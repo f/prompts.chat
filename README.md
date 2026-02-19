@@ -247,3 +247,10 @@ Use prompts.chat as an MCP server in your AI tools.
 ## 📜 License
 
 **[CC0 1.0 Universal (Public Domain)](https://creativecommons.org/publicdomain/zero/1.0/)** — Copy, modify, distribute, and use freely. No attribution required.
+
+## Compatible Agents
+
+These prompts work great with:
+- [ChatGPT](https://chat.openai.com/)
+- [Claude Code](https://claude.com/product/claude-code)
+- [AdaL](https://sylph.ai/) - Self-evolving AI coding agent ([Docs](https://docs.sylph.ai/) | [GitHub](https://github.com/SylphAI-Inc/adal-cli))
