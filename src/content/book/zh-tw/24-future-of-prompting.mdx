@@ -1,0 +1,445 @@
+隨著 AI 以前所未有的速度持續發展，提示詞工程的藝術和科學也將隨之演進。本章將探討新興趨勢、人機協作格局的變化，以及如何在這個領域轉型中保持領先。
+
+<Callout type="info" title="不斷變化的目標">
+本書中的技術代表了當前的最佳做法，但 AI 能力變化迅速。即使具體策略不斷演變，清晰溝通、結構化思維和迭代改進的原則仍將保持價值。
+</Callout>
+
+## 不斷演變的格局
+
+### 從提示詞到對話
+
+早期的提示詞是交易式的——單一輸入產生單一輸出。現代 AI 互動越來越具有**對話性和協作性**：
+
+- **多輪改進** - 通過多次交流建立理解
+- **持久上下文** - 能夠記住互動並從中學習的系統
+- **代理工作流** - 能夠自主規劃、執行和迭代的 AI
+- **工具使用** - 能夠搜尋、計算和與外部系統互動的模型
+
+<TryIt compact prompt={`讓我們一起完成\${task:撰寫一篇技術部落格文章}。
+
+我想迭代式地開發這個內容：
+1. 首先，幫我腦力激盪一些角度
+2. 然後我們一起擬定大綱
+3. 我會起草各個部分並獲得你的反饋
+4. 最後，我們一起潤飾最終版本
+
+請先詢問我關於目標受眾和核心訊息的問題。`} />
+
+### 上下文工程的興起
+
+正如第 14 章所述，提示詞工程正在從單一指令擴充到**上下文工程**——戰略性地管理 AI 可以存取的資訊：
+
+- **RAG（檢索增強生成）** - 動態知識檢索
+- **函式呼叫** - 結構化工具整合
+- **MCP（模型上下文協議）** - 標準化的上下文共享
+- **記憶系統** - 跨會話的持久知識
+
+未來的提示詞工程師不僅要考慮*說什麼*，還要考慮*提供什麼上下文*。
+
+### 多模態成為預設
+
+純文本互動正在成為例外。未來的 AI 系統將無縫處理：
+
+- **圖像和影片** - 理解和生成視覺內容
+- **音訊和語音** - 自然語音互動
+- **文件和檔案** - 直接處理複雜材料
+- **現實世界互動** - 機器人和物理系統
+
+提示詞技能將擴充到引導 AI 感知和物理行動。
+
+## 代理的未來
+
+AI 領域最重大的轉變是**代理**的興起——不僅僅回應提示詞，而是主動追求目標、做出決策並在現實世界中採取行動的 AI 系統。
+
+### 什麼是 AI 代理？
+
+AI 代理是一個能夠：
+
+- **感知**其環境的系統，通過輸入（文本、圖像、資料、API）
+- **推理**該做什麼，使用 LLM 作為其"大腦"
+- **行動**，通過呼叫工具、編寫程式碼或與系統互動
+- **學習**，從反饋中調整其方法
+
+<Callout type="info" title="從聊天機器人到代理">
+傳統聊天機器人等待輸入並回應。代理則主動出擊——它們規劃多步驟任務、自主使用工具、從錯誤中恢復，並堅持直到目標達成。
+</Callout>
+
+### 提示詞在代理中的作用
+
+在代理世界中，提示詞變得更加關鍵——但它們服務於不同的目的：
+
+<div className="my-6 grid md:grid-cols-2 gap-4">
+  <div className="border rounded-lg bg-blue-50/50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900 p-4">
+    <p className="text-sm font-semibold text-blue-700 dark:text-blue-400 m-0!">系統提示詞</p>
+    <p className="text-sm text-muted-foreground mt-2 m-0!">定義代理的身份、能力、約束和行為準則。這些是代理的"憲法"。</p>
+  </div>
+  <div className="border rounded-lg bg-purple-50/50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-900 p-4">
+    <p className="text-sm font-semibold text-purple-700 dark:text-purple-400 m-0!">規劃提示詞</p>
+    <p className="text-sm text-muted-foreground mt-2 m-0!">指導代理如何將複雜目標分解為可執行的步驟。對多步驟推理至關重要。</p>
+  </div>
+  <div className="border rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900 p-4">
+    <p className="text-sm font-semibold text-amber-700 dark:text-amber-400 m-0!">工具使用提示詞</p>
+    <p className="text-sm text-muted-foreground mt-2 m-0!">描述可用工具以及何時/如何使用它們。代理必須理解其能力。</p>
+  </div>
+  <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900 p-4">
+    <p className="text-sm font-semibold text-green-700 dark:text-green-400 m-0!">反思提示詞</p>
+    <p className="text-sm text-muted-foreground mt-2 m-0!">使代理能夠評估自己的輸出、發現錯誤並迭代改進。</p>
+  </div>
+</div>
+
+### 代理架構模式
+
+現代代理遵循可識別的模式。理解這些有助於你設計有效的代理系統：
+
+**ReAct（推理 + 行動）**
+
+代理在推理該做什麼和採取行動之間交替：
+
+<div className="my-6 flex flex-col items-center gap-2 p-6 bg-muted/30 rounded-lg">   
+  <div className="flex items-center gap-4">
+    <div className="px-4 py-2 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">思考</p>
+    </div>
+    <div className="text-slate-400">→</div>
+    <div className="px-4 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">行動</p>
+    </div>
+    <div className="text-slate-400">→</div>
+    <div className="px-4 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded-lg">
+      <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">觀察</p>
+    </div>
+    <div className="text-slate-400">→</div>
+    <div className="text-muted-foreground text-sm">（重複）</div>
+  </div>
+</div>
+
+**規劃執行模式**
+
+代理首先建立完整計劃，然後執行步驟：
+
+<div className="my-6 flex flex-col items-center gap-2 p-6 bg-muted/30 rounded-lg">   
+  <div className="px-6 py-3 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
+    <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">建立計劃</p>
+    <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">將目標分解為步驟</p>
+  </div>
+  <div className="text-blue-400 dark:text-blue-500 text-lg">↓</div>
+  <div className="flex items-center gap-3">
+    <div className="px-4 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg">
+      <p className="text-xs font-medium text-green-700 dark:text-green-300 m-0!">步驟 1</p>
+    </div>
+    <div className="text-slate-400">→</div>
+    <div className="px-4 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg">
+      <p className="text-xs font-medium text-green-700 dark:text-green-300 m-0!">步驟 2</p>
+    </div>
+    <div className="text-slate-400">→</div>
+    <div className="px-4 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg">
+      <p className="text-xs font-medium text-green-700 dark:text-green-300 m-0!">步驟 3</p>
+    </div>
+    <div className="text-slate-400">→</div>
+    <div className="text-muted-foreground text-sm">...</div>
+  </div>
+  <div className="text-green-400 dark:text-green-500 text-lg">↓</div>
+  <div className="px-6 py-3 bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800 rounded-lg text-center">
+    <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">按需修訂</p>
+    <p className="text-xs text-amber-600 dark:text-amber-400 m-0!">根據結果調整計劃</p>
+  </div>
+</div>
+
+### 為代理設計提示詞
+
+在為代理系統設計提示詞時，請考慮：
+
+<TryIt compact prompt={`你是一個自主研究代理。你的目標是\${goal:查找可再生能源採用率的最新統計資料}。
+
+**你的能力：**
+- 在網上搜尋資訊
+- 閱讀和分析文件
+- 做筆記並統整發現
+- 如有需要可以提出澄清問題
+
+**你的方法：**
+1. 首先，規劃你的研究策略
+2. 系統性地執行搜尋
+3. 評估來源的可信度
+4. 將發現統整成一份連貫的報告
+5. 引用所有來源
+
+**約束：**
+- 保持專注於目標
+- 承認不確定性
+- 絕不捏造資訊
+- 如果遇到困難就停下來詢問
+
+請先概述你的研究計劃。`} />
+
+### 多代理系統
+
+未來涉及專業化代理團隊協同工作：
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg">
+  <div className="flex flex-col md:flex-row items-center justify-center gap-6">      
+    <div className="flex flex-col items-center gap-2">
+      <div className="px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
+        <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">協調者</p>
+        <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">管理工作流</p>  
+      </div>
+    </div>
+    <div className="hidden md:block text-slate-400 text-2xl">⟷</div>
+    <div className="md:hidden text-slate-400 text-2xl">↕</div>
+    <div className="flex flex-wrap justify-center gap-3">
+      <div className="px-3 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded-lg">
+        <p className="text-xs font-medium text-purple-700 dark:text-purple-300 m-0!">研究員</p>
+      </div>
+      <div className="px-3 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg">
+        <p className="text-xs font-medium text-green-700 dark:text-green-300 m-0!">寫作者</p>
+      </div>
+      <div className="px-3 py-2 bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800 rounded-lg">
+        <p className="text-xs font-medium text-amber-700 dark:text-amber-300 m-0!">評論者</p>
+      </div>
+      <div className="px-3 py-2 bg-red-100 dark:bg-red-900/50 border border-red-200 dark:border-red-800 rounded-lg">
+        <p className="text-xs font-medium text-red-700 dark:text-red-300 m-0!">程式設計師</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+每個代理都有自己的系統提示詞來定義其角色，它們通過結構化訊息進行通信。提示詞工程師的工作變成了**設計團隊**——定義角色、通信協議和協調策略。
+
+<Callout type="tip" title="提示詞工程師作為架構師">
+在代理的未來，提示詞工程師將成為系統架構師。你不僅僅是在編寫指令——你是在設計能夠推理、規劃和行動的自主系統。你在本書中學到的技能是這個新學科的基礎。
+</Callout>
+
+## 新興模式
+
+### 提示詞編排
+
+單一提示詞正在讓位於**編排系統**：
+
+<div className="my-6 flex flex-col items-center gap-2 p-6 bg-muted/30 rounded-lg">   
+  <div className="px-6 py-3 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg text-center">
+    <p className="text-sm font-medium text-slate-700 dark:text-slate-300 m-0!">使用者請求</p>
+  </div>
+  <div className="text-slate-400 dark:text-slate-500 text-lg">↓</div>
+  <div className="px-6 py-3 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
+    <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">規劃代理</p>
+    <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">分解任務</p>        
+  </div>
+  <div className="text-blue-400 dark:text-blue-500 text-lg">↓</div>
+  <div className="px-6 py-3 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded-lg text-center">
+    <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">研究代理</p>
+    <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">收集資訊</p>    
+  </div>
+  <div className="text-purple-400 dark:text-purple-500 text-lg">↓</div>
+  <div className="px-6 py-3 bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800 rounded-lg text-center">
+    <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">寫作代理</p>
+    <p className="text-xs text-amber-600 dark:text-amber-400 m-0!">建立內容</p>      
+  </div>
+  <div className="text-amber-400 dark:text-amber-500 text-lg">↓</div>
+  <div className="px-6 py-3 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg text-center">
+    <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">審核代理</p>
+    <p className="text-xs text-green-600 dark:text-green-400 m-0!">品質檢查</p>      
+  </div>
+  <div className="text-green-400 dark:text-green-500 text-lg">↓</div>
+  <div className="px-6 py-3 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg text-center">
+    <p className="text-sm font-medium text-slate-700 dark:text-slate-300 m-0!">最終輸出</p>
+  </div>
+</div>
+
+未來的從業者將設計提示詞*系統*而不是單個提示詞。
+
+### 自我改進的提示詞
+
+AI 系統正在開始：
+
+- **優化自己的提示詞** - 元學習以獲得更好的指令
+- **從反饋中學習** - 根據結果進行調整
+- **生成訓練資料** - 為微調建立範例
+- **自我評估** - 內建品質評估
+
+<TryIt compact prompt={`分析這個提示詞並提出改進建議：
+
+原始提示詞："\${originalPrompt:寫一個關於機器人的故事}"
+
+考慮以下方面：
+1. **清晰度** - 意圖是否明確？
+2. **具體性** - 缺少哪些細節？
+3. **結構** - 如何更好地組織輸出？
+4. **邊緣案例** - 可能出什麼問題？
+
+提供：改進版本及變更說明`} />
+
+### 自然語言程式設計
+
+提示詞和程式設計之間的界限正在模糊：
+
+- **提示詞即程式碼** - 版本控制、測試、部署
+- **LLM 作為解釋器** - 自然語言作為可執行指令
+- **混合系統** - 將傳統程式碼與 AI 推理相結合
+- **AI 輔助開發** - 編寫和偵錯程式碼的模型
+
+理解提示詞越來越意味著理解軟體開發。
+
+## 未來所需的技能
+
+### 將保持價值的技能
+
+無論 AI 如何發展，某些技能將始終保持重要：
+
+1. **清晰思考** - 知道你真正想要什麼
+2. **領域專業知識** - 理解問題空間
+3. **批判性評估** - 評估 AI 輸出品質
+4. **倫理判斷** - 知道什麼*應該*做
+5. **迭代改進** - 持續改進的心態
+
+### 將發生變化的方面
+
+其他方面將發生重大轉變：
+
+<div className="my-6 overflow-x-auto">
+  <table className="w-full border-collapse text-sm">
+    <thead>
+      <tr className="border-b border-border">
+        <th className="text-left py-3 px-4 font-semibold text-muted-foreground">今天</th>
+        <th className="text-left py-3 px-4 font-semibold text-muted-foreground">明天</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr className="border-b border-border/50">
+        <td className="py-3 px-4">編寫詳細的提示詞</td>
+        <td className="py-3 px-4 text-primary font-medium">設計代理系統</td>       
+      </tr>
+      <tr className="border-b border-border/50">
+        <td className="py-3 px-4">手動優化提示詞</td>
+        <td className="py-3 px-4 text-primary font-medium">自動化提示詞調優</td>     
+      </tr>
+      <tr className="border-b border-border/50">
+        <td className="py-3 px-4">單一模型專業知識</td>
+        <td className="py-3 px-4 text-primary font-medium">多模型編排</td>
+      </tr>
+      <tr className="border-b border-border/50">
+        <td className="py-3 px-4">以文本為中心的互動</td>
+        <td className="py-3 px-4 text-primary font-medium">多模態流暢度</td>
+      </tr>
+      <tr>
+        <td className="py-3 px-4">個人生產力</td>
+        <td className="py-3 px-4 text-primary font-medium">團隊-AI 協作</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+### 保持與時俱進
+
+為了保持技能的相關性：
+
+- **持續實驗** - 在新模型和功能發佈時嘗試它們
+- **關注研究** - 瞭解學術發展
+- **加入社群** - 向其他從業者學習
+- **建構專案** - 將技能應用於實際問題
+- **教導他人** - 通過講解來鞏固理解
+
+## 人的因素
+
+### AI 作為放大器
+
+在最好的情況下，AI 放大人類能力而不是取代它：
+
+- **專家變得更專業** - AI 處理常規工作，人類專注於洞察
+- **創造力擴充** - 探索更多想法，測試更多可能性
+- **存取普及化** - 曾經需要專家的能力現在人人可用
+- **協作深化** - 人機團隊超越任何一方單獨的能力
+
+### 不可替代的人類
+
+某些品質仍然是人類獨有的：
+
+- **原創體驗** - 生活在世界中，擁有情感和關係
+- **價值觀和倫理** - 決定什麼重要、什麼是對的
+- **問責制** - 對結果承擔責任
+- **意義建構** - 理解某事*為什麼*重要
+- **真正的創造力** - 源於獨特視角的真正新穎性
+
+<Callout type="tip" title="你的獨特價值">
+隨著 AI 處理越來越多的常規認知任務，你的獨特價值在於判斷力、創造力、領域專業知識，以及 AI 無法複製的人際關係。投資於讓你不可替代的方面。
+</Callout>
+
+## 最後的思考
+
+### 我們學到了什麼
+
+在本書中，我們探討了：
+
+- **基礎** - AI 模型如何工作以及什麼使提示詞有效
+- **技術** - 角色提示、思維鏈、少樣本學習等
+- **進階策略** - 系統提示詞、提示詞串接、多模態互動
+- **最佳做法** - 避免陷阱、倫理考慮、優化
+- **應用** - 寫作、程式設計、教育、商業、創意、研究
+
+這些技術有共同的主線：
+
+1. **清晰具體** - 知道你想要什麼並精確地傳達
+2. **提供上下文** - 給 AI 提供它需要的資訊
+3. **結構化請求** - 組織改善輸出
+4. **迭代改進** - 第一次嘗試是起點，不是終點
+5. **批判性評估** - AI 輸出需要人類判斷
+
+### 藝術與科學
+
+提示詞工程既是**藝術也是科學**：
+
+- **科學**：可測試的假設、可衡量的結果、可重複的技術
+- **藝術**：直覺、創造力、知道何時打破規則
+
+最優秀的從業者將嚴謹的方法論與創造性實驗相結合。他們系統地測試，但也相信自己的直覺。他們遵循最佳做法，但知道何時偏離。
+
+### 創造的召喚
+
+本書給了你工具。你用它們建構什麼取決於你自己。
+
+- **解決**對你和他人重要的問題
+- **創造**以前不存在的東西
+- **幫助**人們做他們獨自無法做到的事情
+- **突破**可能性的邊界
+- **保持好奇心**，隨著領域的發展不斷學習
+
+AI 時代才剛剛開始。最重要的應用尚未被發明。最強大的技術尚未被發現。未來正在被書寫——由像你這樣的人，一次一個提示詞。
+
+## 展望未來
+
+<TryIt compact prompt={`我剛剛讀完《提示詞互動手冊》，想制定一個個人練習計劃。
+
+我的背景：\${background:描述你的經驗水平和主要使用案例}
+我的目標：\${goals:你想用 AI 實現什麼？}
+可用時間：\${time:你每週能投入多少時間？}
+
+建立一個 30 天練習計劃：
+1. 循序漸進地培養技能
+2. 包含具體的練習
+3. 應用於我的實際工作
+4. 衡量改進
+
+包括：里程碑、資源和成功標準`} />
+
+<Callout type="tip" title="繼續學習">
+存取 [prompts.chat](https://prompts.chat) 獲取社群提示詞、新技術，並分享你自己的發現。最好的學習發生在社群中。
+</Callout>
+
+## 總結
+
+<Callout type="info" title="關鍵要點">
+AI 將繼續快速發展，但清晰溝通、批判性思維和迭代改進的核心技能仍然有價值。專注於讓你不可替代的方面：判斷力、創造力、倫理和真正的人際關係。提示詞工程的未來是協作的、多模態的，並整合到更大的系統中。保持好奇心，繼續實驗，建構有意義的東西。
+</Callout>
+
+<Quiz
+  question="隨著 AI 不斷發展，最重要的技能是什麼？"
+  options={[
+    "記憶特定的提示詞範本",
+    "學習每個新模型的特定語法",
+    "清晰思考和批判性評估 AI 輸出",
+    "完全避免使用 AI 以保持人類技能"
+  ]}
+  correctIndex={2}
+  explanation="雖然具體技術會改變，但清晰思考你想要什麼、有效地傳達它，以及批判性地評估 AI 輸出的能力，無論 AI 如何發展都保持價值。這些元技能可以跨模型和應用遷移。"
+/>
+
+感謝閱讀《提示詞互動手冊》。現在去創造令人驚歎的東西吧。

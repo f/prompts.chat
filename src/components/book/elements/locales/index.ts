@@ -21,6 +21,7 @@ import it from "./it";
 import pt from "./pt";
 import ja from "./ja";
 import zh from "./zh";
+import zhTW from "./zh-tw";
 import ko from "./ko";
 import ar from "./ar";
 import nl from "./nl";
@@ -44,6 +45,7 @@ const locales: Record<string, LocaleData> = {
   pt,
   ja,
   zh,
+  "zh-tw": zhTW,
   ko,
   ar,
   nl,
@@ -74,7 +76,7 @@ export function getLocaleField<K extends keyof LocaleData>(
 }
 
 // Export individual locale data for direct access if needed
-export { en, tr, az, fr, de, es, it, pt, ja, zh, ko, ar, nl, ru, el, fa, he };
+export { en, tr, az, fr, de, es, it, pt, ja, zh, zhTW, ko, ar, nl, ru, el, fa, he };
 
 // Export the full locales object
 export { locales };

@@ -14,6 +14,7 @@ import { setLocale } from "@/lib/i18n/client";
 const languages = [
   { code: "en", name: "English" },
   { code: "zh", name: "中文" },
+  { code: "zh-tw", name: "繁體中文" },
   { code: "es", name: "Español" },
   { code: "pt", name: "Português" },
   { code: "fr", name: "Français" },
