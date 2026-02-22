@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { generateEmbedding, isAISearchEnabled } from "@/lib/ai/embeddings";
 import { loadPrompt, getSystemPrompt, interpolatePrompt } from "@/lib/ai/load-prompt";
 import { TYPE_DEFINITIONS } from "@/data/type-definitions";
+import { logger } from "@/lib/logger";
 
 const IMPROVE_MODEL = process.env.OPENAI_IMPROVE_MODEL || "gpt-4o";
 
@@ -71,7 +72,7 @@ async function findSimilarPrompts(
 ): Promise<Array<{ id: string; slug: string | null; title: string; content: string; similarity: number }>> {
   const aiSearchEnabled = await isAISearchEnabled();
   if (!aiSearchEnabled) {
-    console.log("[improve-prompt] AI search is not enabled");
+    logger.debug("[improve-prompt] AI search is not enabled");
     return [];
   }
 
@@ -96,7 +97,7 @@ async function findSimilarPrompts(
       take: 100,
     });
 
-    console.log(`[improve-prompt] Found ${prompts.length} prompts with embeddings`);
+    logger.debug({ count: prompts.length }, "[improve-prompt] Found prompts with embeddings");
 
     const SIMILARITY_THRESHOLD = 0.3;
 
@@ -118,7 +119,7 @@ async function findSimilarPrompts(
 
     return scoredPrompts.slice(0, limit);
   } catch (error) {
-    console.error("[improve-prompt] Error finding similar prompts:", error);
+    logger.error({ error }, "[improve-prompt] Error finding similar prompts");
     return [];
   }
 }

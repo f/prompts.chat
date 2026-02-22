@@ -5,6 +5,12 @@ import { getConfig } from "@/lib/config";
 import { initializePlugins, getAuthPlugin } from "@/lib/plugins";
 import type { Adapter, AdapterUser } from "next-auth/adapters";
 
+// Extended interface for adapter user data with optional username fields
+interface ExtendedAdapterUser extends AdapterUser {
+  username?: string;
+  githubUsername?: string;
+}
+
 // Initialize plugins before use
 initializePlugins();
 
@@ -40,12 +46,10 @@ function CustomPrismaAdapter(): Adapter {
   
   return {
     ...prismaAdapter,
-    async createUser(data: AdapterUser & { username?: string; githubUsername?: string }) {
+    async createUser(data: ExtendedAdapterUser) {
       // Use GitHub username if provided, otherwise generate one
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let username = (data as any).username;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const githubUsername = (data as any).githubUsername; // Immutable GitHub username
+      let username = data.username;
+      const githubUsername = data.githubUsername;
       
       if (!username) {
         username = await generateUsername(data.email, data.name);

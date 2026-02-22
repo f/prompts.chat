@@ -224,3 +224,37 @@ export function getConfigSync(): PromptsConfig {
   }
   return cachedConfig;
 }
+
+/**
+ * Validate required environment variables at startup
+ * Throws an error if critical environment variables are missing
+ */
+export function validateEnvironment(): void {
+  const required = [
+    'DATABASE_URL',
+    'NEXTAUTH_SECRET',
+    'NEXTAUTH_URL',
+  ];
+
+  const missing = required.filter(key => !process.env[key]);
+  if (missing.length > 0) {
+    throw new Error(
+      `Missing required environment variables: ${missing.join(', ')}. ` +
+      `Please check your .env file and ensure all required variables are set.`
+    );
+  }
+
+  // Warn about optional but recommended variables
+  const recommended = [
+    'OPENAI_API_KEY',
+    'GOOGLE_ANALYTICS_ID',
+  ];
+
+  const missingRecommended = recommended.filter(key => !process.env[key]);
+  if (missingRecommended.length > 0) {
+    console.warn(
+      `Warning: Optional environment variables not set: ${missingRecommended.join(', ')}. ` +
+      `Some features may be limited.`
+    );
+  }
+}

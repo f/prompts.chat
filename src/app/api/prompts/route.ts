@@ -8,6 +8,7 @@ import { generatePromptEmbedding, findAndSaveRelatedPrompts } from "@/lib/ai/emb
 import { generatePromptSlug } from "@/lib/slug";
 import { checkPromptQuality } from "@/lib/ai/quality-check";
 import { isSimilarContent, normalizeContent } from "@/lib/similarity";
+import { logger } from "@/lib/logger";
 
 const promptSchema = z.object({
   title: z.string().min(1).max(200),
@@ -147,7 +148,7 @@ export async function POST(request: Request) {
       });
 
       // Find similar content using our similarity algorithm
-      const similarPrompt = publicPrompts.find(p => isSimilarContent(content, p.content));
+      const similarPrompt = publicPrompts.find((p: { id: string; slug: string | null; title: string; content: string; author: { username: string } }) => isSimilarContent(content, p.content));
 
       if (similarPrompt) {
         return NextResponse.json(
@@ -261,18 +262,18 @@ export async function POST(request: Request) {
       generatePromptEmbedding(prompt.id)
         .then(() => findAndSaveRelatedPrompts(prompt.id))
         .catch((err) =>
-          console.error("Failed to generate embedding/related prompts for:", prompt.id, err)
+          logger.error({ error: err, promptId: prompt.id }, "Failed to generate embedding/related prompts")
         );
     }
 
     // Run quality check for auto-delist (non-blocking for public prompts)
     // This runs in the background and will delist the prompt if quality issues are found
     if (!isPrivate) {
-      console.log(`[Quality Check] Starting check for prompt ${prompt.id}`);
+      logger.info({ promptId: prompt.id }, "[Quality Check] Starting check");
       checkPromptQuality(title, content, description).then(async (result) => {
-        console.log(`[Quality Check] Result for prompt ${prompt.id}:`, JSON.stringify(result));
+        logger.info({ promptId: prompt.id, result }, "[Quality Check] Result");
         if (result.shouldDelist && result.reason) {
-          console.log(`[Quality Check] Auto-delisting prompt ${prompt.id}: ${result.reason} - ${result.details}`);
+          logger.info({ promptId: prompt.id, reason: result.reason, details: result.details }, "[Quality Check] Auto-delisting prompt");
           await db.prompt.update({
             where: { id: prompt.id },
             data: {
@@ -281,13 +282,13 @@ export async function POST(request: Request) {
               delistReason: result.reason,
             },
           });
-          console.log(`[Quality Check] Prompt ${prompt.id} delisted successfully`);
+          logger.info({ promptId: prompt.id }, "[Quality Check] Prompt delisted successfully");
         }
       }).catch((err) => {
-        console.error("[Quality Check] Failed to run quality check for prompt:", prompt.id, err);
+        logger.error({ error: err, promptId: prompt.id }, "[Quality Check] Failed to run quality check");
       });
     } else {
-      console.log(`[Quality Check] Skipped - prompt ${prompt.id} is private`);
+      logger.debug({ promptId: prompt.id }, "[Quality Check] Skipped - prompt is private");
     }
 
     // Revalidate caches (prompts, categories, tags counts change)
@@ -430,12 +431,15 @@ export async function GET(request: Request) {
     ]);
 
     // Transform to include voteCount and contributorCount, exclude internal fields
-    const prompts = promptsRaw.map(({ embedding: _e, isPrivate: _p, isUnlisted: _u, unlistedAt: _ua, deletedAt: _d, ...p }) => ({
-      ...p,
-      voteCount: p._count.votes,
-      contributorCount: p._count.contributors,
-      contributors: p.contributors,
-    }));
+    const prompts = promptsRaw.map((promptRaw: any) => {
+      const { embedding, isPrivate, isUnlisted, unlistedAt, deletedAt, ...p } = promptRaw;
+      return {
+        ...p,
+        voteCount: p._count.votes,
+        contributorCount: p._count.contributors,
+        contributors: p.contributors,
+      };
+    });
 
     return NextResponse.json({
       prompts,
@@ -445,7 +449,7 @@ export async function GET(request: Request) {
       totalPages: Math.ceil(total / perPage),
     });
   } catch (error) {
-    console.error("List prompts error:", error);
+    logger.error({ error }, "List prompts error");
     return NextResponse.json(
       { error: "server_error", message: "Something went wrong" },
       { status: 500 }

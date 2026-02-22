@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { RunPromptButton } from "@/components/prompts/run-prompt-button";
+import DOMPurify from "dompurify";
 
 interface TreeNode {
   name: string;
@@ -479,10 +480,15 @@ function EmbedContent() {
             }}
           >
             {config.prompt ? (
-              <p 
+              <p
                 className="text-sm whitespace-pre-wrap"
                 style={{ color: isDark ? "#fafafa" : "#0f172a" }}
-                dangerouslySetInnerHTML={{ __html: highlightMentions(config.prompt) }}
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(highlightMentions(config.prompt), {
+                    ALLOWED_TAGS: ['span'],
+                    ALLOWED_ATTR: ['class'],
+                  }),
+                }}
               />
             ) : (
               <p 
