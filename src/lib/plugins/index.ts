@@ -53,11 +53,3 @@ export async function getConfiguredAuthPlugins() {
   return plugins;
 }
 
-/**
- * @deprecated Use getConfiguredAuthPlugins() instead
- * Get the first configured auth plugin based on prompts.config.ts
- */
-export async function getConfiguredAuthPlugin() {
-  const plugins = await getConfiguredAuthPlugins();
-  return plugins[0];
-}

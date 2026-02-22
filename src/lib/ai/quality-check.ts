@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { loadPrompt, getSystemPrompt } from "./load-prompt";
+import { logger, logQualityCheck, logQualityCheckResult, logQualityCheckError } from "@/lib/logger";
 
 const qualityCheckPrompt = loadPrompt("src/lib/ai/quality-check.prompt.yml");
 
@@ -74,19 +75,19 @@ export async function checkPromptQuality(
   content: string,
   description?: string | null
 ): Promise<QualityCheckResult> {
-  console.log(`[Quality Check] Checking: "${title}" (${content.length} chars)`);
+  logQualityCheck(title, content.length);
   
   // First, run basic length checks (no AI needed)
   const lengthCheck = checkLength(content);
   if (lengthCheck) {
-    console.log(`[Quality Check] Length check failed:`, lengthCheck);
+    logQualityCheckResult(lengthCheck);
     return lengthCheck;
   }
 
   // Check if OpenAI is available
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
-    console.log(`[Quality Check] No OpenAI API key - skipping AI check`);
+    logger.debug("[Quality Check] No OpenAI API key - skipping AI check");
     // If no AI available, pass the check (avoid false positives)
     return {
       shouldDelist: false,
@@ -96,7 +97,7 @@ export async function checkPromptQuality(
     };
   }
   
-  console.log(`[Quality Check] Running AI check...`);
+  logger.debug("[Quality Check] Running AI check...");
 
   try {
     const client = getOpenAIClient();
@@ -120,7 +121,7 @@ ${content}`;
     });
 
     const responseText = response.choices[0]?.message?.content || "{}";
-    console.log(`[Quality Check] AI response:`, responseText);
+    logger.debug({ responseText }, "[Quality Check] AI response");
     
     try {
       const result = JSON.parse(responseText);
@@ -142,7 +143,7 @@ ${content}`;
         details: result.details || "Quality check completed",
       };
     } catch {
-      console.error("Failed to parse AI quality check response:", responseText);
+      logQualityCheckError(new Error("Failed to parse AI quality check response"));
       // On parse error, don't delist (avoid false positives)
       return {
         shouldDelist: false,
@@ -152,7 +153,7 @@ ${content}`;
       };
     }
   } catch (error) {
-    console.error("AI quality check error:", error);
+    logQualityCheckError(error);
     // On error, don't delist (avoid false positives)
     return {
       shouldDelist: false,

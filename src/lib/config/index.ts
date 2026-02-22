@@ -1,3 +1,5 @@
+import { logger } from "@/lib/logger";
+
 export interface BrandingConfig {
   name: string;
   logo: string;
@@ -223,4 +225,38 @@ export function getConfigSync(): PromptsConfig {
     throw new Error("Config not initialized. Call getConfig() first in a server component.");
   }
   return cachedConfig;
+}
+
+/**
+ * Validate required environment variables at startup
+ * Throws an error if critical environment variables are missing
+ */
+export function validateEnvironment(): void {
+  const required = [
+    'DATABASE_URL',
+    'NEXTAUTH_SECRET',
+  ];
+
+  const missing = required.filter(key => !process.env[key]);
+  if (missing.length > 0) {
+    throw new Error(
+      `Missing required environment variables: ${missing.join(', ')}. ` +
+      `Please check your .env file and ensure all required variables are set.`
+    );
+  }
+
+  // Warn about optional but recommended variables
+  const recommended = [
+    'NEXTAUTH_URL',
+    'OPENAI_API_KEY',
+    'GOOGLE_ANALYTICS_ID',
+  ];
+
+  const missingRecommended = recommended.filter(key => !process.env[key]);
+  if (missingRecommended.length > 0) {
+    logger.warn(
+      `Optional environment variables not set: ${missingRecommended.join(', ')}. ` +
+      `Some features may be limited.`
+    );
+  }
 }
