@@ -6,6 +6,8 @@ export const githubPlugin: AuthPlugin = {
   name: "GitHub",
   getProvider: () =>
     GitHub({
+      // GitHub includes this issuer in OAuth authorization responses.
+      issuer: "https://github.com/login/oauth",
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
       profile(profile) {
