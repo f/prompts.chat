@@ -1,20 +1,16 @@
 import { defineConfig } from "@/lib/config";
 
 // Set to true to use clone branding (hide prompts.chat repo branding)
-const useCloneBranding = false;
+const useCloneBranding = true;
 
 export default defineConfig({
   // Branding - customize for white-label
   branding: {
-    name: "prompts.chat",
+    name: "Nexus Prompts",
     logo: "/logo.svg",
     logoDark: "/logo-dark.svg",
     favicon: "/logo.svg",
-    description: "Collect, organize, and share AI prompts",
-
-    // Delete this if useCloneBranding is true
-    appStoreUrl: "https://apps.apple.com/tr/app/prompts-chat/id6756895736",
-    chromeExtensionUrl: "https://chromewebstore.google.com/detail/promptschat/eemdohkhbaifiocagjlhibfbhamlbeej",
+    description: "Next-generation AI prompt engineering hub, comparison studio, and library",
   },
 
   // Theme - design system configuration

@@ -138,6 +138,35 @@
   .animate-gradient-text {
     animation: gradient-flow 20s ease infinite;
   }
+
+  /* Glassmorphism styling utilities */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .dark .glass-card {
+    background: rgba(18, 18, 24, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* Glowing accents and interactive hovers */
+  .glow-primary {
+    box-shadow: 0 0 20px -5px oklch(0.636 0.162 256.4 / 0.4);
+  }
+
+  .glow-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .glow-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.25);
+  }
 }
 
 @keyframes gradient-flow {
