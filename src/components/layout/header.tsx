@@ -100,7 +100,8 @@ const languages = [
   { code: "fa", name: "فارسی" },
   { code: "ru", name: "Русский" },
   { code: "he", name: "עברית" },
-  { code: "el", name: "Ελληνικά" }
+  { code: "el", name: "Ελληνικά" },
+  { code: "tk", name: "Türkmençe" },
 ];
 
 interface HeaderProps {
