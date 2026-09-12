@@ -13,12 +13,41 @@ import { isSimilarContent, normalizeContent } from "@/lib/similarity";
 // ADDED: IN-MEMORY RATE LIMITER (Fix for Issue #1061)
 // Acts as a security bouncer to prevent DoS attacks on the public API endpoint.
 // ============================================================================
-const rateLimitMap = new Map<string, { count: number, lastReset: number }>();
+
+interface RateLimitRecord {
+  count: number;
+  lastReset: number;
+}
+
+const rateLimitMap = new Map<string, RateLimitRecord>();
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute window
 const MAX_REQUESTS_PER_WINDOW = 60; // Max 60 requests per minute per IP
+const MAX_MAP_SIZE = 10000; // Prevent memory leak by bounding the map size
 
+/**
+ * Checks if a given IP address has exceeded the rate limit.
+ * Enforces a maximum number of requests per time window and manages memory
+ * by evicting stale records when the map grows too large.
+ *
+ * @param {string} ip - The client's IP address.
+ * @returns {boolean} True if the IP is rate-limited, false otherwise.
+ */
 function isRateLimited(ip: string): boolean {
   const now = Date.now();
+
+  // Memory leak protection: Cleanup expired entries if map gets too large
+  if (rateLimitMap.size >= MAX_MAP_SIZE) {
+    for (const [key, record] of rateLimitMap.entries()) {
+      if (now - record.lastReset > RATE_LIMIT_WINDOW_MS) {
+        rateLimitMap.delete(key);
+      }
+    }
+    // Failsafe: if still too large after cleanup, clear entirely
+    if (rateLimitMap.size >= MAX_MAP_SIZE) {
+      rateLimitMap.clear();
+    }
+  }
+
   const record = rateLimitMap.get(ip);
 
   // New IP detected
