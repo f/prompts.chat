@@ -64,6 +64,7 @@ A curated collection of **prompts** for AI chat models. Originally created for C
 |----------------|--------------|
 | [prompts.chat](https://prompts.chat/prompts) | [prompts.csv](prompts.csv) |
 | [PROMPTS.md](https://raw.githubusercontent.com/f/prompts.chat/main/PROMPTS.md) | [Hugging Face Dataset](https://huggingface.co/datasets/fka/prompts.chat) |
+| [TAPAC MCP](https://tapacapi.com/mcp.html) | [TAPAC MCP](https://tapacapi.com/mcp.html) — B2B contact search MCP: pass industry, job titles, company size, location and source (website / Telegram / Discord) and every email comes back SMTP-verified in the same call (2–5% bounce vs 10–35% for stored lists). Install `npx -y @tapacapi/mcp` or use the remote endpoint https://tapacapi.com/mcp. Free 100 searches, then $0.10–0.50 per verified contact. |
 
 **Want to contribute?** Add prompts at [prompts.chat/prompts/new](https://prompts.chat/prompts/new) — they sync here automatically.
 
