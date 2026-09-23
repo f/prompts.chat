@@ -4,7 +4,7 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { generatePromptEmbedding, findAndSaveRelatedPrompts } from "@/lib/ai/embeddings";
-import { generatePromptSlug } from "@/lib/slug";
+import { generatePromptSlug, slugify } from "@/lib/slug";
 import { checkPromptQuality } from "@/lib/ai/quality-check";
 
 const updatePromptSchema = z.object({
@@ -15,6 +15,7 @@ const updatePromptSchema = z.object({
   structuredFormat: z.enum(["JSON", "YAML"]).optional().nullable(),
   categoryId: z.string().optional().nullable(),
   tagIds: z.array(z.string()).optional(),
+  newTags: z.array(z.string()).optional(),
   contributorIds: z.array(z.string()).optional(),
   isPrivate: z.boolean().optional(),
   mediaUrl: z.string().url().optional().or(z.literal("")).nullable(),
@@ -162,7 +163,7 @@ export async function PATCH(
       );
     }
 
-    const { tagIds, contributorIds, categoryId, mediaUrl, title, bestWithModels, bestWithMCP, workflowLink, ...data } = parsed.data;
+    const { tagIds, newTags, contributorIds, categoryId, mediaUrl, title, bestWithModels, bestWithMCP, workflowLink, ...data } = parsed.data;
 
     // Regenerate slug if title changed
     let newSlug: string | undefined;
@@ -182,15 +183,44 @@ export async function PATCH(
       ...(workflowLink !== undefined && { workflowLink: workflowLink || null }),
     };
 
+    let finalTagIds: string[] | undefined = tagIds ? [...tagIds] : undefined;
+    if (newTags && newTags.length > 0) {
+      if (!finalTagIds) finalTagIds = [];
+      for (const tagName of newTags) {
+        const normalized = tagName.trim();
+        if (!normalized) continue;
+        const tagSlug = slugify(normalized);
+        if (!tagSlug) continue;
+
+        let tag = await db.tag.findUnique({ where: { slug: tagSlug } });
+        if (!tag) {
+          try {
+            tag = await db.tag.create({
+              data: {
+                name: normalized,
+                slug: tagSlug,
+              },
+            });
+          } catch (e) {
+            // Handle race condition where another request created it
+            tag = await db.tag.findUnique({ where: { slug: tagSlug } });
+          }
+        }
+        if (tag && !finalTagIds.includes(tag.id)) {
+          finalTagIds.push(tag.id);
+        }
+      }
+    }
+
     // Update prompt
     const prompt = await db.prompt.update({
       where: { id },
       data: {
         ...cleanedData,
-        ...(tagIds && {
+        ...(finalTagIds && {
           tags: {
             deleteMany: {},
-            create: tagIds.map((tagId) => ({ tagId })),
+            create: finalTagIds.map((tagId) => ({ tagId })),
           },
         }),
         ...(contributorIds !== undefined && {

@@ -348,6 +348,7 @@ const createPromptSchema = (t: (key: string) => string) => z.object({
   structuredFormat: z.enum(["JSON", "YAML"]).optional(),
   categoryId: z.string().optional(),
   tagIds: z.array(z.string()),
+  newTags: z.array(z.string()).optional(),
   isPrivate: z.boolean(),
   mediaUrl: z.string().url().optional().or(z.literal("")),
   requiresMediaUpload: z.boolean(),
@@ -446,6 +447,7 @@ export function PromptForm({ categories, tags, initialData, initialContributors 
       structuredFormat: (builderData?.format as "JSON" | "YAML") || initialData?.structuredFormat || undefined,
       categoryId: initialData?.categoryId || "",
       tagIds: initialData?.tagIds || [],
+      newTags: [],
       isPrivate: initialData?.isPrivate || false,
       mediaUrl: initialData?.mediaUrl || "",
       requiresMediaUpload: initialData?.requiresMediaUpload || false,
@@ -681,6 +683,25 @@ export function PromptForm({ categories, tags, initialData, initialContributors 
     }
   };
 
+  const toggleNewTag = (tagName: string) => {
+    const current = form.getValues("newTags") || [];
+    const normalized = tagName.trim();
+    if (!normalized) return;
+
+    // Check if it already exists in the original tags array by name
+    const existingTag = tags.find(t => t.name.toLowerCase() === normalized.toLowerCase());
+    if (existingTag) {
+      toggleTag(existingTag.id);
+      return;
+    }
+
+    if (current.includes(normalized)) {
+      form.setValue("newTags", current.filter((name) => name !== normalized));
+    } else {
+      form.setValue("newTags", [...current, normalized]);
+    }
+  };
+
   const handleAiGenerate = (field: string, label: string) => {
     if (usedAiButtons.has(field) || !builderRef.current) return;
     setUsedAiButtons(prev => new Set(prev).add(field));
@@ -847,12 +868,15 @@ export function PromptForm({ categories, tags, initialData, initialContributors 
             control={form.control}
             name="tagIds"
             render={() => {
+              const newTags = form.watch("newTags") || [];
               const filteredTags = tags.filter(
                 (tag) =>
                   !selectedTags.includes(tag.id) &&
                   tag.name.toLowerCase().includes(tagSearch.toLowerCase())
               );
               const selectedTagObjects = tags.filter((tag) => selectedTags.includes(tag.id));
+              const exactMatch = tags.some((tag) => tag.name.toLowerCase() === tagSearch.trim().toLowerCase());
+              const isAlreadyNewTag = newTags.some(t => t.toLowerCase() === tagSearch.trim().toLowerCase());
 
               return (
                 <FormItem>
@@ -861,7 +885,7 @@ export function PromptForm({ categories, tags, initialData, initialContributors 
                     <AiGenerateButton field="tags" label="Tags" />
                   </FormLabel>
                   {/* Selected tags */}
-                  {selectedTagObjects.length > 0 && (
+                  {(selectedTagObjects.length > 0 || newTags.length > 0) && (
                     <div className="flex flex-wrap gap-2 mb-2">
                       {selectedTagObjects.map((tag) => (
                         <Badge
@@ -874,6 +898,22 @@ export function PromptForm({ categories, tags, initialData, initialContributors 
                             type="button"
                             onClick={() => toggleTag(tag.id)}
                             className="ml-1 rounded-full hover:bg-white/20 p-0.5"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </Badge>
+                      ))}
+                      {newTags.map((tagName) => (
+                        <Badge
+                          key={`new-${tagName}`}
+                          variant="outline"
+                          className="pr-1 flex items-center gap-1 bg-muted/50 border-primary/20"
+                        >
+                          {tagName}
+                          <button
+                            type="button"
+                            onClick={() => toggleNewTag(tagName)}
+                            className="ml-1 rounded-full hover:bg-muted-foreground/20 p-0.5"
                           >
                             <X className="h-3 w-3" />
                           </button>
@@ -896,6 +936,15 @@ export function PromptForm({ categories, tags, initialData, initialContributors 
                         }}
                         onFocus={() => setTagDropdownOpen(true)}
                         onBlur={() => setTimeout(() => setTagDropdownOpen(false), 150)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            if (tagSearch.trim() && !exactMatch && !isAlreadyNewTag) {
+                              toggleNewTag(tagSearch);
+                              setTagSearch("");
+                            }
+                          }
+                        }}
                         className="pl-9"
                         autoComplete="off"
                         autoCorrect="off"
@@ -929,9 +978,19 @@ export function PromptForm({ categories, tags, initialData, initialContributors 
                         ))}
                       </div>
                     )}
-                    {tagDropdownOpen && tagSearch && filteredTags.length === 0 && (
-                      <div className="absolute z-10 w-full mt-1 bg-popover border rounded-md shadow-md p-3 text-sm text-muted-foreground">
-                        {t("noTagsFound")}
+                    {tagDropdownOpen && tagSearch && filteredTags.length === 0 && !exactMatch && !isAlreadyNewTag && (
+                      <div className="absolute z-10 w-full mt-1 bg-popover border rounded-md shadow-md p-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            toggleNewTag(tagSearch);
+                            setTagSearch("");
+                            tagInputRef.current?.focus();
+                          }}
+                          className="w-full px-3 py-2 text-left text-sm hover:bg-muted flex items-center gap-2 rounded-sm text-primary"
+                        >
+                          Create "{tagSearch.trim()}"
+                        </button>
                       </div>
                     )}
                   </div>
