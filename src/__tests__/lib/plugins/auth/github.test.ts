@@ -37,8 +37,12 @@ describe("GitHub OAuth callback", () => {
       }
       throw new Error(`Unexpected fetch: ${url}`);
     });
+    const provider = githubPlugin.getProvider();
+    if (!provider) {
+      throw new Error("GitHub provider should be configured in this test");
+    }
     config = {
-      providers: [githubPlugin.getProvider()],
+      providers: [provider],
       secret: "github-callback-test-secret",
       trustHost: true,
       basePath: "/api/auth",

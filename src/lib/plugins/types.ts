@@ -8,9 +8,12 @@ export interface AuthPlugin {
   id: string;
   name: string;
   /**
-   * Returns the NextAuth provider configuration
+   * Returns the NextAuth provider configuration, or `null` when the provider is
+   * not configured - for example when its required environment variables are
+   * missing - so callers can skip that provider instead of failing to
+   * initialize. See `requireAuthEnv` in ./auth/env.ts.
    */
-  getProvider: () => NextAuthConfig["providers"][number];
+  getProvider: () => NextAuthConfig["providers"][number] | null;
 }
 
 // ============================================
@@ -22,6 +25,7 @@ export interface UploadResult {
   key?: string;
   size?: number;
   mimeType?: string;
+  folder?: string;
 }
 
 export interface StoragePlugin {
