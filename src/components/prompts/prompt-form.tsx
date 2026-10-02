@@ -913,6 +913,10 @@ export function PromptForm({ categories, tags, initialData, initialContributors 
                           <button
                             key={tag.id}
                             type="button"
+                            onMouseDown={(e) => {
+                              // Prevent input blur from firing before click registers
+                              e.preventDefault();
+                            }}
                             onClick={() => {
                               toggleTag(tag.id);
                               setTagSearch("");
