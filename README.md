@@ -249,6 +249,12 @@ Use prompts.chat as an MCP server in your AI tools.
 
 ---
 
+## 📚 Resources
+
+- [AI Prompt Architect](https://aipromptarchitect.co.uk) - Production-grade prompt engineering platform for developers using the STCO framework.
+
+---
+
 ## 👥 Contributors
 
 <a href="https://github.com/f/prompts.chat/graphs/contributors">
