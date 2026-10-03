@@ -387,7 +387,7 @@ export function RunPromptButton({
               <button
                 key={option.baseUrl}
                 onClick={() => handleRunAndClose(platform, option.baseUrl)}
-                className="flex items-center gap-3 w-full px-3 py-3 text-base hover:bg-accent rounded-md text-left"
+                className="flex items-center gap-3 w-full px-3 py-3 text-base hover:bg-accent rounded-md text-left cursor-pointer"
               >
                 {option.name}
               </button>
@@ -400,7 +400,7 @@ export function RunPromptButton({
       <button
         key={platform.id}
         onClick={() => handleRunAndClose(platform, platform.baseUrl)}
-        className="flex items-center gap-3 w-full px-3 py-3 text-base hover:bg-accent rounded-md text-left"
+        className="flex items-center gap-3 w-full px-3 py-3 text-base hover:bg-accent rounded-md text-left cursor-pointer"
       >
         {platform.sponsor && !useCloneBranding ? (
           <Heart className="h-4 w-4 text-pink-500 fill-pink-500" />
@@ -419,7 +419,7 @@ export function RunPromptButton({
     if (platform.subOptions) {
       return (
         <DropdownMenuSub key={platform.id}>
-          <DropdownMenuSubTrigger className="flex items-center gap-2">
+          <DropdownMenuSubTrigger className="flex items-center gap-2 cursor-pointer">
             {platform.sponsor && !useCloneBranding ? (
               <Heart className="h-3 w-3 text-pink-500 fill-pink-500" />
             ) : (
@@ -463,7 +463,7 @@ export function RunPromptButton({
     <div className={`flex gap-1 ${size === "small" ? "p-1" : "p-1.5"} bg-muted rounded-md`}>
       <button
         onClick={() => setActiveTab("chat")}
-        className={`flex-1 ${size === "small" ? "px-2 py-1 text-xs" : "px-3 py-1.5 text-sm"} font-medium rounded transition-colors ${
+        className={`flex-1 ${size === "small" ? "px-2 py-1 text-xs" : "px-3 py-1.5 text-sm"} font-medium rounded transition-colors cursor-pointer ${
           activeTab === "chat"
             ? "bg-background text-foreground shadow-sm"
             : "text-muted-foreground hover:text-foreground"
@@ -473,7 +473,7 @@ export function RunPromptButton({
       </button>
       <button
         onClick={() => setActiveTab("code")}
-        className={`flex-1 ${size === "small" ? "px-2 py-1 text-xs" : "px-3 py-1.5 text-sm"} font-medium rounded transition-colors ${
+        className={`flex-1 ${size === "small" ? "px-2 py-1 text-xs" : "px-3 py-1.5 text-sm"} font-medium rounded transition-colors cursor-pointer ${
           activeTab === "code"
             ? "bg-background text-foreground shadow-sm"
             : "text-muted-foreground hover:text-foreground"
@@ -490,7 +490,7 @@ export function RunPromptButton({
       {isMobile ? (
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetTrigger asChild>
-            <Button variant={emphasized ? undefined : variant} size={size} className={emphasized ? `bg-green-600 hover:bg-green-700 text-white ${className || ""}` : className}>
+            <Button variant={emphasized ? undefined : variant} size={size} className={emphasized ? `bg-green-600 hover:bg-green-700 text-white cursor-pointer ${className || ""}` : `cursor-pointer ${className || ""}`}>
               <Play className="h-4 w-4" />
               {size !== "icon" && <span className="ml-1.5">{t("run")}</span>}
             </Button>
@@ -511,7 +511,7 @@ export function RunPromptButton({
         /* Desktop: Dropdown */
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant={emphasized ? undefined : variant} size={size} className={emphasized ? `bg-green-600 hover:bg-green-700 text-white ${className || ""}` : className}>
+            <Button variant={emphasized ? undefined : variant} size={size} className={emphasized ? `bg-green-600 hover:bg-green-700 text-white cursor-pointer ${className || ""}` : `cursor-pointer ${className || ""}`}>
               <Play className="h-4 w-4" />
               {size !== "icon" && <span className="ml-1.5">{t("run")}</span>}
             </Button>

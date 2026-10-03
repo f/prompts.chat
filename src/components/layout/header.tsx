@@ -559,7 +559,7 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8"
+            className="h-8 w-8 cursor-pointer"
             onClick={() => {
               const newTheme = theme === "dark" ? "light" : "dark";
               analyticsSettings.changeTheme(newTheme);
@@ -619,7 +619,7 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
                 )}
                 <DropdownMenuSeparator />
                 <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>
+                  <DropdownMenuSubTrigger className="cursor-pointer">
                     <Globe className="mr-2 h-4 w-4" />
                     {t("settings.language")}
                   </DropdownMenuSubTrigger>
@@ -652,7 +652,7 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
               {/* Language selector for non-logged in users */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer">
                     <Globe className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>

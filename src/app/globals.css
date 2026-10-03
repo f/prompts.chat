@@ -138,6 +138,11 @@
   .animate-gradient-text {
     animation: gradient-flow 20s ease infinite;
   }
+  
+  /* Cursor pointer for interactive elements (#1003) */
+  .cursor-pointer {
+    cursor: pointer;
+  }
 }
 
 @keyframes gradient-flow {

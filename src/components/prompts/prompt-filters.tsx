@@ -151,7 +151,7 @@ export function PromptFilters({ categories, tags, currentFilters, aiSearchEnable
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className={`h-6 text-xs px-2 ${hasFilters ? "visible" : "invisible"}`} 
+                className={`h-6 text-xs px-2 cursor-pointer ${hasFilters ? "visible" : "invisible"}`} 
                 onClick={clearFilters}
               >
                 <X className="h-3 w-3 mr-1" />{t("search.clear")}
@@ -169,7 +169,7 @@ export function PromptFilters({ categories, tags, currentFilters, aiSearchEnable
           <Button 
             variant="ghost" 
             size="sm" 
-            className={`h-6 text-xs px-2 ${hasFilters ? "visible" : "invisible"}`} 
+            className={`h-6 text-xs px-2 cursor-pointer ${hasFilters ? "visible" : "invisible"}`} 
             onClick={clearFilters}
           >
             <X className="h-3 w-3 mr-1" />{t("search.clear")}

@@ -115,7 +115,7 @@ export function UpvoteButton({
           onClick={handleVote}
           disabled={isLoading}
           className={cn(
-            "flex flex-col items-center justify-center w-14 h-14 rounded-full border-2 transition-all",
+            "flex flex-col items-center justify-center w-14 h-14 rounded-full border-2 transition-all cursor-pointer",
             isVoted 
               ? "bg-primary text-primary-foreground border-primary" 
               : "bg-background text-muted-foreground border-border hover:border-primary hover:text-primary"
@@ -142,7 +142,7 @@ export function UpvoteButton({
           onClick={handleVote}
           disabled={isLoading}
           className={cn(
-            "flex items-center gap-0.5 text-xs transition-colors",
+            "flex items-center gap-0.5 text-xs transition-colors cursor-pointer",
             isVoted ? "text-primary" : "text-muted-foreground hover:text-foreground"
           )}
         >
@@ -165,7 +165,7 @@ export function UpvoteButton({
         size="sm"
         onClick={handleVote}
         disabled={isLoading}
-        className="gap-1.5"
+        className="gap-1.5 cursor-pointer"
       >
         {isLoading ? (
           <Loader2 className="h-4 w-4 animate-spin" />

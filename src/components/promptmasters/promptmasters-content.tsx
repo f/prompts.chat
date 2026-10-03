@@ -202,7 +202,7 @@ export function PromptmastersContent({ translations }: PromptmastersContentProps
                 variant="outline"
                 size="icon"
                 onClick={() => setSortMode(sortMode === "total" ? "perPrompt" : "total")}
-                className="shrink-0"
+                className="shrink-0 cursor-pointer"
               >
                 {sortMode === "total" ? (
                   <BarChart3 className="h-4 w-4" />

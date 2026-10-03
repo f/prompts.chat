@@ -29,7 +29,7 @@ export function CopyButton({ content, promptId }: CopyButtonProps) {
   };
 
   return (
-    <Button variant="ghost" size="sm" onClick={copyToClipboard}>
+    <Button variant="ghost" size="sm" onClick={copyToClipboard} className="cursor-pointer">
       {copied ? (
         <Check className="h-4 w-4 text-green-500" />
       ) : (
