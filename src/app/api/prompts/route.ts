@@ -5,7 +5,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { triggerWebhooks } from "@/lib/webhook";
 import { generatePromptEmbedding, findAndSaveRelatedPrompts } from "@/lib/ai/embeddings";
-import { generatePromptSlug } from "@/lib/slug";
+import { generatePromptSlug, slugify } from "@/lib/slug";
 import { checkPromptQuality } from "@/lib/ai/quality-check";
 import { isSimilarContent, normalizeContent } from "@/lib/similarity";
 
@@ -17,6 +17,7 @@ const promptSchema = z.object({
   structuredFormat: z.enum(["JSON", "YAML"]).nullish(), // Input type indicator
   categoryId: z.string().optional(),
   tagIds: z.array(z.string()),
+  newTags: z.array(z.string()).optional(),
   contributorIds: z.array(z.string()).optional(),
   isPrivate: z.boolean(),
   mediaUrl: z.string().url().optional().or(z.literal("")),
@@ -52,7 +53,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { title, description, content, type, structuredFormat, categoryId, tagIds, contributorIds, isPrivate, mediaUrl, requiresMediaUpload, requiredMediaType, requiredMediaCount, bestWithModels, bestWithMCP, workflowLink } = parsed.data;
+    const { title, description, content, type, structuredFormat, categoryId, tagIds, newTags, contributorIds, isPrivate, mediaUrl, requiresMediaUpload, requiredMediaType, requiredMediaCount, bestWithModels, bestWithMCP, workflowLink } = parsed.data;
 
     // Check if user is flagged (for auto-delisting and daily limit)
     const currentUser = await db.user.findUnique({
@@ -167,6 +168,34 @@ export async function POST(request: Request) {
     // Generate slug from title (translated to English)
     const slug = await generatePromptSlug(title);
 
+    const finalTagIds = [...tagIds];
+    if (newTags && newTags.length > 0) {
+      for (const tagName of newTags) {
+        const normalized = tagName.trim();
+        if (!normalized) continue;
+        const tagSlug = slugify(normalized);
+        if (!tagSlug) continue;
+
+        let tag = await db.tag.findUnique({ where: { slug: tagSlug } });
+        if (!tag) {
+          try {
+            tag = await db.tag.create({
+              data: {
+                name: normalized,
+                slug: tagSlug,
+              },
+            });
+          } catch (e) {
+            // Handle race condition where another request created it
+            tag = await db.tag.findUnique({ where: { slug: tagSlug } });
+          }
+        }
+        if (tag && !finalTagIds.includes(tag.id)) {
+          finalTagIds.push(tag.id);
+        }
+      }
+    }
+
     // Create prompt with tags
     // Auto-delist if user is flagged
     const prompt = await db.prompt.create({
@@ -194,7 +223,7 @@ export async function POST(request: Request) {
           delistReason: "UNUSUAL_ACTIVITY",
         }),
         tags: {
-          create: tagIds.map((tagId) => ({
+          create: finalTagIds.map((tagId) => ({
             tagId,
           })),
         },
