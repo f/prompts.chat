@@ -9,6 +9,70 @@ import { generatePromptSlug } from "@/lib/slug";
 import { checkPromptQuality } from "@/lib/ai/quality-check";
 import { isSimilarContent, normalizeContent } from "@/lib/similarity";
 
+// ============================================================================
+// ADDED: IN-MEMORY RATE LIMITER (Fix for Issue #1061)
+// Acts as a security bouncer to prevent DoS attacks on the public API endpoint.
+// ============================================================================
+
+interface RateLimitRecord {
+  count: number;
+  lastReset: number;
+}
+
+const rateLimitMap = new Map<string, RateLimitRecord>();
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute window
+const MAX_REQUESTS_PER_WINDOW = 60; // Max 60 requests per minute per IP
+const MAX_MAP_SIZE = 10000; // Prevent memory leak by bounding the map size
+
+/**
+ * Checks if a given IP address has exceeded the rate limit.
+ * Enforces a maximum number of requests per time window and manages memory
+ * by evicting stale records when the map grows too large.
+ *
+ * @param {string} ip - The client's IP address.
+ * @returns {boolean} True if the IP is rate-limited, false otherwise.
+ */
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+
+  // Memory leak protection: Cleanup expired entries if map gets too large
+  if (rateLimitMap.size >= MAX_MAP_SIZE) {
+    for (const [key, record] of rateLimitMap.entries()) {
+      if (now - record.lastReset > RATE_LIMIT_WINDOW_MS) {
+        rateLimitMap.delete(key);
+      }
+    }
+    // Failsafe: if still too large after cleanup, clear entirely
+    if (rateLimitMap.size >= MAX_MAP_SIZE) {
+      rateLimitMap.clear();
+    }
+  }
+
+  const record = rateLimitMap.get(ip);
+
+  // New IP detected
+  if (!record) {
+    rateLimitMap.set(ip, { count: 1, lastReset: now });
+    return false;
+  }
+
+  // Reset counter if window has passed
+  if (now - record.lastReset > RATE_LIMIT_WINDOW_MS) {
+    rateLimitMap.set(ip, { count: 1, lastReset: now });
+    return false;
+  }
+
+  // Block if limit exceeded
+  if (record.count >= MAX_REQUESTS_PER_WINDOW) {
+    return true; 
+  }
+
+  // Increment counter for normal requests
+  record.count += 1;
+  return false;
+}
+// ============================================================================
+
 const promptSchema = z.object({
   title: z.string().min(1).max(200),
   description: z.string().max(500).optional(),
@@ -124,12 +188,9 @@ export async function POST(request: Request) {
     }
 
     // Check for similar content system-wide (any user)
-    // First, get a batch of public prompts to check similarity against
     const normalizedNewContent = normalizeContent(content);
     
-    // Only check if normalized content has meaningful length
     if (normalizedNewContent.length > 50) {
-      // Get recent public prompts to check for similarity (limit to avoid performance issues)
       const publicPrompts = await db.prompt.findMany({
         where: {
           deletedAt: null,
@@ -143,10 +204,9 @@ export async function POST(request: Request) {
           author: { select: { username: true } } 
         },
         orderBy: { createdAt: "desc" },
-        take: 1000, // Check against last 1000 public prompts
+        take: 1000, 
       });
 
-      // Find similar content using our similarity algorithm
       const similarPrompt = publicPrompts.find(p => isSimilarContent(content, p.content));
 
       if (similarPrompt) {
@@ -164,11 +224,8 @@ export async function POST(request: Request) {
       }
     }
 
-    // Generate slug from title (translated to English)
     const slug = await generatePromptSlug(title);
 
-    // Create prompt with tags
-    // Auto-delist if user is flagged
     const prompt = await db.prompt.create({
       data: {
         title,
@@ -187,7 +244,6 @@ export async function POST(request: Request) {
         workflowLink: workflowLink || null,
         authorId: session.user.id,
         categoryId: categoryId || null,
-        // Auto-delist prompts from flagged users
         ...(isUserFlagged && {
           isUnlisted: true,
           unlistedAt: new Date(),
@@ -227,7 +283,6 @@ export async function POST(request: Request) {
       },
     });
 
-    // Create initial version
     await db.promptVersion.create({
       data: {
         promptId: prompt.id,
@@ -238,7 +293,6 @@ export async function POST(request: Request) {
       },
     });
 
-    // Trigger webhooks for new prompt (non-blocking)
     if (!isPrivate) {
       triggerWebhooks("PROMPT_CREATED", {
         id: prompt.id,
@@ -254,9 +308,6 @@ export async function POST(request: Request) {
       });
     }
 
-    // Generate embedding for AI search (non-blocking)
-    // Only for public prompts - the function checks if aiSearch is enabled
-    // After embedding is generated, find and save related prompts
     if (!isPrivate) {
       generatePromptEmbedding(prompt.id)
         .then(() => findAndSaveRelatedPrompts(prompt.id))
@@ -265,8 +316,6 @@ export async function POST(request: Request) {
         );
     }
 
-    // Run quality check for auto-delist (non-blocking for public prompts)
-    // This runs in the background and will delist the prompt if quality issues are found
     if (!isPrivate) {
       console.log(`[Quality Check] Starting check for prompt ${prompt.id}`);
       checkPromptQuality(title, content, description).then(async (result) => {
@@ -290,7 +339,6 @@ export async function POST(request: Request) {
       console.log(`[Quality Check] Skipped - prompt ${prompt.id} is private`);
     }
 
-    // Revalidate caches (prompts, categories, tags counts change)
     revalidateTag("prompts", "max");
     revalidateTag("categories", "max");
     revalidateTag("tags", "max");
@@ -328,6 +376,23 @@ const paginationQuerySchema = z.object({
 
 export async function GET(request: Request) {
   try {
+    // ============================================================================
+    // ADDED: RATE LIMITING SECURITY CHECK (Fix for Issue #1061)
+    // Extract IP and block if rate limit is exceeded before hitting the database
+    // ============================================================================
+    const forwardedFor = request.headers.get("x-forwarded-for");
+    const realIp = request.headers.get("x-real-ip");
+    const ip = forwardedFor ? forwardedFor.split(',')[0] : (realIp || "unknown-ip");
+
+    if (isRateLimited(ip)) {
+      console.warn(`[Rate Limit Exceeded] Blocked IP: ${ip} on GET /api/prompts`);
+      return NextResponse.json(
+        { error: "too_many_requests", message: "Rate limit exceeded. Please try again after a minute." },
+        { status: 429 } 
+      );
+    }
+    // ============================================================================
+
     const { searchParams } = new URL(request.url);
     const { page, perPage } = paginationQuerySchema.parse({
       page: searchParams.get("page"),
@@ -341,10 +406,8 @@ export async function GET(request: Request) {
 
     const where: Record<string, unknown> = {
       isPrivate: false,
-      isUnlisted: false, // Exclude unlisted prompts from public API
-      deletedAt: null, // Exclude soft-deleted prompts
-      // Exclude intermediate flow prompts (only show first prompts or standalone)
-      // Note: "related" connections are AI-suggested similar prompts, not flow connections
+      isUnlisted: false, 
+      deletedAt: null, 
       incomingConnections: { none: { label: { not: "related" } } },
     };
 
@@ -357,7 +420,6 @@ export async function GET(request: Request) {
     }
 
     if (tag) {
-      // Handle multiple tags (comma-separated)
       const tagSlugs = tag.split(",").map(t => t.trim()).filter(Boolean);
       if (tagSlugs.length > 0) {
         where.AND = tagSlugs.map(slug => ({
@@ -378,7 +440,6 @@ export async function GET(request: Request) {
       ];
     }
 
-    // Build order by clause
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let orderBy: any = { createdAt: "desc" };
     if (sort === "oldest") {
@@ -451,7 +512,6 @@ export async function GET(request: Request) {
       db.prompt.count({ where }),
     ]);
 
-    // Transform to include voteCount and contributorCount, exclude internal fields
     const prompts = promptsRaw.map(({ embedding: _e, isPrivate: _p, isUnlisted: _u, unlistedAt: _ua, deletedAt: _d, ...p }) => ({
       ...p,
       voteCount: p._count.votes,
