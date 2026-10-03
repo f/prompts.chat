@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { getDateLocale, formatDistanceToNow, formatDate } from "@/lib/date";
-import { enUS, tr, es, zhCN, ja, arSA } from "date-fns/locale";
+import { enUS, tr, es, zhCN, zhTW, ja, arSA } from "date-fns/locale";
 
 describe("getDateLocale", () => {
   it("should return enUS for 'en' locale", () => {
@@ -17,6 +17,10 @@ describe("getDateLocale", () => {
 
   it("should return zhCN for 'zh' locale", () => {
     expect(getDateLocale("zh")).toBe(zhCN);
+  });
+
+  it("should return zhTW for 'zh-TW' locale", () => {
+    expect(getDateLocale("zh-TW")).toBe(zhTW);
   });
 
   it("should return ja for 'ja' locale", () => {

@@ -1,0 +1,81 @@
+<Section>
+<Panel character="promi" mood="excited">
+歡迎來到**清晰城堡**！🏰 很高興你來了！在這個世界裡，我們將學習**細節**的魔力！
+</Panel>
+</Section>
+
+<Section>
+<Panel character="promi" mood="thinking">
+你有沒有問過某人一些事情，但他們不明白你的意思？AI也會遇到同樣的情況！
+</Panel>
+</Section>
+
+<Section>
+## 模糊提示詞的問題
+
+看看這兩個提示詞：
+
+❌ **模糊：** "畫一幅畫"
+
+✅ **具體：** "畫一幅在陽光明媚的公園裡玩耍的快樂小狗的畫"
+
+哪一個給我更多的資訊來工作？
+</Section>
+
+<Section>
+<Panel character="promi" mood="happy">
+第二個告訴我**畫什麼**（小狗），**在做什麼**（玩耍），和**在哪裡**（陽光明媚的公園）。這就是細節的力量！
+</Panel>
+</Section>
+
+<Section>
+## 讓我們練習！
+
+<PromptVsMistake
+  question="哪個提示詞有更好的細節？"
+  good="寫一個關於想學飛的企鵝的有趣笑話"
+  bad="給我講個笑話"
+  explanation="詳細的提示詞準確地告訴我你想要什麼樣的笑話 - 有趣的、關於企鵝的、有特定故事的！"
+  promiMessage="細節就像線索，幫助我準確理解你想要什麼！"
+/>
+</Section>
+
+<Section>
+## 為什麼細節很重要
+
+<PromptVsMistake
+  question="哪個提示詞能幫助普羅米做出更好的生日卡片？"
+  good="為我喜歡園藝和紫色的奶奶做一張生日卡片"
+  bad="做一張生日卡片"
+  explanation="知道是給你奶奶的，她喜歡園藝，還有她最喜歡的顏色，有助於創造一些特別和個性化的東西！"
+  promiMessage="我對你想要什麼瞭解得越多，就越能幫助你！"
+/>
+</Section>
+
+<Section>
+## 填寫細節！
+
+<MagicWords
+  sentence="請寫一個關於住在___裡喜歡___的___的故事"
+  blanks={[
+    { hint: "🐱 一種動物", answers: ["貓", "狗", "兔子", "龍", "獨角獸"] },
+    { hint: "🏠 一個地方", answers: ["城堡", "森林", "城市", "樹屋", "洞穴"] },
+    { hint: "⭐ 一項活動", answers: ["唱歌", "跳舞", "烹飪", "畫畫", "探險"] }
+  ]}
+  successMessage="新增細節做得很好！"
+/>
+</Section>
+
+<Section>
+## 你在學習！🎉
+
+<Panel character="promi" mood="celebrating">
+太棒了！你發現了**細節讓提示詞更好**。模糊的提示詞 = 困惑的AI。詳細的提示詞 = 驚人的結果！
+</Panel>
+
+<LevelComplete 
+  levelSlug="2-1-missing-details" 
+  stars={3}
+  message="你學會了為什麼細節在提示詞中很重要！"
+/>
+</Section>

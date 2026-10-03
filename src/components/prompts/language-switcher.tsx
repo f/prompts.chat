@@ -10,26 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { setLocale } from "@/lib/i18n/client";
-
-const languages = [
-  { code: "en", name: "English" },
-  { code: "zh", name: "中文" },
-  { code: "es", name: "Español" },
-  { code: "pt", name: "Português" },
-  { code: "fr", name: "Français" },
-  { code: "de", name: "Deutsch" },
-  { code: "nl", name: "Dutch" },
-  { code: "it", name: "Italiano" },
-  { code: "ja", name: "日本語" },
-  { code: "tr", name: "Türkçe" },
-  { code: "az", name: "Azərbaycan dili" },
-  { code: "ko", name: "한국어" },
-  { code: "ar", name: "العربية" },
-  { code: "fa", name: "فارسی" },
-  { code: "ru", name: "Русский" },
-  { code: "he", name: "עברית" },
-  { code: "el", name: "Ελληνικά" }
-];
+import { localeMetadata } from "@/lib/i18n/locales";
 
 export function LanguageSwitcher() {
   const t = useTranslations("settings");
@@ -43,12 +24,12 @@ export function LanguageSwitcher() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="max-h-[300px] overflow-y-auto">
-        {languages.map((lang) => (
+        {localeMetadata.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
             onClick={() => setLocale(lang.code)}
           >
-            {lang.name}
+            {lang.label}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

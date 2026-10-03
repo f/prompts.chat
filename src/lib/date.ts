@@ -1,11 +1,12 @@
 import { formatDistanceToNow as dateFnsFormatDistanceToNow, format as dateFnsFormat, type Locale } from "date-fns";
-import { enUS, tr, es, zhCN, ja, arSA } from "date-fns/locale";
+import { enUS, tr, es, zhCN, zhTW, ja, arSA } from "date-fns/locale";
 
 const locales: Record<string, Locale> = {
   en: enUS,
   tr: tr,
   es: es,
   zh: zhCN,
+  "zh-TW": zhTW,
   ja: ja,
   ar: arSA,
 };

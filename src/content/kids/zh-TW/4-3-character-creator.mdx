@@ -1,0 +1,88 @@
+<Section>
+<Panel character="promi" mood="excited">
+今天我們學習給AI一個**個性**！🎭 這讓對話更加有趣！
+</Panel>
+</Section>
+
+<Section>
+## 給AI一個個性！
+
+你可以告訴AI有什麼個性：
+
+- **友好開朗** - 總是積極的！
+- **傻傻有趣** - 講很多笑話
+- **聰明冷靜** - 給出深思熟慮的回答
+- **興奮充滿活力** - 用很多感嘆號！
+</Section>
+
+<Section>
+<Panel character="promi" mood="happy">
+當你告訴我要有什麼個性時，我就能匹配你想要的氛圍！
+</Panel>
+</Section>
+
+<Section>
+## 個性有區別！
+
+<PromptVsMistake
+  question="哪個提示詞給了一個有趣的個性？"
+  good="假裝你是一個超級興奮的喜歡科學的機器人！用很多感嘆號，經常說'太棒了！'。告訴我關於火山！"
+  bad="告訴我關於火山"
+  explanation="第一個提示詞創造了一個有趣、興奮的個性，讓學習感覺像一場冒險！"
+  promiMessage="太棒了！看到我興奮時科學多有趣了嗎？！"
+/>
+</Section>
+
+<Section>
+## 匹配氛圍！
+
+<PromptVsMistake
+  question="睡前故事最好的個性是什麼？"
+  good="用平靜放鬆的聲音給我講一個睡前故事。輕聲說話，讓它平靜和催眠。"
+  bad="給我講一個睡前故事"
+  explanation="要求一個平靜放鬆的個性，故事會幫助你放鬆！"
+  promiMessage="不同的氛圍更適合不同的情況！"
+/>
+</Section>
+
+<Section>
+## 建立一個角色！
+
+<DragDropPrompt
+  title="角色個性"
+  instruction="排列來建立一個有趣的個性"
+  pieces={["假裝你是一隻聰明的老貓頭鷹", "多用'嗚嗚'的聲音！", "喜歡教年輕鳥兒的。", "要有耐心和善良。"]}
+  correctOrder={[0, 2, 3, 1]}
+  successMessage="多麼美妙的角色！嗚嗚！這隻貓頭鷹準備好教學了！"
+/>
+</Section>
+
+<Section>
+## 設計你的AI個性！
+
+<MagicWords
+  sentence="假裝你是一個總是___的___。使用___並且___。告訴我關於___。"
+  blanks={[
+    { hint: "🎭 角色類型", answers: ["友好的機器人", "聰明的魔法師", "傻傻的小丑", "勇敢的騎士", "好奇的外星人"] },
+    { hint: "😊 個性特點", answers: ["興奮", "冷靜", "有趣", "鼓勵人", "神秘"] },
+    { hint: "💬 說話風格", answers: ["很多笑話", "溫和的話", "押韻", "大詞", "音效"] },
+    { hint: "❤️ 另一個特點", answers: ["樂於助人", "有耐心", "有創意", "愛冒險", "關心人"] },
+    { hint: "📚 一個主題", answers: ["太空", "動物", "音樂", "友誼", "大自然"] }
+  ]}
+  successMessage="你創造了一個驚人的個性！讓我們聊天吧！"
+/>
+</Section>
+
+<Section>
+## 個性大師！🎉
+
+<Panel character="promi" mood="celebrating">
+太棒了！你學會了給AI一個**個性**讓對話更有趣、更吸引人！為不同的需要嘗試不同的個性！
+</Panel>
+
+<LevelComplete 
+  levelSlug="4-3-character-creator" 
+  stars={3}
+  message="你學會了給AI個性！"
+/>
+</Section>

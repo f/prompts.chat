@@ -1,0 +1,97 @@
+<Section>
+<Panel character="promi" mood="happy">
+歡迎回到清晰城堡！今天我們學習**誰**和**什麼** - 兩個超級重要的細節！
+</Panel>
+</Section>
+
+<Section>
+## "誰"的問題
+
+當你向AI尋求幫助時，想一想：**誰參與其中？**
+
+- 一個人？（男孩、女孩、奶奶、超級英雄）
+- 一隻動物？（貓、龍、鯨魚）
+- 一個角色？（機器人、魔法師、外星人）
+</Section>
+
+<Section>
+<Panel character="promi" mood="thinking">
+如果你說"寫一個故事"，我不知道是關於誰的！但是"寫一個關於勇敢騎士的故事"準確地告訴我誰是主角！
+</Panel>
+</Section>
+
+<Section>
+## 讓我們練習"誰"！
+
+<PromptVsMistake
+  question="哪個提示詞告訴我們故事的主角是誰？"
+  good="寫一個關於一隻名叫皮皮的好奇小老鼠的故事"
+  bad="寫一個關於某樣東西的故事"
+  explanation="第一個提示詞告訴我們誰（一隻老鼠），什麼類型（好奇的、小的），甚至它的名字（皮皮）！"
+  promiMessage="名字和描述幫助我想象角色！"
+/>
+</Section>
+
+<Section>
+## "什麼"的問題
+
+現在想一想：**發生了什麼？你想要什麼？**
+
+- 什麼動作？（跑步、唱歌、建造）
+- 什麼物品？（蛋糕、宇宙飛船、詩）
+- 什麼類型？（有趣的、可怕的、多彩的）
+</Section>
+
+<Section>
+## 讓我們練習"什麼"！
+
+<PromptVsMistake
+  question="哪個提示詞告訴我們要創造什麼？"
+  good="寫一首關於披薩的有趣的押韻詩"
+  bad="寫些有趣的東西"
+  explanation="詳細的提示詞告訴我們什麼（一首詩），關於什麼（披薩），什麼風格（有趣的帶押韻）！"
+  promiMessage="具體說明你想要什麼幫助我準確創造！"
+/>
+</Section>
+
+<Section>
+## 建構你自己的提示詞！
+
+結合"誰"和"什麼"：
+
+<DragDropPrompt
+  title="建構提示詞"
+  instruction="把這些部分拖到正確的順序"
+  pieces={["寫一個故事", "關於一條友好的龍", "它學習", "做冰淇淋"]}
+  correctOrder={[0, 1, 2, 3]}
+  successMessage="完美！你結合了誰（友好的龍）和什麼（學習做冰淇淋）！"
+/>
+</Section>
+
+<Section>
+## 創造你自己的！
+
+<MagicWords
+  sentence="請寫一個關於想要___的___的___"
+  blanks={[
+    { hint: "📝 寫作類型", answers: ["故事", "詩", "歌曲", "笑話"] },
+    { hint: "🦸 一個角色", answers: ["超級英雄", "公主", "機器人", "魔法師", "海盜"] },
+    { hint: "🎯 一個目標", answers: ["找到寶藏", "交朋友", "拯救世界", "學習魔法", "贏得比賽"] }
+  ]}
+  successMessage="你完美地新增了誰和什麼！"
+/>
+</Section>
+
+<Section>
+## 驚人的進步！🎉
+
+<Panel character="promi" mood="celebrating">
+你做得越來越好了！現在你知道總是要在提示詞中包含**誰**和**你想要什麼**。繼續加油！
+</Panel>
+
+<LevelComplete 
+  levelSlug="2-2-who-and-what" 
+  stars={3}
+  message="你掌握了提示詞中的'誰'和'什麼'！"
+/>
+</Section>

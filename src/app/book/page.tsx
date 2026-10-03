@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import { PixelRobot } from "@/components/kids/elements/pixel-art";
 import { getTranslations, getLocale } from "next-intl/server";
 import { ContinueReadingButton } from "@/components/book/continue-reading";
+import { getBookPdfLocale } from "@/lib/i18n/locales";
 
 const kidsFont = Schoolbell({
   subsets: ["latin"],
@@ -115,6 +116,7 @@ const jsonLd = {
 export default async function BookHomePage() {
   const t = await getTranslations("book");
   const locale = await getLocale();
+  const pdfLocale = getBookPdfLocale(locale);
   
   const highlights = [
     { icon: Brain, text: t("highlights.understanding") },
@@ -217,7 +219,7 @@ export default async function BookHomePage() {
           </Link>
         </Button>
         <Button asChild variant="outline" size="lg">
-          <a href={`https://raw.githubusercontent.com/f/prompts.chat/refs/heads/main/public/book-pdf/book-${locale}-print.pdf`} download>
+          <a href={`https://raw.githubusercontent.com/f/prompts.chat/refs/heads/main/public/book-pdf/book-${pdfLocale}-print.pdf`} download>
             <Download className="mr-2 h-4 w-4" />
             {t("downloadPdf")}
           </a>

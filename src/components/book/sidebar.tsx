@@ -18,26 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { setLocale } from "@/lib/i18n/client";
-
-const languages = [
-  { code: "en", name: "English" },
-  { code: "zh", name: "中文" },
-  { code: "es", name: "Español" },
-  { code: "pt", name: "Português" },
-  { code: "fr", name: "Français" },
-  { code: "de", name: "Deutsch" },
-  { code: "nl", name: "Dutch" },
-  { code: "it", name: "Italiano" },
-  { code: "ja", name: "日本語" },
-  { code: "tr", name: "Türkçe" },
-  { code: "az", name: "Azərbaycan dili" },
-  { code: "ko", name: "한국어" },
-  { code: "ar", name: "العربية" },
-  { code: "fa", name: "فارسی" },
-  { code: "ru", name: "Русский" },
-  { code: "he", name: "עברית" },
-  { code: "el", name: "Ελληνικά" }
-];
+import { getBookPdfLocale, localeMetadata } from "@/lib/i18n/locales";
 
 const BOOKMARK_KEY = "book-reading-progress";
 
@@ -250,6 +231,7 @@ export function BookSidebar() {
   const { bookmark, saveBookmark } = useBookmark();
   const t = useTranslations("book");
   const locale = useLocale();
+  const pdfLocale = getBookPdfLocale(locale);
   
   return (
     <>
@@ -269,7 +251,7 @@ export function BookSidebar() {
 
           {/* Download PDF button */}
           <a
-            href={`https://raw.githubusercontent.com/f/prompts.chat/refs/heads/main/public/book-pdf/book-${locale}-print.pdf`}
+            href={`https://raw.githubusercontent.com/f/prompts.chat/refs/heads/main/public/book-pdf/book-${pdfLocale}-print.pdf`}
             download
             className="flex items-center justify-center gap-1.5 w-full mb-3 px-3 py-1.5 text-xs rounded-md border border-muted-foreground/20 bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
           >
@@ -310,12 +292,12 @@ export function BookSidebar() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                {languages.map((lang) => (
+                {localeMetadata.map((lang) => (
                   <DropdownMenuItem
                     key={lang.code}
                     onClick={() => setLocale(lang.code)}
                   >
-                    {lang.name}
+                    {lang.label}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>

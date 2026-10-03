@@ -352,6 +352,8 @@ async function main() {
     message: 'Select supported languages',
     options: [
       { value: 'en', label: 'English', hint: 'Default' },
+      { value: 'zh', label: 'Chinese (Simplified)' },
+      { value: 'zh-TW', label: 'Chinese (Traditional)' },
       { value: 'es', label: 'Spanish' },
       { value: 'fr', label: 'French' },
       { value: 'de', label: 'German' },
@@ -361,7 +363,6 @@ async function main() {
       { value: 'az', label: 'Azerbaijani' },
       { value: 'ja', label: 'Japanese' },
       { value: 'ko', label: 'Korean' },
-      { value: 'zh', label: 'Chinese' },
       { value: 'ru', label: 'Russian' },
       { value: 'ar', label: 'Arabic', hint: 'RTL' },
       { value: 'fa', label: 'Persian', hint: 'RTL' },

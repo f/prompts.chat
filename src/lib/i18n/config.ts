@@ -1,8 +1,9 @@
+import { supportedLocales } from "./locales";
+
 // Cookie name for storing locale preference
 export const LOCALE_COOKIE = "NEXT_LOCALE";
+export { supportedLocales };
 
-// Supported locales - keep in sync with prompts.config.ts
-export const supportedLocales = ["en", "tr", "es", "zh", "ja", "ar", "pt", "fr", "it", "de", "nl", "ko", "ru", "he", "el", "fa", "az"];
 export const defaultLocale = "en";
 
 // RTL locales

@@ -1,0 +1,104 @@
+<Section>
+<Panel character="promi" mood="excited">
+歡迎來到清晰城堡的最後一關！🏰 你學會了誰、什麼、何時、何地。現在讓我們把一切結合起來！
+</Panel>
+</Section>
+
+<Section>
+## 細節偵探清單
+
+在傳送提示詞之前，問問自己：
+
+✅ **誰** - 誰參與其中？
+✅ **什麼** - 我想要什麼？發生了什麼？
+✅ **何時** - 什麼時候發生？
+✅ **何地** - 在哪裡發生？
+</Section>
+
+<Section>
+## 分類提示詞部分！
+
+<PromptParts
+  title="匹配每個部分！"
+  instruction="點擊一個部分，然後選擇它是角色、任務、背景還是限制！"
+  parts={[
+    { text: "寫一個有趣的故事", type: "task" },
+    { text: "關於一個笨拙的魔法師", type: "context" },
+    { text: "在魔法學校", type: "context" },
+    { text: "寫短一點", type: "constraint" }
+  ]}
+  successMessage="你識別了提示詞的所有部分！現在你可以像專業人士一樣建構提示詞了！"
+/>
+</Section>
+
+<Section>
+<Panel character="promi" mood="thinking">
+你不需要每次都用到所有四個，但你新增的細節越多，我就能更好地幫助你！
+</Panel>
+</Section>
+
+<Section>
+## 偵探挑戰 #1
+
+<PromptVsMistake
+  question="哪個提示詞有最有用的細節？"
+  good="寫一個有趣的故事，關於一個叫扎普的笨拙魔法師在王宮魔術表演中不小心把他的貓變成了巨人"
+  bad="寫一個關於魔法的故事"
+  explanation="詳細的提示詞有誰（魔法師扎普，他的貓），什麼（把貓變成巨人，魔術表演），何地（王宮），還有風格（有趣）！"
+  promiMessage="哇！這個提示詞給我很多素材。我能想象整個場景！"
+/>
+</Section>
+
+<Section>
+## 偵探挑戰 #2
+
+<PromptVsMistake
+  question="哪個提示詞能得到更好的詩？"
+  good="寫一首關於在舒適洞穴中準備冬眠的睏倦小熊的短押韻詩"
+  bad="寫一首關於動物的詩"
+  explanation="第一個提示詞告訴我誰（睏倦的熊），什麼（準備冬眠），何時（冬天），何地（舒適的洞穴），還有風格（短的，押韻）！"
+  promiMessage="每一個細節都幫助我創造專屬於你的特別內容！"
+/>
+</Section>
+
+<Section>
+## 建構終極提示詞！
+
+<DragDropPrompt
+  title="大師偵探"
+  instruction="把所有細節排列成一個完美的提示詞"
+  pieces={["寫一個令人興奮的故事", "關於一個年輕發明家", "製造了一個機器人好朋友", "在未來城市", "在夏天的第一天"]}
+  correctOrder={[0, 1, 2, 3, 4]}
+  successMessage="完美！你包含了誰、什麼、何地和何時！"
+/>
+</Section>
+
+<Section>
+## 創造你的傑作！
+
+<MagicWords
+  sentence="請寫一個___故事，關於一個___在___期間在___中___"
+  blanks={[
+    { hint: "😊 一種情緒/風格", answers: ["有趣的", "令人興奮的", "神秘的", "溫馨的", "搞笑的"] },
+    { hint: "🦸 一個角色", answers: ["勇敢的騎士", "小仙女", "聰明的狐狸", "年輕的宇航員", "友好的幽靈"] },
+    { hint: "🎬 一個動作", answers: ["發現了一個秘密", "踏上了探險", "交了一個新朋友", "解開了一個謎團", "學會了飛翔"] },
+    { hint: "🏰 一個地方", answers: ["魔法王國", "深深的叢林", "太空站", "海底城市", "魔法森林"] },
+    { hint: "🌙 一個時間", answers: ["滿月時", "生日那天", "大暴風雨中", "學校最後一天", "午夜時分"] }
+  ]}
+  successMessage="你是真正的細節偵探！這是一個驚人的提示詞！"
+/>
+</Section>
+
+<Section>
+## 恭喜，偵探！🎉
+
+<Panel character="promi" mood="celebrating">
+你做到了！你完成了清晰城堡，成為了**細節偵探**！現在你知道秘密了：誰 + 什麼 + 何時 + 何地 = 驚人的提示詞！
+</Panel>
+
+<LevelComplete 
+  levelSlug="2-4-detail-detective" 
+  stars={3}
+  message="你完成了清晰城堡！你是細節偵探！"
+/>
+</Section>

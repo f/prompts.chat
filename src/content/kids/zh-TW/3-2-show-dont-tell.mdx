@@ -1,0 +1,104 @@
+<Section>
+<Panel character="promi" mood="happy">
+歡迎回來！今天的課程非常重要：**展示，不要講述**！使用例子是幫助AI理解的最好方法之一！
+</Panel>
+</Section>
+
+<Section>
+## 例子的力量
+
+不要只描述你想要什麼，**給我展示一個例子**！
+
+這就像當你教某人玩遊戲時 - 展示如何玩比只解釋規則更容易！
+</Section>
+
+<Section>
+## 學習模式！
+
+<ExampleMatcher
+  title="模式的力量"
+  instruction="AI從例子中學習！看看模式並選擇下一個是什麼。"
+  examples={[
+    { input: "開心", output: "😊" },
+    { input: "傷心", output: "😢" },
+    { input: "困", output: "😴" }
+  ]}
+  question="生氣"
+  options={["😠", "😊", "🎉", "😴"]}
+  correctAnswer="😠"
+  explanation="AI學會了：情感詞 → 對應的表情符號！這叫做'從例子中學習' - 就像你一樣！"
+/>
+</Section>
+
+<Section>
+<Panel character="promi" mood="thinking">
+如果你說"讓它酷一點"，我可能不知道對你來說"酷"是什麼意思。但如果你給我展示一個例子，我就完全理解了！
+</Panel>
+</Section>
+
+<Section>
+## 看看區別
+
+<PromptVsMistake
+  question="哪個提示詞更好地使用了例子？"
+  good="寫一個有趣的產品名字，像'超級閃亮洗髮水'或'魔法雲朵枕頭' - 朗朗上口又好玩的！"
+  bad="寫一個有趣的產品名字"
+  explanation="例子準確地展示了你在找什麼樣的名字風格 - 朗朗上口、好玩、有趣的形容詞！"
+  promiMessage="例子就像藏寶圖 - 它們準確地告訴我你想去哪裡！"
+/>
+</Section>
+
+<Section>
+## 展示你的風格
+
+<PromptVsMistake
+  question="哪個提示詞更好地展示了寫作風格？"
+  good="用這種風格寫一個笑話：'香蕉為什麼去看醫生？因為它不舒服！' - 傻傻的帶雙關語！"
+  bad="寫一個有趣的笑話"
+  explanation="透過展示一個帶雙關語的笑話例子，我知道你想要同樣的傻風格！"
+  promiMessage="當你給我展示你喜歡什麼，我就能匹配那種風格！"
+/>
+</Section>
+
+<Section>
+## 給出例子！
+
+<DragDropPrompt
+  title="用例子建構"
+  instruction="排列這些部分來建立一個帶有有用例子的提示詞"
+  pieces={["寫一個超級英雄的名字", "像'勇氣隊長'", "或'閃電女士'", "- 英雄般的且令人難忘的"]}
+  correctOrder={[0, 1, 2, 3]}
+  successMessage="完美！你的例子準確地展示了你想要什麼樣的名字！"
+/>
+</Section>
+
+<Section>
+## 建立你自己的帶例子的提示詞！
+
+<MagicWords
+  sentence="寫一個___像'___ ___ ___' - ___又___的"
+  blanks={[
+    { hint: "📝 寫什麼", answers: ["團隊名字", "寵物名字", "樂隊名字", "書名", "餐廳名字"] },
+    { hint: "✨ 形容詞", answers: ["超級", "快樂", "金色", "魔法", "強大"] },
+    { hint: "🌟 名詞", answers: ["星星", "龍", "夢想", "雷電", "鳳凰"] },
+    { hint: "🎯 詞", answers: ["俱樂部", "小隊", "團隊", "王國", "冒險"] },
+    { hint: "😊 風格1", answers: ["有趣", "令人興奮", "酷", "創意", "朗朗上口"] },
+    { hint: "🎨 風格2", answers: ["令人難忘", "獨特", "強大", "友好", "大膽"] }
+  ]}
+  successMessage="太棒了！你的例子準確地展示了你想要什麼風格！"
+/>
+</Section>
+
+<Section>
+## 例子很強大！🎉
+
+<Panel character="promi" mood="celebrating">
+太棒了！你學會了**用範例示範**是幫助 AI 準確理解你想要什麼的最好方法之一！
+</Panel>
+
+<LevelComplete 
+  levelSlug="3-2-show-dont-tell" 
+  stars={3}
+  message="你掌握了在提示詞中使用例子！"
+/>
+</Section>

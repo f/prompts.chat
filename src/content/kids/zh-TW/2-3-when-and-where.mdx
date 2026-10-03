@@ -1,0 +1,96 @@
+<Section>
+<Panel character="promi" mood="excited">
+很高興再次見到你！今天的課程是關於**何時**和**何地** - 這些細節讓你的提示詞栩栩如生！
+</Panel>
+</Section>
+
+<Section>
+## "何時"的問題
+
+你的故事**何時**發生？
+
+- 一天中的時間：早上、晚上、日落
+- 季節：夏天、冬天、春天
+- 時代：很久以前、未來、現在
+- 特殊時刻：生日、假期、開學第一天
+</Section>
+
+<Section>
+<Panel character="promi" mood="thinking">
+"一個關於貓的故事"還行，但"一個關於在可怕的萬聖節夜晚的貓的故事"更有趣多了！
+</Panel>
+</Section>
+
+<Section>
+## 讓我們練習"何時"！
+
+<PromptVsMistake
+  question="哪個提示詞有更好的時間感？"
+  good="寫一個在溫暖的春天早晨醒來的雪人"
+  bad="寫一個關於雪人的故事"
+  explanation="第一個提示詞告訴我們何時（春天早晨），這創造了一個有趣的問題 - 春天的雪人！這是一個很棒的故事創意！"
+  promiMessage="'何時'可以在你的故事中創造令人興奮的情境！"
+/>
+</Section>
+
+<Section>
+## "何地"的問題
+
+動作發生在**哪裡**？
+
+- 地點：海灘、森林、城市、太空
+- 建築：學校、城堡、樹屋
+- 奇幻地點：海底王國、雲上城市
+- 特定位置：橋下、山頂
+</Section>
+
+<Section>
+## 讓我們練習"何地"！
+
+<PromptVsMistake
+  question="哪個提示詞畫出了更好的'何地'畫面？"
+  good="寫一個關於海盜在神秘的霧濛濛的島上尋找寶藏的故事"
+  bad="寫一個關於海盜尋找寶藏的故事"
+  explanation="新增何地（神秘的霧濛濛的島）幫助我想象場景並寫出更生動的故事！"
+  promiMessage="'何地'幫助設定故事的氛圍和氣氛！"
+/>
+</Section>
+
+<Section>
+## 結合"何時"和"何地"！
+
+<DragDropPrompt
+  title="時間和地點"
+  instruction="排列這些部分來建立一個有'何時'和'何地'的提示詞"
+  pieces={["給我講一個故事", "在魔法森林裡", "在星光閃爍的夜晚", "關於一隻貓頭鷹"]}
+  correctOrder={[0, 3, 1, 2]}
+  successMessage="太棒了！你用何地（魔法森林）和何時（星光閃爍的夜晚）設定了場景！"
+/>
+</Section>
+
+<Section>
+## 建構一個完整的場景！
+
+<MagicWords
+  sentence="寫一個關於在___期間發生在___的冒險故事"
+  blanks={[
+    { hint: "🗺️ 一個地方", answers: ["鬼屋", "海底城市", "雲端王國", "恐龍公園", "糖果國"] },
+    { hint: "⏰ 一個時間", answers: ["暴風雨", "日落", "寒假", "滿月", "未來"] }
+  ]}
+  successMessage="你用'何時'和'何地'創造了一個生動的場景！"
+/>
+</Section>
+
+<Section>
+## 你是場景創造者！🎉
+
+<Panel character="promi" mood="celebrating">
+太棒了！現在你知道如何在提示詞中新增**何時**（時間）和**何地**（地點）。這讓你的請求更加有趣！
+</Panel>
+
+<LevelComplete 
+  levelSlug="2-3-when-and-where" 
+  stars={3}
+  message="你掌握了提示詞中的'何時'和'何地'！"
+/>
+</Section>

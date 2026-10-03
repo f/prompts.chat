@@ -291,9 +291,9 @@ export function PromptCard({ prompt, showPinButton = false, isPinned = false }: 
               preview
             />
           ) : (
-            <pre className={`text-xs text-muted-foreground bg-muted p-2 rounded overflow-hidden font-mono h-full whitespace-pre-wrap break-words ${hasMediaBackground ? "line-clamp-2" : "line-clamp-4"}`}>
+            <div className={`text-xs text-muted-foreground bg-muted p-2 rounded overflow-hidden font-mono h-full whitespace-pre-wrap break-words ${hasMediaBackground ? "line-clamp-2" : "line-clamp-4"}`}>
               {contentHasVariables ? renderContentWithVariables(prompt.content) : prompt.content}
-            </pre>
+            </div>
           )}
           {showPinButton && (
             <div className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">

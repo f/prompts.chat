@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { supportedLocales } from "@/lib/i18n/config";
 
 export const metadata = {
   title: "Self-Hosting Guide - prompts.chat",
@@ -40,7 +41,7 @@ export default async function SelfHostingPage() {
             <li>Custom branding, logos, and themes</li>
             <li>Multiple auth providers (GitHub, Google, Azure, credentials)</li>
             <li>AI-powered semantic search and generation (optional)</li>
-            <li>Multi-language support (11 locales)</li>
+            <li>Multi-language support ({supportedLocales.length} locales)</li>
             <li>CC0 licensed - use freely for any purpose</li>
           </ul>
         </section>
@@ -506,7 +507,7 @@ export default async function SelfHostingPage() {
                   <TableRow>
                     <TableCell className="font-mono text-xs">locales</TableCell>
                     <TableCell className="text-muted-foreground text-xs">string[]</TableCell>
-                    <TableCell className="text-muted-foreground text-sm">Supported locales: en, tr, es, zh, ja, ar, pt, fr, it, de, ko</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Supported locales: {supportedLocales.join(", ")}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell className="font-mono text-xs">defaultLocale</TableCell>

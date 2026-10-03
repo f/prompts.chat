@@ -79,29 +79,10 @@ import { NotificationBell } from "@/components/layout/notification-bell";
 import { setLocale } from "@/lib/i18n/client";
 import { useBranding } from "@/components/providers/branding-provider";
 import { analyticsAuth, analyticsSettings, analyticsExternal } from "@/lib/analytics";
+import { localeMetadata } from "@/lib/i18n/locales";
 import { isChromeBrowser, isFirefoxBrowser } from "@/lib/utils";
 
 const FIREFOX_ADDON_URL = "https://addons.mozilla.org/firefox/downloads/file/4675190/prompts_chat-1.4.1.xpi";
-
-const languages = [
-  { code: "en", name: "English" },
-  { code: "zh", name: "中文" },
-  { code: "es", name: "Español" },
-  { code: "pt", name: "Português" },
-  { code: "fr", name: "Français" },
-  { code: "de", name: "Deutsch" },
-  { code: "nl", name: "Dutch" },
-  { code: "it", name: "Italiano" },
-  { code: "ja", name: "日本語" },
-  { code: "tr", name: "Türkçe" },
-  { code: "az", name: "Azərbaycan dili" },
-  { code: "ko", name: "한국어" },
-  { code: "ar", name: "العربية" },
-  { code: "fa", name: "فارسی" },
-  { code: "ru", name: "Русский" },
-  { code: "he", name: "עברית" },
-  { code: "el", name: "Ελληνικά" }
-];
 
 interface HeaderProps {
   authProvider?: string;
@@ -109,7 +90,6 @@ interface HeaderProps {
 }
 
 export function Header({ authProvider = "credentials", allowRegistration = true }: HeaderProps) {
-  const isOAuth = authProvider !== "credentials";
   const { data: session } = useSession();
   const t = useTranslations();
   const { theme, setTheme } = useTheme();
@@ -624,7 +604,7 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
                     {t("settings.language")}
                   </DropdownMenuSubTrigger>
                   <DropdownMenuSubContent>
-                    {languages.map((lang) => (
+                    {localeMetadata.map((lang) => (
                       <DropdownMenuItem
                         key={lang.code}
                         onClick={() => {
@@ -632,7 +612,7 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
                           setLocale(lang.code);
                         }}
                       >
-                        {lang.name}
+                        {lang.label}
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuSubContent>
@@ -657,7 +637,7 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  {languages.map((lang) => (
+                  {localeMetadata.map((lang) => (
                     <DropdownMenuItem
                       key={lang.code}
                       onClick={() => {
@@ -665,7 +645,7 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
                         setLocale(lang.code);
                       }}
                     >
-                      {lang.name}
+                      {lang.label}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>

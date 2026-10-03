@@ -103,6 +103,7 @@ const INTERACTIVE_NOTICES: Record<string, string> = {
   fr: '📖 Ceci est un élément interactif. Visitez prompts.chat/book pour l\'essayer en direct!',
   pt: '📖 Este é um elemento interativo. Visite prompts.chat/book para experimentá-lo ao vivo!',
   zh: '📖 这是一个互动元素。访问 prompts.chat/book 进行在线体验！',
+  'zh-TW': '📖 這是一個互動元素。前往 prompts.chat/book 即可線上體驗！',
   ja: '📖 これはインタラクティブな要素です。prompts.chat/book でライブで試してみてください！',
   ko: '📖 이것은 인터랙티브 요소입니다. prompts.chat/book을 방문하여 직접 체험해 보세요!',
   ar: '📖 هذا عنصر تفاعلي. قم بزيارة prompts.chat/book لتجربته مباشرة!',

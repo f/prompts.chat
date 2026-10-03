@@ -1,0 +1,108 @@
+<Section>
+<Panel character="promi" mood="happy">
+歡迎回來！今天我們學習一個超級重要的技能：**找到並修復弱提示詞**！🔧
+</Panel>
+</Section>
+
+<Section>
+## 找出問題！
+
+弱提示詞通常有：
+
+❌ 太模糊 - "寫點東西"
+❌ 缺少細節 - "告訴我關於一個人"
+❌ 沒有格式 - 只是沒有結構地問
+❌ 風格不清楚 - 不說你想要什麼樣的
+</Section>
+
+<Section>
+## 當提示詞醫生！🏥
+
+<PromptDoctor
+  title="治癒這個提示詞"
+  brokenPrompt="寫點東西"
+  problems={[
+    { issue: "太模糊", symptom: "我應該寫什麼？故事？詩？笑話？", fix: "寫一個故事" },
+    { issue: "沒有主題", symptom: "故事應該關於什麼？", fix: "寫一個關於龍的故事" },
+    { issue: "沒有細節", symptom: "什麼樣的龍？發生什麼？", fix: "寫一個關於做餅乾的友好龍的短故事" }
+  ]}
+  healedPrompt="寫一個關於做餅乾的友好龍的短故事"
+  successMessage="你治癒了這個提示詞！從2個詞到一個很棒的詳細請求！"
+/>
+</Section>
+
+<Section>
+<Panel character="promi" mood="thinking">
+學會找出弱提示詞幫助你寫出更好的！就像當提示詞偵探！
+</Panel>
+</Section>
+
+<Section>
+## 找到解決方案！
+
+<PromptVsMistake
+  question="這個提示詞很弱：'寫一首詩。'你會怎麼修復？"
+  good="寫一首關於暴風雨後彩虹的4行短押韻詩。讓它歡快，用多彩的詞語！"
+  bad="請寫一首非常好的詩"
+  explanation="只說'非常好'沒有幫助！相反，新增細節：主題（彩虹），格式（4行，押韻），和風格（歡快，多彩）！"
+  promiMessage="新增具體細節把弱提示詞變成強的！"
+/>
+</Section>
+
+<Section>
+## 改進這個提示詞！
+
+<PromptVsMistake
+  question="弱提示詞：'幫我做作業。'你會怎麼讓它更好？"
+  good="我是四年級學生，需要幫助理解分數。你能用披薩做例子解釋1/2是什麼意思嗎？保持簡單！"
+  bad="請多幫幫我做作業"
+  explanation="好的版本告訴我：你的水平（四年級），主題（分數），要求例子（披薩），和風格（簡單）！"
+  promiMessage="你越具體，我就能越好地幫助你！"
+/>
+</Section>
+
+<Section>
+## 修復提示詞！
+
+<DragDropPrompt
+  title="提示詞修復"
+  instruction="'給我講個故事'這個提示詞太弱了。排列這些新增來修復它："
+  pieces={["關於一隻勇敢的小老鼠的", "給我講一個短睡前故事", "幫助一隻迷路的小鳥找到家。", "讓它甜蜜，所有人最後都安全。"]}
+  correctOrder={[1, 0, 2, 3]}
+  successMessage="你把弱提示詞變成了很棒的！"
+/>
+</Section>
+
+<Section>
+## 升級挑戰！
+
+把這個弱提示詞變強：
+
+**弱：** "給我想法"
+
+<MagicWords
+  sentence="給我___個___又___的___創意想法。像___！"
+  blanks={[
+    { hint: "🔢 多少", answers: ["5", "3", "7", "10", "4"] },
+    { hint: "🎯 為了什麼", answers: ["生日派對", "科學專案", "有趣的遊戲", "要寫的故事", "裝飾我的房間"] },
+    { hint: "✨ 風格1", answers: ["有趣", "容易做", "創意", "驚喜", "多彩"] },
+    { hint: "🌟 風格2", answers: ["適合孩子", "便宜", "獨特", "令人興奮", "簡單"] },
+    { hint: "💡 例子", answers: ["尋寶遊戲", "做史萊姆", "超級英雄主題", "在黑暗中發光的東西", "魔術表演"] }
+  ]}
+  successMessage="你把2個詞的弱提示詞變成了驚人的詳細提示詞！"
+/>
+</Section>
+
+<Section>
+## 提示詞修復者！🎉
+
+<Panel character="promi" mood="celebrating">
+太棒了！你學會了找出弱提示詞並透過新增細節、格式和風格來**修復它們**！這個技能會永遠幫助你！
+</Panel>
+
+<LevelComplete 
+  levelSlug="5-2-fix-it-up" 
+  stars={3}
+  message="你學會了找到並修復弱提示詞！"
+/>
+</Section>

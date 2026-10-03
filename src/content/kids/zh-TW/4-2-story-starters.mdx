@@ -1,0 +1,87 @@
+<Section>
+<Panel character="promi" mood="happy">
+歡迎回到創意峽谷！今天我們一起創造驚人的**故事**！📚
+</Panel>
+</Section>
+
+<Section>
+## AI是你的合著者
+
+你不必獨自寫故事！AI可以幫助你：
+
+- 用令人興奮的開頭開始一個故事
+- 繼續你開始的故事
+- 新增新角色或轉折
+- 當你卡住時給你想法
+</Section>
+
+<Section>
+<Panel character="promi" mood="thinking">
+最好的故事來自你的想象力和我的幫助一起工作！
+</Panel>
+</Section>
+
+<Section>
+## 有效的故事開頭！
+
+<PromptVsMistake
+  question="哪個是更好的開始故事的提示詞？"
+  good="開始一個懸疑故事，關於一個孩子在奶奶閣樓裡發現了一張發光的地圖。讓第一段令人興奮和神秘！"
+  bad="寫一個故事"
+  explanation="詳細的提示詞給我一個角色（一個孩子），場景（奶奶的閣樓），物品（發光的地圖），和風格（令人興奮、神秘）！"
+  promiMessage="好的故事開頭給我足夠的內容開始，但留有冒險的空間！"
+/>
+</Section>
+
+<Section>
+## 繼續冒險！
+
+<PromptVsMistake
+  question="哪個提示詞更好地幫助繼續故事？"
+  good="繼續我的故事：'露娜在書架後面發現了一扇小門。她聽到裡面傳來音樂。'她開啟門會發生什麼？讓它充滿魔法！"
+  bad="繼續一個關於門的故事"
+  explanation="分享你到目前為止寫的內容，我就能用同樣的風格繼續！"
+  promiMessage="分享你的故事到現在為止，我來繼續冒險！"
+/>
+</Section>
+
+<Section>
+## 開始你的故事！
+
+<DragDropPrompt
+  title="故事開頭"
+  instruction="排列這些部分來建立一個令人興奮的故事提示詞"
+  pieces={["寫一個故事的開頭", "發現自己能和動物說話的", "讓它有趣又驚喜！", "關於一個孩子"]}
+  correctOrder={[0, 3, 1, 2]}
+  successMessage="這是一個很棒的故事開頭！我迫不及待要寫這個冒險了！"
+/>
+</Section>
+
+<Section>
+## 建立你的故事提示詞！
+
+<MagicWords
+  sentence="寫一個___故事，關於一個___發現了一個能___的___。用令人興奮的開頭開始！"
+  blanks={[
+    { hint: "✨ 故事類型", answers: ["魔法", "有趣", "神秘", "冒險", "溫馨"] },
+    { hint: "🧒 主角", answers: ["年輕發明家", "勇敢公主", "好奇機器人", "害羞的龍", "聰明狐狸"] },
+    { hint: "🎁 特別物品", answers: ["舊書", "發光的水晶", "魔法棒", "神秘鑰匙", "會說話的動物"] },
+    { hint: "🌟 特殊力量", answers: ["實現願望", "開啟傳送門", "展示未來", "讓畫活起來", "說任何語言"] }
+  ]}
+  successMessage="多麼驚人的故事創意！讓冒險開始吧！"
+/>
+</Section>
+
+<Section>
+## 故事創作者！🎉
+
+<Panel character="promi" mood="celebrating">
+太棒了！你學會了把AI當作你的**合著者**！我們一起可以創造最驚人的故事！
+</Panel>
+
+<LevelComplete 
+  levelSlug="4-2-story-starters" 
+  stars={3}
+  message="你學會了和AI一起創造故事！"
+/>
+</Section>

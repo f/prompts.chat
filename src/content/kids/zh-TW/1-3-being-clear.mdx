@@ -1,0 +1,121 @@
+<Section>
+<Panel character="promi" mood="happy">
+嗨超級明星！🌟 今天我們要學習最重要的技能：**表達清晰**！
+</Panel>
+</Section>
+
+<Section>
+## 為什麼清晰很重要
+
+想象一下向媽媽要"食物"和要"去掉邊的花生醬三明治"的區別。哪個能讓你得到你想要的？
+
+<Panel character="promi" mood="thinking">
+對我來說也是一樣！當你表達清晰時，我確切知道如何幫助你。當你表達模糊時，我必須猜測...而且我可能猜錯！
+</Panel>
+</Section>
+
+<Section>
+## 清晰 vs. 模糊
+
+讓我們練習發現差異！
+
+
+<PromptVsMistake
+  question="哪個提示詞更清晰？"
+  good="寫一首4行的關於花園裡蝴蝶的詩，使用押韻的詞"
+  bad="寫詩蝴蝶"
+  explanation="清晰的提示詞告訴我：多長（4行）、關於什麼（花園裡的蝴蝶）、還有特殊規則（押韻）。好多了！"
+  promiMessage="清晰的提示詞 = 更好的結果！就像魔法一樣！"
+/>
+
+
+<PromptVsMistake
+  question="哪個確切告訴我你需要什麼？"
+  good="幫我寫3個關於海豚的有趣知識，適合10歲孩子的"
+  bad="告訴我關於海豚"
+  explanation="第一個提示詞告訴我：幾個知識（3個）、什麼類型（有趣的）、給誰（10歲孩子）。這很有幫助！"
+  promiMessage="當你告訴我是給誰的，我就能為他們做到完美！"
+/>
+</Section>
+
+<Section>
+## 清晰挑戰
+
+讓我們建構有史以來最清晰的提示詞！
+
+
+<DragDropPrompt
+  title="讓它像水晶一樣清晰！💎"
+  instruction="排列這些片段來建立一個超級清晰的提示詞"
+  pieces={[
+    "請幫我寫",
+    "一個簡短的睡前故事",
+    "關於一隻睏倦的貓頭鷹",
+    "有一個快樂的結局",
+    "給我的小妹妹"
+  ]}
+  correctOrder={[0, 1, 2, 3, 4]}
+  successMessage="這是有史以來最清晰的提示詞！太棒了！"
+/>
+</Section>
+
+<Section>
+## 新增清晰的細節
+
+<MagicWords
+  title="新增細節！🎯"
+  sentence="寫一個{{length}}的{{type}}，關於{{topic}}，給{{audience}}"
+  blanks={[
+    { id: "length", hint: "多長？（短的、長的）", answers: ["短的", "長的", "5句話的", "一頁的", "簡短的", "快速的"], emoji: "📏" },
+    { id: "type", hint: "什麼類型？（故事、列表、解釋）", answers: ["故事", "列表", "解釋", "詩", "歌", "指南"], emoji: "📝" },
+    { id: "topic", hint: "關於什麼？（太空、動物、運動）", answers: ["太空", "動物", "運動", "恐龍", "機器人", "魔法", "自然", "科學"], emoji: "🎯" },
+    { id: "audience", hint: "給誰？（小朋友、初學者）", answers: ["小朋友", "初學者", "我的老師", "我的朋友", "我的家人", "學生"], emoji: "👥" }
+  ]}
+  successMessage="你新增了所有重要的細節！幹得好！"
+/>
+</Section>
+
+<Section>
+## 清晰的黃金法則
+
+<Panel character="promi" mood="excited">
+這是我關於表達清晰的最佳建議：
+</Panel>
+
+寫提示詞時記住這三個問題：
+
+1. 我**想要什麼**？（故事、幫助、資訊）
+2. 應該**怎樣**？（短的、有趣的、簡單的）
+3. **給誰**？（我、我的朋友、我的班級）
+
+
+<PromptVsMistake
+  question="最終挑戰！哪個使用了全部三個規則？"
+  good="寫一個關於披薩的簡短有趣的笑話，我可以在午餐時講給朋友聽"
+  bad="做一些有趣的東西"
+  explanation="好的提示詞有：什麼（關於披薩的笑話）、怎樣（簡短有趣）、給誰（午餐時講給朋友）！"
+  promiMessage="你是清晰表達冠軍！🏆"
+/>
+</Section>
+
+<Section>
+## 世界1完成！🎊
+
+<Panel character="promi" mood="celebrating">
+哇！你完成了整個世界1！你學到了：
+
+- ✅ 什麼是AI和提示詞
+- ✅ 如何寫你的第一個提示詞
+- ✅ 為什麼表達清晰超級重要
+
+你準備好迎接新的冒險了！
+</Panel>
+
+
+<LevelComplete 
+  levelSlug="1-3-being-clear" 
+  stars={3}
+  message="你掌握了表達清晰的藝術！世界1完成！"
+/>
+</Section>
+

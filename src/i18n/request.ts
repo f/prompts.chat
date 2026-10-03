@@ -1,40 +1,8 @@
 import { getRequestConfig } from "next-intl/server";
 import { cookies, headers } from "next/headers";
 import { LOCALE_COOKIE, supportedLocales, defaultLocale } from "@/lib/i18n/config";
+import { detectLocaleFromHeader } from "@/lib/i18n/locale-resolution";
 import { IntlErrorCode } from "next-intl";
-
-/**
- * Parse Accept-Language header and find the best matching supported locale
- * e.g., "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7" -> "ru" if supported
- */
-function detectLocaleFromHeader(acceptLanguage: string | null): string | null {
-  if (!acceptLanguage) return null;
-  
-  // Parse Accept-Language header into array of {lang, q} sorted by quality
-  const languages = acceptLanguage
-    .split(",")
-    .map((part) => {
-      const [lang, qPart] = part.trim().split(";");
-      const q = qPart ? parseFloat(qPart.split("=")[1]) : 1;
-      return { lang: lang.trim().toLowerCase(), q };
-    })
-    .sort((a, b) => b.q - a.q);
-  
-  // Find first matching supported locale
-  for (const { lang } of languages) {
-    // Try exact match first (e.g., "en-us" -> "en")
-    const baseLocale = lang.split("-")[0];
-    if (supportedLocales.includes(baseLocale)) {
-      return baseLocale;
-    }
-    // Try full locale match
-    if (supportedLocales.includes(lang)) {
-      return lang;
-    }
-  }
-  
-  return null;
-}
 
 export default getRequestConfig(async () => {
   const cookieStore = await cookies();
@@ -42,7 +10,6 @@ export default getRequestConfig(async () => {
   
   // 1. Check for saved locale preference in cookie
   let locale = cookieStore.get(LOCALE_COOKIE)?.value;
-  let detectedFromBrowser = false;
   
   // 2. If no cookie, detect from browser's Accept-Language header
   if (!locale || !supportedLocales.includes(locale)) {
@@ -50,7 +17,6 @@ export default getRequestConfig(async () => {
     const detected = detectLocaleFromHeader(acceptLanguage);
     if (detected) {
       locale = detected;
-      detectedFromBrowser = true;
     } else {
       locale = defaultLocale;
     }

@@ -1,0 +1,86 @@
+<Section>
+<Panel character="promi" mood="excited">
+歡迎來到**創意峽谷**！🎨 這裡是創意誕生的地方！今天我們學習**角色扮演提示詞**！
+</Panel>
+</Section>
+
+<Section>
+## 什麼是角色扮演？
+
+**角色扮演**意味著讓AI假裝成某人或某物！
+
+你可以說：
+- "假裝你是海盜..."
+- "想象你是老師..."
+- "你是一個友好的廚師..."
+</Section>
+
+<Section>
+<Panel character="promi" mood="happy">
+當你讓我扮演一個角色時，我可以用那個角色的聲音和風格來回答！就像一起玩假裝遊戲！
+</Panel>
+</Section>
+
+<Section>
+## 看看角色扮演！
+
+<PromptVsMistake
+  question="哪個提示詞使用了角色扮演？"
+  good="假裝你是一個友好的太空探險家。告訴我你在火星上的冒險！"
+  bad="告訴我關於火星的事"
+  explanation="第一個提示詞讓我成為一個太空探險家，這樣我就能以有趣和個人化的方式講述'我的'冒險！"
+  promiMessage="角色扮演讓我們的對話更加有趣和有創意！"
+/>
+</Section>
+
+<Section>
+## 選擇你的角色！
+
+<PromptVsMistake
+  question="學習海洋知識最好的角色是什麼？"
+  good="假裝你是一隻活了100年的聰明老海龜。你在海洋裡看到了什麼很酷的東西？"
+  bad="海洋裡住著什麼？"
+  explanation="一隻100歲的海龜看過很多東西！這讓學習海洋就像聽朋友講故事一樣！"
+  promiMessage="不同的角色給出不同的視角，讓學習更有趣！"
+/>
+</Section>
+
+<Section>
+## 建立角色扮演提示詞！
+
+<DragDropPrompt
+  title="想象時間！"
+  instruction="排列這些部分來建立一個有趣的角色扮演提示詞"
+  pieces={["然後告訴我", "假裝你是一條龍", "關於你最喜歡的寶藏", "喜歡收集閃亮東西的"]}
+  correctOrder={[1, 3, 0, 2]}
+  successMessage="很棒的角色扮演提示詞！現在龍可以分享它的寶藏故事了！"
+/>
+</Section>
+
+<Section>
+## 建構你自己的角色扮演！
+
+<MagicWords
+  sentence="假裝你是一個___的___。告訴我關於___。"
+  blanks={[
+    { hint: "🎭 一個角色", answers: ["魔法師", "超級英雄", "會說話的貓", "時間旅行者", "仙女"] },
+    { hint: "⭐ 它做什麼", answers: ["實現願望", "拯救世界", "探索魔法土地", "發明酷小玩意", "製作藥水"] },
+    { hint: "📖 分享什麼", answers: ["你最大的冒險", "你最美好的一天", "你犯的一個有趣的錯誤", "你的秘密藏身處", "你最好的朋友"] }
+  ]}
+  successMessage="很棒的角色扮演！現在我們可以有一個有趣的想象對話了！"
+/>
+</Section>
+
+<Section>
+## 角色扮演大師！🎉
+
+<Panel character="promi" mood="celebrating">
+太棒了！你學會了**角色扮演提示詞**讓對話變得有創意和有趣！只要讓我"假裝"或"成為"某人就行了！
+</Panel>
+
+<LevelComplete 
+  levelSlug="4-1-pretend-time" 
+  stars={3}
+  message="你學會了使用角色扮演提示詞！"
+/>
+</Section>
