@@ -133,6 +133,10 @@ The setup wizard configures branding, theme, authentication (GitHub/Google/Azure
 
 ---
 
+## 📂 Related prompt directories
+
+- [OpenRuna](https://www.openruna.com/best/prompt-engineering-examples) — Graph directory of prompts, tools, and benchmarks with semantic search and MCP API.
+
 ## 🔌 Integrations
 
 ### CLI
