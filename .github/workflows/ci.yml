@@ -28,8 +28,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Generate Prisma schema
+        run: npx prisma generate
+
       - name: Run linter
         run: npm run lint
+
+      - name: Validate prompts.csv
+        run: npm run validate:csv -- --json
 
       - name: Run tests
         run: npm test
