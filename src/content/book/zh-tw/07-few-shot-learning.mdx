@@ -1,0 +1,478 @@
+Few-shot learning 是最強大的提示技術之一。通過提供範例來展示你想要的結果，你可以在無需微調的情況下教會模型完成複雜任務。
+
+<Callout type="info" title="通過範例學習">
+就像人類通過觀察範例來學習一樣，AI 模型也可以從你在提示中提供的範例中學習模式。
+</Callout>
+
+## 什麼是 Few-Shot Learning？
+
+Few-shot learning 在要求模型執行任務之前，先向模型展示輸入-輸出對的範例。模型從你的範例中學習模式，並將其應用於新的輸入。
+
+<Compare
+  before={{
+    label: "Zero-Shot（無範例）",
+    content: `將這條評論分類為正面或負面：
+
+"電池續航很長，但螢幕太暗了。"
+
+→ 模型在處理邊緣案例時可能不一致`
+  }}
+  after={{
+    label: "Few-Shot（有範例）",
+    content: `"太喜歡了！" → 正面
+"品質太差" → 負面
+"不錯但太貴" → 混合
+
+現在分類：
+"電池續航很長，但螢幕太暗了。"
+
+→ 模型學習你的精確分類`
+  }}
+/>
+
+<div className="my-4 grid grid-cols-2 md:grid-cols-4 gap-2">
+  <div className="p-3 bg-muted/50 rounded-lg text-center">
+    <div className="text-2xl font-bold">0</div>
+    <div className="text-xs text-muted-foreground">Zero-shot</div>
+  </div>
+  <div className="p-3 bg-muted/50 rounded-lg text-center">
+    <div className="text-2xl font-bold">1</div>
+    <div className="text-xs text-muted-foreground">One-shot</div>
+  </div>
+  <div className="p-3 bg-primary/10 rounded-lg text-center border-2 border-primary">
+    <div className="text-2xl font-bold">2-5</div>
+    <div className="text-xs text-muted-foreground">Few-shot</div>
+  </div>
+  <div className="p-3 bg-muted/50 rounded-lg text-center">
+    <div className="text-2xl font-bold">5+</div>
+    <div className="text-xs text-muted-foreground">Many-shot</div>
+  </div>
+</div>
+
+## 為什麼範例有效
+
+<FewShotDemo />
+
+範例傳達了：
+- **格式**：輸出應該如何結構化
+- **風格**：語氣、長度、詞彙
+- **邏輯**：要遵循的推理模式
+- **邊緣案例**：如何處理特殊情況
+
+## 基本 Few-Shot 模式
+
+Few-shot 提示的基本結構遵循一個簡單的模式：展示範例，然後提出新任務。範例之間格式的一致性至關重要。模型會從你建立的模式中學習。
+
+```
+[範例 1]
+輸入：[輸入 1]
+輸出：[輸出 1]
+
+[範例 2]
+輸入：[輸入 2]
+輸出：[輸出 2]
+
+[範例 3]
+輸入：[輸入 3]
+輸出：[輸出 3]
+
+現在處理這個：
+輸入：[新輸入]
+輸出：
+```
+
+## Few-Shot 用於分類
+
+分類是 few-shot learning 最強大的使用案例之一。通過展示每個類別的範例，你可以比單純的指令更精確地定義類別之間的邊界。
+
+### 情感分析
+
+<Callout type="info" title="什麼是情感分析？">
+情感分析按情感基調對文本進行分類：正面、負面、中性或混合。它廣泛用於客戶反饋、社交媒體監控和品牌感知追蹤。
+</Callout>
+
+情感分類受益於展示每種情感類型的範例，特別是可能存在歧義的邊緣案例，如"混合"情感。
+
+<TryIt compact prompt={`對這些客戶評論的情感進行分類。
+
+評論："這個產品超出了我所有的期望！會再次購買。"
+情感：正面
+
+評論："收到時就壞了，客服也沒幫上忙。"
+情感：負面
+
+評論："用著還行，沒什麼特別的，但能完成工作。"
+情感：中性
+
+評論："品質很棒，但運送時間太長了。"
+情感：混合
+
+現在分類：
+評論："設計很喜歡，但電池續航讓人失望。"
+情感：`} />
+
+### 主題分類
+
+對於多類別分類，每個類別至少包含一個範例。這有助於模型理解你的特定分類體系，它可能與模型的預設理解不同。
+
+<TryIt compact prompt={`對這些支援工單進行分類。
+
+工單："我無法登錄帳戶，密碼重置不起作用"
+類別：身份驗證
+
+工單："如何升級到進階套餐？"
+類別：帳單
+
+工單："匯出資料時應用崩潰了"
+類別：Bug 報告
+
+工單："能在行動應用程式上新增深色模式嗎？"
+類別：功能請求
+
+現在分類：
+工單："付款被拒絕了，但我看到卡上有扣款"
+類別：`} />
+
+## Few-Shot 用於轉換
+
+轉換任務將輸入從一種形式轉換為另一種形式，同時保留含義。範例在這裡至關重要，因為它們精確定義了對於你的使用案例，"轉換"意味著什麼。
+
+### 文本改寫
+
+風格轉換需要範例來展示你想要的確切語氣變化。像"使其更專業"這樣的抽象指令會被不同地解釋。範例使其具體化。
+
+<TryIt compact prompt={`用專業的語氣改寫這些句子。
+
+隨意："嘿，就想確認一下你收到我的郵件了嗎？"
+專業："我想跟進一下我之前發送的郵件。"
+
+隨意："這個超級重要，必須儘快完成！"
+專業："此事需要緊急關注並迅速採取行動。"
+
+隨意："抱歉回覆晚了，最近忙瘋了！"
+專業："對於回覆延遲，我深表歉意。最近的工作安排特別緊張。"
+
+現在改寫：
+隨意："去不了會議了，有點事。"
+專業：`} />
+
+### 格式轉換
+
+格式轉換任務受益於展示邊緣案例和模糊輸入的範例。模型學習你處理棘手情況的特定約定。
+
+<TryIt compact prompt={`將這些自然語言日期轉換為 ISO 格式。
+
+輸入："下週二"
+輸出：2024-01-16（假設今天是 2024-01-11，週四）
+
+輸入："後天"
+輸出：2024-01-13
+
+輸入："這個月最後一天"
+輸出：2024-01-31
+
+輸入："兩週後"
+輸出：2024-01-25
+
+現在轉換：
+輸入："下個月第一個週一"
+輸出：`} />
+
+## Few-Shot 用於生成
+
+生成任務根據學習到的模式建立新內容。範例確定了長度、結構、語氣以及要強調哪些細節。這些很難僅通過指令來指定。
+
+### 產品描述
+
+行銷文案從範例中獲益巨大，因為它們捕捉了品牌聲音、功能重點和說服技巧，這些都很難抽象地描述。
+
+<TryIt compact prompt={`按照這種風格撰寫產品描述：
+
+產品：無線藍牙耳機
+描述：用我們的輕量級無線耳機沉浸在清澈的音質中。具有 40 小時電池續航、主動降噪功能和柔軟的記憶海綿耳墊，提供全天舒適體驗。
+
+產品：不鏽鋼水瓶
+描述：用我們的雙層真空保溫瓶時尚補水。保冷 24 小時或保溫 12 小時。具有防漏蓋設計，適合標準杯架。
+
+產品：人體工學辦公椅
+描述：用我們的可調節人體工學座椅改造你的工作空間。透氣網面靠背、腰部支撐和 360° 旋轉相結合，讓你在長時間工作中保持舒適。
+
+現在撰寫：
+產品：便攜式行動電源
+描述：`} />
+
+### 程式碼文件
+
+<Callout type="info" title="為什麼要編寫程式碼文件？">
+好的文件解釋程式碼的功能、參數、返回值和使用範例。一致的文件字串使自動生成 API 文件成為可能，並幫助 IDE 提供更好的程式碼補全。
+</Callout>
+
+文件風格在不同專案之間差異很大。範例教授你的特定格式、要包含的內容（參數、返回值、範例）以及預期的詳細程度。
+
+<TryIt compact prompt={`為這些函式編寫文件註解：
+
+函式：
+def calculate_bmi(weight_kg, height_m):
+    return weight_kg / (height_m ** 2)
+
+文件：
+"""
+根據體重和身高計算身體質量指數（BMI）。
+
+Args:
+    weight_kg (float): 體重（千克）
+    height_m (float): 身高（米）
+
+Returns:
+    float: BMI 值（體重/身高²）
+
+Example:
+    >>> calculate_bmi(70, 1.75)
+    22.86
+"""
+
+現在編寫文件：
+函式：
+def is_palindrome(text):
+    cleaned = ''.join(c.lower() for c in text if c.isalnum())
+    return cleaned == cleaned[::-1]
+
+文件：`} />
+
+## Few-Shot 用於提取
+
+提取任務從非結構化文本中提取結構化訊息。範例定義了哪些實體重要、如何格式化輸出，以及如何處理訊息缺失或模糊的情況。
+
+### 實體提取
+
+<Callout type="info" title="什麼是命名實體識別？">
+命名實體識別（NER）識別文本中的命名實體，並將其分類為人物、組織、地點、日期和產品等類別。它是訊息檢索和知識圖譜的基礎。
+</Callout>
+
+NER 受益於展示你的特定實體類型以及如何處理可能屬於多個類別的實體的範例。
+
+<TryIt compact prompt={`從這些句子中提取命名實體。
+
+文本："蘋果公司 CEO 蒂姆·庫克在庫比蒂諾發佈了 iPhone 15。"
+實體：
+- 公司：蘋果
+- 人物：蒂姆·庫克
+- 產品：iPhone 15
+- 地點：庫比蒂諾
+
+文本："歐盟在 2018 年對谷歌處以 43.4 億歐元罰款。"
+實體：
+- 組織：歐盟
+- 公司：谷歌
+- 金額：43.4 億歐元
+- 日期：2018
+
+現在提取：
+文本："埃隆·馬斯克的 SpaceX 於 12 月 3 日從卡納維拉爾角發射了 23 顆星鏈衛星。"
+實體：`} />
+
+### 結構化資料提取
+
+從自然語言中提取結構化資料需要範例來展示如何處理缺失欄位、隱含訊息和不同的輸入格式。
+
+<TryIt compact prompt={`將會議詳情提取為結構化格式。
+
+郵件："我們明天下午 3 點在 B 會議室見面，討論第四季度預算。請帶上你的筆記型電腦。"
+
+會議：
+- 日期：[明天的日期]
+- 時間：下午 3:00
+- 地點：B 會議室
+- 主題：第四季度預算討論
+- 要求：攜帶筆記型電腦
+
+郵件："團隊同步會改到週五上午 10 點，我們改用 Zoom。連結在日曆邀請中。最多 30 分鐘。"
+
+會議：
+- 日期：週五
+- 時間：上午 10:00
+- 地點：Zoom（線上）
+- 主題：團隊同步
+- 時長：30 分鐘
+
+現在提取：
+郵件："週一早上 9:30 左右能打個簡短電話討論客戶簡報嗎？我會發一個 Teams 連結。"
+
+會議：`} />
+
+## 進階 Few-Shot 技術
+
+除了基本的 few-shot，還有幾種技術可以改善複雜任務的結果。
+
+### 多樣化範例
+
+範例的多樣性比數量更有價值。涵蓋不同的場景、邊緣案例和潛在的歧義，而不是重複展示相似的範例。
+
+<TryIt compact prompt={`回應客戶投訴。
+
+範例 1（產品問題）：
+客戶："我的訂單收到時已損壞。"
+回應："對於損壞的配送，我深表歉意。我會立即免費為您發送替換品。您無需退回損壞的物品。可以確認一下您的收件地址嗎？"
+
+範例 2（服務問題）：
+客戶："我等了 2 個小時！"
+回應："對於長時間的等待，我非常抱歉。這是不可接受的。我現在在這裡，將親自確保您的問題得到解決。今天有什麼可以幫您的？"
+
+範例 3（帳單問題）：
+客戶："你們對同一訂單扣了我兩次款！"
+回應："對於這個帳單錯誤，我深表歉意。我已驗證了重複扣款，並已向您的原始付款方式發起退款 XX.XX 元。您應該在 3-5 個工作日內看到退款。"
+
+現在回應：
+客戶："產品和網站上展示的不一樣。"
+回應：`} />
+
+### 反面範例
+
+<Callout type="tip" title="對比學習">
+展示"好"與"壞"範例被稱為對比學習。它幫助模型理解的不僅是你想要什麼，還有要避免什麼。這對於風格和品質判斷特別有用。
+</Callout>
+
+有時展示*不該做什麼*和展示正確範例一樣有價值。反面範例幫助模型理解邊界並避免常見錯誤。
+
+<TryIt compact prompt={`撰寫簡潔的郵件主題行。
+
+好："第三季度報告已準備好供審閱"
+壞："嘿，我完成了我們討論的那個報告"
+
+好："需採取行動：請在週五前批准休假申請"
+壞："我需要你幫我做點事，請閱讀這個"
+
+好："會議改期：專案同步 → 週四下午 2 點"
+壞："計劃有變！！！！！"
+
+現在為以下內容撰寫主題行：
+郵件關於：請求對提案草稿的反饋
+主題：`} />
+
+### 邊緣案例範例
+
+邊緣案例通常決定解決方案在正式環境中是否有效。在範例中包含例外輸入可以防止模型在不符合"正常路徑"的真實資料上失敗。
+
+<TryIt compact prompt={`將姓名解析為結構化格式。
+
+輸入："John Smith"
+輸出：{"first": "John", "last": "Smith", "middle": null, "suffix": null}
+
+輸入："Mary Jane Watson-Parker"
+輸出：{"first": "Mary", "middle": "Jane", "last": "Watson-Parker", "suffix": null}
+
+輸入："Dr. Martin Luther King Jr."
+輸出：{"prefix": "Dr.", "first": "Martin", "middle": "Luther", "last": "King", "suffix": "Jr."}
+
+輸入："Madonna"
+輸出：{"first": "Madonna", "last": null, "middle": null, "suffix": null, "mononym": true}
+
+現在解析：
+輸入："Sir Patrick Stewart III"
+輸出：`} />
+
+## 需要多少範例？
+
+<div className="my-4 grid gap-2">
+  <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-40">簡單分類</span>
+    <span className="text-primary font-mono">2-3</span>
+    <span className="text-muted-foreground">每個類別至少一個</span>
+  </div>
+  <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-40">複雜格式化</span>
+    <span className="text-primary font-mono">3-5</span>
+    <span className="text-muted-foreground">展示變化</span>
+  </div>
+  <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-40">細微風格</span>
+    <span className="text-primary font-mono">4-6</span>
+    <span className="text-muted-foreground">涵蓋完整範圍</span>
+  </div>
+  <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-40">邊緣案例</span>
+    <span className="text-primary font-mono">1-2</span>
+    <span className="text-muted-foreground">與正常範例一起</span>
+  </div>
+</div>
+
+## 範例品質很重要
+
+<Compare
+  before={{
+    label: "差的範例",
+    content: `"產品不錯" → 好
+"服務不錯" → 好
+"價格不錯" → 好
+
+✗ 全都太相似
+✗ 相同詞彙重複
+✗ 沒有邊緣案例`
+  }}
+  after={{
+    label: "好的範例",
+    content: `"超出預期！" → 正面
+"收到時就壞了" → 負面
+"用著還行，沒什麼特別" → 中性
+"品質很好但太貴" → 混合
+
+✓ 場景多樣
+✓ 邊界清晰
+✓ 涵蓋邊緣案例`
+  }}
+/>
+
+## 將 Few-Shot 與其他技術結合
+
+Few-shot learning 可以與其他提示技術強力結合。範例提供了"做什麼"，而其他技術可以新增上下文、推理或結構。
+
+### Few-Shot + 角色
+
+新增角色為模型提供了*為什麼*執行任務的上下文，這可以提高品質和一致性。
+
+```
+你是一名法律合同審查員。
+
+[合同條款分析範例]
+
+現在分析：[新條款]
+```
+
+### Few-Shot + CoT
+
+將 few-shot 與思維鏈（Chain of Thought）結合，不僅展示*給出什麼*答案，還展示*如何*推理得出答案。這對於需要判斷的任務非常有效。
+
+```
+分類並解釋推理過程。
+
+評論："功能很棒但太貴了"
+思考：評論提到了正面方面（"功能很棒"）
+但也有明顯的負面方面（"太貴了"）。根據"但"
+這個連接詞，負面似乎超過了正面。
+分類：混合偏負面
+
+[更多帶推理的範例]
+
+現在帶推理分類：
+評論："正是我需要的，到貨比預期更快"
+```
+
+## 總結
+
+<Callout type="tip" title="關鍵要點">
+Few-shot learning 通過示範進行教學，通常比單純的指令更有效。使用 2-5 個多樣、正確的範例，並與其他技術結合以獲得最佳效果。
+</Callout>
+
+<Quiz
+  question="在 few-shot learning 中通常應該提供多少範例？"
+  options={[
+    "儘可能多（10+）",
+    "只需 1 個範例就足夠",
+    "2-5 個多樣、正確的範例",
+    "如果指令清晰，不需要範例"
+  ]}
+  correctIndex={2}
+  explanation="2-5 個多樣、正確的範例通常效果最好。太少可能無法捕捉模式，而太多會浪費 token 並可能使模型困惑。品質和多樣性比數量更重要。"
+/>
+
+在下一章中，我們將探討迭代優化：通過連續嘗試改進提示的藝術。

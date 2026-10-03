@@ -1,0 +1,287 @@
+理解上下文對於建構真正有效的 AI 應用程式至關重要。本章涵蓋了你需要了解的關於在正確時間為 AI 提供正確訊息的所有內容。
+
+<Callout type="info" title="為什麼上下文很重要">
+AI 模型是無狀態的。它們不會記住過去的對話。每次發送訊息時，你都需要包含 AI 需要知道的所有訊息。這就是所謂的"上下文工程"。
+</Callout>
+
+## 什麼是上下文？
+
+上下文是你在提問時一併提供給 AI 的所有訊息。可以這樣理解：
+
+<Compare
+  before={{ label: "無上下文", content: "進展如何？" }}
+  after={{ label: "有上下文", content: "你是一個專案管理助手。使用者正在進行 Alpha 專案，截止日期是週五。最新進展是：'後端已完成，前端完成 80%。'\n\n使用者：進展如何？" }}
+/>
+
+沒有上下文，AI 不知道你問的是什麼"進展"。有了上下文，它就能給出有用的回答。
+
+### 上下文視窗
+
+還記得前面章節提到的：AI 有一個有限的"上下文視窗"——它一次能看到的最大文本量。這包括：
+
+<InfoGrid items={[
+  { label: "系統提示", description: "定義 AI 行為的指令", color: "purple" },
+  { label: "對話歷史", description: "此次聊天中的先前訊息", color: "blue" },
+  { label: "檢索訊息", description: "為此查詢獲取的文件、資料或知識", color: "green" },
+  { label: "當前查詢", description: "使用者的實際問題", color: "amber" },
+  { label: "AI 回應", description: "回答（也計入限制！）", color: "rose" },
+]} />
+
+## AI 是無狀態的
+
+<Callout type="warning" title="重要概念">
+AI 不會在對話之間記住任何東西。每次 API 呼叫都是全新開始。如果你想讓 AI "記住"某些內容，你必須每次都將其包含在上下文中。
+</Callout>
+
+這就是為什麼聊天機器人會在每條訊息中發送你的整個對話歷史。不是 AI 記住了——而是應用程式重新發送了所有內容。
+
+<TryIt compact prompt={`假設這是一個沒有歷史記錄的新對話。
+
+我剛才問了你什麼？`} />
+
+AI 會說它不知道，因為它確實無法存取任何先前的上下文。
+
+## RAG：檢索增強生成
+
+RAG 是一種讓 AI 存取其訓練資料之外知識的技術。與其試圖將所有內容都放入 AI 的訓練中，你可以：
+
+1. **儲存** 你的文件到可搜尋的資料庫中
+2. **搜尋** 使用者提問時的相關文件
+3. **檢索** 最相關的片段
+4. **增強** 你的提示詞，加入這些片段
+5. **生成** 使用該上下文的答案
+
+<div className="my-6 p-4 border rounded-lg bg-muted/30">
+  <p className="font-semibold mb-3">RAG 工作原理：</p>
+  <div className="flex flex-col gap-2 text-sm">
+    <div className="flex items-center gap-3">
+      <span className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 font-bold">1</span>
+      <span>使用者問："我們的退款政策是什麼？"</span>
+    </div>
+    <div className="flex items-center gap-3">
+      <span className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 font-bold">2</span>
+      <span>系統在你的文件中搜尋"退款政策"</span>
+    </div>
+    <div className="flex items-center gap-3">
+      <span className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 font-bold">3</span>
+      <span>從你的政策文件中找到相關部分</span>
+    </div>
+    <div className="flex items-center gap-3">
+      <span className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 font-bold">4</span>
+      <span>發送給 AI："根據此政策：[文本]，回答：我們的退款政策是什麼？"</span>
+    </div>
+    <div className="flex items-center gap-3">
+      <span className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center text-green-600 font-bold">5</span>
+      <span>AI 使用你的實際政策生成準確答案</span>
+    </div>
+  </div>
+</div>
+
+### 為什麼使用 RAG？
+
+<div className="my-6 grid md:grid-cols-2 gap-4">
+  <div className="p-4 border rounded-lg">
+    <p className="font-semibold text-green-600 dark:text-green-400 mb-2 flex items-center gap-2"><IconCheck className="text-green-600" /> RAG 優勢</p>
+    <ul className="text-sm space-y-1 text-muted-foreground">
+      <li>使用你實際的、最新的資料</li>
+      <li>減少幻覺</li>
+      <li>可以引用來源</li>
+      <li>易於更新（只需更新文件）</li>
+      <li>無需昂貴的微調</li>
+    </ul>
+  </div>
+  <div className="p-4 border rounded-lg">
+    <p className="font-semibold text-amber-600 dark:text-amber-400 mb-2 flex items-center gap-2"><IconLightbulb className="text-amber-600" /> 何時使用 RAG</p>
+    <ul className="text-sm space-y-1 text-muted-foreground">
+      <li>客戶支援機器人</li>
+      <li>文件搜尋</li>
+      <li>內部知識庫</li>
+      <li>任何特定領域的問答</li>
+      <li>當準確性很重要時</li>
+    </ul>
+  </div>
+</div>
+
+## Embeddings：搜尋的工作原理
+
+RAG 如何知道哪些文件是"相關的"？它使用 **embeddings**——一種將文本轉換為能捕獲含義的數字的方法。
+
+### 什麼是 Embeddings？
+
+Embedding 是一個表示文本含義的數字列表（"向量"）。相似的含義 = 相似的數字。
+
+<EmbeddingsDemo />
+
+### 語義搜尋
+
+使用 embeddings，你可以按含義搜尋，而不僅僅是關鍵詞：
+
+<Compare
+  before={{ label: "關鍵詞搜尋", content: "查詢：'退貨政策'\n找到：包含'退貨'和'政策'的文件\n遺漏：'如何獲得退款'" }}
+  after={{ label: "語義搜尋", content: "查詢：'退貨政策'\n找到：所有相關文件，包括：\n- '退款指南'\n- '如何退回商品'\n- '退款保證'" }}
+/>
+
+這就是 RAG 如此強大的原因——即使確切的詞語不匹配，它也能找到相關訊息。
+
+## Function Calling / Tool Use
+
+Function calling 讓 AI 可以使用外部工具——比如搜尋網路、查詢資料庫或呼叫 API。
+
+<Callout type="tip" title="也被稱為">
+不同的 AI 提供商對此有不同的叫法："function calling"（OpenAI）、"tool use"（Anthropic/Claude）或 "tools"（通用術語）。它們都是同一個意思。
+</Callout>
+
+### 工作原理
+
+1. 你告訴 AI 有哪些工具可用
+2. AI 決定是否需要工具來回答
+3. AI 輸出對工具的結構化請求
+4. 你的程式碼執行工具並返回結果
+5. AI 使用結果形成答案
+
+<TryIt
+  title="Function Calling 範例"
+  description="這個提示展示了 AI 如何決定使用工具："
+  prompt={`你可以使用以下工具：
+
+1. get_weather(city: string) - 獲取城市的當前天氣
+2. search_web(query: string) - 搜尋網際網路
+3. calculate(expression: string) - 進行數學計算
+
+使用者：東京現在的天氣怎麼樣？
+
+逐步思考：你需要工具嗎？哪一個？什麼參數？`}
+/>
+
+## 摘要：管理長對話
+
+隨著對話變長，你會達到上下文視窗限制。由於 AI 是無狀態的（它不記得任何東西），長對話可能會溢出。解決方案？**摘要**。
+
+### 問題所在
+
+<Compare
+  before={{ label: "不使用摘要", content: "訊息 1（500 tokens）\n訊息 2（800 tokens）\n訊息 3（600 tokens）\n... 還有 50 條訊息 ...\n────────────────────\n= 40,000+ tokens\n= 超出限制！" }}
+  after={{ label: "使用摘要", content: "[摘要]：200 tokens\n最近訊息：2,000 tokens\n當前查詢：100 tokens\n────────────────────\n= 2,300 tokens\n= 完美適配！" }}
+/>
+
+### 摘要策略
+
+不同的方法適用於不同的使用案例。點擊每個策略查看它如何處理同一對話：
+
+<SummarizationDemo />
+
+### 摘要中應該捕獲什麼
+
+好的對話摘要應保留重要內容：
+
+<Checklist
+  title="摘要檢查清單"
+  items={[
+    { text: "做出的關鍵決定" },
+    { text: "提到的重要事實" },
+    { text: "發現的使用者偏好" },
+    { text: "當前任務或目標" },
+    { text: "任何待解決的問題" },
+    { text: "語氣和正式程度" }
+  ]}
+/>
+
+### 試一試：建立摘要
+
+<TryIt
+  title="對話摘要器"
+  description="練習從這段對話中建立保留上下文的摘要："
+  prompt={`為上下文管理總結這段對話。摘要將替換 AI 記憶中的完整對話。
+
+對話：
+使用者：你好，我正在學習 Python 進行資料分析
+助手：歡迎！Python 非常適合資料分析。你目前的經驗水平如何？
+使用者：我懂基本的 Excel。程式設計完全是初學者。
+助手：很好的起點！讓我們從變數開始——它們就像儲存資料的 Excel 單元格。
+使用者：你能解釋一下變數嗎？
+助手：變數是儲存資料的容器。在 Python 中：name = "Alice" 或 age = 25
+使用者：列表呢？我需要處理多個值。
+助手：列表就像 Excel 列！建立一個：prices = [10, 20, 30]。用 prices[0] 存取項目。
+使用者：我可以對列表進行計算嗎？
+助手：可以！使用 sum(prices)、len(prices) 或 max(prices)。對於複雜分析，我們稍後會用 pandas。
+使用者：什麼是 pandas？
+助手：Pandas 是一個資料分析函式庫——可以理解為"增強版 Excel"。它有 DataFrames（像試算表）。
+
+建立一個摘要，捕獲：
+1. 使用者的目標和背景（1 句話）
+2. 到目前為止涵蓋的主題（1 句話）
+3. 使用者的學習風格/偏好（1 句話）
+4. 接下來要涵蓋的內容（1 句話）`}
+/>
+
+### 何時進行摘要
+
+<TryIt compact prompt={`你正在管理對話的上下文視窗。根據這些條件，決定何時觸發摘要：
+
+上下文視窗：最大 8,000 tokens
+當前使用情況：
+- 系統提示：500 tokens
+- 對話歷史：6,200 tokens
+- 回應緩衝：1,500 tokens
+
+規則：
+- 當歷史超過可用空間的 70% 時進行摘要
+- 保持最後 5 條訊息完整
+- 保留所有使用者偏好和決定
+
+你現在應該進行摘要嗎？如果是，哪些訊息應該被摘要，哪些應該保持完整？`} />
+
+## MCP：模型上下文協議
+
+MCP（Model Context Protocol）是一種將 AI 連線到外部資料和工具的標準方式。MCP 提供了一個通用介面，而不是為每個 AI 提供商建構自訂整合。
+
+### 為什麼使用 MCP？
+
+<InfoGrid columns={2} items={[
+  { label: "沒有 MCP", description: "為 ChatGPT、Claude、Gemini 分別建構整合... 維護多個程式碼庫。API 變化時會出問題。", color: "red" },
+  { label: "有 MCP", description: "建構一次，到處可用。標準協議。AI 可以自動發現和使用你的工具。", color: "green" },
+]} />
+
+### MCP 提供
+
+- **Resources**：AI 可以讀取的資料（文件、資料庫記錄、API 回應）
+- **Tools**：AI 可以執行的操作（搜尋、建立、更新、刪除）
+- **Prompts**：預建構的提示範本
+
+<Callout type="info" title="prompts.chat 使用 MCP">
+這個平台有一個 MCP 伺服器！你可以將它連線到 Claude Desktop 或其他兼容 MCP 的客戶端，直接從你的 AI 助手搜尋和使用提示詞。
+</Callout>
+
+## 建構上下文：完整圖景
+
+<ContextPlayground />
+
+## 最佳做法
+
+<Checklist
+  title="上下文工程檢查清單"
+  items={[
+    { text: "保持系統提示簡潔但完整" },
+    { text: "只包含相關上下文（不是所有內容）" },
+    { text: "對長對話進行摘要" },
+    { text: "對特定領域知識使用 RAG" },
+    { text: "為即時資料提供工具給 AI" },
+    { text: "監控 token 使用量以保持在限制內" },
+    { text: "用邊緣案例測試（非常長的輸入等）" }
+  ]}
+/>
+
+## 總結
+
+上下文工程是關於為 AI 提供正確的訊息：
+
+- **AI 是無狀態的** - 每次都要包含它需要的所有內容
+- **RAG** 檢索相關文件來增強提示詞
+- **Embeddings** 實現語義搜尋（按含義，而非僅關鍵詞）
+- **Function calling** 讓 AI 可以使用外部工具
+- **摘要** 管理長對話
+- **MCP** 標準化 AI 連線資料和工具的方式
+
+<Callout type="tip" title="記住">
+AI 輸出的品質取決於你提供的上下文品質。更好的上下文 = 更好的答案。
+</Callout>

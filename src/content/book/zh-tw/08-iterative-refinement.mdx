@@ -1,0 +1,387 @@
+提示工程很少是一次完成的過程。最好的提示是通過迭代產生的——測試、觀察和優化，直到獲得理想的結果。
+
+<Callout type="info" title="初稿，而非終稿">
+把你的第一個提示當作初稿。即使是經驗豐富的提示工程師也很少能一次就寫對。
+</Callout>
+
+## 迭代循環
+
+有效的提示優化遵循一個可預測的循環：編寫、測試、分析和改進。每次迭代都會讓你更接近一個能可靠產生所需結果的提示。
+
+<IterativeRefinementDemo />
+
+## 常見優化模式
+
+大多數提示失敗都可以歸類為幾種情況。學會識別這些模式可以讓你快速診斷和修復問題，而無需從頭開始。
+
+### 問題：輸出太長
+
+這是最常見的問題之一。如果沒有明確的約束，模型傾向於提供詳盡而非簡潔的回答。
+
+<DiffView
+  before="Explain how photosynthesis works."
+  after={`Explain how photosynthesis works in 3-4 sentences suitable for a 10-year-old.`}
+  beforeLabel="原始版本"
+  afterLabel="優化版本"
+/>
+
+### 問題：輸出太模糊
+
+模糊的提示會產生模糊的輸出。模型無法讀取你的想法，不知道"更好"意味著什麼，也不知道哪些方面對你最重要。
+
+<DiffView
+  before="Give me tips for better presentations."
+  after={`Give me 5 specific, actionable tips for improving technical presentations to non-technical stakeholders. For each tip, include a concrete example.`}
+  beforeLabel="原始版本"
+  afterLabel="優化版本"
+/>
+
+### 問題：語氣不對
+
+語氣是主觀的，會因上下文而異。模型認為的"專業"可能與你組織的風格或與收件人的關係不匹配。
+
+<DiffView
+  before="Write an apology email for missing a deadline."
+  after={`Write a professional but warm apology email for missing a project deadline. The tone should be accountable without being overly apologetic. Include a concrete plan to prevent future delays.`}
+  beforeLabel="原始版本"
+  afterLabel="優化版本"
+/>
+
+### 問題：缺少關鍵資訊
+
+開放式的請求會得到開放式的回應。如果你需要特定類型的反饋，必須明確地提出要求。
+
+<DiffView
+  before="Review this code."
+  after={`Review this Python code for:
+1. Bugs and logical errors
+2. Performance issues
+3. Security vulnerabilities
+4. Code style (PEP 8)
+
+For each issue found, explain the problem and suggest a fix.
+
+[code]`}
+  beforeLabel="原始版本"
+  afterLabel="優化版本"
+/>
+
+### 問題：格式不一致
+
+如果沒有範本，模型會以不同的方式組織每個回應，使比較變得困難，自動化也無法實現。
+
+<DiffView
+  before="Analyze these three products."
+  after={`Analyze these three products using this exact format for each:
+
+## [Product Name]
+**Price:** $X
+**Pros:** [bullet list]
+**Cons:** [bullet list]
+**Best For:** [one sentence]
+**Rating:** X/10
+
+[products]`}
+  beforeLabel="原始版本"
+  afterLabel="優化版本"
+/>
+
+## 系統化優化方法
+
+隨機的修改會浪費時間。系統化的方法可以幫助你快速識別問題並高效地修復它們。
+
+### 第一步：診斷問題
+
+在修改任何內容之前，先確定到底出了什麼問題。使用這個診斷表將症狀對應到解決方案：
+
+<div className="my-4 grid gap-2">
+  <div className="grid grid-cols-3 gap-2 p-3 bg-muted/50 rounded-lg text-sm">
+    <span className="font-semibold">症狀</span>
+    <span className="font-semibold">可能原因</span>
+    <span className="font-semibold">解決方案</span>
+  </div>
+  <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
+    <span>太長</span>
+    <span className="text-muted-foreground">沒有長度限制</span>
+    <span className="text-green-600 dark:text-green-400">新增字數/句子限制</span>
+  </div>
+  <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
+    <span>太短</span>
+    <span className="text-muted-foreground">缺少詳細說明要求</span>
+    <span className="text-green-600 dark:text-green-400">要求詳細闡述</span>
+  </div>
+  <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
+    <span>離題</span>
+    <span className="text-muted-foreground">指令模糊</span>
+    <span className="text-green-600 dark:text-green-400">更加具體</span>
+  </div>
+  <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
+    <span>格式錯誤</span>
+    <span className="text-muted-foreground">未指定格式</span>
+    <span className="text-green-600 dark:text-green-400">定義確切結構</span>
+  </div>
+  <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
+    <span>語氣不對</span>
+    <span className="text-muted-foreground">受眾不明確</span>
+    <span className="text-green-600 dark:text-green-400">指定受眾/風格</span>
+  </div>
+  <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
+    <span>不一致</span>
+    <span className="text-muted-foreground">沒有提供範例</span>
+    <span className="text-green-600 dark:text-green-400">新增少樣本範例</span>
+  </div>
+</div>
+
+### 第二步：進行針對性修改
+
+克制重寫一切的衝動。同時修改多個變數會讓你無法知道什麼有幫助、什麼有害。每次只修改一個地方，測試後再繼續：
+
+```
+迭代 1：新增長度限制
+迭代 2：指定格式
+迭代 3：新增範例
+迭代 4：優化語氣說明
+```
+
+### 第三步：記錄有效的內容
+
+提示工程的知識很容易丟失。記錄你嘗試過的內容和原因。這在你以後重新查看提示或面臨類似挑戰時可以節省時間：
+
+```markdown
+## 提示：客戶郵件回覆
+
+### 版本 1（太正式）
+"Write a response to this customer complaint."
+
+### 版本 2（語氣更好，但結構仍然缺失）
+"Write a friendly but professional response to this complaint.
+Show empathy first."
+
+### 版本 3（最終版 - 效果良好）
+"Write a response to this customer complaint. Structure:
+1. Acknowledge their frustration (1 sentence)
+2. Apologize specifically (1 sentence)
+3. Explain solution (2-3 sentences)
+4. Offer additional help (1 sentence)
+
+Tone: Friendly, professional, empathetic but not groveling."
+```
+
+## 真實世界的迭代範例
+
+讓我們完整地走一遍迭代循環，看看每次優化是如何在前一次基礎上建構的。注意每個版本是如何解決前一個版本的具體不足的。
+
+### 任務：生成產品名稱
+
+<VersionDiff versions={[
+  {
+    label: "版本 1",
+    content: "Generate names for a new productivity app.",
+    note: "太籠統，沒有上下文"
+  },
+  {
+    label: "版本 2",
+    content: `Generate names for a new productivity app. The app uses AI to automatically schedule your tasks based on energy levels and calendar availability.`,
+    note: "新增了上下文，仍然籠統"
+  },
+  {
+    label: "版本 3",
+    content: `Generate 10 unique, memorable names for a productivity app with these characteristics:
+- Uses AI to schedule tasks based on energy levels
+- Target audience: busy professionals aged 25-40
+- Brand tone: modern, smart, slightly playful
+- Avoid: generic words like "pro", "smart", "AI", "task"
+
+For each name, explain why it works.`,
+    note: "新增了約束和推理"
+  },
+  {
+    label: "版本 4（最終版）",
+    content: `Generate 10 unique, memorable names for a productivity app.
+
+Context:
+- Uses AI to schedule tasks based on energy levels
+- Target: busy professionals, 25-40
+- Tone: modern, smart, slightly playful
+
+Requirements:
+- 2-3 syllables maximum
+- Easy to spell and pronounce
+- Available as .com domain (check if plausible)
+- Avoid: generic words (pro, smart, AI, task, flow)
+
+Format:
+Name | Pronunciation | Why It Works | Domain Availability Guess`,
+    note: "結構化格式，具體要求"
+  }
+]} />
+
+## 按任務類型的優化策略
+
+不同的任務會以可預測的方式失敗。瞭解常見的失敗模式可以幫助你更快地診斷和修復問題。
+
+### 內容生成
+
+內容生成通常會產生通用的、偏離目標的或格式不佳的輸出。修復方法通常包括更具體地說明約束、提供具體範例或明確定義你的品牌聲音。
+
+<InfoGrid items={[
+  { icon: "target", title: "太通用", description: "新增具體約束和上下文", example: "\"Write about dogs\" → \"Write about golden retrievers for first-time owners, focusing on training and exercise needs\"" },
+  { icon: "scissors", title: "太長", description: "設定字數/段落限制", example: "新增：\"Keep response under 150 words\" 或 \"Maximum 3 paragraphs\"" },
+  { icon: "palette", title: "風格不對", description: "提供風格範例", example: "\"Write in the style of this example: [paste sample text]\"" },
+  { icon: "megaphone", title: "不符合品牌", description: "包含品牌聲音指南", example: "\"Use friendly, casual tone. Avoid jargon. Address reader as 'you'.\"" }
+]} />
+
+### 程式碼生成
+
+程式碼輸出可能在技術上失敗（語法錯誤、錯誤的語言特性）或在架構上失敗（糟糕的模式、遺漏的情況）。技術問題需要版本/環境細節；架構問題需要設計指導。
+
+<InfoGrid items={[
+  { icon: "code", title: "語法錯誤", description: "指定語言版本", example: "\"Use Python 3.11+ syntax with type hints\" 或 \"ES2022 JavaScript\"" },
+  { icon: "git-branch", title: "方法不對", description: "描述首選模式", example: "\"Use functional approach, avoid classes\" 或 \"Follow repository pattern\"" },
+  { icon: "shield", title: "缺少邊緣案例", description: "列出需要處理的場景", example: "\"Handle: empty input, null values, network timeouts, invalid formats\"" },
+  { icon: "tag", title: "命名不佳", description: "包含命名約定", example: "\"Use camelCase for variables, PascalCase for classes, UPPER_SNAKE for constants\"" }
+]} />
+
+### 分析任務
+
+分析任務通常會產生表面或無結構的結果。用特定框架（SWOT、波特五力分析）指導模型，要求多個視角，或為輸出結構提供範本。
+
+<InfoGrid items={[
+  { icon: "layers", title: "太淺顯", description: "要求使用特定框架", example: "\"Analyze using SWOT framework\" 或 \"Apply Porter's Five Forces\"" },
+  { icon: "scale", title: "有偏見", description: "要求多個視角", example: "\"Present arguments for and against\" 或 \"Include skeptic's viewpoint\"" },
+  { icon: "database", title: "缺少資料", description: "指定分析內容", example: "\"Focus on: market size, growth rate, key players, entry barriers\"" },
+  { icon: "layout", title: "無結構", description: "提供分析範本", example: "\"Format as: Summary → Key Findings → Implications → Recommendations\"" }
+]} />
+
+### 問答任務
+
+問答可能太簡短或太冗長，可能缺少置信度指標或來源。指定你需要的詳細程度，以及是否希望引用來源或表達不確定性。
+
+<InfoGrid items={[
+  { icon: "plus", title: "太簡短", description: "要求詳細闡述", example: "\"Explain in detail with examples\" 或 \"Elaborate on each point\"" },
+  { icon: "minus", title: "太冗長", description: "要求簡潔回答", example: "\"Answer in 2-3 sentences\" 或 \"Give me the TL;DR\"" },
+  { icon: "help-circle", title: "不確定", description: "要求置信度級別", example: "\"Rate your confidence 1-10\" 或 \"Note any assumptions made\"" },
+  { icon: "link", title: "無來源", description: "要求引用", example: "\"Cite sources for claims\" 或 \"Include references where possible\"" }
+]} />
+
+## 回饋循環技術
+
+這是一個進階技巧：使用模型本身來幫助改進你的提示。分享你嘗試的內容、得到的結果和你想要的內容。模型通常可以建議你沒有想到的改進。
+
+```
+I used this prompt:
+"[your prompt]"
+
+And got this output:
+"[model output]"
+
+I wanted something more [describe gap]. How should I modify
+my prompt to get better results?
+```
+
+## A/B 測試提示
+
+對於將重複使用或大規模使用的提示，不要只選擇第一個有效的版本。測試變體以找到最可靠和最高品質的方法。
+
+```
+Prompt A: "Summarize this article in 3 bullet points."
+Prompt B: "Extract the 3 most important insights from this article."
+Prompt C: "What are the key takeaways from this article? List 3."
+```
+
+多次執行每個提示，比較：
+- 輸出的一致性
+- 資訊的品質
+- 與你需求的相關性
+
+## 何時停止迭代
+
+完美是"足夠好"的敵人。知道什麼時候你的提示已經可以使用，什麼時候你只是在為邊際效益遞減而打磨。
+
+<div className="my-6 grid md:grid-cols-2 gap-4">
+  <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
+    <p className="text-sm font-semibold text-green-700 dark:text-green-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconCheck className="h-4 w-4" /> 可以發佈</p>
+    <div className="text-sm p-4 pt-2 space-y-1">
+      <p className="m-0!">輸出始終滿足要求</p>
+      <p className="m-0!">邊緣案例處理得當</p>
+      <p className="m-0!">格式可靠且可解析</p>
+      <p className="m-0!">進一步改進顯示邊際效益遞減</p>
+    </div>
+  </div>
+  <div className="border rounded-lg bg-red-50/50 dark:bg-red-950/20 border-red-200 dark:border-red-900">
+    <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> 繼續迭代</p>
+    <div className="text-sm p-4 pt-2 space-y-1">
+      <p className="m-0!">不同執行的輸出不一致</p>
+      <p className="m-0!">邊緣案例導致失敗</p>
+      <p className="m-0!">關鍵要求被遺漏</p>
+      <p className="m-0!">你還沒有測試足夠多的變體</p>
+    </div>
+  </div>
+</div>
+
+## 提示的版本控制
+
+提示就是程式碼。對於任何在生產中使用的提示，要以同樣的嚴格性對待：版本控制、變更記錄，以及在出現問題時回滾的能力。
+
+<Callout type="tip" title="內建版本控制">
+prompts.chat 包含提示的自動版本歷史。每次編輯都會保存，因此你可以比較版本並一鍵恢復之前的迭代。
+</Callout>
+
+對於自行管理的提示，使用資料夾結構：
+
+```
+prompts/
+├── customer-response/
+│   ├── v1.0.txt    # 初始版本
+│   ├── v1.1.txt    # 修復語氣問題
+│   ├── v2.0.txt    # 重大重構
+│   └── current.txt # 指向活動版本的符號連結
+└── changelog.md    # 記錄變更
+```
+
+## 總結
+
+<Callout type="tip" title="關鍵要點">
+從簡單開始，仔細觀察，一次只改一件事，記錄有效的內容，並知道何時停止。最好的提示不是寫出來的——它們是通過系統化的迭代發現的。
+</Callout>
+
+<Quiz
+  question="當優化一個產生錯誤結果的提示時，最佳方法是什麼？"
+  options={[
+    "從頭重寫整個提示",
+    "新增更多範例直到它有效",
+    "一次只改變一件事並測試每個更改",
+    "讓提示儘可能長"
+  ]}
+  correctIndex={2}
+  explanation="一次只改變一件事可以讓你隔離什麼有效、什麼無效。如果你同時改變多件事，你就無法知道哪個更改修復了問題，哪個讓它變得更糟。"
+/>
+
+## 練習：改進這個提示
+
+嘗試自己改進這個薄弱的提示。編輯它，然後使用 AI 將你的版本與原版進行比較：
+
+<BeforeAfterEditor
+  title="優化這個郵件提示"
+  badPrompt="Write an email."
+  idealPrompt={`You are a professional business writer.
+
+Task: Write a follow-up email to a potential client after a sales meeting.
+
+Context:
+- Met with Sarah Chen, VP of Marketing at TechCorp
+- Discussed our analytics platform
+- She expressed interest in the reporting features
+- Meeting was yesterday
+
+Requirements:
+- Professional but warm tone
+- Reference specific points from our meeting
+- Include a clear next step (schedule a demo)
+- Keep under 150 words
+
+Format: Subject line + email body`}
+  task="將這個模糊的郵件提示轉變為能產生專業、有效結果的提示。"
+/>
+
+在下一章中，我們將探索用於結構化資料應用的 JSON 和 YAML 提示技術。

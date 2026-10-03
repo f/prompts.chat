@@ -13,6 +13,7 @@ const localeToLanguage: Record<string, string> = {
   tr: "Turkish",
   es: "Spanish",
   zh: "Chinese",
+  "zh-tw": "Traditional Chinese",
   ja: "Japanese",
   ar: "Arabic",
   pt: "Portuguese",

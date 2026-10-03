@@ -1,0 +1,373 @@
+除了結構之外，有效的提示工程還遵循一些基本原則——這些是適用於所有模型、任務和場景的基礎真理。掌握這些原則，你就能應對任何提示挑戰。
+
+<Callout type="info" title="8 大核心原則">
+這些原則適用於每個 AI 模型和每項任務。學習一次，隨處使用。
+</Callout>
+
+## 原則 1：清晰勝於聰明
+
+最好的提示是清晰的，而不是賣弄聰明的。AI 模型是字面解釋器——它們完全按照你給出的內容工作。
+
+### 明確表達
+
+<Compare
+  before={{ label: "隱含（有問題）", content: "把這個弄好一點。" }}
+  after={{ label: "明確（有效）", content: "通過以下方式改進這封郵件：\n1. 讓主題行更引人注目\n2. 將段落縮短到最多 2-3 句\n3. 在結尾新增明確的呼籲行動" }}
+/>
+
+### 避免歧義
+
+詞語可能有多重含義。選擇精確的語言。
+
+<Compare
+  before={{ label: "模糊", content: "給我一個簡短的摘要。\n（多短？1 句話？1 段？1 頁？）" }} 
+  after={{ label: "精確", content: "用 3 個要點總結，每個要點不超過 20 個字。" }}
+/>
+
+### 說明顯而易見的事情
+
+對你來說顯而易見的事情對模型來說並不明顯。把假設說清楚。
+
+```
+你正在幫我寫一封求職信。
+
+重要背景：
+- 我正在申請 Google 的軟體工程師職位
+- 我有 5 年 Python 和分佈式系統經驗
+- 該職位需要領導經驗（我曾帶領過 4 人團隊）
+- 我想強調我的開源貢獻
+```
+
+## 原則 2：具體性帶來品質
+
+模糊的輸入產生模糊的輸出。具體的輸入產生具體、有用的輸出。
+
+### 具體性階梯
+
+<SpecificitySpectrum levels={[
+  { level: "第 1 級", text: "寫一篇關於氣候變化的文章" },
+  { level: "第 2 級", text: "寫一篇關於氣候變化影響的文章" },
+  { level: "第 3 級", text: "寫一篇 500 字的文章，關於氣候變化如何影響珊瑚礁" },
+  { level: "第 4 級", text: "寫一篇 500 字的文章，解釋海洋溫度上升如何導致珊瑚白化，面向高中生，包含 2 個來自大堡礁的具體例子，語氣要引人入勝但科學準確" }
+]} />
+
+每個級別都增加了具體性，並顯著提高輸出品質。
+
+### 明確這些要素
+
+<div className="my-4 grid gap-2">
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-24">受眾</span>
+    <span className="text-muted-foreground">誰會閱讀/使用這個？</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-24">長度</span>
+    <span className="text-muted-foreground">應該多長/多短？</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-24">語氣</span>
+    <span className="text-muted-foreground">正式？隨意？技術性？</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-24">格式</span>
+    <span className="text-muted-foreground">散文？列表？表格？程式碼？</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-24">範圍</span>
+    <span className="text-muted-foreground">包含/排除什麼？</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-24">目的</span>
+    <span className="text-muted-foreground">這應該達成什麼目標？</span>
+  </div>
+</div>
+
+## 原則 3：上下文為王
+
+模型沒有記憶，無法存取你的文件，也不瞭解你的情況。所有相關內容都必須在提示中。
+
+### 提供充分的上下文
+
+<Compare
+  before={{ label: "上下文不足", content: "為什麼我的函式不工作？" }}
+  after={{ label: "上下文充分", content: "我有一個 Python 函式，應該按特定鍵值過濾字典列表。它返回空列表，但應該返回 2 個專案。\n\n函式：\ndef filter_items(items, key, value):\n    return [item for item in items if item[key] = value]\n\n呼叫：filter_items(items, 'status', 'active')\n預期：2 個專案，實際：空列表" }}
+/>
+
+### 上下文檢查清單
+
+<Callout type="tip" title="提交前">
+問問自己：一個聰明的陌生人能理解這個請求嗎？如果不能，新增更多上下文。
+</Callout>
+
+<Checklist
+  title="上下文檢查清單"
+  items={[
+    { text: "模型知道我在做什麼嗎？" },
+    { text: "它知道我的目標嗎？" },
+    { text: "它有所有必要的資訊嗎？" },
+    { text: "它理解約束條件嗎？" },
+    { text: "一個聰明的陌生人能理解這個請求嗎？" }
+  ]}
+/>
+
+## 原則 4：引導，而不僅僅是詢問
+
+不要只是詢問答案——引導模型走向你想要的答案。
+
+### 使用指導性框架
+
+<Compare
+  before={{ label: "僅僅詢問", content: "微服務的優缺點是什麼？" }}
+  after={{ label: "引導", content: "列出微服務架構的 5 個優點和 5 個缺點。\n\n對於每一點：\n- 用一句話清楚陳述觀點\n- 提供簡短解釋（2-3 句話）\n- 給出一個具體例子\n\n考慮以下視角：小型創業公司、大型企業、以及從單體式架構轉型的團隊。" }}
+/>
+
+### 提供推理引導框架
+
+對於複雜任務，引導推理過程：
+
+<TryIt
+  title="推理引導框架範例"
+  description="這個提示引導 AI 進行系統的決策過程。"
+  prompt={`我需要在 PostgreSQL 和 MongoDB 之間為我的電商專案做出選擇。
+
+請系統地思考這個問題：
+1. 首先，列出電商資料庫的典型需求
+2. 然後，根據每個需求評估每個資料庫
+3. 考慮針對我使用案例的具體權衡
+4. 給出帶有明確理由的建議`}
+/>
+
+## 原則 5：迭代和優化
+
+提示工程是一個迭代過程。你的第一個提示很少是最好的。
+
+### 迭代週期
+
+```
+1. 編寫初始提示
+2. 查看輸出
+3. 識別差距或問題
+4. 優化提示
+5. 重複直到滿意
+```
+
+### 常見優化
+
+<div className="my-4 grid gap-2">
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">太冗長</span>
+    <span className="text-muted-foreground">新增"簡潔一些"或長度限制</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">太模糊</span>
+    <span className="text-muted-foreground">新增具體範例或約束</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">格式錯誤</span>
+    <span className="text-muted-foreground">指定確切的輸出結構</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">缺少方面</span>
+    <span className="text-muted-foreground">新增"確保包含..."</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">語氣不對</span>
+    <span className="text-muted-foreground">指定受眾和風格</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">不準確</span>
+    <span className="text-muted-foreground">要求引用來源或逐步推理</span>
+  </div>
+</div>
+
+### 保持提示記錄
+
+記錄有效的內容：
+```
+任務：程式碼審查
+版本 1："審查這段程式碼" → 太籠統
+版本 2：新增了具體審查標準 → 更好
+版本 3：新增了好的審查範例 → 很好
+最終版本：[保存成功的提示作為範本]
+```
+
+## 原則 6：利用模型的優勢
+
+順應模型的訓練方式工作，而不是逆其道而行。
+
+### 模型想要提供幫助
+
+將請求框定為有幫助的助手自然會做的事情：
+
+<Compare
+  before={{ label: "逆向而行", content: "我知道你不能做這個，但試著..." }}
+  after={{ label: "順勢而為", content: "幫我理解...\n我正在做 X，需要幫助...\n你能帶我瞭解一下..." }}
+/>
+
+### 模型擅長模式
+
+如果你需要一致的輸出，展示模式：
+
+<TryIt
+  title="模式範例"
+  description="這個提示向 AI 展示你想要的書籍推薦格式。"
+  prompt={`推薦 3 本科幻小說。按以下格式給出每個推薦：
+
+📚 **[書名]** 作者：[作者]
+*[類型] | [出版年份]*
+[2 句描述]
+你會喜歡它的原因：[1 句吸引人的話]
+
+---`}
+/>
+
+### 模型可以角色扮演
+
+使用角色來存取不同的回應"模式"：
+
+```
+作為魔鬼代言人，反駁我的提案...
+作為支援性的導師，幫我改進...
+作為持懷疑態度的投資者，質疑這個商業計劃...
+```
+
+## 原則 7：控制輸出結構
+
+結構化輸出比自由形式的文本更有用。
+
+### 請求特定格式
+
+```
+按以下格式返回你的分析：
+
+摘要：[1 句話]
+
+主要發現：
+• [發現 1]
+• [發現 2]
+• [發現 3]
+
+建議：[1-2 句話]
+
+信心度：[低/中/高] 因為 [原因]
+```
+
+### 使用分隔符
+
+清楚地分隔提示的各個部分：
+
+```
+### 背景 ###
+[你的背景資訊]
+
+### 任務 ###
+[你的任務]
+
+### 格式 ###
+[期望的格式]
+```
+
+### 請求機器可讀輸出
+
+用於程式化使用：
+
+```
+只返回有效的 JSON，不要解釋：
+{
+  "decision": "approve" | "reject" | "review",
+  "confidence": 0.0-1.0,
+  "reasons": ["字串陣列"]
+}
+```
+
+## 原則 8：驗證和確認
+
+永遠不要盲目信任模型輸出，尤其是對於重要任務。
+
+### 要求推理過程
+
+```
+解決這個問題並逐步展示你的工作過程。
+解決後，通過[檢查方法]驗證你的答案。
+```
+
+### 請求多種視角
+
+```
+給我三種不同的方法來解決這個問題。
+對於每種方法，解釋其權衡。
+```
+
+### 內建自我檢查
+
+```
+生成程式碼後，檢查以下內容：
+- 語法錯誤
+- 邊緣情況
+- 安全漏洞
+列出發現的任何問題。
+```
+
+## 總結：原則一覽
+
+<PrinciplesSummary />
+
+<Quiz
+  question="哪個原則建議你應該在提示中包含所有相關背景資訊？"
+  options={[
+    "清晰勝於聰明",
+    "具體性帶來品質",
+    "上下文為王",
+    "迭代和優化"
+  ]}
+  correctIndex={2}
+  explanation="上下文為王 強調 AI 模型在會話之間沒有記憶，也無法讀取你的想法。包含相關背景、約束和目標有助於模型理解你的需求。"
+/>
+
+## 練習：填空
+
+通過完成這個提示範本來測試你對核心原則的理解：
+
+<FillInTheBlank
+  title="應用原則"
+  description="填寫空白以建立一個結構良好的提示——寫任何你想要的內容！"
+  useAI={true}
+  openEnded={true}
+  template={`你是一位在{{expertise}}方面有專業知識的{{role}}。
+
+背景：我正在做{{context}}。
+
+任務：{{task}}
+
+約束：
+- 將你的回覆控制在{{length}}字以內
+- 只關注{{focus}}
+
+格式：以{{format}}的形式返回你的答案。`}
+  blanks={[
+    { id: "role", correctAnswers: [], hint: "AI 應該扮演什麼職業角色？", context: "一個職位或專業角色" },
+    { id: "expertise", correctAnswers: [], hint: "需要什麼具體領域知識？", context: "與角色匹配的技能或領域" },
+    { id: "context", correctAnswers: [], hint: "專案或情況是什麼？", context: "具有這種專業知識的人會做的專案" },
+    { id: "task", correctAnswers: [], hint: "AI 應該採取什麼具體行動？", context: "適合角色和背景的行動" },
+    { id: "length", correctAnswers: [], hint: "回覆應該多長？", context: "一個數位（字數）" },
+    { id: "focus", correctAnswers: [], hint: "應該優先考慮什麼方面？", context: "與任務相關的品質或方面" },
+    { id: "format", correctAnswers: [], hint: "輸出應該如何結構化？", context: "一種輸出格式類型" }
+  ]}
+  explanation="結構良好的提示包括：明確的角色（原則 1）、充分的上下文（原則 3）、具體的任務（原則 2）、約束條件（原則 4）和輸出格式（原則 5）。AI 會檢查你的選擇是否內在一致。"
+/>
+
+<InteractiveChecklist
+  title="原則檢查清單"
+  items={[
+    { id: "clarity", label: "清晰勝於聰明", description: "你的提示是否明確且無歧義？" },
+    { id: "specificity", label: "具體性帶來品質", description: "你是否包含了受眾、長度、語氣和格式？" },
+    { id: "context", label: "上下文為王", description: "提示是否包含所有必要的背景資訊？" },
+    { id: "examples", label: "範例勝過解釋", description: "你是否展示了你想要什麼，而不僅僅是描述它？" },
+    { id: "constraints", label: "約束聚焦輸出", description: "範圍和格式是否有明確的邊界？" },
+    { id: "iteration", label: "迭代和優化", description: "你是否準備好根據結果進行改進？" },
+    { id: "persona", label: "角色塑造視角", description: "AI 是否知道要扮演什麼角色？" },
+    { id: "verify", label: "驗證和確認", description: "你是否內建了準確性檢查？" }
+  ]}
+/>
+
+這些原則構成了後續所有內容的基礎。在第二部分，我們將把它們應用到顯著提升提示效果的具體技術中。

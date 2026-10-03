@@ -85,7 +85,8 @@ const FIREFOX_ADDON_URL = "https://addons.mozilla.org/firefox/downloads/file/467
 
 const languages = [
   { code: "en", name: "English" },
-  { code: "zh", name: "中文" },
+  { code: "zh", name: "简体中文" },
+  { code: "zh-tw", name: "繁體中文" },
   { code: "es", name: "Español" },
   { code: "pt", name: "Português" },
   { code: "fr", name: "Français" },

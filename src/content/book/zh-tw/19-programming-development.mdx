@@ -1,0 +1,409 @@
+AI 已經徹底改變了軟體開發。本章介紹用於程式碼生成、偵錯、審查和開發工作流程的提示詞技巧。
+
+<Callout type="info" title="AI 作為程式設計夥伴">
+AI 擅長程式碼生成、偵錯和文件編寫——但務必審查生成的程式碼，檢查安全性、正確性和可維護性。未經測試，切勿部署 AI 生成的程式碼。
+</Callout>
+
+## 程式碼生成
+
+### 應做與不應做：程式碼提示詞
+
+<Compare
+  before={{ label: "❌ 模糊的請求", content: "寫一個驗證郵箱的函式。" }}
+  after={{ label: "✓ 完整的規格說明", content: "寫一個 Python 函式來驗證郵箱地址。\n\n輸入：string（可能的郵箱地址）\n輸出：tuple[bool, str | None] - (is_valid, error_message)\n處理：空字串、None、unicode 字元\n使用正規表示式，包含類型提示和文件字串。" }}
+/>
+
+### 函式生成
+
+<TryIt compact prompt={`Write a \${language:Python} function that \${description:validates email addresses}.
+
+Requirements:
+- Input: \${inputTypes:string (potential email)}
+- Output: \${outputType:boolean and optional error message}
+- Handle edge cases: \${edgeCases:empty string, None, unicode characters}
+- Performance: \${performance:standard}
+
+Include:
+- Type hints/annotations
+- Docstring with examples
+- Input validation
+- Error handling`} />
+
+### 類別/模組生成
+
+<TryIt compact prompt={`Create a \${language:Python} class for \${purpose:managing user sessions}.
+
+Class design:
+- Name: \${className:SessionManager}
+- Responsibility: \${responsibility:handle user session lifecycle}
+- Properties: \${properties:session_id, user_id, created_at, expires_at}
+- Methods: \${methods:create(), validate(), refresh(), destroy()}
+
+Requirements:
+- Follow \${designPattern:Singleton} pattern
+- Include proper encapsulation
+- Add comprehensive docstrings
+- Include usage example
+
+Testing:
+- Include unit test skeleton`} />
+
+### API 端點生成
+
+<TryIt compact prompt={`Create a REST API endpoint for \${resource:user profiles}.   
+
+Framework: \${framework:FastAPI}
+Method: \${method:GET}
+Path: \${path:/api/users/{id}}
+
+Request:
+- Headers: \${headers:Authorization Bearer token}
+- Body schema: \${bodySchema:N/A for GET}
+- Query params: \${queryParams:include_posts (boolean)}
+
+Response:
+- Success: \${successResponse:200 with user object}
+- Errors: \${errorResponses:401 Unauthorized, 404 Not Found}
+
+Include:
+- Input validation
+- Authentication check
+- Error handling
+- Rate-limiting consideration`} />
+
+## 偵錯
+
+<Callout type="tip" title="偵錯原則">
+始終包含**預期行為**、**實際行為**和**錯誤訊息**（如有）。你提供的上下文越多，AI 就能越快找到根本原因。
+</Callout>
+
+### Bug 分析
+
+<TryIt compact prompt={`Debug this code. It should \${expectedBehavior:return the sum of all numbers} but instead \${actualBehavior:returns 0 for all inputs}.
+
+Code:
+\${code:paste your code here}
+
+Error message (if any):
+\${error:none}
+
+Steps to debug:
+1. Identify what the code is trying to do
+2. Trace through execution with the given input
+3. Find where expected and actual behavior diverge
+4. Explain the root cause
+5. Provide the fix with explanation`} />
+
+### 錯誤訊息解讀
+
+<TryIt compact prompt={`Explain this error and how to fix it:
+
+Error:
+\${errorMessage:paste error message or stack trace here}
+
+Context:
+- Language/Framework: \${framework:Python 3.11}
+- What I was trying to do: \${action:reading a JSON file}
+- Relevant code: \${codeSnippet:paste relevant code}
+
+Provide:
+1. Plain English explanation of the error
+2. Root cause
+3. Step-by-step fix
+4. How to prevent this in the future`} />
+
+### 效能偵錯
+
+<TryIt compact prompt={`This code is slow. Analyze and optimize:
+
+Code:
+\${code:paste your code here}
+
+Current performance: \${currentPerformance:takes 30 seconds for 1000 items}
+Target performance: \${targetPerformance:under 5 seconds}
+Constraints: \${constraints:memory limit 512MB}
+
+Provide:
+1. Identify bottlenecks
+2. Explain why each is slow
+3. Suggest optimizations (ranked by impact)
+4. Show optimized code
+5. Estimate improvement`} />
+
+## 程式碼審查
+
+### 應做與不應做：程式碼審查提示詞
+
+<Compare
+  before={{ label: "❌ 籠統的請求", content: "審查這段程式碼。" }}
+  after={{ label: "✓ 具體的標準", content: "為 Pull Request 審查這段程式碼。\n\n檢查：\n1. 正確性：bug、邏輯錯誤、邊緣案例\n2. 安全性：注入風險、認證問題\n3. 效能：N+1 查詢、記憶體洩漏\n4. 可維護性：命名、複雜度\n\n格式：🔴 嚴重 / 🟡 重要 / 🟢 建議" }}
+/>
+
+### 綜合審查
+
+<TryIt compact prompt={`Review this code for a pull request.
+
+Code:
+\${code:paste your code here}
+
+Review for:
+1. **Correctness**: Bugs, logic errors, edge cases
+2. **Security**: Vulnerabilities, injection risks, auth issues
+3. **Performance**: Inefficiencies, N+1 queries, memory leaks
+4. **Maintainability**: Readability, naming, complexity
+5. **Best practices**: \${framework:Python/Django} conventions
+
+Format your review as:
+🔴 Critical: must fix before merge
+🟡 Important: should fix
+🟢 Suggestion: nice to have
+💭 Question: clarification needed`} />
+
+### 安全審查
+
+<TryIt compact prompt={`Perform a security review of this code:
+
+Code:
+\${code:paste your code here}
+
+Check for:
+- [ ] Injection vulnerabilities (SQL, XSS, command)
+- [ ] Authentication/authorization flaws
+- [ ] Sensitive data exposure
+- [ ] Insecure dependencies
+- [ ] Cryptographic issues
+- [ ] Input validation gaps
+- [ ] Error handling that leaks info
+
+For each finding:
+- Severity: Critical/High/Medium/Low
+- Location: Line number or function
+- Issue: Description
+- Exploit: How it could be attacked
+- Fix: Recommended remediation`} />
+
+## 重構
+
+### 程式碼異味檢測
+
+<TryIt compact prompt={`Analyze this code for code smells and refactoring opportunities:
+
+Code:
+\${code:paste your code here}
+
+Identify:
+1. Long methods (suggest extraction)
+2. Duplicate code (suggest DRY improvements)
+3. Complex conditionals (suggest simplification)
+4. Poor naming (suggest better names)
+5. Tight coupling (suggest decoupling)
+
+For each issue, show before/after code.`} />
+
+### 設計模式應用
+
+<TryIt compact prompt={`Refactor this code using the \${patternName:Factory} pattern.
+
+Current code:
+\${code:paste your code here}
+
+Goals:
+- \${whyPattern:decouple object creation from usage}
+- \${benefits:easier testing and extensibility}
+
+Provide:
+1. Explanation of the pattern
+2. How it applies here
+3. Refactored code
+4. Trade-offs to consider`} />
+
+## 測試
+
+### 單元測試生成
+
+<TryIt compact prompt={`Write unit tests for this function:
+
+Function:
+\${code:paste your function here}
+
+Testing framework: \${testFramework:pytest}
+
+Cover:
+- Happy path (normal inputs)
+- Edge cases (empty, null, boundary values)
+- Error cases (invalid inputs)
+- \${specificScenarios:concurrent access, large inputs}
+
+Format: Arrange-Act-Assert pattern
+Include: Descriptive test names`} />
+
+### 測試案例生成
+
+<TryIt compact prompt={`Generate test cases for this feature:
+
+Feature: \${featureDescription:user registration with email verification}
+Acceptance criteria: \${acceptanceCriteria:user can sign up, receives email, can verify account}
+
+Provide test cases in this format:
+
+| ID | Scenario | Given | When | Then | Priority |
+|----|----------|-------|------|------|----------|
+| TC01 | ... | ... | ... | ... | High |`} />
+
+## 架構與設計
+
+### 系統設計
+
+<TryIt compact prompt={`Design a system for \${requirement:real-time chat application}.
+
+Constraints:
+- Expected load: \${expectedLoad:10,000 concurrent users}
+- Latency requirements: \${latency:< 100ms message delivery}
+- Availability: \${availability:99.9%}
+- Budget: \${budget:moderate, prefer open source}
+
+Provide:
+1. High-level architecture diagram (ASCII/text)
+2. Component descriptions
+3. Data flow
+4. Technology choices with rationale
+5. Scaling strategy
+6. Trade-offs and alternatives considered`} />
+
+### 資料庫結構設計
+
+<TryIt compact prompt={`Design a database schema for \${application:e-commerce platform}.
+
+Requirements:
+- \${feature1:User accounts with profiles and addresses}
+- \${feature2:Product catalog with categories and variants}
+- \${feature3:Orders with line items and payment tracking}
+
+Provide:
+1. Entity-relationship description
+2. Table definitions with columns and types
+3. Indexes for common queries
+4. Foreign key relationships
+5. Sample queries for key operations`} />
+
+## 文件生成
+
+### API 文件
+
+<TryIt compact prompt={`Generate API documentation from this code:
+
+Code:
+\${code:paste your endpoint code here}
+
+Format: \${format:OpenAPI/Swagger YAML}
+
+Include:
+- Endpoint description
+- Request/response schemas
+- Example requests/responses
+- Error codes
+- Authentication requirements`} />
+
+### 內嵌文件
+
+<TryIt compact prompt={`Add comprehensive documentation to this code:
+
+Code:
+\${code:paste your code here}
+
+Add:
+- File/module docstring (purpose, usage)
+- Function/method docstrings (params, returns, raises, examples)
+- Inline comments for complex logic only
+- Type hints if missing
+
+Style: \${docStyle:Google}`} />
+
+## 來自 prompts.chat 的提示詞範本
+
+### 扮演資深開發者
+
+```
+我希望你扮演一位資深軟體開發者。我會提供程式碼並就其提問。
+你將審查程式碼、提出改進建議、解釋概念並幫助偵錯問題。
+你的回覆應具有教育意義，幫助我成為更好的開發者。
+```
+
+### 扮演程式碼審查者
+
+```
+我希望你扮演一位程式碼審查者。我會提供包含程式碼變更的
+Pull Request，你將對其進行全面審查。檢查 bug、安全問題、
+效能問題以及是否遵循最佳做法。提供建設性的反饋，
+幫助開發者改進。
+```
+
+### 扮演軟體架構師
+
+```
+我希望你扮演一位軟體架構師。我會描述系統需求和約束條件，
+你將設計可擴充、可維護的架構。解釋你的設計決策、
+權衡考量，並在有幫助時提供圖表。
+```
+
+## 開發工作流程整合
+
+### 提交訊息生成
+
+<TryIt compact prompt={`Generate a commit message for these changes:
+
+Diff:
+\${diff:paste git diff here}
+
+Format: Conventional Commits
+Type: \${commitType:feat}
+
+Provide:
+- Subject line (50 chars max, imperative mood)
+- Body (what and why, wrapped at 72 chars)
+- Footer (references issues if applicable)`} />
+
+### PR 描述生成
+
+<TryIt compact prompt={`Generate a pull request description:
+
+Changes:
+\${changes:list your changes or paste diff summary}
+
+Template:
+## Summary
+Brief description of changes
+
+## Changes Made
+- Change 1
+- Change 2
+
+## Testing
+- [ ] Unit tests added/updated
+- [ ] Manual testing completed
+
+## Screenshots (if UI changes)
+placeholder
+
+## Related Issues
+Closes #\${issueNumber:123}`} />
+
+## 總結
+
+<Callout type="tip" title="關鍵技巧">
+包含完整的上下文（語言、框架、約束條件），精確說明需求，請求特定的輸出格式，在請求程式碼的同時要求解釋，並包含需要處理的邊緣案例。
+</Callout>
+
+<Quiz
+  question="請求 AI 偵錯程式碼時，最重要的元素是什麼？"
+  options={[
+    "僅提供程式語言",
+    "預期行為、實際行為和錯誤訊息",
+    "僅提供程式碼片段",
+    "檔名"
+  ]}
+  correctIndex={1}
+  explanation="偵錯需要上下文：應該發生什麼與實際發生了什麼。錯誤訊息和堆疊追蹤能幫助 AI 快速定位確切問題。"
+/>
+
+AI 是強大的程式設計夥伴——將其用於程式碼生成、審查、偵錯和文件編寫，同時保持你自己的架構判斷力。
