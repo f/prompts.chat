@@ -96,6 +96,76 @@ function extractVariables(content: string): ExtractedVariable[] {
   return variables;
 }
 
+interface CategoryRow {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+/**
+ * Match a user-supplied category string against known categories.
+ * Tries, in order: exact slug (case-insensitive), exact name (case-insensitive),
+ * then slugified-name / slug equality (so "Code Review" and "code_review" both map
+ * to the "code-review" category). Returns null when nothing matches.
+ */
+export function findCategoryMatch(categories: CategoryRow[], input: string): CategoryRow | null {
+  const needle = input.trim().toLowerCase();
+  if (!needle) return null;
+
+  const bySlug = categories.find((c) => c.slug.toLowerCase() === needle);
+  if (bySlug) return bySlug;
+
+  const byName = categories.find((c) => c.name.toLowerCase() === needle);
+  if (byName) return byName;
+
+  const inputSlug = slugify(input);
+  const bySlugified = categories.find((c) => c.slug === inputSlug || slugify(c.name) === inputSlug);
+  if (bySlugified) return bySlugified;
+
+  return null;
+}
+
+/**
+ * Visibility filter for fetching a single prompt/skill by id: public entries, plus the
+ * authenticated owner's own private ones. Unauthenticated callers see only public entries.
+ * Returns a Prisma `where` fragment to spread into the query. Keep get_prompt and get_skill
+ * in sync — get_prompt previously hard-filtered `isPrivate: false`, hiding owners' own private
+ * prompts from themselves.
+ */
+export function buildPromptVisibilityFilter(
+  authenticatedUser: Pick<AuthenticatedUser, "id"> | null | undefined
+) {
+  return authenticatedUser
+    ? {
+        OR: [
+          { isPrivate: false },
+          { isPrivate: true, authorId: authenticatedUser.id },
+        ],
+      }
+    : { isPrivate: false };
+}
+
+/**
+ * Resolve a category string (slug or name) to a category id. Returns a human-readable
+ * warning (instead of silently dropping the value) when nothing matches, so callers can
+ * surface it rather than creating a prompt with no category and no feedback.
+ */
+async function resolveCategory(
+  category: string | undefined
+): Promise<{ categoryId: string | null; warning?: string }> {
+  if (!category) return { categoryId: null };
+
+  const categories = await db.category.findMany({ select: { id: true, name: true, slug: true } });
+  const match = findCategoryMatch(categories, category);
+  if (match) return { categoryId: match.id };
+
+  const available = categories.map((c) => c.slug).sort().join(", ");
+  return {
+    categoryId: null,
+    warning: `Category "${category}" did not match any category and was not assigned. Call list_categories, or pass one of these slugs: ${available || "(none)"}.`,
+  };
+}
+
 export const config = {
   api: {
     bodyParser: false,
@@ -349,6 +419,7 @@ function createServer(options: ServerOptions = {}) {
           type: p.type,
           author: p.author.name || p.author.username,
           category: p.category?.name || null,
+          categorySlug: p.category?.slug || null,
           tags: p.tags.map((t) => t.tag.name),
           votes: p._count.votes,
           createdAt: p.createdAt.toISOString(),
@@ -387,12 +458,14 @@ function createServer(options: ServerOptions = {}) {
     },
     async ({ id, fill_variables }, extra) => {
       try {
+        const visibilityFilter = buildPromptVisibilityFilter(authenticatedUser);
+
         const prompt = await db.prompt.findFirst({
           where: {
             id,
-            isPrivate: false,
             isUnlisted: false,
             deletedAt: null,
+            ...visibilityFilter,
           },
           select: {
             id: true,
@@ -587,7 +660,7 @@ function createServer(options: ServerOptions = {}) {
         content: z.string().min(1).describe("The prompt content. Can include variables like ${variable} or ${variable:default}"),
         description: z.string().max(500).optional().describe("Optional description of the prompt"),
         tags: z.array(z.string()).max(10).optional().describe("Optional array of tag names (will be created if they don't exist)"),
-        category: z.string().optional().describe("Optional category slug"),
+        category: z.string().optional().describe("Optional category slug or name. Call list_categories for valid values; an unrecognized value is ignored (with a warning in the response) rather than failing the save."),
         isPrivate: z.boolean().optional().describe("Whether the prompt is private (default: uses your account setting)"),
         type: z.enum(["TEXT", "STRUCTURED", "IMAGE", "VIDEO", "AUDIO"]).optional().describe("Prompt type (default: TEXT)"),
         structuredFormat: z.enum(["JSON", "YAML"]).optional().describe("Format for structured prompts"),
@@ -625,12 +698,8 @@ function createServer(options: ServerOptions = {}) {
           }
         }
 
-        // Find category if provided
-        let categoryId: string | undefined;
-        if (category) {
-          const cat = await db.category.findUnique({ where: { slug: category } });
-          if (cat) categoryId = cat.id;
-        }
+        // Resolve category (accepts slug or name; warns instead of silently dropping)
+        const { categoryId, warning: categoryWarning } = await resolveCategory(category);
 
         // Create the prompt
         const prompt = await db.prompt.create({
@@ -668,10 +737,12 @@ function createServer(options: ServerOptions = {}) {
               type: "text" as const,
               text: JSON.stringify({
                   success: true,
+                  ...(categoryWarning ? { warning: categoryWarning } : {}),
                   prompt: {
                     ...prompt,
                     tags: prompt.tags.map((t) => t.tag.name),
                     category: prompt.category?.name || null,
+                    categorySlug: prompt.category?.slug || null,
                     link: prompt.isPrivate ? null : `https://prompts.chat/prompts/${prompt.id}_${getPromptName(prompt)}`,
                   },
                 }),
@@ -753,7 +824,7 @@ function createServer(options: ServerOptions = {}) {
           content: z.string().describe("File content"),
         })).min(1).describe("Array of files. Must include SKILL.md as the main skill file."),
         tags: z.array(z.string()).max(10).optional().describe("Optional array of tag names"),
-        category: z.string().optional().describe("Optional category slug"),
+        category: z.string().optional().describe("Optional category slug or name. Call list_categories for valid values; an unrecognized value is ignored (with a warning in the response) rather than failing the save."),
         isPrivate: z.boolean().optional().describe("Whether the skill is private (default: uses your account setting)"),
       },
     },
@@ -808,12 +879,8 @@ function createServer(options: ServerOptions = {}) {
           }
         }
 
-        // Find category if provided
-        let categoryId: string | undefined;
-        if (category) {
-          const cat = await db.category.findUnique({ where: { slug: category } });
-          if (cat) categoryId = cat.id;
-        }
+        // Resolve category (accepts slug or name; warns instead of silently dropping)
+        const { categoryId, warning: categoryWarning } = await resolveCategory(category);
 
         // Create the skill
         const skill = await db.prompt.create({
@@ -846,11 +913,13 @@ function createServer(options: ServerOptions = {}) {
               type: "text" as const,
               text: JSON.stringify({
                   success: true,
+                  ...(categoryWarning ? { warning: categoryWarning } : {}),
                   skill: {
                     ...skill,
                     files: files.map(f => f.filename),
                     tags: skill.tags.map((t) => t.tag.name),
                     category: skill.category?.name || null,
+                    categorySlug: skill.category?.slug || null,
                     link: skill.isPrivate ? null : `https://prompts.chat/prompts/${skill.id}_${getPromptName(skill)}`,
                   },
                 }),
@@ -1167,15 +1236,7 @@ function createServer(options: ServerOptions = {}) {
     },
     async ({ id }) => {
       try {
-        // Build visibility filter
-        const visibilityFilter = authenticatedUser
-          ? {
-              OR: [
-                { isPrivate: false },
-                { isPrivate: true, authorId: authenticatedUser.id },
-              ],
-            }
-          : { isPrivate: false };
+        const visibilityFilter = buildPromptVisibilityFilter(authenticatedUser);
 
         const skill = await db.prompt.findFirst({
           where: {
@@ -1343,6 +1404,53 @@ function createServer(options: ServerOptions = {}) {
         console.error("MCP search_skills error:", error);
         return {
           content: [{ type: "text" as const, text: JSON.stringify({ error: "Failed to search skills" }) }],
+          isError: true,
+        };
+      }
+    }
+  );
+
+  // List categories tool - lets clients discover valid category slugs before saving
+  server.registerTool(
+    "list_categories",
+    {
+      title: "List Categories",
+      description:
+        "List all available prompt categories with their name and slug. Call this before save_prompt or save_skill so you can pass a valid `category` slug.",
+      inputSchema: {},
+    },
+    async () => {
+      try {
+        const categories = await db.category.findMany({
+          orderBy: [{ order: "asc" }, { name: "asc" }],
+          select: {
+            name: true,
+            slug: true,
+            description: true,
+            _count: { select: { prompts: true } },
+          },
+        });
+
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify({
+                count: categories.length,
+                categories: categories.map((c) => ({
+                  name: c.name,
+                  slug: c.slug,
+                  description: c.description || null,
+                  promptCount: c._count.prompts,
+                })),
+              }),
+            },
+          ],
+        };
+      } catch (error) {
+        console.error("MCP list_categories error:", error);
+        return {
+          content: [{ type: "text" as const, text: JSON.stringify({ error: "Failed to list categories" }) }],
           isError: true,
         };
       }
