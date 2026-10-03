@@ -208,6 +208,7 @@ function MediaField({ form, t, promptType, promptContent }: MediaFieldProps) {
                         mediaType={mediaType as "IMAGE" | "VIDEO" | "AUDIO"}
                         onMediaGenerated={handleMediaGenerated}
                         onUploadClick={handleUploadClick}
+                        inputImageUrl=""
                       />
                     </div>
                   ) : (
@@ -216,6 +217,7 @@ function MediaField({ form, t, promptType, promptContent }: MediaFieldProps) {
                       mediaType={mediaType as "IMAGE" | "VIDEO" | "AUDIO"}
                       onMediaGenerated={handleMediaGenerated}
                       onUploadClick={handleUploadClick}
+                      inputImageUrl=""
                     />
                   )}
                   {showUpload && (
@@ -290,6 +292,7 @@ function MediaField({ form, t, promptType, promptContent }: MediaFieldProps) {
                         mediaType={mediaType as "IMAGE" | "VIDEO" | "AUDIO"}
                         onMediaGenerated={handleMediaGenerated}
                         onUploadClick={handleUploadClick}
+                        inputImageUrl=""
                       />
                     </div>
                   ) : (
@@ -298,6 +301,7 @@ function MediaField({ form, t, promptType, promptContent }: MediaFieldProps) {
                       mediaType={mediaType as "IMAGE" | "VIDEO" | "AUDIO"}
                       onMediaGenerated={handleMediaGenerated}
                       onUploadClick={handleUploadClick}
+                      inputImageUrl=""
                     />
                   )}
                   {showUpload && (

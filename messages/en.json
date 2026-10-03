@@ -341,6 +341,12 @@
     "generateVideoDescription": "Generate a unique video for your prompt using AI — perfect for showcasing your prompt to the community.",
     "generateAudioDescription": "Generate unique audio/music for your prompt using AI — perfect for showcasing your prompt to the community.",
     "close": "Close",
+    "inputImageOptional": "Input image (optional)",
+    "uploadInputImage": "Upload",
+    "pasteInputImageUrl": "Paste URL",
+    "inputImageUrlPlaceholder": "Paste image URL...",
+    "upload": "Upload",
+    "inputImageModelHint": "Note: This model may not support image-to-video. Models with 'image-to-video' or 'i2v' in their name typically support input images.",
     "mediaGeneration": {
       "connecting": "Connecting to server...",
       "connected": "Connected, waiting in queue...",
