@@ -8,6 +8,8 @@ Run your own prompts.chat instance using Docker Compose.
 
 ### To build locally
 
+Local builds run the full Next.js production build inside Docker. Allocate at least 4 GB of memory to Docker Desktop or your Docker daemon before running the build. If the build exits with code 137, Docker likely ran out of memory; increase the memory limit or use the pre-built image below.
+
 ```bash
 git clone https://github.com/f/prompts.chat.git
 cd prompts.chat
