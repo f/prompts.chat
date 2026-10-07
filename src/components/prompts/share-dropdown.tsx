@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// Simple X/Twitter icon
+/** X/Twitter mark used in the share menu. */
 function XIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="currentColor">
@@ -23,7 +23,7 @@ function XIcon({ className }: { className?: string }) {
   );
 }
 
-// Hacker News icon
+/** Hacker News mark used in the share menu. */
 function HackerNewsIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="currentColor">
@@ -32,6 +32,7 @@ function HackerNewsIcon({ className }: { className?: string }) {
   );
 }
 
+/** Escapes characters that would break an HTML attribute value. */
 function escapeHtmlAttr(value: string): string {
   return value
     .replace(/&/g, "&amp;")
@@ -45,6 +46,7 @@ export function buildEmbedUrl(origin: string, prompt: string): string {
   return `${base}/embed?prompt=${encodeURIComponent(prompt)}`;
 }
 
+/** Builds a one-line iframe whose src is the embed URL. */
 export function buildEmbedSnippet(embedUrl: string, title: string): string {
   return `<iframe src="${escapeHtmlAttr(embedUrl)}" title="${escapeHtmlAttr(title)}" width="100%" height="400" style="border:0"></iframe>`;
 }
@@ -57,11 +59,13 @@ interface ShareDropdownProps {
   prompt?: string;
 }
 
+/** Share menu for a prompt: social links, plus embed URL and iframe copies. */
 export function ShareDropdown({ title, url, promptId, prompt }: ShareDropdownProps) {
   const t = useTranslations("prompts");
   const [copied, setCopied] = useState<"url" | "iframe" | null>(null);
   const canEmbed = Boolean(prompt);
 
+  /** Opens X or Hacker News with the prompt page URL. */
   const handleShare = (platform: "twitter" | "hackernews") => {
     const shareUrl = url || (typeof window !== "undefined" ? window.location.href : "");
     const encodedUrl = encodeURIComponent(shareUrl);
@@ -80,6 +84,7 @@ export function ShareDropdown({ title, url, promptId, prompt }: ShareDropdownPro
     analyticsPrompt.share(promptId, platform);
   };
 
+  /** Copies the embed URL or the iframe snippet for the current prompt. */
   const handleCopyEmbed = async (kind: "url" | "iframe") => {
     if (!prompt || typeof window === "undefined") return;
     const embedUrl = buildEmbedUrl(window.location.origin, prompt);

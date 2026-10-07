@@ -42,6 +42,7 @@ describe("ShareDropdown embed actions", () => {
     window.HTMLElement.prototype.scrollIntoView = vi.fn();
   });
 
+  /** Renders the menu and opens it. */
   async function openMenu(ui: ReactElement) {
     const user = userEvent.setup();
     render(ui);

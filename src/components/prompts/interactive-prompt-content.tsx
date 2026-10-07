@@ -146,6 +146,7 @@ function EditableSpan({
   );
 }
 
+/** Prompt body with variable editing, copy, download, and share actions. */
 export function InteractivePromptContent({ 
   content, 
   className,
