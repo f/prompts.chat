@@ -276,6 +276,8 @@
     },
     "copyMarkdownUrl": "کپی لینک MD",
     "copyYamlUrl": "کپی لینک YAML",
+    "copyEmbedUrl": "کپی لینک جاسازی",
+    "copyEmbedCode": "کپی iframe",
     "downloadStarted": "دانلود شروع شد",
     "downloadFailed": "دانلود ناموفق بود",
     "urlCopied": "لینک در کلیپ‌بورد کپی شد",

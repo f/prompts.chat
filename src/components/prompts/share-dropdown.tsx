@@ -1,12 +1,16 @@
 "use client";
 
-import { Share2 } from "lucide-react";
+import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { Check, Code, Link, Share2 } from "lucide-react";
+import { toast } from "sonner";
 import { analyticsPrompt } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -28,13 +32,36 @@ function HackerNewsIcon({ className }: { className?: string }) {
   );
 }
 
+function escapeHtmlAttr(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;");
+}
+
+/** Embed page already renders `?prompt=`. No extra backend. */
+export function buildEmbedUrl(origin: string, prompt: string): string {
+  const base = origin.replace(/\/$/, "");
+  return `${base}/embed?prompt=${encodeURIComponent(prompt)}`;
+}
+
+export function buildEmbedSnippet(embedUrl: string, title: string): string {
+  return `<iframe src="${escapeHtmlAttr(embedUrl)}" title="${escapeHtmlAttr(title)}" width="100%" height="400" style="border:0"></iframe>`;
+}
+
 interface ShareDropdownProps {
   title: string;
   url?: string;
   promptId?: string;
+  /** Prompt text copied into the existing /embed page. */
+  prompt?: string;
 }
 
-export function ShareDropdown({ title, url, promptId }: ShareDropdownProps) {
+export function ShareDropdown({ title, url, promptId, prompt }: ShareDropdownProps) {
+  const t = useTranslations("prompts");
+  const [copied, setCopied] = useState<"url" | "iframe" | null>(null);
+  const canEmbed = Boolean(prompt);
+
   const handleShare = (platform: "twitter" | "hackernews") => {
     const shareUrl = url || (typeof window !== "undefined" ? window.location.href : "");
     const encodedUrl = encodeURIComponent(shareUrl);
@@ -53,6 +80,21 @@ export function ShareDropdown({ title, url, promptId }: ShareDropdownProps) {
     analyticsPrompt.share(promptId, platform);
   };
 
+  const handleCopyEmbed = async (kind: "url" | "iframe") => {
+    if (!prompt || typeof window === "undefined") return;
+    const embedUrl = buildEmbedUrl(window.location.origin, prompt);
+    const text = kind === "url" ? embedUrl : buildEmbedSnippet(embedUrl, title);
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(kind);
+      toast.success(t("urlCopied"));
+      analyticsPrompt.share(promptId, kind === "url" ? "embed" : "embed_iframe");
+      setTimeout(() => setCopied(null), 2000);
+    } catch {
+      toast.error(t("failedToCopyUrl"));
+    }
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -69,6 +111,27 @@ export function ShareDropdown({ title, url, promptId }: ShareDropdownProps) {
           <HackerNewsIcon className="h-4 w-4 mr-2" />
           Hacker News
         </DropdownMenuItem>
+        {canEmbed && <DropdownMenuSeparator />}
+        {canEmbed && (
+          <DropdownMenuItem onClick={() => handleCopyEmbed("url")}>
+            {copied === "url" ? (
+              <Check className="h-4 w-4 mr-2 text-green-500" />
+            ) : (
+              <Link className="h-4 w-4 mr-2" />
+            )}
+            {t("copyEmbedUrl")}
+          </DropdownMenuItem>
+        )}
+        {canEmbed && (
+          <DropdownMenuItem onClick={() => handleCopyEmbed("iframe")}>
+            {copied === "iframe" ? (
+              <Check className="h-4 w-4 mr-2 text-green-500" />
+            ) : (
+              <Code className="h-4 w-4 mr-2" />
+            )}
+            {t("copyEmbedCode")}
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

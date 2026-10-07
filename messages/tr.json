@@ -276,6 +276,8 @@
     },
     "copyMarkdownUrl": "MD Linkini Kopyala",
     "copyYamlUrl": "YAML Linkini Kopyala",
+    "copyEmbedUrl": "Embed Linkini Kopyala",
+    "copyEmbedCode": "iframe Kodunu Kopyala",
     "downloadStarted": "İndirme başladı",
     "downloadFailed": "İndirme başarısız",
     "urlCopied": "Link kopyalandı",

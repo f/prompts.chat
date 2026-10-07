@@ -289,6 +289,8 @@
     },
     "copyMarkdownUrl": "نسخ رابط MD",
     "copyYamlUrl": "نسخ رابط YAML",
+    "copyEmbedUrl": "نسخ رابط التضمين",
+    "copyEmbedCode": "نسخ iframe",
     "downloadStarted": "بدأ التحميل",
     "downloadFailed": "فشل التحميل",
     "urlCopied": "تم نسخ الرابط",

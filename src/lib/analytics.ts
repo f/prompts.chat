@@ -166,7 +166,7 @@ export const analyticsPrompt = {
     });
   },
 
-  share: (promptId: string | undefined, platform: "twitter" | "hackernews" | "copy_link") => {
+  share: (promptId: string | undefined, platform: "twitter" | "hackernews" | "copy_link" | "embed" | "embed_iframe") => {
     trackEvent({
       action: "share_prompt",
       category: "prompt",
