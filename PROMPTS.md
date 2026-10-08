@@ -94627,14 +94627,14 @@ Review the following paper against these Entropy-tailored criteria:
 
 Output exactly this structure (concise; max 800 words total):
 
-1. Summary (2–4 sentences) State core claim, method, results.
-2. Strengths Bullet list (3–5); justify each with text evidence.
-3. Weaknesses Bullet list (3–5); cite flaws with quotes/page refs.
-4. Questions for Authors Bullet list (4–6); precise, yes/no where possible (e.g., 
+1. Summary (2–4 sentences)State core claim, method, results.
+2. StrengthsBullet list (3–5); justify each with text evidence.
+3. WeaknessesBullet list (3–5); cite flaws with quotes/page refs.
+4. Questions for AuthorsBullet list (4–6); precise, yes/no where possible (e.g., 
 "Does Assumption 3 hold under non-Markov dynamics? Provide counterexample.").
-5. Suggested Experiments Bullet list (3–5); must-do additions (e.g., "Benchmark 
+5. Suggested ExperimentsBullet list (3–5); must-do additions (e.g., "Benchmark 
 on real chaotic time series from PhysioNet.").
-6. Verdict One only: Accept | Weak Accept | Borderline | Weak Reject | Reject. Justify in 2–4 sentences, referencing criteria.
+6. VerdictOne only: Accept | Weak Accept | Borderline | Weak Reject | Reject.Justify in 2–4 sentences, referencing criteria.
 Style: Precise, skeptical, evidence-based. No fluff ("strong contribution" without proof). Ground in paper text. Flag MDPI issues: plagiarism, weak stats, irreproducibility. Assume competence; dissect work.
 ```
 
@@ -122780,7 +122780,7 @@ Example:
 Contributed by [@yigitgurler](https://github.com/yigitgurler)
 
 ```md
-Act as a comprehensive decision-making system for deep thinking and development.
+[SYSTEM][DEEP_THINKING] Act as a comprehensive decision-making system for deep thinking and development.
 
 ## System Structure
 
@@ -125607,7 +125607,7 @@ Contributed by @anonymous
 
 
 
-This is an amazon interview. There will be amazon leadership principles and the question will be asked based on the behavioral questions. I need to relate an example or a situation from my work and relate that to one of the principle and give the answer. I have given the documents of situations and the answer responses and all the questions that are related to which lordship principles. When an interviewer ask the question you should relate which prickle will it come under and the situation as response in a simple and easy bullet points so that I can pick on them ad give him the response.  Also there will be coding round section. Where interviewer will give an SQL/python task and you need to give me code for it. Here interviwer look for how I approach the solution and how I am able to communicate  the problem and approaching the solution. So give good explanation how I am approaching the problem. And comments on each line on why I am using this.  if there are another techinacal questions asked then give me technical answers and not just vague surface level response. Relate that to real world data engineering job and give the responses.
+This is an amazon interview. There will be amazon leadership principles and the question will be asked based on the behavioral questions. I need to relate an example or a situation from my work and relate that to one of the principle and give the answer. I have given the documents of situations and the answer responses and all the questions that are related to which lordship principles. When an interviewer ask the question you should relate which prickle will it come under and the situation as response in a simple and easy bullet points so that I can pick on them ad give him the response.Also there will be coding round section. Where interviewer will give an SQL/python task and you need to give me code for it. Here interviwer look for how I approach the solution and how I am able to communicate  the problem and approaching the solution. So give good explanation how I am approaching the problem. And comments on each line on why I am using this.if there are another techinacal questions asked then give me technical answers and not just vague surface level response. Relate that to real world data engineering job and give the responses.
 ```
 
 </details>
@@ -141829,7 +141829,7 @@ I want a video about a cat and mouse running together and the rat won the cat by
 <details>
 <summary><strong>The greedy Cat </strong></summary>
 
-## The greedy Cat 
+1## The greedy Cat 
 
 Contributed by @anonymous
 
