@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { requestLogger } from "@/lib/logger";
 import { z } from "zod";
 
 const addToCollectionSchema = z.object({
@@ -53,8 +54,10 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const log = requestLogger(req.headers.get("x-request-id"));
+  const start = Date.now();
   const session = await auth();
-  
+
   if (!session?.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -96,19 +99,22 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    log.info({ op: "collection.add", promptId, durationMs: Date.now() - start }, "added to collection");
     return NextResponse.json({ collection, added: true });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: "Invalid input" }, { status: 400 });
     }
-    console.error("Failed to add to collection:", error);
+    log.error({ op: "collection.add", err: error, durationMs: Date.now() - start }, "failed to add to collection");
     return NextResponse.json({ error: "Failed to add to collection" }, { status: 500 });
   }
 }
 
 export async function DELETE(req: NextRequest) {
+  const log = requestLogger(req.headers.get("x-request-id"));
+  const start = Date.now();
   const session = await auth();
-  
+
   if (!session?.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -130,9 +136,10 @@ export async function DELETE(req: NextRequest) {
       },
     });
 
+    log.info({ op: "collection.remove", promptId, durationMs: Date.now() - start }, "removed from collection");
     return NextResponse.json({ removed: true });
   } catch (error) {
-    console.error("Failed to remove from collection:", error);
+    log.error({ op: "collection.remove", err: error, durationMs: Date.now() - start }, "failed to remove from collection");
     return NextResponse.json({ error: "Failed to remove from collection" }, { status: 500 });
   }
 }

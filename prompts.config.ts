@@ -1,92 +1,61 @@
 import { defineConfig } from "@/lib/config";
 
-// Set to true to use clone branding (hide prompts.chat repo branding)
-const useCloneBranding = false;
+// White-label mode ON: hide all prompts.chat repo branding,
+// achievements (Forbes/GitHub stars), and sponsor links.
+const useCloneBranding = true;
 
 export default defineConfig({
-  // Branding - customize for white-label
+  // Branding — swap logo/favicon for your design-system assets in /public
   branding: {
-    name: "prompts.chat",
+    name: "Vyaxis Prompt Library",
     logo: "/logo.svg",
     logoDark: "/logo-dark.svg",
     favicon: "/logo.svg",
-    description: "Collect, organize, and share AI prompts",
-
-    // Delete this if useCloneBranding is true
-    appStoreUrl: "https://apps.apple.com/tr/app/prompts-chat/id6756895736",
-    chromeExtensionUrl: "https://chromewebstore.google.com/detail/promptschat/eemdohkhbaifiocagjlhibfbhamlbeej",
+    description: "Governed prompt catalog for Vyaxis agents, BidIQ, and the acquisition stack.",
+    // NOTE: appStoreUrl / chromeExtensionUrl intentionally removed (clone branding).
   },
 
-  // Theme - design system configuration
+  // Theme — primary is a placeholder; set from your Vyaxis design-system token.
   theme: {
-    // Border radius: "none" | "sm" | "md" | "lg"
     radius: "sm",
-    // UI style: "flat" | "default" | "brutal"
     variant: "default",
-    // Spacing density: "compact" | "default" | "comfortable"
     density: "default",
-    // Colors (hex or oklch)
     colors: {
-      primary: "#6366f1", // Indigo
+      primary: "#6366f1", // TODO: replace with Vyaxis accent hex
     },
   },
 
-  // Authentication plugins
+  // Auth — GitHub (your Vyaxis-LLC / RoblImvp org) + credentials for staff
+  // without GitHub accounts. Registration locked; you seed the admin.
   auth: {
-    // Available: "credentials" | "google" | "azure" | "github" | "apple" | "oidc" | "oauth" | custom
-    // Use `providers` array to enable multiple auth providers
-    providers: ["github", "google", "apple"],
-    // Allow public registration (only applies to credentials provider)
+    providers: ["github", "credentials"],
     allowRegistration: false,
   },
 
-  // Internationalization
+  // English only for internal use (add "es" if dealership staff need it).
   i18n: {
-    locales: ["en", "tr", "es", "zh", "ja", "ar", "pt", "fr", "it", "de", "nl", "ko", "ru", "he", "el", "az", "fa"],
+    locales: ["en"],
     defaultLocale: "en",
   },
 
   // Features
   features: {
-    // Allow users to create private prompts
     privatePrompts: true,
-    // Enable change request system for versioning
     changeRequests: true,
-    // Enable categories
     categories: true,
-    // Enable tags
     tags: true,
-    // Enable AI-powered semantic search (requires OPENAI_API_KEY)
-    aiSearch: true,
-    // Enable AI-powered generation features (requires OPENAI_API_KEY)
-    aiGeneration: true,
-    // Enable MCP (Model Context Protocol) features including API key generation
+    // AI search/gen need an OpenAI(-compatible) key + embedding model.
+    aiSearch: false,
+    aiGeneration: false,
+    // MCP on: API-key generation so agents can pull prompts programmatically.
     mcp: true,
-    // Enable comments on prompts
     comments: true,
   },
 
-  // Homepage customization
+  // Homepage — clone branding hides repo achievements + sponsors.
   homepage: {
-    // Set to true to hide prompts.chat repo branding and use your own branding
     useCloneBranding,
-    achievements: {
-      enabled: !useCloneBranding,
-    },
-    sponsors: {
-      enabled: !useCloneBranding,
-      items: [
-        // Add sponsors here
-        { name: "Neon", className: 'py-1', logo: '/sponsors/neon.svg', darkLogo: '/sponsors/neon-dark.svg', url: "https://get.neon.com/VqfnMo4" },
-        { name: "Clemta", logo: '/sponsors/clemta.webp', url: "https://clemta.com/?utm_source=prompts.chat" },
-        { name: "Wiro.ai", className: 'py-1', darkLogo: '/sponsors/wiro.png', logo: '/sponsors/wiro.png', url: "https://wiro.ai/?utm_source=prompts.chat" },
-        { name: "Cognition", logo: "/sponsors/cognition.svg", url: "https://wind.surf/prompts-chat" },
-        { name: "CodeRabbit", className: 'py-1', logo: '/sponsors/coderabbit.svg', darkLogo: '/sponsors/coderabbit-dark.svg', url: "https://coderabbit.link/fatih" },
-        { name: "Sentry", className: 'py-1', logo: '/sponsors/sentry.svg', darkLogo: '/sponsors/sentry-dark.svg', url: "https://sentry.io/?utm_source=prompts.chat" },
-
-        { name: "eachlabs", className: 'py-[6px]', logo: '/sponsors/eachlabs.png', darkLogo: '/sponsors/eachlabs-dark.png', url: "https://www.eachlabs.ai/?utm_source=promptschat&utm_medium=referral" },
-        { name: "CommandCode", className: 'py-1', logo: '/sponsors/commandcode.svg', darkLogo: '/sponsors/commandcode-dark.svg', url: "https://commandcode.ai/?utm_source=prompts.chat" },
-      ],
-    },
+    achievements: { enabled: !useCloneBranding },
+sponsors: { enabled: !useCloneBranding, items: [] },
   },
 });

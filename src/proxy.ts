@@ -15,6 +15,13 @@ export function proxy(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-pathname", pathname);
 
+  // Propagate a correlation id for request-scoped logging (Step 2).
+  // Reuse an inbound id if one is present (e.g. from an upstream proxy), else mint one.
+  // Read back in route handlers via request.headers.get("x-request-id").
+  if (!requestHeaders.get("x-request-id")) {
+    requestHeaders.set("x-request-id", crypto.randomUUID());
+  }
+
   return NextResponse.next({
     request: {
       headers: requestHeaders,

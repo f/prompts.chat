@@ -5,7 +5,9 @@
 import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
-  dsn: "https://9c2eb3b4441745efad28a908001c30bf@o4510673866063872.ingest.de.sentry.io/4510673871306832",
+  // DSN comes from the environment so this fork does not ship telemetry to the
+  // upstream project's Sentry. Empty/unset disables sending (set your own to enable).
+  dsn: process.env.SENTRY_DSN ?? "",
 
   // Disable Sentry in development
   enabled: process.env.NODE_ENV === "production",
@@ -16,7 +18,7 @@ Sentry.init({
   // Enable logs to be sent to Sentry
   enableLogs: true,
 
-  // Enable sending user PII (Personally Identifiable Information)
+  // Do not attach user PII (IP, headers, etc.) to events by default.
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
-  sendDefaultPii: true,
+  sendDefaultPii: false,
 });

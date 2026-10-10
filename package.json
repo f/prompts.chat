@@ -17,6 +17,7 @@
     "db:setup": "prisma generate && prisma migrate dev && prisma db seed",
     "setup": "node scripts/setup.js",
     "generate:examples": "npx tsx scripts/generate-examples.ts",
+    "smoke:composition": "tsx scripts/smoke-composition.ts",
     "postinstall": "prisma generate",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -30,6 +31,7 @@
     "book:pdf:print:all": "npx tsx scripts/generate-book-pdf.ts --all --print && npx tsx scripts/html-to-pdf.ts --all --print"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.104.1",
     "@auth/prisma-adapter": "^2.11.1",
     "@aws-sdk/client-s3": "^3.948.0",
     "@hookform/resolvers": "^5.2.2",

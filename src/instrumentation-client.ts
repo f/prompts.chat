@@ -23,7 +23,10 @@ const ignoreErrors = [
 ];
 
 Sentry.init({
-  dsn: "https://9c2eb3b4441745efad28a908001c30bf@o4510673866063872.ingest.de.sentry.io/4510673871306832",
+  // Client DSN must be NEXT_PUBLIC_ to be inlined into the browser bundle. Sourced
+  // from the environment so this fork does not ship telemetry to the upstream
+  // project's Sentry. Empty/unset disables sending (set your own to enable).
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN ?? "",
 
   // Disable Sentry in development
   enabled: process.env.NODE_ENV === "production",
@@ -44,9 +47,9 @@ Sentry.init({
   // Define how likely Replay events are sampled when an error occurs.
   replaysOnErrorSampleRate: 1.0,
 
-  // Enable sending user PII (Personally Identifiable Information)
+  // Do not attach user PII (IP, headers, etc.) to events by default.
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
-  sendDefaultPii: true,
+  sendDefaultPii: false,
 
   // Filter out browser extension and third-party script errors
   beforeSend(event) {

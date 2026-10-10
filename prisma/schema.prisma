@@ -9,46 +9,49 @@ datasource db {
 }
 
 model User {
-  id                        String                 @id @default(cuid())
-  email                     String                 @unique
-  username                  String                 @unique
-  name                      String?
-  password                  String?
-  avatar                    String?
-  bio                       String?                @db.VarChar(250)
-  customLinks               Json?                  // Array of {type: string, url: string, label?: string}
-  role                      UserRole               @default(USER)
-  locale                    String                 @default("en")
-  emailVerified             DateTime?
-  createdAt                 DateTime               @default(now())
-  updatedAt                 DateTime               @updatedAt
-  verified                  Boolean                @default(false)
-  githubUsername            String?
-  apiKey                    String?                @unique
-  mcpPromptsPublicByDefault Boolean                @default(false)
-  flagged                   Boolean                @default(false)
-  flaggedAt                 DateTime?
-  flaggedReason             String?
-  dailyGenerationLimit      Int                    @default(3)
-  generationCreditsRemaining Int                   @default(3)
-  generationCreditsResetAt  DateTime?
-  accounts                  Account[]
-  subscriptions  CategorySubscription[]
-  changeRequests ChangeRequest[]
-  pinnedPrompts  PinnedPrompt[]
-  reports        PromptReport[]
-  promptVersions PromptVersion[]
-  votes          PromptVote[]
-  prompts        Prompt[]               @relation("PromptAuthor")
-  sessions       Session[]
-  contributions  Prompt[]               @relation("PromptContributors")
-  comments              Comment[]              @relation("CommentAuthor")
-  commentVotes          CommentVote[]
-  notifications         Notification[]         @relation("NotificationRecipient")
-  notificationsActed    Notification[]         @relation("NotificationActor")
-  collections           Collection[]
-  userPromptExamples    UserPromptExample[]
+  id                         String                 @id @default(cuid())
+  email                      String                 @unique
+  username                   String                 @unique
+  name                       String?
+  password                   String?
+  avatar                     String?
+  bio                        String?                @db.VarChar(250)
+  customLinks                Json? // Array of {type: string, url: string, label?: string}
+  role                       UserRole               @default(USER)
+  locale                     String                 @default("en")
+  emailVerified              DateTime?
+  createdAt                  DateTime               @default(now())
+  updatedAt                  DateTime               @updatedAt
+  verified                   Boolean                @default(false)
+  githubUsername             String?
+  apiKey                     String?                @unique
+  mcpPromptsPublicByDefault  Boolean                @default(false)
+  flagged                    Boolean                @default(false)
+  flaggedAt                  DateTime?
+  flaggedReason              String?
+  dailyGenerationLimit       Int                    @default(3)
+  generationCreditsRemaining Int                    @default(3)
+  generationCreditsResetAt   DateTime?
+  accounts                   Account[]
+  subscriptions              CategorySubscription[]
+  changeRequests             ChangeRequest[]
+  pinnedPrompts              PinnedPrompt[]
+  reports                    PromptReport[]
+  promptVersions             PromptVersion[]
+  votes                      PromptVote[]
+  prompts                    Prompt[]               @relation("PromptAuthor")
+  sessions                   Session[]
+  contributions              Prompt[]               @relation("PromptContributors")
+  comments                   Comment[]              @relation("CommentAuthor")
+  commentVotes               CommentVote[]
+  notifications              Notification[]         @relation("NotificationRecipient")
+  notificationsActed         Notification[]         @relation("NotificationActor")
+  collections                Collection[]
+  userPromptExamples         UserPromptExample[]
+  organizationId             String?
+  organization               Organization?          @relation(fields: [organizationId], references: [id])
 
+  @@index([organizationId])
   @@map("users")
 }
 
@@ -91,27 +94,27 @@ model VerificationToken {
 }
 
 model Prompt {
-  id                  String             @id @default(cuid())
+  id                  String              @id @default(cuid())
   title               String
   slug                String?
   description         String?
   content             String
-  type                PromptType         @default(TEXT)
-  isPrivate           Boolean            @default(false)
+  type                PromptType          @default(TEXT)
+  isPrivate           Boolean             @default(false)
   mediaUrl            String?
-  viewCount           Int                @default(0)
-  createdAt           DateTime           @default(now())
-  updatedAt           DateTime           @updatedAt
+  viewCount           Int                 @default(0)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
   authorId            String
   categoryId          String?
   embedding           Json?
   requiredMediaCount  Int?
   requiredMediaType   RequiredMediaType?
-  requiresMediaUpload Boolean            @default(false)
+  requiresMediaUpload Boolean             @default(false)
   structuredFormat    StructuredFormat?
   featuredAt          DateTime?
-  isFeatured          Boolean            @default(false)
-  isUnlisted          Boolean            @default(false)
+  isFeatured          Boolean             @default(false)
+  isUnlisted          Boolean             @default(false)
   unlistedAt          DateTime?
   delistReason        DelistReason?
   deletedAt           DateTime?
@@ -122,16 +125,18 @@ model Prompt {
   versions            PromptVersion[]
   votes               PromptVote[]
   comments            Comment[]
-  author              User               @relation("PromptAuthor", fields: [authorId], references: [id], onDelete: Cascade)
-  category            Category?          @relation(fields: [categoryId], references: [id])
-  contributors        User[]             @relation("PromptContributors")
-  outgoingConnections PromptConnection[] @relation("ConnectionSource")
-  incomingConnections PromptConnection[] @relation("ConnectionTarget")
+  author              User                @relation("PromptAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  category            Category?           @relation(fields: [categoryId], references: [id])
+  contributors        User[]              @relation("PromptContributors")
+  outgoingConnections PromptConnection[]  @relation("ConnectionSource")
+  incomingConnections PromptConnection[]  @relation("ConnectionTarget")
   collectedBy         Collection[]
   userExamples        UserPromptExample[]
-  bestWithModels      String[]           // Model slugs this prompt works best with (max 3), e.g. ["gpt-4o", "claude-3-5-sonnet"]
-  bestWithMCP         Json?              // MCP configs array, e.g. [{command: "npx -y @mcp/server", tools: ["tool1"]}]
-  workflowLink        String?            // URL to test/demo the workflow when prompt has previous/next connections
+  bestWithModels      String[] // Model slugs this prompt works best with (max 3), e.g. ["gpt-4o", "claude-3-5-sonnet"]
+  bestWithMCP         Json? // MCP configs array, e.g. [{command: "npx -y @mcp/server", tools: ["tool1"]}]
+  workflowLink        String? // URL to test/demo the workflow when prompt has previous/next connections
+  organizationId      String?
+  organization        Organization?       @relation(fields: [organizationId], references: [id])
 
   @@index([authorId])
   @@index([categoryId])
@@ -141,6 +146,7 @@ model Prompt {
   @@index([isUnlisted])
   @@index([slug])
   @@index([isPrivate, isUnlisted, deletedAt, createdAt(sort: Desc)])
+  @@index([organizationId])
   @@map("prompts")
 }
 
@@ -349,10 +355,10 @@ model Comment {
 model CommentVote {
   userId    String
   commentId String
-  value     Int        // 1 for upvote, -1 for downvote
-  createdAt DateTime   @default(now())
-  comment   Comment    @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  value     Int // 1 for upvote, -1 for downvote
+  createdAt DateTime @default(now())
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, commentId])
   @@index([userId])
@@ -378,15 +384,15 @@ model Notification {
 }
 
 model PromptConnection {
-  id            String   @id @default(cuid())
-  sourceId      String
-  targetId      String
-  label         String
-  order         Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  source        Prompt   @relation("ConnectionSource", fields: [sourceId], references: [id], onDelete: Cascade)
-  target        Prompt   @relation("ConnectionTarget", fields: [targetId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  sourceId  String
+  targetId  String
+  label     String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  source    Prompt   @relation("ConnectionSource", fields: [sourceId], references: [id], onDelete: Cascade)
+  target    Prompt   @relation("ConnectionTarget", fields: [targetId], references: [id], onDelete: Cascade)
 
   @@unique([sourceId, targetId])
   @@index([sourceId])
@@ -397,6 +403,126 @@ model PromptConnection {
 enum NotificationType {
   COMMENT
   REPLY
+}
+
+// ---------------------------------------------------------------------------
+// Phase 1: Multi-tenancy + Composition Engine execution traces
+// Added by service-extraction Day-1 migration. See SERVICE-EXTRACTION-PLAN.md
+// and EXECUTION-TRACE-SCORING-SPEC.md for rationale.
+//
+// Phase 2 (Composition Engine, Level 2): Composition + Stage models added.
+// ExecutionRecord/StageTrace are reused as-is (superset) — the audited trace
+// columns (rawInput/adaptedInput/promptVersion/score/thresholdMet/...) are
+// preserved so Level-3 scoring stays migration-free.
+// ---------------------------------------------------------------------------
+
+model Composition {
+  id             String            @id @default(cuid())
+  organizationId String
+  name           String
+  description    String?
+  createdBy      String
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  stages         Stage[]
+  executions     ExecutionRecord[]
+
+  @@index([organizationId])
+  @@map("compositions")
+}
+
+model Stage {
+  id               String      @id @default(cuid())
+  compositionId    String
+  composition      Composition @relation(fields: [compositionId], references: [id], onDelete: Cascade)
+  order            Int
+  promptId         String
+  fallbackPromptId String?
+  successThreshold Float       @default(0.5)
+  extractFields    String[]
+  transformRules   Json?
+  createdAt        DateTime    @default(now())
+
+  @@unique([compositionId, order])
+  @@index([compositionId])
+  @@map("stages")
+}
+
+model Organization {
+  id               String            @id @default(cuid())
+  name             String
+  slug             String            @unique
+  tier             String            @default("internal") // internal | pro | enterprise (field only; no enforcement in v1 per Q4)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  users            User[]
+  prompts          Prompt[]
+  executionRecords ExecutionRecord[]
+  compositions     Composition[]
+
+  @@map("organizations")
+}
+
+model ExecutionRecord {
+  id              String          @id @default(cuid())
+  compositionId   String // Phase 2: now FK-backed by Composition (see `composition` relation)
+  organizationId  String
+  userId          String // Phase 2: user who ran the execution
+  sessionId       String? // Phase 2: optional client/session correlation id
+  status          ExecutionStatus
+  input           String
+  finalOutput     String?
+  totalTokens     Int             @default(0)
+  totalDurationMs Int             @default(0)
+  overallScore    Float? // null in v1 (manual review); populated v1.1 per Q2
+  startedAt       DateTime        @default(now())
+  completedAt     DateTime?
+  organization    Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  composition     Composition     @relation(fields: [compositionId], references: [id], onDelete: Cascade)
+  stageTraces     StageTrace[]
+
+  @@index([organizationId])
+  @@index([compositionId])
+  @@map("execution_records")
+}
+
+model StageTrace {
+  id               String          @id @default(cuid())
+  executionId      String
+  stageOrder       Int
+  promptId         String // references prompts.id by value; no FK on the hot prompts table by design
+  promptVersion    Int
+  rawInput         String // input BEFORE adaptation
+  adaptedInput     String // input AFTER adaptation rules
+  output           String?
+  adaptationMode   AdaptationMode  @default(CONFIG) // CONFIG only in v1; LLM dark-shipped per Q1
+  rulesApplied     String[]
+  tokensUsed       Int             @default(0)
+  durationMs       Int             @default(0)
+  model            String?
+  score            Float? // null in v1 per Q2
+  thresholdMet     Boolean? // null in v1 per Q2
+  fallbackApplied  Boolean         @default(false)
+  fallbackPromptId String?
+  error            String?
+  execution        ExecutionRecord @relation(fields: [executionId], references: [id], onDelete: Cascade)
+
+  @@unique([executionId, stageOrder])
+  @@index([executionId])
+  @@index([promptId])
+  @@map("stage_traces")
+}
+
+enum ExecutionStatus {
+  SUCCESS
+  PARTIAL
+  FAILED
+}
+
+enum AdaptationMode {
+  CONFIG
+  LLM
 }
 
 enum UserRole {
