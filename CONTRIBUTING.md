@@ -1,6 +1,6 @@
 # Contribution Guidelines
 
-Thank you for your interest in contributing to Awesome ChatGPT Prompts! 
+Thank you for your interest in contributing to Awesome ChatGPT Prompts!
 
 ## How to Contribute
 
@@ -30,10 +30,20 @@ For bug fixes, documentation improvements, or other non-prompt contributions:
 2. Create a branch for your changes
 3. Submit a pull request with a descriptive title and explanation
 
+### Pull Request Guidelines
+
+When submitting a pull request:
+
+- Keep each pull request focused on a single change or issue
+- Clearly describe what was changed and why
+- Reference the related issue when applicable
+- Make sure your changes follow the existing project structure and conventions
+
 ## Questions & Issue Policy
 
-Open an issue if you have questions about contributing. 
+Open an issue if you have questions about contributing.
 
-**Important:** This repository is strictly for AI prompts. 
+**Important:** This repository is strictly for AI prompts.
+
 - Do **not** post advertisements.
 - Any off-topic issues will be closed immediately, and the posting user will be reported to GitHub for spam and malicious activity.
