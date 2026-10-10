@@ -177,6 +177,12 @@ Use prompts.chat as an MCP server in your AI tools.
 
 ---
 
+## 📚 Related Resources
+
+- [ChatGPT Prompts for Marketers](https://github.com/mrreviewai/chatgpt-prompts-for-marketers) - 50+ battle-tested prompts for sales pages, email sequences, ads, hooks and landing pages.
+
+---
+
 ## 💖 Sponsors
 
 <p align="center">
