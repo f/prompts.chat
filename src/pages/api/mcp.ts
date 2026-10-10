@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { Readable } from "node:stream";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import {
   ElicitResultSchema,
   ListPromptsRequestSchema,
@@ -1384,6 +1385,75 @@ async function parseBody(req: NextApiRequest): Promise<unknown> {
   });
 }
 
+function toWebHeaders(headers: NextApiRequest["headers"]): Headers {
+  const webHeaders = new Headers();
+
+  for (const [key, value] of Object.entries(headers)) {
+    if (value === undefined) continue;
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        webHeaders.append(key, item);
+      }
+    } else {
+      webHeaders.set(key, String(value));
+    }
+  }
+
+  return webHeaders;
+}
+
+async function sendWebResponse(response: Response, res: NextApiResponse): Promise<void> {
+  res.status(response.status);
+
+  response.headers.forEach((value, key) => {
+    res.setHeader(key, value);
+  });
+
+  if (!response.body) {
+    res.end();
+    return;
+  }
+
+  const nodeStream = Readable.fromWeb(response.body as import("node:stream/web").ReadableStream);
+
+  await new Promise<void>((resolve, reject) => {
+    let settled = false;
+
+    const cleanup = () => {
+      nodeStream.off("error", onError);
+      res.off("error", onError);
+      res.off("finish", onFinish);
+      res.off("close", onClose);
+    };
+
+    const settle = (callback: () => void) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      callback();
+    };
+
+    const onError = (error: Error) => {
+      settle(() => reject(error));
+    };
+
+    const onFinish = () => {
+      settle(resolve);
+    };
+
+    const onClose = () => {
+      nodeStream.destroy();
+      settle(resolve);
+    };
+
+    nodeStream.once("error", onError);
+    res.once("error", onError);
+    res.once("finish", onFinish);
+    res.once("close", onClose);
+    nodeStream.pipe(res);
+  });
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (!appConfig.features.mcp) {
     return res.status(404).json({ error: "MCP is not enabled" });
@@ -1442,9 +1512,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const server = createServer(serverOptions);
+  let transport: WebStandardStreamableHTTPServerTransport | null = null;
 
   try {
-    const transport = new StreamableHTTPServerTransport({
+    transport = new WebStandardStreamableHTTPServerTransport({
       sessionIdGenerator: undefined,
     });
 
@@ -1501,12 +1572,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
-    await transport.handleRequest(req, res, body);
-
-    res.on("close", () => {
-      transport.close();
-      server.close();
+    const webRequest = new Request(url, {
+      method: req.method,
+      headers: toWebHeaders(req.headers),
     });
+
+    const response = await transport.handleRequest(webRequest, { parsedBody: body });
+    await sendWebResponse(response, res);
   } catch (error) {
     console.error("MCP error:", error);
     if (!res.headersSent) {
@@ -1524,5 +1596,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
       }
     }
+  } finally {
+    await transport?.close();
+    await server.close();
   }
 }
