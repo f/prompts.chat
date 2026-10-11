@@ -276,6 +276,8 @@
     },
     "copyMarkdownUrl": "העתק קישור MD",
     "copyYamlUrl": "העתק קישור YAML",
+    "copyEmbedUrl": "העתק קישור הטמעה",
+    "copyEmbedCode": "העתק iframe",
     "downloadStarted": "ההורדה החלה",
     "downloadFailed": "ההורדה נכשלה",
     "urlCopied": "הקישור הועתק",

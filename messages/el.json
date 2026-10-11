@@ -276,6 +276,8 @@
     },
     "copyMarkdownUrl": "Αντιγραφή συνδέσμου MD",
     "copyYamlUrl": "Αντιγραφή συνδέσμου YAML",
+    "copyEmbedUrl": "Αντιγραφή συνδέσμου ενσωμάτωσης",
+    "copyEmbedCode": "Αντιγραφή iframe",
     "downloadStarted": "Η λήψη ξεκίνησε",
     "downloadFailed": "Η λήψη απέτυχε",
     "urlCopied": "Ο σύνδεσμος αντιγράφηκε",

@@ -276,6 +276,8 @@
     },
     "copyMarkdownUrl": "Копировать ссылку MD",
     "copyYamlUrl": "Копировать ссылку YAML",
+    "copyEmbedUrl": "Копировать ссылку для встраивания",
+    "copyEmbedCode": "Копировать iframe",
     "downloadStarted": "Загрузка началась",
     "downloadFailed": "Ошибка загрузки",
     "urlCopied": "Ссылка скопирована",

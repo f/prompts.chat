@@ -276,6 +276,8 @@
     },
     "copyMarkdownUrl": "Copia link MD",
     "copyYamlUrl": "Copia link YAML",
+    "copyEmbedUrl": "Copia link di incorporamento",
+    "copyEmbedCode": "Copia iframe",
     "downloadStarted": "Download avviato",
     "downloadFailed": "Download fallito",
     "urlCopied": "Link copiato",

@@ -146,6 +146,7 @@ function EditableSpan({
   );
 }
 
+/** Prompt body with variable editing, copy, download, and share actions. */
 export function InteractivePromptContent({ 
   content, 
   className,
@@ -288,7 +289,7 @@ export function InteractivePromptContent({
             </div>
             <div className="flex items-center gap-2">
               {promptId && <DownloadPromptDropdown promptId={promptId} promptSlug={promptSlug} promptType={promptType} />}
-              {shareTitle && <ShareDropdown title={shareTitle} />}
+              {shareTitle && <ShareDropdown title={shareTitle} prompt={content} promptId={promptId} />}
               <Button variant="ghost" size="sm" onClick={copyToClipboard}>
                 {copied ? (
                   <Check className="h-4 w-4 text-green-500" />
@@ -323,7 +324,7 @@ export function InteractivePromptContent({
             </div>
             <div className="flex items-center gap-2">
               {promptId && <DownloadPromptDropdown promptId={promptId} promptSlug={promptSlug} promptType={promptType} />}
-              {shareTitle && <ShareDropdown title={shareTitle} />}
+              {shareTitle && <ShareDropdown title={shareTitle} prompt={content} promptId={promptId} />}
               <Button variant="ghost" size="sm" onClick={copyToClipboard}>
                 {copied ? (
                   <Check className="h-4 w-4 text-green-500" />
@@ -367,7 +368,7 @@ export function InteractivePromptContent({
           </div>
           <div className="flex items-center gap-2">
             {promptId && <DownloadPromptDropdown promptId={promptId} promptSlug={promptSlug} promptType={promptType} />}
-            {shareTitle && <ShareDropdown title={shareTitle} />}
+            {shareTitle && <ShareDropdown title={shareTitle} prompt={content} promptId={promptId} />}
             <Button variant="ghost" size="sm" onClick={copyToClipboard}>
               {copied ? (
                 <Check className="h-4 w-4 text-green-500" />
@@ -418,7 +419,7 @@ export function InteractivePromptContent({
               </Button>
             )}
             {promptId && <DownloadPromptDropdown promptId={promptId} promptSlug={promptSlug} promptType={promptType} />}
-            {shareTitle && <ShareDropdown title={shareTitle} />}
+            {shareTitle && <ShareDropdown title={shareTitle} prompt={content} promptId={promptId} />}
             <Button variant="ghost" size="sm" onClick={copyToClipboard}>
               {copied ? (
                 <Check className="h-4 w-4 text-green-500" />
@@ -528,7 +529,7 @@ export function InteractivePromptContent({
             </Button>
           )}
           {promptId && <DownloadPromptDropdown promptId={promptId} promptSlug={promptSlug} promptType={promptType} />}
-          {shareTitle && <ShareDropdown title={shareTitle} />}
+          {shareTitle && <ShareDropdown title={shareTitle} prompt={content} promptId={promptId} />}
           <Button variant="ghost" size="sm" onClick={copyToClipboard}>
             {copied ? (
               <Check className="h-4 w-4 text-green-500" />

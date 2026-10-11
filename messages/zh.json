@@ -276,6 +276,8 @@
     },
     "copyMarkdownUrl": "复制 MD 链接",
     "copyYamlUrl": "复制 YAML 链接",
+    "copyEmbedUrl": "复制嵌入链接",
+    "copyEmbedCode": "复制 iframe",
     "downloadStarted": "开始下载",
     "downloadFailed": "下载失败",
     "urlCopied": "链接已复制",

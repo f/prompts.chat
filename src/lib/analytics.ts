@@ -166,7 +166,8 @@ export const analyticsPrompt = {
     });
   },
 
-  share: (promptId: string | undefined, platform: "twitter" | "hackernews" | "copy_link") => {
+  /** Records a prompt share, including embed URL and iframe copies. */
+  share: (promptId: string | undefined, platform: "twitter" | "hackernews" | "copy_link" | "embed" | "embed_iframe") => {
     trackEvent({
       action: "share_prompt",
       category: "prompt",

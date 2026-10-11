@@ -276,6 +276,8 @@
     },
     "copyMarkdownUrl": "MD 링크 복사",
     "copyYamlUrl": "YAML 링크 복사",
+    "copyEmbedUrl": "임베드 링크 복사",
+    "copyEmbedCode": "iframe 복사",
     "downloadStarted": "다운로드 시작",
     "downloadFailed": "다운로드 실패",
     "urlCopied": "링크 복사됨",

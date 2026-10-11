@@ -289,6 +289,8 @@
     },
     "copyMarkdownUrl": "Copiar enlace MD",
     "copyYamlUrl": "Copiar enlace YAML",
+    "copyEmbedUrl": "Copiar enlace de incrustación",
+    "copyEmbedCode": "Copiar iframe",
     "downloadStarted": "Descarga iniciada",
     "downloadFailed": "Error en la descarga",
     "urlCopied": "Enlace copiado",
