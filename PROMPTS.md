@@ -168613,3 +168613,16 @@ Photoreal architectural photograph of a small timber treehouse retreat built int
 
 </details>
 
+<details>
+<summary><strong>Cedar Treehouse Retreat on a Snowy Winter Evening (Front Right View)</strong></summary>
+
+## Cedar Treehouse Retreat on a Snowy Winter Evening (Front Right View)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Photoreal architectural photograph of the same small cedar treehouse cabin and old oak from step 2, now on a snowy winter evening at blue hour, seen from the meadow at the front right instead of from the left, camera at standing eye level (1.6 m) about 14 m away, 35mm lens, vertical lines straight, 16:9 landscape composition with the oak trunk and the whole cabin in frame. Keep every fixed design detail identical to step 2. Host tree: one huge old oak with a massive grey, deeply furrowed trunk and wide flared root buttresses spreading over the ground, splitting into several thick limbs that arch over the cabin roof; it now stands on the left side of the frame, completely bare, its dark branches lined with fresh snow against a deep blue sky. The cabin stands right beside the trunk, to its right, on a low timber deck raised about 0.6 m on short square timber posts. Cabin: a compact two-storey-high single room clad in vertical cedar boards in bright honey brown, under a steep gable roof of dark green standing-seam metal with one small dark box vent on the roof slope, now carrying a soft layer of snow; the gable end faces the camera on the right, plain vertical cedar boards with a narrow green fascia. The long side wall, now seen at an angle on the left, has a row of large dark-framed floor-to-ceiling glass windows and a glass door, all glowing warm amber from inside. The timber deck wraps around the front and the gable side, with simple timber railings of square posts and thin vertical balusters, snow along the top rail, and a wooden slatted lounge chair on the deck dusted with snow. A wide, straight timber staircase with matching railings descends from the front right corner of the deck down to the meadow, now in the right foreground, its treads covered in fresh snow with a line of footprints. Warm globe string lights hang along the deck railing, glowing. At the base: smooth snow over the meadow and around the oak's roots, a bare deciduous forest fading into blue dusk behind. Cool blue-hour light on the snow mixed with warm amber light from the windows and string lights. Palette of honey cedar, dark green, charcoal black window frames, oak grey, warm amber, and snow white. Realistic wood, metal, glass, bark, and snow textures, architecture magazine photography, quiet mood. No people, no text, no logos, no signs.
+```
+
+</details>
+
