@@ -393,7 +393,13 @@
     "learnHowToWritePrompts": "למדו איך לכתוב פרומפטים יעילים ←",
     "structuredFormatDetected": "זוהה פורמט {format}",
     "structuredFormatWarningDescription": "תוכן הפרומפט שלך נראה כמו נתונים מובנים. שקול לעבור למצב מובנה להדגשת תחביר ואימות טובים יותר.",
-    "switchToStructured": "לעבור ל-{format}"
+    "switchToStructured": "לעבור ל-{format}",
+    "inputImageOptional": "Input image (optional)",
+    "uploadInputImage": "Upload",
+    "pasteInputImageUrl": "Paste URL",
+    "inputImageUrlPlaceholder": "Paste image URL...",
+    "upload": "Upload",
+    "inputImageModelHint": "Note: This model may not support image-to-video. Models with 'image-to-video' or 'i2v' in their name typically support input images."
   },
   "changeRequests": {
     "title": "בקשות שינוי",

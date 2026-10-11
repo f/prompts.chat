@@ -393,7 +393,13 @@
     "learnHowToWritePrompts": "効果的なプロンプトの書き方を学ぶ →",
     "structuredFormatDetected": "{format}形式が検出されました",
     "structuredFormatWarningDescription": "プロンプトの内容が構造化データのようです。より良い構文ハイライトと検証のために構造化モードへの切り替えを検討してください。",
-    "switchToStructured": "{format}に切り替え"
+    "switchToStructured": "{format}に切り替え",
+    "inputImageOptional": "Input image (optional)",
+    "uploadInputImage": "Upload",
+    "pasteInputImageUrl": "Paste URL",
+    "inputImageUrlPlaceholder": "Paste image URL...",
+    "upload": "Upload",
+    "inputImageModelHint": "Note: This model may not support image-to-video. Models with 'image-to-video' or 'i2v' in their name typically support input images."
   },
   "changeRequests": {
     "title": "変更リクエスト",
