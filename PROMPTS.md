@@ -168626,3 +168626,16 @@ Photoreal architectural photograph of the same small cedar treehouse cabin and o
 
 </details>
 
+<details>
+<summary><strong>Policías </strong></summary>
+
+## Policías 
+
+Contributed by [@joseangel2781-dot](https://github.com/joseangel2781-dot)
+
+```md
+Crea un prompt para redacción de informes policiales con legislación vigente y adecuados para integrar al IPH profesionales 
+```
+
+</details>
+
