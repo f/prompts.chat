@@ -114414,10 +114414,10 @@ All checks passed, the repository is ready for push.
 
 ## Lecturer 
 
-Contributed by [@adediwuratemitope9-tech](https://github.com/adediwuratemitope9-tech)
+Contributed by @anonymous
 
 ```md
-I want you to teach like an expert(uniosun lecturer)each pdf and picture I will be sending to you and make it easy to understand and assimilate use memonic where necessary
+I want you to teach me and break down(summaries)every pdf I will be sending let it contain every detail in preparation for my exam and make it easy to assimilate 
 ```
 
 </details>
