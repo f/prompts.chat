@@ -1359,28 +1359,48 @@ class PayloadTooLargeError extends Error {
   }
 }
 
+class ClientDisconnectedError extends Error {
+  constructor() {
+    super("Client disconnected before the request body was received");
+    this.name = "ClientDisconnectedError";
+  }
+}
+
 async function parseBody(req: NextApiRequest): Promise<unknown> {
   const MAX_BODY_SIZE = 1024 * 1024; // 1MB
   return new Promise((resolve, reject) => {
     let body = "";
     let bytesReceived = 0;
+    let settled = false;
+    const settle = (action: () => void) => {
+      if (settled) return;
+      settled = true;
+      action();
+    };
+
     req.on("data", (chunk: Buffer | string) => {
       bytesReceived += Buffer.isBuffer(chunk) ? chunk.length : Buffer.byteLength(chunk);
       body += chunk;
       if (bytesReceived > MAX_BODY_SIZE) {
         req.destroy();
-        reject(new PayloadTooLargeError());
+        settle(() => reject(new PayloadTooLargeError()));
         return;
       }
     });
     req.on("end", () => {
-      try {
-        resolve(JSON.parse(body));
-      } catch {
-        resolve(body);
-      }
+      settle(() => {
+        try {
+          resolve(JSON.parse(body));
+        } catch {
+          resolve(body);
+        }
+      });
     });
-    req.on("error", reject);
+    req.on("error", (err) => settle(() => reject(err)));
+    // A client that disconnects mid-upload emits `close` without `end` or `error`.
+    // Without this the promise never settles and the McpServer/transport it is
+    // holding are retained for the lifetime of the process.
+    req.on("close", () => settle(() => reject(new ClientDisconnectedError())));
   });
 }
 
@@ -1443,10 +1463,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const server = createServer(serverOptions);
 
+  let toreDown = false;
+  const teardown = (transport?: StreamableHTTPServerTransport) => {
+    if (toreDown) return;
+    toreDown = true;
+    // Both are async; a failure to close must never reject into the request path.
+    void Promise.resolve()
+      .then(() => transport?.close())
+      .catch(() => {});
+    void Promise.resolve()
+      .then(() => server.close())
+      .catch(() => {});
+  };
+
+  let transport: StreamableHTTPServerTransport | undefined;
+
   try {
-    const transport = new StreamableHTTPServerTransport({
+    transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined,
     });
+
+    // Registered BEFORE dispatch: previously this was attached after awaiting
+    // handleRequest, by which point the response may already have closed, so the
+    // listener never fired and every MCP request leaked an McpServer + transport.
+    res.once("close", () => teardown(transport));
 
     await server.connect(transport);
 
@@ -1502,12 +1542,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     await transport.handleRequest(req, res, body);
-
-    res.on("close", () => {
-      transport.close();
-      server.close();
-    });
   } catch (error) {
+    if (error instanceof ClientDisconnectedError) {
+      // Routine: the peer went away mid-upload. Nothing to log and nothing to
+      // send — the `finally` below still releases the transport and server.
+      return;
+    }
     console.error("MCP error:", error);
     if (!res.headersSent) {
       if (error instanceof PayloadTooLargeError) {
@@ -1524,5 +1564,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
       }
     }
+  } finally {
+    // Backstop: covers the aborted/errored paths, the early `return`s above
+    // (rate-limit 429s previously leaked unconditionally), and the case where
+    // `close` fired before the listener was attached. Idempotent, and safe here
+    // because handleRequest has already fully written the response.
+    teardown(transport);
   }
 }
