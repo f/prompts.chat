@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
+import { Readable } from "stream";
 import {
   ElicitResultSchema,
   ListPromptsRequestSchema,
@@ -1444,7 +1445,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const server = createServer(serverOptions);
 
   try {
-    const transport = new StreamableHTTPServerTransport({
+    const transport = new WebStandardStreamableHTTPServerTransport({
       sessionIdGenerator: undefined,
     });
 
@@ -1501,7 +1502,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
-    await transport.handleRequest(req, res, body);
+    const headers = new Headers();
+    for (const [key, value] of Object.entries(req.headers)) {
+      if (Array.isArray(value)) {
+        value.forEach((v) => headers.append(key, v));
+      } else if (value !== undefined) {
+        headers.set(key, value);
+      }
+    }
+
+    const webRequest = new Request(url.href, {
+      method: req.method,
+      headers,
+      body: req.method === "POST" ? JSON.stringify(body) : undefined,
+    });
+
+    const webResponse = await transport.handleRequest(webRequest, {
+      parsedBody: body,
+    });
+
+    res.status(webResponse.status);
+    webResponse.headers.forEach((value, key) => {
+      res.setHeader(key, value);
+    });
+
+    if (webResponse.body) {
+      Readable.fromWeb(webResponse.body as import("node:stream/web").ReadableStream).pipe(res);
+    } else {
+      res.end();
+    }
 
     res.on("close", () => {
       transport.close();
