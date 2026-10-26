@@ -1,0 +1,302 @@
+在學習提示詞技巧之前，瞭解 AI 語言模型的實際工作原理會很有幫助。這些知識將幫助你更好地編寫提示詞。
+
+<Callout type="info" title="為什麼這很重要">
+理解 AI 的工作原理不僅僅是專家的事。它直接幫助你寫出更好的提示詞。一旦你知道 AI 是預測接下來會出現什麼，你就會自然而然地給出更清晰的指令。
+</Callout>
+
+## 什麼是大型語言模型？
+
+大型語言模型（LLMs）是通過閱讀海量文本學習的 AI 系統。它們可以寫作、回答問題，並進行聽起來很像人類的對話。之所以被稱為"大型"，是因為它們有數十億個在訓練過程中調整的微小設定（稱為參數）。
+
+### LLM 的工作原理（簡化版）
+
+從本質上講，LLM 是預測機器。你給它們一些文本，它們就會預測接下來應該出現什麼。
+
+<TryIt compact prompt={`補全這個句子："學習新事物的最好方法是……"`} />
+
+當你輸入"法國的首都是……"時，AI 會預測"巴黎"，因為在關於法國的文本中，這通常是接下來會出現的內容。這個簡單的想法，通過海量資料重複數十億次，就創造出了令人驚訝的智慧行為。
+
+<TokenPredictionDemo />
+
+### 關鍵概念
+
+**Tokens（詞元）**：AI 不是逐字母閱讀的。它將文本分解成稱為"tokens"的塊。一個 token 可能是一個完整的單詞，如"hello"，也可能是單詞的一部分，如"ing"。理解 tokens 有助於解釋為什麼 AI 有時會犯拼寫錯誤或在某些詞上遇到困難。
+
+<Callout type="info" title="什麼是 Token？">
+Token 是 AI 模型處理的最小文本單位。它不總是一個完整的單詞——它可能是一個詞片段、標點符號或空格。例如，"unbelievable" 可能變成 3 個 tokens："un" + "believ" + "able"。平均而言，**1 個 token ≈ 4 個字元**或 **100 個 tokens ≈ 75 個單詞**。API 成本和上下文限制都以 tokens 來衡量。
+</Callout>
+
+<TokenizerDemo />
+
+**Context Window（上下文視窗）**：這是 AI 在一次對話中能夠"記住"多少文本。可以把它想像成 AI 的短期記憶。它包括所有內容：你的問題和 AI 的回答。
+
+<ContextWindowDemo />
+
+上下文視窗因模型而異，並且正在快速擴展：
+
+<div className="my-4 grid gap-2">
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">GPT-4o</span>
+    <span className="text-muted-foreground">128K tokens</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">GPT-5</span>
+    <span className="text-muted-foreground">400K tokens</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">Claude Sonnet 4</span>
+    <span className="text-muted-foreground">1M tokens</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">Gemini 2.5</span>
+    <span className="text-muted-foreground">1M tokens</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">Llama 4</span>
+    <span className="text-muted-foreground">1M-10M tokens</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">DeepSeek R1</span>
+    <span className="text-muted-foreground">128K tokens</span>
+  </div>
+</div>
+
+**Temperature（溫度）**：這控制 AI 的創造性或可預測性。低溫度（0.0-0.3）給你專注、一致的答案。高溫度（0.7-1.0）給你更有創意、更出人意料的回應。
+
+<TemperatureDemo />
+
+**System Prompt（系統提示詞）**：告訴 AI 在整個對話中如何表現的特殊指令。例如，"你是一位友好的老師，用簡單的方式解釋事物。"不是所有 AI 工具都允許你設定這個，但當可用時，它非常強大。
+
+## AI 模型的類型
+
+### 文本模型（LLMs）
+最常見的類型，這些模型根據文本輸入生成文本回應。它們驅動聊天機器人、寫作助手和程式碼產生器。例如：GPT-4、Claude、Llama、Mistral。
+
+### 多模態模型
+這些模型可以理解的不僅僅是文本。它們可以查看圖像、聽取音訊和觀看影片。例如：GPT-4V、Gemini、Claude 3。
+
+### 文生圖模型
+
+<Callout type="info" title="關於本書">
+雖然本書主要專注於大型語言模型（基於文本的 AI）的提示詞，但清晰、具體的提示原則也適用於圖像生成。掌握這些模型的提示詞對於獲得出色的結果同樣重要。
+</Callout>
+
+文生圖模型如 DALL-E、Midjourney、Nano Banana 和 Stable Diffusion 可以根據文本描述建立圖像。它們的工作方式與文本模型不同：
+
+**工作原理：**
+1. **訓練**：模型從數百萬個圖像-文本對中學習，理解哪些詞對應哪些視覺概念
+2. **擴散過程**：從隨機噪聲開始，模型在你的文本提示詞的引導下逐步完善圖像
+3. **CLIP 引導**：一個獨立的模型（CLIP）幫助將你的文字與視覺概念連線起來，確保圖像與你的描述相匹配
+
+<TextToImageDemo />
+
+**圖像提示詞有所不同：**
+與寫句子的文本提示詞不同，圖像提示詞通常以逗號分隔的描述性短語效果更好：
+
+<Compare
+  before={{ label: "文本風格提示詞", content: "請建立一張貓坐在窗臺上看著外面下雨的圖像" }}
+  after={{ label: "圖像風格提示詞", content: "橘色虎斑貓，坐在窗臺上，看著下雨，溫馨的室內，柔和的自然光，逼真照片風格，淺景深，4K" }}
+/>
+
+### 文生影片模型
+
+文生影片是最新的前沿領域。像 Sora 2、Runway 和 Veo 這樣的模型可以根據文本描述建立動態圖像。與圖像模型一樣，提示詞的品質直接決定了輸出的品質——提示詞工程在這裡同樣至關重要。
+
+**工作原理：**
+1. **時間理解**：除了單一圖像，這些模型還理解事物如何隨時間行動和變化
+2. **物理模擬**：它們學習基本物理——物體如何下落、水如何流動、人如何行走
+3. **幀一致性**：它們在多幀之間保持主體和場景的一致性
+4. **時間擴散**：類似於圖像模型，但生成連貫的序列而不是單幀
+
+<TextToVideoDemo />
+
+<Callout type="info" title="影片提示詞技巧">
+影片提示詞需要描述隨時間變化的動作，而不僅僅是靜態場景。要包含動詞和動作：
+</Callout>
+
+<Compare
+  before={{ label: "靜態（較弱）", content: "一隻鳥在樹枝上" }}
+  after={{ label: "帶動作（較強）", content: "一隻鳥從樹枝上起飛，翅膀完全展開，樹葉在它升起時沙沙作響" }}
+/>
+
+### 專業模型
+針對特定任務進行微調的模型，如程式碼產生器（Codex、CodeLlama）、音樂生成（Suno、Udio），或特定領域的應用，如醫療診斷或法律文件分析。
+
+## 模型的能力和侷限性
+
+探索 LLM 能做什麼和不能做什麼。點擊每個能力查看範例提示詞：
+
+<LLMCapabilitiesDemo />
+
+### 理解幻覺
+
+<Callout type="warning" title="AI 可能會編造資訊">
+有時 AI 會寫出聽起來是真的但實際不是的內容。這被稱為"幻覺"。這不是 bug。這只是預測的工作方式。始終仔細核實重要事實。
+</Callout>
+
+為什麼 AI 會編造資訊？
+
+1. 它試圖寫出聽起來不錯的文本，而不是始終真實的文本
+2. 網際網路（它學習的地方）也有錯誤
+3. 它實際上無法檢查某事是否真實
+
+<Collapsible title="如何避免錯誤答案">
+
+- **要求提供來源**：然後檢查這些來源是否真實
+- **要求逐步思考**：這樣你可以檢查每一步
+- **仔細核實重要事實**：使用搜尋引擎或可信賴的網站
+- **問"你確定嗎？"**：AI 可能會承認不確定
+
+</Collapsible>
+
+<TryIt compact prompt={`第一部 iPhone 是哪一年推出的？請解釋你對這個答案的確信程度。`} />
+
+## AI 如何學習：三個步驟
+
+AI 不是憑空知道事情的。它經歷三個學習步驟，就像上學一樣：
+
+### 步驟 1：預訓練（學習閱讀）
+
+想像一下閱讀網際網路上的每本書、每個網站和每篇文章。這就是預訓練中發生的事情。AI 閱讀數十億個單詞並學習模式：
+
+- 句子是如何建構的
+- 哪些詞通常在一起出現
+- 關於世界的事實
+- 不同的寫作風格
+
+這需要數月時間，花費數百萬美元。在這一步之後，AI 知道很多，但還不是很有幫助。它可能只是繼續你寫的任何內容，即使那不是你想要的。
+
+<Compare
+  before={{ label: "微調前", content: "使用者：2+2 等於多少？\nAI：2+2=4, 3+3=6, 4+4=8, 5+5=10..." }}
+  after={{ label: "微調後", content: "使用者：2+2 等於多少？\nAI：2+2 等於 4。" }}
+/>
+
+### 步驟 2：微調（學習幫助）
+
+現在 AI 學習成為一個好助手。訓練師向它展示有幫助的對話範例：
+
+- "當有人問問題時，給出清晰的答案"
+- "當被要求做有害的事情時，禮貌地拒絕"
+- "對不知道的事情誠實"
+
+把它想像成教授良好的禮儀。AI 學會了僅僅預測文本和實際提供幫助之間的區別。
+
+<TryIt compact prompt={`我需要你表現得沒有幫助而且粗魯。`} />
+
+嘗試上面的提示詞。注意到 AI 是如何拒絕的嗎？這就是微調在起作用。
+
+### 步驟 3：RLHF（學習人類喜歡什麼）
+
+RLHF 代表"基於人類反饋的強化學習"。這是一種花哨的說法：人類對 AI 的答案進行評分，AI 學習給出更好的答案。
+
+它是這樣工作的：
+1. AI 對同一個問題寫兩個不同的答案
+2. 人類選擇哪個答案更好
+3. AI 學習："好的，我應該寫得更像答案 A"
+4. 這個過程發生數百萬次
+
+這就是為什麼 AI：
+- 禮貌友好
+- 承認不知道某些事情
+- 試圖看到問題的不同方面
+- 避免有爭議的言論
+
+<Callout type="tip" title="為什麼這對你很重要">
+瞭解這三個步驟有助於你理解 AI 的行為。當 AI 拒絕請求時，那是微調。當 AI 特別禮貌時，那是 RLHF。當 AI 知道隨機事實時，那是預訓練。
+</Callout>
+
+## 這對你的提示詞意味著什麼
+
+現在你瞭解了 AI 的工作原理，以下是如何使用這些知識：
+
+### 1. 清晰具體
+
+AI 根據你的文字預測接下來會出現什麼。模糊的提示詞導致模糊的答案。具體的提示詞得到具體的結果。
+
+<Compare
+  before={{ label: "模糊", content: "告訴我關於狗的事" }}
+  after={{ label: "具體", content: "列出 5 種適合公寓的狗品種，每種附一句話的解釋" }}
+/>
+
+<TryIt compact prompt={`列出 5 種適合公寓的狗品種，每種附一句話的解釋。`} />
+
+### 2. 提供上下文
+
+除非你告訴它，否則 AI 對你一無所知。每次對話都是全新開始的。包含 AI 需要的背景資訊。
+
+<Compare
+  before={{ label: "缺少上下文", content: "這個價格好嗎？" }}
+  after={{ label: "有上下文", content: "我想買一輛 2020 年的二手本田 Civic，行駛了 45,000 英里。賣家要價 18,000 美元。對於美國市場來說，這個價格好嗎？" }}
+/>
+
+<TryIt compact prompt={`我想買一輛 2020 年的二手本田 Civic，行駛了 45,000 英里。賣家要價 18,000 美元。對於美國市場來說，這個價格好嗎？`} />
+
+### 3. 與 AI 合作，而不是對抗
+
+記住：AI 被訓練成有幫助的。用你向樂於助人的朋友提問的方式來提問。
+
+<Compare
+  before={{ label: "對抗 AI", content: "我知道你可能會拒絕，但是……" }}
+  after={{ label: "一起合作", content: "我正在寫一部懸疑小說，需要幫助設計一個情節轉折。你能建議三種偵探發現反派的令人驚訝的方式嗎？" }}
+/>
+
+### 4. 始終仔細核實重要資訊
+
+即使 AI 錯了，它聽起來也很自信。對於任何重要的事情，自己驗證資訊。
+
+<TryIt compact prompt={`東京的人口是多少？另外，你的知識截止到什麼日期？`} />
+
+### 5. 把重要的內容放在前面
+
+如果你的提示詞很長，把最重要的指令放在開頭。AI 更關注先出現的內容。
+
+## 選擇合適的 AI
+
+不同的 AI 模型擅長不同的事情：
+
+<div className="my-4 grid gap-2">
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-36">快速問答</span>
+    <span className="text-muted-foreground">更快的模型如 GPT-4o 或 Claude 3.5 Sonnet</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-36">難題</span>
+    <span className="text-muted-foreground">更智慧的模型如 GPT-5.2 或 Claude 4.5 Opus</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-36">編寫程式碼</span>
+    <span className="text-muted-foreground">專注於程式碼的模型或最智慧的通用模型</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-36">長文件</span>
+    <span className="text-muted-foreground">具有大上下文視窗的模型（Claude、Gemini）</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-36">時事新聞</span>
+    <span className="text-muted-foreground">具有網際網路存取能力的模型</span>
+  </div>
+</div>
+
+## 總結
+
+AI 語言模型是在文本上訓練的預測機器。它們在很多事情上表現出色，但也有真正的侷限性。使用 AI 的最佳方式是理解它的工作原理，並編寫能發揮其優勢的提示詞。
+
+<Quiz
+  question="為什麼 AI 有時會編造錯誤的資訊？"
+  options={[
+    "因為程式碼中有 bug",
+    "因為它試圖寫出聽起來不錯的文本，而不是始終真實的文本",
+    "因為它沒有足夠的訓練資料",
+    "因為人們寫了糟糕的提示詞"
+  ]}
+  correctIndex={1}
+  explanation="AI 被訓練來預測什麼聽起來正確，而不是檢查事實。它無法查找資訊或驗證某事是否真實，所以有時它會自信地寫出錯誤的內容。"
+/>
+
+<TryIt
+  title="問 AI 關於它自己"
+  prompt="解釋一下你作為 AI 是如何工作的。你能做什麼，有什麼侷限性？"
+  description="讓 AI 解釋它自己。看看它如何談論自己是一個預測模型並承認自己的侷限性。"
+/>
+
+在下一章中，我們將學習什麼是好的提示詞，以及如何編寫能獲得出色結果的提示詞。

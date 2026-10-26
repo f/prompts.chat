@@ -1,0 +1,587 @@
+JSON 和 YAML 等結構化資料格式對於建構以程式化方式取用 AI 輸出的應用程式至關重要。本章涵蓋可靠結構化輸出生成的技術。
+
+<Callout type="info" title="從文本到資料">
+JSON 和 YAML 將 AI 輸出從自由格式文本轉換為程式碼可以直接取用的結構化、類型安全的資料。
+</Callout>
+
+## 為什麼需要結構化格式？
+
+<JsonYamlDemo />
+
+## JSON 提示基礎
+
+JSON（JavaScript Object Notation）是程式化 AI 輸出最常見的格式。其嚴格的語法使其易於解析，但也意味著小錯誤可能會破壞整個管線。
+
+### 該做與不該做：請求 JSON
+
+<Compare
+  before={{ label: "❌ 不要：模糊的請求", content: "Give me the user info as JSON." }}
+  after={{ label: "✓ 要：展示 schema", content: "Extract user info as JSON matching this schema:\n\n{\n  \"name\": \"string\",\n  \"age\": number,\n  \"email\": \"string\"\n}\n\nReturn ONLY valid JSON, no markdown." }}
+/>
+
+### 簡單 JSON 輸出
+
+從展示預期結構的 schema 開始。模型將根據輸入文本填充值。
+
+```
+Extract the following information as JSON:
+
+{
+  "name": "string",
+  "age": number,
+  "email": "string"
+}
+
+Text: "Contact John Smith, 34 years old, at john@example.com"
+```
+
+輸出：
+```json
+{
+  "name": "John Smith",
+  "age": 34,
+  "email": "john@example.com"
+}
+```
+
+### 巢狀 JSON 結構
+
+現實世界的資料通常具有巢狀關係。清晰地定義 schema 的每個層級，特別是物件陣列。
+
+```
+Parse this order into JSON:
+
+{
+  "order_id": "string",
+  "customer": {
+    "name": "string",
+    "email": "string"
+  },
+  "items": [
+    {
+      "product": "string",
+      "quantity": number,
+      "price": number
+    }
+  ],
+  "total": number
+}
+
+Order: "Order #12345 for Jane Doe (jane@email.com): 2x Widget ($10 each),
+1x Gadget ($25). Total: $45"
+```
+
+### 確保有效的 JSON
+
+<Callout type="warning" title="常見失敗點">
+模型經常將 JSON 包裝在 markdown 程式碼塊中或新增解釋性文本。明確表示只需要原始 JSON。
+</Callout>
+
+新增明確的指令：
+
+```
+CRITICAL: Return ONLY valid JSON. No markdown, no explanation,
+no additional text before or after the JSON object.
+
+If a field cannot be determined, use null.
+Ensure all strings are properly quoted and escaped.
+Numbers should not be quoted.
+```
+
+## YAML 提示基礎
+
+YAML 比 JSON 更易於人類閱讀，並支援註釋。它是設定檔的標準，特別是在 DevOps 領域（Docker、Kubernetes、GitHub Actions）。
+
+### 簡單 YAML 輸出
+
+YAML 使用縮進而不是花括號。提供一個展示預期結構的範本。
+
+```
+Generate a configuration file in YAML format:
+
+server:
+  host: string
+  port: number
+  ssl: boolean
+database:
+  type: string
+  connection_string: string
+
+Requirements: Production server on port 443 with SSL, PostgreSQL database
+```
+
+輸出：
+```yaml
+server:
+  host: "0.0.0.0"
+  port: 443
+  ssl: true
+database:
+  type: "postgresql"
+  connection_string: "postgresql://user:pass@localhost:5432/prod"
+```
+
+### 複雜 YAML 結構
+
+對於複雜設定，要具體說明需求。模型瞭解 GitHub Actions、Docker Compose 和 Kubernetes 等工具的常見模式。
+
+```
+Generate a GitHub Actions workflow in YAML:
+
+Requirements:
+- Trigger on push to main and pull requests
+- Run on Ubuntu latest
+- Steps: checkout, setup Node 18, install dependencies, run tests
+- Cache npm dependencies
+```
+
+## 提示中的類型定義
+
+類型定義為模型提供了輸出結構的精確契約。它們比範例更明確，也更容易以程式化方式驗證。
+
+### 使用類似 TypeScript 的類型
+
+TypeScript 介面對開發人員來說很熟悉，可以精確描述可選欄位、聯合類型和陣列。prompts.chat 平台使用這種方法來處理結構化提示。
+
+<TryIt
+  title="TypeScript 介面提取"
+  description="使用 TypeScript 介面提取結構化資料。"
+  prompt={`Extract data according to this type definition:
+
+interface ChatPersona {
+    name?: string;
+    role?: string;
+    tone?: "professional" | "casual" | "friendly" | "technical";
+    expertise?: string[];
+    personality?: string[];
+    background?: string;
+}
+
+Return as JSON matching this interface.
+
+Description: "A senior software engineer named Alex who reviews code. They're analytical and thorough, with expertise in backend systems and databases. Professional but approachable tone."
+`}
+/>
+
+### JSON Schema 定義
+
+<Callout type="info" title="行業標準">
+JSON Schema 是描述 JSON 結構的正式規範。它被許多驗證函式庫和 API 工具支援。
+</Callout>
+
+JSON Schema 提供約束，如最小/最大值、必填欄位和正規表示式模式：
+
+```
+Extract data according to this JSON Schema:
+
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["title", "author", "year"],
+  "properties": {
+    "title": { "type": "string" },
+    "author": { "type": "string" },
+    "year": { "type": "integer", "minimum": 1000, "maximum": 2100 },
+    "genres": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "rating": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 5
+    }
+  }
+}
+
+Book: "1984 by George Orwell (1949) - A dystopian masterpiece.
+Genres: Science Fiction, Political Fiction. Rated 4.8/5"
+```
+
+## 處理陣列
+
+陣列需要特別注意。指定你需要固定數量的項還是可變長度的列表，以及如何處理空的情況。
+
+### 固定長度陣列
+
+當你需要恰好 N 個項時，明確說明。模型將確保陣列具有正確的長度。
+
+```
+Extract exactly 3 key points as JSON:
+
+{
+  "key_points": [
+    "string (first point)",
+    "string (second point)",
+    "string (third point)"
+  ]
+}
+
+Article: [article text]
+```
+
+### 可變長度陣列
+
+對於可變長度陣列，指定當沒有項時該怎麼做。包含計數欄位有助於驗證提取的完整性。
+
+```
+Extract all mentioned people as JSON:
+
+{
+  "people": [
+    {
+      "name": "string",
+      "role": "string or null if not mentioned"
+    }
+  ],
+  "count": number
+}
+
+If no people are mentioned, return empty array.
+
+Text: [text]
+```
+
+## 列舉值和約束
+
+列舉將值限制在預定義的集合中。這對於分類任務以及任何需要一致、可預測輸出的地方都至關重要。
+
+### 該做與不該做：列舉值
+
+<Compare
+  before={{ label: "❌ 不要：開放式類別", content: "Classify this text into a category.\n\n{\n  \"category\": \"string\"\n}" }}
+  after={{ label: "✓ 要：限制為有效值", content: "Classify this text. Category MUST be exactly one of:\n- \"technical\"\n- \"business\"\n- \"creative\"\n- \"personal\"\n\n{\n  \"category\": \"one of the values above\"\n}" }}
+/>
+
+### 字串列舉
+
+明確列出允許的值。使用"必須是其中之一"的語言來強制嚴格匹配。
+
+```
+Classify this text. The category MUST be one of these exact values:
+- "technical"
+- "business"
+- "creative"
+- "personal"
+
+Return JSON:
+{
+  "text": "original text (truncated to 50 chars)",
+  "category": "one of the enum values above",
+  "confidence": number between 0 and 1
+}
+
+Text: [text to classify]
+```
+
+### 驗證數值
+
+數值約束防止超出範圍的值。指定類型（整數與浮點數）和有效範圍。
+
+```
+Rate these aspects. Each score MUST be an integer from 1 to 5.
+
+{
+  "quality": 1-5,
+  "value": 1-5,
+  "service": 1-5,
+  "overall": 1-5
+}
+
+Review: [review text]
+```
+
+## 處理缺失資料
+
+現實世界的文本通常缺少某些訊息。定義模型應如何處理缺失資料，以避免虛構的值。
+
+### 該做與不該做：缺失訊息
+
+<Compare
+  before={{ label: "❌ 不要：讓 AI 猜測", content: "Extract all company details as JSON:\n{\n  \"revenue\": number,\n  \"employees\": number\n}" }}
+  after={{ label: "✓ 要：明確允許 null", content: "Extract company details. Use null for any field NOT explicitly mentioned. Do NOT invent or estimate values.\n\n{\n  \"revenue\": \"number or null\",\n  \"employees\": \"number or null\"\n}" }}
+/>
+
+### Null 值
+
+明確允許 null 並指示模型不要編造訊息。這比讓模型猜測更安全。
+
+```
+Extract information. Use null for any field that cannot be
+determined from the text. Do NOT invent information.
+
+{
+  "company": "string or null",
+  "revenue": "number or null",
+  "employees": "number or null",
+  "founded": "number (year) or null",
+  "headquarters": "string or null"
+}
+
+Text: "Apple, headquartered in Cupertino, was founded in 1976."
+```
+
+輸出：
+```json
+{
+  "company": "Apple",
+  "revenue": null,
+  "employees": null,
+  "founded": 1976,
+  "headquarters": "Cupertino"
+}
+```
+
+### 預設值
+
+當預設值有意義時，在 schema 中指定它們。這在設定提取中很常見。
+
+```
+Extract settings with these defaults if not specified:
+
+{
+  "theme": "light" (default) | "dark",
+  "language": "en" (default) | other ISO code,
+  "notifications": true (default) | false,
+  "fontSize": 14 (default) | number
+}
+
+User preferences: "I want dark mode and larger text (18px)"
+```
+
+## 多物件回應
+
+通常你需要從單個輸入中提取多個項。定義陣列結構以及任何排序/分組要求。
+
+### 物件陣列
+
+對於相似項的列表，定義一次物件 schema 並指定它是一個陣列。
+
+```
+Parse this list into JSON array:
+
+[
+  {
+    "task": "string",
+    "priority": "high" | "medium" | "low",
+    "due": "ISO date string or null"
+  }
+]
+
+Todo list:
+- Finish report (urgent, due tomorrow)
+- Call dentist (low priority)
+- Review PR #123 (medium, due Friday)
+```
+
+### 分組物件
+
+分組任務需要分類邏輯。模型會將專案排序到你定義的類別中。
+
+```
+Categorize these items into JSON:
+
+{
+  "fruits": ["string array"],
+  "vegetables": ["string array"],
+  "other": ["string array"]
+}
+
+Items: apple, carrot, bread, banana, broccoli, milk, orange, spinach
+```
+
+## YAML 用於設定生成
+
+YAML 在 DevOps 設定中表現出色。模型瞭解常見工具的標準模式，可以生成生產就緒的設定。
+
+### 該做與不該做：YAML 設定
+
+<Compare
+  before={{ label: "❌ 不要：模糊的需求", content: "Generate a docker-compose file for my app." }}
+  after={{ label: "✓ 要：指定元件和需求", content: "Generate docker-compose.yml for:\n- Node.js app (port 3000)\n- PostgreSQL database\n- Redis cache\n\nInclude: health checks, volume persistence, environment from .env file" }}
+/>
+
+### Docker Compose
+
+指定你需要的服務和任何特殊要求。模型將處理 YAML 語法和最佳做法。
+
+```
+Generate a docker-compose.yml for:
+- Node.js app on port 3000
+- PostgreSQL database
+- Redis cache
+- Nginx reverse proxy
+
+Include:
+- Health checks
+- Volume persistence
+- Environment variables from .env file
+- Network isolation
+```
+
+### Kubernetes 清單
+
+Kubernetes 清單很冗長，但遵循可預測的模式。提供關鍵參數，模型將生成符合規範的 YAML。
+
+```
+Generate Kubernetes deployment YAML:
+
+Deployment:
+- Name: api-server
+- Image: myapp:v1.2.3
+- Replicas: 3
+- Resources: 256Mi memory, 250m CPU (requests)
+- Health checks: /health endpoint
+- Environment from ConfigMap: api-config
+
+Also generate matching Service (ClusterIP, port 8080)
+```
+
+## 驗證和錯誤處理
+
+對於生產系統，在提示中內建驗證。這可以在錯誤傳播到管線之前捕獲它們。
+
+### 自我驗證提示
+
+要求模型根據你指定的規則驗證自己的輸出。這可以捕獲格式錯誤和無效值。
+
+```
+Extract data as JSON, then validate your output.
+
+Schema:
+{
+  "email": "valid email format",
+  "phone": "E.164 format (+1234567890)",
+  "date": "ISO 8601 format (YYYY-MM-DD)"
+}
+
+After generating JSON, check:
+1. Email contains @ and valid domain
+2. Phone starts with + and contains only digits
+3. Date is valid and parseable
+
+If validation fails, fix the issues before responding.
+
+Text: [contact information]
+```
+
+### 錯誤回應格式
+
+定義單獨的成功和錯誤格式。這使程式化處理變得更加容易。
+
+```
+Attempt to extract data. If extraction fails, return error format:
+
+Success format:
+{
+  "success": true,
+  "data": { ... extracted data ... }
+}
+
+Error format:
+{
+  "success": false,
+  "error": "description of what went wrong",
+  "partial_data": { ... any data that could be extracted ... }
+}
+```
+
+## JSON vs YAML：何時使用哪個
+
+<div className="my-4 grid md:grid-cols-2 gap-4">
+  <div className="p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
+    <div className="font-semibold text-amber-700 dark:text-amber-300 mb-2">使用 JSON 的場景</div>
+    <div className="text-sm space-y-1">
+      <p className="m-0!">需要程式化解析</p>
+      <p className="m-0!">API 回應</p>
+      <p className="m-0!">嚴格的類型要求</p>
+      <p className="m-0!">JavaScript/Web 整合</p>
+      <p className="m-0!">緊湊的表示</p>
+    </div>
+  </div>
+  <div className="p-4 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200 dark:border-purple-800">
+    <div className="font-semibold text-purple-700 dark:text-purple-300 mb-2">使用 YAML 的場景</div>
+    <div className="text-sm space-y-1">
+      <p className="m-0!">人類可讀性很重要</p>
+      <p className="m-0!">設定檔</p>
+      <p className="m-0!">需要註釋</p>
+      <p className="m-0!">DevOps/基礎設施</p>
+      <p className="m-0!">深層巢狀結構</p>
+    </div>
+  </div>
+</div>
+
+## Prompts.chat 結構化提示
+
+在 prompts.chat 上，你可以建立具有結構化輸出格式的提示：
+
+```
+When creating a prompt on prompts.chat, you can specify:
+
+Type: STRUCTURED
+Format: JSON or YAML
+
+The platform will:
+- Validate outputs against your schema
+- Provide syntax highlighting
+- Enable easy copying of structured output
+- Support template variables in your schema
+```
+
+## 常見陷阱
+
+<Callout type="warning" title="首先偵錯這些">
+這三個問題導致了大多數 JSON 解析失敗。當你的程式碼無法解析 AI 輸出時，檢查它們。
+</Callout>
+
+### 1. Markdown 程式碼塊
+
+**問題：** 模型將 JSON 包裝在 ```json 程式碼塊中
+
+**解決方案：**
+```
+Return ONLY the JSON object. Do not wrap in markdown code blocks.
+Do not include ```json or ``` markers.
+```
+
+### 2. 結尾逗號
+
+**問題：** 由於結尾逗號導致無效 JSON
+
+**解決方案：**
+```
+Ensure valid JSON syntax. No trailing commas after the last 
+element in arrays or objects.
+```
+
+### 3. 未跳脫的字串
+
+**問題：** 引號或特殊字元破壞 JSON
+
+**解決方案：**
+```
+Properly escape special characters in strings:
+- \" for quotes
+- \\ for backslashes
+- \n for newlines
+```
+
+## 總結
+
+<Callout type="tip" title="關鍵技術">
+使用 TypeScript 介面或 JSON Schema 明確定義 schema。指定類型和約束，處理 null 和預設值，請求自我驗證，並為你的使用案例選擇正確的格式。
+</Callout>
+
+<Quiz
+  question="什麼時候應該優先選擇 YAML 而不是 JSON 作為 AI 輸出？"
+  options={[
+    "建構 REST API 時",
+    "當輸出需要人類可讀並可能包含註釋時",
+    "使用 JavaScript 應用程式時",
+    "當你需要最緊湊的表示時"
+  ]}
+  correctIndex={1}
+  explanation="當人類可讀性很重要時，如設定檔、DevOps 清單和文件，YAML 是首選。它還支援註釋，而 JSON 不支援。"
+/>
+
+第二部分關於技術的內容到此結束。在第三部分中，我們將探索不同領域的實際應用。

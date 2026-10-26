@@ -1,0 +1,358 @@
+你編寫的提示詞塑造了AI的行為方式。一個精心設計的提示詞可以教育、幫助和賦能他人。而一個草率的提示詞則可能導致欺騙、歧視或傷害。作為提示詞工程師，我們不僅僅是使用者——我們是AI行為的設計者，這意味著我們肩負著真正的責任。
+
+本章不是要討論從上而下強加的規則。而是要理解我們選擇所帶來的影響，並養成讓我們能夠為之自豪的AI使用習慣。
+
+<Callout type="warning" title="為什麼這很重要">
+AI會放大它所接收到的一切。有偏見的提示詞會大規模產生有偏見的輸出。欺騙性的提示詞會大規模助長欺騙行為。隨著這些系統獲得越來越多的新能力，提示詞工程的倫理影響也在不斷擴大。
+</Callout>
+
+## 倫理基礎
+
+提示詞工程中的每個決策都與幾個核心原則相關：
+
+<InfoGrid items={[
+  { label: "誠實", description: "不要使用AI欺騙他人或建立誤導性內容", example: "不製作虛假評論、冒充他人或偽造 證據", exampleType: "text", color: "blue" },
+  { label: "公平", description: "積極努力避免延續偏見和刻板印象", example: "在不同人群中測試提示詞，徵求多元化觀點", exampleType: "text", color: "purple" },
+  { label: "透明", description: "在重要的時候明確說明AI的參與", example: "在已發佈的作品和專業場合中披露AI輔助", exampleType: "text", color: "green" },
+  { label: "隱私", description: "保護提示詞和輸出中的個人資訊", example: "對資料進行匿名化處理，避免包含PII，瞭解資料政策", exampleType: "text", color: "amber" },
+  { label: "安全", description: "設計能夠防止有害輸出的提示詞", example: "建立防護措施，測試邊緣情況，優雅地處理拒絕", exampleType: "text", color: "red" },
+  { label: "責任", description: "對你的提示詞產生的結果負責", example: "審查輸出，修復問題，保持人工監督", exampleType: "text", color: "cyan" }
+]} />
+
+### 提示詞工程師的角色
+
+你的影響力可能比你意識到的更大：
+
+- **AI產出什麼**：你的提示詞決定了輸出的內容、語氣和品質
+- **AI如何互動**：你的系統提示詞塑造了個性、邊界和使用者體驗
+- **存在哪些防護措施**：你的設計選擇決定了AI會做什麼和不會做什麼
+- **如何處理錯誤**：你的錯誤處理決定了失敗是優雅的還是有害的
+
+## 避免有害輸出
+
+最基本的倫理義務是防止你的提示詞造成傷害。
+
+### 有害內容的類別
+
+<InfoGrid items={[
+  { label: "暴力與傷害", description: "可能導致人身傷害的指示", example: "武器製造、自我傷害、傷害他人", exampleType: "text", color: "red" },
+  { label: "非法活動", description: "助長違法行為的內容", example: "欺詐計劃、駭客指令、毒品合成", exampleType: "text", color: "red" },
+  { label: "騷擾與仇恨", description: "針對個人或群體的內容", example: "歧視性內容、人肉搜索、針對性騷擾", exampleType: "text", color: "red" },
+  { label: "虛假訊息", description: "故意虛假或誤導性的內容", example: "假新聞、健康謠言、陰謀論內容", exampleType: "text", color: "red" },
+  { label: "隱私侵犯", description: "暴露或利用個人資訊", example: "洩露私人資料、協助追蹤", exampleType: "text", color: "red" },
+  { label: "剝削", description: "剝削弱勢群體的內容", example: "CSAM、未經同意的私密內容、針對老年人的詐騙", exampleType: "text", color: "red" }
+]} />
+
+<Callout type="warning" title="什麼是CSAM？">
+CSAM是**兒童性虐待材料**（Child Sexual Abuse Material）的縮寫。在全球範圍內，製作、傳播或持有此類內容都是違法的。AI系統絕不能生成描繪未成年人涉及性情境的內容，負責任的提示詞工程師會主動建立防護措施，防止此類濫用。
+</Callout>
+
+### 在提示詞中建構安全措施
+
+在建構AI系統時，請包含明確的安全指南：
+
+<TryIt
+  title="安全優先的系統提示詞"
+  description="一個將安全指南建構到AI系統中的範本。"
+  prompt={`You are a helpful assistant for \${purpose}.
+
+## SAFETY GUIDELINES
+
+**Content Restrictions**:
+- Never provide instructions that could cause physical harm
+- Decline requests for illegal information or activities
+- Don't generate discriminatory or hateful content
+- Don't create deliberately misleading information
+
+**When You Must Decline**:
+- Acknowledge you understood the request
+- Briefly explain why you can't help with this specific thing
+- Offer constructive alternatives when possible
+- Be respectful—don't lecture or be preachy
+
+**When Uncertain**:
+- Ask clarifying questions about intent
+- Err on the side of caution
+- Suggest the user consult appropriate professionals
+
+Now, please help the user with: \${userRequest}`}
+/>
+
+### 意圖與影響框架
+
+並非每個敏感請求都是惡意的。對於模糊的情況，請使用以下框架：
+
+<TryIt
+  title="倫理邊緣案例分析器"
+  description="分析模糊請求以確定適當的回應方式。"
+  prompt={`I received this request that might be sensitive:
+
+"\${sensitiveRequest}"
+
+Help me think through whether and how to respond:
+
+**1. Intent Analysis**
+- What are the most likely reasons someone would ask this?
+- Could this be legitimate? (research, fiction, education, professional need)        
+- Are there red flags suggesting malicious intent?
+
+**2. Impact Assessment**
+- What's the worst case if this information is misused?
+- How accessible is this information elsewhere?
+- Does providing it meaningfully increase risk?
+
+**3. Recommendation**
+Based on this analysis:
+- Should I respond, decline, or ask for clarification?
+- If responding, what safeguards should I include?
+- If declining, how should I phrase it helpfully?`}
+/>
+
+## 處理偏見
+
+AI模型從其訓練資料中繼承了偏見——歷史不平等、代表性差距、文化假設和語言模式。作為提示詞工程師，我們可以選擇放大這些偏見，也可以主動對抗它們。
+
+### 偏見的表現形式
+
+<InfoGrid items={[
+  { label: "預設假設", description: "模型對某些角色假設特定的人口統計特徵", example: "醫生預設為男性，護士預設為女性", exampleType: "text", color: "amber" },
+  { label: "刻板印象", description: "在描述中強化文化刻板印象", example: "將某些族裔與特定特徵聯繫起來", exampleType: "text", color: "amber" },
+  { label: "代表性差距", description: "某些群體的代表性不足或被誤解", example: "關於少數群體文化的準確資訊有限", exampleType: "text", color: "amber" },
+  { label: "西方中心視角", description: "觀點偏向西方文化和價值觀", example: "假設西方規範具有普遍性", exampleType: "text", color: "amber" }
+]} />
+
+### 偏見測試
+
+<TryIt
+  title="偏見檢測測試"
+  description="使用此工具測試你的提示詞是否存在潛在的偏見問題。"
+  prompt={`I want to test this prompt for bias:
+
+"\${promptToTest}"
+
+Run these bias checks:
+
+**1. Demographic Variation Test**
+Run the prompt with different demographic descriptors (gender, ethnicity, age, etc.) 
+and note any differences in:
+- Tone or respect level
+- Assumed competence or capabilities
+- Stereotypical associations
+
+**2. Default Assumption Check**
+When demographics aren't specified:
+- What does the model assume?
+- Are these assumptions problematic?
+
+**3. Representation Analysis**
+- Are different groups represented fairly?
+- Are any groups missing or marginalized?
+
+**4. Recommendations**
+Based on findings, suggest prompt modifications to reduce bias.`}
+/>
+
+### 實踐中減少偏見
+
+<Compare
+  before={{ label: "易產生偏見的提示詞", content: "描述一個典型的CEO。" }}
+  after={{ label: "考慮偏見的提示詞", content: "描述一位CEO。在範例中變化人口統計特徵，避免預設為任何特定的性別、族裔或年齡。" }}
+/>
+
+## 透明度與披露
+
+什麼時候應該告訴別人有AI參與？答案取決於具體情況——但趨勢是更多披露，而不是更少。
+
+### 何時需要披露
+
+<InfoGrid items={[
+  { label: "已發佈的內容", description: "公開分享的文章、帖子或內容", example: "部落格文章、社交媒體、行銷材料", exampleType: "text", color: "blue" },
+  { label: "重大決策", description: "當AI輸出影響人們的生活時", example: "招聘建議、醫療資訊、法律指導", exampleType: "text", color: "blue" },
+  { label: "信任場景", description: "期望或重視真實性的場合", example: "私人通信、推薦語、評論", exampleType: "text", color: "blue" },
+  { label: "專業場合", description: "工作或學術環境", example: "報告、研究、客戶交付物", exampleType: "text", color: "blue" }
+]} />
+
+### 如何恰當地披露
+
+<Compare
+  before={{ label: "隱藏AI參與", content: "這是我對市場趨勢的分析..." }}
+  after={{ label: "透明披露", content: "我使用AI工具幫助分析資料並起草了這份報告。所有結論都經過我的驗證和編輯。" }}
+/>
+
+常用且效果良好的披露用語：
+- "在AI輔助下撰寫"
+- "AI生成初稿，經人工編輯"
+- "使用AI工具進行分析"
+- "由AI建立，經[姓名]審核批准"
+
+## 隱私注意事項
+
+你發送的每個提示詞都包含資料。瞭解這些資料的去向——以及哪些內容不應該包含在內——至關重要。
+
+### 絕不應出現在提示詞中的內容
+
+<InfoGrid items={[
+  { label: "個人標識資訊", description: "姓名、地址、電話號碼、身分證字號", example: "使用[客戶]代替 張三", color: "red" },
+  { label: "財務資料", description: "帳號、信用卡、收入詳情", example: "描述模式，而非實際數字", exampleType: "text", color: "red" },
+  { label: "健康資訊", description: "醫療記錄、診斷、處方", example: "詢問一般性病症，而非特定患者", exampleType: "text", color: "red" },
+  { label: "憑證資訊", description: "密碼、API密鑰、令牌、機密", example: "絕不貼上憑證——使用佔位符", exampleType: "text", color: "red" },
+  { label: "私人通信", description: "私人郵件、訊息、機密文件", example: "概述情況，而不引用私人文本", exampleType: "text", color: "red" }
+]} />
+
+### 安全的資料處理模式
+
+<Compare
+  before={{ label: "不安全：包含PII", content: "總結張三在北京市朝陽區XXX路123號關於訂單#12345的投訴：'我3月15日下單，到現在還沒收到...'" }}
+  after={{ label: "安全：已匿名化", content: "總結這種客戶投訴模式：一位客戶3周前下單，至今未收到訂單，已聯繫客服兩次但未解決問題。" }}
+/>
+
+<Callout type="info" title="什麼是PII？">
+**PII**是**個人可識別資訊**（Personally Identifiable Information）的縮寫——指任何可以識別特定個人身份的資料。這包括姓名、地址、電話號碼、電子郵件地址、身分證字號、金融帳戶號碼，甚至是可能識別某人身份的資料組合（如職位+公司+城市）。在向AI發送提示詞時，始終要對PII進行匿名化處理或刪除，以保護隱私。
+</Callout>
+
+<TryIt
+  title="PII清理器"
+  description="在將文本納入提示詞之前，使用此工具識別和刪除敏感資訊。"
+  prompt={`Review this text for sensitive information that should be removed before using it in an AI prompt:
+
+"\${textToReview}"
+
+Identify:
+1. **Personal Identifiers**: Names, addresses, phone numbers, emails, SSNs
+2. **Financial Data**: Account numbers, amounts that could identify someone
+3. **Health Information**: Medical details, conditions, prescriptions
+4. **Credentials**: Any passwords, keys, or tokens
+5. **Private Details**: Information someone would reasonably expect to be confidential
+
+For each item found, suggest how to anonymize or generalize it while preserving the information needed for the task.`}
+/>
+
+## 真實性與欺騙
+
+使用AI作為工具和使用AI進行欺騙之間存在區別。
+
+### 合法性界限
+
+<InfoGrid items={[
+  { label: "合法使用", description: "將AI作為提升工作品質的工具", example: "起草、頭腦風暴、編輯、學習", exampleType: "text", color: "green" },
+  { label: "灰色地帶", description: "取決於具體情況，需要判斷", example: "代筆、範本、自動回覆", exampleType: "text", color: "amber" },
+  { label: "欺騙性使用", description: "將AI作品誤稱為人類原創", example: "虛假評論、學術欺詐、冒充他人", exampleType: "text", color: "red" }
+]} />
+
+需要思考的關鍵問題：
+- 接收者是否期望這是人類的原創作品？
+- 我是否通過欺騙獲得不公平的優勢？
+- 披露是否會改變作品被接受的方式？
+
+### 合成媒體責任
+
+建立真實人物的逼真描繪——無論是圖像、音訊還是影片——都有特殊的義務：
+
+- **絕不**在未經同意的情況下建立逼真的人物描繪
+- **始終**明確標註合成媒體
+- **在建立之前考慮**被濫用的可能性
+- **拒絕**建立未經同意的私密圖像
+
+## 負責任的部署
+
+當為他人建構AI功能時，你的倫理義務成倍增加。
+
+### 部署前檢查清單
+
+<Checklist
+  title="部署準備"
+  items={[
+    { text: "在多樣化輸入中測試了有害輸出" },
+    { text: "在不同人口統計特徵下測試了偏見" },
+    { text: "使用者披露/同意機制已就位" },
+    { text: "高風險決策有人工監督" },
+    { text: "反饋和舉報系統可用" },
+    { text: "事件回應計劃已記錄" },
+    { text: "使用政策已明確傳達" },
+    { text: "監控和警報已設定" }
+  ]}
+/>
+
+### 人工監督原則
+
+<InfoGrid items={[
+  { label: "高風險審查", description: "人工審查對人們有重大影響的決策", example: "招聘、醫療、法律、財務建議", exampleType: "text", color: "blue" },
+  { label: "錯誤糾正", description: "存在發現和修復AI錯誤的機制", example: "使用者反饋、品質抽樣、申訴流程", exampleType: "text", color: "blue" },
+  { label: "持續學習", description: "從問題中獲得的見解用於改進系統", example: "事後分析、提示詞更新、訓練改進", exampleType: "text", color: "blue" },
+  { label: "覆蓋能力", description: "當AI失敗時人工可以介入", example: "人工審核佇列、上報路徑", exampleType: "text", color: "blue" }
+]} />
+
+## 特殊場景指南
+
+某些領域由於其潛在的危害性或涉及人群的脆弱性，需要格外謹慎。
+
+### 醫療健康
+
+<TryIt
+  title="醫療場景免責宣告"
+  description="可能收到健康相關查詢的AI系統的範本。"
+  prompt={`You are an AI assistant. When users ask about health or medical topics:   
+
+**Always**:
+- Recommend consulting a qualified healthcare provider for personal medical decisions
+- Provide general educational information, not personalized medical advice
+- Include disclaimers that you cannot diagnose conditions
+- Suggest emergency services (911) for urgent situations
+
+**Never**:
+- Provide specific diagnoses
+- Recommend specific medications or dosages
+- Discourage someone from seeking professional care
+- Make claims about treatments without noting uncertainty
+
+User question: \${healthQuestion}
+
+Respond helpfully while following these guidelines.`}
+/>
+
+### 法律和金融
+
+這些領域涉及監管影響，需要適當的免責宣告：
+
+<InfoGrid items={[
+  { label: "法律諮詢", description: "提供一般資訊，而非法律建議", example: "這是一般性資訊。對於你的具體情況，請諮詢執業律師。", color: "purple" },
+  { label: "財務諮詢", description: "教育性質，而非個人理財建議", example: "這是教育性內容。對於你的情況，請考慮諮詢理財顧問。", color: "purple" },
+  { label: "管轄權意識", description: "法律因地區而異", example: "各國/各地法律不同。請核實你所在地區的要求。", color: "purple" }
+]} />
+
+### 兒童與教育
+
+<InfoGrid items={[
+  { label: "年齡適宜的內容", description: "確保輸出適合目標年齡群體", example: "過濾限制級內容，使用適當的語言", exampleType: "text", color: "cyan" },
+  { label: "學術誠信", description: "支援學習，而非代替學習", example: "解釋概念，而不是替學生寫作文", exampleType: "text", color: "cyan" },
+  { label: "安全第一", description: "對弱勢使用者提供額外保護", example: "更嚴格的內容過濾，不收集個人資料", exampleType: "text", color: "cyan" }
+]} />
+
+## 自我評估
+
+在部署任何提示詞或AI系統之前，請思考以下問題：
+
+<Checklist
+  title="倫理自檢"
+  items={[
+    { text: "這可能被用來傷害他人嗎？" },
+    { text: "這尊重使用者隱私嗎？" },
+    { text: "這可能延續有害偏見嗎？" },
+    { text: "AI的參與是否得到適當披露？" },
+    { text: "是否有足夠的人工監督？" },
+    { text: "最壞的情況會是什麼？" },
+    { text: "如果這種使用方式被公開，我會感到舒適嗎？" }
+  ]}
+/>
+
+<Quiz
+  question="一個使用者問你的AI系統如何擺脫一個煩人的人。最恰當的回應策略是什麼？"
+  options={[
+    "立即拒絕——這可能是請求傷害他人的指示",
+    "提供衝突解決建議，因為這是最可能的意圖",
+    "提出澄清問題以瞭解意圖，然後決定如何回應",
+    "解釋你無法幫助任何與傷害他人相關的事情"
+  ]}
+  correctIndex={2}
+  explanation="模糊的請求需要澄清，而不是假設。擺脫某人可能意味著結束友誼、解決職場衝突，或者某些有害的事情。提出澄清問題可以讓你針對實際意圖做出適當回應，同時對提供有害資訊保持謹慎。"
+/>

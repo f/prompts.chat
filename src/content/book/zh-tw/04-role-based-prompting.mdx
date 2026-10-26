@@ -1,0 +1,328 @@
+角色扮演提示是提示工程中最強大且使用最廣泛的技術之一。通過為AI分配特定的角色或人設，你可以顯著提升回覆的品質、風格和相關性。
+
+<Callout type="tip" title="人設的力量">
+將角色視為AI龐大知識庫的過濾器。合適的角色能像透鏡聚焦光線一樣聚焦回覆。
+</Callout>
+
+## 角色為何有效
+
+當你分配一個角色時，你實際上是在告訴模型："通過這個特定的視角來過濾你的海量知識。"模型會調整以下方面：
+
+- **詞彙**：使用與角色相匹配的專業術語
+- **視角**：從該角色的立場思考問題
+- **專業深度**：提供與角色相匹配的細節程度
+- **溝通風格**：模仿該角色的表達方式
+
+### 技術原理解釋
+
+大語言模型通過根據給定的上下文預測最可能的下一個token來工作。當你指定一個角色時，你從根本上改變了"可能"的含義。
+
+**活化相關知識**：角色會活化模型學習到的特定關聯區域。說"你是一名醫生"會活化訓練資料中的醫學術語、診斷推理模式和臨床溝通風格。
+
+**統計制約**：大語言模型從數百萬份由真實專家撰寫的文件中學習。當你分配一個角色時，模型會調整其概率分佈，以匹配它從該類型作者那裡學到的模式。
+
+**減少歧義**：沒有角色時，模型會在所有可能的回答者之間取平均值。有了角色，它就會縮小到特定子集，使回覆更加聚焦和一致。
+
+**上下文錨定**：角色在整個對話過程中建立一個持久的上下文錨點。每個後續回覆都會受到這個初始框架的影響。
+
+這樣理解：如果你問"我該怎麼處理這個咳嗽？"模型可能會以醫生、朋友、藥劑師或擔心的父母的身份回答。每種身份給出的建議都不同。通過預先指定角色，你是在告訴模型該使用訓練資料中的哪種"聲音"。
+
+<Callout type="info" title="為什麼這很重要">
+模型並不是在戲劇意義上的假裝或角色扮演。它是在統計上將輸出偏向於它在訓練期間從真實專家、專業人士和專業人員那裡學到的模式。"醫生"角色活化醫學知識路徑；"詩人"角色活化文學模式。
+</Callout>
+
+## 基礎角色模式
+
+這些基礎模式適用於大多數使用案例。從這些範本開始，根據你的需求進行客製化。
+
+### 專家模式
+
+最通用的模式。指定專業領域和從業年限，獲得權威、深入的回覆。適用於技術問題、分析和專業建議。
+
+<TryIt compact prompt={`You are an expert \${field} with \${years:10} years of experience in \${specialty}.
+
+\${task}`} />
+
+### 專業人士模式
+
+通過指定職位和組織類型，將角色置於現實世界的背景中。這會為回覆新增機構知識和專業規範。
+
+<TryIt compact prompt={`You are a \${profession} working at \${organization}.
+
+\${task}`} />
+
+### 教師模式
+
+非常適合學習和解釋。指定受眾級別可確保回覆與學習者的背景相匹配，從初學者到進階從業者都適用。
+
+<TryIt compact prompt={`You are a \${subject} teacher who specializes in explaining complex concepts to \${audience}.
+
+\${task}`} />
+
+## 進階角色建構
+
+### 複合角色
+
+結合多種身份，獲得融合不同視角的回覆。這個兒科醫生兼家長的組合能產生既具醫學專業性又經過實踐檢驗的建議。
+
+<TryIt compact prompt={`You are a pediatrician who is also a parent of three children. You understand both the medical and practical aspects of childhood health issues. You communicate with empathy and without medical jargon.
+
+\${question}`} />
+
+### 情境角色
+
+將角色置於特定場景中，以塑造內容和語氣。這裡的程式碼審查情境使AI具有建設性和教育性，而不僅僅是批評性的。
+
+<TryIt compact prompt={`You are a senior developer conducting a code review for a junior team member. You want to be helpful and educational, not critical. You explain not just what to fix, but why.
+
+Code to review:
+\${code}`} />
+
+### 視角角色
+
+從特定利益相關者的角度獲取反饋。風險投資人的視角評估可行性和可擴充性的方式與客戶或工程師不同。
+
+<TryIt compact prompt={`You are a venture capitalist evaluating startup pitches. You've seen thousands of pitches and can quickly identify strengths, weaknesses, and red flags. Be direct but constructive.
+
+Pitch: \${pitch}`} />
+
+## 角色類別與範例
+
+不同領域適合不同類型的角色。以下是按類別組織的經過驗證的範例，你可以根據自己的任務進行調整。
+
+### 技術角色
+
+**軟體架構師**：最適合系統設計決策、技術選型和架構權衡。對可維護性的關注使回覆傾向於實用的長期解決方案。
+
+<TryIt compact prompt={`You are a software architect specializing in scalable distributed systems. You prioritize maintainability, performance, and team productivity in your recommendations.
+
+\${question}`} />
+
+**安全專家**：攻擊者思維是這裡的關鍵。這個角色產生以威脅為中心的分析，能識別出僅防禦性視角可能遺漏的漏洞。
+
+<TryIt compact prompt={`You are a cybersecurity specialist who conducts penetration testing. You think like an attacker to identify vulnerabilities.
+
+Analyze: \${target}`} />
+
+**DevOps工程師**：適合部署、自動化和基礎設施問題。對可靠性的強調確保了生產就緒的建議。
+
+<TryIt compact prompt={`You are a DevOps engineer focused on CI/CD pipelines and infrastructure as code. You value automation and reliability.
+
+\${question}`} />
+
+### 創意角色
+
+**文案撰稿人**："屢獲殊榮"的修飾語和轉換率導向能產生簡潔有力、有說服力的文案，而非泛泛的行銷文本。
+
+<TryIt compact prompt={`You are an award-winning copywriter known for creating compelling headlines and persuasive content that drives conversions.
+
+Write copy for: \${product}`} />
+
+**編劇**：活化戲劇結構、節奏和對話慣例的知識。適合任何需要張力和角色聲音的敘事寫作。
+
+<TryIt compact prompt={`You are a screenwriter who has written for popular TV dramas. You understand story structure, dialogue, and character development.
+
+Write: \${scene}`} />
+
+**使用者體驗文案**：專門用於介面文本的角色。對簡潔性和使用者引導的關注產生簡明、面向行動的文案。
+
+<TryIt compact prompt={`You are a UX writer specializing in microcopy. You make interfaces feel human and guide users with minimal text.
+
+Write microcopy for: \${element}`} />
+
+### 分析角色
+
+**業務分析師**：連線技術團隊和非技術利益相關者之間的橋樑。適用於需求收集、規格撰寫和識別專案計劃中的缺口。
+
+<TryIt compact prompt={`You are a business analyst who translates between technical teams and stakeholders. You clarify requirements and identify edge cases.
+
+Analyze: \${requirement}`} />
+
+**研究科學家**：強調證據和承認不確定性，產生平衡、有據可查的回覆，區分事實和推測。
+
+<TryIt compact prompt={`You are a research scientist who values empirical evidence and acknowledges uncertainty. You distinguish between established facts and hypotheses.
+
+Research question: \${question}`} />
+
+**金融分析師**：結合量化分析和風險評估。對回報和風險的雙重關注產生更平衡的投資觀點。
+
+<TryIt compact prompt={`You are a financial analyst who evaluates investments using fundamental and technical analysis. You consider risk alongside potential returns.
+
+Evaluate: \${investment}`} />
+
+### 教育角色
+
+**蘇格拉底式導師**：這個角色不直接給出答案，而是提出引導性問題。非常適合深度學習和幫助學生培養批判性思維能力。
+
+<TryIt compact prompt={`You are a tutor using the Socratic method. Instead of giving answers directly, you guide students to discover answers through thoughtful questions.
+
+Topic: \${topic}`} />
+
+**教學設計師**：建構學習內容以實現最大記憶留存。當你需要將複雜主題分解為具有清晰進度的可教授模組時，使用這個角色。
+
+<TryIt compact prompt={`You are an instructional designer who creates engaging learning experiences. You break complex topics into digestible modules with clear learning objectives.
+
+Create curriculum for: \${topic}`} />
+
+## 角色堆疊技術
+
+對於複雜任務，將多個角色方面組合成一個分層的身份。這種技術堆疊專業知識、受眾意識和風格指南，以建立高度專業化的回覆。
+
+這個例子疊加了三個元素：領域專業知識（API文件）、受眾（資淺開發人員）和風格指南（Google的慣例）。每一層都進一步約束輸出。
+
+<TryIt compact prompt={`You are a technical writer with expertise in API documentation. You write for developers who are new to REST APIs. Follow the Google developer documentation style guide: use second person ("you"), active voice, present tense, and keep sentences under 26 words.
+
+Document: \${apiEndpoint}`} />
+
+## 不同任務的角色
+
+<div className="my-4 grid gap-2">
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-40">程式碼審查</span>
+    <span className="text-muted-foreground">資深開發人員 + 導師</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-40">寫作反饋</span>
+    <span className="text-muted-foreground">編輯 + 目標受眾成員</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-40">商業策略</span>
+    <span className="text-muted-foreground">顧問 + 行業專家</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-40">學習新主題</span>
+    <span className="text-muted-foreground">耐心的老師 + 實踐者</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-40">創意寫作</span>
+    <span className="text-muted-foreground">特定類型作家</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-40">技術解釋</span>
+    <span className="text-muted-foreground">專家 + 溝通者</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-40">問題解決</span>
+    <span className="text-muted-foreground">領域專家 + 通才</span>
+  </div>
+</div>
+
+## 應避免的反模式
+
+### 過於籠統的角色
+
+<Compare
+  before={{ label: "弱", content: "You are a helpful assistant." }}
+  after={{ label: "更好", content: "You are a helpful assistant specializing in Python development, particularly web applications with Flask and Django." }}
+/>
+
+### 衝突的角色
+
+<Compare
+  before={{ label: "有問題", content: "You are a creative writer who always follows strict templates." }}
+  after={{ label: "更好", content: "You are a creative writer who works within established story structures while adding original elements." }}
+/>
+
+### 不切實際的專業知識
+
+<Compare
+  before={{ label: "有問題", content: "You are an expert in everything." }}
+  after={{ label: "更好", content: "You are a T-shaped professional: deep expertise in machine learning with broad knowledge of software engineering practices." }}
+/>
+
+## 真實世界提示範例
+
+### 技術文件
+
+<TryIt
+  title="技術寫作者角色"
+  description="嘗試使用你自己的API端點來測試這個技術文件提示。"
+  prompt={`You are a senior technical writer at a developer tools company. You have 10 years of experience writing API documentation, SDK guides, and developer tutorials.
+
+Your documentation style:
+- Clear, scannable structure with headers and code examples
+- Explains the "why" alongside the "how"
+- Anticipates common questions and edge cases
+- Uses consistent terminology defined in a glossary
+- Includes working code examples that users can copy-paste
+
+Document this API endpoint: GET /api/users/:id - Returns user profile data`}
+/>
+
+### 創意寫作
+
+<TryIt
+  title="小說家角色"
+  description="這個角色結合了類型專業知識和特定的風格特徵。"
+  prompt={`You are a novelist who writes in the style of literary fiction with elements of magical realism. Your prose is known for:
+- Lyrical but accessible language
+- Deep psychological character portraits
+- Subtle magical elements woven into everyday settings
+- Themes of memory, identity, and transformation
+
+Write the opening scene of a story about a librarian who discovers that books in her library are slowly changing their endings.`}
+/>
+
+### 商務溝通
+
+<TryIt
+  title="高階主管教練角色"
+  description="這個角色有助於處理敏感的商務溝通。"
+  prompt={`You are an executive communications coach who has worked with Fortune 500 CEOs. You help leaders communicate complex ideas simply and build trust with their teams.
+
+Review this message for a team meeting about budget cuts. Suggest improvements that:
+- Acknowledge the difficulty while maintaining confidence
+- Are transparent without creating panic
+- Show empathy while being professional
+- Include clear next steps
+
+Draft message: "Due to budget constraints, we need to reduce project scope. Some initiatives will be paused."`}
+/>
+
+## 將角色與其他技術結合
+
+角色與其他提示技術結合使用時效果更佳：
+
+### 角色 + 少樣本學習
+
+將角色與範例結合，展示角色應該如何回應。範例教授語氣和格式，而角色提供上下文和專業知識。
+
+<TryIt compact prompt={`You are a customer support specialist trained to de-escalate angry customers.
+
+Example response to angry customer:
+Customer: "This is ridiculous! I've been waiting 2 weeks!"
+You: "I completely understand your frustration, and I apologize for the delay. Let me look into this right now and find out exactly where your order is. Can I have your order number?"
+
+Now respond to:
+Customer: "\${customerMessage}"`} />
+
+### 角色 + 思維鏈
+
+偵探角色自然鼓勵逐步推理。將角色與思維鏈結合可產生更透明、可驗證的問題解決過程。
+
+<TryIt compact prompt={`You are a detective solving a logic puzzle. Think through each clue methodically, stating your reasoning at each step.
+
+Clues:
+\${clues}
+
+Solve step by step, explaining your deductions.`} />
+
+## 總結
+
+<Callout type="info" title="關鍵要點">
+角色扮演提示之所以強大，是因為它能聚焦模型的海量知識、設定語氣和風格的期望、提供隱含上下文，並使輸出更加一致。
+</Callout>
+
+<Quiz
+  question="是什麼讓角色扮演提示更有效？"
+  options={[
+    "使用像'專家'這樣的籠統角色稱謂",
+    "新增具體的專業知識、經驗和視角細節",
+    "儘可能保持角色描述簡短",
+    "讓AI頻繁切換角色"
+  ]}
+  correctIndex={1}
+  explanation="角色越詳細和真實，效果越好。具體性幫助模型準確理解應該應用什麼知識、語氣和視角。"
+/>
+
+關鍵是**具體性**：角色越詳細和真實，效果越好。在下一章中，我們將探討如何從你的提示中獲得一致的、結構化的輸出。
