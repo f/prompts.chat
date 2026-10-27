@@ -24,6 +24,13 @@ import { ProfileLinks, type CustomLink } from "@/components/user/profile-links";
 import { JsonLd, profilePageSchema } from "@/components/seo/structured-data";
 import { buildPageMetadata, NOINDEX_ROBOTS, paginatedPath, toMetaDescription } from "@/lib/seo";
 import { escapeLikePattern } from "@/lib/utils";
+import {
+  isPageOutOfRange,
+  parseDayFilter,
+  parsePageParam,
+  PROFILE_PROMPTS_PER_PAGE,
+  profilePromptsWhere,
+} from "@/lib/listing-pagination";
 
 interface UserProfilePageProps {
   params: Promise<{ username: string }>;
@@ -131,36 +138,14 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
     notFound();
   }
 
-  const page = Math.max(1, parseInt(pageParam || "1") || 1);
-  const perPage = 24;
-  const botsPage = Math.max(1, parseInt(botsPageParam || "1") || 1);
+  const page = parsePageParam(pageParam);
+  const perPage = PROFILE_PROMPTS_PER_PAGE;
+  const botsPage = parsePageParam(botsPageParam);
   const isOwner = session?.user?.id === user.id;
   const isUnclaimed = user.email?.endsWith("@unclaimed.prompts.chat") ?? false;
 
-  // Parse date filter for filtering prompts by day (validate YYYY-MM-DD format)
-  const isValidDateFilter = dateFilter && /^\d{4}-\d{2}-\d{2}$/.test(dateFilter);
-  const filterDateStart = isValidDateFilter ? new Date(dateFilter + "T00:00:00") : null;
-  const filterDateEnd = isValidDateFilter ? new Date(dateFilter + "T23:59:59") : null;
-  // Also verify the Date objects are valid (e.g., 2024-02-30 would fail)
-  const validFilterDateStart = filterDateStart && !isNaN(filterDateStart.getTime()) ? filterDateStart : null;
-  const validFilterDateEnd = filterDateEnd && !isNaN(filterDateEnd.getTime()) ? filterDateEnd : null;
-
-  // Build where clause - show private prompts only if owner (unlisted prompts are visible on profiles)
-  // Exclude intermediate flow prompts (only show first prompts or standalone)
-  // Note: "related" connections are AI-suggested similar prompts, not flow connections
-  const where = {
-    authorId: user.id,
-    deletedAt: null,
-    type: { not: "BOT" as const },
-    incomingConnections: { none: { label: { not: "related" } } },
-    ...(isOwner ? {} : { isPrivate: false }),
-    ...(validFilterDateStart && validFilterDateEnd ? {
-      createdAt: {
-        gte: validFilterDateStart,
-        lte: validFilterDateEnd,
-      },
-    } : {}),
-  };
+  const validFilterDateStart = parseDayFilter(dateFilter)?.start ?? null;
+  const where = profilePromptsWhere(user.id, { includePrivate: isOwner, date: dateFilter });
 
   // Common prompt include for both queries
   const promptInclude = {
@@ -384,6 +369,13 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
   const pinnedIds = new Set<string>(pinnedPrompts.map((p: { id: string }) => p.id));
 
   const totalPages = Math.ceil(total / perPage);
+
+  // Pages past the end would be empty duplicates of the listing. The layout
+  // already rejects them on full page loads; this covers client navigation.
+  if (isPageOutOfRange(page, total, perPage)) {
+    notFound();
+  }
+
   const botsTotalPages = Math.ceil(botsTotal / perPage);
   const botsPageHref = (n: number) => `/@${user.username}?tab=bots${n > 1 ? `&botsPage=${n}` : ""}`;
 

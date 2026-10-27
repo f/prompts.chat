@@ -13,12 +13,11 @@ import { PromptCard } from "@/components/prompts/prompt-card";
 import { McpServerPopup } from "@/components/mcp/mcp-server-popup";
 import { JsonLd, breadcrumbSchema, collectionPageSchema } from "@/components/seo/structured-data";
 import { buildPageMetadata, NOINDEX_ROBOTS, paginatedPath } from "@/lib/seo";
+import { isPageOutOfRange, parsePageParam, TAG_PROMPTS_PER_PAGE, tagPromptsWhere } from "@/lib/listing-pagination";
 import { getPromptUrl } from "@/lib/urls";
 
 // Tags with fewer public prompts than this are too thin to be indexed
 const MIN_INDEXABLE_PROMPTS = 3;
-
-const PROMPTS_PER_PAGE = 24;
 
 interface TagPageProps {
   params: Promise<{ slug: string }>;
@@ -28,7 +27,7 @@ interface TagPageProps {
 export async function generateMetadata({ params, searchParams }: TagPageProps): Promise<Metadata> {
   const { slug } = await params;
   const { page: pageParam } = await searchParams;
-  const page = Math.max(1, parseInt(pageParam || "1") || 1);
+  const page = parsePageParam(pageParam);
   const tag = await db.tag.findUnique({
     where: { slug },
     select: {
@@ -41,7 +40,7 @@ export async function generateMetadata({ params, searchParams }: TagPageProps): 
     },
   });
 
-  if (!tag || page > Math.max(1, Math.ceil(tag._count.prompts / PROMPTS_PER_PAGE))) {
+  if (!tag) {
     return { title: "Tag Not Found", robots: NOINDEX_ROBOTS };
   }
 
@@ -73,21 +72,9 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
     notFound();
   }
 
-  const page = Math.max(1, parseInt(pageParam || "1") || 1);
-  const perPage = PROMPTS_PER_PAGE;
-
-  // Build where clause
-  const where = {
-    tags: {
-      some: { tagId: tag.id },
-    },
-    isUnlisted: false,
-    deletedAt: null,
-    ...NON_BOT_PROMPTS,
-    OR: session?.user
-      ? [{ isPrivate: false }, { authorId: session.user.id }]
-      : [{ isPrivate: false }],
-  };
+  const page = parsePageParam(pageParam);
+  const perPage = TAG_PROMPTS_PER_PAGE;
+  const where = tagPromptsWhere(tag.id, session?.user?.id);
 
   // Fetch prompts with this tag; bots are listed on /bots
   const [promptsRaw, total, botCount] = await Promise.all([
@@ -140,8 +127,9 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
 
   const totalPages = Math.ceil(total / perPage);
 
-  // Pages past the end would be empty duplicates of the listing
-  if (page > 1 && page > totalPages) {
+  // Pages past the end would be empty duplicates of the listing. The layout
+  // already rejects them on full page loads; this covers client navigation.
+  if (isPageOutOfRange(page, total, perPage)) {
     notFound();
   }
 

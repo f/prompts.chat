@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -70,6 +71,11 @@ export default async function BotsPage({ searchParams }: BotsPageProps) {
     getBotFilterOptions(),
   ]);
   const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
+
+  // Pages past the end would be empty duplicates of the listing
+  if (page > totalPages) {
+    notFound();
+  }
 
   return (
     <div className="container py-6">
