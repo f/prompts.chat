@@ -1070,6 +1070,8 @@
     "removed": "컬렉션에서 제거됨"
   },
   "discovery": {
+    "trending": "지금 트렌딩",
+    "seeAll": "모두 보기",
     "featuredPrompts": "추천 프롬프트",
     "todaysMostUpvoted": "오늘의 인기",
     "latestPrompts": "최신 프롬프트",

@@ -1070,6 +1070,8 @@
     "removed": "הוסר מהאוסף"
   },
   "discovery": {
+    "trending": "פופולרי עכשיו",
+    "seeAll": "הצג הכל",
     "featuredPrompts": "פרומפטים מודגשים",
     "todaysMostUpvoted": "המדורגים ביותר היום",
     "latestPrompts": "פרומפטים אחרונים",

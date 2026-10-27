@@ -1070,6 +1070,8 @@
     "removed": "تمت الإزالة من المجموعة"
   },
   "discovery": {
+    "trending": "الرائج الآن",
+    "seeAll": "عرض الكل",
     "featuredPrompts": "الأوامر المميزة",
     "todaysMostUpvoted": "الأكثر تصويتاً اليوم",
     "latestPrompts": "أحدث الأوامر",

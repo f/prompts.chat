@@ -1070,6 +1070,8 @@
     "removed": "از مجموعه حذف شد"
   },
   "discovery": {
+    "trending": "پرطرفدارهای اکنون",
+    "seeAll": "مشاهده همه",
     "featuredPrompts": "پرامپت‌های برگزیده",
     "todaysMostUpvoted": "پرلایک‌ترین‌های امروز",
     "latestPrompts": "جدیدترین پرامپت‌ها",

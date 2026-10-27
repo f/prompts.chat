@@ -1070,6 +1070,8 @@
     "removed": "Αφαιρέθηκε από τη συλλογή"
   },
   "discovery": {
+    "trending": "Δημοφιλή τώρα",
+    "seeAll": "Δείτε όλα",
     "featuredPrompts": "Προβεβλημένα Prompts",
     "todaysMostUpvoted": "Τα πιο ψηφισμένα σήμερα",
     "latestPrompts": "Τελευταία Prompts",

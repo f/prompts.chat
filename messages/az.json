@@ -1070,6 +1070,8 @@
     "removed": "Kolleksiyadan silindi"
   },
   "discovery": {
+    "trending": "İndi trenddə",
+    "seeAll": "Hamısına bax",
     "featuredPrompts": "Seçilmiş Promptlar",
     "todaysMostUpvoted": "Bu Günün Ən Çox Bəyənilənləri",
     "latestPrompts": "Ən Son Promptlar",

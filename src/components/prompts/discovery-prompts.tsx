@@ -2,10 +2,11 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { ArrowRight, Clock, Flame, RefreshCw, Star, Users } from "lucide-react";
 import { db } from "@/lib/db";
-import { NON_BOT_PROMPTS } from "@/lib/prompt-list";
+import { NON_BOT_PROMPTS, trendingPromptListWhere } from "@/lib/prompt-list";
 import { Button } from "@/components/ui/button";
 import { Masonry } from "@/components/ui/masonry";
 import { PromptCard } from "@/components/prompts/prompt-card";
+import { TrendingBadge } from "@/components/prompts/trending-badge";
 import { LatestBots } from "@/components/bots/latest-bots";
 
 interface DiscoveryPromptsProps {
@@ -49,7 +50,15 @@ export async function DiscoveryPrompts({ isHomepage = false }: DiscoveryPromptsP
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const [featuredPromptsRaw, todaysMostUpvotedRaw, latestPromptsRaw, recentlyUpdatedRaw, mostContributedRaw] = await Promise.all([
+  const [trendingPromptsRaw, featuredPromptsRaw, todaysMostUpvotedRaw, latestPromptsRaw, recentlyUpdatedRaw, mostContributedRaw] = await Promise.all([
+    isHomepage
+      ? db.prompt.findMany({
+          where: trendingPromptListWhere(),
+          orderBy: [{ trendingUntil: "desc" }, { createdAt: "desc" }],
+          take: limit,
+          include: promptInclude,
+        })
+      : Promise.resolve([]),
     db.prompt.findMany({
       where: {
         isPrivate: false,
@@ -131,6 +140,7 @@ export async function DiscoveryPrompts({ isHomepage = false }: DiscoveryPromptsP
     contributors: p.contributors,
   });
 
+  const trendingPrompts = trendingPromptsRaw.map(mapPrompt);
   const featuredPrompts = featuredPromptsRaw.map(mapPrompt);
   const todaysMostUpvoted = todaysMostUpvotedRaw.map(mapPrompt);
   const latestPrompts = latestPromptsRaw.map(mapPrompt);
@@ -139,6 +149,30 @@ export async function DiscoveryPrompts({ isHomepage = false }: DiscoveryPromptsP
 
   return (
     <div className={isHomepage ? "flex flex-col" : "container py-6"}>
+      {trendingPrompts.length > 0 && (
+        <section className="py-12 border-b" aria-labelledby="trending-prompts-heading">
+          <div className="container">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <h2 id="trending-prompts-heading" className="text-xl font-semibold">{tDiscovery("trending")}</h2>
+                <TrendingBadge />
+              </div>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/prompts?trending=1" prefetch={false}>
+                  {tDiscovery("seeAll")}
+                  <ArrowRight className="ml-1.5 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+            <Masonry columnCount={{ default: 1, md: 2, lg: 3 }} gap={16}>
+              {trendingPrompts.map((prompt) => (
+                <PromptCard key={prompt.id} prompt={prompt} />
+              ))}
+            </Masonry>
+          </div>
+        </section>
+      )}
+
       {/* Featured Prompts Section */}
       {featuredPrompts.length > 0 && (
         <section className={isHomepage ? "py-12 border-b" : "pb-8 mb-8 border-b"}>

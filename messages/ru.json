@@ -1070,6 +1070,8 @@
     "removed": "Удалено из коллекции"
   },
   "discovery": {
+    "trending": "Сейчас в тренде",
+    "seeAll": "Смотреть все",
     "featuredPrompts": "Избранные промпты",
     "todaysMostUpvoted": "Самые популярные за сегодня",
     "latestPrompts": "Новейшие промпты",

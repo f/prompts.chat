@@ -1070,6 +1070,8 @@
     "removed": "Verwijderd uit collectie"
   },
   "discovery": {
+    "trending": "Nu trending",
+    "seeAll": "Alles bekijken",
     "featuredPrompts": "Uitgelichte prompts",
     "todaysMostUpvoted": "Meest gestemd vandaag",
     "latestPrompts": "Nieuwste prompts",

@@ -1070,6 +1070,8 @@
     "removed": "已从收藏中移除"
   },
   "discovery": {
+    "trending": "当前热门",
+    "seeAll": "查看全部",
     "featuredPrompts": "精选提示词",
     "todaysMostUpvoted": "今日最热",
     "latestPrompts": "最新提示词",

@@ -1070,6 +1070,8 @@
     "removed": "Removido da coleção"
   },
   "discovery": {
+    "trending": "Em alta agora",
+    "seeAll": "Ver tudo",
     "featuredPrompts": "Prompts em Destaque",
     "todaysMostUpvoted": "Mais Votados de Hoje",
     "latestPrompts": "Prompts Recentes",

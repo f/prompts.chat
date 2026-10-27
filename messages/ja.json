@@ -1070,6 +1070,8 @@
     "removed": "コレクションから削除しました"
   },
   "discovery": {
+    "trending": "今トレンド中",
+    "seeAll": "すべて見る",
     "featuredPrompts": "注目のプロンプト",
     "todaysMostUpvoted": "今日最も投票された",
     "latestPrompts": "最新のプロンプト",
