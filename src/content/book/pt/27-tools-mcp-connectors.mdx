@@ -112,6 +112,25 @@ O [guia de conceitos do servidor MCP](https://modelcontextprotocol.io/docs/learn
 
 Um modelo de prompt MCP não é automaticamente uma skill. Uma skill pode reunir um procedimento mais longo, referências e scripts. Ela pode orientar o agente a usar ferramentas fornecidas por MCP, um conector direto ou funções locais.
 
+### As skills também podem vir com o servidor
+
+Até pouco tempo atrás, essas duas peças costumavam chegar separadas. Um servidor podia dar ao agente as suas ferramentas, mas o conhecimento para usá-las bem ficava em outro lugar: numa skill instalada à parte, num README ou no próprio prompt do usuário. Quando o serviço mudava, essas instruções podiam ficar para trás sem que ninguém percebesse.
+
+A **extensão Skills** oficial do MCP, finalizada em setembro de 2026, fecha boa parte dessa lacuna. Agora um servidor pode oferecer não só as suas ferramentas, mas também as skills que explicam como usá-las, escritas no mesmo formato `SKILL.md` descrito em [Agentes e Habilidades](/book/25-agents-and-skills). As ferramentas dizem ao agente o que ele pode fazer. As skills dizem como fazer bem o trabalho. Agora as duas podem vir do mesmo servidor, de modo que as instruções ficam ao lado do serviço que descrevem e quem o mantém pode deixá-las sempre atualizadas.
+
+O mecanismo se apoia em peças que você já conhece. Cada arquivo de uma skill é exposto como um recurso MCP, normalmente com uma URI `skill://`. Um cliente pode listar as skills de um servidor com `skills/list`, obter uma com `skills/get` e ler os arquivos de apoio com `resources/read`.
+
+<Compare
+  before={{ label: "Um servidor só com ferramentas", content: "O servidor do rastreador oferece search_issues e create_issue. O método de triagem (buscar duplicatas, seguir o modelo de issue) precisa vir de uma skill instalada à parte ou do seu prompt, e pode ficar desatualizado quando o serviço muda." }}
+  after={{ label: "Um servidor que também traz uma skill", content: "O mesmo servidor também oferece uma skill de triagem de issues. No início, o host vê apenas o nome e a descrição dela e só carrega as instruções completas quando uma tarefa precisa delas. Quando os mantenedores mudam o serviço, podem atualizar a skill junto." }}
+/>
+
+O host continua decidindo como uma skill chega ao modelo. O modelo pode escolhê-la pelo nome e pela descrição, ou o usuário pode selecioná-la diretamente. Em qualquer caso, as instruções completas só entram no contexto quando são necessárias, e ler um arquivo `SKILL.md` não ativa a skill por si só.
+
+<Callout type="warning" title="Uma skill vinda de um servidor continua sendo instrução">
+Uma skill que vem de um servidor é texto que entra no contexto do agente e pode influenciar o que ele fará em seguida. Por isso, merece o mesmo escrutínio que o próprio servidor. Um host cuidadoso verifica o conteúdo e pede qualquer aprovação necessária antes de carregá-lo. Assim como outras extensões oficiais do MCP, como MCP Apps e MCP Tasks, Skills é opcional: só é usada quando o cliente e o servidor declaram suporte a ela. O suporte nos clientes ainda é inicial, então verifique se a sua aplicação realmente carrega skills de servidores antes de contar com isso.
+</Callout>
+
 ## Experimente uma leitura e uma escrita
 
 Este exemplo usa o mesmo gerenciador fictício por dois caminhos. Mude o caminho, a operação ou o nível de acesso e depois execute a solicitação. Para uma escrita, experimente aprovar e recusar.

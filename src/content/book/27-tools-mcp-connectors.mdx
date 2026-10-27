@@ -112,6 +112,25 @@ The [MCP server concepts guide](https://modelcontextprotocol.io/docs/learn/serve
 
 An MCP prompt template is not automatically a skill. A skill can package a longer procedure, references, and scripts. It may tell the agent how to use tools provided through MCP, a direct connector, or local functions.
 
+### Skills Can Travel With the Server
+
+Until recently, these two pieces usually arrived separately. A server could give an agent its tools, while the know-how for using them well lived somewhere else: in a skill installed on its own, a README, or the user's prompt. When the service changed, those instructions could quietly fall behind.
+
+MCP's official **Skills extension**, finalized in September 2026, closes much of that gap. A server can now offer not only its tools but also the skills that explain how to use them, written in the same `SKILL.md` format described in [Agents & Skills](/book/25-agents-and-skills). Tools tell an agent what it can do. Skills tell it how to do the job well. Now both can come from the same server, so the instructions live beside the service they describe and can be kept current by the people who maintain it.
+
+The mechanism builds on pieces you have already met. Each file in a skill is exposed as an MCP resource, conventionally with a `skill://` URI. A client can list a server's skills with `skills/list`, fetch one with `skills/get`, and read its supporting files with `resources/read`.
+
+<Compare
+  before={{ label: "A server with tools only", content: "The tracker server exposes search_issues and create_issue. The triage method (check for duplicates, follow the issue template) has to come from a separately installed skill or from your prompt, and it can drift when the service changes." }}
+  after={{ label: "A server that also ships a skill", content: "The same server also offers an issue-triage skill. The host sees only its name and description at first and loads the full instructions when a task calls for them. When the maintainers change the service, they can update the skill alongside it." }}
+/>
+
+The host still decides how a skill reaches the model. The model might choose one by its name and description, or the user might pick it directly. Either way, the full instructions enter the context only when they are needed, and reading a `SKILL.md` file does not activate the skill by itself.
+
+<Callout type="warning" title="A served skill is still instructions">
+A skill from a server is text entering the agent's context, and it can shape what the agent does next. It deserves the same scrutiny as the server itself. A careful host verifies the content and asks for any required approval before loading it. Like other official MCP extensions, such as MCP Apps and MCP Tasks, Skills is optional: it is used only when both client and server declare support. Client support is still early, so check whether your application actually loads skills from servers before relying on them.
+</Callout>
+
 ## Try a Read and a Write
 
 This example uses the same fictional tracker through two routes. Change the route, operation, or access level, then run the request. For a write, try both approving and declining it.

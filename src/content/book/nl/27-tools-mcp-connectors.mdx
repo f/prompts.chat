@@ -112,6 +112,25 @@ De [gids voor MCP-serverconcepten](https://modelcontextprotocol.io/docs/learn/se
 
 Een MCP-promptsjabloon is niet automatisch een skill. Een skill kan een langere procedure, referenties en scripts bundelen. Die kan de agent vertellen hoe hij tools moet gebruiken die via MCP, een directe connector of lokale functies beschikbaar zijn.
 
+### Skills kunnen ook met de server meekomen
+
+Tot voor kort kwamen deze twee onderdelen meestal los van elkaar binnen. Een server kon een agent zijn tools geven, maar de kennis om ze goed te gebruiken zat ergens anders: in een apart geïnstalleerde skill, in een README of in de eigen prompt van de gebruiker. Als de dienst veranderde, konden die instructies ongemerkt achterlopen.
+
+De officiële **Skills-extensie** van MCP, sinds september 2026 definitief, dicht een groot deel van dat gat. Een server kan nu niet alleen zijn tools aanbieden, maar ook de skills die uitleggen hoe je ze gebruikt, geschreven in hetzelfde `SKILL.md`-formaat dat in [Agents en Skills](/book/25-agents-and-skills) wordt beschreven. Tools vertellen een agent wat hij kan doen. Skills vertellen hem hoe hij het werk goed doet. Nu kunnen beide van dezelfde server komen, zodat de instructies naast de dienst staan die ze beschrijven en de beheerders van die dienst ze actueel kunnen houden.
+
+Het mechanisme bouwt voort op onderdelen die je al kent. Elk bestand in een skill wordt aangeboden als MCP-bron, meestal met een `skill://`-URI. Een client kan de skills van een server opvragen met `skills/list`, er één ophalen met `skills/get` en de bijbehorende bestanden lezen met `resources/read`.
+
+<Compare
+  before={{ label: "Een server met alleen tools", content: "De trackerserver biedt search_issues en create_issue aan. De beoordelingsmethode (op duplicaten controleren, het issuesjabloon volgen) moet uit een apart geïnstalleerde skill of uit je eigen prompt komen, en kan verouderen als de dienst verandert." }}
+  after={{ label: "Een server die ook een skill meelevert", content: "Dezelfde server biedt ook een skill voor het beoordelen van issues. De host ziet eerst alleen de naam en beschrijving, en laadt de volledige instructies pas wanneer een taak erom vraagt. Als de beheerders de dienst aanpassen, kunnen ze de skill meteen mee bijwerken." }}
+/>
+
+De host beslist nog steeds hoe een skill bij het model terechtkomt. Het model kan er een kiezen op basis van naam en beschrijving, of de gebruiker kiest hem zelf. In beide gevallen komen de volledige instructies pas in de context wanneer ze nodig zijn, en het lezen van een `SKILL.md`-bestand activeert de skill niet vanzelf.
+
+<Callout type="warning" title="Een skill van een server blijft een instructie">
+Een skill van een server is tekst die in de context van de agent terechtkomt en kan bepalen wat de agent daarna doet. Hij verdient dus dezelfde kritische blik als de server zelf. Een zorgvuldige host controleert de inhoud en vraagt om eventuele vereiste goedkeuring voordat hij die laadt. Net als andere officiële MCP-extensies, zoals MCP Apps en MCP Tasks, is Skills optioneel: de extensie wordt alleen gebruikt als zowel de client als de server ondersteuning aangeeft. Ondersteuning in clients staat nog in de kinderschoenen, dus controleer of je toepassing echt skills van servers laadt voordat je erop vertrouwt.
+</Callout>
+
 ## Probeer lezen en schrijven
 
 Dit voorbeeld gebruikt dezelfde fictieve tracker via twee routes. Verander de route, bewerking of het toegangsniveau en voer daarna het verzoek uit. Probeer een schrijfactie zowel goed te keuren als af te wijzen.

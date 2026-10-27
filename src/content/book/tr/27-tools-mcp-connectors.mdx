@@ -112,6 +112,25 @@ MCP ayrıca **kaynakları** ve **promptları** da tanımlar. Bu kelimelerin prot
 
 Bir MCP prompt şablonu otomatik olarak beceri sayılmaz. Beceri daha uzun bir yöntemi, referansları ve betikleri bir araya getirebilir. Ajana MCP, doğrudan bir bağlayıcı veya yerel fonksiyonlar üzerinden sunulan araçları nasıl kullanacağını anlatabilir.
 
+### Beceriler de Sunucuyla Birlikte Gelebilir
+
+Yakın zamana kadar bu iki parça genellikle ayrı ayrı gelirdi. Bir sunucu ajana araçlarını verebiliyordu, ama bu araçları iyi kullanmanın püf noktaları başka bir yerde dururdu: ayrıca kurulan bir beceride, bir README dosyasında ya da kullanıcının kendi promptunda. Hizmet değiştiğinde bu talimatlar kimse fark etmeden geride kalabiliyordu.
+
+MCP'nin Eylül 2026'da kesinleşen resmî **Skills uzantısı**, bu boşluğun büyük kısmını kapatıyor. Artık bir sunucu yalnızca araçlarını değil, bu araçların nasıl kullanılacağını anlatan becerileri de sunabiliyor. Bu beceriler, [Ajanlar ve Yetenekler](/book/25-agents-and-skills) bölümünde anlatılan `SKILL.md` biçiminde yazılır. Araçlar ajana neler yapabileceğini söyler; beceriler ise işi nasıl iyi yapacağını. İkisi aynı sunucudan gelebildiğinde talimatlar, anlattıkları hizmetin hemen yanında durur ve o hizmetin bakımını yapanlar tarafından güncel tutulabilir.
+
+Bu mekanizma, daha önce tanıdığınız parçaların üzerine kurulur. Bir becerideki her dosya bir MCP kaynağı olarak sunulur ve genellikle `skill://` ile başlayan bir URI taşır. İstemci, sunucudaki becerileri `skills/list` ile listeleyebilir, birini `skills/get` ile alabilir ve yardımcı dosyalarını `resources/read` ile okuyabilir.
+
+<Compare
+  before={{ label: "Yalnızca araç sunan sunucu", content: "Kayıt takip sunucusu search_issues ve create_issue araçlarını sunar. Kayıtları değerlendirme yöntemi (tekrar eden kayıtları kontrol etmek, kayıt şablonunu izlemek) ayrıca kurulmuş bir beceriden ya da sizin promptunuzdan gelmek zorundadır ve hizmet değiştikçe güncelliğini yitirebilir." }}
+  after={{ label: "Becerisini de yanında getiren sunucu", content: "Aynı sunucu bir kayıt değerlendirme becerisi de sunar. Ana uygulama önce yalnızca becerinin adını ve açıklamasını görür; talimatların tamamını ancak görev gerektirdiğinde yükler. Hizmetin bakımını yapanlar hizmeti değiştirdiğinde beceriyi de onunla birlikte güncelleyebilir." }}
+/>
+
+Becerinin modele nasıl ulaşacağına yine ana uygulama karar verir. Model, beceriyi adına ve açıklamasına bakarak seçebilir; kullanıcı da doğrudan seçebilir. Her iki durumda da talimatların tamamı ancak gerektiğinde bağlama girer. Bir `SKILL.md` dosyasını okumak, beceriyi tek başına etkinleştirmez.
+
+<Callout type="warning" title="Sunucudan gelen beceri de bir talimattır">
+Sunucudan gelen bir beceri, ajanın bağlamına giren bir metindir ve ajanın bundan sonra ne yapacağını etkileyebilir. Bu yüzden sunucunun kendisi kadar dikkatli bir incelemeyi hak eder. Özenli bir ana uygulama, beceriyi yüklemeden önce içeriğini doğrular ve gereken onayları ister. MCP Apps ve MCP Tasks gibi diğer resmî MCP uzantılarında olduğu gibi Skills de isteğe bağlıdır: yalnızca hem istemci hem de sunucu desteklediğini bildirdiğinde kullanılır. İstemci desteği henüz yeni yeni gelişiyor; bu yüzden buna güvenmeden önce uygulamanızın sunuculardan gerçekten beceri yükleyip yüklemediğini kontrol edin.
+</Callout>
+
 ## Okuma ve Yazmayı Deneyin
 
 Bu örnek, aynı hayali takip sistemine iki yoldan ulaşır. Yolu, işlemi veya erişim düzeyini değiştirin, sonra isteği çalıştırın. Yazma işleminde hem onaylamayı hem de reddetmeyi deneyin.

@@ -112,6 +112,25 @@ MCP **resursları** və **promptları** da müəyyən edir. Bu sözlərin protok
 
 MCP prompt şablonu avtomatik olaraq bacarıq sayılmır. Bacarıq daha uzun proseduru, istinadları və skriptləri birləşdirə bilər. Agentə MCP, birbaşa bağlayıcı və ya yerli funksiyalar vasitəsilə verilən alətlərdən necə istifadə edəcəyini deyə bilər.
 
+### Bacarıqlar da Serverlə Birlikdə Gələ Bilər
+
+Bu yaxınlara qədər bu iki hissə adətən ayrı-ayrılıqda gəlirdi. Server agentə alətlərini verə bilirdi, lakin onlardan yaxşı istifadə etməyin incəlikləri başqa yerdə qalırdı: ayrıca quraşdırılan bir bacarıqda, README faylında və ya istifadəçinin öz promptunda. Xidmət dəyişəndə bu təlimatlar heç kimin xəbəri olmadan geridə qala bilirdi.
+
+MCP-nin 2026-cı ilin sentyabrında yekunlaşan rəsmi **Skills genişlənməsi** bu boşluğun böyük hissəsini aradan qaldırır. İndi server təkcə alətlərini deyil, onlardan necə istifadə ediləcəyini izah edən bacarıqları da təqdim edə bilər. Bu bacarıqlar [Agentlər və Bacarıqlar](/book/25-agents-and-skills) fəslində təsvir olunan eyni `SKILL.md` formatında yazılır. Alətlər agentə nə edə biləcəyini deyir, bacarıqlar isə işi necə yaxşı görəcəyini. İndi hər ikisi eyni serverdən gələ bilər; beləcə təlimatlar təsvir etdikləri xidmətin yanında yaşayır və həmin xidməti dəstəkləyən insanlar onları aktual saxlaya bilir.
+
+Mexanizm artıq tanış olduğunuz hissələrə əsaslanır. Bacarıqdakı hər fayl MCP resursu kimi təqdim olunur və adətən `skill://` ilə başlayan URI daşıyır. Müştəri serverin bacarıqlarını `skills/list` ilə siyahıya ala, birini `skills/get` ilə əldə edə və köməkçi fayllarını `resources/read` ilə oxuya bilər.
+
+<Compare
+  before={{ label: "Yalnız alət təqdim edən server", content: "Qeyd izləmə serveri search_issues və create_issue alətlərini təqdim edir. Qeydləri qiymətləndirmə üsulu (təkrar qeydləri yoxlamaq, qeyd şablonunu izləmək) ayrıca quraşdırılmış bacarıqdan və ya sizin promptunuzdan gəlməlidir və xidmət dəyişdikcə köhnələ bilər." }}
+  after={{ label: "Bacarığı da birlikdə təqdim edən server", content: "Eyni server qeydləri qiymətləndirmə bacarığı da təqdim edir. Əsas tətbiq əvvəlcə yalnız onun adını və təsvirini görür, tam təlimatları isə yalnız tapşırıq tələb etdikdə yükləyir. Xidməti dəstəkləyənlər onu dəyişəndə bacarığı da onunla birlikdə yeniləyə bilərlər." }}
+/>
+
+Bacarığın modelə necə çatacağına yenə də əsas tətbiq qərar verir. Model onu adına və təsvirinə görə seçə bilər, ya da istifadəçi birbaşa seçə bilər. Hər iki halda tam təlimatlar yalnız lazım olduqda kontekstə daxil olur və `SKILL.md` faylını oxumaq bacarığı öz-özlüyündə aktivləşdirmir.
+
+<Callout type="warning" title="Serverdən gələn bacarıq da təlimatdır">
+Serverdən gələn bacarıq agentin kontekstinə daxil olan mətndir və agentin sonrakı addımlarını formalaşdıra bilər. Ona görə də serverin özü qədər diqqətlə yoxlanmalıdır. Diqqətli əsas tətbiq məzmunu yükləməzdən əvvəl yoxlayır və lazım olan təsdiqi istəyir. MCP Apps və MCP Tasks kimi digər rəsmi MCP genişlənmələri kimi, Skills də məcburi deyil: yalnız həm müştəri, həm də server onu dəstəklədiyini bildirdikdə istifadə olunur. Müştəri dəstəyi hələ ilkin mərhələdədir, buna görə də ona güvənməzdən əvvəl tətbiqinizin serverlərdən bacarıqları həqiqətən yüklədiyini yoxlayın.
+</Callout>
+
 ## Oxuma və Yazmanı Sınayın
 
 Bu nümunə eyni uydurma izləmə sistemindən iki yol vasitəsilə istifadə edir. Yolu, əməliyyatı və ya giriş səviyyəsini dəyişin, sonra sorğunu işlədin. Yazma üçün həm təsdiqi, həm də rəddi sınayın.

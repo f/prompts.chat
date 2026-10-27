@@ -112,6 +112,25 @@ La [guía de conceptos del servidor MCP](https://modelcontextprotocol.io/docs/le
 
 Una plantilla de prompt MCP no es automáticamente una habilidad. Una habilidad puede agrupar un procedimiento más largo, referencias y scripts. Puede indicar al agente cómo usar herramientas proporcionadas mediante MCP, un conector directo o funciones locales.
 
+### Las habilidades también pueden llegar con el servidor
+
+Hasta hace poco, estas dos piezas solían llegar por separado. Un servidor podía darle al agente sus herramientas, pero el saber hacer para usarlas bien vivía en otra parte: en una habilidad instalada aparte, en un README o en el propio prompt del usuario. Cuando el servicio cambiaba, esas instrucciones podían quedarse atrás sin que nadie lo notara.
+
+La **extensión Skills** oficial de MCP, que alcanzó su versión final en septiembre de 2026, cierra buena parte de esa brecha. Ahora un servidor puede ofrecer no solo sus herramientas, sino también las habilidades que explican cómo usarlas, escritas en el mismo formato `SKILL.md` que se describe en [Agentes y Habilidades](/book/25-agents-and-skills). Las herramientas le dicen al agente qué puede hacer. Las habilidades le dicen cómo hacer bien el trabajo. Ahora ambas pueden llegar del mismo servidor, así que las instrucciones viven junto al servicio que describen y quienes lo mantienen pueden tenerlas al día.
+
+El mecanismo se apoya en piezas que ya conoces. Cada archivo de una habilidad se expone como un recurso MCP, normalmente con una URI `skill://`. Un cliente puede listar las habilidades de un servidor con `skills/list`, obtener una con `skills/get` y leer sus archivos de apoyo con `resources/read`.
+
+<Compare
+  before={{ label: "Un servidor solo con herramientas", content: "El servidor del gestor de incidencias ofrece search_issues y create_issue. El método de clasificación (buscar duplicados, seguir la plantilla de incidencias) tiene que venir de una habilidad instalada aparte o de tu prompt, y puede quedarse desfasado cuando cambia el servicio." }}
+  after={{ label: "Un servidor que también incluye una habilidad", content: "El mismo servidor ofrece además una habilidad para clasificar incidencias. Al principio, el host solo ve su nombre y su descripción, y carga las instrucciones completas cuando una tarea las necesita. Cuando los responsables cambian el servicio, pueden actualizar la habilidad al mismo tiempo." }}
+/>
+
+El host sigue decidiendo cómo llega una habilidad al modelo. El modelo puede elegirla por su nombre y su descripción, o el usuario puede seleccionarla directamente. En cualquier caso, las instrucciones completas solo entran en el contexto cuando hacen falta, y leer un archivo `SKILL.md` no activa la habilidad por sí solo.
+
+<Callout type="warning" title="Una habilidad servida sigue siendo una instrucción">
+Una habilidad que llega de un servidor es texto que entra en el contexto del agente y puede influir en lo que hará después. Por eso merece el mismo escrutinio que el propio servidor. Un host cuidadoso verifica el contenido y pide cualquier aprobación necesaria antes de cargarlo. Como otras extensiones oficiales de MCP, por ejemplo MCP Apps y MCP Tasks, Skills es opcional: solo se usa cuando tanto el cliente como el servidor declaran que la admiten. El soporte en los clientes todavía es incipiente, así que comprueba si tu aplicación realmente carga habilidades desde servidores antes de depender de ellas.
+</Callout>
+
 ## Prueba una lectura y una escritura
 
 Este ejemplo usa el mismo gestor ficticio por dos rutas. Cambia la ruta, la operación o el nivel de acceso y después ejecuta la solicitud. Para una escritura, prueba tanto aprobarla como rechazarla.
