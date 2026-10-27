@@ -2512,5 +2512,8 @@
       "TASTE": "پروفایل سلیقه کدنویسی",
       "model": "پرامپت {model}"
     }
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "استقرار با SpaceFast"
   }
 }

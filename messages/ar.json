@@ -2514,5 +2514,8 @@
       "TASTE": "ملف أسلوب البرمجة",
       "model": "أمر {model}"
     }
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "انشر باستخدام SpaceFast"
   }
 }

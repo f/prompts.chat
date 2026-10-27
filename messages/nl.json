@@ -2519,5 +2519,8 @@
       "TASTE": "Codeerstijlprofiel",
       "model": "{model}-prompt"
     }
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "Implementeren met SpaceFast"
   }
 }

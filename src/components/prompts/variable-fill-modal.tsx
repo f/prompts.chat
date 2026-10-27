@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { RunPromptButton } from "@/components/prompts/run-prompt-button";
+import { InjectedActionButton } from "@/components/action-buttons/injected-action-button";
+import type { ActionButtonConfig } from "@/lib/plugins/action-buttons";
 import { analyticsPrompt } from "@/lib/analytics";
 
 interface Variable {
@@ -30,6 +32,7 @@ interface VariableFillModalProps {
   promptId?: string;
   categoryName?: string;
   parentCategoryName?: string;
+  actionButton?: ActionButtonConfig;
 }
 
 // Parse ${variablename:defaultvalue} or ${variablename} patterns
@@ -67,7 +70,8 @@ export function VariableFillModal({
   mode,
   promptId,
   categoryName,
-  parentCategoryName
+  parentCategoryName,
+  actionButton
 }: VariableFillModalProps) {
   const t = useTranslations("common");
 
@@ -142,6 +146,8 @@ export function VariableFillModal({
               <Copy className="h-4 w-4 mr-1.5" />
               {t("copy")}
             </Button>
+          ) : actionButton ? (
+            <InjectedActionButton action={actionButton} content={finalContent} promptId={promptId} />
           ) : (
             <RunPromptButton content={finalContent} size="sm" categoryName={categoryName} parentCategoryName={parentCategoryName} />
           )}

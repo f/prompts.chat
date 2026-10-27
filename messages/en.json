@@ -2532,5 +2532,8 @@
       "TASTE": "Coding Taste Profile",
       "model": "{model} Prompt"
     }
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "Deploy with SpaceFast"
   }
 }

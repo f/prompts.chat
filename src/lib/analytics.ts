@@ -807,6 +807,22 @@ export const analyticsWidget = {
 };
 
 // ============================================================================
+// Action Button Events
+// ============================================================================
+
+export const analyticsActionButton = {
+  click: (buttonId: string, promptId: string | undefined, platform: string) => {
+    trackEvent({
+      action: "action_button_click",
+      category: "action_button",
+      label: platform,
+      button_id: buttonId,
+      prompt_id: promptId,
+    });
+  },
+};
+
+// ============================================================================
 // Admin Events
 // ============================================================================
 

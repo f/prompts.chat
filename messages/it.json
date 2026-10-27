@@ -2534,5 +2534,8 @@
       "TASTE": "Profilo di stile di codice",
       "model": "Prompt {model}"
     }
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "Distribuisci con SpaceFast"
   }
 }

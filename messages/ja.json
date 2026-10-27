@@ -2516,5 +2516,8 @@
       "TASTE": "コーディングテイスト",
       "model": "{model}プロンプト"
     }
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "SpaceFast でデプロイ"
   }
 }
