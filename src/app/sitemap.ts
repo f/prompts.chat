@@ -5,8 +5,8 @@ import { getAllChapters } from "@/lib/book/chapters";
 import { getBotUrl, getPromptUrl } from "@/lib/urls";
 import { getBaseUrl, toSitemapImageUrl } from "@/lib/seo";
 
-// Revalidate sitemap every hour (3600 seconds)
-export const revalidate = 3600;
+// Revalidate every 5 minutes so new prompts reach crawlers quickly
+export const revalidate = 300;
 
 // A single sitemap file may hold at most 50,000 URLs. Split this file with
 // `generateSitemaps` once the number of public prompts gets close to the cap.
