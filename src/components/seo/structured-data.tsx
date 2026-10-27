@@ -77,12 +77,56 @@ interface PromptSchemaInput {
   category?: string;
   tags: string[];
   voteCount: number;
+  /** Publicly visible comments on the prompt, oldest first. Replies point to their parent. */
+  comments: PromptSchemaComment[];
+  /** Total number of publicly visible comments; may exceed `comments.length` */
   commentCount: number;
+}
+
+export interface PromptSchemaComment {
+  id: string;
+  parentId: string | null;
+  text: string;
+  createdAt: Date;
+  author: { name: string; username: string };
+}
+
+/**
+ * Nests replies under their parent comments. Replies whose parent isn't in
+ * the list (hidden or beyond the fetched limit) are left out, since they
+ * aren't shown on their own on the page either.
+ */
+function commentTreeSchema(comments: PromptSchemaComment[]): Schema[] {
+  const children = new Map<string | null, PromptSchemaComment[]>();
+  for (const comment of comments) {
+    const siblings = children.get(comment.parentId) ?? [];
+    siblings.push(comment);
+    children.set(comment.parentId, siblings);
+  }
+
+  const toSchema = (comment: PromptSchemaComment): Schema => {
+    const replies = children.get(comment.id) ?? [];
+    return {
+      "@type": "Comment",
+      text: comment.text,
+      datePublished: comment.createdAt.toISOString(),
+      author: {
+        "@type": "Person",
+        name: comment.author.name,
+        url: absoluteUrl(`/@${comment.author.username}`),
+      },
+      ...(replies.length > 0 && { comment: replies.map(toSchema) }),
+    };
+  };
+
+  return (children.get(null) ?? []).map(toSchema);
 }
 
 /**
  * A prompt is a user-generated post on the platform, so it is described as a
- * SocialMediaPosting with its real author, dates, upvotes and comment count.
+ * SocialMediaPosting with its real author, dates, upvotes and comments.
+ * Comments are only ever taken from real data; without any, the comment
+ * counter is left out instead of reporting zero.
  */
 export function promptSchema(prompt: PromptSchemaInput): Schema {
   const baseUrl = getBaseUrl();
@@ -91,6 +135,7 @@ export function promptSchema(prompt: PromptSchemaInput): Schema {
     prompt.content.length > MAX_SCHEMA_TEXT_LENGTH
       ? `${prompt.content.slice(0, MAX_SCHEMA_TEXT_LENGTH)}…`
       : prompt.content;
+  const comments = commentTreeSchema(prompt.comments);
 
   return {
     "@context": "https://schema.org",
@@ -118,12 +163,17 @@ export function promptSchema(prompt: PromptSchemaInput): Schema {
         interactionType: "https://schema.org/LikeAction",
         userInteractionCount: prompt.voteCount,
       },
-      {
-        "@type": "InteractionCounter",
-        interactionType: "https://schema.org/CommentAction",
-        userInteractionCount: prompt.commentCount,
-      },
+      ...(comments.length > 0
+        ? [
+            {
+              "@type": "InteractionCounter",
+              interactionType: "https://schema.org/CommentAction",
+              userInteractionCount: Math.max(prompt.commentCount, prompt.comments.length),
+            },
+          ]
+        : []),
     ],
+    ...(comments.length > 0 && { comment: comments }),
     isPartOf: { "@id": `${baseUrl}/#website` },
     license: "https://creativecommons.org/publicdomain/zero/1.0/",
   };

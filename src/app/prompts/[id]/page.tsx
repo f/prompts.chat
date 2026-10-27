@@ -44,6 +44,12 @@ interface PromptPageProps {
   params: Promise<{ id: string }>;
 }
 
+// Flagged comments are shadow-banned: only admins and their authors see them
+const PUBLIC_COMMENT_WHERE = { deletedAt: null, flagged: false };
+
+// Most comments included in structured data; the full thread is on the page
+const MAX_SCHEMA_COMMENTS = 50;
+
 /**
  * Extracts the prompt ID from a URL parameter that may contain a slug
  * Supports formats: "abc123", "abc123_some-slug", or "abc123_some-slug.prompt.md"
@@ -183,7 +189,7 @@ export default async function PromptPage({ params }: PromptPageProps) {
       _count: {
         select: {
           votes: true,
-          comments: { where: { deletedAt: null } },
+          comments: { where: PUBLIC_COMMENT_WHERE },
         },
       },
       contributors: {
@@ -290,6 +296,23 @@ export default async function PromptPage({ params }: PromptPageProps) {
   });
   const hasFlowConnections = flowConnectionCount > 0;
 
+  // Comments everyone can see (flagged ones are shadow-banned) for structured data
+  const showComments = config.features.comments !== false && !prompt.isPrivate;
+  const schemaComments = showComments
+    ? await db.comment.findMany({
+        where: { promptId: id, ...PUBLIC_COMMENT_WHERE },
+        orderBy: { createdAt: "asc" },
+        take: MAX_SCHEMA_COMMENTS,
+        select: {
+          id: true,
+          content: true,
+          createdAt: true,
+          parentId: true,
+          author: { select: { name: true, username: true } },
+        },
+      })
+    : [];
+
   // Unlisted prompts are accessible via direct link (like YouTube unlisted videos)
   // They just don't appear in public listings, search results, or feeds
 
@@ -360,7 +383,14 @@ export default async function PromptPage({ params }: PromptPageProps) {
               category: prompt.category?.name,
               tags: prompt.tags.map(({ tag }) => tag.name),
               voteCount,
-              commentCount: prompt._count.comments,
+              comments: schemaComments.map((comment) => ({
+                id: comment.id,
+                parentId: comment.parentId,
+                text: comment.content,
+                createdAt: comment.createdAt,
+                author: { name: comment.author.name || comment.author.username, username: comment.author.username },
+              })),
+              commentCount: showComments ? prompt._count.comments : 0,
             }),
             breadcrumbSchema([
               { name: "Home", path: "/" },
