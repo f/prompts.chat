@@ -40,5 +40,26 @@ export function BotPlatformIcon({ platform, className }: BotPlatformIconProps) {
           <img src="/bots/autogpt-dark.svg" alt="" aria-hidden="true" className={cn(size, "hidden dark:block")} />
         </>
       );
+    case "DOTS":
+      return (
+        <>
+          <img src="/bots/dots.svg" alt="" aria-hidden="true" className={cn(size, "dark:hidden")} />
+          <img src="/bots/dots-dark.svg" alt="" aria-hidden="true" className={cn(size, "hidden dark:block")} />
+        </>
+      );
+    case "DUET":
+      return (
+        <>
+          <img src="/bots/duet.svg" alt="" aria-hidden="true" className={cn(size, "dark:hidden")} />
+          <img src="/bots/duet-dark.svg" alt="" aria-hidden="true" className={cn(size, "hidden dark:block")} />
+        </>
+      );
+    case "MUSE":
+      return (
+        <>
+          <img src="/bots/muse.svg" alt="" aria-hidden="true" className={cn(size, "dark:hidden")} />
+          <img src="/bots/muse-dark.svg" alt="" aria-hidden="true" className={cn(size, "hidden dark:block")} />
+        </>
+      );
   }
 }

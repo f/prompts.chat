@@ -62,16 +62,22 @@ async function publicFileDataUri(file: string, mime: string): Promise<string> {
 const LOGO_SIZE = 32;
 
 async function platformLogos(): Promise<Record<BotPlatform, ReactNode>> {
-  const [openclaw, hermes, autogpt] = await Promise.all([
+  const [openclaw, hermes, autogpt, dots, duet, muse] = await Promise.all([
     publicFileDataUri("bots/openclaw.svg", "image/svg+xml"),
     publicFileDataUri("bots/hermes.png", "image/png"),
     publicFileDataUri("bots/autogpt.svg", "image/svg+xml"),
+    publicFileDataUri("bots/dots.svg", "image/svg+xml"),
+    publicFileDataUri("bots/duet.svg", "image/svg+xml"),
+    publicFileDataUri("bots/muse.svg", "image/svg+xml"),
   ]);
   return {
     GROK_BOT: expandIcon(<GrokLogo width={LOGO_SIZE} height={LOGO_SIZE} fill="#18181b" />),
     OPENCLAW: <img src={openclaw} width={LOGO_SIZE} height={LOGO_SIZE} alt="" />,
     HERMES: <img src={hermes} width={LOGO_SIZE} height={LOGO_SIZE} alt="" />,
     AUTOGPT: <img src={autogpt} width={LOGO_SIZE} height={LOGO_SIZE} alt="" />,
+    DOTS: <img src={dots} width={LOGO_SIZE} height={LOGO_SIZE} alt="" />,
+    DUET: <img src={duet} width={LOGO_SIZE} height={LOGO_SIZE} alt="" />,
+    MUSE: <img src={muse} width={LOGO_SIZE} height={LOGO_SIZE} alt="" />,
   };
 }
 
@@ -80,27 +86,44 @@ function truncate(text: string, max: number): string {
   return clean.length > max ? `${clean.slice(0, max - 1).trimEnd()}…` : clean;
 }
 
-function PlatformChips({ platforms, logos }: { platforms: BotPlatform[]; logos: Record<BotPlatform, ReactNode> }) {
+/** Full names fit four chips; past that the row uses short names, or logos only when it shares the row */
+const MAX_FULL_NAME_CHIPS = 4;
+
+function PlatformChips({
+  platforms,
+  logos,
+  sharesRow = false,
+}: {
+  platforms: BotPlatform[];
+  logos: Record<BotPlatform, ReactNode>;
+  sharesRow?: boolean;
+}) {
+  const compact = platforms.length > MAX_FULL_NAME_CHIPS;
+  const label = (platform: BotPlatform) => {
+    if (!compact) return BOT_PLATFORM_INFO[platform].name;
+    return sharesRow ? null : BOT_PLATFORM_INFO[platform].shortName;
+  };
+
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: compact ? 10 : 12 }}>
       {platforms.map((platform) => (
         <div
           key={platform}
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 10,
-            padding: "10px 18px",
+            gap: compact ? 8 : 10,
+            padding: compact ? "8px 14px" : "10px 18px",
             borderRadius: 999,
             border: "2px solid #e4e4e7",
             backgroundColor: "#ffffff",
-            fontSize: 24,
+            fontSize: compact ? 22 : 24,
             fontWeight: 600,
             color: "#18181b",
           }}
         >
           {logos[platform]}
-          <span>{BOT_PLATFORM_INFO[platform].name}</span>
+          {label(platform) && <span>{label(platform)}</span>}
         </div>
       ))}
     </div>
@@ -215,7 +238,7 @@ export async function renderBotOgImage(bot: BotOgImageInput | null) {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <PlatformChips platforms={bot.platforms} logos={logos} />
+          <PlatformChips platforms={bot.platforms} logos={logos} sharesRow />
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             {bot.author.avatar ? (
               <img
