@@ -11,11 +11,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { CopyBlock, OpenAutogptButton } from "@/components/bots/bot-install";
-import { BotPlatformIcon } from "@/components/bots/bot-platform-icon";
+import { BotPlatformTabsList } from "@/components/bots/bot-platform-tabs";
 import type { BotBundleInstallOption } from "@/lib/bots/pairings";
-import { BOT_PLATFORM_INFO } from "@/lib/bots/schema";
 import { analyticsBot } from "@/lib/analytics";
 
 interface BotBundleInstallProps {
@@ -111,14 +110,11 @@ export function BotBundleInstall({ botId, botTitle, botCount, options }: BotBund
         </DialogHeader>
         {options.length > 1 ? (
           <Tabs defaultValue={options[0].platform} className="min-w-0 gap-4">
-            <TabsList aria-label={t("form.platforms")} className="w-full">
-              {options.map((option) => (
-                <TabsTrigger key={option.platform} value={option.platform} className="min-w-0 flex-auto px-1.5 text-xs">
-                  <BotPlatformIcon platform={option.platform} className="h-3.5 w-3.5" />
-                  <span className="truncate">{BOT_PLATFORM_INFO[option.platform].shortName}</span>
-                </TabsTrigger>
-              ))}
-            </TabsList>
+            <BotPlatformTabsList
+              platforms={options.map((option) => option.platform)}
+              label={t("form.platforms")}
+              fourAcrossOnWide
+            />
             {options.map((option) => (
               <TabsContent key={option.platform} value={option.platform} className="min-w-0">
                 <BundlePlatformInstall botId={botId} option={option} />

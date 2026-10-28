@@ -5,10 +5,10 @@ import { useTranslations } from "next-intl";
 import { Check, Copy, ExternalLink, FileCode2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BotPlatformIcon } from "@/components/bots/bot-platform-icon";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { BotPlatformTabsList } from "@/components/bots/bot-platform-tabs";
 import type { BotInstallOption } from "@/lib/bots";
-import { AUTOGPT_CHAT_URL, BOT_PLATFORM_INFO } from "@/lib/bots/schema";
+import { AUTOGPT_CHAT_URL } from "@/lib/bots/schema";
 import { cn } from "@/lib/utils";
 import { analyticsBot } from "@/lib/analytics";
 
@@ -153,19 +153,7 @@ export function BotInstall({ botId, options, urls }: BotInstallProps) {
           onValueChange={(platform) => analyticsBot.tabChange(botId, platform)}
           className="gap-4"
         >
-          <TabsList aria-label={t("form.platforms")} className="w-full md:w-full">
-            {options.map((option) => (
-              <TabsTrigger
-                key={option.platform}
-                value={option.platform}
-                title={option.platformName}
-                className="min-w-0 flex-auto px-1.5 text-xs"
-              >
-                <BotPlatformIcon platform={option.platform} className="h-3.5 w-3.5" />
-                <span className="truncate">{BOT_PLATFORM_INFO[option.platform].shortName}</span>
-              </TabsTrigger>
-            ))}
-          </TabsList>
+          <BotPlatformTabsList platforms={options.map((option) => option.platform)} label={t("form.platforms")} />
           {options.map((option) => (
             <TabsContent key={option.platform} value={option.platform} className="min-w-0">
               <PlatformInstall botId={botId} option={option} />
