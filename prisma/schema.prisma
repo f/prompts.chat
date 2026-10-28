@@ -447,6 +447,7 @@ enum BotPlatform {
   GROK_BOT
   OPENCLAW
   HERMES
+  AUTOGPT
 }
 
 enum StructuredFormat {

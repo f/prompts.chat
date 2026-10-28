@@ -7,6 +7,7 @@ import {
   getBotUrls,
   getHermesInstallCommand,
   getInstallPrompt,
+  getInstallTarget,
   publicBotWhere,
   toBotView,
   type BotPairingInput,
@@ -109,9 +110,8 @@ export function botPairingsJson(pairings: BotPairingView[], baseUrl: string) {
 /** One prompt that sets up every bot of a set on the same platform */
 export function getBundleInstallPrompt(bots: BotView[], platform: BotPlatform, baseUrl: string): string {
   if (bots.length === 1) return getInstallPrompt(bots[0], platform, baseUrl);
-  const platformName = BOT_PLATFORM_INFO[platform].name;
   const list = bots.map((bot, index) => `${index + 1}. "${bot.title}": ${getBotUrls(bot, baseUrl).markdown}`).join("\n");
-  return `Set up these ${bots.length} bots on ${platformName}. They are designed to work together, so install all of them:
+  return `Set up these ${bots.length} bots ${getInstallTarget(platform, bots.length)}. They are designed to work together, so install all of them:
 
 ${list}
 

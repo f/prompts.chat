@@ -186,4 +186,22 @@ describe("getBundleInstallOptions", () => {
       `hermes skills install ${BASE}/bots/m_m-slug/SKILL.md\nhermes skills install ${BASE}/bots/h_h-slug/SKILL.md`
     );
   });
+
+  it("installs AutoGPT bots as Experts through one prompt, with no command or template links", () => {
+    const main = bot("m", { botPlatforms: ["HERMES", "AUTOGPT"] });
+    const autogptOnly = bot("a", { botPlatforms: ["AUTOGPT"], installUrl: "https://x.ai/bot/a" });
+    const hermesOnly = bot("h", { botPlatforms: ["HERMES"] });
+
+    const [, autogpt] = getBundleInstallOptions(main, [autogptOnly, hermesOnly], BASE);
+
+    expect(autogpt.platform).toBe("AUTOGPT");
+    expect(autogpt.bots.map((b) => [b.id, b.installUrl])).toEqual([
+      ["m", null],
+      ["a", null],
+    ]);
+    expect(autogpt.skipped).toEqual(["Bot h"]);
+    expect(autogpt.command).toBeNull();
+    expect(autogpt.installPrompt).toContain("Set up these 2 bots as Experts on AutoGPT.");
+    expect(autogpt.installPrompt).toContain(`2. "Bot a": ${BASE}/bots/a_a-slug.md`);
+  });
 });

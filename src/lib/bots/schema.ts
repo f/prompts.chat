@@ -1,13 +1,17 @@
 import { z } from "zod";
 
-export const BOT_PLATFORMS = ["GROK_BOT", "OPENCLAW", "HERMES"] as const;
+export const BOT_PLATFORMS = ["GROK_BOT", "OPENCLAW", "HERMES", "AUTOGPT"] as const;
 export type BotPlatform = (typeof BOT_PLATFORMS)[number];
 
 export const BOT_PLATFORM_INFO: Record<BotPlatform, { name: string; shortName: string; param: string }> = {
   GROK_BOT: { name: "Grok Bot", shortName: "Grok Bot", param: "grok" },
   OPENCLAW: { name: "OpenClaw", shortName: "OpenClaw", param: "openclaw" },
   HERMES: { name: "Hermes Agent", shortName: "Hermes", param: "hermes" },
+  AUTOGPT: { name: "AutoGPT", shortName: "AutoGPT", param: "autogpt" },
 };
+
+/** AutoGPT has no import command; the install prompt is pasted into a chat with Otto, its head-of-AI agent */
+export const AUTOGPT_CHAT_URL = "https://platform.agpt.co/copilot";
 
 export function platformFromParam(param: string | undefined): BotPlatform | undefined {
   return BOT_PLATFORMS.find((platform) => BOT_PLATFORM_INFO[platform].param === param);

@@ -253,10 +253,16 @@ export function getBotSkillName(bot: Pick<BotView, "id" | "slug">): string {
   return /^[a-z]/.test(name) ? name : `bot-${bot.id.toLowerCase()}`;
 }
 
+/** Where a bot lands on the platform; AutoGPT keeps instructions, skills and routines on an Expert */
+export function getInstallTarget(platform: BotPlatform, count = 1): string {
+  const platformName = BOT_PLATFORM_INFO[platform].name;
+  if (platform === "AUTOGPT") return `as ${count === 1 ? "an Expert" : "Experts"} on ${platformName}`;
+  return `on ${platformName}`;
+}
+
 /** Prompt the user pastes into an agent that cannot import bots from a URL */
 export function getInstallPrompt(bot: BotView, platform: BotPlatform, baseUrl: string): string {
-  const platformName = BOT_PLATFORM_INFO[platform].name;
-  return `Go to ${getBotUrls(bot, baseUrl).markdown} and create the "${bot.title}" bot on ${platformName} exactly as described there: adopt its instructions as your standing instructions, install its skills, ask me to connect the required connectors, and set up each routine with the given schedule or trigger. Confirm each step when done.`;
+  return `Go to ${getBotUrls(bot, baseUrl).markdown} and create the "${bot.title}" bot ${getInstallTarget(platform)} exactly as described there: adopt its instructions as your standing instructions, install its skills, ask me to connect the required connectors, and set up each routine with the given schedule or trigger. Confirm each step when done.`;
 }
 
 /** Hermes installs SKILL.md files straight from a URL */

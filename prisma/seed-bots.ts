@@ -106,7 +106,7 @@ export const EXAMPLE_BOTS: ExampleBot[] = [
 - Pick at most eight papers per digest, ranked by relevance to the topics.
 - For each paper give the title, authors, link and one plain-language takeaway.
 - Skip papers you have already sent in previous digests.`,
-    botPlatforms: ["HERMES", "OPENCLAW"],
+    botPlatforms: ["HERMES", "OPENCLAW", "AUTOGPT"],
     botIcon: "graduation-cap",
     botColor: "violet",
     installUrl: null,
