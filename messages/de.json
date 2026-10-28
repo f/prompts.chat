@@ -186,6 +186,8 @@
     "relistRequestAlreadySent": "Sie haben bereits eine Wiederaufnahme-Anfrage für diesen Prompt gesendet.",
     "relistRequestError": "Fehler beim Senden der Wiederaufnahme-Anfrage. Bitte versuchen Sie es erneut.",
     "relatedPrompts": "Ähnliche Prompts",
+    "relatedSkills": "Ähnliche Skills",
+    "relatedBots": "Ähnliche Bots",
     "deletePrompt": "Prompt Löschen",
     "deletePromptTitle": "Diesen Prompt löschen?",
     "deletePromptDescription": "Diese Aktion kann nicht rückgängig gemacht werden. Der Prompt wird dauerhaft gelöscht.",

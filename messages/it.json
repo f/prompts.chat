@@ -186,6 +186,8 @@
     "relistRequestAlreadySent": "Hai già inviato una richiesta di re-inserimento per questo prompt.",
     "relistRequestError": "Impossibile inviare la richiesta di re-inserimento. Riprova.",
     "relatedPrompts": "Prompt Correlati",
+    "relatedSkills": "Skill Correlate",
+    "relatedBots": "Bot Correlati",
     "deletePrompt": "Elimina Prompt",
     "deletePromptTitle": "Eliminare questo prompt?",
     "deletePromptDescription": "Questa azione non può essere annullata. Il prompt verrà eliminato definitivamente.",

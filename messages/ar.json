@@ -186,6 +186,8 @@
     "relistRequestAlreadySent": "لقد أرسلت بالفعل طلب إعادة إدراج لهذا البرومبت.",
     "relistRequestError": "فشل إرسال طلب إعادة الإدراج. يرجى المحاولة مرة أخرى.",
     "relatedPrompts": "برومبتات ذات صلة",
+    "relatedSkills": "مهارات ذات صلة",
+    "relatedBots": "بوتات ذات صلة",
     "deletePrompt": "حذف البرومبت",
     "deletePromptTitle": "حذف هذا البرومبت؟",
     "deletePromptDescription": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف البرومبت نهائياً.",

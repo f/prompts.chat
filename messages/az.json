@@ -186,6 +186,8 @@
     "relistRequestAlreadySent": "Bu prompt üçün artıq sorğu göndərmisiniz.",
     "relistRequestError": "Sorğu göndərilmədi. Yenidən cəhd edin.",
     "relatedPrompts": "Əlaqəli Promptlar",
+    "relatedSkills": "Əlaqəli Bacarıqlar",
+    "relatedBots": "Əlaqəli Botlar",
     "deletePrompt": "Promptu Sil",
     "deletePromptTitle": "Bu promptu silmək istəyirsiniz?",
     "deletePromptDescription": "Bu əməliyyat geri alına bilməz. Prompt birdəfəlik silinəcək.",

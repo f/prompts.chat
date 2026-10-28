@@ -186,6 +186,8 @@
     "relistRequestAlreadySent": "You have already submitted a relist request for this prompt.",
     "relistRequestError": "Failed to submit relist request. Please try again.",
     "relatedPrompts": "Related Prompts",
+    "relatedSkills": "Related Skills",
+    "relatedBots": "Related Bots",
     "deletePrompt": "Delete Prompt",
     "deletePromptTitle": "Delete this prompt?",
     "deletePromptDescription": "This action cannot be undone. The prompt will be permanently removed.",

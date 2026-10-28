@@ -186,6 +186,8 @@
     "relistRequestAlreadySent": "Você já enviou uma solicitação de re-listagem para este prompt.",
     "relistRequestError": "Falha ao enviar solicitação de re-listagem. Por favor, tente novamente.",
     "relatedPrompts": "Prompts Relacionados",
+    "relatedSkills": "Skills Relacionadas",
+    "relatedBots": "Bots Relacionados",
     "deletePrompt": "Excluir Prompt",
     "deletePromptTitle": "Excluir este prompt?",
     "deletePromptDescription": "Esta ação não pode ser desfeita. O prompt será excluído permanentemente.",

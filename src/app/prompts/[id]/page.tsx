@@ -32,6 +32,8 @@ import { RestorePromptButton } from "@/components/prompts/restore-prompt-button"
 import { CommentSection } from "@/components/comments";
 import { PromptFlowSection } from "@/components/prompts/prompt-flow-section";
 import { RelatedPrompts } from "@/components/prompts/related-prompts";
+import { RelatedBots } from "@/components/bots/related-bots";
+import { getRelatedSkillsAndBots } from "@/lib/related-content";
 import { ChangeRequestList } from "@/components/prompts/change-request-list";
 import { AddToCollectionButton } from "@/components/prompts/add-to-collection-button";
 import { getConfig } from "@/lib/config";
@@ -284,6 +286,10 @@ export default async function PromptPage({ params }: PromptPageProps) {
   const relatedPrompts = relatedConnections
     .map((conn) => conn.target)
     .filter((p) => !p.isPrivate && !p.isUnlisted && !p.deletedAt);
+
+  const { skills: relatedSkills, bots: relatedBots } = await getRelatedSkillsAndBots(id, {
+    excludeIds: relatedPrompts.map((p) => p.id),
+  });
 
   // Check if prompt has flow connections (previous/next, not "related")
   const flowConnectionCount = await db.promptConnection.count({
@@ -788,6 +794,9 @@ export default async function PromptPage({ params }: PromptPageProps) {
           {relatedPrompts.length > 0 && (
             <RelatedPrompts prompts={relatedPrompts} />
           )}
+
+          <RelatedPrompts prompts={relatedSkills} title={t("relatedSkills")} />
+          <RelatedBots bots={relatedBots} />
 
           {/* Comments Section */}
           {config.features.comments !== false && !prompt.isPrivate && (

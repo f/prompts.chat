@@ -186,6 +186,8 @@
     "relistRequestAlreadySent": "Vous avez déjà soumis une demande de re-listage pour ce prompt.",
     "relistRequestError": "Échec de l'envoi de la demande de re-listage. Veuillez réessayer.",
     "relatedPrompts": "Prompts Similaires",
+    "relatedSkills": "Skills Similaires",
+    "relatedBots": "Bots Similaires",
     "deletePrompt": "Supprimer le Prompt",
     "deletePromptTitle": "Supprimer ce prompt ?",
     "deletePromptDescription": "Cette action est irréversible. Le prompt sera définitivement supprimé.",

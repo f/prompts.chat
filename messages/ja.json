@@ -183,6 +183,8 @@
     "relistRequestAlreadySent": "このプロンプトの再公開依頼は既に送信されています。",
     "relistRequestError": "再公開依頼の送信に失敗しました。もう一度お試しください。",
     "relatedPrompts": "関連プロンプト",
+    "relatedSkills": "関連スキル",
+    "relatedBots": "関連ボット",
     "deletePrompt": "プロンプトを削除",
     "deletePromptTitle": "このプロンプトを削除しますか？",
     "deletePromptDescription": "この操作は取り消せません。プロンプトは完全に削除されます。",

@@ -183,6 +183,8 @@
     "relistRequestAlreadySent": "您已经为此提示词提交了重新上架请求。",
     "relistRequestError": "提交重新上架请求失败。请重试。",
     "relatedPrompts": "相关提示词",
+    "relatedSkills": "相关技能",
+    "relatedBots": "相关机器人",
     "deletePrompt": "删除提示词",
     "deletePromptTitle": "删除此提示词？",
     "deletePromptDescription": "此操作无法撤销。提示词将被永久删除。",

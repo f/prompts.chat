@@ -186,6 +186,8 @@
     "relistRequestAlreadySent": "כבר שלחת בקשת רישום מחדש לפרומפט זה.",
     "relistRequestError": "שליחת בקשת הרישום מחדש נכשלה. אנא נסה שוב.",
     "relatedPrompts": "פרומפטים קשורים",
+    "relatedSkills": "כישורים קשורים",
+    "relatedBots": "בוטים קשורים",
     "deletePrompt": "מחק פרומפט",
     "deletePromptTitle": "למחוק את הפרומפט הזה?",
     "deletePromptDescription": "לא ניתן לבטל פעולה זו. הפרומפט יימחק לצמיתות.",

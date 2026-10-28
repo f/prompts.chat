@@ -186,6 +186,8 @@
     "relistRequestAlreadySent": "شما قبلاً درخواست بازگشت به لیست برای این پرامپت ارسال کرده‌اید.",
     "relistRequestError": "ارسال درخواست بازگشت به لیست ناموفق بود. لطفاً دوباره امتحان کنید.",
     "relatedPrompts": "پرامپت‌های مرتبط",
+    "relatedSkills": "مهارت‌های مرتبط",
+    "relatedBots": "ربات‌های مرتبط",
     "deletePrompt": "حذف پرامپت",
     "deletePromptTitle": "این پرامپت حذف شود؟",
     "deletePromptDescription": "این عمل قابل بازگشت نیست. پرامپت برای همیشه حذف خواهد شد.",

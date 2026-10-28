@@ -186,6 +186,8 @@
     "relistRequestAlreadySent": "Bu prompt için zaten bir yeniden listeleme talebi gönderdiniz.",
     "relistRequestError": "Yeniden listeleme talebi gönderilemedi. Lütfen tekrar deneyin.",
     "relatedPrompts": "İlgili Promptlar",
+    "relatedSkills": "İlgili Beceriler",
+    "relatedBots": "İlgili Botlar",
     "deletePrompt": "Promptu Sil",
     "deletePromptTitle": "Bu promptu silmek istiyor musunuz?",
     "deletePromptDescription": "Bu işlem geri alınamaz. Prompt kalıcı olarak silinecektir.",

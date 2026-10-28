@@ -186,6 +186,8 @@
     "relistRequestAlreadySent": "Έχετε ήδη υποβάλει αίτημα επανακαταχώρησης για αυτό το prompt.",
     "relistRequestError": "Αποτυχία υποβολής αιτήματος επανακαταχώρησης. Παρακαλώ δοκιμάστε ξανά.",
     "relatedPrompts": "Σχετικά Prompts",
+    "relatedSkills": "Σχετικές δεξιότητες",
+    "relatedBots": "Σχετικά bots",
     "deletePrompt": "Διαγραφή Prompt",
     "deletePromptTitle": "Διαγραφή αυτού του prompt;",
     "deletePromptDescription": "Αυτή η ενέργεια δεν μπορεί να αναιρεθεί. Το prompt θα διαγραφεί οριστικά.",

@@ -29,9 +29,11 @@ interface RelatedPrompt {
 
 interface RelatedPromptsProps {
   prompts: RelatedPrompt[];
+  /** Defaults to "Related Prompts" */
+  title?: string;
 }
 
-export function RelatedPrompts({ prompts }: RelatedPromptsProps) {
+export function RelatedPrompts({ prompts, title }: RelatedPromptsProps) {
   const t = useTranslations("prompts");
 
   if (prompts.length === 0) {
@@ -39,9 +41,9 @@ export function RelatedPrompts({ prompts }: RelatedPromptsProps) {
   }
 
   return (
-    <div className="mt-8 space-y-4">
+    <section className="mt-8 space-y-4">
       <div className="flex items-center gap-2">
-        <h2 className="font-semibold">{t("relatedPrompts")}</h2>
+        <h2 className="font-semibold">{title ?? t("relatedPrompts")}</h2>
       </div>
       <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
         {prompts.map((prompt) => (
@@ -86,6 +88,6 @@ export function RelatedPrompts({ prompts }: RelatedPromptsProps) {
           </Link>
         ))}
       </div>
-    </div>
+    </section>
   );
 }

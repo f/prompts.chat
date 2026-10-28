@@ -186,6 +186,8 @@
     "relistRequestAlreadySent": "이 프롬프트에 대한 재등재 요청을 이미 제출하셨습니다.",
     "relistRequestError": "재등재 요청 제출에 실패했습니다. 다시 시도해 주세요.",
     "relatedPrompts": "관련 프롬프트",
+    "relatedSkills": "관련 스킬",
+    "relatedBots": "관련 봇",
     "deletePrompt": "프롬프트 삭제",
     "deletePromptTitle": "이 프롬프트를 삭제하시겠습니까?",
     "deletePromptDescription": "이 작업은 취소할 수 없습니다. 프롬프트가 영구적으로 삭제됩니다.",

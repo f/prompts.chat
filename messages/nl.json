@@ -186,6 +186,8 @@
     "relistRequestAlreadySent": "Je hebt al een herlistingsverzoek ingediend voor deze prompt.",
     "relistRequestError": "Kon herlistingsverzoek niet indienen. Probeer het opnieuw.",
     "relatedPrompts": "Gerelateerde prompts",
+    "relatedSkills": "Gerelateerde skills",
+    "relatedBots": "Gerelateerde bots",
     "deletePrompt": "Prompt verwijderen",
     "deletePromptTitle": "Deze prompt verwijderen?",
     "deletePromptDescription": "Deze actie kan niet ongedaan worden gemaakt. De prompt wordt permanent verwijderd.",
