@@ -7,6 +7,7 @@ const PLATFORM_STYLES: Record<BotPlatform, string> = {
   OPENCLAW: "border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-300",
   HERMES: "border-violet-500/30 bg-violet-500/10 text-violet-700 dark:text-violet-300",
   GROK_BOT: "border-foreground/20 bg-foreground/5 text-foreground",
+  AUTOGPT: "border-blue-500/30 bg-blue-500/10 text-blue-700 dark:text-blue-300",
 };
 
 interface BotPlatformBadgeProps {

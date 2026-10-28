@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BotPlatformIcon } from "@/components/bots/bot-platform-icon";
 import type { BotInstallOption } from "@/lib/bots";
-import { BOT_PLATFORM_INFO } from "@/lib/bots/schema";
+import { AUTOGPT_CHAT_URL, BOT_PLATFORM_INFO } from "@/lib/bots/schema";
 import { cn } from "@/lib/utils";
 import { analyticsBot } from "@/lib/analytics";
 
@@ -108,17 +108,37 @@ function PlatformInstall({ botId, option }: { botId: string; option: BotInstallO
 
       <div className="space-y-2">
         <p className="text-sm text-muted-foreground">
-          {hasPrimaryAction
-            ? t("installPromptPlatformFallbackHint", { platform: platformName })
-            : t("installPromptHint")}
+          {platform === "AUTOGPT"
+            ? t("autogptPromptHint")
+            : hasPrimaryAction
+              ? t("installPromptPlatformFallbackHint", { platform: platformName })
+              : t("installPromptHint")}
         </p>
         <CopyBlock
           text={installPrompt}
           label={t("copyInstallPrompt")}
           onCopy={() => analyticsBot.copyInstall(botId, platform, "prompt")}
         />
+        {platform === "AUTOGPT" && <OpenAutogptButton botId={botId} />}
       </div>
     </div>
+  );
+}
+
+export function OpenAutogptButton({ botId }: { botId: string }) {
+  const t = useTranslations("bots");
+  return (
+    <Button asChild size="sm" variant="ghost" className="w-full">
+      <a
+        href={AUTOGPT_CHAT_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => analyticsBot.installClick(botId, "AUTOGPT")}
+      >
+        <ExternalLink className="h-4 w-4" />
+        {t("openAutogpt")}
+      </a>
+    </Button>
   );
 }
 

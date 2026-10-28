@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CopyBlock } from "@/components/bots/bot-install";
+import { CopyBlock, OpenAutogptButton } from "@/components/bots/bot-install";
 import { BotPlatformIcon } from "@/components/bots/bot-platform-icon";
 import type { BotBundleInstallOption } from "@/lib/bots/pairings";
 import { BOT_PLATFORM_INFO } from "@/lib/bots/schema";
@@ -78,13 +78,14 @@ function BundlePlatformInstall({ botId, option }: { botId: string; option: BotBu
 
       <div className="space-y-2">
         <p className="text-sm text-muted-foreground">
-          {t("installAllPromptHint", { platform: platformName })}
+          {platform === "AUTOGPT" ? t("installAllAutogptPromptHint") : t("installAllPromptHint", { platform: platformName })}
         </p>
         <CopyBlock
           text={installPrompt}
           label={t("copyInstallPrompt")}
           onCopy={() => analyticsBot.copyInstall(botId, platform, "bundle_prompt")}
         />
+        {platform === "AUTOGPT" && <OpenAutogptButton botId={botId} />}
       </div>
     </div>
   );

@@ -62,14 +62,16 @@ async function publicFileDataUri(file: string, mime: string): Promise<string> {
 const LOGO_SIZE = 32;
 
 async function platformLogos(): Promise<Record<BotPlatform, ReactNode>> {
-  const [openclaw, hermes] = await Promise.all([
+  const [openclaw, hermes, autogpt] = await Promise.all([
     publicFileDataUri("bots/openclaw.svg", "image/svg+xml"),
     publicFileDataUri("bots/hermes.png", "image/png"),
+    publicFileDataUri("bots/autogpt.svg", "image/svg+xml"),
   ]);
   return {
     GROK_BOT: expandIcon(<GrokLogo width={LOGO_SIZE} height={LOGO_SIZE} fill="#18181b" />),
     OPENCLAW: <img src={openclaw} width={LOGO_SIZE} height={LOGO_SIZE} alt="" />,
     HERMES: <img src={hermes} width={LOGO_SIZE} height={LOGO_SIZE} alt="" />,
+    AUTOGPT: <img src={autogpt} width={LOGO_SIZE} height={LOGO_SIZE} alt="" />,
   };
 }
 
