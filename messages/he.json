@@ -929,7 +929,7 @@
     "browsePrompts": "עיין בפרומפטים"
   },
   "bots": {
-    "description": "בוטים מוכנים של סוכני בינה מלאכותית עם הנחיות, שגרות ומיומנויות. התקינו אותם ב-OpenClaw, ב-Hermes Agent או ב-Grok Bot.",
+    "description": "בוטים מוכנים של סוכני בינה מלאכותית עם הנחיות, שגרות ומיומנויות. התקינו אותם ב-OpenClaw, ב-AutoGPT, ב-Hermes Agent או ב-Grok Bot.",
     "count": "{count, plural, one {בוט אחד} other {# בוטים}}",
     "allPlatforms": "הכול",
     "searchPlaceholder": "חיפוש בוטים...",
@@ -954,6 +954,8 @@
     "installPromptHint": "הדביקו את הפרומפט הזה בסוכן שלכם. הוא יטען את הגדרת הבוט ויגדיר את ההנחיות, השגרות והמיומנויות.",
     "installPromptFallbackHint": "או הדביקו את הפרומפט הזה ב-Grok Bot כדי ליצור את הבוט בעצמכם:",
     "installPromptPlatformFallbackHint": "או הדביקו את הפרומפט הזה ב-{platform} כדי ליצור את הבוט בעצמכם:",
+    "autogptPromptHint": "הדביקו את הפרומפט הזה בשיחה עם Otto ב-AutoGPT. Otto מגדיר את הבוט כ-Expert עם ההנחיות, המיומנויות והשגרות שלו.",
+    "openAutogpt": "פתיחת AutoGPT",
     "copyInstallPrompt": "העתקת פרומפט ההתקנה",
     "machineReadable": "קריא למכונה",
     "create": "בוט חדש",
@@ -1069,6 +1071,7 @@
     "installAllTitle": "{count, plural, other {התקנת כל הבוטים יחד (#)}}",
     "installAllDescription": "הגדירו את {bot} ואת הבוטים שמשתלבים איתו בבת אחת.",
     "installAllPromptHint": "הדביקו את הפרומפט הזה ב-{platform}. הוא מגדיר כל בוט בסט, אחד אחרי השני.",
+    "installAllAutogptPromptHint": "הדביקו את הפרומפט הזה בשיחה עם Otto ב-AutoGPT. Otto מגדיר כל בוט בסט כ-Expert, אחד אחרי השני.",
     "installAllCommandHint": "התקינו כל בוט בסט כמיומנות:",
     "installAllTemplatesHint": "או פתחו כל תבנית {platform}:",
     "installAllSkipped": "לא זמין ב-{platform}: {bots}",
@@ -2470,7 +2473,7 @@
     },
     "bots": {
       "title": "בוטים מוכנים של סוכני בינה מלאכותית ל-OpenClaw, Hermes ו-Grok",
-      "description": "עיינו בבוטים מוכנים של סוכני בינה מלאכותית עם הנחיות, שגרות מתוזמנות ומיומנויות, והתקינו אותם ב-OpenClaw, ב-Hermes Agent או ב-Grok Bot בלחיצה אחת.",
+      "description": "עיינו בבוטים מוכנים של סוכני בינה מלאכותית עם הנחיות, שגרות מתוזמנות ומיומנויות, והתקינו אותם ב-OpenClaw, ב-AutoGPT, ב-Hermes Agent או ב-Grok Bot בלחיצה אחת.",
       "heading": "בוטים"
     },
     "taste": {

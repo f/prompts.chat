@@ -929,7 +929,7 @@
     "browsePrompts": "Prompts bekijken"
   },
   "bots": {
-    "description": "Kant-en-klare AI-agentbots met instructies, routines en skills. Installeer ze op OpenClaw, Hermes Agent of Grok Bot.",
+    "description": "Kant-en-klare AI-agentbots met instructies, routines en skills. Installeer ze op OpenClaw, AutoGPT, Hermes Agent of Grok Bot.",
     "count": "{count, plural, one {# bot} other {# bots}}",
     "allPlatforms": "Alle",
     "searchPlaceholder": "Bots zoeken...",
@@ -954,6 +954,8 @@
     "installPromptHint": "Plak deze prompt in je agent. Die haalt de botdefinitie op en stelt de instructies, routines en skills in.",
     "installPromptFallbackHint": "Of plak deze prompt in Grok Bot om de bot zelf te maken:",
     "installPromptPlatformFallbackHint": "Of plak deze prompt in {platform} om de bot zelf te maken:",
+    "autogptPromptHint": "Plak deze prompt in een chat met Otto op AutoGPT. Otto stelt de bot in als Expert met zijn instructies, skills en routines.",
+    "openAutogpt": "AutoGPT openen",
     "copyInstallPrompt": "Installatieprompt kopiëren",
     "machineReadable": "Machineleesbaar",
     "create": "Nieuwe bot",
@@ -1069,6 +1071,7 @@
     "installAllTitle": "{count, plural, one {# bot installeren} other {Alle # bots samen installeren}}",
     "installAllDescription": "Stel {bot} en de bots die erbij passen in één keer in.",
     "installAllPromptHint": "Plak deze prompt in {platform}. Hij stelt elke bot uit de set na elkaar in.",
+    "installAllAutogptPromptHint": "Plak deze prompt in een chat met Otto op AutoGPT. Otto stelt elke bot uit de set na elkaar in als Expert.",
     "installAllCommandHint": "Installeer elke bot uit de set als skill:",
     "installAllTemplatesHint": "Of open elke {platform}-sjabloon:",
     "installAllSkipped": "Niet beschikbaar op {platform}: {bots}",
@@ -2477,7 +2480,7 @@
     },
     "bots": {
       "title": "Kant-en-klare AI-agentbots voor OpenClaw, Hermes en Grok",
-      "description": "Bekijk kant-en-klare AI-agentbots met instructies, geplande routines en skills en installeer ze met één klik op OpenClaw, Hermes Agent of Grok Bot.",
+      "description": "Bekijk kant-en-klare AI-agentbots met instructies, geplande routines en skills en installeer ze met één klik op OpenClaw, AutoGPT, Hermes Agent of Grok Bot.",
       "heading": "Bots"
     },
     "taste": {

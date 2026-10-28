@@ -929,7 +929,7 @@
     "browsePrompts": "Περιήγηση Prompts"
   },
   "bots": {
-    "description": "Έτοιμα bots πρακτόρων AI με οδηγίες, ρουτίνες και δεξιότητες. Εγκαταστήστε τα στο OpenClaw, στο Hermes Agent ή στο Grok Bot.",
+    "description": "Έτοιμα bots πρακτόρων AI με οδηγίες, ρουτίνες και δεξιότητες. Εγκαταστήστε τα στο OpenClaw, στο AutoGPT, στο Hermes Agent ή στο Grok Bot.",
     "count": "{count, plural, one {# bot} other {# bots}}",
     "allPlatforms": "Όλα",
     "searchPlaceholder": "Αναζήτηση bots...",
@@ -954,6 +954,8 @@
     "installPromptHint": "Επικολλήστε αυτό το prompt στον πράκτορά σας. Φέρνει τον ορισμό του bot και ρυθμίζει τις οδηγίες, τις ρουτίνες και τις δεξιότητες.",
     "installPromptFallbackHint": "Ή επικολλήστε αυτό το prompt στο Grok Bot για να δημιουργήσετε το bot μόνοι σας:",
     "installPromptPlatformFallbackHint": "Ή επικολλήστε αυτό το prompt στο {platform} για να δημιουργήσετε το bot μόνοι σας:",
+    "autogptPromptHint": "Επικολλήστε αυτό το prompt σε μια συνομιλία με τον Otto στο AutoGPT. Ο Otto ρυθμίζει το bot ως Expert με τις οδηγίες, τις δεξιότητες και τις ρουτίνες του.",
+    "openAutogpt": "Άνοιγμα AutoGPT",
     "copyInstallPrompt": "Αντιγραφή prompt εγκατάστασης",
     "machineReadable": "Αναγνώσιμο από μηχανές",
     "create": "Νέο bot",
@@ -1069,6 +1071,7 @@
     "installAllTitle": "{count, plural, one {Εγκατάσταση # bot} other {Εγκατάσταση και των # bots μαζί}}",
     "installAllDescription": "Ρυθμίστε το {bot} και τα bots που ταιριάζουν μαζί του με μία κίνηση.",
     "installAllPromptHint": "Επικολλήστε αυτό το prompt στο {platform}. Ρυθμίζει κάθε bot του συνόλου, το ένα μετά το άλλο.",
+    "installAllAutogptPromptHint": "Επικολλήστε αυτό το prompt σε μια συνομιλία με τον Otto στο AutoGPT. Ο Otto ρυθμίζει κάθε bot του συνόλου ως Expert, το ένα μετά το άλλο.",
     "installAllCommandHint": "Εγκαταστήστε κάθε bot του συνόλου ως skill:",
     "installAllTemplatesHint": "Ή ανοίξτε κάθε πρότυπο {platform}:",
     "installAllSkipped": "Μη διαθέσιμο στο {platform}: {bots}",
@@ -2477,7 +2480,7 @@
     },
     "bots": {
       "title": "Έτοιμα bots πρακτόρων AI για OpenClaw, Hermes και Grok",
-      "description": "Εξερευνήστε έτοιμα bots πρακτόρων AI με οδηγίες, προγραμματισμένες ρουτίνες και δεξιότητες και εγκαταστήστε τα στο OpenClaw, στο Hermes Agent ή στο Grok Bot με ένα κλικ.",
+      "description": "Εξερευνήστε έτοιμα bots πρακτόρων AI με οδηγίες, προγραμματισμένες ρουτίνες και δεξιότητες και εγκαταστήστε τα στο OpenClaw, στο AutoGPT, στο Hermes Agent ή στο Grok Bot με ένα κλικ.",
       "heading": "Bots"
     },
     "taste": {

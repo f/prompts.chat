@@ -929,7 +929,7 @@
     "browsePrompts": "プロンプトを見る"
   },
   "bots": {
-    "description": "指示・ルーティン・スキルを備えたすぐに使える AI エージェントボット。OpenClaw、Hermes Agent、Grok Bot にインストールできます。",
+    "description": "指示・ルーティン・スキルを備えたすぐに使える AI エージェントボット。OpenClaw、AutoGPT、Hermes Agent、Grok Bot にインストールできます。",
     "count": "{count, plural, other {# 件のボット}}",
     "allPlatforms": "すべて",
     "searchPlaceholder": "ボットを検索...",
@@ -954,6 +954,8 @@
     "installPromptHint": "このプロンプトをエージェントに貼り付けてください。ボットの定義を取得し、指示・ルーティン・スキルを設定します。",
     "installPromptFallbackHint": "または、このプロンプトを Grok Bot に貼り付けて自分でボットを作成します:",
     "installPromptPlatformFallbackHint": "または、このプロンプトを {platform} に貼り付けて自分でボットを作成します:",
+    "autogptPromptHint": "このプロンプトを AutoGPT の Otto とのチャットに貼り付けてください。Otto が指示・スキル・ルーティンを備えた Expert としてボットをセットアップします。",
+    "openAutogpt": "AutoGPT を開く",
     "copyInstallPrompt": "インストールプロンプトをコピー",
     "machineReadable": "機械可読",
     "create": "新しいボット",
@@ -1069,6 +1071,7 @@
     "installAllTitle": "{count, plural, other {# 個のボットをまとめてインストール}}",
     "installAllDescription": "{bot} と相性の良いボットを一度にセットアップします。",
     "installAllPromptHint": "このプロンプトを {platform} に貼り付けてください。セット内のボットを順番にセットアップします。",
+    "installAllAutogptPromptHint": "このプロンプトを AutoGPT の Otto とのチャットに貼り付けてください。Otto がセット内の各ボットを順番に Expert としてセットアップします。",
     "installAllCommandHint": "セット内の各ボットをスキルとしてインストール:",
     "installAllTemplatesHint": "または各 {platform} テンプレートを開く:",
     "installAllSkipped": "{platform} では利用できません: {bots}",
@@ -2474,7 +2477,7 @@
     },
     "bots": {
       "title": "OpenClaw・Hermes・Grok 向けのすぐに使える AI エージェントボット",
-      "description": "指示、定期ルーティン、スキルを備えたすぐに使える AI エージェントボットを探して、OpenClaw、Hermes Agent、Grok Bot にワンクリックでインストールできます。",
+      "description": "指示、定期ルーティン、スキルを備えたすぐに使える AI エージェントボットを探して、OpenClaw、AutoGPT、Hermes Agent、Grok Bot にワンクリックでインストールできます。",
       "heading": "ボット"
     },
     "taste": {

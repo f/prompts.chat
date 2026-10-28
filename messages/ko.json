@@ -929,7 +929,7 @@
     "browsePrompts": "프롬프트 둘러보기"
   },
   "bots": {
-    "description": "지침, 루틴, 스킬을 갖춘 바로 쓸 수 있는 AI 에이전트 봇입니다. OpenClaw, Hermes Agent 또는 Grok Bot에 설치하세요.",
+    "description": "지침, 루틴, 스킬을 갖춘 바로 쓸 수 있는 AI 에이전트 봇입니다. OpenClaw, AutoGPT, Hermes Agent 또는 Grok Bot에 설치하세요.",
     "count": "{count, plural, other {봇 #개}}",
     "allPlatforms": "전체",
     "searchPlaceholder": "봇 검색...",
@@ -954,6 +954,8 @@
     "installPromptHint": "이 프롬프트를 에이전트에 붙여 넣으세요. 봇 정의를 가져와 지침, 루틴, 스킬을 설정합니다.",
     "installPromptFallbackHint": "또는 이 프롬프트를 Grok Bot에 붙여 넣어 직접 봇을 만드세요:",
     "installPromptPlatformFallbackHint": "또는 이 프롬프트를 {platform}에 붙여넣어 직접 봇을 만드세요:",
+    "autogptPromptHint": "이 프롬프트를 AutoGPT의 Otto와의 채팅에 붙여넣으세요. Otto가 지침, 스킬, 루틴을 갖춘 Expert로 봇을 설정합니다.",
+    "openAutogpt": "AutoGPT 열기",
     "copyInstallPrompt": "설치 프롬프트 복사",
     "machineReadable": "기계 판독용",
     "create": "새 봇",
@@ -1069,6 +1071,7 @@
     "installAllTitle": "{count, plural, other {봇 #개 모두 함께 설치}}",
     "installAllDescription": "{bot}와(과) 함께 쓰기 좋은 봇을 한 번에 설정하세요.",
     "installAllPromptHint": "이 프롬프트를 {platform}에 붙여넣으세요. 세트의 모든 봇을 차례대로 설정합니다.",
+    "installAllAutogptPromptHint": "이 프롬프트를 AutoGPT의 Otto와의 채팅에 붙여넣으세요. Otto가 세트의 모든 봇을 차례대로 Expert로 설정합니다.",
     "installAllCommandHint": "세트의 각 봇을 스킬로 설치:",
     "installAllTemplatesHint": "또는 각 {platform} 템플릿 열기:",
     "installAllSkipped": "{platform}에서 사용할 수 없음: {bots}",
@@ -2474,7 +2477,7 @@
     },
     "bots": {
       "title": "OpenClaw, Hermes, Grok용 바로 쓰는 AI 에이전트 봇",
-      "description": "지침, 예약 루틴, 스킬을 갖춘 바로 쓸 수 있는 AI 에이전트 봇을 둘러보고 클릭 한 번으로 OpenClaw, Hermes Agent 또는 Grok Bot에 설치하세요.",
+      "description": "지침, 예약 루틴, 스킬을 갖춘 바로 쓸 수 있는 AI 에이전트 봇을 둘러보고 클릭 한 번으로 OpenClaw, AutoGPT, Hermes Agent 또는 Grok Bot에 설치하세요.",
       "heading": "봇"
     },
     "taste": {

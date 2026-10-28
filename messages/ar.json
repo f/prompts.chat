@@ -929,7 +929,7 @@
     "browsePrompts": "تصفح الأوامر"
   },
   "bots": {
-    "description": "بوتات وكلاء ذكاء اصطناعي جاهزة مع التعليمات والمهام الروتينية والمهارات. ثبّتها على OpenClaw أو Hermes Agent أو Grok Bot.",
+    "description": "بوتات وكلاء ذكاء اصطناعي جاهزة مع التعليمات والمهام الروتينية والمهارات. ثبّتها على OpenClaw أو AutoGPT أو Hermes Agent أو Grok Bot.",
     "count": "{count, plural, zero {لا توجد بوتات} one {بوت واحد} two {بوتان} few {# بوتات} many {# بوتًا} other {# بوت}}",
     "allPlatforms": "الكل",
     "searchPlaceholder": "ابحث في البوتات...",
@@ -954,6 +954,8 @@
     "installPromptHint": "الصق هذه التعليمة في وكيلك. سيجلب تعريف البوت ويُعدّ التعليمات والمهام الروتينية والمهارات.",
     "installPromptFallbackHint": "أو الصق هذه التعليمة في Grok Bot لإنشاء البوت بنفسك:",
     "installPromptPlatformFallbackHint": "أو الصق هذا الموجّه في {platform} لإنشاء البوت بنفسك:",
+    "autogptPromptHint": "الصق هذا الموجّه في محادثة مع Otto على AutoGPT. سيُعِدّ Otto البوت بوصفه Expert مع تعليماته ومهاراته ومهامه الروتينية.",
+    "openAutogpt": "فتح AutoGPT",
     "copyInstallPrompt": "نسخ تعليمة التثبيت",
     "machineReadable": "قابل للقراءة آليًا",
     "create": "بوت جديد",
@@ -1069,6 +1071,7 @@
     "installAllTitle": "{count, plural, other {تثبيت كل البوتات معًا (#)}}",
     "installAllDescription": "أعدّ {bot} والبوتات التي تتكامل معه دفعة واحدة.",
     "installAllPromptHint": "الصق هذه التعليمات في {platform}. ستُعِدّ كل بوت في المجموعة واحدًا تلو الآخر.",
+    "installAllAutogptPromptHint": "الصق هذه التعليمات في محادثة مع Otto على AutoGPT. سيُعِدّ Otto كل بوت في المجموعة بوصفه Expert، واحدًا تلو الآخر.",
     "installAllCommandHint": "ثبّت كل بوت في المجموعة كمهارة:",
     "installAllTemplatesHint": "أو افتح كل قالب من {platform}:",
     "installAllSkipped": "غير متاح على {platform}: {bots}",
@@ -2472,7 +2475,7 @@
     },
     "bots": {
       "title": "بوتات وكلاء ذكاء اصطناعي جاهزة لـ OpenClaw وHermes وGrok",
-      "description": "تصفّح بوتات وكلاء ذكاء اصطناعي جاهزة مع التعليمات والمهام المجدولة والمهارات، وثبّتها على OpenClaw أو Hermes Agent أو Grok Bot بنقرة واحدة.",
+      "description": "تصفّح بوتات وكلاء ذكاء اصطناعي جاهزة مع التعليمات والمهام المجدولة والمهارات، وثبّتها على OpenClaw أو AutoGPT أو Hermes Agent أو Grok Bot بنقرة واحدة.",
       "heading": "البوتات"
     },
     "taste": {

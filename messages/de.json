@@ -929,7 +929,7 @@
     "browsePrompts": "Prompts durchsuchen"
   },
   "bots": {
-    "description": "Fertige KI-Agenten-Bots mit Anweisungen, Routinen und Skills. Installiere sie auf OpenClaw, Hermes Agent oder Grok Bot.",
+    "description": "Fertige KI-Agenten-Bots mit Anweisungen, Routinen und Skills. Installiere sie auf OpenClaw, AutoGPT, Hermes Agent oder Grok Bot.",
     "count": "{count, plural, one {# Bot} other {# Bots}}",
     "allPlatforms": "Alle",
     "searchPlaceholder": "Bots durchsuchen...",
@@ -954,6 +954,8 @@
     "installPromptHint": "Füge diesen Prompt in deinen Agenten ein. Er ruft die Bot-Definition ab und richtet Anweisungen, Routinen und Skills ein.",
     "installPromptFallbackHint": "Oder füge diesen Prompt in Grok Bot ein, um den Bot selbst zu erstellen:",
     "installPromptPlatformFallbackHint": "Oder füge diesen Prompt in {platform} ein, um den Bot selbst zu erstellen:",
+    "autogptPromptHint": "Füge diesen Prompt in einen Chat mit Otto auf AutoGPT ein. Otto richtet den Bot als Expert mit seinen Anweisungen, Skills und Routinen ein.",
+    "openAutogpt": "AutoGPT öffnen",
     "copyInstallPrompt": "Installations-Prompt kopieren",
     "machineReadable": "Maschinenlesbar",
     "create": "Neuer Bot",
@@ -1069,6 +1071,7 @@
     "installAllTitle": "{count, plural, one {# Bot installieren} other {Alle # Bots zusammen installieren}}",
     "installAllDescription": "Richte {bot} und die passenden Bots in einem Schritt ein.",
     "installAllPromptHint": "Füge diesen Prompt in {platform} ein. Er richtet jeden Bot des Sets nacheinander ein.",
+    "installAllAutogptPromptHint": "Füge diesen Prompt in einen Chat mit Otto auf AutoGPT ein. Otto richtet jeden Bot des Sets nacheinander als Expert ein.",
     "installAllCommandHint": "Installiere jeden Bot des Sets als Skill:",
     "installAllTemplatesHint": "Oder öffne jede {platform}-Vorlage:",
     "installAllSkipped": "Nicht verfügbar auf {platform}: {bots}",
@@ -2486,7 +2489,7 @@
     },
     "bots": {
       "title": "Fertige KI-Agenten-Bots für OpenClaw, Hermes und Grok",
-      "description": "Entdecke fertige KI-Agenten-Bots mit Anweisungen, geplanten Routinen und Skills und installiere sie mit einem Klick auf OpenClaw, Hermes Agent oder Grok Bot.",
+      "description": "Entdecke fertige KI-Agenten-Bots mit Anweisungen, geplanten Routinen und Skills und installiere sie mit einem Klick auf OpenClaw, AutoGPT, Hermes Agent oder Grok Bot.",
       "heading": "Bots"
     },
     "taste": {

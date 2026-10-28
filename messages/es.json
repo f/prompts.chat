@@ -929,7 +929,7 @@
     "browsePrompts": "Explorar Prompts"
   },
   "bots": {
-    "description": "Bots de agentes de IA listos para usar, con instrucciones, rutinas y habilidades. Instálalos en OpenClaw, Hermes Agent o Grok Bot.",
+    "description": "Bots de agentes de IA listos para usar, con instrucciones, rutinas y habilidades. Instálalos en OpenClaw, AutoGPT, Hermes Agent o Grok Bot.",
     "count": "{count, plural, one {# bot} other {# bots}}",
     "allPlatforms": "Todos",
     "searchPlaceholder": "Buscar bots...",
@@ -954,6 +954,8 @@
     "installPromptHint": "Pega este prompt en tu agente. Obtiene la definición del bot y configura las instrucciones, rutinas y habilidades.",
     "installPromptFallbackHint": "O pega este prompt en Grok Bot para crear el bot tú mismo:",
     "installPromptPlatformFallbackHint": "O pega este prompt en {platform} para crear el bot tú mismo:",
+    "autogptPromptHint": "Pega este prompt en un chat con Otto en AutoGPT. Otto configura el bot como un Expert con sus instrucciones, habilidades y rutinas.",
+    "openAutogpt": "Abrir AutoGPT",
     "copyInstallPrompt": "Copiar prompt de instalación",
     "machineReadable": "Legible por máquinas",
     "create": "Nuevo bot",
@@ -1069,6 +1071,7 @@
     "installAllTitle": "{count, plural, one {Instalar # bot} other {Instalar los # bots juntos}}",
     "installAllDescription": "Configura {bot} y los bots con los que combina de una sola vez.",
     "installAllPromptHint": "Pega este prompt en {platform}. Configura cada bot del conjunto, uno tras otro.",
+    "installAllAutogptPromptHint": "Pega este prompt en un chat con Otto en AutoGPT. Otto configura cada bot del conjunto como un Expert, uno tras otro.",
     "installAllCommandHint": "Instala cada bot del conjunto como skill:",
     "installAllTemplatesHint": "O abre cada plantilla de {platform}:",
     "installAllSkipped": "No disponible en {platform}: {bots}",
@@ -2489,7 +2492,7 @@
     },
     "bots": {
       "title": "Bots de agentes de IA listos para OpenClaw, Hermes y Grok",
-      "description": "Explora bots de agentes de IA listos para usar, con instrucciones, rutinas programadas y habilidades, e instálalos en OpenClaw, Hermes Agent o Grok Bot con un clic.",
+      "description": "Explora bots de agentes de IA listos para usar, con instrucciones, rutinas programadas y habilidades, e instálalos en OpenClaw, AutoGPT, Hermes Agent o Grok Bot con un clic.",
       "heading": "Bots"
     },
     "taste": {

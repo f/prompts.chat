@@ -929,7 +929,7 @@
     "browsePrompts": "Обзор промптов"
   },
   "bots": {
-    "description": "Готовые боты ИИ-агентов с инструкциями, рутинами и навыками. Установите их в OpenClaw, Hermes Agent или Grok Bot.",
+    "description": "Готовые боты ИИ-агентов с инструкциями, рутинами и навыками. Установите их в OpenClaw, AutoGPT, Hermes Agent или Grok Bot.",
     "count": "{count, plural, one {# бот} few {# бота} many {# ботов} other {# бота}}",
     "allPlatforms": "Все",
     "searchPlaceholder": "Поиск ботов...",
@@ -954,6 +954,8 @@
     "installPromptHint": "Вставьте этот промпт в своего агента. Он загрузит описание бота и настроит инструкции, рутины и навыки.",
     "installPromptFallbackHint": "Или вставьте этот промпт в Grok Bot, чтобы создать бота самостоятельно:",
     "installPromptPlatformFallbackHint": "Или вставьте этот промпт в {platform}, чтобы создать бота самостоятельно:",
+    "autogptPromptHint": "Вставьте этот промпт в чат с Otto в AutoGPT. Otto настроит бота как Expert с его инструкциями, навыками и рутинами.",
+    "openAutogpt": "Открыть AutoGPT",
     "copyInstallPrompt": "Копировать промпт установки",
     "machineReadable": "Машиночитаемый формат",
     "create": "Новый бот",
@@ -1069,6 +1071,7 @@
     "installAllTitle": "{count, plural, one {Установить # бота} few {Установить все # бота вместе} many {Установить все # ботов вместе} other {Установить все # бота вместе}}",
     "installAllDescription": "Настройте {bot} и подходящих к нему ботов за один раз.",
     "installAllPromptHint": "Вставьте этот промпт в {platform}. Он по очереди настроит каждого бота из набора.",
+    "installAllAutogptPromptHint": "Вставьте этот промпт в чат с Otto в AutoGPT. Otto по очереди настроит каждого бота из набора как Expert.",
     "installAllCommandHint": "Установите каждого бота из набора как навык:",
     "installAllTemplatesHint": "Или откройте каждый шаблон {platform}:",
     "installAllSkipped": "Недоступно в {platform}: {bots}",
@@ -2471,7 +2474,7 @@
     },
     "bots": {
       "title": "Готовые боты ИИ-агентов для OpenClaw, Hermes и Grok",
-      "description": "Просматривайте готовых ботов ИИ-агентов с инструкциями, рутинами по расписанию и навыками и устанавливайте их в OpenClaw, Hermes Agent или Grok Bot в один клик.",
+      "description": "Просматривайте готовых ботов ИИ-агентов с инструкциями, рутинами по расписанию и навыками и устанавливайте их в OpenClaw, AutoGPT, Hermes Agent или Grok Bot в один клик.",
       "heading": "Боты"
     },
     "taste": {

@@ -929,7 +929,7 @@
     "browsePrompts": "Promptlara Göz At"
   },
   "bots": {
-    "description": "Talimatları, rutinleri ve becerileriyle hazır yapay zekâ ajan botları. OpenClaw, Hermes Agent veya Grok Bot'a kurun.",
+    "description": "Talimatları, rutinleri ve becerileriyle hazır yapay zekâ ajan botları. OpenClaw, AutoGPT, Hermes Agent veya Grok Bot'a kurun.",
     "count": "{count, plural, one {# bot} other {# bot}}",
     "allPlatforms": "Tümü",
     "searchPlaceholder": "Bot ara...",
@@ -954,6 +954,8 @@
     "installPromptHint": "Bu istemi ajanınıza yapıştırın. Bot tanımını alır ve talimatları, rutinleri ve becerileri kurar.",
     "installPromptFallbackHint": "Ya da botu kendiniz oluşturmak için bu istemi Grok Bot'a yapıştırın:",
     "installPromptPlatformFallbackHint": "Ya da botu kendiniz oluşturmak için bu istemi {platform} içine yapıştırın:",
+    "autogptPromptHint": "Bu istemi AutoGPT'de Otto ile bir sohbete yapıştırın. Otto botu talimatları, becerileri ve rutinleriyle bir Expert olarak kurar.",
+    "openAutogpt": "AutoGPT'yi aç",
     "copyInstallPrompt": "Kurulum istemini kopyala",
     "machineReadable": "Makine tarafından okunabilir",
     "create": "Yeni bot",
@@ -1069,6 +1071,7 @@
     "installAllTitle": "{count, plural, other {# botun hepsini birlikte yükle}}",
     "installAllDescription": "{bot} botunu ve onunla uyumlu botları tek seferde kurun.",
     "installAllPromptHint": "Bu istemi {platform} içine yapıştırın. Setteki her botu sırayla kurar.",
+    "installAllAutogptPromptHint": "Bu istemi AutoGPT'de Otto ile bir sohbete yapıştırın. Otto setteki her botu sırayla bir Expert olarak kurar.",
     "installAllCommandHint": "Setteki her botu bir beceri olarak yükleyin:",
     "installAllTemplatesHint": "Ya da her {platform} şablonunu açın:",
     "installAllSkipped": "{platform} için mevcut değil: {bots}",
@@ -2485,7 +2488,7 @@
     },
     "bots": {
       "title": "OpenClaw, Hermes ve Grok için Hazır Yapay Zekâ Ajan Botları",
-      "description": "Talimatları, zamanlanmış rutinleri ve becerileri olan hazır yapay zekâ ajan botlarına göz atın ve onları tek tıkla OpenClaw, Hermes Agent veya Grok Bot'a kurun.",
+      "description": "Talimatları, zamanlanmış rutinleri ve becerileri olan hazır yapay zekâ ajan botlarına göz atın ve onları tek tıkla OpenClaw, AutoGPT, Hermes Agent veya Grok Bot'a kurun.",
       "heading": "Botlar"
     },
     "taste": {

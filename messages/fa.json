@@ -929,7 +929,7 @@
     "browsePrompts": "مرور پرامپت‌ها"
   },
   "bots": {
-    "description": "ربات‌های آماده عامل هوش مصنوعی با دستورالعمل‌ها، روال‌ها و مهارت‌ها. آن‌ها را روی OpenClaw، Hermes Agent یا Grok Bot نصب کنید.",
+    "description": "ربات‌های آماده عامل هوش مصنوعی با دستورالعمل‌ها، روال‌ها و مهارت‌ها. آن‌ها را روی OpenClaw، AutoGPT، Hermes Agent یا Grok Bot نصب کنید.",
     "count": "{count, plural, other {# ربات}}",
     "allPlatforms": "همه",
     "searchPlaceholder": "جستجوی بات‌ها...",
@@ -954,6 +954,8 @@
     "installPromptHint": "این پرامپت را در عامل خود قرار دهید. تعریف ربات را دریافت می‌کند و دستورالعمل‌ها، روال‌ها و مهارت‌ها را راه‌اندازی می‌کند.",
     "installPromptFallbackHint": "یا این پرامپت را در Grok Bot قرار دهید تا خودتان ربات را بسازید:",
     "installPromptPlatformFallbackHint": "یا این پرامپت را در {platform} بچسبانید تا ربات را خودتان بسازید:",
+    "autogptPromptHint": "این پرامپت را در گفتگو با Otto در AutoGPT بچسبانید. Otto ربات را با دستورالعمل‌ها، مهارت‌ها و روال‌هایش به‌عنوان یک Expert راه‌اندازی می‌کند.",
+    "openAutogpt": "باز کردن AutoGPT",
     "copyInstallPrompt": "کپی پرامپت نصب",
     "machineReadable": "قابل خواندن توسط ماشین",
     "create": "ربات جدید",
@@ -1069,6 +1071,7 @@
     "installAllTitle": "{count, plural, other {نصب همه ربات‌ها با هم (#)}}",
     "installAllDescription": "{bot} و ربات‌هایی که با آن هماهنگ‌اند را یک‌جا راه‌اندازی کنید.",
     "installAllPromptHint": "این پرامپت را در {platform} بچسبانید. همه ربات‌های مجموعه را یکی پس از دیگری راه‌اندازی می‌کند.",
+    "installAllAutogptPromptHint": "این پرامپت را در گفتگو با Otto در AutoGPT بچسبانید. Otto همه ربات‌های مجموعه را یکی پس از دیگری به‌عنوان Expert راه‌اندازی می‌کند.",
     "installAllCommandHint": "هر ربات مجموعه را به‌عنوان مهارت نصب کنید:",
     "installAllTemplatesHint": "یا هر قالب {platform} را باز کنید:",
     "installAllSkipped": "در {platform} در دسترس نیست: {bots}",
@@ -2470,7 +2473,7 @@
     },
     "bots": {
       "title": "ربات‌های آماده عامل هوش مصنوعی برای OpenClaw، Hermes و Grok",
-      "description": "ربات‌های آماده عامل هوش مصنوعی با دستورالعمل‌ها، روال‌های زمان‌بندی‌شده و مهارت‌ها را مرور کنید و با یک کلیک روی OpenClaw، Hermes Agent یا Grok Bot نصب کنید.",
+      "description": "ربات‌های آماده عامل هوش مصنوعی با دستورالعمل‌ها، روال‌های زمان‌بندی‌شده و مهارت‌ها را مرور کنید و با یک کلیک روی OpenClaw، AutoGPT، Hermes Agent یا Grok Bot نصب کنید.",
       "heading": "ربات‌ها"
     },
     "taste": {
