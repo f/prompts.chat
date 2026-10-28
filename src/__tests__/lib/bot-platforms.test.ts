@@ -132,8 +132,9 @@ describe("bot platforms", () => {
 });
 
 describe("platform tabs", () => {
-  // Container widths: desktop sidebar, 320px and 375px phones (card padding), and the bundle dialog
-  const CONTAINERS = [286, 288, 343, 462];
+  // Tab list widths measured in the browser: the bundle dialog and page card on a 320px phone, the
+  // desktop sidebar, the page card on a 375px phone, the bundle dialog on desktop, and the 768px page
+  const CONTAINERS = [238, 262, 286, 317, 462, 686];
   /** The widest short label, "OpenClaw", with its icon and padding */
   const MIN_TAB_WIDTH = 110;
   const TABS_LIST_PADDING = 6;
