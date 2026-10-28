@@ -204,4 +204,24 @@ describe("getBundleInstallOptions", () => {
     expect(autogpt.installPrompt).toContain("Set up these 2 bots as Experts on AutoGPT.");
     expect(autogpt.installPrompt).toContain(`2. "Bot a": ${BASE}/bots/a_a-slug.md`);
   });
+
+  it("installs Dots, Duet and Muse bots through one prompt each, with no command or template links", () => {
+    const main = bot("m", { botPlatforms: ["DOTS", "DUET", "MUSE"] });
+    const dotsOnly = bot("d", { botPlatforms: ["DOTS"], installUrl: "https://x.ai/bot/d" });
+    const duetAndMuse = bot("u", { botPlatforms: ["DUET", "MUSE"] });
+
+    const [dots, duet, muse] = getBundleInstallOptions(main, [dotsOnly, duetAndMuse], BASE);
+
+    expect([dots.platform, duet.platform, muse.platform]).toEqual(["DOTS", "DUET", "MUSE"]);
+    expect(dots.bots.map((b) => [b.id, b.installUrl])).toEqual([
+      ["m", null],
+      ["d", null],
+    ]);
+    expect(dots.skipped).toEqual(["Bot u"]);
+    expect(duet.skipped).toEqual(["Bot d"]);
+    expect([dots.command, duet.command, muse.command]).toEqual([null, null, null]);
+    expect(dots.installPrompt).toContain("Set up these 2 bots on OpenAI Dots.");
+    expect(duet.installPrompt).toContain("Set up these 2 bots on Claude Duet.");
+    expect(muse.installPrompt).toContain(`2. "Bot u": ${BASE}/bots/u_u-slug.md`);
+  });
 });
