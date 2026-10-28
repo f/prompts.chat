@@ -4,7 +4,7 @@ export const BOT_PLATFORMS = ["GROK_BOT", "OPENCLAW", "HERMES", "AUTOGPT"] as co
 export type BotPlatform = (typeof BOT_PLATFORMS)[number];
 
 export const BOT_PLATFORM_INFO: Record<BotPlatform, { name: string; shortName: string; param: string }> = {
-  GROK_BOT: { name: "Grok Bot", shortName: "Grok Bot", param: "grok" },
+  GROK_BOT: { name: "Grok Bot", shortName: "Grok", param: "grok" },
   OPENCLAW: { name: "OpenClaw", shortName: "OpenClaw", param: "openclaw" },
   HERMES: { name: "Hermes Agent", shortName: "Hermes", param: "hermes" },
   AUTOGPT: { name: "AutoGPT", shortName: "AutoGPT", param: "autogpt" },

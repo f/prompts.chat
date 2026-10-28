@@ -70,6 +70,16 @@ describe("bot platforms", () => {
     expect(platformFromParam("autogpt")).toBe("AUTOGPT");
   });
 
+  it("have short tab labels no wider than the one the tab grid is sized for", () => {
+    // bot-platform-tabs.tsx sizes its container-query columns for "OpenClaw", the widest label
+    expect(BOT_PLATFORMS.map((platform) => BOT_PLATFORM_INFO[platform].shortName)).toEqual([
+      "Grok",
+      "OpenClaw",
+      "Hermes",
+      "AutoGPT",
+    ]);
+  });
+
   it("keep AutoGPT in the shared platform order", () => {
     expect(normalizeBotPlatforms(["AUTOGPT", "GROK_BOT", "AUTOGPT"])).toEqual(["GROK_BOT", "AUTOGPT"]);
     expect(botPlatformsSchema.parse(["AUTOGPT", "HERMES"])).toEqual(["HERMES", "AUTOGPT"]);

@@ -110,11 +110,7 @@ export function BotBundleInstall({ botId, botTitle, botCount, options }: BotBund
         </DialogHeader>
         {options.length > 1 ? (
           <Tabs defaultValue={options[0].platform} className="min-w-0 gap-4">
-            <BotPlatformTabsList
-              platforms={options.map((option) => option.platform)}
-              label={t("form.platforms")}
-              fourAcrossOnWide
-            />
+            <BotPlatformTabsList platforms={options.map((option) => option.platform)} label={t("form.platforms")} />
             {options.map((option) => (
               <TabsContent key={option.platform} value={option.platform} className="min-w-0">
                 <BundlePlatformInstall botId={botId} option={option} />
