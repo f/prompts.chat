@@ -999,7 +999,15 @@
       "submit": "Bot erstellen",
       "save": "Bot speichern",
       "created": "Bot erstellt",
-      "updated": "Bot aktualisiert"
+      "updated": "Bot aktualisiert",
+      "pairingsHint": "Verknüpfe Bots, die gut mit diesem zusammenarbeiten. Verknüpfungen erscheinen auf den Seiten beider Bots.",
+      "pairingsSearch": "Bots zum Verknüpfen suchen...",
+      "pairingsNoResults": "Keine Bots gefunden",
+      "pairingNotePlaceholder": "Warum passen sie gut zusammen? (optional)",
+      "pairingNoteLabel": "Warum {bot} gut passt",
+      "removePairing": "{bot} entfernen",
+      "pairingsMax": "Du kannst bis zu {max} Bots verknüpfen",
+      "pairingsInvalid": "Einer der verknüpften Bots existiert nicht mehr. Entferne ihn und versuche es erneut."
     },
     "colors": {
       "slate": "Schiefer",
@@ -1055,7 +1063,17 @@
       "coffee": "Kaffee"
     },
     "latestBots": "Neueste Bots",
-    "viewAll": "Alle anzeigen"
+    "viewAll": "Alle anzeigen",
+    "betterTogether": "Besser zusammen mit",
+    "installAllTogether": "Alle zusammen installieren",
+    "installAllTitle": "{count, plural, one {# Bot installieren} other {Alle # Bots zusammen installieren}}",
+    "installAllDescription": "Richte {bot} und die passenden Bots in einem Schritt ein.",
+    "installAllPromptHint": "Füge diesen Prompt in {platform} ein. Er richtet jeden Bot des Sets nacheinander ein.",
+    "installAllCommandHint": "Installiere jeden Bot des Sets als Skill:",
+    "installAllTemplatesHint": "Oder öffne jede {platform}-Vorlage:",
+    "installAllSkipped": "Nicht verfügbar auf {platform}: {bots}",
+    "copyCommands": "Befehle kopieren",
+    "openTemplate": "{bot}-Vorlage öffnen"
   },
   "collection": {
     "title": "Meine Sammlung",

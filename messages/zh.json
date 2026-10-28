@@ -999,7 +999,15 @@
       "submit": "创建机器人",
       "save": "保存机器人",
       "created": "机器人已创建",
-      "updated": "机器人已更新"
+      "updated": "机器人已更新",
+      "pairingsHint": "关联与此机器人配合良好的机器人。关联会显示在两个机器人的页面上。",
+      "pairingsSearch": "搜索要搭配的机器人...",
+      "pairingsNoResults": "未找到机器人",
+      "pairingNotePlaceholder": "为什么它们搭配良好?(可选)",
+      "pairingNoteLabel": "{bot} 为什么搭配良好",
+      "removePairing": "移除 {bot}",
+      "pairingsMax": "最多可关联 {max} 个机器人",
+      "pairingsInvalid": "某个已关联的机器人已不存在。请将其移除后重试。"
     },
     "colors": {
       "slate": "石板灰",
@@ -1055,7 +1063,17 @@
       "coffee": "咖啡"
     },
     "latestBots": "最新机器人",
-    "viewAll": "查看全部"
+    "viewAll": "查看全部",
+    "betterTogether": "搭配使用更佳",
+    "installAllTogether": "全部一起安装",
+    "installAllTitle": "{count, plural, other {一起安装全部 # 个机器人}}",
+    "installAllDescription": "一次性设置 {bot} 及其搭配的机器人。",
+    "installAllPromptHint": "将此提示粘贴到 {platform}。它会依次设置组合中的每个机器人。",
+    "installAllCommandHint": "将组合中的每个机器人安装为技能:",
+    "installAllTemplatesHint": "或打开每个 {platform} 模板:",
+    "installAllSkipped": "{platform} 不可用:{bots}",
+    "copyCommands": "复制命令",
+    "openTemplate": "打开 {bot} 模板"
   },
   "collection": {
     "title": "我的收藏",

@@ -999,7 +999,15 @@
       "submit": "ボットを作成",
       "save": "ボットを保存",
       "created": "ボットを作成しました",
-      "updated": "ボットを更新しました"
+      "updated": "ボットを更新しました",
+      "pairingsHint": "このボットと相性の良いボットをリンクします。リンクは両方のボットのページに表示されます。",
+      "pairingsSearch": "組み合わせるボットを検索...",
+      "pairingsNoResults": "ボットが見つかりません",
+      "pairingNotePlaceholder": "相性が良い理由(任意)",
+      "pairingNoteLabel": "{bot} と相性が良い理由",
+      "removePairing": "{bot} を削除",
+      "pairingsMax": "リンクできるボットは最大 {max} 個です",
+      "pairingsInvalid": "リンクしたボットの一つが存在しません。削除してからもう一度お試しください。"
     },
     "colors": {
       "slate": "スレート",
@@ -1055,7 +1063,17 @@
       "coffee": "コーヒー"
     },
     "latestBots": "最新のボット",
-    "viewAll": "すべて表示"
+    "viewAll": "すべて表示",
+    "betterTogether": "一緒に使うとさらに便利",
+    "installAllTogether": "まとめてインストール",
+    "installAllTitle": "{count, plural, other {# 個のボットをまとめてインストール}}",
+    "installAllDescription": "{bot} と相性の良いボットを一度にセットアップします。",
+    "installAllPromptHint": "このプロンプトを {platform} に貼り付けてください。セット内のボットを順番にセットアップします。",
+    "installAllCommandHint": "セット内の各ボットをスキルとしてインストール:",
+    "installAllTemplatesHint": "または各 {platform} テンプレートを開く:",
+    "installAllSkipped": "{platform} では利用できません: {bots}",
+    "copyCommands": "コマンドをコピー",
+    "openTemplate": "{bot} のテンプレートを開く"
   },
   "collection": {
     "title": "マイコレクション",

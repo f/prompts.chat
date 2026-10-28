@@ -999,7 +999,15 @@
       "submit": "Bot maken",
       "save": "Bot opslaan",
       "created": "Bot gemaakt",
-      "updated": "Bot bijgewerkt"
+      "updated": "Bot bijgewerkt",
+      "pairingsHint": "Koppel bots die goed samenwerken met deze. Koppelingen verschijnen op de pagina's van beide bots.",
+      "pairingsSearch": "Zoek bots om te koppelen...",
+      "pairingsNoResults": "Geen bots gevonden",
+      "pairingNotePlaceholder": "Waarom passen ze goed samen? (optioneel)",
+      "pairingNoteLabel": "Waarom {bot} goed past",
+      "removePairing": "{bot} verwijderen",
+      "pairingsMax": "Je kunt maximaal {max} bots koppelen",
+      "pairingsInvalid": "Een van de gekoppelde bots bestaat niet meer. Verwijder hem en probeer het opnieuw."
     },
     "colors": {
       "slate": "Leisteen",
@@ -1055,7 +1063,17 @@
       "coffee": "Koffie"
     },
     "latestBots": "Nieuwste bots",
-    "viewAll": "Alles bekijken"
+    "viewAll": "Alles bekijken",
+    "betterTogether": "Beter samen met",
+    "installAllTogether": "Alles samen installeren",
+    "installAllTitle": "{count, plural, one {# bot installeren} other {Alle # bots samen installeren}}",
+    "installAllDescription": "Stel {bot} en de bots die erbij passen in één keer in.",
+    "installAllPromptHint": "Plak deze prompt in {platform}. Hij stelt elke bot uit de set na elkaar in.",
+    "installAllCommandHint": "Installeer elke bot uit de set als skill:",
+    "installAllTemplatesHint": "Of open elke {platform}-sjabloon:",
+    "installAllSkipped": "Niet beschikbaar op {platform}: {bots}",
+    "copyCommands": "Opdrachten kopiëren",
+    "openTemplate": "{bot}-sjabloon openen"
   },
   "collection": {
     "title": "Mijn collectie",

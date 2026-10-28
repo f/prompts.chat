@@ -999,7 +999,15 @@
       "submit": "إنشاء البوت",
       "save": "حفظ البوت",
       "created": "تم إنشاء البوت",
-      "updated": "تم تحديث البوت"
+      "updated": "تم تحديث البوت",
+      "pairingsHint": "اربط البوتات التي تعمل جيدًا مع هذا البوت. تظهر الروابط في صفحتي البوتين.",
+      "pairingsSearch": "ابحث عن بوتات للربط...",
+      "pairingsNoResults": "لم يتم العثور على بوتات",
+      "pairingNotePlaceholder": "لماذا يتكاملان جيدًا؟ (اختياري)",
+      "pairingNoteLabel": "لماذا يتكامل {bot} جيدًا",
+      "removePairing": "إزالة {bot}",
+      "pairingsMax": "يمكنك ربط ما يصل إلى {max} بوتات",
+      "pairingsInvalid": "أحد البوتات المرتبطة لم يعد موجودًا. أزله وحاول مرة أخرى."
     },
     "colors": {
       "slate": "رمادي أردوازي",
@@ -1055,7 +1063,17 @@
       "coffee": "قهوة"
     },
     "latestBots": "أحدث البوتات",
-    "viewAll": "عرض الكل"
+    "viewAll": "عرض الكل",
+    "betterTogether": "أفضل معًا مع",
+    "installAllTogether": "تثبيت الكل معًا",
+    "installAllTitle": "{count, plural, other {تثبيت كل البوتات معًا (#)}}",
+    "installAllDescription": "أعدّ {bot} والبوتات التي تتكامل معه دفعة واحدة.",
+    "installAllPromptHint": "الصق هذه التعليمات في {platform}. ستُعِدّ كل بوت في المجموعة واحدًا تلو الآخر.",
+    "installAllCommandHint": "ثبّت كل بوت في المجموعة كمهارة:",
+    "installAllTemplatesHint": "أو افتح كل قالب من {platform}:",
+    "installAllSkipped": "غير متاح على {platform}: {bots}",
+    "copyCommands": "نسخ الأوامر",
+    "openTemplate": "فتح قالب {bot}"
   },
   "collection": {
     "title": "مجموعتي",

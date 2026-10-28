@@ -999,7 +999,15 @@
       "submit": "봇 만들기",
       "save": "봇 저장",
       "created": "봇이 생성되었습니다",
-      "updated": "봇이 업데이트되었습니다"
+      "updated": "봇이 업데이트되었습니다",
+      "pairingsHint": "이 봇과 잘 어울리는 봇을 연결하세요. 연결은 두 봇의 페이지에 모두 표시됩니다.",
+      "pairingsSearch": "연결할 봇 검색...",
+      "pairingsNoResults": "봇을 찾을 수 없습니다",
+      "pairingNotePlaceholder": "왜 잘 어울리나요? (선택 사항)",
+      "pairingNoteLabel": "{bot}이(가) 잘 어울리는 이유",
+      "removePairing": "{bot} 제거",
+      "pairingsMax": "최대 {max}개의 봇을 연결할 수 있습니다",
+      "pairingsInvalid": "연결된 봇 중 하나가 더 이상 존재하지 않습니다. 제거한 후 다시 시도하세요."
     },
     "colors": {
       "slate": "슬레이트",
@@ -1055,7 +1063,17 @@
       "coffee": "커피"
     },
     "latestBots": "최신 봇",
-    "viewAll": "모두 보기"
+    "viewAll": "모두 보기",
+    "betterTogether": "함께 쓰면 더 좋은",
+    "installAllTogether": "모두 함께 설치",
+    "installAllTitle": "{count, plural, other {봇 #개 모두 함께 설치}}",
+    "installAllDescription": "{bot}와(과) 함께 쓰기 좋은 봇을 한 번에 설정하세요.",
+    "installAllPromptHint": "이 프롬프트를 {platform}에 붙여넣으세요. 세트의 모든 봇을 차례대로 설정합니다.",
+    "installAllCommandHint": "세트의 각 봇을 스킬로 설치:",
+    "installAllTemplatesHint": "또는 각 {platform} 템플릿 열기:",
+    "installAllSkipped": "{platform}에서 사용할 수 없음: {bots}",
+    "copyCommands": "명령어 복사",
+    "openTemplate": "{bot} 템플릿 열기"
   },
   "collection": {
     "title": "내 컬렉션",

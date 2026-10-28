@@ -999,7 +999,15 @@
       "submit": "Создать бота",
       "save": "Сохранить бота",
       "created": "Бот создан",
-      "updated": "Бот обновлён"
+      "updated": "Бот обновлён",
+      "pairingsHint": "Свяжите ботов, которые хорошо работают с этим. Связи отображаются на страницах обоих ботов.",
+      "pairingsSearch": "Найти ботов для связи...",
+      "pairingsNoResults": "Боты не найдены",
+      "pairingNotePlaceholder": "Почему они хорошо сочетаются? (необязательно)",
+      "pairingNoteLabel": "Почему {bot} хорошо сочетается",
+      "removePairing": "Удалить {bot}",
+      "pairingsMax": "Можно связать не более {max} ботов",
+      "pairingsInvalid": "Один из связанных ботов больше не существует. Удалите его и попробуйте снова."
     },
     "colors": {
       "slate": "Сланцевый",
@@ -1055,7 +1063,17 @@
       "coffee": "Кофе"
     },
     "latestBots": "Новые боты",
-    "viewAll": "Смотреть все"
+    "viewAll": "Смотреть все",
+    "betterTogether": "Лучше вместе с",
+    "installAllTogether": "Установить все вместе",
+    "installAllTitle": "{count, plural, one {Установить # бота} few {Установить все # бота вместе} many {Установить все # ботов вместе} other {Установить все # бота вместе}}",
+    "installAllDescription": "Настройте {bot} и подходящих к нему ботов за один раз.",
+    "installAllPromptHint": "Вставьте этот промпт в {platform}. Он по очереди настроит каждого бота из набора.",
+    "installAllCommandHint": "Установите каждого бота из набора как навык:",
+    "installAllTemplatesHint": "Или откройте каждый шаблон {platform}:",
+    "installAllSkipped": "Недоступно в {platform}: {bots}",
+    "copyCommands": "Копировать команды",
+    "openTemplate": "Открыть шаблон {bot}"
   },
   "collection": {
     "title": "Моя Коллекция",

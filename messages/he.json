@@ -999,7 +999,15 @@
       "submit": "יצירת בוט",
       "save": "שמירת בוט",
       "created": "הבוט נוצר",
-      "updated": "הבוט עודכן"
+      "updated": "הבוט עודכן",
+      "pairingsHint": "קשרו בוטים שעובדים טוב עם הבוט הזה. הקישורים מוצגים בדפים של שני הבוטים.",
+      "pairingsSearch": "חיפוש בוטים לקישור...",
+      "pairingsNoResults": "לא נמצאו בוטים",
+      "pairingNotePlaceholder": "למה הם משתלבים היטב? (אופציונלי)",
+      "pairingNoteLabel": "למה {bot} משתלב היטב",
+      "removePairing": "הסרת {bot}",
+      "pairingsMax": "אפשר לקשר עד {max} בוטים",
+      "pairingsInvalid": "אחד הבוטים המקושרים כבר לא קיים. הסירו אותו ונסו שוב."
     },
     "colors": {
       "slate": "צפחה",
@@ -1055,7 +1063,17 @@
       "coffee": "קפה"
     },
     "latestBots": "הבוטים האחרונים",
-    "viewAll": "הצג הכול"
+    "viewAll": "הצג הכול",
+    "betterTogether": "טוב יותר יחד עם",
+    "installAllTogether": "התקנת כולם יחד",
+    "installAllTitle": "{count, plural, other {התקנת כל הבוטים יחד (#)}}",
+    "installAllDescription": "הגדירו את {bot} ואת הבוטים שמשתלבים איתו בבת אחת.",
+    "installAllPromptHint": "הדביקו את הפרומפט הזה ב-{platform}. הוא מגדיר כל בוט בסט, אחד אחרי השני.",
+    "installAllCommandHint": "התקינו כל בוט בסט כמיומנות:",
+    "installAllTemplatesHint": "או פתחו כל תבנית {platform}:",
+    "installAllSkipped": "לא זמין ב-{platform}: {bots}",
+    "copyCommands": "העתקת פקודות",
+    "openTemplate": "פתיחת התבנית של {bot}"
   },
   "collection": {
     "title": "האוסף שלי",

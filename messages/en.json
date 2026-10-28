@@ -999,7 +999,15 @@
       "submit": "Create bot",
       "save": "Save bot",
       "created": "Bot created",
-      "updated": "Bot updated"
+      "updated": "Bot updated",
+      "pairingsHint": "Link bots that work well with this one. Links show on both bots' pages.",
+      "pairingsSearch": "Search bots to pair with...",
+      "pairingsNoResults": "No bots found",
+      "pairingNotePlaceholder": "Why do they pair well? (optional)",
+      "pairingNoteLabel": "Why {bot} pairs well",
+      "removePairing": "Remove {bot}",
+      "pairingsMax": "You can link up to {max} bots",
+      "pairingsInvalid": "One of the paired bots no longer exists. Remove it and try again."
     },
     "colors": {
       "slate": "Slate",
@@ -1055,7 +1063,17 @@
       "coffee": "Coffee"
     },
     "latestBots": "Latest Bots",
-    "viewAll": "View all"
+    "viewAll": "View all",
+    "betterTogether": "Better together with",
+    "installAllTogether": "Install all together",
+    "installAllTitle": "{count, plural, one {Install # bot} other {Install all # bots together}}",
+    "installAllDescription": "Set up {bot} and the bots it pairs with in one go.",
+    "installAllPromptHint": "Paste this prompt into {platform}. It sets up every bot in the set, one after another.",
+    "installAllCommandHint": "Install every bot in the set as a skill:",
+    "installAllTemplatesHint": "Or open each {platform} template:",
+    "installAllSkipped": "Not available on {platform}: {bots}",
+    "copyCommands": "Copy commands",
+    "openTemplate": "Open {bot} template"
   },
   "collection": {
     "title": "My Collection",

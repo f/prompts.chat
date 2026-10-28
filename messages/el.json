@@ -999,7 +999,15 @@
       "submit": "Δημιουργία bot",
       "save": "Αποθήκευση bot",
       "created": "Το bot δημιουργήθηκε",
-      "updated": "Το bot ενημερώθηκε"
+      "updated": "Το bot ενημερώθηκε",
+      "pairingsHint": "Συνδέστε bots που λειτουργούν καλά με αυτό. Οι συνδέσεις εμφανίζονται στις σελίδες και των δύο bots.",
+      "pairingsSearch": "Αναζήτηση bots για σύνδεση...",
+      "pairingsNoResults": "Δεν βρέθηκαν bots",
+      "pairingNotePlaceholder": "Γιατί ταιριάζουν; (προαιρετικό)",
+      "pairingNoteLabel": "Γιατί το {bot} ταιριάζει",
+      "removePairing": "Αφαίρεση {bot}",
+      "pairingsMax": "Μπορείτε να συνδέσετε έως {max} bots",
+      "pairingsInvalid": "Ένα από τα συνδεδεμένα bots δεν υπάρχει πια. Αφαιρέστε το και δοκιμάστε ξανά."
     },
     "colors": {
       "slate": "Σχιστόλιθος",
@@ -1055,7 +1063,17 @@
       "coffee": "Καφές"
     },
     "latestBots": "Πιο πρόσφατα bots",
-    "viewAll": "Προβολή όλων"
+    "viewAll": "Προβολή όλων",
+    "betterTogether": "Καλύτερα μαζί με",
+    "installAllTogether": "Εγκατάσταση όλων μαζί",
+    "installAllTitle": "{count, plural, one {Εγκατάσταση # bot} other {Εγκατάσταση και των # bots μαζί}}",
+    "installAllDescription": "Ρυθμίστε το {bot} και τα bots που ταιριάζουν μαζί του με μία κίνηση.",
+    "installAllPromptHint": "Επικολλήστε αυτό το prompt στο {platform}. Ρυθμίζει κάθε bot του συνόλου, το ένα μετά το άλλο.",
+    "installAllCommandHint": "Εγκαταστήστε κάθε bot του συνόλου ως skill:",
+    "installAllTemplatesHint": "Ή ανοίξτε κάθε πρότυπο {platform}:",
+    "installAllSkipped": "Μη διαθέσιμο στο {platform}: {bots}",
+    "copyCommands": "Αντιγραφή εντολών",
+    "openTemplate": "Άνοιγμα προτύπου {bot}"
   },
   "collection": {
     "title": "Η Συλλογή μου",

@@ -999,7 +999,15 @@
       "submit": "Crea bot",
       "save": "Salva bot",
       "created": "Bot creato",
-      "updated": "Bot aggiornato"
+      "updated": "Bot aggiornato",
+      "pairingsHint": "Collega i bot che funzionano bene con questo. I collegamenti compaiono nelle pagine di entrambi i bot.",
+      "pairingsSearch": "Cerca bot da abbinare...",
+      "pairingsNoResults": "Nessun bot trovato",
+      "pairingNotePlaceholder": "Perché funzionano bene insieme? (facoltativo)",
+      "pairingNoteLabel": "Perché {bot} si abbina bene",
+      "removePairing": "Rimuovi {bot}",
+      "pairingsMax": "Puoi collegare fino a {max} bot",
+      "pairingsInvalid": "Uno dei bot collegati non esiste più. Rimuovilo e riprova."
     },
     "colors": {
       "slate": "Ardesia",
@@ -1055,7 +1063,17 @@
       "coffee": "Caffè"
     },
     "latestBots": "Ultimi bot",
-    "viewAll": "Vedi tutti"
+    "viewAll": "Vedi tutti",
+    "betterTogether": "Meglio insieme a",
+    "installAllTogether": "Installa tutti insieme",
+    "installAllTitle": "{count, plural, one {Installa # bot} other {Installa tutti i # bot insieme}}",
+    "installAllDescription": "Configura {bot} e i bot che lo completano in un colpo solo.",
+    "installAllPromptHint": "Incolla questo prompt in {platform}. Configura ogni bot del set, uno dopo l'altro.",
+    "installAllCommandHint": "Installa ogni bot del set come skill:",
+    "installAllTemplatesHint": "Oppure apri ogni modello {platform}:",
+    "installAllSkipped": "Non disponibile su {platform}: {bots}",
+    "copyCommands": "Copia comandi",
+    "openTemplate": "Apri il modello {bot}"
   },
   "collection": {
     "title": "La Mia Collezione",

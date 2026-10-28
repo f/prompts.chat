@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { BotForm } from "@/components/bots/bot-form";
 import { extractBotId, getBotById } from "@/lib/bots";
+import { getBotPairings } from "@/lib/bots/pairings";
 import { NOINDEX_ROBOTS } from "@/lib/seo";
 import { getBotUrl } from "@/lib/urls";
 
@@ -32,12 +33,14 @@ export default async function EditBotPage({ params }: EditBotPageProps) {
     redirect(getBotUrl(bot.id, bot.slug));
   }
 
-  const [categories, tags] = await Promise.all([
+  const isAdmin = session.user.role === "ADMIN";
+  const [categories, tags, pairings] = await Promise.all([
     db.category.findMany({
       orderBy: [{ order: "asc" }, { name: "asc" }],
       select: { id: true, name: true, slug: true, parentId: true },
     }),
     db.tag.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true, slug: true, color: true } }),
+    isAdmin ? getBotPairings(bot.id, { includeHidden: true }) : [],
   ]);
 
   return (
@@ -47,6 +50,7 @@ export default async function EditBotPage({ params }: EditBotPageProps) {
         botId={bot.id}
         categories={categories}
         tags={tags}
+        canManagePairings={isAdmin}
         initialData={{
           title: bot.title,
           description: bot.description ?? "",
@@ -59,6 +63,13 @@ export default async function EditBotPage({ params }: EditBotPageProps) {
           categoryId: bot.category?.id,
           tagIds: bot.tags.map((tag) => tag.id),
           config: bot.config,
+          pairings: pairings.map(({ bot: paired, note }) => ({
+            botId: paired.id,
+            title: paired.title,
+            icon: paired.icon,
+            color: paired.color,
+            note: note ?? "",
+          })),
         }}
       />
     </div>

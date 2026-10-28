@@ -302,13 +302,23 @@ export const analyticsBot = {
     });
   },
 
-  copyInstall: (botId: string, platform: string, kind: "prompt" | "command") => {
+  copyInstall: (botId: string, platform: string, kind: "prompt" | "command" | "bundle_prompt" | "bundle_command") => {
     trackEvent({
       action: "copy_bot_install",
       category: "bot",
       label: kind,
       bot_id: botId,
       platform,
+    });
+  },
+
+  /** Opened "Install all together" for a bot and its paired bots */
+  installAllOpen: (botId: string, botCount: number) => {
+    trackEvent({
+      action: "open_bot_install_all",
+      category: "bot",
+      bot_id: botId,
+      value: botCount,
     });
   },
 

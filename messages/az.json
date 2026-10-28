@@ -999,7 +999,15 @@
       "submit": "Bot yarat",
       "save": "Botu yadda saxla",
       "created": "Bot yaradıldı",
-      "updated": "Bot yeniləndi"
+      "updated": "Bot yeniləndi",
+      "pairingsHint": "Bununla yaxşı işləyən botları əlaqələndirin. Əlaqələr hər iki botun səhifəsində görünür.",
+      "pairingsSearch": "Əlaqələndirmək üçün bot axtarın...",
+      "pairingsNoResults": "Bot tapılmadı",
+      "pairingNotePlaceholder": "Niyə yaxşı uyğun gəlirlər? (istəyə bağlı)",
+      "pairingNoteLabel": "{bot} niyə yaxşı uyğun gəlir",
+      "removePairing": "{bot} sil",
+      "pairingsMax": "Ən çox {max} bot əlaqələndirə bilərsiniz",
+      "pairingsInvalid": "Əlaqələndirilmiş botlardan biri artıq mövcud deyil. Onu silib yenidən cəhd edin."
     },
     "colors": {
       "slate": "Şifer",
@@ -1055,7 +1063,17 @@
       "coffee": "Qəhvə"
     },
     "latestBots": "Ən son botlar",
-    "viewAll": "Hamısına bax"
+    "viewAll": "Hamısına bax",
+    "betterTogether": "Birlikdə daha yaxşı",
+    "installAllTogether": "Hamısını birlikdə quraşdır",
+    "installAllTitle": "{count, plural, other {# botun hamısını birlikdə quraşdır}}",
+    "installAllDescription": "{bot} və ona uyğun botları bir dəfəyə quraşdırın.",
+    "installAllPromptHint": "Bu təlimatı {platform} daxilinə yapışdırın. Dəstdəki hər botu ardıcıl quraşdırır.",
+    "installAllCommandHint": "Dəstdəki hər botu bacarıq kimi quraşdırın:",
+    "installAllTemplatesHint": "Və ya hər {platform} şablonunu açın:",
+    "installAllSkipped": "{platform} üçün mövcud deyil: {bots}",
+    "copyCommands": "Əmrləri kopyala",
+    "openTemplate": "{bot} şablonunu aç"
   },
   "collection": {
     "title": "Kolleksiyam",

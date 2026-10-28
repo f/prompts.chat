@@ -25,6 +25,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { BotPlatformIcon } from "@/components/bots/bot-platform-icon";
 import { BotAppearancePicker } from "@/components/bots/bot-appearance-picker";
+import { BotPairingPicker, type BotPairingValue } from "@/components/bots/bot-pairing-picker";
 import { CategorySelect, type CategoryOption } from "@/components/prompts/category-select";
 import { TagPicker, type TagOption } from "@/components/prompts/tag-picker";
 import {
@@ -32,6 +33,8 @@ import {
   BOT_ICONS,
   BOT_PLATFORMS,
   BOT_PLATFORM_INFO,
+  BOT_PAIRING_NOTE_MAX_LENGTH,
+  MAX_BOT_PAIRINGS,
   botRoutineSchema,
   botSkillSchema,
   normalizeBotPlatforms,
@@ -61,6 +64,17 @@ const botFormSchema = z.object({
   routines: z.array(botRoutineSchema).max(20),
   skills: z.array(botSkillSchema).max(20),
   connectors: z.string().max(1000),
+  pairings: z
+    .array(
+      z.object({
+        botId: z.string(),
+        title: z.string(),
+        icon: z.custom<BotPairingValue["icon"]>(),
+        color: z.custom<BotPairingValue["color"]>(),
+        note: z.string().trim().max(BOT_PAIRING_NOTE_MAX_LENGTH),
+      })
+    )
+    .max(MAX_BOT_PAIRINGS),
 });
 
 type BotFormValues = z.infer<typeof botFormSchema>;
@@ -77,6 +91,7 @@ export interface BotFormInitialData {
   categoryId?: string;
   tagIds: string[];
   config: BotConfig;
+  pairings?: BotPairingValue[];
 }
 
 interface BotFormProps {
@@ -85,13 +100,15 @@ interface BotFormProps {
   initialData?: BotFormInitialData;
   categories: CategoryOption[];
   tags: TagOption[];
+  /** Only admins can link bots as "Better together with" */
+  canManagePairings?: boolean;
 }
 
 function parseConnectors(value: string): string[] {
   return Array.from(new Set(value.split(",").map((c) => c.trim()).filter(Boolean))).slice(0, 20);
 }
 
-export function BotForm({ mode, botId, initialData, categories, tags }: BotFormProps) {
+export function BotForm({ mode, botId, initialData, categories, tags, canManagePairings = false }: BotFormProps) {
   const t = useTranslations("bots");
   const tPrompts = useTranslations("prompts");
   const tCommon = useTranslations("common");
@@ -114,6 +131,7 @@ export function BotForm({ mode, botId, initialData, categories, tags }: BotFormP
       routines: initialData?.config.routines ?? [],
       skills: initialData?.config.skills ?? [],
       connectors: initialData?.config.connectors.join(", ") ?? "",
+      pairings: initialData?.pairings ?? [],
     },
   });
 
@@ -140,6 +158,9 @@ export function BotForm({ mode, botId, initialData, categories, tags }: BotFormP
           skills: data.skills,
           connectors: parseConnectors(data.connectors),
         },
+        ...(canManagePairings && {
+          pairings: data.pairings.map(({ botId: pairedId, note }) => ({ botId: pairedId, note: note || null })),
+        }),
       };
 
       const response = await fetch(isEdit ? `/api/prompts/${botId}` : "/api/prompts", {
@@ -152,6 +173,7 @@ export function BotForm({ mode, botId, initialData, categories, tags }: BotFormP
       if (!response.ok) {
         if (result.error === "rate_limit") return void toast.error(tPrompts("rateLimitError"));
         if (result.error === "daily_limit") return void toast.error(tPrompts("dailyLimitError"));
+        if (result.error === "invalid_pairing") return void toast.error(t("form.pairingsInvalid"));
         if (result.error === "duplicate_prompt") return void toast.error(tPrompts("duplicatePromptError"));
         if (result.error === "content_exists") {
           return void toast.error(
@@ -527,6 +549,25 @@ export function BotForm({ mode, botId, initialData, categories, tags }: BotFormP
             </FormItem>
           )}
         />
+
+        {canManagePairings && (
+          <FormField
+            control={form.control}
+            name="pairings"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("betterTogether")}</FormLabel>
+                <FormDescription>{t("form.pairingsHint")}</FormDescription>
+                <BotPairingPicker
+                  botId={botId}
+                  value={field.value}
+                  onChange={(value) => form.setValue("pairings", value, { shouldDirty: true, shouldValidate: true })}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <div className="flex justify-end gap-2 pt-4 border-t">
           <Button type="button" variant="outline" onClick={() => router.back()} disabled={isLoading}>

@@ -18,7 +18,7 @@ interface BotInstallProps {
   urls: { markdown: string; json: string; skill: string };
 }
 
-function CopyBlock({
+export function CopyBlock({
   text,
   label,
   code = false,

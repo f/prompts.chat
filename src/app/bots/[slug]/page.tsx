@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
-import { ArrowLeft, Clock, EyeOff, GitPullRequest, Pencil, Plug, Shield, Sparkles, Star, Trash2, Zap } from "lucide-react";
+import { ArrowLeft, Clock, EyeOff, GitPullRequest, Handshake, Pencil, Plug, Shield, Sparkles, Star, Trash2, Zap } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { getConfig } from "@/lib/config";
@@ -14,6 +14,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BotViewTracker } from "@/components/bots/bot-analytics";
 import { BotAvatar } from "@/components/bots/bot-avatar";
+import { BotBundleInstall } from "@/components/bots/bot-bundle-install";
+import { BotCard } from "@/components/bots/bot-card";
 import { BotInstall } from "@/components/bots/bot-install";
 import { BotPlatformBadge } from "@/components/bots/bot-platform-badge";
 import { DelistBanner } from "@/components/prompts/delist-banner";
@@ -22,6 +24,7 @@ import { RestorePromptButton } from "@/components/prompts/restore-prompt-button"
 import { UnlistPromptButton } from "@/components/prompts/unlist-prompt-button";
 import { JsonLd, botSchema, breadcrumbSchema } from "@/components/seo/structured-data";
 import { BOT_PLATFORM_INFO, extractBotId, formatBotPlatforms, getBotById, getBotInstallOptions, getBotUrls } from "@/lib/bots";
+import { getBotPairings, getBundleInstallOptions } from "@/lib/bots/pairings";
 import { canViewPrompt } from "@/lib/prompt-access";
 import { buildPageMetadata, getBaseUrl, NOINDEX_ROBOTS, toMetaDescription } from "@/lib/seo";
 import { getBotUrl } from "@/lib/urls";
@@ -75,7 +78,7 @@ export default async function BotPage({ params }: BotPageProps) {
   const tChanges = await getTranslations("changeRequests");
   const canRequestChange = !!session?.user && !isOwner && !bot.isPrivate && !bot.deletedAt;
 
-  const [userVote, changeRequests] = await Promise.all([
+  const [userVote, changeRequests, pairings] = await Promise.all([
     session?.user
       ? db.promptVote.findUnique({
           where: { userId_promptId: { userId: session.user.id, promptId: bot.id } },
@@ -87,6 +90,7 @@ export default async function BotPage({ params }: BotPageProps) {
       orderBy: { createdAt: "desc" },
       include: { author: { select: { id: true, name: true, username: true, avatar: true } } },
     }),
+    getBotPairings(bot.id),
   ]);
   const pendingCount = changeRequests.filter((cr) => cr.status === "PENDING").length;
 
@@ -292,6 +296,31 @@ export default async function BotPage({ params }: BotPageProps) {
                   </div>
                 </div>
               )}
+            </section>
+          )}
+
+          {pairings.length > 0 && (
+            <section aria-labelledby="better-together" className="space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h2 id="better-together" className="flex items-center gap-2 text-base font-semibold">
+                  <Handshake className="h-4 w-4" />
+                  {t("betterTogether")}
+                </h2>
+                <BotBundleInstall
+                  botId={bot.id}
+                  botTitle={bot.title}
+                  botCount={pairings.length + 1}
+                  options={getBundleInstallOptions(bot, pairings.map((pairing) => pairing.bot), baseUrl)}
+                />
+              </div>
+              <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {pairings.map(({ bot: paired, note }) => (
+                  <li key={paired.id} className="flex min-w-0 flex-col gap-2">
+                    <BotCard bot={paired} />
+                    {note && <p className="px-1 text-sm text-muted-foreground wrap-anywhere">{note}</p>}
+                  </li>
+                ))}
+              </ul>
             </section>
           )}
         </div>
