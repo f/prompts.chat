@@ -10,6 +10,22 @@ export function getRequestApiKey(request: Request): string | null {
 }
 
 /**
+ * The signed-in user, or else an admin authenticated by API key, for endpoints that
+ * any user can call from the UI and admins can also call from scripts. Keys of
+ * non-admin users are not accepted.
+ */
+export async function getSessionOrAdminApiKeyUser(request: Request): Promise<{ id: string; role: string } | null> {
+  const session = await auth();
+  if (session?.user?.id) {
+    return { id: session.user.id, role: session.user.role ?? "USER" };
+  }
+  const apiKey = getRequestApiKey(request);
+  if (!apiKey || !isValidApiKeyFormat(apiKey)) return null;
+  const user = await db.user.findUnique({ where: { apiKey }, select: { id: true, role: true } });
+  return user?.role === "ADMIN" ? user : null;
+}
+
+/**
  * Authenticates an admin by session, or by an admin user's API key so that
  * scripts and scheduled routines can call admin endpoints. The role is read
  * from the database so a demoted admin's session or key stops working at once.

@@ -10,13 +10,14 @@ export async function GET(request: Request) {
   const platform = platformFromParam(searchParams.get("platform") ?? undefined);
   const baseUrl = getBaseUrl();
   const sort = searchParams.get("sort");
+  const limit = Number.parseInt(searchParams.get("limit") ?? "", 10);
   const { bots, total } = await listBots({
     platform,
     categorySlug: searchParams.get("category") ?? undefined,
     tagSlugs: searchParams.get("tag")?.split(",").map((slug) => slug.trim()).filter(Boolean),
     q: searchParams.get("q") ?? undefined,
     sort: BOT_SORTS.includes(sort as BotSort) ? (sort as BotSort) : undefined,
-    take: MAX_BOTS,
+    take: Number.isInteger(limit) && limit > 0 ? Math.min(limit, MAX_BOTS) : MAX_BOTS,
   });
 
   return NextResponse.json(

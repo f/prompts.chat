@@ -7,7 +7,9 @@ import { generatePromptEmbedding, findAndSaveRelatedPrompts } from "@/lib/ai/emb
 import { generatePromptSlug } from "@/lib/slug";
 import { checkPromptQuality } from "@/lib/ai/quality-check";
 import { isTrending } from "@/lib/trending";
-import { BOT_PLATFORMS, botColorSchema, botConfigSchema, botIconSchema, botPlatformsData, botPlatformsSchema, installUrlSchema } from "@/lib/bots/schema";
+import { BOT_PLATFORMS, botColorSchema, botConfigSchema, botIconSchema, botPairingsSchema, botPlatformsData, botPlatformsSchema, installUrlSchema } from "@/lib/bots/schema";
+import { BotPairingError, botPairingsJson, buildPairingRows, findInvalidPairingTargets, getBotPairings, replaceBotPairings } from "@/lib/bots/pairings";
+import { getSessionOrAdminApiKeyUser } from "@/lib/admin-auth";
 
 const updatePromptSchema = z.object({
   title: z.string().min(1).max(200).optional(),
@@ -37,6 +39,8 @@ const updatePromptSchema = z.object({
   botColor: botColorSchema.nullish().or(z.literal("")),
   installUrl: installUrlSchema.optional().or(z.literal("")).nullable(),
   botConfig: botConfigSchema.optional(),
+  /** Replaces every "Better together with" link of the bot; admins only */
+  pairings: botPairingsSchema.optional(),
 });
 
 // Get single prompt
@@ -109,11 +113,17 @@ export async function GET(
       hasVoted = !!vote;
     }
 
+    const betterTogetherWith =
+      prompt.type === "BOT"
+        ? botPairingsJson(await getBotPairings(id, { includeHidden: session?.user?.role === "ADMIN" }), new URL(request.url).origin)
+        : undefined;
+
     return NextResponse.json({
       ...prompt,
       isTrending: isTrending(prompt.trendingUntil),
       voteCount: prompt._count.votes,
       hasVoted,
+      ...(betterTogetherWith && { betterTogetherWith }),
     });
   } catch (error) {
     console.error("Get prompt error:", error);
@@ -131,9 +141,9 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    const session = await auth();
+    const user = await getSessionOrAdminApiKeyUser(request);
 
-    if (!session?.user) {
+    if (!user) {
       return NextResponse.json(
         { error: "unauthorized", message: "You must be logged in" },
         { status: 401 }
@@ -143,7 +153,7 @@ export async function PATCH(
     // Check if prompt exists and user owns it
     const existing = await db.prompt.findUnique({
       where: { id },
-      select: { authorId: true, content: true },
+      select: { authorId: true, content: true, type: true },
     });
 
     if (!existing) {
@@ -153,7 +163,7 @@ export async function PATCH(
       );
     }
 
-    if (existing.authorId !== session.user.id && session.user.role !== "ADMIN") {
+    if (existing.authorId !== user.id && user.role !== "ADMIN") {
       return NextResponse.json(
         { error: "forbidden", message: "You can only edit your own prompts" },
         { status: 403 }
@@ -170,7 +180,38 @@ export async function PATCH(
       );
     }
 
-    const { tagIds, contributorIds, categoryId, mediaUrl, title, bestWithModels, bestWithMCP, workflowLink, installUrl, botPlatforms, botPlatform, botIcon, botColor, ...data } = parsed.data;
+    const { tagIds, contributorIds, categoryId, mediaUrl, title, bestWithModels, bestWithMCP, workflowLink, installUrl, botPlatforms, botPlatform, botIcon, botColor, pairings, ...data } = parsed.data;
+
+    let pairingRows: ReturnType<typeof buildPairingRows> | undefined;
+    if (pairings !== undefined) {
+      if (user.role !== "ADMIN") {
+        return NextResponse.json(
+          { error: "forbidden", message: "Only admins can pair bots" },
+          { status: 403 }
+        );
+      }
+      if ((data.type ?? existing.type) !== "BOT") {
+        return NextResponse.json(
+          { error: "validation_error", message: "pairings are only supported for bots" },
+          { status: 400 }
+        );
+      }
+      try {
+        pairingRows = buildPairingRows(id, pairings);
+      } catch (error) {
+        if (error instanceof BotPairingError) {
+          return NextResponse.json({ error: "invalid_pairing", message: error.message }, { status: 400 });
+        }
+        throw error;
+      }
+      const invalid = await findInvalidPairingTargets(pairings.map((pairing) => pairing.botId));
+      if (invalid.length > 0) {
+        return NextResponse.json(
+          { error: "invalid_pairing", message: "Paired bots must be existing bots", botIds: invalid },
+          { status: 400 }
+        );
+      }
+    }
     const nextBotPlatforms = botPlatforms ?? (botPlatform ? [botPlatform] : undefined);
 
     // Regenerate slug if title changed
@@ -233,6 +274,10 @@ export async function PATCH(
       },
     });
 
+    if (pairingRows) {
+      await replaceBotPairings(id, pairingRows);
+    }
+
     // Create new version if content changed
     if (data.content && data.content !== existing.content) {
       const latestVersion = await db.promptVersion.findFirst({
@@ -246,7 +291,7 @@ export async function PATCH(
           version: (latestVersion?.version || 0) + 1,
           content: data.content,
           changeNote: "Content updated",
-          createdBy: session.user.id,
+          createdBy: user.id,
         },
       });
     }
@@ -352,7 +397,10 @@ export async function PATCH(
     revalidateTag("prompts", "max");
     revalidateTag("prompt-flow", "max");
 
-    return NextResponse.json(prompt);
+    return NextResponse.json({
+      ...prompt,
+      ...(pairings && { pairings: pairings.map(({ botId, note }) => ({ botId, note: note || null })) }),
+    });
   } catch (error) {
     console.error("Update prompt error:", error);
     return NextResponse.json(

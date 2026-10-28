@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidateTag } from "next/cache";
 import { z } from "zod";
-import { auth } from "@/lib/auth";
+import { getSessionOrAdminApiKeyUser } from "@/lib/admin-auth";
 import { db } from "@/lib/db";
 import { triggerWebhooks } from "@/lib/webhook";
 import { generatePromptEmbedding, findAndSaveRelatedPrompts } from "@/lib/ai/embeddings";
@@ -10,7 +10,8 @@ import { checkPromptQuality } from "@/lib/ai/quality-check";
 import { isSimilarContent, normalizeContent } from "@/lib/similarity";
 import { promptListTypeWhere } from "@/lib/prompt-list";
 import { isTrending, trendingWhere } from "@/lib/trending";
-import { BOT_PLATFORMS, EMPTY_BOT_CONFIG, botColorSchema, botConfigSchema, botIconSchema, botPlatformsData, botPlatformsSchema, installUrlSchema } from "@/lib/bots/schema";
+import { BOT_PLATFORMS, EMPTY_BOT_CONFIG, botColorSchema, botConfigSchema, botIconSchema, botPairingsSchema, botPlatformsData, botPlatformsSchema, installUrlSchema } from "@/lib/bots/schema";
+import { buildPairingRows, findInvalidPairingTargets } from "@/lib/bots/pairings";
 
 const promptSchema = z.object({
   title: z.string().min(1).max(200),
@@ -40,16 +41,21 @@ const promptSchema = z.object({
   botColor: botColorSchema.nullish().or(z.literal("")),
   installUrl: installUrlSchema.optional().or(z.literal("")),
   botConfig: botConfigSchema.optional(),
+  /** "Better together with" links to other bots; admins only */
+  pairings: botPairingsSchema.optional(),
 }).refine((data) => data.type !== "BOT" || !!data.botPlatforms || !!data.botPlatform, {
   message: "botPlatforms is required for bots",
   path: ["botPlatforms"],
+}).refine((data) => data.type === "BOT" || data.pairings === undefined, {
+  message: "pairings are only supported for bots",
+  path: ["pairings"],
 });
 
 // Create prompt
 export async function POST(request: Request) {
   try {
-    const session = await auth();
-    if (!session?.user) {
+    const user = await getSessionOrAdminApiKeyUser(request);
+    if (!user) {
       return NextResponse.json(
         { error: "unauthorized", message: "You must be logged in" },
         { status: 401 }
@@ -66,12 +72,28 @@ export async function POST(request: Request) {
       );
     }
 
-    const { title, description, content, type, structuredFormat, categoryId, tagIds, contributorIds, isPrivate, mediaUrl, requiresMediaUpload, requiredMediaType, requiredMediaCount, bestWithModels, bestWithMCP, workflowLink, botPlatforms, botPlatform, botIcon, botColor, installUrl, botConfig } = parsed.data;
+    const { title, description, content, type, structuredFormat, categoryId, tagIds, contributorIds, isPrivate, mediaUrl, requiresMediaUpload, requiredMediaType, requiredMediaCount, bestWithModels, bestWithMCP, workflowLink, botPlatforms, botPlatform, botIcon, botColor, installUrl, botConfig, pairings } = parsed.data;
     const isBot = type === "BOT";
+
+    if (pairings !== undefined) {
+      if (user.role !== "ADMIN") {
+        return NextResponse.json(
+          { error: "forbidden", message: "Only admins can pair bots" },
+          { status: 403 }
+        );
+      }
+      const invalid = await findInvalidPairingTargets(pairings.map((pairing) => pairing.botId));
+      if (invalid.length > 0) {
+        return NextResponse.json(
+          { error: "invalid_pairing", message: "Paired bots must be existing bots", botIds: invalid },
+          { status: 400 }
+        );
+      }
+    }
 
     // Check if user is flagged (for auto-delisting and daily limit)
     const currentUser = await db.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: user.id },
       select: { flagged: true },
     });
     const isUserFlagged = currentUser?.flagged ?? false;
@@ -83,7 +105,7 @@ export async function POST(request: Request) {
       
       const todayPromptCount = await db.prompt.count({
         where: {
-          authorId: session.user.id,
+          authorId: user.id,
           createdAt: { gte: startOfDay },
         },
       });
@@ -100,7 +122,7 @@ export async function POST(request: Request) {
     const thirtySecondsAgo = new Date(Date.now() - 30 * 1000);
     const recentPrompt = await db.prompt.findFirst({
       where: {
-        authorId: session.user.id,
+        authorId: user.id,
         createdAt: { gte: thirtySecondsAgo },
       },
       select: { id: true },
@@ -116,7 +138,7 @@ export async function POST(request: Request) {
     // Check for duplicate title or content from the same user
     const userDuplicate = await db.prompt.findFirst({
       where: {
-        authorId: session.user.id,
+        authorId: user.id,
         deletedAt: null,
         OR: [
           { title: { equals: title, mode: "insensitive" } },
@@ -207,7 +229,7 @@ export async function POST(request: Request) {
           installUrl: installUrl || null,
           botConfig: botConfig ?? EMPTY_BOT_CONFIG,
         }),
-        authorId: session.user.id,
+        authorId: user.id,
         categoryId: categoryId || null,
         // Auto-delist prompts from flagged users
         ...(isUserFlagged && {
@@ -249,6 +271,10 @@ export async function POST(request: Request) {
       },
     });
 
+    if (pairings && pairings.length > 0) {
+      await db.botPairing.createMany({ data: buildPairingRows(prompt.id, pairings), skipDuplicates: true });
+    }
+
     // Create initial version
     await db.promptVersion.create({
       data: {
@@ -256,7 +282,7 @@ export async function POST(request: Request) {
         version: 1,
         content,
         changeNote: "Initial version",
-        createdBy: session.user.id,
+        createdBy: user.id,
       },
     });
 
@@ -317,7 +343,10 @@ export async function POST(request: Request) {
     revalidateTag("categories", "max");
     revalidateTag("tags", "max");
 
-    return NextResponse.json(prompt);
+    return NextResponse.json({
+      ...prompt,
+      ...(pairings && { pairings: pairings.map(({ botId, note }) => ({ botId, note: note || null })) }),
+    });
   } catch (error) {
     console.error("Create prompt error:", error);
     return NextResponse.json(
