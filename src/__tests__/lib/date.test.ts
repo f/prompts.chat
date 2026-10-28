@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { getDateLocale, formatDistanceToNow, formatDate } from "@/lib/date";
-import { enUS, tr, es, zhCN, ja, arSA } from "date-fns/locale";
+import { enUS, tr, es, zhCN, ja, arSA, ptBR, fr, de, faIR } from "date-fns/locale";
+import { supportedLocales } from "@/lib/i18n/config";
 
 describe("getDateLocale", () => {
   it("should return enUS for 'en' locale", () => {
@@ -27,10 +28,22 @@ describe("getDateLocale", () => {
     expect(getDateLocale("ar")).toBe(arSA);
   });
 
+  it("should map app locale codes to date-fns locales", () => {
+    expect(getDateLocale("pt")).toBe(ptBR);
+    expect(getDateLocale("fr")).toBe(fr);
+    expect(getDateLocale("de")).toBe(de);
+    expect(getDateLocale("fa")).toBe(faIR);
+  });
+
+  it("should have a date-fns locale for every supported locale", () => {
+    for (const locale of supportedLocales.filter((l) => l !== "en")) {
+      expect(getDateLocale(locale), locale).not.toBe(enUS);
+    }
+  });
+
   it("should return enUS for unknown locale", () => {
     expect(getDateLocale("unknown")).toBe(enUS);
-    expect(getDateLocale("fr")).toBe(enUS);
-    expect(getDateLocale("de")).toBe(enUS);
+    expect(getDateLocale("xx")).toBe(enUS);
   });
 });
 
