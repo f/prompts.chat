@@ -448,6 +448,9 @@ enum BotPlatform {
   OPENCLAW
   HERMES
   AUTOGPT
+  DOTS
+  DUET
+  MUSE
 }
 
 enum StructuredFormat {

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { BotPlatformTabsList } from "@/components/bots/bot-platform-tabs";
 import type { BotInstallOption } from "@/lib/bots";
-import { AUTOGPT_CHAT_URL } from "@/lib/bots/schema";
+import { BOT_PLATFORM_CHAT_INSTALL, isChatInstallPlatform, type ChatInstallPlatform } from "@/lib/bots/schema";
 import { cn } from "@/lib/utils";
 import { analyticsBot } from "@/lib/analytics";
 
@@ -108,8 +108,8 @@ function PlatformInstall({ botId, option }: { botId: string; option: BotInstallO
 
       <div className="space-y-2">
         <p className="text-sm text-muted-foreground">
-          {platform === "AUTOGPT"
-            ? t("autogptPromptHint")
+          {isChatInstallPlatform(platform)
+            ? t(BOT_PLATFORM_CHAT_INSTALL[platform].hint)
             : hasPrimaryAction
               ? t("installPromptPlatformFallbackHint", { platform: platformName })
               : t("installPromptHint")}
@@ -119,24 +119,25 @@ function PlatformInstall({ botId, option }: { botId: string; option: BotInstallO
           label={t("copyInstallPrompt")}
           onCopy={() => analyticsBot.copyInstall(botId, platform, "prompt")}
         />
-        {platform === "AUTOGPT" && <OpenAutogptButton botId={botId} />}
+        {isChatInstallPlatform(platform) && <OpenPlatformChatButton botId={botId} platform={platform} />}
       </div>
     </div>
   );
 }
 
-export function OpenAutogptButton({ botId }: { botId: string }) {
+export function OpenPlatformChatButton({ botId, platform }: { botId: string; platform: ChatInstallPlatform }) {
   const t = useTranslations("bots");
+  const { url, open } = BOT_PLATFORM_CHAT_INSTALL[platform];
   return (
     <Button asChild size="sm" variant="ghost" className="w-full">
       <a
-        href={AUTOGPT_CHAT_URL}
+        href={url}
         target="_blank"
         rel="noopener noreferrer"
-        onClick={() => analyticsBot.installClick(botId, "AUTOGPT")}
+        onClick={() => analyticsBot.installClick(botId, platform)}
       >
         <ExternalLink className="h-4 w-4" />
-        {t("openAutogpt")}
+        {t(open)}
       </a>
     </Button>
   );

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const BOT_PLATFORMS = ["GROK_BOT", "OPENCLAW", "HERMES", "AUTOGPT"] as const;
+export const BOT_PLATFORMS = ["GROK_BOT", "OPENCLAW", "HERMES", "AUTOGPT", "DOTS", "DUET", "MUSE"] as const;
 export type BotPlatform = (typeof BOT_PLATFORMS)[number];
 
 export const BOT_PLATFORM_INFO: Record<BotPlatform, { name: string; shortName: string; param: string }> = {
@@ -8,10 +8,33 @@ export const BOT_PLATFORM_INFO: Record<BotPlatform, { name: string; shortName: s
   OPENCLAW: { name: "OpenClaw", shortName: "OpenClaw", param: "openclaw" },
   HERMES: { name: "Hermes Agent", shortName: "Hermes", param: "hermes" },
   AUTOGPT: { name: "AutoGPT", shortName: "AutoGPT", param: "autogpt" },
+  DOTS: { name: "OpenAI Dots", shortName: "Dots", param: "dots" },
+  DUET: { name: "Claude Duet", shortName: "Duet", param: "duet" },
+  MUSE: { name: "Meta Muse", shortName: "Muse", param: "muse" },
 };
 
-/** AutoGPT has no import command; the install prompt is pasted into a chat with Otto, its head-of-AI agent */
-export const AUTOGPT_CHAT_URL = "https://platform.agpt.co/copilot";
+/**
+ * Platforms with no import command or template link: the install prompt is pasted into a chat with the
+ * agent at `url`. AutoGPT: Otto, its head-of-AI agent. Dots: your dot in ChatGPT. Claude Duet: claude.ai,
+ * its only web address. Muse: the Muse web app. The other fields are "bots" message keys.
+ */
+export const BOT_PLATFORM_CHAT_INSTALL = {
+  AUTOGPT: {
+    url: "https://platform.agpt.co/copilot",
+    hint: "autogptPromptHint",
+    bundleHint: "installAllAutogptPromptHint",
+    open: "openAutogpt",
+  },
+  DOTS: { url: "https://chatgpt.com/dots", hint: "dotsPromptHint", bundleHint: "installAllDotsPromptHint", open: "openDots" },
+  DUET: { url: "https://claude.ai", hint: "duetPromptHint", bundleHint: "installAllDuetPromptHint", open: "openDuet" },
+  MUSE: { url: "https://muse.ai", hint: "musePromptHint", bundleHint: "installAllMusePromptHint", open: "openMuse" },
+} as const satisfies Partial<Record<BotPlatform, { url: string; hint: string; bundleHint: string; open: string }>>;
+
+export type ChatInstallPlatform = keyof typeof BOT_PLATFORM_CHAT_INSTALL;
+
+export function isChatInstallPlatform(platform: BotPlatform): platform is ChatInstallPlatform {
+  return platform in BOT_PLATFORM_CHAT_INSTALL;
+}
 
 export function platformFromParam(param: string | undefined): BotPlatform | undefined {
   return BOT_PLATFORMS.find((platform) => BOT_PLATFORM_INFO[platform].param === param);

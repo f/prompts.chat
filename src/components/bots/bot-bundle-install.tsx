@@ -12,7 +12,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { CopyBlock, OpenAutogptButton } from "@/components/bots/bot-install";
+import { CopyBlock, OpenPlatformChatButton } from "@/components/bots/bot-install";
+import { BOT_PLATFORM_CHAT_INSTALL, isChatInstallPlatform } from "@/lib/bots/schema";
 import { BotPlatformTabsList } from "@/components/bots/bot-platform-tabs";
 import type { BotBundleInstallOption } from "@/lib/bots/pairings";
 import { analyticsBot } from "@/lib/analytics";
@@ -77,14 +78,16 @@ function BundlePlatformInstall({ botId, option }: { botId: string; option: BotBu
 
       <div className="space-y-2">
         <p className="text-sm text-muted-foreground">
-          {platform === "AUTOGPT" ? t("installAllAutogptPromptHint") : t("installAllPromptHint", { platform: platformName })}
+          {isChatInstallPlatform(platform)
+            ? t(BOT_PLATFORM_CHAT_INSTALL[platform].bundleHint)
+            : t("installAllPromptHint", { platform: platformName })}
         </p>
         <CopyBlock
           text={installPrompt}
           label={t("copyInstallPrompt")}
           onCopy={() => analyticsBot.copyInstall(botId, platform, "bundle_prompt")}
         />
-        {platform === "AUTOGPT" && <OpenAutogptButton botId={botId} />}
+        {isChatInstallPlatform(platform) && <OpenPlatformChatButton botId={botId} platform={platform} />}
       </div>
     </div>
   );
