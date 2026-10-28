@@ -137,3 +137,26 @@ export function parseBotConfig(value: unknown): BotConfig {
 export const installUrlSchema = z.string().trim().url().refine((url) => url.startsWith("https://"), {
   message: "Install URL must use https",
 });
+
+export const MAX_BOT_PAIRINGS = 12;
+export const BOT_PAIRING_NOTE_MAX_LENGTH = 200;
+
+/** One "Better together with" link as sent to the create and update APIs */
+export const botPairingInputSchema = z.object({
+  botId: z.string().trim().min(1),
+  note: z.string().trim().max(BOT_PAIRING_NOTE_MAX_LENGTH).nullish(),
+});
+
+export const botPairingsSchema = z
+  .array(botPairingInputSchema)
+  .max(MAX_BOT_PAIRINGS)
+  .refine((pairings) => new Set(pairings.map((p) => p.botId)).size === pairings.length, {
+    message: "Each bot can only be paired once",
+  });
+
+export type BotPairingInput = z.infer<typeof botPairingInputSchema>;
+
+/** BotPairing rows are stored once per pair, ordered so that fromId < toId */
+export function canonicalPair(a: string, b: string): { fromId: string; toId: string } {
+  return a < b ? { fromId: a, toId: b } : { fromId: b, toId: a };
+}

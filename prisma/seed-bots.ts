@@ -1,5 +1,5 @@
 import { PrismaClient, Prisma, BotPlatform } from "@prisma/client";
-import { botPlatformsData, type BotColor, type BotIconName } from "../src/lib/bots/schema";
+import { botPlatformsData, canonicalPair, type BotColor, type BotIconName } from "../src/lib/bots/schema";
 
 interface ExampleBot {
   id: string;
@@ -126,6 +126,20 @@ export const EXAMPLE_BOTS: ExampleBot[] = [
   },
 ];
 
+/** "Better together with" links between the example bots */
+export const EXAMPLE_BOT_PAIRINGS: { a: string; b: string; note: string }[] = [
+  {
+    a: "example-bot-grok",
+    b: "example-bot-hermes",
+    note: "Both arrive before work: the X briefing covers the conversation, the arXiv digest the new papers behind it.",
+  },
+  {
+    a: "example-bot-openclaw",
+    b: "example-bot-hermes",
+    note: "Turn papers from the digest into tracked GitHub issues, then let the triager keep them labeled.",
+  },
+];
+
 /** Creates the example bots if they don't exist yet. Existing rows are left untouched. */
 export async function seedExampleBots(prisma: PrismaClient, authorId: string): Promise<number> {
   let created = 0;
@@ -147,6 +161,10 @@ export async function seedExampleBots(prisma: PrismaClient, authorId: string): P
     });
     created++;
   }
+  await prisma.botPairing.createMany({
+    data: EXAMPLE_BOT_PAIRINGS.map(({ a, b, note }) => ({ ...canonicalPair(a, b), note })),
+    skipDuplicates: true,
+  });
   return created;
 }
 

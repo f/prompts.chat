@@ -128,6 +128,8 @@ model Prompt {
   contributors        User[]              @relation("PromptContributors")
   outgoingConnections PromptConnection[]  @relation("ConnectionSource")
   incomingConnections PromptConnection[]  @relation("ConnectionTarget")
+  botPairingsFrom     BotPairing[]        @relation("BotPairingFrom")
+  botPairingsTo       BotPairing[]        @relation("BotPairingTo")
   collectedBy         Collection[]
   userExamples        UserPromptExample[]
   bestWithModels      String[] // Model slugs this prompt works best with (max 3), e.g. ["gpt-4o", "claude-3-5-sonnet"]
@@ -402,6 +404,22 @@ model PromptConnection {
   @@index([sourceId])
   @@index([targetId])
   @@map("prompt_connections")
+}
+
+/// "Better together with" link between two BOT prompts, shown on both bots' pages.
+/// Each pair is stored once with fromId < toId (enforced by a CHECK constraint in the
+/// migration), which rules out self-links and reversed duplicates. See src/lib/bots/pairings.ts
+model BotPairing {
+  fromId    String
+  toId      String
+  note      String?  @db.VarChar(200)
+  createdAt DateTime @default(now())
+  from      Prompt   @relation("BotPairingFrom", fields: [fromId], references: [id], onDelete: Cascade)
+  to        Prompt   @relation("BotPairingTo", fields: [toId], references: [id], onDelete: Cascade)
+
+  @@id([fromId, toId])
+  @@index([toId])
+  @@map("bot_pairings")
 }
 
 enum NotificationType {
