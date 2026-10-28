@@ -128,7 +128,24 @@ The mechanism builds on pieces you have already met. Each file in a skill is exp
 The host still decides how a skill reaches the model. The model might choose one by its name and description, or the user might pick it directly. Either way, the full instructions enter the context only when they are needed, and reading a `SKILL.md` file does not activate the skill by itself.
 
 <Callout type="warning" title="A served skill is still instructions">
-A skill from a server is text entering the agent's context, and it can shape what the agent does next. It deserves the same scrutiny as the server itself. A careful host verifies the content and asks for any required approval before loading it. Like other official MCP extensions, such as MCP Apps and MCP Tasks, Skills is optional: it is used only when both client and server declare support. Client support is still early, so check whether your application actually loads skills from servers before relying on them.
+A skill from a server is text entering the agent's context, and it can shape what the agent does next. It deserves the same scrutiny as the server itself. A careful host verifies the content and asks for any required approval before loading it. Like other official MCP extensions, such as MCP Apps and the Tasks extension described next, Skills is optional: it is used only when both client and server declare support. Client support is still early, so check whether your application actually loads skills from servers before relying on them.
+</Callout>
+
+### When a Tool Needs Time or an Answer
+
+Most tool calls are brief exchanges: the agent asks, the server answers, and the work moves on. Some jobs do not fit that rhythm. A deep research run, a large report export, or a build can take many minutes, and some jobs reach a point where only the user can decide what happens next. MCP offers two ideas for these moments: **Tasks**, for work that needs time, and **elicitation**, for work that needs a person.
+
+The official [Tasks extension](https://tasks.extensions.modelcontextprotocol.io/) (`io.modelcontextprotocol/tasks`) changes how a slow `tools/call` ends. Instead of holding the request open until the job is done, the server can reply right away with a durable task handle, a little like the ticket you get at a coat check. The client can look in on the task with `tasks/get`, send updates or answers with `tasks/update`, stop it with `tasks/cancel`, and collect the result when it is ready. Meanwhile, the agent is free to keep working and come back later, which matters most for [always-on bots](/book/28-persistent-bots) that run jobs while you are away. Tasks are opt-in on both sides: the client declares support with each request, and the server decides, request by request, whether to create a task. Existing tools do not gain this ability on their own; the server's author has to add it.
+
+<Compare
+  before={{ label: "A blocking tool call", content: "The agent calls export_report and waits. The request stays open for minutes. If the connection drops, no one knows whether the export finished, and the agent can do nothing else until it returns." }}
+  after={{ label: "A task handle", content: "The agent calls export_report and gets a task handle back at once. It moves on to other work, checks the task with tasks/get, and fetches the finished report when it is ready. If plans change, tasks/cancel stops it." }}
+/>
+
+[Elicitation](https://modelcontextprotocol.io/specification/latest/client/elicitation) lets a server pause and ask the user for structured input: "Deploy to staging?", "Confirm this refund?", or a missing detail the job cannot continue without. The host shows a small form, and the user can answer, decline, or cancel. Declining is a valid answer too, and the server decides what to do next. The two ideas meet naturally: a running task can pause in an `input_required` state and ask the user something mid-flight. Before a write, a question like this is a natural human-in-the-loop checkpoint, placed exactly where the decision matters.
+
+<Callout type="warning" title="A form from a server is still a request from a server">
+An elicitation comes from the server, not from your application, so it deserves the same scrutiny as any tool output. Read what it asks before you answer, and never type a password, API key, or other secret into such a form unless you trust the server. Support also differs between applications: VS Code [documents elicitation support](https://code.visualstudio.com/api/extension-guides/ai/mcp), Cursor supports elicitation, and Claude Code has added [MCP Tasks and elicitations](https://code.claude.com/docs/en/mcp) in public beta in its terminal app, though not yet everywhere it runs. The official [client support matrix](https://modelcontextprotocol.io/extensions/client-matrix) tracks which applications support which extensions, so check yours before relying on either feature.
 </Callout>
 
 ## Try a Read and a Write
