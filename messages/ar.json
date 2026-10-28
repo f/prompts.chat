@@ -931,7 +931,7 @@
     "browsePrompts": "تصفح الأوامر"
   },
   "bots": {
-    "description": "بوتات وكلاء ذكاء اصطناعي جاهزة مع التعليمات والمهام الروتينية والمهارات. ثبّتها على OpenClaw أو AutoGPT أو Hermes Agent أو Grok Bot.",
+    "description": "بوتات وكلاء ذكاء اصطناعي جاهزة مع التعليمات والمهام الروتينية والمهارات. ثبّتها على OpenClaw أو AutoGPT أو OpenAI Dots أو Claude Duet أو Meta Muse أو Hermes Agent أو Grok Bot.",
     "count": "{count, plural, zero {لا توجد بوتات} one {بوت واحد} two {بوتان} few {# بوتات} many {# بوتًا} other {# بوت}}",
     "allPlatforms": "الكل",
     "searchPlaceholder": "ابحث في البوتات...",
@@ -958,6 +958,12 @@
     "installPromptPlatformFallbackHint": "أو الصق هذا الموجّه في {platform} لإنشاء البوت بنفسك:",
     "autogptPromptHint": "الصق هذا الموجّه في محادثة مع Otto على AutoGPT. سيُعِدّ Otto البوت بوصفه Expert مع تعليماته ومهاراته ومهامه الروتينية.",
     "openAutogpt": "فتح AutoGPT",
+    "dotsPromptHint": "الصق هذا الموجّه في محادثة مع dot الخاص بك في ChatGPT. سيتبنّى تعليمات البوت، ويطلب منك ربط التطبيقات التي يحتاجها، ويجدول مهامه الروتينية كمهام متكررة.",
+    "openDots": "فتح Dots",
+    "duetPromptHint": "الصق هذا الموجّه في محادثتك على Claude Duet. سيتبنّى Claude Duet تعليمات البوت ومهامه الروتينية، ويستخدم مهارات حسابك على Claude وموصلاته، لذا أضف ما ينقص منها في إعدادات Claude.",
+    "openDuet": "فتح Claude Duet",
+    "musePromptHint": "الصق هذا الموجّه في محادثة مع Muse. مهارات Muse مدمجة، لذا سيتبنّى تعليمات البوت، ويطلب منك ربط التطبيقات التي يحتاجها، ويُعِدّ مهامه الروتينية كمهام مجدولة.",
+    "openMuse": "فتح Muse",
     "copyInstallPrompt": "نسخ تعليمة التثبيت",
     "machineReadable": "قابل للقراءة آليًا",
     "create": "بوت جديد",
@@ -1074,6 +1080,9 @@
     "installAllDescription": "أعدّ {bot} والبوتات التي تتكامل معه دفعة واحدة.",
     "installAllPromptHint": "الصق هذه التعليمات في {platform}. ستُعِدّ كل بوت في المجموعة واحدًا تلو الآخر.",
     "installAllAutogptPromptHint": "الصق هذه التعليمات في محادثة مع Otto على AutoGPT. سيُعِدّ Otto كل بوت في المجموعة بوصفه Expert، واحدًا تلو الآخر.",
+    "installAllDotsPromptHint": "الصق هذا الموجّه في محادثة مع dot الخاص بك في ChatGPT. سيُعِدّ كل بوت في المجموعة، واحدًا تلو الآخر.",
+    "installAllDuetPromptHint": "الصق هذا الموجّه في محادثتك على Claude Duet. سيُعِدّ Claude Duet كل بوت في المجموعة، واحدًا تلو الآخر. أضف المهارات والموصلات الناقصة في إعدادات Claude.",
+    "installAllMusePromptHint": "الصق هذا الموجّه في محادثة مع Muse. سيُعِدّ Muse كل بوت في المجموعة، واحدًا تلو الآخر، ويطلب منك ربط التطبيقات التي تحتاجها.",
     "installAllCommandHint": "ثبّت كل بوت في المجموعة كمهارة:",
     "installAllTemplatesHint": "أو افتح كل قالب من {platform}:",
     "installAllSkipped": "غير متاح على {platform}: {bots}",
@@ -2477,7 +2486,7 @@
     },
     "bots": {
       "title": "بوتات وكلاء ذكاء اصطناعي جاهزة لـ OpenClaw وHermes وGrok",
-      "description": "تصفّح بوتات وكلاء ذكاء اصطناعي جاهزة مع التعليمات والمهام المجدولة والمهارات، وثبّتها على OpenClaw أو AutoGPT أو Hermes Agent أو Grok Bot بنقرة واحدة.",
+      "description": "تصفّح بوتات وكلاء ذكاء اصطناعي جاهزة مع التعليمات والمهام المجدولة والمهارات، وثبّتها على OpenClaw أو AutoGPT أو OpenAI Dots أو Claude Duet أو Meta Muse أو Hermes Agent أو Grok Bot بنقرة واحدة.",
       "heading": "البوتات"
     },
     "taste": {

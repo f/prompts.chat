@@ -931,7 +931,7 @@
     "browsePrompts": "Обзор промптов"
   },
   "bots": {
-    "description": "Готовые боты ИИ-агентов с инструкциями, рутинами и навыками. Установите их в OpenClaw, AutoGPT, Hermes Agent или Grok Bot.",
+    "description": "Готовые боты ИИ-агентов с инструкциями, рутинами и навыками. Установите их в OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent или Grok Bot.",
     "count": "{count, plural, one {# бот} few {# бота} many {# ботов} other {# бота}}",
     "allPlatforms": "Все",
     "searchPlaceholder": "Поиск ботов...",
@@ -958,6 +958,12 @@
     "installPromptPlatformFallbackHint": "Или вставьте этот промпт в {platform}, чтобы создать бота самостоятельно:",
     "autogptPromptHint": "Вставьте этот промпт в чат с Otto в AutoGPT. Otto настроит бота как Expert с его инструкциями, навыками и рутинами.",
     "openAutogpt": "Открыть AutoGPT",
+    "dotsPromptHint": "Вставьте этот промпт в чат со своим dot в ChatGPT. Ваш dot примет инструкции бота, попросит подключить нужные приложения и запланирует его рутины как повторяющиеся задачи.",
+    "openDots": "Открыть Dots",
+    "duetPromptHint": "Вставьте этот промпт в свою ветку Claude Duet. Claude Duet примет инструкции и рутины бота и использует навыки и коннекторы вашего аккаунта Claude, поэтому добавьте недостающие в настройках Claude.",
+    "openDuet": "Открыть Claude Duet",
+    "musePromptHint": "Вставьте этот промпт в чат с Muse. Навыки Muse встроенные, поэтому он примет инструкции бота, попросит подключить нужные приложения и настроит его рутины как запланированные задачи.",
+    "openMuse": "Открыть Muse",
     "copyInstallPrompt": "Копировать промпт установки",
     "machineReadable": "Машиночитаемый формат",
     "create": "Новый бот",
@@ -1074,6 +1080,9 @@
     "installAllDescription": "Настройте {bot} и подходящих к нему ботов за один раз.",
     "installAllPromptHint": "Вставьте этот промпт в {platform}. Он по очереди настроит каждого бота из набора.",
     "installAllAutogptPromptHint": "Вставьте этот промпт в чат с Otto в AutoGPT. Otto по очереди настроит каждого бота из набора как Expert.",
+    "installAllDotsPromptHint": "Вставьте этот промпт в чат со своим dot в ChatGPT. Ваш dot по очереди настроит каждого бота из набора.",
+    "installAllDuetPromptHint": "Вставьте этот промпт в свою ветку Claude Duet. Claude Duet по очереди настроит каждого бота из набора. Добавьте недостающие навыки и коннекторы в настройках Claude.",
+    "installAllMusePromptHint": "Вставьте этот промпт в чат с Muse. Muse по очереди настроит каждого бота из набора и попросит подключить нужные приложения.",
     "installAllCommandHint": "Установите каждого бота из набора как навык:",
     "installAllTemplatesHint": "Или откройте каждый шаблон {platform}:",
     "installAllSkipped": "Недоступно в {platform}: {bots}",
@@ -2476,7 +2485,7 @@
     },
     "bots": {
       "title": "Готовые боты ИИ-агентов для OpenClaw, Hermes и Grok",
-      "description": "Просматривайте готовых ботов ИИ-агентов с инструкциями, рутинами по расписанию и навыками и устанавливайте их в OpenClaw, AutoGPT, Hermes Agent или Grok Bot в один клик.",
+      "description": "Просматривайте готовых ботов ИИ-агентов с инструкциями, рутинами по расписанию и навыками и устанавливайте их в OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent или Grok Bot в один клик.",
       "heading": "Боты"
     },
     "taste": {

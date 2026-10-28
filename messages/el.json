@@ -931,7 +931,7 @@
     "browsePrompts": "Περιήγηση Prompts"
   },
   "bots": {
-    "description": "Έτοιμα bots πρακτόρων AI με οδηγίες, ρουτίνες και δεξιότητες. Εγκαταστήστε τα στο OpenClaw, στο AutoGPT, στο Hermes Agent ή στο Grok Bot.",
+    "description": "Έτοιμα bots πρακτόρων AI με οδηγίες, ρουτίνες και δεξιότητες. Εγκαταστήστε τα στο OpenClaw, στο AutoGPT, στο OpenAI Dots, στο Claude Duet, στο Meta Muse, στο Hermes Agent ή στο Grok Bot.",
     "count": "{count, plural, one {# bot} other {# bots}}",
     "allPlatforms": "Όλα",
     "searchPlaceholder": "Αναζήτηση bots...",
@@ -958,6 +958,12 @@
     "installPromptPlatformFallbackHint": "Ή επικολλήστε αυτό το prompt στο {platform} για να δημιουργήσετε το bot μόνοι σας:",
     "autogptPromptHint": "Επικολλήστε αυτό το prompt σε μια συνομιλία με τον Otto στο AutoGPT. Ο Otto ρυθμίζει το bot ως Expert με τις οδηγίες, τις δεξιότητες και τις ρουτίνες του.",
     "openAutogpt": "Άνοιγμα AutoGPT",
+    "dotsPromptHint": "Επικολλήστε αυτό το prompt σε μια συνομιλία με το dot σας στο ChatGPT. Το dot σας υιοθετεί τις οδηγίες του bot, σας ζητά να συνδέσετε τις εφαρμογές που χρειάζεται και προγραμματίζει τις ρουτίνες του ως επαναλαμβανόμενες εργασίες.",
+    "openDots": "Άνοιγμα Dots",
+    "duetPromptHint": "Επικολλήστε αυτό το prompt στο νήμα σας στο Claude Duet. Το Claude Duet υιοθετεί τις οδηγίες και τις ρουτίνες του bot και χρησιμοποιεί τις δεξιότητες και τους συνδέσμους του λογαριασμού σας στο Claude, οπότε προσθέστε όσους λείπουν στις ρυθμίσεις του Claude.",
+    "openDuet": "Άνοιγμα Claude Duet",
+    "musePromptHint": "Επικολλήστε αυτό το prompt σε μια συνομιλία με το Muse. Οι δεξιότητες του Muse είναι ενσωματωμένες, οπότε υιοθετεί τις οδηγίες του bot, σας ζητά να συνδέσετε τις εφαρμογές που χρειάζεται και ρυθμίζει τις ρουτίνες του ως προγραμματισμένες εργασίες.",
+    "openMuse": "Άνοιγμα Muse",
     "copyInstallPrompt": "Αντιγραφή prompt εγκατάστασης",
     "machineReadable": "Αναγνώσιμο από μηχανές",
     "create": "Νέο bot",
@@ -1074,6 +1080,9 @@
     "installAllDescription": "Ρυθμίστε το {bot} και τα bots που ταιριάζουν μαζί του με μία κίνηση.",
     "installAllPromptHint": "Επικολλήστε αυτό το prompt στο {platform}. Ρυθμίζει κάθε bot του συνόλου, το ένα μετά το άλλο.",
     "installAllAutogptPromptHint": "Επικολλήστε αυτό το prompt σε μια συνομιλία με τον Otto στο AutoGPT. Ο Otto ρυθμίζει κάθε bot του συνόλου ως Expert, το ένα μετά το άλλο.",
+    "installAllDotsPromptHint": "Επικολλήστε αυτό το prompt σε μια συνομιλία με το dot σας στο ChatGPT. Το dot σας ρυθμίζει κάθε bot του συνόλου, το ένα μετά το άλλο.",
+    "installAllDuetPromptHint": "Επικολλήστε αυτό το prompt στο νήμα σας στο Claude Duet. Το Claude Duet ρυθμίζει κάθε bot του συνόλου, το ένα μετά το άλλο. Προσθέστε δεξιότητες και συνδέσμους που λείπουν στις ρυθμίσεις του Claude.",
+    "installAllMusePromptHint": "Επικολλήστε αυτό το prompt σε μια συνομιλία με το Muse. Το Muse ρυθμίζει κάθε bot του συνόλου, το ένα μετά το άλλο, και σας ζητά να συνδέσετε τις εφαρμογές που χρειάζονται.",
     "installAllCommandHint": "Εγκαταστήστε κάθε bot του συνόλου ως skill:",
     "installAllTemplatesHint": "Ή ανοίξτε κάθε πρότυπο {platform}:",
     "installAllSkipped": "Μη διαθέσιμο στο {platform}: {bots}",
@@ -2482,7 +2491,7 @@
     },
     "bots": {
       "title": "Έτοιμα bots πρακτόρων AI για OpenClaw, Hermes και Grok",
-      "description": "Εξερευνήστε έτοιμα bots πρακτόρων AI με οδηγίες, προγραμματισμένες ρουτίνες και δεξιότητες και εγκαταστήστε τα στο OpenClaw, στο AutoGPT, στο Hermes Agent ή στο Grok Bot με ένα κλικ.",
+      "description": "Εξερευνήστε έτοιμα bots πρακτόρων AI με οδηγίες, προγραμματισμένες ρουτίνες και δεξιότητες και εγκαταστήστε τα στο OpenClaw, στο AutoGPT, στο OpenAI Dots, στο Claude Duet, στο Meta Muse, στο Hermes Agent ή στο Grok Bot με ένα κλικ.",
       "heading": "Bots"
     },
     "taste": {

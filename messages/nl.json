@@ -931,7 +931,7 @@
     "browsePrompts": "Prompts bekijken"
   },
   "bots": {
-    "description": "Kant-en-klare AI-agentbots met instructies, routines en skills. Installeer ze op OpenClaw, AutoGPT, Hermes Agent of Grok Bot.",
+    "description": "Kant-en-klare AI-agentbots met instructies, routines en skills. Installeer ze op OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent of Grok Bot.",
     "count": "{count, plural, one {# bot} other {# bots}}",
     "allPlatforms": "Alle",
     "searchPlaceholder": "Bots zoeken...",
@@ -958,6 +958,12 @@
     "installPromptPlatformFallbackHint": "Of plak deze prompt in {platform} om de bot zelf te maken:",
     "autogptPromptHint": "Plak deze prompt in een chat met Otto op AutoGPT. Otto stelt de bot in als Expert met zijn instructies, skills en routines.",
     "openAutogpt": "AutoGPT openen",
+    "dotsPromptHint": "Plak deze prompt in een chat met je dot in ChatGPT. Je dot neemt de instructies van de bot over, vraagt je de benodigde apps te koppelen en plant de routines als terugkerende taken.",
+    "openDots": "Dots openen",
+    "duetPromptHint": "Plak deze prompt in je Claude Duet-thread. Claude Duet neemt de instructies en routines van de bot over en gebruikt de skills en connectors van je Claude-account. Voeg ontbrekende toe in de instellingen van Claude.",
+    "openDuet": "Claude Duet openen",
+    "musePromptHint": "Plak deze prompt in een chat met Muse. De skills van Muse zijn ingebouwd: Muse neemt de instructies van de bot over, vraagt je de benodigde apps te koppelen en stelt de routines in als geplande taken.",
+    "openMuse": "Muse openen",
     "copyInstallPrompt": "Installatieprompt kopiëren",
     "machineReadable": "Machineleesbaar",
     "create": "Nieuwe bot",
@@ -1074,6 +1080,9 @@
     "installAllDescription": "Stel {bot} en de bots die erbij passen in één keer in.",
     "installAllPromptHint": "Plak deze prompt in {platform}. Hij stelt elke bot uit de set na elkaar in.",
     "installAllAutogptPromptHint": "Plak deze prompt in een chat met Otto op AutoGPT. Otto stelt elke bot uit de set na elkaar in als Expert.",
+    "installAllDotsPromptHint": "Plak deze prompt in een chat met je dot in ChatGPT. Je dot stelt elke bot uit de set na elkaar in.",
+    "installAllDuetPromptHint": "Plak deze prompt in je Claude Duet-thread. Claude Duet stelt elke bot uit de set na elkaar in. Voeg ontbrekende skills en connectors toe in de instellingen van Claude.",
+    "installAllMusePromptHint": "Plak deze prompt in een chat met Muse. Muse stelt elke bot uit de set na elkaar in en vraagt je de benodigde apps te koppelen.",
     "installAllCommandHint": "Installeer elke bot uit de set als skill:",
     "installAllTemplatesHint": "Of open elke {platform}-sjabloon:",
     "installAllSkipped": "Niet beschikbaar op {platform}: {bots}",
@@ -2482,7 +2491,7 @@
     },
     "bots": {
       "title": "Kant-en-klare AI-agentbots voor OpenClaw, Hermes en Grok",
-      "description": "Bekijk kant-en-klare AI-agentbots met instructies, geplande routines en skills en installeer ze met één klik op OpenClaw, AutoGPT, Hermes Agent of Grok Bot.",
+      "description": "Bekijk kant-en-klare AI-agentbots met instructies, geplande routines en skills en installeer ze met één klik op OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent of Grok Bot.",
       "heading": "Bots"
     },
     "taste": {

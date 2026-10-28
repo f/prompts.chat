@@ -931,7 +931,7 @@
     "browsePrompts": "Parcourir les Prompts"
   },
   "bots": {
-    "description": "Des bots d'agents IA prêts à l'emploi, avec instructions, routines et compétences. Installez-les sur OpenClaw, AutoGPT, Hermes Agent ou Grok Bot.",
+    "description": "Des bots d'agents IA prêts à l'emploi, avec instructions, routines et compétences. Installez-les sur OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent ou Grok Bot.",
     "count": "{count, plural, one {# bot} other {# bots}}",
     "allPlatforms": "Tous",
     "searchPlaceholder": "Rechercher des bots...",
@@ -958,6 +958,12 @@
     "installPromptPlatformFallbackHint": "Ou collez ce prompt dans {platform} pour créer le bot vous-même :",
     "autogptPromptHint": "Collez ce prompt dans une conversation avec Otto sur AutoGPT. Otto configure le bot en tant qu'Expert avec ses instructions, compétences et routines.",
     "openAutogpt": "Ouvrir AutoGPT",
+    "dotsPromptHint": "Collez ce prompt dans une conversation avec votre dot dans ChatGPT. Votre dot adopte les instructions du bot, vous demande de connecter les apps nécessaires et planifie ses routines comme tâches récurrentes.",
+    "openDots": "Ouvrir Dots",
+    "duetPromptHint": "Collez ce prompt dans votre fil Claude Duet. Claude Duet adopte les instructions et routines du bot et utilise les compétences et connecteurs de votre compte Claude : ajoutez ceux qui manquent dans les paramètres de Claude.",
+    "openDuet": "Ouvrir Claude Duet",
+    "musePromptHint": "Collez ce prompt dans une conversation avec Muse. Les compétences de Muse sont intégrées : Muse adopte les instructions du bot, vous demande de connecter les apps nécessaires et configure ses routines comme tâches planifiées.",
+    "openMuse": "Ouvrir Muse",
     "copyInstallPrompt": "Copier le prompt d'installation",
     "machineReadable": "Lisible par machine",
     "create": "Nouveau bot",
@@ -1074,6 +1080,9 @@
     "installAllDescription": "Configurez {bot} et les bots qui l'accompagnent en une seule fois.",
     "installAllPromptHint": "Collez ce prompt dans {platform}. Il configure chaque bot de l'ensemble, l'un après l'autre.",
     "installAllAutogptPromptHint": "Collez ce prompt dans une conversation avec Otto sur AutoGPT. Otto configure chaque bot de l'ensemble en tant qu'Expert, l'un après l'autre.",
+    "installAllDotsPromptHint": "Collez ce prompt dans une conversation avec votre dot dans ChatGPT. Votre dot configure chaque bot de l'ensemble, l'un après l'autre.",
+    "installAllDuetPromptHint": "Collez ce prompt dans votre fil Claude Duet. Claude Duet configure chaque bot de l'ensemble, l'un après l'autre. Ajoutez les compétences et connecteurs manquants dans les paramètres de Claude.",
+    "installAllMusePromptHint": "Collez ce prompt dans une conversation avec Muse. Muse configure chaque bot de l'ensemble, l'un après l'autre, et vous demande de connecter les apps nécessaires.",
     "installAllCommandHint": "Installez chaque bot de l'ensemble comme skill :",
     "installAllTemplatesHint": "Ou ouvrez chaque modèle {platform} :",
     "installAllSkipped": "Indisponible sur {platform} : {bots}",
@@ -2494,7 +2503,7 @@
     },
     "bots": {
       "title": "Bots d'agents IA prêts à l'emploi pour OpenClaw, Hermes et Grok",
-      "description": "Parcourez des bots d'agents IA prêts à l'emploi, avec instructions, routines planifiées et compétences, et installez-les sur OpenClaw, AutoGPT, Hermes Agent ou Grok Bot en un clic.",
+      "description": "Parcourez des bots d'agents IA prêts à l'emploi, avec instructions, routines planifiées et compétences, et installez-les sur OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent ou Grok Bot en un clic.",
       "heading": "Bots"
     },
     "taste": {

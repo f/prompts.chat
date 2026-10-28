@@ -931,7 +931,7 @@
     "browsePrompts": "Promptlara Bax"
   },
   "bots": {
-    "description": "Təlimatları, rutinləri və bacarıqları olan hazır süni intellekt agent botları. Onları OpenClaw, AutoGPT, Hermes Agent və ya Grok Bot-a quraşdırın.",
+    "description": "Təlimatları, rutinləri və bacarıqları olan hazır süni intellekt agent botları. Onları OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent və ya Grok Bot-a quraşdırın.",
     "count": "{count, plural, one {# bot} other {# bot}}",
     "allPlatforms": "Hamısı",
     "searchPlaceholder": "Botlarda axtar...",
@@ -958,6 +958,12 @@
     "installPromptPlatformFallbackHint": "Və ya botu özünüz yaratmaq üçün bu promptu {platform} daxilinə yapışdırın:",
     "autogptPromptHint": "Bu promptu AutoGPT-də Otto ilə söhbətə yapışdırın. Otto botu təlimatları, bacarıqları və rutinləri ilə birlikdə Expert kimi quraşdırır.",
     "openAutogpt": "AutoGPT-ni aç",
+    "dotsPromptHint": "Bu promptu ChatGPT-də dot-unuzla söhbətə yapışdırın. Dot-unuz botun təlimatlarını qəbul edir, lazım olan tətbiqləri qoşmağınızı xahiş edir və rutinlərini təkrarlanan tapşırıqlar kimi planlaşdırır.",
+    "openDots": "Dots-u aç",
+    "duetPromptHint": "Bu promptu Claude Duet söhbətinizə yapışdırın. Claude Duet botun təlimatlarını və rutinlərini qəbul edir, Claude hesabınızın bacarıqlarından və konnektorlarından istifadə edir, ona görə çatışmayanları Claude parametrlərində əlavə edin.",
+    "openDuet": "Claude Duet-i aç",
+    "musePromptHint": "Bu promptu Muse ilə söhbətə yapışdırın. Muse-un bacarıqları daxilidir: botun təlimatlarını qəbul edir, lazım olan tətbiqləri qoşmağınızı xahiş edir və rutinlərini planlaşdırılmış tapşırıqlar kimi quraşdırır.",
+    "openMuse": "Muse-u aç",
     "copyInstallPrompt": "Quraşdırma promptunu kopyala",
     "machineReadable": "Maşın tərəfindən oxunan",
     "create": "Yeni bot",
@@ -1074,6 +1080,9 @@
     "installAllDescription": "{bot} və ona uyğun botları bir dəfəyə quraşdırın.",
     "installAllPromptHint": "Bu təlimatı {platform} daxilinə yapışdırın. Dəstdəki hər botu ardıcıl quraşdırır.",
     "installAllAutogptPromptHint": "Bu təlimatı AutoGPT-də Otto ilə söhbətə yapışdırın. Otto dəstdəki hər botu ardıcıl olaraq Expert kimi quraşdırır.",
+    "installAllDotsPromptHint": "Bu promptu ChatGPT-də dot-unuzla söhbətə yapışdırın. Dot-unuz dəstdəki hər botu ardıcıl olaraq quraşdırır.",
+    "installAllDuetPromptHint": "Bu promptu Claude Duet söhbətinizə yapışdırın. Claude Duet dəstdəki hər botu ardıcıl olaraq quraşdırır. Çatışmayan bacarıq və konnektorları Claude parametrlərində əlavə edin.",
+    "installAllMusePromptHint": "Bu promptu Muse ilə söhbətə yapışdırın. Muse dəstdəki hər botu ardıcıl olaraq quraşdırır və lazım olan tətbiqləri qoşmağınızı xahiş edir.",
     "installAllCommandHint": "Dəstdəki hər botu bacarıq kimi quraşdırın:",
     "installAllTemplatesHint": "Və ya hər {platform} şablonunu açın:",
     "installAllSkipped": "{platform} üçün mövcud deyil: {bots}",
@@ -2491,7 +2500,7 @@
     },
     "bots": {
       "title": "OpenClaw, Hermes və Grok üçün hazır süni intellekt agent botları",
-      "description": "Təlimatları, planlaşdırılmış rutinləri və bacarıqları olan hazır süni intellekt agent botlarına baxın və onları bir kliklə OpenClaw, AutoGPT, Hermes Agent və ya Grok Bot-a quraşdırın.",
+      "description": "Təlimatları, planlaşdırılmış rutinləri və bacarıqları olan hazır süni intellekt agent botlarına baxın və onları bir kliklə OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent və ya Grok Bot-a quraşdırın.",
       "heading": "Botlar"
     },
     "taste": {

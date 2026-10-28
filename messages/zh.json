@@ -931,7 +931,7 @@
     "browsePrompts": "浏览提示词"
   },
   "bots": {
-    "description": "现成的 AI 智能体机器人，包含指令、例行任务和技能。可安装到 OpenClaw、AutoGPT、Hermes Agent 或 Grok Bot。",
+    "description": "现成的 AI 智能体机器人，包含指令、例行任务和技能。可安装到 OpenClaw、AutoGPT、OpenAI Dots、Claude Duet、Meta Muse、Hermes Agent 或 Grok Bot。",
     "count": "{count, plural, other {# 个机器人}}",
     "allPlatforms": "全部",
     "searchPlaceholder": "搜索机器人...",
@@ -958,6 +958,12 @@
     "installPromptPlatformFallbackHint": "或者将此提示词粘贴到 {platform} 中自行创建机器人：",
     "autogptPromptHint": "将此提示词粘贴到 AutoGPT 上与 Otto 的对话中。Otto 会将机器人设置为一个 Expert，并配置其指令、技能和例行任务。",
     "openAutogpt": "打开 AutoGPT",
+    "dotsPromptHint": "将此提示词粘贴到 ChatGPT 中与你的 dot 的对话里。你的 dot 会采用机器人的指令，请你连接所需的应用，并将其例行任务安排为定期任务。",
+    "openDots": "打开 Dots",
+    "duetPromptHint": "将此提示词粘贴到你的 Claude Duet 对话中。Claude Duet 会采用机器人的指令和例行任务，并使用你 Claude 账户中的技能和连接器，缺少的请在 Claude 设置中添加。",
+    "openDuet": "打开 Claude Duet",
+    "musePromptHint": "将此提示词粘贴到与 Muse 的对话中。Muse 的技能是内置的，它会采用机器人的指令，请你连接所需的应用，并将其例行任务设置为计划任务。",
+    "openMuse": "打开 Muse",
     "copyInstallPrompt": "复制安装提示",
     "machineReadable": "机器可读",
     "create": "新建机器人",
@@ -1074,6 +1080,9 @@
     "installAllDescription": "一次性设置 {bot} 及其搭配的机器人。",
     "installAllPromptHint": "将此提示粘贴到 {platform}。它会依次设置组合中的每个机器人。",
     "installAllAutogptPromptHint": "将此提示粘贴到 AutoGPT 上与 Otto 的对话中。Otto 会依次将组合中的每个机器人设置为 Expert。",
+    "installAllDotsPromptHint": "将此提示词粘贴到 ChatGPT 中与你的 dot 的对话里。你的 dot 会依次设置组合中的每个机器人。",
+    "installAllDuetPromptHint": "将此提示词粘贴到你的 Claude Duet 对话中。Claude Duet 会依次设置组合中的每个机器人。缺少的技能和连接器请在 Claude 设置中添加。",
+    "installAllMusePromptHint": "将此提示词粘贴到与 Muse 的对话中。Muse 会依次设置组合中的每个机器人，并请你连接所需的应用。",
     "installAllCommandHint": "将组合中的每个机器人安装为技能:",
     "installAllTemplatesHint": "或打开每个 {platform} 模板:",
     "installAllSkipped": "{platform} 不可用:{bots}",
@@ -2479,7 +2488,7 @@
     },
     "bots": {
       "title": "适用于 OpenClaw、Hermes 和 Grok 的现成 AI 智能体机器人",
-      "description": "浏览包含指令、定时任务和技能的现成 AI 智能体机器人，一键安装到 OpenClaw、AutoGPT、Hermes Agent 或 Grok Bot。",
+      "description": "浏览包含指令、定时任务和技能的现成 AI 智能体机器人，一键安装到 OpenClaw、AutoGPT、OpenAI Dots、Claude Duet、Meta Muse、Hermes Agent 或 Grok Bot。",
       "heading": "机器人"
     },
     "taste": {

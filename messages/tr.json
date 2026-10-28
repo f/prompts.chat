@@ -931,7 +931,7 @@
     "browsePrompts": "Promptlara Göz At"
   },
   "bots": {
-    "description": "Talimatları, rutinleri ve becerileriyle hazır yapay zekâ ajan botları. OpenClaw, AutoGPT, Hermes Agent veya Grok Bot'a kurun.",
+    "description": "Talimatları, rutinleri ve becerileriyle hazır yapay zekâ ajan botları. OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent veya Grok Bot'a kurun.",
     "count": "{count, plural, one {# bot} other {# bot}}",
     "allPlatforms": "Tümü",
     "searchPlaceholder": "Bot ara...",
@@ -958,6 +958,12 @@
     "installPromptPlatformFallbackHint": "Ya da botu kendiniz oluşturmak için bu istemi {platform} içine yapıştırın:",
     "autogptPromptHint": "Bu istemi AutoGPT'de Otto ile bir sohbete yapıştırın. Otto botu talimatları, becerileri ve rutinleriyle bir Expert olarak kurar.",
     "openAutogpt": "AutoGPT'yi aç",
+    "dotsPromptHint": "Bu istemi ChatGPT'de dot'unuzla bir sohbete yapıştırın. Dot'unuz botun talimatlarını benimser, ihtiyaç duyduğu uygulamaları bağlamanızı ister ve rutinlerini yinelenen görevler olarak zamanlar.",
+    "openDots": "Dots'u aç",
+    "duetPromptHint": "Bu istemi Claude Duet sohbetinize yapıştırın. Claude Duet botun talimatlarını ve rutinlerini benimser; Claude hesabınızdaki becerileri ve bağlayıcıları kullanır, bu yüzden eksik olanları Claude ayarlarından ekleyin.",
+    "openDuet": "Claude Duet'i aç",
+    "musePromptHint": "Bu istemi Muse ile bir sohbete yapıştırın. Muse'un becerileri yerleşiktir; botun talimatlarını benimser, ihtiyaç duyduğu uygulamaları bağlamanızı ister ve rutinlerini zamanlanmış görevler olarak kurar.",
+    "openMuse": "Muse'u aç",
     "copyInstallPrompt": "Kurulum istemini kopyala",
     "machineReadable": "Makine tarafından okunabilir",
     "create": "Yeni bot",
@@ -1074,6 +1080,9 @@
     "installAllDescription": "{bot} botunu ve onunla uyumlu botları tek seferde kurun.",
     "installAllPromptHint": "Bu istemi {platform} içine yapıştırın. Setteki her botu sırayla kurar.",
     "installAllAutogptPromptHint": "Bu istemi AutoGPT'de Otto ile bir sohbete yapıştırın. Otto setteki her botu sırayla bir Expert olarak kurar.",
+    "installAllDotsPromptHint": "Bu istemi ChatGPT'de dot'unuzla bir sohbete yapıştırın. Dot'unuz setteki her botu sırayla kurar.",
+    "installAllDuetPromptHint": "Bu istemi Claude Duet sohbetinize yapıştırın. Claude Duet setteki her botu sırayla kurar. Eksik becerileri ve bağlayıcıları Claude ayarlarından ekleyin.",
+    "installAllMusePromptHint": "Bu istemi Muse ile bir sohbete yapıştırın. Muse setteki her botu sırayla kurar ve ihtiyaç duydukları uygulamaları bağlamanızı ister.",
     "installAllCommandHint": "Setteki her botu bir beceri olarak yükleyin:",
     "installAllTemplatesHint": "Ya da her {platform} şablonunu açın:",
     "installAllSkipped": "{platform} için mevcut değil: {bots}",
@@ -2490,7 +2499,7 @@
     },
     "bots": {
       "title": "OpenClaw, Hermes ve Grok için Hazır Yapay Zekâ Ajan Botları",
-      "description": "Talimatları, zamanlanmış rutinleri ve becerileri olan hazır yapay zekâ ajan botlarına göz atın ve onları tek tıkla OpenClaw, AutoGPT, Hermes Agent veya Grok Bot'a kurun.",
+      "description": "Talimatları, zamanlanmış rutinleri ve becerileri olan hazır yapay zekâ ajan botlarına göz atın ve onları tek tıkla OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent veya Grok Bot'a kurun.",
       "heading": "Botlar"
     },
     "taste": {

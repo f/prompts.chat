@@ -931,7 +931,7 @@
     "browsePrompts": "프롬프트 둘러보기"
   },
   "bots": {
-    "description": "지침, 루틴, 스킬을 갖춘 바로 쓸 수 있는 AI 에이전트 봇입니다. OpenClaw, AutoGPT, Hermes Agent 또는 Grok Bot에 설치하세요.",
+    "description": "지침, 루틴, 스킬을 갖춘 바로 쓸 수 있는 AI 에이전트 봇입니다. OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent 또는 Grok Bot에 설치하세요.",
     "count": "{count, plural, other {봇 #개}}",
     "allPlatforms": "전체",
     "searchPlaceholder": "봇 검색...",
@@ -958,6 +958,12 @@
     "installPromptPlatformFallbackHint": "또는 이 프롬프트를 {platform}에 붙여넣어 직접 봇을 만드세요:",
     "autogptPromptHint": "이 프롬프트를 AutoGPT의 Otto와의 채팅에 붙여넣으세요. Otto가 지침, 스킬, 루틴을 갖춘 Expert로 봇을 설정합니다.",
     "openAutogpt": "AutoGPT 열기",
+    "dotsPromptHint": "이 프롬프트를 ChatGPT의 dot과의 채팅에 붙여넣으세요. dot이 봇의 지침을 따르고, 필요한 앱 연결을 요청하며, 루틴을 반복 작업으로 예약합니다.",
+    "openDots": "Dots 열기",
+    "duetPromptHint": "이 프롬프트를 Claude Duet 스레드에 붙여넣으세요. Claude Duet이 봇의 지침과 루틴을 따르고 Claude 계정의 스킬과 커넥터를 사용하므로, 없는 항목은 Claude 설정에서 추가하세요.",
+    "openDuet": "Claude Duet 열기",
+    "musePromptHint": "이 프롬프트를 Muse와의 채팅에 붙여넣으세요. Muse의 스킬은 기본 내장되어 있어, 봇의 지침을 따르고 필요한 앱 연결을 요청하며 루틴을 예약 작업으로 설정합니다.",
+    "openMuse": "Muse 열기",
     "copyInstallPrompt": "설치 프롬프트 복사",
     "machineReadable": "기계 판독용",
     "create": "새 봇",
@@ -1074,6 +1080,9 @@
     "installAllDescription": "{bot}와(과) 함께 쓰기 좋은 봇을 한 번에 설정하세요.",
     "installAllPromptHint": "이 프롬프트를 {platform}에 붙여넣으세요. 세트의 모든 봇을 차례대로 설정합니다.",
     "installAllAutogptPromptHint": "이 프롬프트를 AutoGPT의 Otto와의 채팅에 붙여넣으세요. Otto가 세트의 모든 봇을 차례대로 Expert로 설정합니다.",
+    "installAllDotsPromptHint": "이 프롬프트를 ChatGPT의 dot과의 채팅에 붙여넣으세요. dot이 세트의 모든 봇을 차례대로 설정합니다.",
+    "installAllDuetPromptHint": "이 프롬프트를 Claude Duet 스레드에 붙여넣으세요. Claude Duet이 세트의 모든 봇을 차례대로 설정합니다. 없는 스킬과 커넥터는 Claude 설정에서 추가하세요.",
+    "installAllMusePromptHint": "이 프롬프트를 Muse와의 채팅에 붙여넣으세요. Muse가 세트의 모든 봇을 차례대로 설정하고 필요한 앱 연결을 요청합니다.",
     "installAllCommandHint": "세트의 각 봇을 스킬로 설치:",
     "installAllTemplatesHint": "또는 각 {platform} 템플릿 열기:",
     "installAllSkipped": "{platform}에서 사용할 수 없음: {bots}",
@@ -2479,7 +2488,7 @@
     },
     "bots": {
       "title": "OpenClaw, Hermes, Grok용 바로 쓰는 AI 에이전트 봇",
-      "description": "지침, 예약 루틴, 스킬을 갖춘 바로 쓸 수 있는 AI 에이전트 봇을 둘러보고 클릭 한 번으로 OpenClaw, AutoGPT, Hermes Agent 또는 Grok Bot에 설치하세요.",
+      "description": "지침, 예약 루틴, 스킬을 갖춘 바로 쓸 수 있는 AI 에이전트 봇을 둘러보고 클릭 한 번으로 OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent 또는 Grok Bot에 설치하세요.",
       "heading": "봇"
     },
     "taste": {
