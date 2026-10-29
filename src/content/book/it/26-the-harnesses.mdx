@@ -211,6 +211,55 @@ La stessa distinzione conta per le informazioni restituite dagli strumenti. Una 
   explanation="I prompt guidano il comportamento. Lo strumento o l'ambiente devono far rispettare il limite di accesso anche se il modello richiede un'azione non consentita."
 />
 
+## Dove vive l'harness?
+
+Ogni agente lavora dentro un harness, ma qualcuno deve costruirlo, ospitarlo e tenerlo in funzione. Chi se ne occupa decide quanto controlli tu e quanto devi mantenere. Oggi un harness arriva di solito per una di queste quattro strade:
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Da dove arriva</th>
+      <th scope="col">Chi fa girare il ciclo</th>
+      <th scope="col">Cosa metti tu</th>
+      <th scope="col">Il compromesso</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Un ciclo che scrivi da solo</td>
+      <td>Tu</td>
+      <td>Tutto: contesto, gestione degli strumenti, permessi, limiti</td>
+      <td>Controllo completo, e anche tutta la manutenzione</td>
+    </tr>
+    <tr>
+      <td>Un SDK o un framework</td>
+      <td>Tu, in locale o sull'hosting che scegli</td>
+      <td>L'agente come file nel tuo progetto: prompt, strumenti, test</td>
+      <td>Le modifiche passano dalla normale revisione del codice; rilascio e aggiornamenti restano a te</td>
+    </tr>
+    <tr>
+      <td>Un servizio gestito</td>
+      <td>Il fornitore</td>
+      <td>Istruzioni, skill, strumenti e la scelta del modello</td>
+      <td>Poca infrastruttura da mantenere; sandbox e limiti del fornitore tracciano i confini</td>
+    </tr>
+    <tr>
+      <td>Parte di un sistema di automazione, come la CI</td>
+      <td>La piattaforma di automazione, quando scatta un evento</td>
+      <td>Una descrizione del compito e gli output che può produrre</td>
+      <td>Si inserisce nelle pipeline che hai già; nessuno guarda una chat mentre gira</td>
+    </tr>
+  </tbody>
+</table>
+
+La fine di ottobre 2026 ha offerto un esempio chiaro per ciascuna delle ultime tre. L'[Agent SDK](https://cursor.com/blog/agent-sdk) di Cursor, disponibile per tutti dal 20 ottobre, tratta un agente come un piccolo progetto: prompt in Markdown, strumenti come funzioni TypeScript e valutazioni (eval) lì accanto. Puoi eseguire l'agente in locale, distribuirlo sull'infrastruttura di Cursor o farlo girare sui tuoi server come un singolo processo Node. Il 28 ottobre Microsoft ha rilasciato in anteprima pubblica il [Copilot harness in Foundry Agent Service](https://devblogs.microsoft.com/foundry/microsoft-copilot-harness-in-foundry/). È lo [stesso harness](https://blogs.microsoft.com/blog/2026/10/28/introducing-the-microsoft-copilot-harness-unlocking-the-potential-of-truly-multi-model-agentic-work/) che fa funzionare GitHub Copilot nella sua app, nella CLI e in VS Code. Microsoft gestisce il ciclo dell'agente e la sandbox; tu porti skill, strumenti MCP e definizioni dell'agente che puoi tenere sotto controllo di versione. Lo stesso giorno [GitHub Agentic Workflows](https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available/) è diventato disponibile per tutti. Descrivi un lavoro, come smistare le nuove issue, in un file Markdown, e questo viene compilato in un normale workflow di GitHub Actions che esegue Copilot o un altro agente di programmazione.
+
+Dove vive l'harness decide anche dove vengono fatti rispettare i suoi confini. Le istruzioni orientano; i permessi impongono. Nel tuo ciclo, questi controlli li costruisci tu. In un servizio gestito o in una piattaforma di automazione li fornisce la piattaforma, e tu li configuri. Agentic Workflows mostra quanti strati possono esserci: per impostazione predefinita gli agenti hanno permessi di sola lettura e girano in un container isolato dietro un firewall, e le modifiche che propongono passano per «safe output» convalidati e per una scansione delle minacce separata prima che venga applicato qualsiasi cosa. Il tuo prompt dice ancora cosa fare. La piattaforma limita i danni che un errore può fare.
+
+Le parti che scrivi tu di solito viaggiano meglio del ciclo. Le skill e MCP sono standard aperti, e l'annuncio di Microsoft considera il loro supporto il segno di un harness serio. Una skill chiara o una buona descrizione di uno strumento spesso passa a un altro harness con piccoli aggiustamenti; il codice scritto attorno a un ciclo specifico, raramente. Prima abbiamo suggerito di mantenere lo stesso modello quando confronti degli harness. Un harness multi-modello permette l'esperimento opposto: Foundry ti fa scegliere un modello supportato senza riscrivere l'orchestrazione, e Agentic Workflows lascia che ogni workflow scelga il proprio fornitore di modelli. Puoi cambiare modello e lasciare fermo tutto il resto.
+
+Qualunque strada tu scelga, alcune cose non passano mai al fornitore: il risultato che vuoi, le istruzioni e le skill che lo descrivono, gli strumenti e gli accessi che concedi, e i controlli che mostrano che il lavoro è finito. Un harness può far girare il ciclo al posto tuo. Non può decidere che cosa significhi «finito».
+
 ## Cosa rende utile un harness?
 
 Più autonomia è utile solo quando il sistema può verificare il proprio lavoro e riprendersi dai problemi. Per un'attività lunga, osserva come l'harness gestisce questi aspetti:

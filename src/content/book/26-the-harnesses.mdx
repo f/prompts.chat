@@ -211,6 +211,55 @@ The same distinction matters for information coming back from tools. A web page 
   explanation="Prompts guide behavior. The tool or environment must enforce the access boundary even if the model requests a disallowed action."
 />
 
+## Where Does the Harness Live?
+
+Every agent runs inside a harness, but someone has to build that harness, host it, and keep it working. Who does that decides how much you control and how much you have to maintain. Today a harness usually reaches you in one of four ways:
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Where it comes from</th>
+      <th scope="col">Who runs the loop</th>
+      <th scope="col">What you provide</th>
+      <th scope="col">The trade-off</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>A loop you write yourself</td>
+      <td>You</td>
+      <td>Everything: context, tool handling, permissions, limits</td>
+      <td>Complete control, and all of the upkeep</td>
+    </tr>
+    <tr>
+      <td>An SDK or framework</td>
+      <td>You, locally or on a host you choose</td>
+      <td>The agent as files in your project: prompts, tools, tests</td>
+      <td>Changes go through ordinary code review; you still deploy and update it</td>
+    </tr>
+    <tr>
+      <td>A managed service</td>
+      <td>The provider</td>
+      <td>Instructions, skills, tools, and a choice of model</td>
+      <td>Little machinery to maintain; the provider's sandbox and limits set the edges</td>
+    </tr>
+    <tr>
+      <td>Part of an automation system, such as CI</td>
+      <td>The automation platform, when an event fires</td>
+      <td>A task description and the outputs it is allowed to produce</td>
+      <td>Fits pipelines you already have; nobody is watching a chat while it runs</td>
+    </tr>
+  </tbody>
+</table>
+
+Late October 2026 brought a clear example of each of the last three. Cursor's [Agent SDK](https://cursor.com/blog/agent-sdk), generally available since October 20, treats an agent as a small project: prompts in Markdown, tools as TypeScript functions, and evals beside them. You can run it locally, deploy it to Cursor's infrastructure, or run it on your own as a single Node process. On October 28, Microsoft released the [Copilot harness in Foundry Agent Service](https://devblogs.microsoft.com/foundry/microsoft-copilot-harness-in-foundry/) as a public preview. It is the [same harness](https://blogs.microsoft.com/blog/2026/10/28/introducing-the-microsoft-copilot-harness-unlocking-the-potential-of-truly-multi-model-agentic-work/) that powers GitHub Copilot in its app, CLI, and VS Code. Microsoft runs the agent loop and the sandbox; you bring skills, MCP tools, and agent definitions you can keep in source control. The same day, [GitHub Agentic Workflows](https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available/) became generally available. You describe a job such as issue triage in a Markdown file, and it is compiled into an ordinary GitHub Actions workflow that runs Copilot or another coding agent.
+
+Where the harness lives also decides where its boundaries are enforced. Instructions guide; permissions enforce. In your own loop, you build that enforcement yourself. On a managed service or an automation platform, the platform supplies it and you configure it. Agentic Workflows shows how many layers that can mean: agents get read-only permissions by default and run in a sandboxed container behind a firewall, and their proposed changes pass through validated "safe outputs" and a separate threat-detection scan before anything is applied. Your prompt still says what to do. The platform limits what a mistake can do.
+
+The parts you write usually travel better than the loop. Skills and MCP are open standards, and Microsoft's announcement treats supporting them as the mark of a serious harness. A clear skill or tool description can often move to another harness with small adjustments; code written around one particular loop rarely can. Earlier we suggested keeping the model fixed while you compare harnesses. A multi-model harness offers the opposite experiment: Foundry lets you pick a supported model without rewriting the orchestration, and Agentic Workflows lets each workflow choose its model provider. You can change the model and hold everything else still.
+
+Whichever path you choose, some things never move to the provider: the outcome you want, the instructions and skills that describe it, the tools and access you grant, and the checks that show the work is done. A harness can run the loop for you. It cannot decide what "done" means.
+
 ## What Makes a Harness Useful?
 
 More autonomy is useful only when the system can check its work and recover from problems. For a long task, look at how the harness handles:

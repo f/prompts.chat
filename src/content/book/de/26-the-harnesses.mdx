@@ -211,6 +211,55 @@ Dieselbe Unterscheidung ist bei Informationen wichtig, die von Werkzeugen zurüc
   explanation="Prompts lenken das Verhalten. Das Werkzeug oder die Umgebung muss die Zugriffsgrenze durchsetzen, selbst wenn das Modell eine unerlaubte Aktion anfordert."
 />
 
+## Wo lebt der Harness?
+
+Jeder Agent läuft in einem Harness. Aber irgendjemand muss diesen Harness bauen, betreiben und am Laufen halten. Wer das übernimmt, entscheidet darüber, wie viel du selbst in der Hand hast und wie viel du pflegen musst. Heute kommt ein Harness meist auf einem von vier Wegen zu dir:
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Woher er kommt</th>
+      <th scope="col">Wer die Schleife betreibt</th>
+      <th scope="col">Was du beisteuerst</th>
+      <th scope="col">Der Preis dafür</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Eine Schleife, die du selbst schreibst</td>
+      <td>Du</td>
+      <td>Alles: Kontext, Werkzeugaufrufe, Berechtigungen, Grenzen</td>
+      <td>Volle Kontrolle – und die ganze Pflege</td>
+    </tr>
+    <tr>
+      <td>Ein SDK oder Framework</td>
+      <td>Du, lokal oder bei einem Host deiner Wahl</td>
+      <td>Den Agent als Dateien in deinem Projekt: Prompts, Werkzeuge, Tests</td>
+      <td>Änderungen laufen durch das gewohnte Code-Review; Deployment und Updates bleiben deine Sache</td>
+    </tr>
+    <tr>
+      <td>Ein verwalteter Dienst</td>
+      <td>Der Anbieter</td>
+      <td>Anweisungen, Skills, Werkzeuge und die Wahl des Modells</td>
+      <td>Wenig Technik zu pflegen; Sandbox und Grenzen des Anbieters stecken den Rahmen ab</td>
+    </tr>
+    <tr>
+      <td>Teil eines Automatisierungssystems wie CI</td>
+      <td>Die Automatisierungsplattform, sobald ein Ereignis eintritt</td>
+      <td>Eine Aufgabenbeschreibung und die Ausgaben, die sie erzeugen darf</td>
+      <td>Passt in bestehende Pipelines; während der Agent läuft, schaut niemand in einen Chat</td>
+    </tr>
+  </tbody>
+</table>
+
+Ende Oktober 2026 lieferte für jeden der letzten drei Wege ein anschauliches Beispiel. Cursors [Agent SDK](https://cursor.com/blog/agent-sdk), seit dem 20. Oktober allgemein verfügbar, behandelt einen Agent als kleines Projekt: Prompts in Markdown, Werkzeuge als TypeScript-Funktionen und Evals direkt daneben. Du kannst so einen Agent lokal ausführen, auf Cursors Infrastruktur deployen oder als einzelnen Node-Prozess auf eigenen Servern betreiben. Am 28. Oktober veröffentlichte Microsoft den [Copilot-Harness in Foundry Agent Service](https://devblogs.microsoft.com/foundry/microsoft-copilot-harness-in-foundry/) als Public Preview. Es ist [derselbe Harness](https://blogs.microsoft.com/blog/2026/10/28/introducing-the-microsoft-copilot-harness-unlocking-the-potential-of-truly-multi-model-agentic-work/), der GitHub Copilot in der App, in der CLI und in VS Code antreibt. Microsoft betreibt die Agentenschleife und die Sandbox; du bringst Skills, MCP-Werkzeuge und Agentendefinitionen mit, die du in der Versionsverwaltung halten kannst. Am selben Tag wurden [GitHub Agentic Workflows](https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available/) allgemein verfügbar. Dort beschreibst du eine Aufgabe, etwa das Sichten neuer Issues, in einer Markdown-Datei, und daraus wird ein ganz gewöhnlicher GitHub-Actions-Workflow kompiliert, der Copilot oder einen anderen Coding-Agent ausführt.
+
+Wo der Harness lebt, entscheidet auch darüber, wo seine Grenzen durchgesetzt werden. Anweisungen lenken, Berechtigungen setzen durch. In deiner eigenen Schleife baust du diese Durchsetzung selbst. Bei einem verwalteten Dienst oder einer Automatisierungsplattform liefert die Plattform sie, und du konfigurierst sie. Agentic Workflows zeigt, wie viele Schichten das sein können: Agents erhalten standardmäßig nur Leserechte und laufen in einem abgeschotteten Container hinter einer Firewall, und ihre vorgeschlagenen Änderungen durchlaufen geprüfte „Safe Outputs“ und einen separaten Scan auf Bedrohungen, bevor irgendetwas angewendet wird. Dein Prompt sagt weiterhin, was zu tun ist. Die Plattform begrenzt, was ein Fehler anrichten kann.
+
+Was du selbst schreibst, lässt sich meist leichter mitnehmen als die Schleife. Skills und MCP sind offene Standards, und Microsofts Ankündigung sieht ihre Unterstützung als Kennzeichen eines ernstzunehmenden Harness. Ein klarer Skill oder eine gute Werkzeugbeschreibung lässt sich oft mit kleinen Anpassungen in einen anderen Harness übertragen; Code, der um eine bestimmte Schleife herum geschrieben wurde, kaum. Weiter oben haben wir empfohlen, beim Vergleich von Harnesses das Modell gleich zu lassen. Ein Multi-Modell-Harness erlaubt das umgekehrte Experiment: In Foundry wählst du ein unterstütztes Modell, ohne die Orchestrierung neu zu schreiben, und bei Agentic Workflows kann jeder Workflow seinen Modellanbieter selbst wählen. Du kannst das Modell wechseln und alles andere unverändert lassen.
+
+Welchen Weg du auch wählst, manches geht nie an den Anbieter über: das Ergebnis, das du willst, die Anweisungen und Skills, die es beschreiben, die Werkzeuge und Zugriffe, die du gewährst, und die Prüfungen, die zeigen, dass die Arbeit erledigt ist. Ein Harness kann die Schleife für dich ausführen. Was „fertig“ bedeutet, kann er nicht entscheiden.
+
 ## Was macht einen Harness nützlich?
 
 Mehr Autonomie ist nur dann nützlich, wenn das System seine Arbeit prüfen und sich von Problemen erholen kann. Achte bei langen Aufgaben darauf, wie der Harness mit diesen Punkten umgeht:

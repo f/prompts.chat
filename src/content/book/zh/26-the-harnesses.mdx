@@ -211,6 +211,55 @@ harness 仍然需要技能所预期的工具和环境。描述浏览器测试的
   explanation="提示词引导行为。即使模型请求了不允许的操作，工具或环境也必须强制执行访问边界。"
 />
 
+## Harness 运行在哪里？
+
+每个智能体都运行在某个 harness 里，但总得有人来构建它、托管它，并让它持续运转。由谁来做这件事，决定了你能掌控多少，又要自己维护多少。如今，harness 通常通过以下四种方式来到你手中：
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">从哪里来</th>
+      <th scope="col">谁来运行循环</th>
+      <th scope="col">你需要提供什么</th>
+      <th scope="col">得与失</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>自己编写的循环</td>
+      <td>你</td>
+      <td>全部：上下文、工具请求处理、权限、限制</td>
+      <td>完全的掌控，也意味着全部的维护</td>
+    </tr>
+    <tr>
+      <td>SDK 或框架</td>
+      <td>你，在本地或你选择的托管环境中</td>
+      <td>以项目文件形式存在的智能体：提示词、工具、测试</td>
+      <td>改动走常规的代码审查；部署和更新仍由你负责</td>
+    </tr>
+    <tr>
+      <td>托管服务</td>
+      <td>服务提供方</td>
+      <td>指令、技能、工具，以及模型选择</td>
+      <td>需要维护的机制很少；边界由提供方的沙箱和限制划定</td>
+    </tr>
+    <tr>
+      <td>自动化系统的一部分，比如 CI</td>
+      <td>自动化平台，在事件触发时运行</td>
+      <td>任务描述，以及允许它产生的输出</td>
+      <td>能融入你已有的流水线；运行时没有人盯着聊天窗口</td>
+    </tr>
+  </tbody>
+</table>
+
+2026 年 10 月下旬，后三种方式各自出现了一个清晰的例子。Cursor 的 [Agent SDK](https://cursor.com/blog/agent-sdk) 自 10 月 20 日起正式可用，它把智能体当作一个小项目来对待：提示词用 Markdown 编写，工具是 TypeScript 函数，评估（evals）就放在旁边。你可以在本地运行这样的智能体，把它部署到 Cursor 的基础设施上，也可以作为单个 Node 进程在自己的服务器上运行。10 月 28 日，Microsoft 以公开预览形式推出了 [Foundry Agent Service 中的 Copilot harness](https://devblogs.microsoft.com/foundry/microsoft-copilot-harness-in-foundry/)。驱动 GitHub Copilot 应用、CLI 和 VS Code 的正是[同一个 harness](https://blogs.microsoft.com/blog/2026/10/28/introducing-the-microsoft-copilot-harness-unlocking-the-potential-of-truly-multi-model-agentic-work/)。智能体循环和沙箱由 Microsoft 运行；你带来技能、MCP 工具，以及可以放进版本控制的智能体定义。同一天，[GitHub Agentic Workflows](https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available/) 正式可用。你在 Markdown 文件里描述一项工作，比如给新 issue 分类，它会被编译成一个普通的 GitHub Actions 工作流，运行 Copilot 或其他编码智能体。
+
+harness 运行在哪里，也决定了它的边界在哪里被强制执行。指令负责引导，权限负责约束。在你自己的循环里，这些强制机制要由你亲手搭建。在托管服务或自动化平台上，则由平台提供、由你配置。Agentic Workflows 展示了这可能意味着多少层防护：智能体默认只有只读权限，运行在防火墙后的沙箱容器中；它们提出的改动在真正生效之前，要先通过经过验证的“安全输出”（safe outputs）机制，以及一个独立的威胁检测扫描。告诉智能体做什么的，仍然是你的提示词；限制一次失误能造成多大破坏的，是平台。
+
+你自己编写的部分，通常比循环本身更容易迁移。技能和 MCP 都是开放标准，Microsoft 的公告也把对它们的支持视为一个合格 harness 的标志。一个清晰的技能或写得好的工具描述，往往只需稍作调整就能搬到另一个 harness 上；而围绕某个特定循环写的代码，很少能做到这一点。前面我们建议，在比较 harness 时保持模型不变。多模型 harness 则让你可以做相反的实验：Foundry 允许你选择受支持的模型而无需重写编排逻辑，Agentic Workflows 允许每个工作流选择自己的模型提供方。你可以只换模型，其余一切保持不动。
+
+无论选择哪条路，有些东西永远不会交给提供方：你想要的结果、描述它的指令和技能、你授予的工具和访问权限，以及证明工作已经完成的检查。harness 可以替你运行循环，却无法替你决定什么才算“完成”。
+
 ## 什么样的 Harness 才有用？
 
 只有系统能够检查工作并从问题中恢复时，更高的自主性才有用。对于长任务，要关注 harness 如何处理以下事项：

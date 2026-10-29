@@ -211,6 +211,55 @@ Aynı ayrım, araçlardan dönen bilgiler için de önemlidir. Bir web sayfası 
   explanation="Promptlar davranışa yön verir. Model izin verilmeyen bir işlem istese bile araç veya ortam erişim sınırını uygulamalıdır."
 />
 
+## Harness Nerede Yaşar?
+
+Her ajan bir harness'in içinde çalışır; ama o harness'i birinin kurması, barındırması ve ayakta tutması gerekir. Bu işi kimin üstlendiği, neyin sizin kontrolünüzde olacağını ve neyin bakımını sizin yapacağınızı belirler. Bugün bir harness karşınıza genellikle şu dört yoldan biriyle çıkar:
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Nereden gelir?</th>
+      <th scope="col">Döngüyü kim çalıştırır?</th>
+      <th scope="col">Siz ne sağlarsınız?</th>
+      <th scope="col">Kazanç ve bedel</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Kendi yazdığınız bir döngü</td>
+      <td>Siz</td>
+      <td>Her şey: bağlam, araç isteklerinin işlenmesi, izinler, sınırlar</td>
+      <td>Kontrol tamamen sizde, bakım yükü de</td>
+    </tr>
+    <tr>
+      <td>Bir SDK ya da framework</td>
+      <td>Siz; kendi bilgisayarınızda ya da seçtiğiniz bir sunucuda</td>
+      <td>Projenizdeki dosyalar olarak ajanın kendisi: promptlar, araçlar, testler</td>
+      <td>Değişiklikler alışılmış kod incelemesinden geçer; yayına almak ve güncel tutmak yine size düşer</td>
+    </tr>
+    <tr>
+      <td>Yönetilen bir hizmet</td>
+      <td>Sağlayıcı</td>
+      <td>Talimatlar, beceriler, araçlar ve model tercihi</td>
+      <td>Bakımını yapacağınız düzenek azdır; sınırları sağlayıcının yalıtılmış ortamı ve limitleri çizer</td>
+    </tr>
+    <tr>
+      <td>CI gibi bir otomasyon sisteminin parçası</td>
+      <td>Bir olay tetiklendiğinde otomasyon platformu</td>
+      <td>Bir görev tanımı ve üretmesine izin verilen çıktılar</td>
+      <td>Hâlihazırdaki iş akışlarınıza oturur; o çalışırken kimse bir sohbet ekranının başında beklemez</td>
+    </tr>
+  </tbody>
+</table>
+
+2026 Ekim'inin sonu, son üç yolun her birine açık birer örnek getirdi. Cursor'ın [Agent SDK](https://cursor.com/blog/agent-sdk) aracı 20 Ekim'den beri herkesin kullanımına açık ve bir ajanı küçük bir proje gibi ele alıyor: promptlar Markdown ile, araçlar TypeScript fonksiyonları olarak yazılıyor, değerlendirmeler (eval) de hemen yanlarında duruyor. Ajanı kendi bilgisayarınızda çalıştırabilir, Cursor'ın altyapısında yayına alabilir ya da tek bir Node süreci olarak kendi sunucularınızda çalıştırabilirsiniz. 28 Ekim'de Microsoft, [Foundry Agent Service'teki Copilot harness'ini](https://devblogs.microsoft.com/foundry/microsoft-copilot-harness-in-foundry/) genel önizleme olarak kullanıma sundu. Bu, GitHub Copilot'u uygulamasında, CLI'ında ve VS Code'da çalıştıran [harness'in ta kendisi](https://blogs.microsoft.com/blog/2026/10/28/introducing-the-microsoft-copilot-harness-unlocking-the-potential-of-truly-multi-model-agentic-work/). Ajan döngüsünü ve yalıtılmış ortamı Microsoft işletiyor; becerileri, MCP araçlarını ve sürüm kontrolünde saklayabileceğiniz ajan tanımlarını ise siz getiriyorsunuz. Aynı gün [GitHub Agentic Workflows](https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available/) da herkesin kullanımına açıldı. Burada yeni issue'ları ayıklamak gibi bir işi bir Markdown dosyasında anlatıyorsunuz; dosya, Copilot'u ya da başka bir kodlama ajanını çalıştıran sıradan bir GitHub Actions iş akışına derleniyor.
+
+Harness'in nerede yaşadığı, sınırlarının nerede zorla uygulandığını da belirler. Talimatlar yön gösterir; izinler ise uyulmasını sağlar. Kendi döngünüzde bu denetimi kendiniz kurarsınız. Yönetilen bir hizmette ya da bir otomasyon platformunda ise denetimi platform sağlar, siz de ayarlarını yaparsınız. Agentic Workflows bunun kaç katman anlamına gelebileceğini iyi gösteriyor: ajanlar varsayılan olarak yalnızca okuma iznine sahip ve bir güvenlik duvarının arkasındaki yalıtılmış bir konteynerde çalışıyor. Önerdikleri değişiklikler de bir şey uygulanmadan önce doğrulanmış "güvenli çıktılar" (safe outputs) adımından ve ayrı bir tehdit taramasından geçiyor. Ne yapılacağını yine prompt'unuz söyler. Bir hatanın ne kadar zarar verebileceğini ise platform sınırlar.
+
+Sizin yazdığınız parçalar, genellikle döngünün kendisinden daha kolay taşınır. Beceriler ve MCP açık standartlardır; Microsoft'un duyurusu da bunları desteklemeyi ciddi bir harness'in alameti farikası sayıyor. İyi yazılmış bir beceri ya da araç açıklaması çoğu zaman küçük ayarlamalarla başka bir harness'e geçebilir; belirli bir döngünün etrafında yazılmış kod ise nadiren. Daha önce harness'leri karşılaştırırken modeli sabit tutmanızı önermiştik. Çok modelli bir harness, tam tersini denemenize imkân verir: Foundry, orkestrasyonu yeniden yazmadan desteklenen bir modeli seçmenize izin veriyor; Agentic Workflows ise her iş akışının kendi model sağlayıcısını seçmesine. Modeli değiştirip geri kalan her şeyi olduğu gibi bırakabilirsiniz.
+
+Hangi yolu seçerseniz seçin, bazı şeyler hiçbir zaman sağlayıcıya geçmez: ulaşmak istediğiniz sonuç, onu anlatan talimatlar ve beceriler, verdiğiniz araçlar ve erişimler, işin bittiğini gösteren kontroller. Harness döngüyü sizin yerinize çalıştırabilir. Ama "bitti"nin ne anlama geldiğine o karar veremez.
+
 ## Bir Harness'i Faydalı Yapan Nedir?
 
 Daha fazla özerklik, ancak sistem çalışmasını kontrol edebiliyor ve sorunlardan sonra toparlanabiliyorsa faydalıdır. Uzun bir görev için harness'in şunları nasıl yönettiğine bakın:

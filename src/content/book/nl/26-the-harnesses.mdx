@@ -211,6 +211,55 @@ Hetzelfde onderscheid geldt voor informatie die tools teruggeven. Een webpagina 
   explanation="Prompts sturen het gedrag. De tool of omgeving moet de toegangsgrens afdwingen, ook als het model een niet-toegestane actie aanvraagt."
 />
 
+## Waar woont de harness?
+
+Elke agent draait in een harness, maar iemand moet die harness bouwen, hosten en draaiende houden. Wie dat doet, bepaalt hoeveel jij in handen hebt en hoeveel je zelf moet onderhouden. Tegenwoordig komt een harness meestal langs een van deze vier wegen bij je terecht:
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Waar hij vandaan komt</th>
+      <th scope="col">Wie de lus draait</th>
+      <th scope="col">Wat jij aanlevert</th>
+      <th scope="col">De afweging</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Een lus die je zelf schrijft</td>
+      <td>Jij</td>
+      <td>Alles: context, afhandeling van tools, machtigingen, limieten</td>
+      <td>Volledige controle, en al het onderhoud erbij</td>
+    </tr>
+    <tr>
+      <td>Een SDK of framework</td>
+      <td>Jij, lokaal of bij een host naar keuze</td>
+      <td>De agent als bestanden in je project: prompts, tools, tests</td>
+      <td>Wijzigingen gaan door de gewone codereview; uitrollen en bijwerken blijft jouw werk</td>
+    </tr>
+    <tr>
+      <td>Een beheerde dienst</td>
+      <td>De aanbieder</td>
+      <td>Instructies, skills, tools en een modelkeuze</td>
+      <td>Weinig machinerie om te onderhouden; de sandbox en limieten van de aanbieder bepalen de grenzen</td>
+    </tr>
+    <tr>
+      <td>Onderdeel van een automatiseringssysteem, zoals CI</td>
+      <td>Het automatiseringsplatform, zodra er iets gebeurt</td>
+      <td>Een taakomschrijving en de uitvoer die ze mag opleveren</td>
+      <td>Past in pipelines die je al hebt; niemand kijkt naar een chat terwijl hij draait</td>
+    </tr>
+  </tbody>
+</table>
+
+Eind oktober 2026 kwam er van elk van de laatste drie een duidelijk voorbeeld. De [Agent SDK](https://cursor.com/blog/agent-sdk) van Cursor, sinds 20 oktober algemeen beschikbaar, behandelt een agent als een klein project: prompts in Markdown, tools als TypeScript-functies en evals ernaast. Je kunt zo'n agent lokaal draaien, uitrollen op de infrastructuur van Cursor of op je eigen servers draaien als één Node-proces. Op 28 oktober bracht Microsoft de [Copilot-harness in Foundry Agent Service](https://devblogs.microsoft.com/foundry/microsoft-copilot-harness-in-foundry/) uit als openbare preview. Het is [dezelfde harness](https://blogs.microsoft.com/blog/2026/10/28/introducing-the-microsoft-copilot-harness-unlocking-the-potential-of-truly-multi-model-agentic-work/) die GitHub Copilot aandrijft in de app, de CLI en VS Code. Microsoft draait de agentlus en de sandbox; jij levert skills, MCP-tools en agentdefinities die je in versiebeheer kunt bewaren. Dezelfde dag werd [GitHub Agentic Workflows](https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available/) algemeen beschikbaar. Je beschrijft een klus, zoals het sorteren van nieuwe issues, in een Markdown-bestand, en dat wordt gecompileerd tot een gewone GitHub Actions-workflow die Copilot of een andere codeeragent uitvoert.
+
+Waar de harness woont, bepaalt ook waar zijn grenzen worden afgedwongen. Instructies sturen; machtigingen dwingen af. In je eigen lus bouw je die handhaving zelf. Bij een beheerde dienst of een automatiseringsplatform levert het platform die, en stel jij die in. Agentic Workflows laat zien hoeveel lagen dat kan betekenen: agents krijgen standaard alleen leesrechten en draaien in een afgeschermde container achter een firewall, en hun voorgestelde wijzigingen gaan door gevalideerde 'safe outputs' en een aparte dreigingsscan voordat er iets wordt toegepast. Je prompt zegt nog steeds wat er moet gebeuren. Het platform beperkt wat een vergissing kan aanrichten.
+
+Wat je zelf schrijft, reist meestal beter dan de lus. Skills en MCP zijn open standaarden, en de aankondiging van Microsoft ziet ondersteuning ervoor als kenmerk van een serieuze harness. Een heldere skill of een goede toolbeschrijving gaat vaak met kleine aanpassingen mee naar een andere harness; code die rond één specifieke lus is geschreven zelden. Eerder raadden we aan het model gelijk te houden als je harnesses vergelijkt. Een harness met meerdere modellen maakt het omgekeerde experiment mogelijk: in Foundry kies je een ondersteund model zonder de orkestratie te herschrijven, en in Agentic Workflows kiest elke workflow zijn eigen modelaanbieder. Je kunt het model wisselen en al het andere laten staan.
+
+Welke weg je ook kiest, sommige dingen gaan nooit over naar de aanbieder: de uitkomst die je wilt, de instructies en skills die die beschrijven, de tools en toegang die je verleent, en de controles die laten zien dat het werk af is. Een harness kan de lus voor je draaien. Wat 'klaar' betekent, kan hij niet bepalen.
+
 ## Wat maakt een harness nuttig?
 
 Meer autonomie is alleen nuttig als het systeem zijn werk kan controleren en problemen kan opvangen. Kijk bij een lange taak hoe de harness met deze punten omgaat:

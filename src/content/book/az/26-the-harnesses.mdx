@@ -211,6 +211,55 @@ Eyni fərq alətlərdən qayıdan məlumat üçün də vacibdir. Veb səhifə v�
   explanation="Promptlar davranışı istiqamətləndirir. Model icazəsiz əməliyyat istəsə belə, alət və ya mühit giriş sərhədini tətbiq etməlidir."
 />
 
+## Harness Harada Yaşayır?
+
+Hər agent bir harness-in içində işləyir, amma həmin harness-i kimsə qurmalı, yerləşdirməli və işlək saxlamalıdır. Bu işi kimin gördüyü nəyin sizin nəzarətinizdə olacağını və nəyin baxımını özünüzün aparacağınızı müəyyən edir. Bu gün harness adətən sizə bu dörd yoldan biri ilə gəlir:
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Haradan gəlir?</th>
+      <th scope="col">Dövrü kim işlədir?</th>
+      <th scope="col">Siz nə təqdim edirsiniz?</th>
+      <th scope="col">Qazanc və bədəl</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Özünüzün yazdığınız dövr</td>
+      <td>Siz</td>
+      <td>Hər şey: kontekst, alət sorğularının emalı, icazələr, limitlər</td>
+      <td>Tam nəzarət, eləcə də bütün baxım işi</td>
+    </tr>
+    <tr>
+      <td>SDK və ya framework</td>
+      <td>Siz, öz kompüterinizdə və ya seçdiyiniz hostinqdə</td>
+      <td>Layihənizdəki fayllar şəklində agentin özü: promptlar, alətlər, testlər</td>
+      <td>Dəyişikliklər adi kod yoxlamasından keçir; yayımlamaq və yeniləmək yenə sizin işinizdir</td>
+    </tr>
+    <tr>
+      <td>İdarə olunan xidmət</td>
+      <td>Provayder</td>
+      <td>Təlimatlar, bacarıqlar, alətlər və model seçimi</td>
+      <td>Baxım tələb edən mexanizm azdır; sərhədləri provayderin izolyasiya mühiti və limitləri müəyyən edir</td>
+    </tr>
+    <tr>
+      <td>CI kimi avtomatlaşdırma sisteminin bir hissəsi</td>
+      <td>Hadisə baş verəndə avtomatlaşdırma platforması</td>
+      <td>Tapşırığın təsviri və onun yaratmağa icazəsi olan nəticələr</td>
+      <td>Mövcud pipeline-larınıza uyğunlaşır; o işləyərkən heç kim söhbət pəncərəsinə baxmır</td>
+    </tr>
+  </tbody>
+</table>
+
+2026-cı ilin oktyabr ayının sonu son üç yolun hər biri üçün aydın nümunə gətirdi. Cursor-un 20 oktyabrdan bəri hamı üçün əlçatan olan [Agent SDK](https://cursor.com/blog/agent-sdk) aləti agenti kiçik bir layihə kimi qəbul edir: promptlar Markdown-da, alətlər TypeScript funksiyaları kimi yazılır, qiymətləndirmələr (eval) isə onların yanında durur. Agenti öz kompüterinizdə işlədə, Cursor-un infrastrukturunda yayımlaya və ya tək Node prosesi kimi öz serverlərinizdə işlədə bilərsiniz. 28 oktyabrda Microsoft [Foundry Agent Service-dəki Copilot harness-ini](https://devblogs.microsoft.com/foundry/microsoft-copilot-harness-in-foundry/) ictimai ilkin baxış (public preview) kimi təqdim etdi. Bu, GitHub Copilot-u tətbiqində, CLI-da və VS Code-da işlədən [həmin harness-dir](https://blogs.microsoft.com/blog/2026/10/28/introducing-the-microsoft-copilot-harness-unlocking-the-potential-of-truly-multi-model-agentic-work/). Agent dövrünü və izolyasiya mühitini Microsoft idarə edir; siz isə bacarıqları, MCP alətlərini və versiya nəzarətində saxlaya biləcəyiniz agent təriflərini gətirirsiniz. Həmin gün [GitHub Agentic Workflows](https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available/) da hamı üçün əlçatan oldu. Burada yeni issue-ları çeşidləmək kimi bir işi Markdown faylında təsvir edirsiniz, fayl isə Copilot-u və ya başqa bir kodlaşdırma agentini işə salan adi GitHub Actions iş axınına kompilyasiya olunur.
+
+Harness-in harada yaşadığı onun sərhədlərinin harada məcburi tətbiq olunduğunu da müəyyən edir. Təlimatlar istiqamət verir, icazələr isə buna əməl olunmasını təmin edir. Öz dövrünüzdə bu nəzarəti özünüz qurursunuz. İdarə olunan xidmətdə və ya avtomatlaşdırma platformasında isə onu platforma təmin edir, siz də tənzimləyirsiniz. Agentic Workflows bunun neçə qat demək ola biləcəyini yaxşı göstərir: agentlərə standart olaraq yalnız oxuma icazəsi verilir və onlar firewall arxasındakı izolyasiya olunmuş konteynerdə işləyir. Təklif etdikləri dəyişikliklər isə nəsə tətbiq olunmazdan əvvəl yoxlanılmış "təhlükəsiz nəticələr" (safe outputs) mərhələsindən və ayrıca təhdid yoxlamasından keçir. Nə ediləcəyini yenə də promptunuz deyir. Səhvin nə qədər zərər verə biləcəyini isə platforma məhdudlaşdırır.
+
+Sizin yazdığınız hissələr adətən dövrün özündən daha asan köçürülür. Bacarıqlar və MCP açıq standartlardır və Microsoft-un elanı onları dəstəkləməyi ciddi harness-in əlaməti sayır. Aydın yazılmış bacarıq və ya alət təsviri çox vaxt kiçik düzəlişlərlə başqa harness-ə keçə bilir; müəyyən bir dövrün ətrafında yazılmış kod isə nadir hallarda. Əvvəlcə harness-ləri müqayisə edərkən modeli sabit saxlamağı tövsiyə etmişdik. Çox modelli harness bunun əksini sınamağa imkan verir: Foundry orkestrasiyanı yenidən yazmadan dəstəklənən modeli seçməyə imkan verir, Agentic Workflows isə hər iş axınının öz model provayderini seçməsinə. Modeli dəyişib qalan hər şeyi olduğu kimi saxlaya bilərsiniz.
+
+Hansı yolu seçsəniz də, bəzi şeylər heç vaxt provayderə keçmir: istədiyiniz nəticə, onu təsvir edən təlimatlar və bacarıqlar, verdiyiniz alətlər və giriş hüquqları, işin bitdiyini göstərən yoxlamalar. Harness dövrü sizin əvəzinizə işlədə bilər. Amma "hazırdır" sözünün nə demək olduğuna o qərar verə bilməz.
+
 ## Harness-i Faydalı Edən Nədir?
 
 Daha çox müstəqillik yalnız sistem öz işini yoxlaya və problemlərdən sonra bərpa oluna bildikdə faydalıdır. Uzun tapşırıq üçün harness-in bunları necə idarə etdiyinə baxın:
