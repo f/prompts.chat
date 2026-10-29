@@ -146,7 +146,7 @@ function botListWhere({ platform, categorySlug, tagSlugs = [], q }: BotListFilte
 }
 
 const BOT_ORDER: Record<BotSort, Prisma.PromptOrderByWithRelationInput[]> = {
-  newest: [{ isFeatured: "desc" }, { createdAt: "desc" }],
+  newest: [{ createdAt: "desc" }, { id: "desc" }],
   oldest: [{ createdAt: "asc" }],
   upvotes: [{ votes: { _count: "desc" } }, { createdAt: "desc" }],
 };
