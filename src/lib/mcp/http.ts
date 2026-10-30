@@ -40,11 +40,22 @@ async function readBody(request: Request): Promise<string | null> {
   return Buffer.concat(chunks).toString("utf8");
 }
 
-function toolCallNames(body: unknown): string[] {
+interface ToolCall {
+  name: string;
+  args: Record<string, unknown>;
+}
+
+function toolCalls(body: unknown): ToolCall[] {
   const messages = Array.isArray(body) ? body : [body];
   return messages
-    .filter((m): m is { method: string; params?: { name?: unknown } } => typeof m === "object" && m !== null && m.method === "tools/call")
-    .map((m) => (typeof m.params?.name === "string" ? m.params.name : ""));
+    .filter(
+      (m): m is { method: string; params?: { name?: unknown; arguments?: unknown } } =>
+        typeof m === "object" && m !== null && m.method === "tools/call"
+    )
+    .map(({ params }) => ({
+      name: typeof params?.name === "string" ? params.name : "",
+      args: typeof params?.arguments === "object" && params.arguments !== null ? (params.arguments as Record<string, unknown>) : {},
+    }));
 }
 
 /** The first rate limit a request exceeds, as a 429 response */
@@ -54,11 +65,11 @@ function checkRateLimits(rateLimitId: string, body: unknown): Response | null {
   const general = mcpGeneralLimiter.check(rateLimitId);
   if (!general.allowed) return tooMany(`Rate limit exceeded. Try again in ${general.retryAfterSeconds}s.`);
 
-  for (const toolName of toolCallNames(body)) {
+  for (const { name: toolName, args } of toolCalls(body)) {
     const toolCall = mcpToolCallLimiter.check(rateLimitId);
     if (!toolCall.allowed) return tooMany(`Tool call rate limit exceeded. Try again in ${toolCall.retryAfterSeconds}s.`);
 
-    const kind = getToolKind(toolName);
+    const kind = getToolKind(toolName, args);
     if (kind === "ai") {
       const ai = mcpAiToolLimiter.check(rateLimitId);
       if (!ai.allowed) return tooMany(`AI tool rate limit exceeded (${toolName}). Try again in ${ai.retryAfterSeconds}s.`);

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { db } from "@/lib/db";
-import { mcpGeneralLimiter, mcpToolCallLimiter, mcpWriteToolLimiter } from "@/lib/rate-limit";
+import { mcpAiToolLimiter, mcpGeneralLimiter, mcpToolCallLimiter, mcpWriteToolLimiter } from "@/lib/rate-limit";
 import { clearAuthCache } from "@/lib/mcp/auth";
 
 vi.mock("@/lib/db", () => ({
@@ -58,7 +58,7 @@ describe("MCP route", () => {
     vi.clearAllMocks();
     clearAuthCache();
     config.features.mcp = true;
-    for (const limiter of [mcpGeneralLimiter, mcpToolCallLimiter, mcpWriteToolLimiter]) {
+    for (const limiter of [mcpGeneralLimiter, mcpToolCallLimiter, mcpWriteToolLimiter, mcpAiToolLimiter]) {
       vi.mocked(limiter.check).mockReturnValue({ allowed: true, remaining: 1 });
     }
   });
@@ -201,6 +201,33 @@ describe("MCP route", () => {
       expect(res.status).toBe(429);
       expect((await res.json()).error.message).toBe("Write tool rate limit exceeded (save_bot). Try again in 30s.");
       expect(mcpWriteToolLimiter.check).toHaveBeenCalledWith(API_KEY);
+    });
+
+    it("applies the AI limit to semantic search_bots, which calls the embeddings API", async () => {
+      vi.mocked(mcpAiToolLimiter.check).mockReturnValue({ allowed: false, retryAfterSeconds: 45 });
+      const { POST } = await loadRoute();
+
+      const res = await POST(
+        rpc({ jsonrpc: "2.0", id: 5, method: "tools/call", params: { name: "search_bots", arguments: { query: "inbox", semantic: true } } })
+      );
+
+      expect(res.status).toBe(429);
+      expect((await res.json()).error.message).toBe("AI tool rate limit exceeded (search_bots). Try again in 45s.");
+      expect(db.prompt.findMany).not.toHaveBeenCalled();
+    });
+
+    it("rate limits keyword search_bots as a read", async () => {
+      vi.mocked(mcpAiToolLimiter.check).mockReturnValue({ allowed: false, retryAfterSeconds: 45 });
+      vi.mocked(db.prompt.findMany).mockResolvedValue([]);
+      vi.mocked(db.prompt.count).mockResolvedValue(0);
+      const { POST } = await loadRoute();
+
+      const res = await POST(
+        rpc({ jsonrpc: "2.0", id: 6, method: "tools/call", params: { name: "search_bots", arguments: { query: "inbox", semantic: false } } })
+      );
+
+      expect(res.status).toBe(200);
+      expect(mcpAiToolLimiter.check).not.toHaveBeenCalled();
     });
 
     it("does not apply the write limit to read tools", async () => {

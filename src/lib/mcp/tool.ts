@@ -7,10 +7,12 @@ import type { McpContext, McpUser } from "./context";
 /** How a tool is rate limited: reads share the tool-call budget, writes and AI calls also have their own */
 export type ToolKind = "read" | "write" | "ai";
 
-const toolKinds = new Map<string, ToolKind>();
+const toolKinds = new Map<string, ToolKind | ((args: Record<string, unknown>) => ToolKind)>();
 
-export function getToolKind(name: string): ToolKind | undefined {
-  return toolKinds.get(name);
+/** The kind a call is rate limited as; some tools depend on their arguments */
+export function getToolKind(name: string, args: Record<string, unknown> = {}): ToolKind | undefined {
+  const kind = toolKinds.get(name);
+  return typeof kind === "function" ? kind(args) : kind;
 }
 
 /** Thrown from a tool handler to return a tool execution error the model can act on */
@@ -63,6 +65,8 @@ interface ToolDefinition<In extends Shape, Out extends Shape> {
   kind: ToolKind;
   inputSchema: In;
   outputSchema?: Out;
+  /** The kind a call is rate limited as, when it depends on the arguments; defaults to `kind` */
+  rateLimitKind?: (args: Record<string, unknown>) => ToolKind;
   /** Hints beyond the ones derived from `kind` */
   annotations?: Pick<ToolAnnotations, "idempotentHint" | "destructiveHint" | "openWorldHint">;
   /** Message returned when the handler throws something other than a ToolError */
@@ -89,8 +93,8 @@ export function defineTool<In extends Shape, Out extends Shape>(
   definition: ToolDefinition<In, Out> & { requiresAuth?: boolean },
   handler: (args: Args<In>, ctx: McpContext & { user: McpUser }) => Promise<CallToolResult>
 ): void {
-  const { name, title, description, kind, inputSchema, outputSchema, annotations, failureMessage, requiresAuth } = definition;
-  toolKinds.set(name, kind);
+  const { name, title, description, kind, rateLimitKind, inputSchema, outputSchema, annotations, failureMessage, requiresAuth } = definition;
+  toolKinds.set(name, rateLimitKind ?? kind);
 
   const callback = async (args: Args<In>): Promise<CallToolResult> => {
     if (requiresAuth && !ctx.user) return toolError("unauthorized", AUTH_REQUIRED_MESSAGE);

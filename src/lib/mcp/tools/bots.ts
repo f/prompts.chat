@@ -78,6 +78,8 @@ export function registerBotTools(server: McpServer, ctx: McpContext) {
         "Filter by platform, category and tags; sort by newest, oldest or upvotes. With `semantic: true` and AI search enabled on the server, results are ranked by meaning instead of keywords (sort is then ignored). " +
         "Returns bot summaries with a resource link each; call get_bot for the full definition and install instructions.",
       kind: "read",
+      // Semantic search embeds the query through the AI provider, so it shares the AI tool budget
+      rateLimitKind: (args) => (args.semantic === true ? "ai" : "read"),
       inputSchema: {
         query: z
           .string()
