@@ -22,3 +22,10 @@ export function isValidApiKeyFormat(apiKey: string): boolean {
   // Should be 64 hex characters (32 bytes)
   return /^[a-f0-9]{64}$/.test(randomPart);
 }
+
+/** An API key sent as x-api-key, an Authorization bearer token, or prompts-api-key */
+export function getRequestApiKey(request: Request): string | null {
+  const authorization = request.headers.get("authorization");
+  const bearer = authorization?.startsWith("Bearer ") ? authorization.slice("Bearer ".length).trim() : null;
+  return request.headers.get("x-api-key") || bearer || request.headers.get("prompts-api-key");
+}

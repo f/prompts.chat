@@ -11,7 +11,7 @@ import { BotPairingError, buildPairingRows, findInvalidPairingTargets, replaceBo
 
 /**
  * Prompt (and bot) create and update logic shared by POST /api/prompts, PATCH /api/prompts/[id]
- * and the MCP server, so every client goes through the same validation, limits and side effects.
+ * and the MCP server (src/lib/mcp), so every client goes through the same validation, limits and side effects.
  */
 
 export interface PromptWriter {
@@ -97,7 +97,7 @@ export const promptUpdateSchema = z.object({
   pairings: botPairingsSchema.optional(),
 });
 
-/** revalidateTag needs an App Router request context; the Pages Router MCP endpoint has none */
+/** A failed cache revalidation must not fail a write that has already been committed */
 function revalidateTags(tags: string[]) {
   for (const tag of tags) {
     try {
