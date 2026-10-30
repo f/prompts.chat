@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { buildPageMetadata } from "@/lib/seo";
-import { Code, Zap, Terminal, Search, Box, Key, Save, Sparkles, Cpu, FilePlus, FileX, Bot, List } from "lucide-react";
+import { Code, Zap, Terminal, Search, Box, Key, Save, Sparkles, Cpu, FilePlus, FileX, Bot, List, Link2 } from "lucide-react";
 import { ImprovePromptDemo } from "@/components/api/improve-prompt-demo";
 import {
   Table,
@@ -109,6 +109,9 @@ export default async function ApiDocsPage() {
                   <p className="font-medium">Using the API Key</p>
                   <p className="text-muted-foreground">
                     Pass your API key via the <code className="bg-muted px-1.5 py-0.5 rounded">PROMPTS_API_KEY</code> header.
+                    An <code className="bg-muted px-1.5 py-0.5 rounded">Authorization: Bearer</code> header,{" "}
+                    <code className="bg-muted px-1.5 py-0.5 rounded">x-api-key</code> header or{" "}
+                    <code className="bg-muted px-1.5 py-0.5 rounded">?api_key=</code> query parameter also work.
                   </p>
                 </div>
               </div>
@@ -134,6 +137,7 @@ export default async function ApiDocsPage() {
 # Or via curl (remote)
 curl -X POST ${baseUrl}/api/mcp \\
   -H "Content-Type: application/json" \\
+  -H "Accept: application/json, text/event-stream" \\
   -H "PROMPTS_API_KEY: pchat_your_api_key_here" \\
   -d '{"jsonrpc": "2.0", "id": 1, "method": "tools/list"}'`}</pre>
               </div>
@@ -144,6 +148,8 @@ curl -X POST ${baseUrl}/api/mcp \\
                 With authentication, you can use the <code className="bg-muted px-1.5 py-0.5 rounded">save_prompt</code> and{" "}
                 <code className="bg-muted px-1.5 py-0.5 rounded">save_bot</code> tools
                 and search results will include your private prompts.
+                The endpoint is stateless: every POST is answered with a plain JSON response, so no session or
+                SSE stream is needed.
               </p>
             </section>
 
@@ -184,7 +190,10 @@ curl -X POST ${baseUrl}/api/mcp \\
               <div className="bg-muted/50 rounded-lg p-4 text-sm space-y-3">
                 <div>
                   <p className="font-medium">prompts/list</p>
-                  <p className="text-muted-foreground">Browse all available prompts with pagination support.</p>
+                  <p className="text-muted-foreground">
+                    Browse all available prompts with pagination support. Each prompt lists its variables as arguments;
+                    variables without a default are required.
+                  </p>
                 </div>
                 <div>
                   <p className="font-medium">prompts/get</p>
@@ -260,6 +269,12 @@ curl -X POST ${baseUrl}/api/mcp \\
                     <TableCell className="text-muted-foreground text-sm">Maximum results (default: 10, max: 50)</TableCell>
                   </TableRow>
                   <TableRow>
+                    <TableCell className="font-mono text-xs">cursor</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">The <code className="text-xs">nextCursor</code> of a previous result, for the next page</TableCell>
+                  </TableRow>
+                  <TableRow>
                     <TableCell className="font-mono text-xs">type</TableCell>
                     <TableCell className="text-muted-foreground text-xs">string</TableCell>
                     <TableCell className="text-xs">No</TableCell>
@@ -291,8 +306,8 @@ curl -X POST ${baseUrl}/api/mcp \\
               get_prompt
             </h3>
             <p className="text-muted-foreground">
-              Get a prompt by ID. If the prompt contains template variables (like {"${variable}"} or {"${variable:default}"}), 
-              the MCP client will be asked to provide values through elicitation.
+              Get a prompt by ID, with its template variables (like {"${variable}"} or {"${variable:default}"}).
+              Pass <code className="text-xs">variables</code> to get the prompt filled in.
             </p>
 
             <div className="border rounded-lg overflow-hidden">
@@ -312,17 +327,24 @@ curl -X POST ${baseUrl}/api/mcp \\
                     <TableCell className="text-xs">Yes</TableCell>
                     <TableCell className="text-muted-foreground text-sm">The ID of the prompt to retrieve</TableCell>
                   </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">variables</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">object</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Values for the template variables, by name</TableCell>
+                  </TableRow>
                 </TableBody>
               </Table>
             </div>
 
             <div className="bg-muted/50 rounded-lg p-4 text-sm">
-              <p className="font-medium mb-2">Variable Elicitation</p>
+              <p className="font-medium mb-2">Filling Variables</p>
               <p className="text-muted-foreground">
-                When a prompt contains variables like {"${name}"} or {"${topic:default value}"}, MCP clients 
-                that support elicitation will prompt the user to fill in these values. Variables with 
-                default values (after the colon) are optional. The prompt content will be returned with 
-                variables replaced.
+                The result lists the prompt&apos;s <code className="text-xs">variables</code>. With{" "}
+                <code className="text-xs">variables</code> given, <code className="text-xs">content</code> holds the filled
+                prompt and <code className="text-xs">originalContent</code> the template. Variables with a default (after the
+                colon) are optional; any required ones still missing are listed in{" "}
+                <code className="text-xs">missingVariables</code>, so the agent can ask the user and call again.
               </p>
             </div>
           </div>
@@ -719,6 +741,99 @@ curl -X POST ${baseUrl}/api/mcp \\
             </div>
           </div>
 
+          {/* search_bots Tool */}
+          <div className="space-y-4">
+            <h3 className="font-medium flex items-center gap-2">
+              <Search className="h-4 w-4" />
+              search_bots
+            </h3>
+            <p className="text-muted-foreground">
+              Search the public <Link href="/bots" className="underline hover:text-foreground">bots directory</Link>.
+              Returns bot summaries; use <code className="text-xs">get_bot</code> for the full definition and install
+              instructions. With <code className="text-xs">semantic: true</code> and AI search enabled, results are
+              ranked by meaning; otherwise keyword search is used and <code className="text-xs">searchMode</code> says so.
+            </p>
+
+            <div className="border rounded-lg overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[140px]">Parameter</TableHead>
+                    <TableHead className="w-[100px]">Type</TableHead>
+                    <TableHead className="w-[80px]">Required</TableHead>
+                    <TableHead>Description</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">query</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Keywords; separate alternatives with commas</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">platform</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Only bots for this platform, e.g. <code className="text-xs">HERMES</code></TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">category</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Category slug (includes its subcategories)</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">tags</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string[]</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Tag slugs; every tag must match</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">sort</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm"><code className="text-xs">newest</code> (default), <code className="text-xs">oldest</code> or <code className="text-xs">upvotes</code></TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">semantic</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">boolean</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Rank by meaning using AI search when available</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">limit / cursor</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">number / string</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Page size (default 10, max 50) and the <code className="text-xs">nextCursor</code> of the previous page</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* get_bot Tool */}
+          <div className="space-y-4">
+            <h3 className="font-medium flex items-center gap-2">
+              <Bot className="h-4 w-4" />
+              get_bot
+            </h3>
+            <p className="text-muted-foreground">
+              Get a bot by <code className="text-xs">id</code> (or its <code className="text-xs">id_slug</code> URL segment) or{" "}
+              <code className="text-xs">slug</code>: its instructions, routines, skills and connectors, an{" "}
+              <code className="text-xs">install</code> entry per platform (one-click link, a prompt to paste into the agent, or a CLI
+              command) and the bots it works well with. Public and unlisted bots are visible to everyone; private bots only to their owner.
+            </p>
+
+            <div className="bg-muted rounded-lg p-4 font-mono text-sm overflow-x-auto">
+              <pre>{`curl -X POST ${baseUrl}/api/mcp \\
+  -H "Content-Type: application/json" \\
+  -H "Accept: application/json, text/event-stream" \\
+  -d '{"jsonrpc": "2.0", "id": 1, "method": "tools/call",
+       "params": {"name": "get_bot", "arguments": {"slug": "inbox-triage"}}}'`}</pre>
+            </div>
+          </div>
+
           {/* save_bot Tool */}
           <div className="space-y-4">
             <h3 className="font-medium flex items-center gap-2">
@@ -900,10 +1015,10 @@ curl -X POST ${baseUrl}/api/mcp \\
                     <TableCell className="text-muted-foreground text-sm">Maximum bots to return (default 50, max 100)</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-mono text-xs">offset</TableCell>
-                    <TableCell className="text-muted-foreground text-xs">number</TableCell>
+                    <TableCell className="font-mono text-xs">cursor</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string</TableCell>
                     <TableCell className="text-xs">No</TableCell>
-                    <TableCell className="text-muted-foreground text-sm">Bots to skip, for paging</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">The <code className="text-xs">nextCursor</code> of a previous result (<code className="text-xs">offset</code> still works but is deprecated)</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -951,6 +1066,33 @@ curl -X POST ${baseUrl}/api/mcp \\
           </div>
         </section>
 
+            {/* MCP Resources */}
+            <section className="space-y-4">
+              <h2 className="text-lg font-semibold flex items-center gap-2">
+                <Link2 className="h-5 w-5" />
+                MCP Resources
+              </h2>
+              <p className="text-muted-foreground">
+                Prompts, skills and bots can also be read as MCP resources. Tool results include{" "}
+                <code className="text-xs">resource_link</code> entries pointing at them, and{" "}
+                <code className="text-xs">resources/list</code> lists your own items when you are authenticated.
+                Resources follow the same visibility rules as the tools.
+              </p>
+              <div className="bg-muted/50 rounded-lg p-4 text-sm space-y-2 font-mono">
+                <p>prompts-chat://prompts/{"{id}"} <span className="text-muted-foreground font-sans">: a prompt as Markdown</span></p>
+                <p>prompts-chat://skills/{"{id}"} <span className="text-muted-foreground font-sans">: every file of a skill</span></p>
+                <p>prompts-chat://skills/{"{id}"}/files/{"{path}"} <span className="text-muted-foreground font-sans">: one skill file</span></p>
+                <p>prompts-chat://bots/{"{id}"} <span className="text-muted-foreground font-sans">: a bot&apos;s definition and setup steps as Markdown</span></p>
+              </div>
+              <div className="bg-muted rounded-lg p-4 font-mono text-sm overflow-x-auto">
+                <pre>{`curl -X POST ${baseUrl}/api/mcp \\
+  -H "Content-Type: application/json" \\
+  -H "Accept: application/json, text/event-stream" \\
+  -d '{"jsonrpc": "2.0", "id": 1, "method": "resources/read",
+       "params": {"uri": "prompts-chat://bots/bot_id_here"}}'`}</pre>
+              </div>
+            </section>
+
             {/* MCP Protocol Example */}
             <section className="space-y-4">
               <h2 className="text-lg font-semibold flex items-center gap-2">
@@ -969,7 +1111,7 @@ curl -X POST ${baseUrl}/api/mcp \\
     "id": 1,
     "method": "initialize",
     "params": {
-      "protocolVersion": "2024-11-05",
+      "protocolVersion": "2025-11-25",
       "capabilities": {},
       "clientInfo": { "name": "my-app", "version": "1.0.0" }
     }
@@ -1017,7 +1159,12 @@ curl -X POST ${baseUrl}/api/mcp \\
             <section className="space-y-4">
               <h2 className="text-lg font-semibold">Response Format</h2>
               <p className="text-muted-foreground">
-                The <code className="bg-muted px-1.5 py-0.5 rounded text-sm">search_prompts</code> tool returns results in the following format:
+                Tools return their result as <code className="bg-muted px-1.5 py-0.5 rounded text-sm">structuredContent</code>,
+                described by the tool&apos;s <code className="bg-muted px-1.5 py-0.5 rounded text-sm">outputSchema</code>, and the same
+                JSON as a text block for older clients, followed by resource links. Errors set{" "}
+                <code className="bg-muted px-1.5 py-0.5 rounded text-sm">isError</code> with{" "}
+                <code className="bg-muted px-1.5 py-0.5 rounded text-sm">{`{"error": "...", "code": "..."}`}</code>. For example,{" "}
+                <code className="bg-muted px-1.5 py-0.5 rounded text-sm">search_prompts</code> returns:
               </p>
               <div className="bg-muted rounded-lg p-4 font-mono text-sm overflow-x-auto">
                 <pre>{`{
@@ -1028,15 +1175,17 @@ curl -X POST ${baseUrl}/api/mcp \\
       "id": "abc123",
       "title": "Code Review Assistant",
       "description": "A prompt for conducting thorough code reviews",
-      "content": "You are an expert code reviewer...",
+      "contentPreview": "You are an expert code reviewer...",
       "type": "TEXT",
       "author": "username",
       "category": "Development",
       "tags": ["coding", "review", "development"],
       "votes": 42,
-      "createdAt": "2024-01-15T10:30:00.000Z"
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "link": "${baseUrl}/prompts/abc123_code-review-assistant"
     }
-  ]
+  ],
+  "nextCursor": "Mg"
 }`}</pre>
               </div>
             </section>
