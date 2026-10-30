@@ -2562,5 +2562,8 @@
       "TASTE": "Coding-Stilprofil",
       "model": "{model}-Prompt"
     }
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "Mit SpaceFast bereitstellen"
   }
 }

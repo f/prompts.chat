@@ -2547,5 +2547,8 @@
       "TASTE": "Профиль стиля кода",
       "model": "Промпт для {model}"
     }
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "Развернуть в SpaceFast"
   }
 }

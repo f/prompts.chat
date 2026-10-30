@@ -2550,5 +2550,8 @@
       "TASTE": "코딩 취향 프로필",
       "model": "{model} 프롬프트"
     }
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "SpaceFast로 배포"
   }
 }

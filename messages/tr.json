@@ -2561,5 +2561,8 @@
       "TASTE": "Kod Tarzı Profili",
       "model": "{model} Promptu"
     }
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "SpaceFast ile Yayınla"
   }
 }

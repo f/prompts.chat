@@ -2550,5 +2550,8 @@
       "TASTE": "编码风格档案",
       "model": "{model}提示词"
     }
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "使用 SpaceFast 部署"
   }
 }

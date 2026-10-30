@@ -8,6 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { RunPromptButton } from "./run-prompt-button";
+import { InjectedActionButton } from "@/components/action-buttons/injected-action-button";
+import { useActionButton } from "@/components/action-buttons/use-action-button";
+import type { ActionButtonCategory } from "@/lib/plugins/action-buttons";
 import { TranslateButton } from "./translate-button";
 import { DownloadPromptDropdown } from "./download-prompt-dropdown";
 import { ShareDropdown } from "./share-dropdown";
@@ -31,6 +34,7 @@ interface InteractivePromptContentProps {
   isLoggedIn?: boolean;
   categoryName?: string;
   parentCategoryName?: string;
+  category?: ActionButtonCategory | null;
   promptId?: string;
   promptSlug?: string;
   promptType?: string;
@@ -156,6 +160,7 @@ export function InteractivePromptContent({
   isLoggedIn = false,
   categoryName,
   parentCategoryName,
+  category,
   promptId,
   promptSlug,
   promptType,
@@ -164,6 +169,7 @@ export function InteractivePromptContent({
   promptDescription
 }: InteractivePromptContentProps) {
   const t = useTranslations("common");
+  const actionButton = useActionButton(category);
   const [copied, setCopied] = useState(false);
   const [translatedContent, setTranslatedContent] = useState<string | null>(null);
 
@@ -331,18 +337,31 @@ export function InteractivePromptContent({
                   <Copy className="h-4 w-4" />
                 )}
               </Button>
-              <RunPromptButton 
-                content={displayContent}
-                title={promptTitle || title}
-                description={promptDescription || description}
-                unfilledVariables={unfilledVariables}
-                onVariablesFilled={handleVariablesFilled}
-                getContentWithVariables={getContentWithVariables}
-                categoryName={categoryName}
-                parentCategoryName={parentCategoryName}
-                promptType={promptType as "TEXT" | "IMAGE" | "VIDEO" | "AUDIO" | "STRUCTURED" | "SKILL"}
-                emphasized
-              />
+              {actionButton ? (
+                <InjectedActionButton
+                  action={actionButton}
+                  content={displayContent}
+                  title={promptTitle || title}
+                  description={promptDescription || description}
+                  promptId={promptId}
+                  unfilledVariables={unfilledVariables}
+                  onVariablesFilled={handleVariablesFilled}
+                  getContentWithVariables={getContentWithVariables}
+                />
+              ) : (
+                <RunPromptButton 
+                  content={displayContent}
+                  title={promptTitle || title}
+                  description={promptDescription || description}
+                  unfilledVariables={unfilledVariables}
+                  onVariablesFilled={handleVariablesFilled}
+                  getContentWithVariables={getContentWithVariables}
+                  categoryName={categoryName}
+                  parentCategoryName={parentCategoryName}
+                  promptType={promptType as "TEXT" | "IMAGE" | "VIDEO" | "AUDIO" | "STRUCTURED" | "SKILL"}
+                  emphasized
+                />
+              )}
             </div>
           </div>
           <CodeView 
@@ -375,18 +394,31 @@ export function InteractivePromptContent({
                 <Copy className="h-4 w-4" />
               )}
             </Button>
-            <RunPromptButton 
-              content={displayedContent}
-              title={promptTitle || title}
-              description={promptDescription || description}
-              unfilledVariables={unfilledVariables}
-              onVariablesFilled={handleVariablesFilled}
-              getContentWithVariables={getContentWithVariables}
-              categoryName={categoryName}
-              parentCategoryName={parentCategoryName}
-              promptType={promptType as "TEXT" | "IMAGE" | "VIDEO" | "AUDIO" | "STRUCTURED" | "SKILL"}
-              emphasized
-            />
+            {actionButton ? (
+              <InjectedActionButton
+                action={actionButton}
+                content={displayedContent}
+                title={promptTitle || title}
+                description={promptDescription || description}
+                promptId={promptId}
+                unfilledVariables={unfilledVariables}
+                onVariablesFilled={handleVariablesFilled}
+                getContentWithVariables={getContentWithVariables}
+              />
+            ) : (
+              <RunPromptButton 
+                content={displayedContent}
+                title={promptTitle || title}
+                description={promptDescription || description}
+                unfilledVariables={unfilledVariables}
+                onVariablesFilled={handleVariablesFilled}
+                getContentWithVariables={getContentWithVariables}
+                categoryName={categoryName}
+                parentCategoryName={parentCategoryName}
+                promptType={promptType as "TEXT" | "IMAGE" | "VIDEO" | "AUDIO" | "STRUCTURED" | "SKILL"}
+                emphasized
+              />
+            )}
           </div>
         </div>
         <pre className="whitespace-pre-wrap text-sm bg-muted p-4 rounded-lg font-mono border max-h-[500px] overflow-y-auto">
@@ -426,18 +458,31 @@ export function InteractivePromptContent({
                 <Copy className="h-4 w-4" />
               )}
             </Button>
-            <RunPromptButton 
-              content={getFinalContent()}
-              title={promptTitle || title}
-              description={promptDescription || description}
-              unfilledVariables={unfilledVariables}
-              onVariablesFilled={handleVariablesFilled}
-              getContentWithVariables={getContentWithVariables}
-              categoryName={categoryName}
-              parentCategoryName={parentCategoryName}
-              promptType={promptType as "TEXT" | "IMAGE" | "VIDEO" | "AUDIO" | "STRUCTURED" | "SKILL"}
-              emphasized
-            />
+            {actionButton ? (
+              <InjectedActionButton
+                action={actionButton}
+                content={getFinalContent()}
+                title={promptTitle || title}
+                description={promptDescription || description}
+                promptId={promptId}
+                unfilledVariables={unfilledVariables}
+                onVariablesFilled={handleVariablesFilled}
+                getContentWithVariables={getContentWithVariables}
+              />
+            ) : (
+              <RunPromptButton 
+                content={getFinalContent()}
+                title={promptTitle || title}
+                description={promptDescription || description}
+                unfilledVariables={unfilledVariables}
+                onVariablesFilled={handleVariablesFilled}
+                getContentWithVariables={getContentWithVariables}
+                categoryName={categoryName}
+                parentCategoryName={parentCategoryName}
+                promptType={promptType as "TEXT" | "IMAGE" | "VIDEO" | "AUDIO" | "STRUCTURED" | "SKILL"}
+                emphasized
+              />
+            )}
           </div>
         </div>
         {/* Variable form */}
@@ -536,18 +581,31 @@ export function InteractivePromptContent({
               <Copy className="h-4 w-4" />
             )}
           </Button>
-          <RunPromptButton 
-            content={getFinalContent()}
-            title={promptTitle || title}
-            description={promptDescription || description}
-            unfilledVariables={unfilledVariables}
-            onVariablesFilled={handleVariablesFilled}
-            getContentWithVariables={getContentWithVariables}
-            categoryName={categoryName}
-            parentCategoryName={parentCategoryName}
-            promptType={promptType as "TEXT" | "IMAGE" | "VIDEO" | "AUDIO" | "STRUCTURED" | "SKILL"}
-            emphasized
-          />
+          {actionButton ? (
+            <InjectedActionButton
+              action={actionButton}
+              content={getFinalContent()}
+              title={promptTitle || title}
+              description={promptDescription || description}
+              promptId={promptId}
+              unfilledVariables={unfilledVariables}
+              onVariablesFilled={handleVariablesFilled}
+              getContentWithVariables={getContentWithVariables}
+            />
+          ) : (
+            <RunPromptButton 
+              content={getFinalContent()}
+              title={promptTitle || title}
+              description={promptDescription || description}
+              unfilledVariables={unfilledVariables}
+              onVariablesFilled={handleVariablesFilled}
+              getContentWithVariables={getContentWithVariables}
+              categoryName={categoryName}
+              parentCategoryName={parentCategoryName}
+              promptType={promptType as "TEXT" | "IMAGE" | "VIDEO" | "AUDIO" | "STRUCTURED" | "SKILL"}
+              emphasized
+            />
+          )}
         </div>
       </div>
       {/* Variable form for text prompts */}

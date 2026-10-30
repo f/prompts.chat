@@ -2565,5 +2565,8 @@
       "TASTE": "Profil de style de code",
       "model": "Prompt {model}"
     }
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "Déployer avec SpaceFast"
   }
 }

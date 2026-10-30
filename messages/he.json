@@ -2546,5 +2546,8 @@
       "TASTE": "פרופיל סגנון קוד",
       "model": "פרומפט ל-{model}"
     }
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "פריסה עם SpaceFast"
   }
 }

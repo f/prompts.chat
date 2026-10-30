@@ -2562,5 +2562,8 @@
       "TASTE": "Kod Üslubu Profili",
       "model": "{model} Promptu"
     }
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "SpaceFast ilə yerləşdir"
   }
 }

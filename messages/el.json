@@ -2553,5 +2553,8 @@
       "TASTE": "Προφίλ στυλ κώδικα",
       "model": "Prompt για {model}"
     }
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "Ανάπτυξη με SpaceFast"
   }
 }
