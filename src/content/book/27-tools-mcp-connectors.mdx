@@ -72,6 +72,21 @@ The name and schema do not execute anything by themselves. The implementation mu
 "I will create an issue" is a statement. A tool call requests the operation. A successful response with the new issue's ID is evidence that it happened. Keep those three things separate.
 </Callout>
 
+### A Tool Can Stand for a Whole Workflow
+
+So far, each tool has been a single operation: search, create, export. But the implementation behind a tool's name can be much larger. It can be a whole process, written down in advance and run by a workflow engine. The agent still decides **when** to start it and **what input** to pass. Everything after that runs exactly as the process defines it, in the same order, every time.
+
+Think of a refund. A support agent may be good at understanding a frustrated customer, but you probably do not want it improvising your refund policy. Wrapped as one tool, the refund workflow checks eligibility, asks a manager for approval, and issues the credit in that order, whichever conversation started it. Approvals, deployments, and other processes where the steps *are* the policy fit the same shape. Workflow engines usually keep a record of each run, so the agent can also look up past runs and tell you which ones failed overnight and at which step, instead of guessing.
+
+AWS offers one recent example. On October 29, 2026, it [announced](https://aws.amazon.com/about-aws/whats-new/2026/10/step-functions-workflows-ai-agent-tools/) that Step Functions workflows can be used as agent tools through Amazon Bedrock AgentCore Gateway, which connects agents to tools through MCP. The idea is not tied to one vendor: a CI pipeline, an approval flow in a ticketing system, or a script your team already trusts can be offered to an agent in the same way.
+
+The trade is between two strengths. The model is flexible: it can read an unusual situation and choose a sensible next move. The workflow is predictable: the same input leads through the same steps. Leaving the moment to the agent and the steps to the workflow puts each strength where it belongs. That changes the prompt too. Describe the goal and when to call the workflow, not the steps inside it. Repeating the steps creates a second copy of the policy, one that can drift from the real one and that the model might try to follow by hand.
+
+<Compare
+  before={{ label: "Re-describing the workflow", content: "To refund a customer, first check that the order is less than 30 days old, then ask a manager, then issue the credit, then email the customer." }}
+  after={{ label: "Describing the goal and the trigger", content: "Help customers resolve billing problems. When a customer asks for a refund and you have the order ID, call the refund workflow with that ID and the reason. Report the result it returns. Do not promise a refund before the workflow confirms it." }}
+/>
+
 ## What a Connector Adds
 
 A connector packages the integration with a particular system. It may handle signing in, selecting an account or workspace, finding data, and exposing supported actions as tools. Some connectors only search or read. Others also support writes.
@@ -147,6 +162,30 @@ The official [Tasks extension](https://tasks.extensions.modelcontextprotocol.io/
 <Callout type="warning" title="A form from a server is still a request from a server">
 An elicitation comes from the server, not from your application, so it deserves the same scrutiny as any tool output. Read what it asks before you answer, and never type a password, API key, or other secret into such a form unless you trust the server. Support also differs between applications: VS Code [documents elicitation support](https://code.visualstudio.com/api/extension-guides/ai/mcp), Cursor supports elicitation, and Claude Code has added [MCP Tasks and elicitations](https://code.claude.com/docs/en/mcp) in public beta in its terminal app, though not yet everywhere it runs. The official [client support matrix](https://modelcontextprotocol.io/extensions/client-matrix) tracks which applications support which extensions, so check yours before relying on either feature.
 </Callout>
+
+### Finding a Server and Connecting Once
+
+Before an agent can use a remote server, someone has to find it, learn how to connect, and sign in. For a long time that meant copying a URL from a README, guessing which transport to use, and repeating the setup in every application. Two kinds of help are now arriving: information a client can read **before** it connects, and connections you set up **once** and reuse.
+
+On the discovery side, MCP's **Server Cards** extension ([SEP-2127](https://modelcontextprotocol.io/seps/2127-mcp-server-cards)) was finalized on October 6, 2026. It describes a small, static document about a remote server: its name, its endpoints and transports, and the protocol versions it supports. A website can list its cards in an AI catalog at `/.well-known/ai-catalog.json`, so a client pointed at a domain can learn where and how to connect without manual setup. The card deliberately leaves out the list of tools, because the tools a server offers can change with the signed-in user. Those still come from `tools/list` after connecting.
+
+On the connection side, GitHub began rolling out [GitHub-verified MCP servers](https://github.blog/changelog/2026-10-28-connect-your-tools-to-copilot-without-all-the-setup/), which it also calls connectors, in public preview on October 28, 2026. You sign in to a service such as Slack or Sentry once, and the connection works across the Copilot app, Copilot CLI, VS Code, Copilot in the cloud, and GitHub Mobile.
+
+Tools are not only web services, either. The same day, at Android Dev Summit, Google [announced](https://developer.android.com/blog/posts/build-it-your-way-a-next-era-of-android-development) that **AppFunctions**, which it calls Android's unified tool calling layer, is now in beta. Through Android MCP, an app on your phone can offer functions such as creating a note or sending a message to an on-device agent of its own or to system-level agents, without anyone opening the app.
+
+This brings us back to an earlier point: **connector** is a product term. A server card, a verified badge, and a single sign-in make setup easier and help you trust *who* you are connecting to. They do not decide *what* you grant. You still choose which account to connect, which permissions to allow, and which actions should wait for approval. Neither discovery metadata nor verification replaces reading what the tools can actually do once they are listed.
+
+<Quiz
+  question="A remote server publishes a Server Card and appears as a verified connector in your application. What is still your job?"
+  options={[
+    "Nothing. Verification means every tool on the server is safe to run",
+    "Choosing which account and permissions to grant, and reviewing what the listed tools can do",
+    "Copying the tool list from the Server Card into your prompt",
+    "Typing the server's endpoint address into every prompt"
+  ]}
+  correctIndex={1}
+  explanation="Discovery metadata and verification help with setup and with knowing who runs the server. They do not choose your account or scopes for you, and a Server Card does not even list the tools. Review the tools after connecting, and grant only the access the task needs."
+/>
 
 ## Try a Read and a Write
 

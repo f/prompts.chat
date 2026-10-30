@@ -72,6 +72,21 @@ Ad ve şema tek başına hiçbir şey çalıştırmaz. Aracın kodu girdileri do
 "Bir kayıt oluşturacağım" bir ifadedir. Araç çağrısı işlemi talep eder. Yeni kaydın kimliğini içeren başarılı bir yanıt ise işlemin yapıldığına dair kanıttır. Bu üçünü birbirinden ayırın.
 </Callout>
 
+### Bir Araç Koca Bir İş Akışını Temsil Edebilir
+
+Şimdiye kadar her araç tek bir işlemdi: aramak, oluşturmak, dışa aktarmak. Ama bir aracın adının arkasındaki kod çok daha büyük olabilir. Önceden yazılmış ve bir iş akışı motorunun yürüttüğü koca bir süreç de olabilir. Süreci **ne zaman** başlatacağına ve ona **hangi girdiyi** vereceğine yine ajan karar verir. Ondan sonrası ise sürecin tanımladığı gibi, her seferinde aynı sırayla işler.
+
+Bir para iadesini düşünün. Destek ajanı sinirli bir müşteriyi anlamakta gayet başarılı olabilir, ama iade politikanızı doğaçlamayla yürütmesini muhtemelen istemezsiniz. Tek bir araç olarak paketlenen iade iş akışı, hangi konuşma başlatmış olursa olsun önce uygunluğu kontrol eder, sonra bir yöneticiden onay ister, en son da tutarı hesaba geçirir. Onaylar, dağıtımlar ve adımların bizzat politikanın kendisi olduğu diğer süreçler de bu kalıba uyar. İş akışı motorları genellikle her çalıştırmanın kaydını tutar; bu sayede ajan geçmiş çalıştırmalara da bakabilir ve tahmin yürütmek yerine, gece hangi çalıştırmaların hangi adımda takıldığını söyleyebilir.
+
+Yakın tarihli bir örneği AWS veriyor. AWS, 29 Ekim 2026'da Step Functions iş akışlarının, ajanları MCP üzerinden araçlara bağlayan Amazon Bedrock AgentCore Gateway aracılığıyla ajan aracı olarak kullanılabileceğini [duyurdu](https://aws.amazon.com/about-aws/whats-new/2026/10/step-functions-workflows-ai-agent-tools/). Fikir tek bir sağlayıcıya özgü değil: bir CI hattı, bir talep sistemindeki onay akışı ya da ekibinizin zaten güvendiği bir betik de ajana aynı şekilde sunulabilir.
+
+Burada iki gücü dengeliyorsunuz. Model esnektir: alışılmadık bir durumu okuyup mantıklı bir sonraki adımı seçebilir. İş akışı ise öngörülebilirdir: aynı girdi her seferinde aynı adımlardan geçer. Ne zaman başlanacağını ajana, nasıl ilerleneceğini iş akışına bırakmak, her iki gücü de ait olduğu yere koyar. Bu, promptu da değiştirir. İş akışının içindeki adımları değil, hedefi ve iş akışının ne zaman çağrılacağını anlatın. Adımları prompta yeniden yazmak politikanın ikinci bir kopyasını oluşturur. Bu kopya zamanla aslından kopabilir, model de adımları kendi başına uygulamaya kalkışabilir.
+
+<Compare
+  before={{ label: "İş akışını yeniden anlatan prompt", content: "Bir müşteriye iade yapmak için önce siparişin 30 günden eski olmadığını kontrol et, sonra bir yöneticiye sor, ardından tutarı hesaba geçir ve en son müşteriye e-posta gönder." }}
+  after={{ label: "Hedefi ve tetikleyiciyi anlatan prompt", content: "Müşterilerin fatura sorunlarını çözmesine yardım et. Bir müşteri iade isterse ve sipariş numarası elindeyse, iade iş akışını bu numarayla ve iade gerekçesiyle çağır. İş akışının döndürdüğü sonucu bildir. İş akışı onaylamadan iade sözü verme." }}
+/>
+
 ## Bağlayıcı Ne Ekler?
 
 Bağlayıcı, belirli bir sistemle entegrasyonu bir araya getirir. Oturum açmayı, hesap veya çalışma alanı seçmeyi, veri bulmayı ve desteklenen işlemleri araç olarak sunmayı sağlayabilir. Bazı bağlayıcılar yalnızca arama veya okuma yapar. Bazıları yazmayı da destekler.
@@ -147,6 +162,30 @@ Resmî [Tasks uzantısı](https://tasks.extensions.modelcontextprotocol.io/) (`i
 <Callout type="warning" title="Sunucudan gelen form da sunucudan gelen bir istektir">
 Bir elicitation isteği uygulamanızdan değil sunucudan gelir; bu yüzden herhangi bir araç çıktısı kadar dikkatli incelenmeyi hak eder. Cevap vermeden önce ne sorulduğunu okuyun ve sunucuya güvenmiyorsanız böyle bir forma asla parola, API anahtarı ya da başka bir gizli bilgi yazmayın. Destek de uygulamadan uygulamaya değişir: VS Code [elicitation desteğini belgeliyor](https://code.visualstudio.com/api/extension-guides/ai/mcp), Cursor elicitation'ı destekliyor, Claude Code ise terminal uygulamasına [MCP Tasks ve elicitation](https://code.claude.com/docs/en/mcp) desteğini herkese açık beta olarak ekledi; ancak bu destek henüz çalıştığı her ortamda yok. Resmî [istemci destek tablosu](https://modelcontextprotocol.io/extensions/client-matrix) hangi uygulamanın hangi uzantıları desteklediğini takip ediyor; bu yüzden iki özellikten birine güvenmeden önce kendi uygulamanızı kontrol edin.
 </Callout>
+
+### Sunucuyu Bulmak ve Bir Kez Bağlanmak
+
+Bir ajanın uzak bir sunucuyu kullanabilmesi için önce birinin o sunucuyu bulması, nasıl bağlanılacağını öğrenmesi ve oturum açması gerekir. Uzun süre bu; bir README dosyasından adres kopyalamak, hangi aktarım yönteminin (transport) kullanılacağını tahmin etmek ve aynı kurulumu her uygulamada baştan yapmak demekti. Artık iki tür kolaylık geliyor: istemcinin **bağlanmadan önce** okuyabileceği bilgiler ve **bir kez** kurup yeniden kullanabileceğiniz bağlantılar.
+
+Keşif tarafında, MCP'nin **Server Cards** uzantısı ([SEP-2127](https://modelcontextprotocol.io/seps/2127-mcp-server-cards)) 6 Ekim 2026'da kesinleşti. Uzantı, uzak bir sunucuyu anlatan küçük ve sabit bir belge tanımlar: sunucunun adı, uç noktaları ve aktarım yöntemleri, desteklediği protokol sürümleri. Bir web sitesi kartlarını `/.well-known/ai-catalog.json` adresindeki bir yapay zeka kataloğunda listeleyebilir. Böylece bir alan adına yönlendirilen istemci, elle ayar yapmadan nereye ve nasıl bağlanacağını öğrenir. Kart araç listesine bilerek yer vermez, çünkü bir sunucunun sunduğu araçlar oturum açan kullanıcıya göre değişebilir. Araçlar yine bağlandıktan sonra `tools/list` ile öğrenilir.
+
+Bağlantı tarafında GitHub, bağlayıcı adını da verdiği [GitHub tarafından doğrulanmış MCP sunucularını](https://github.blog/changelog/2026-10-28-connect-your-tools-to-copilot-without-all-the-setup/) 28 Ekim 2026'da herkese açık önizleme olarak kullanıma sunmaya başladı. Slack ya da Sentry gibi bir hizmette bir kez oturum açıyorsunuz; bağlantı Copilot uygulamasında, Copilot CLI'da, VS Code'da, buluttaki Copilot'ta ve GitHub Mobile'da çalışıyor.
+
+Üstelik araçlar yalnızca web hizmetlerinden ibaret değil. Google da aynı gün Android Dev Summit'te, Android'in birleşik araç çağırma katmanı olarak tanımladığı **AppFunctions**'ın beta aşamasına geçtiğini [duyurdu](https://developer.android.com/blog/posts/build-it-your-way-a-next-era-of-android-development). Android MCP sayesinde telefonunuzdaki bir uygulama, not oluşturmak ya da mesaj göndermek gibi işlevlerini kendi cihaz içi ajanına veya sistem düzeyindeki ajanlara sunabiliyor; hem de kimsenin uygulamayı açmasına gerek kalmadan.
+
+Bu da bizi daha önceki bir noktaya geri getiriyor: **bağlayıcı** bir ürün terimidir. Sunucu kartı, doğrulanmış rozeti ve tek seferlik oturum açma kurulumu kolaylaştırır ve *kime* bağlandığınıza güvenmenize yardım eder. Ama *neye* izin vereceğinize sizin yerinize karar vermez. Hangi hesabı bağlayacağınızı, hangi izinleri tanıyacağınızı ve hangi işlemlerin onay bekleyeceğini yine siz seçersiniz. Ne keşif bilgileri ne de doğrulama, araçlar listelendikten sonra gerçekte neler yapabildiklerini incelemenin yerini tutar.
+
+<Quiz
+  question="Uzak bir sunucu bir Server Card yayımlıyor ve uygulamanızda doğrulanmış bir bağlayıcı olarak görünüyor. Hâlâ size düşen iş nedir?"
+  options={[
+    "Hiçbir şey. Doğrulama, sunucudaki her aracın gönül rahatlığıyla çalıştırılabileceği anlamına gelir",
+    "Hangi hesabı ve izinleri vereceğinizi seçmek, listelenen araçların neler yapabildiğini incelemek",
+    "Server Card'daki araç listesini promptunuza kopyalamak",
+    "Sunucunun uç nokta adresini her prompta yazmak"
+  ]}
+  correctIndex={1}
+  explanation="Keşif bilgileri ve doğrulama, kurulumu kolaylaştırır ve sunucuyu kimin işlettiğini bilmenize yardım eder. Hesabınızı ya da yetki kapsamlarınızı sizin yerinize seçmezler; üstelik bir Server Card araçları listelemez bile. Bağlandıktan sonra araçları inceleyin ve yalnızca görevin gerektirdiği erişimi verin."
+/>
 
 ## Okuma ve Yazmayı Deneyin
 

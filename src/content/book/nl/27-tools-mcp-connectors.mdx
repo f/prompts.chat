@@ -72,6 +72,21 @@ De naam en het schema voeren zelf niets uit. De implementatie moet de invoer val
 'Ik zal een issue aanmaken' is een uitspraak. Een toolaanroep vraagt de bewerking aan. Een geslaagd antwoord met het ID van het nieuwe issue bewijst dat het is gebeurd. Houd die drie dingen uit elkaar.
 </Callout>
 
+### Een tool kan voor een hele workflow staan
+
+Tot nu toe was elke tool één bewerking: zoeken, aanmaken, exporteren. Maar achter de naam van een tool kan veel meer schuilgaan: een compleet proces, vooraf vastgelegd en uitgevoerd door een workflow-engine. De agent beslist nog steeds **wanneer** het proces start en **welke invoer** het meekrijgt. Alles daarna verloopt precies zoals het proces voorschrijft, in dezelfde volgorde, elke keer weer.
+
+Denk aan een terugbetaling. Een supportagent kan een gefrustreerde klant prima begrijpen, maar je wilt waarschijnlijk niet dat hij je terugbetalingsbeleid improviseert. Verpakt als één tool controleert de terugbetalingsworkflow eerst of de klant er recht op heeft, vraagt dan goedkeuring aan een leidinggevende en schrijft daarna het bedrag bij, ongeacht welk gesprek de workflow heeft gestart. Goedkeuringen, deployments en andere processen waarin de stappen zelf het beleid *zijn*, passen in hetzelfde patroon. Workflow-engines houden meestal van elke uitvoering een logboek bij. Daardoor kan de agent ook eerdere uitvoeringen opzoeken en je vertellen welke er vannacht zijn mislukt en bij welke stap, in plaats van te gokken.
+
+AWS geeft een recent voorbeeld. Op 29 oktober 2026 [kondigde AWS aan](https://aws.amazon.com/about-aws/whats-new/2026/10/step-functions-workflows-ai-agent-tools/) dat Step Functions-workflows als tools voor agents kunnen dienen via Amazon Bedrock AgentCore Gateway, dat agents via MCP met tools verbindt. Het idee hoort niet bij één leverancier: een CI-pipeline, een goedkeuringsstroom in een ticketsysteem of een script dat je team al vertrouwt, kun je op dezelfde manier aan een agent aanbieden.
+
+Het gaat om het verdelen van twee sterke punten. Het model is flexibel: het kan een ongebruikelijke situatie lezen en een verstandige volgende stap kiezen. De workflow is voorspelbaar: dezelfde invoer doorloopt dezelfde stappen. Wie het moment aan de agent laat en de stappen aan de workflow, zet elk sterk punt op de juiste plek. Dat verandert ook de prompt. Beschrijf het doel en wanneer de workflow moet worden aangeroepen, niet de stappen erin. Wie de stappen herhaalt, maakt een tweede versie van het beleid, die kan afwijken van het origineel en die het model misschien zelf met de hand probeert te volgen.
+
+<Compare
+  before={{ label: "De workflow opnieuw beschrijven", content: "Om een klant terug te betalen, controleer je eerst of de bestelling minder dan 30 dagen oud is, vraag je daarna een leidinggevende, schrijf je vervolgens het bedrag bij en stuur je de klant ten slotte een e-mail." }}
+  after={{ label: "Het doel en het moment beschrijven", content: "Help klanten factuurproblemen op te lossen. Als een klant om een terugbetaling vraagt en je het bestelnummer hebt, roep dan de terugbetalingsworkflow aan met dat nummer en de reden. Meld het resultaat dat de workflow teruggeeft. Beloof geen terugbetaling voordat de workflow die heeft bevestigd." }}
+/>
+
 ## Wat een connector toevoegt
 
 Een connector bundelt de integratie met een bepaald systeem. Die kan het aanmelden, de keuze van een account of werkruimte, het zoeken van gegevens en het aanbieden van ondersteunde acties als tools regelen. Sommige connectors kunnen alleen zoeken of lezen. Andere ondersteunen ook schrijven.
@@ -147,6 +162,30 @@ Met [elicitation](https://modelcontextprotocol.io/specification/latest/client/el
 <Callout type="warning" title="Een formulier van een server blijft een verzoek van een server">
 Een elicitation komt van de server, niet van je toepassing, en verdient dus dezelfde kritische blik als elke tooluitvoer. Lees wat er gevraagd wordt voordat je antwoordt, en typ nooit een wachtwoord, API-sleutel of ander geheim in zo'n formulier, tenzij je de server vertrouwt. Ook de ondersteuning verschilt per toepassing: VS Code [documenteert ondersteuning voor elicitation](https://code.visualstudio.com/api/extension-guides/ai/mcp), Cursor ondersteunt elicitation, en Claude Code heeft [MCP Tasks en elicitations](https://code.claude.com/docs/en/mcp) als publieke bèta toegevoegd aan zijn terminal-app, maar nog niet overal waar het draait. Het officiële [overzicht van clientondersteuning](https://modelcontextprotocol.io/extensions/client-matrix) houdt bij welke toepassingen welke extensies ondersteunen, dus controleer de jouwe voordat je op een van beide functies vertrouwt.
 </Callout>
+
+### Een server vinden en maar één keer verbinden
+
+Voordat een agent een externe server kan gebruiken, moet iemand die server vinden, uitzoeken hoe je verbinding maakt en inloggen. Lange tijd betekende dat: een URL uit een README kopiëren, raden welk transport je nodig hebt en de installatie in elke toepassing herhalen. Nu komen er twee soorten hulp bij: informatie die een client **vóór** het verbinden kan lezen, en verbindingen die je **één keer** instelt en daarna hergebruikt.
+
+Aan de kant van het vinden werd de **Server Cards**-extensie van MCP ([SEP-2127](https://modelcontextprotocol.io/seps/2127-mcp-server-cards)) op 6 oktober 2026 definitief. Die beschrijft een klein, statisch document over een externe server: de naam, de endpoints en transporten, en de protocolversies die hij ondersteunt. Een website kan haar cards opnemen in een AI-catalogus op `/.well-known/ai-catalog.json`, zodat een client die je naar een domein verwijst zonder handmatige installatie leert waar en hoe hij verbinding kan maken. De card laat de lijst met tools bewust weg, omdat de tools die een server aanbiedt kunnen verschillen per ingelogde gebruiker. Die komen nog steeds na het verbinden uit `tools/list`.
+
+Aan de kant van het verbinden begon GitHub op 28 oktober 2026 met het uitrollen van [door GitHub geverifieerde MCP-servers](https://github.blog/changelog/2026-10-28-connect-your-tools-to-copilot-without-all-the-setup/) als openbare preview. GitHub noemt ze ook connectors. Je logt één keer in bij een dienst als Slack of Sentry, en de verbinding werkt in de Copilot-app, Copilot CLI, VS Code, Copilot in de cloud en GitHub Mobile.
+
+Tools zijn bovendien niet alleen webdiensten. Op dezelfde dag [kondigde Google](https://developer.android.com/blog/posts/build-it-your-way-a-next-era-of-android-development) op de Android Dev Summit aan dat **AppFunctions**, door Google omschreven als de uniforme laag voor toolaanroepen in Android, nu in bèta is. Via Android MCP kan een app op je telefoon functies zoals een notitie maken of een bericht versturen aanbieden aan een eigen agent op het apparaat of aan agents op systeemniveau, zonder dat iemand de app hoeft te openen.
+
+Dat brengt ons terug bij een eerder punt: **connector** is een productterm. Een server card, een verificatiebadge en één keer inloggen maken de installatie makkelijker en helpen je te vertrouwen *met wie* je verbinding maakt. Ze beslissen niet *wat* je toestaat. Je kiest nog steeds zelf welk account je koppelt, welke machtigingen je geeft en welke acties op goedkeuring moeten wachten. Noch vindbaarheidsgegevens noch verificatie vervangen het nalopen van wat de tools werkelijk kunnen zodra ze in de lijst staan.
+
+<Quiz
+  question="Een externe server publiceert een Server Card en verschijnt in je toepassing als geverifieerde connector. Wat blijft toch jouw taak?"
+  options={[
+    "Niets. Verificatie betekent dat elke tool op de server zonder risico kan worden uitgevoerd",
+    "Kiezen welk account en welke machtigingen je geeft, en nagaan wat de vermelde tools kunnen",
+    "De toollijst uit de Server Card in je prompt kopiëren",
+    "Het endpointadres van de server in elke prompt typen"
+  ]}
+  correctIndex={1}
+  explanation="Vindbaarheidsgegevens en verificatie helpen bij de installatie en laten zien wie de server beheert. Ze kiezen je account of toegangsbereik niet voor je, en een Server Card somt de tools niet eens op. Loop de tools na het verbinden na en geef alleen de toegang die de taak nodig heeft."
+/>
 
 ## Probeer lezen en schrijven
 

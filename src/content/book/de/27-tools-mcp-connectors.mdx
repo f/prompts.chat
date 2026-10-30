@@ -72,6 +72,21 @@ Name und Schema führen selbst nichts aus. Die Implementierung muss Eingaben val
 „Ich werde ein Issue erstellen“ ist eine Aussage. Ein Werkzeugaufruf fordert den Vorgang an. Eine erfolgreiche Antwort mit der ID des neuen Issues belegt, dass er stattgefunden hat. Halte diese drei Dinge auseinander.
 </Callout>
 
+### Ein Werkzeug kann für einen ganzen Workflow stehen
+
+Bisher war jedes Werkzeug ein einzelner Vorgang: suchen, anlegen, exportieren. Doch hinter dem Namen eines Werkzeugs kann viel mehr stecken, nämlich ein ganzer Ablauf, im Voraus festgelegt und von einer Workflow-Engine ausgeführt. Der Agent entscheidet weiterhin, **wann** er ihn startet und **welche Eingabe** er übergibt. Alles Weitere läuft genau so ab, wie der Ablauf es vorsieht, in derselben Reihenfolge, jedes Mal.
+
+Denk an eine Rückerstattung. Ein Support-Agent mag gut darin sein, einen verärgerten Kunden zu verstehen, aber deine Erstattungsrichtlinie soll er vermutlich nicht improvisieren. Als ein einziges Werkzeug verpackt, prüft der Erstattungs-Workflow zuerst die Berechtigung, holt dann die Freigabe einer Führungskraft ein und schreibt zuletzt den Betrag gut, ganz gleich, welches Gespräch ihn ausgelöst hat. Freigaben, Deployments und andere Abläufe, bei denen die Schritte selbst die Richtlinie *sind*, passen in dieselbe Form. Workflow-Engines protokollieren meist jeden Durchlauf. Deshalb kann der Agent auch frühere Durchläufe nachschlagen und dir sagen, welche über Nacht gescheitert sind und an welchem Schritt, statt zu raten.
+
+Ein aktuelles Beispiel liefert AWS. Am 29. Oktober 2026 hat AWS [angekündigt](https://aws.amazon.com/about-aws/whats-new/2026/10/step-functions-workflows-ai-agent-tools/), dass sich Step-Functions-Workflows über Amazon Bedrock AgentCore Gateway als Werkzeuge für Agenten nutzen lassen. Das Gateway verbindet Agenten über MCP mit Werkzeugen. Die Idee ist aber an keinen Anbieter gebunden: Eine CI-Pipeline, ein Freigabeprozess in einem Ticketsystem oder ein Skript, dem dein Team ohnehin vertraut, lässt sich einem Agenten auf dieselbe Weise anbieten.
+
+Dabei wägst du zwei Stärken gegeneinander ab. Das Modell ist flexibel: Es kann eine ungewöhnliche Lage erfassen und einen sinnvollen nächsten Schritt wählen. Der Workflow ist berechenbar: Dieselbe Eingabe führt durch dieselben Schritte. Wer den Zeitpunkt dem Agenten und die Schritte dem Workflow überlässt, setzt jede Stärke dort ein, wo sie hingehört. Das verändert auch den Prompt. Beschreibe das Ziel und wann der Workflow aufgerufen werden soll, nicht die Schritte darin. Wer die Schritte wiederholt, schafft eine zweite Fassung der Richtlinie, die sich vom Original entfernen kann und die das Modell vielleicht selbst von Hand abzuarbeiten versucht.
+
+<Compare
+  before={{ label: "Den Workflow nacherzählen", content: "Um einem Kunden Geld zu erstatten, prüfe zuerst, ob die Bestellung weniger als 30 Tage alt ist, frag dann eine Führungskraft, schreib anschließend den Betrag gut und schick dem Kunden zum Schluss eine E-Mail." }}
+  after={{ label: "Ziel und Auslöser beschreiben", content: "Hilf Kunden, Probleme mit ihrer Abrechnung zu lösen. Wenn ein Kunde eine Erstattung wünscht und dir die Bestellnummer vorliegt, rufe den Erstattungs-Workflow mit dieser Nummer und dem Grund auf. Berichte das Ergebnis, das er zurückgibt. Versprich keine Erstattung, bevor der Workflow sie bestätigt hat." }}
+/>
+
 ## Was ein Konnektor ergänzt
 
 Ein Konnektor bündelt die Integration mit einem bestimmten System. Er kann Anmeldung, Konto- oder Arbeitsbereichsauswahl, Datensuche und die Bereitstellung unterstützter Aktionen als Werkzeuge übernehmen. Einige Konnektoren können nur suchen oder lesen. Andere unterstützen auch Schreibzugriffe.
@@ -147,6 +162,30 @@ Mit [Elicitation](https://modelcontextprotocol.io/specification/latest/client/el
 <Callout type="warning" title="Ein Formular vom Server ist immer noch eine Anfrage vom Server">
 Eine Elicitation kommt vom Server, nicht von deiner Anwendung, und verdient deshalb dieselbe Prüfung wie jede Werkzeugausgabe. Lies, worum gebeten wird, bevor du antwortest, und gib niemals ein Passwort, einen API-Schlüssel oder ein anderes Geheimnis in ein solches Formular ein, wenn du dem Server nicht vertraust. Auch die Unterstützung unterscheidet sich je nach Anwendung: VS Code [dokumentiert die Unterstützung für Elicitation](https://code.visualstudio.com/api/extension-guides/ai/mcp), Cursor unterstützt Elicitation, und Claude Code hat [MCP Tasks und Elicitations](https://code.claude.com/docs/en/mcp) als öffentliche Beta in seiner Terminal-App eingeführt, allerdings noch nicht überall, wo es läuft. Die offizielle [Übersicht zur Client-Unterstützung](https://modelcontextprotocol.io/extensions/client-matrix) zeigt, welche Anwendungen welche Erweiterungen unterstützen. Prüfe also deine, bevor du dich auf eine der beiden Funktionen verlässt.
 </Callout>
+
+### Einen Server finden und sich nur einmal verbinden
+
+Bevor ein Agent einen entfernten Server nutzen kann, muss jemand ihn finden, herausfinden, wie man sich verbindet, und sich anmelden. Lange hieß das: eine URL aus einer README kopieren, raten, welcher Transport der richtige ist, und die Einrichtung in jeder Anwendung wiederholen. Inzwischen kommen zwei Arten von Hilfe hinzu: Informationen, die ein Client **vor** dem Verbinden lesen kann, und Verbindungen, die du **einmal** einrichtest und dann wiederverwendest.
+
+Auf der Seite der Auffindbarkeit wurde die **Server-Cards**-Erweiterung von MCP ([SEP-2127](https://modelcontextprotocol.io/seps/2127-mcp-server-cards)) am 6. Oktober 2026 final. Sie beschreibt ein kleines, statisches Dokument über einen entfernten Server: seinen Namen, seine Endpunkte und Transporte und die Protokollversionen, die er unterstützt. Eine Website kann ihre Cards in einem KI-Katalog unter `/.well-known/ai-catalog.json` aufführen. So erfährt ein Client, den man auf eine Domain verweist, ohne manuelle Einrichtung, wo und wie er sich verbinden kann. Die Liste der Werkzeuge lässt die Card bewusst weg, denn welche Werkzeuge ein Server anbietet, kann vom angemeldeten Nutzer abhängen. Die kommen weiterhin nach dem Verbinden über `tools/list`.
+
+Auf der Seite der Verbindung hat GitHub am 28. Oktober 2026 begonnen, [von GitHub verifizierte MCP-Server](https://github.blog/changelog/2026-10-28-connect-your-tools-to-copilot-without-all-the-setup/), die es auch Konnektoren nennt, als öffentliche Vorschau auszurollen. Du meldest dich einmal bei einem Dienst wie Slack oder Sentry an, und die Verbindung funktioniert in der Copilot-App, in der Copilot CLI, in VS Code, in Copilot in der Cloud und in GitHub Mobile.
+
+Werkzeuge sind auch nicht nur Webdienste. Am selben Tag hat Google auf dem Android Dev Summit [angekündigt](https://developer.android.com/blog/posts/build-it-your-way-a-next-era-of-android-development), dass **AppFunctions**, von Google als einheitliche Ebene für Werkzeugaufrufe in Android bezeichnet, jetzt in der Beta ist. Über Android MCP kann eine App auf deinem Smartphone Funktionen wie das Anlegen einer Notiz oder das Senden einer Nachricht einem eigenen Agenten auf dem Gerät oder Agenten auf Systemebene anbieten, ohne dass jemand die App öffnen muss.
+
+Damit sind wir wieder bei einem früheren Punkt: **Konnektor** ist ein Produktbegriff. Eine Server Card, ein Verifiziert-Abzeichen und eine einmalige Anmeldung erleichtern die Einrichtung und helfen dir einzuschätzen, *mit wem* du dich verbindest. Sie entscheiden nicht, *was* du freigibst. Welches Konto du verbindest, welche Berechtigungen du erlaubst und welche Aktionen auf eine Freigabe warten sollen, wählst weiterhin du. Weder Metadaten zur Auffindbarkeit noch eine Verifizierung ersetzen den Blick darauf, was die Werkzeuge tatsächlich können, sobald sie aufgelistet sind.
+
+<Quiz
+  question="Ein entfernter Server veröffentlicht eine Server Card und erscheint in deiner Anwendung als verifizierter Konnektor. Was bleibt trotzdem deine Aufgabe?"
+  options={[
+    "Nichts. Verifizierung bedeutet, dass jedes Werkzeug auf dem Server bedenkenlos ausgeführt werden kann",
+    "Auswählen, welches Konto und welche Berechtigungen du freigibst, und prüfen, was die aufgelisteten Werkzeuge können",
+    "Die Werkzeugliste aus der Server Card in deinen Prompt kopieren",
+    "Die Endpunktadresse des Servers in jeden Prompt schreiben"
+  ]}
+  correctIndex={1}
+  explanation="Metadaten zur Auffindbarkeit und Verifizierung helfen bei der Einrichtung und zeigen, wer den Server betreibt. Sie wählen weder dein Konto noch deine Berechtigungsumfänge für dich aus, und eine Server Card listet die Werkzeuge nicht einmal auf. Prüfe die Werkzeuge nach dem Verbinden und gib nur den Zugriff frei, den die Aufgabe braucht."
+/>
 
 ## Lesen und Schreiben ausprobieren
 

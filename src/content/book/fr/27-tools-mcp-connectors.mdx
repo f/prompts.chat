@@ -72,6 +72,21 @@ Le nom et le schéma n'exécutent rien par eux-mêmes. L'implémentation doit va
 « Je vais créer un ticket » est une déclaration. Un appel d'outil demande l'opération. Une réponse réussie avec l'identifiant du nouveau ticket prouve qu'elle a eu lieu. Gardez ces trois choses distinctes.
 </Callout>
 
+### Un outil peut représenter tout un workflow
+
+Jusqu'ici, chaque outil était une seule opération : chercher, créer, exporter. Mais ce qui se cache derrière le nom d'un outil peut être bien plus vaste. Ce peut être un processus entier, écrit à l'avance et exécuté par un moteur de workflows. L'agent décide toujours **quand** le lancer et **quelles données** lui transmettre. Tout le reste se déroule exactement comme le processus le prévoit, dans le même ordre, à chaque fois.
+
+Prenez un remboursement. Un agent de support peut très bien comprendre un client mécontent, mais vous ne voulez sans doute pas qu'il improvise votre politique de remboursement. Emballé dans un seul outil, le workflow de remboursement vérifie d'abord l'éligibilité, demande ensuite l'accord d'un responsable, puis crédite le montant, quelle que soit la conversation qui l'a déclenché. Les validations, les déploiements et les autres processus dont les étapes *sont* la politique entrent dans le même moule. Les moteurs de workflows gardent en général une trace de chaque exécution : l'agent peut donc aussi consulter les exécutions passées et vous dire lesquelles ont échoué pendant la nuit, et à quelle étape, au lieu de deviner.
+
+AWS en donne un exemple récent. Le 29 octobre 2026, AWS a [annoncé](https://aws.amazon.com/about-aws/whats-new/2026/10/step-functions-workflows-ai-agent-tools/) que les workflows Step Functions peuvent servir d'outils aux agents via Amazon Bedrock AgentCore Gateway, qui relie les agents à des outils grâce à MCP. L'idée n'appartient à aucun fournisseur en particulier : un pipeline de CI, un circuit de validation dans un outil de tickets ou un script auquel votre équipe fait déjà confiance peuvent être proposés à un agent de la même façon.
+
+Il s'agit de répartir deux qualités. Le modèle est souple : il sait lire une situation inhabituelle et choisir une suite raisonnable. Le workflow est prévisible : la même entrée passe par les mêmes étapes. Laisser le moment à l'agent et les étapes au workflow place chaque qualité là où elle sert le mieux. Cela change aussi le prompt. Décrivez l'objectif et le moment d'appeler le workflow, pas les étapes qu'il contient. Répéter les étapes crée une seconde copie de la politique, qui peut s'écarter de l'originale et que le modèle risque de vouloir suivre lui-même, à la main.
+
+<Compare
+  before={{ label: "Redécrire le workflow", content: "Pour rembourser un client, vérifie d'abord que la commande date de moins de 30 jours, puis demande à un responsable, crédite ensuite le montant et envoie enfin un e-mail au client." }}
+  after={{ label: "Décrire l'objectif et le déclencheur", content: "Aide les clients à résoudre leurs problèmes de facturation. Quand un client demande un remboursement et que tu as le numéro de commande, appelle le workflow de remboursement avec ce numéro et le motif. Rends compte du résultat qu'il renvoie. Ne promets aucun remboursement avant que le workflow l'ait confirmé." }}
+/>
+
 ## Ce qu'ajoute un connecteur
 
 Un connecteur regroupe l'intégration avec un système particulier. Il peut gérer la connexion, le choix d'un compte ou d'un espace de travail, la recherche de données et la présentation des actions disponibles sous forme d'outils. Certains connecteurs permettent seulement de chercher ou de lire. D'autres permettent aussi d'écrire.
@@ -147,6 +162,30 @@ L'[élicitation](https://modelcontextprotocol.io/specification/latest/client/eli
 <Callout type="warning" title="Un formulaire venu d'un serveur reste une demande du serveur">
 Une élicitation vient du serveur, pas de votre application ; elle mérite donc le même examen que n'importe quelle sortie d'outil. Lisez ce qui vous est demandé avant de répondre, et ne saisissez jamais un mot de passe, une clé d'API ou tout autre secret dans un tel formulaire si vous ne faites pas confiance au serveur. La prise en charge varie aussi d'une application à l'autre : VS Code [documente sa prise en charge de l'élicitation](https://code.visualstudio.com/api/extension-guides/ai/mcp), Cursor prend en charge l'élicitation, et Claude Code a ajouté [MCP Tasks et les élicitations](https://code.claude.com/docs/en/mcp) en bêta publique dans son application de terminal, mais pas encore partout où il fonctionne. La [matrice officielle de prise en charge des clients](https://modelcontextprotocol.io/extensions/client-matrix) indique quelles applications prennent en charge quelles extensions ; vérifiez donc la vôtre avant de compter sur l'une ou l'autre de ces fonctionnalités.
 </Callout>
+
+### Trouver un serveur et ne se connecter qu'une fois
+
+Avant qu'un agent puisse utiliser un serveur distant, quelqu'un doit le trouver, comprendre comment s'y connecter et s'identifier. Longtemps, cela voulait dire copier une URL depuis un README, deviner quel transport utiliser et refaire la configuration dans chaque application. Deux sortes d'aide arrivent désormais : des informations qu'un client peut lire **avant** de se connecter, et des connexions que l'on configure **une fois** pour les réutiliser.
+
+Côté découverte, l'extension **Server Cards** de MCP ([SEP-2127](https://modelcontextprotocol.io/seps/2127-mcp-server-cards)) a été finalisée le 6 octobre 2026. Elle décrit un petit document statique consacré à un serveur distant : son nom, ses points de terminaison et ses transports, ainsi que les versions du protocole qu'il prend en charge. Un site peut répertorier ses cartes dans un catalogue d'IA à l'adresse `/.well-known/ai-catalog.json`, si bien qu'un client à qui l'on indique un domaine peut apprendre où et comment se connecter sans configuration manuelle. La carte laisse volontairement de côté la liste des outils, car les outils d'un serveur peuvent varier selon l'utilisateur connecté. Ceux-ci s'obtiennent toujours avec `tools/list` une fois la connexion établie.
+
+Côté connexion, GitHub a commencé le 28 octobre 2026 à déployer en préversion publique les [serveurs MCP vérifiés par GitHub](https://github.blog/changelog/2026-10-28-connect-your-tools-to-copilot-without-all-the-setup/), qu'il appelle aussi connecteurs. Vous vous connectez une seule fois à un service comme Slack ou Sentry, et la connexion fonctionne dans l'application Copilot, dans Copilot CLI, dans VS Code, dans Copilot dans le cloud et dans GitHub Mobile.
+
+Les outils ne sont d'ailleurs pas seulement des services web. Le même jour, lors de l'Android Dev Summit, Google a [annoncé](https://developer.android.com/blog/posts/build-it-your-way-a-next-era-of-android-development) qu'**AppFunctions**, qu'il présente comme la couche unifiée d'appel d'outils d'Android, est désormais en bêta. Grâce à Android MCP, une application de votre téléphone peut proposer des fonctions, comme créer une note ou envoyer un message, à son propre agent sur l'appareil ou à des agents du système, sans que personne ait besoin d'ouvrir l'application.
+
+Cela nous ramène à une idée vue plus haut : **connecteur** est un terme de produit. Une carte de serveur, un badge de vérification et une connexion unique simplifient la mise en place et vous aident à savoir *à qui* vous vous connectez. Ils ne décident pas de *ce que* vous accordez. C'est toujours vous qui choisissez quel compte connecter, quelles permissions autoriser et quelles actions doivent attendre votre accord. Ni les métadonnées de découverte ni la vérification ne remplacent l'examen de ce que les outils peuvent réellement faire une fois qu'ils sont listés.
+
+<Quiz
+  question="Un serveur distant publie une Server Card et apparaît comme connecteur vérifié dans votre application. Que vous reste-t-il à faire ?"
+  options={[
+    "Rien. La vérification signifie que chaque outil du serveur peut être exécuté sans risque",
+    "Choisir quel compte et quelles permissions accorder, et examiner ce que peuvent faire les outils listés",
+    "Copier dans votre prompt la liste d'outils de la Server Card",
+    "Écrire l'adresse du point de terminaison du serveur dans chaque prompt"
+  ]}
+  correctIndex={1}
+  explanation="Les métadonnées de découverte et la vérification facilitent la configuration et indiquent qui exploite le serveur. Elles ne choisissent ni votre compte ni vos périmètres d'accès à votre place, et une Server Card ne liste même pas les outils. Examinez les outils après la connexion et n'accordez que l'accès dont la tâche a besoin."
+/>
 
 ## Essayez une lecture et une écriture
 

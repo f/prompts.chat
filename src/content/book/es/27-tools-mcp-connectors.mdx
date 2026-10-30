@@ -72,6 +72,21 @@ El nombre y el esquema no ejecutan nada por sí solos. La implementación debe v
 «Voy a crear una incidencia» es una afirmación. Una llamada a una herramienta solicita la operación. Una respuesta correcta con el identificador de la nueva incidencia es evidencia de que ocurrió. Mantén estas tres cosas separadas.
 </Callout>
 
+### Una herramienta puede representar todo un flujo de trabajo
+
+Hasta ahora, cada herramienta era una sola operación: buscar, crear, exportar. Pero lo que hay detrás del nombre de una herramienta puede ser mucho más grande. Puede ser un proceso completo, escrito de antemano y ejecutado por un motor de flujos de trabajo. El agente sigue decidiendo **cuándo** iniciarlo y **qué datos** pasarle. Todo lo demás ocurre exactamente como el proceso lo define, en el mismo orden, cada vez.
+
+Piensa en un reembolso. Un agente de soporte puede entender muy bien a un cliente molesto, pero seguramente no quieres que improvise tu política de reembolsos. Empaquetado como una sola herramienta, el flujo de reembolso comprueba primero si el pedido cumple los requisitos, luego pide la aprobación de un responsable y por último abona el importe, sea cual sea la conversación que lo puso en marcha. Las aprobaciones, los despliegues y otros procesos en los que los pasos *son* la política encajan en el mismo molde. Los motores de flujos de trabajo suelen guardar un registro de cada ejecución, así que el agente también puede consultar ejecuciones anteriores y decirte cuáles fallaron durante la noche y en qué paso, en lugar de adivinarlo.
+
+AWS ofrece un ejemplo reciente. El 29 de octubre de 2026 [anunció](https://aws.amazon.com/about-aws/whats-new/2026/10/step-functions-workflows-ai-agent-tools/) que los flujos de trabajo de Step Functions pueden usarse como herramientas de agentes a través de Amazon Bedrock AgentCore Gateway, que conecta agentes con herramientas mediante MCP. La idea no depende de un único proveedor: un pipeline de CI, un flujo de aprobación en un sistema de tickets o un script en el que tu equipo ya confía pueden ofrecerse a un agente de la misma manera.
+
+Se trata de repartir dos virtudes. El modelo es flexible: puede leer una situación poco habitual y elegir un siguiente paso sensato. El flujo de trabajo es predecible: la misma entrada recorre los mismos pasos. Dejar el momento en manos del agente y los pasos en manos del flujo coloca cada virtud donde corresponde. Eso también cambia el prompt. Describe el objetivo y cuándo llamar al flujo, no los pasos que contiene. Repetir los pasos crea una segunda copia de la política, que puede alejarse de la real y que el modelo podría intentar seguir por su cuenta.
+
+<Compare
+  before={{ label: "Volver a describir el flujo", content: "Para reembolsar a un cliente, comprueba primero que el pedido tiene menos de 30 días, luego pregunta a un responsable, después abona el importe y por último envía un correo al cliente." }}
+  after={{ label: "Describir el objetivo y el momento", content: "Ayuda a los clientes a resolver problemas de facturación. Cuando un cliente pida un reembolso y tengas el número de pedido, llama al flujo de reembolso con ese número y el motivo. Informa del resultado que devuelva. No prometas un reembolso antes de que el flujo lo confirme." }}
+/>
+
 ## Qué añade un conector
 
 Un conector reúne la integración con un sistema concreto. Puede gestionar el inicio de sesión, la selección de una cuenta o espacio de trabajo, la búsqueda de datos y la presentación de acciones disponibles como herramientas. Algunos conectores solo buscan o leen. Otros también permiten escribir.
@@ -147,6 +162,30 @@ La [elicitación](https://modelcontextprotocol.io/specification/latest/client/el
 <Callout type="warning" title="Un formulario de un servidor sigue siendo una petición de un servidor">
 Una elicitación viene del servidor, no de tu aplicación, así que merece el mismo escrutinio que cualquier resultado de una herramienta. Lee lo que te pide antes de responder y nunca escribas una contraseña, una clave de API ni otro secreto en un formulario así, a menos que confíes en el servidor. Además, el soporte varía entre aplicaciones: VS Code [documenta su soporte de elicitación](https://code.visualstudio.com/api/extension-guides/ai/mcp), Cursor admite la elicitación y Claude Code ha incorporado [MCP Tasks y las elicitaciones](https://code.claude.com/docs/en/mcp) en beta pública en su aplicación de terminal, aunque todavía no en todos los entornos donde funciona. La [matriz oficial de compatibilidad de clientes](https://modelcontextprotocol.io/extensions/client-matrix) indica qué aplicaciones admiten qué extensiones, así que comprueba la tuya antes de depender de cualquiera de las dos funciones.
 </Callout>
+
+### Encontrar un servidor y conectarse una sola vez
+
+Antes de que un agente pueda usar un servidor remoto, alguien tiene que encontrarlo, averiguar cómo conectarse e iniciar sesión. Durante mucho tiempo eso significó copiar una URL de un README, adivinar qué transporte usar y repetir la configuración en cada aplicación. Ahora llegan dos tipos de ayuda: información que un cliente puede leer **antes** de conectarse y conexiones que configuras **una vez** y reutilizas.
+
+En el lado del descubrimiento, la extensión **Server Cards** de MCP ([SEP-2127](https://modelcontextprotocol.io/seps/2127-mcp-server-cards)) alcanzó su versión final el 6 de octubre de 2026. Describe un documento pequeño y estático sobre un servidor remoto: su nombre, sus endpoints y transportes, y las versiones del protocolo que admite. Un sitio web puede listar sus tarjetas en un catálogo de IA en `/.well-known/ai-catalog.json`, de modo que un cliente al que se le indica un dominio puede saber dónde y cómo conectarse sin configuración manual. La tarjeta deja fuera a propósito la lista de herramientas, porque las herramientas que ofrece un servidor pueden cambiar según el usuario que haya iniciado sesión. Esas se siguen obteniendo con `tools/list` después de conectarse.
+
+En el lado de la conexión, GitHub empezó a desplegar el 28 de octubre de 2026, en vista previa pública, los [servidores MCP verificados por GitHub](https://github.blog/changelog/2026-10-28-connect-your-tools-to-copilot-without-all-the-setup/), a los que también llama conectores. Inicias sesión una vez en un servicio como Slack o Sentry, y la conexión funciona en la aplicación de Copilot, en Copilot CLI, en VS Code, en Copilot en la nube y en GitHub Mobile.
+
+Además, las herramientas no son solo servicios web. Ese mismo día, en el Android Dev Summit, Google [anunció](https://developer.android.com/blog/posts/build-it-your-way-a-next-era-of-android-development) que **AppFunctions**, a la que describe como la capa unificada de llamadas a herramientas de Android, ya está en beta. A través de Android MCP, una aplicación de tu teléfono puede ofrecer funciones como crear una nota o enviar un mensaje a un agente propio en el dispositivo o a agentes del sistema, sin que nadie tenga que abrir la aplicación.
+
+Esto nos devuelve a una idea anterior: **conector** es un término de producto. Una tarjeta de servidor, una insignia de verificación y un único inicio de sesión facilitan la configuración y te ayudan a confiar en *con quién* te conectas. No deciden *qué* concedes. Sigues eligiendo tú qué cuenta conectar, qué permisos permitir y qué acciones deben esperar tu aprobación. Ni los metadatos de descubrimiento ni la verificación sustituyen a revisar lo que las herramientas pueden hacer realmente una vez que aparecen en la lista.
+
+<Quiz
+  question="Un servidor remoto publica una Server Card y aparece como conector verificado en tu aplicación. ¿Qué sigue siendo tarea tuya?"
+  options={[
+    "Nada. La verificación significa que todas las herramientas del servidor se pueden ejecutar sin riesgo",
+    "Elegir qué cuenta y qué permisos conceder, y revisar lo que pueden hacer las herramientas de la lista",
+    "Copiar en tu prompt la lista de herramientas de la Server Card",
+    "Escribir la dirección del endpoint del servidor en cada prompt"
+  ]}
+  correctIndex={1}
+  explanation="Los metadatos de descubrimiento y la verificación ayudan con la configuración y a saber quién gestiona el servidor. No eligen por ti la cuenta ni los ámbitos de acceso, y una Server Card ni siquiera enumera las herramientas. Revisa las herramientas después de conectarte y concede solo el acceso que la tarea necesita."
+/>
 
 ## Prueba una lectura y una escritura
 

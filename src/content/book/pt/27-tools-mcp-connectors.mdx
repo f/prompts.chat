@@ -72,6 +72,21 @@ O nome e o esquema não executam nada sozinhos. A implementação precisa valida
 “Vou criar uma issue” é uma afirmação. Uma chamada de ferramenta solicita a operação. Uma resposta bem-sucedida com o ID da nova issue é uma evidência de que ela aconteceu. Mantenha essas três coisas separadas.
 </Callout>
 
+### Uma ferramenta pode representar um fluxo de trabalho inteiro
+
+Até aqui, cada ferramenta foi uma única operação: pesquisar, criar, exportar. Mas o que existe por trás do nome de uma ferramenta pode ser bem maior. Pode ser um processo inteiro, escrito com antecedência e executado por um motor de fluxos de trabalho. O agente continua decidindo **quando** iniciá-lo e **quais dados** passar a ele. Todo o resto acontece exatamente como o processo define, na mesma ordem, todas as vezes.
+
+Pense em um reembolso. Um agente de suporte pode ser ótimo em entender um cliente irritado, mas você provavelmente não quer que ele improvise sua política de reembolso. Empacotado como uma única ferramenta, o fluxo de reembolso verifica primeiro se o pedido é elegível, depois pede a aprovação de um gestor e por fim credita o valor, seja qual for a conversa que o iniciou. Aprovações, implantações e outros processos em que os passos *são* a política se encaixam no mesmo formato. Motores de fluxos de trabalho costumam guardar o registro de cada execução, então o agente também pode consultar execuções anteriores e dizer quais falharam durante a noite e em qual passo, em vez de adivinhar.
+
+A AWS oferece um exemplo recente. Em 29 de outubro de 2026, ela [anunciou](https://aws.amazon.com/about-aws/whats-new/2026/10/step-functions-workflows-ai-agent-tools/) que fluxos de trabalho do Step Functions podem ser usados como ferramentas de agentes por meio do Amazon Bedrock AgentCore Gateway, que conecta agentes a ferramentas via MCP. A ideia não pertence a um único fornecedor: um pipeline de CI, um fluxo de aprovação em um sistema de chamados ou um script em que sua equipe já confia podem ser oferecidos a um agente da mesma forma.
+
+É uma questão de distribuir duas qualidades. O modelo é flexível: consegue ler uma situação incomum e escolher um próximo passo sensato. O fluxo de trabalho é previsível: a mesma entrada percorre os mesmos passos. Deixar o momento com o agente e os passos com o fluxo coloca cada qualidade no lugar certo. Isso também muda o prompt. Descreva o objetivo e quando chamar o fluxo, não os passos dentro dele. Repetir os passos cria uma segunda cópia da política, que pode se afastar da verdadeira e que o modelo pode tentar seguir por conta própria.
+
+<Compare
+  before={{ label: "Descrever o fluxo de novo", content: "Para reembolsar um cliente, primeiro verifique se o pedido tem menos de 30 dias, depois pergunte a um gestor, em seguida credite o valor e por fim envie um e-mail ao cliente." }}
+  after={{ label: "Descrever o objetivo e o gatilho", content: "Ajude os clientes a resolver problemas de cobrança. Quando um cliente pedir reembolso e você tiver o número do pedido, chame o fluxo de reembolso com esse número e o motivo. Informe o resultado que ele devolver. Não prometa um reembolso antes que o fluxo o confirme." }}
+/>
+
 ## O que um conector acrescenta
 
 Um conector reúne a integração com um sistema específico. Ele pode cuidar do login, da seleção de uma conta ou espaço de trabalho, da busca de dados e da disponibilização das ações suportadas como ferramentas. Alguns conectores apenas pesquisam ou leem. Outros também permitem gravar dados.
@@ -147,6 +162,30 @@ A [elicitação](https://modelcontextprotocol.io/specification/latest/client/eli
 <Callout type="warning" title="Um formulário de um servidor continua sendo um pedido do servidor">
 Uma elicitação vem do servidor, não da sua aplicação, então merece o mesmo escrutínio que qualquer saída de ferramenta. Leia o que está sendo pedido antes de responder e nunca digite uma senha, uma chave de API ou outro segredo em um formulário assim, a menos que confie no servidor. O suporte também varia entre aplicações: o VS Code [documenta o suporte à elicitação](https://code.visualstudio.com/api/extension-guides/ai/mcp), o Cursor oferece suporte à elicitação e o Claude Code adicionou [MCP Tasks e elicitações](https://code.claude.com/docs/en/mcp) em beta pública no seu aplicativo de terminal, mas ainda não em todos os ambientes em que roda. A [matriz oficial de suporte dos clientes](https://modelcontextprotocol.io/extensions/client-matrix) mostra quais aplicações suportam quais extensões, então verifique a sua antes de contar com qualquer um desses recursos.
 </Callout>
+
+### Encontrar um servidor e conectar só uma vez
+
+Antes que um agente possa usar um servidor remoto, alguém precisa encontrá-lo, descobrir como se conectar e fazer login. Por muito tempo, isso significou copiar uma URL de um README, adivinhar qual transporte usar e repetir a configuração em cada aplicação. Agora chegam dois tipos de ajuda: informações que um cliente pode ler **antes** de se conectar e conexões que você configura **uma vez** e reaproveita.
+
+No lado da descoberta, a extensão **Server Cards** do MCP ([SEP-2127](https://modelcontextprotocol.io/seps/2127-mcp-server-cards)) foi finalizada em 6 de outubro de 2026. Ela descreve um documento pequeno e estático sobre um servidor remoto: seu nome, seus endpoints e transportes e as versões do protocolo que ele suporta. Um site pode listar seus cartões em um catálogo de IA em `/.well-known/ai-catalog.json`, de modo que um cliente apontado para um domínio descobre onde e como se conectar sem configuração manual. O cartão deixa de fora, de propósito, a lista de ferramentas, porque as ferramentas que um servidor oferece podem mudar conforme o usuário conectado. Elas continuam vindo de `tools/list` depois da conexão.
+
+No lado da conexão, o GitHub começou a liberar em 28 de outubro de 2026, em prévia pública, os [servidores MCP verificados pelo GitHub](https://github.blog/changelog/2026-10-28-connect-your-tools-to-copilot-without-all-the-setup/), que ele também chama de conectores. Você faz login uma vez em um serviço como Slack ou Sentry, e a conexão funciona no app do Copilot, no Copilot CLI, no VS Code, no Copilot na nuvem e no GitHub Mobile.
+
+E ferramentas não são só serviços web. No mesmo dia, no Android Dev Summit, o Google [anunciou](https://developer.android.com/blog/posts/build-it-your-way-a-next-era-of-android-development) que o **AppFunctions**, que ele descreve como a camada unificada de chamada de ferramentas do Android, está em beta. Por meio do Android MCP, um app no seu celular pode oferecer funções como criar uma nota ou enviar uma mensagem a um agente próprio no dispositivo ou a agentes do sistema, sem que ninguém precise abrir o app.
+
+Isso nos leva de volta a um ponto anterior: **conector** é um termo de produto. Um cartão de servidor, um selo de verificação e um login único facilitam a configuração e ajudam você a confiar em *com quem* está se conectando. Eles não decidem *o que* você concede. Você continua escolhendo qual conta conectar, quais permissões permitir e quais ações devem esperar aprovação. Nem os metadados de descoberta nem a verificação substituem a análise do que as ferramentas realmente podem fazer depois que aparecem na lista.
+
+<Quiz
+  question="Um servidor remoto publica um Server Card e aparece como conector verificado na sua aplicação. O que continua sendo tarefa sua?"
+  options={[
+    "Nada. A verificação significa que todas as ferramentas do servidor podem ser executadas sem risco",
+    "Escolher qual conta e quais permissões conceder, e analisar o que as ferramentas listadas podem fazer",
+    "Copiar para o seu prompt a lista de ferramentas do Server Card",
+    "Digitar o endereço do endpoint do servidor em cada prompt"
+  ]}
+  correctIndex={1}
+  explanation="Metadados de descoberta e verificação ajudam na configuração e a saber quem opera o servidor. Eles não escolhem por você a conta nem os escopos de acesso, e um Server Card nem sequer lista as ferramentas. Analise as ferramentas depois de se conectar e conceda apenas o acesso de que a tarefa precisa."
+/>
 
 ## Experimente uma leitura e uma escrita
 

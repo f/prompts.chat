@@ -72,6 +72,21 @@ Il nome e lo schema non eseguono nulla da soli. L'implementazione deve convalida
 «Creerò una issue» è un'affermazione. Una chiamata a uno strumento richiede l'operazione. Una risposta riuscita con l'ID della nuova issue è una prova che l'operazione è avvenuta. Tieni separate queste tre cose.
 </Callout>
 
+### Uno strumento può rappresentare un intero workflow
+
+Finora ogni strumento è stato una singola operazione: cercare, creare, esportare. Ma dietro il nome di uno strumento può esserci molto di più: un intero processo, scritto in anticipo ed eseguito da un motore di workflow. L'agente continua a decidere **quando** avviarlo e **quali dati** passargli. Tutto il resto procede esattamente come il processo stabilisce, nello stesso ordine, ogni volta.
+
+Pensa a un rimborso. Un agente di assistenza può essere bravissimo a capire un cliente arrabbiato, ma probabilmente non vuoi che improvvisi la tua politica sui rimborsi. Racchiuso in un unico strumento, il workflow di rimborso verifica prima che la richiesta sia ammissibile, poi chiede l'approvazione di un responsabile e infine accredita l'importo, qualunque sia la conversazione che l'ha avviato. Approvazioni, deployment e altri processi in cui i passaggi *sono* la politica hanno la stessa forma. I motori di workflow di solito tengono traccia di ogni esecuzione, quindi l'agente può anche consultare le esecuzioni passate e dirti quali sono fallite durante la notte e a quale passaggio, invece di tirare a indovinare.
+
+AWS ne offre un esempio recente. Il 29 ottobre 2026 ha [annunciato](https://aws.amazon.com/about-aws/whats-new/2026/10/step-functions-workflows-ai-agent-tools/) che i workflow di Step Functions possono essere usati come strumenti per agenti tramite Amazon Bedrock AgentCore Gateway, che collega gli agenti agli strumenti attraverso MCP. L'idea non appartiene a un solo fornitore: una pipeline di CI, un flusso di approvazione in un sistema di ticket o uno script di cui il tuo team si fida già possono essere offerti a un agente nello stesso modo.
+
+Si tratta di distribuire due punti di forza. Il modello è flessibile: sa leggere una situazione insolita e scegliere un passo successivo sensato. Il workflow è prevedibile: lo stesso input attraversa gli stessi passaggi. Lasciare il momento all'agente e i passaggi al workflow mette ogni punto di forza al suo posto. Questo cambia anche il prompt. Descrivi l'obiettivo e quando chiamare il workflow, non i passaggi che contiene. Ripetere i passaggi crea una seconda copia della politica, che può allontanarsi da quella vera e che il modello potrebbe provare a seguire da solo, a mano.
+
+<Compare
+  before={{ label: "Descrivere di nuovo il workflow", content: "Per rimborsare un cliente, controlla prima che l'ordine abbia meno di 30 giorni, poi chiedi a un responsabile, quindi accredita l'importo e infine manda un'email al cliente." }}
+  after={{ label: "Descrivere l'obiettivo e il momento giusto", content: "Aiuta i clienti a risolvere i problemi di fatturazione. Quando un cliente chiede un rimborso e hai il numero d'ordine, chiama il workflow di rimborso con quel numero e il motivo. Riporta il risultato che restituisce. Non promettere un rimborso prima che il workflow lo confermi." }}
+/>
+
 ## Cosa aggiunge un connettore
 
 Un connettore raccoglie l'integrazione con un sistema specifico. Può gestire l'accesso, la scelta di un account o di uno spazio di lavoro, la ricerca di dati e la disponibilità delle azioni supportate come strumenti. Alcuni connettori consentono solo di cercare o leggere. Altri supportano anche la scrittura.
@@ -147,6 +162,30 @@ L'[elicitation](https://modelcontextprotocol.io/specification/latest/client/elic
 <Callout type="warning" title="Un modulo inviato da un server resta una richiesta del server">
 Un'elicitation arriva dal server, non dalla tua applicazione, quindi merita lo stesso esame di qualsiasi output di uno strumento. Leggi cosa ti viene chiesto prima di rispondere e non inserire mai una password, una chiave API o un altro segreto in un modulo del genere, a meno che tu non ti fidi del server. Anche il supporto cambia da un'applicazione all'altra: VS Code [documenta il supporto all'elicitation](https://code.visualstudio.com/api/extension-guides/ai/mcp), Cursor supporta l'elicitation e Claude Code ha aggiunto [MCP Tasks e le elicitation](https://code.claude.com/docs/en/mcp) in beta pubblica nella sua app da terminale, anche se non ancora in tutti gli ambienti in cui funziona. La [matrice ufficiale di supporto dei client](https://modelcontextprotocol.io/extensions/client-matrix) indica quali applicazioni supportano quali estensioni, quindi controlla la tua prima di fare affidamento su una delle due funzionalità.
 </Callout>
+
+### Trovare un server e collegarsi una volta sola
+
+Prima che un agente possa usare un server remoto, qualcuno deve trovarlo, capire come collegarsi ed effettuare l'accesso. Per molto tempo questo ha voluto dire copiare un URL da un README, indovinare quale trasporto usare e ripetere la configurazione in ogni applicazione. Ora arrivano due tipi di aiuto: informazioni che un client può leggere **prima** di collegarsi e connessioni che configuri **una volta** e poi riusi.
+
+Sul fronte della scoperta, l'estensione **Server Cards** di MCP ([SEP-2127](https://modelcontextprotocol.io/seps/2127-mcp-server-cards)) è diventata definitiva il 6 ottobre 2026. Descrive un piccolo documento statico su un server remoto: il suo nome, gli endpoint e i trasporti, le versioni del protocollo che supporta. Un sito può elencare le sue schede in un catalogo IA all'indirizzo `/.well-known/ai-catalog.json`, così un client a cui si indica un dominio può scoprire dove e come collegarsi senza configurazione manuale. La scheda lascia fuori di proposito l'elenco degli strumenti, perché gli strumenti offerti da un server possono cambiare a seconda dell'utente che ha effettuato l'accesso. Quelli si ottengono ancora con `tools/list` dopo il collegamento.
+
+Sul fronte della connessione, il 28 ottobre 2026 GitHub ha iniziato a distribuire in anteprima pubblica i [server MCP verificati da GitHub](https://github.blog/changelog/2026-10-28-connect-your-tools-to-copilot-without-all-the-setup/), che chiama anche connettori. Accedi una volta a un servizio come Slack o Sentry, e la connessione funziona nell'app Copilot, in Copilot CLI, in VS Code, in Copilot nel cloud e in GitHub Mobile.
+
+E gli strumenti non sono solo servizi web. Lo stesso giorno, all'Android Dev Summit, Google ha [annunciato](https://developer.android.com/blog/posts/build-it-your-way-a-next-era-of-android-development) che **AppFunctions**, che descrive come il livello unificato di Android per le chiamate agli strumenti, è ora in beta. Tramite Android MCP, un'app sul tuo telefono può offrire funzioni come creare una nota o inviare un messaggio a un proprio agente sul dispositivo o ad agenti di sistema, senza che nessuno debba aprire l'app.
+
+Questo ci riporta a un punto visto prima: **connettore** è un termine di prodotto. Una scheda del server, un badge di verifica e un accesso unico rendono più semplice la configurazione e ti aiutano a fidarti di *chi* c'è dall'altra parte. Non decidono *cosa* concedi. Sei sempre tu a scegliere quale account collegare, quali permessi consentire e quali azioni devono attendere un'approvazione. Né i metadati di scoperta né la verifica sostituiscono il controllo di ciò che gli strumenti possono fare davvero, una volta elencati.
+
+<Quiz
+  question="Un server remoto pubblica una Server Card e compare come connettore verificato nella tua applicazione. Cosa resta comunque compito tuo?"
+  options={[
+    "Niente. La verifica significa che ogni strumento del server si può eseguire senza rischi",
+    "Scegliere quale account e quali permessi concedere, e controllare cosa possono fare gli strumenti elencati",
+    "Copiare nel prompt l'elenco degli strumenti dalla Server Card",
+    "Scrivere l'indirizzo dell'endpoint del server in ogni prompt"
+  ]}
+  correctIndex={1}
+  explanation="I metadati di scoperta e la verifica aiutano nella configurazione e a sapere chi gestisce il server. Non scelgono al posto tuo l'account o gli ambiti di accesso, e una Server Card non elenca nemmeno gli strumenti. Controlla gli strumenti dopo il collegamento e concedi solo l'accesso di cui il compito ha bisogno."
+/>
 
 ## Prova una lettura e una scrittura
 
