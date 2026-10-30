@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { buildPageMetadata } from "@/lib/seo";
-import { Code, Zap, Terminal, Search, Box, Key, Save, Sparkles, Cpu, FilePlus, FileX } from "lucide-react";
+import { Code, Zap, Terminal, Search, Box, Key, Save, Sparkles, Cpu, FilePlus, FileX, Bot, List } from "lucide-react";
 import { ImprovePromptDemo } from "@/components/api/improve-prompt-demo";
 import {
   Table,
@@ -141,7 +141,8 @@ curl -X POST ${baseUrl}/api/mcp \\
               <p className="text-muted-foreground text-sm">
                 <strong>Remote (HTTP)</strong> sends requests to prompts.chat with the API key in headers. 
                 <strong> Local (stdio)</strong> runs the MCP server locally via npx with the API key as an environment variable.
-                With authentication, you can use the <code className="bg-muted px-1.5 py-0.5 rounded">save_prompt</code> tool 
+                With authentication, you can use the <code className="bg-muted px-1.5 py-0.5 rounded">save_prompt</code> and{" "}
+                <code className="bg-muted px-1.5 py-0.5 rounded">save_bot</code> tools
                 and search results will include your private prompts.
               </p>
             </section>
@@ -715,6 +716,237 @@ curl -X POST ${baseUrl}/api/mcp \\
       }
     }
   }'`}</pre>
+            </div>
+          </div>
+
+          {/* save_bot Tool */}
+          <div className="space-y-4">
+            <h3 className="font-medium flex items-center gap-2">
+              <Bot className="h-4 w-4" />
+              save_bot
+              <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">Requires Auth</span>
+            </h3>
+            <p className="text-muted-foreground">
+              Create or update one of your own <Link href="/bots" className="underline hover:text-foreground">bots</Link>,
+              so an agent connected over MCP can back up its own definition. It is an idempotent upsert: it updates your bot
+              matching <code className="text-xs">id</code>, else <code className="text-xs">slug</code>, else <code className="text-xs">name</code>{" "}
+              (case-insensitive), and only creates a bot when none matches. Sending the same definition again changes nothing.
+              On update, omitted optional fields keep their stored values. Bots go through the same validation, limits and
+              moderation as the bot form, and new bots are private by default unless your settings say otherwise.
+            </p>
+
+            <div className="border rounded-lg overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[140px]">Parameter</TableHead>
+                    <TableHead className="w-[100px]">Type</TableHead>
+                    <TableHead className="w-[80px]">Required</TableHead>
+                    <TableHead>Description</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">name</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string</TableCell>
+                    <TableCell className="text-xs">Yes</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Bot name (max 200 chars)</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">instructions</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string</TableCell>
+                    <TableCell className="text-xs">Yes</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">The bot&apos;s standing instructions (its system prompt)</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">platforms</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string[]</TableCell>
+                    <TableCell className="text-xs">Yes</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">One or more of <code className="text-xs">GROK_BOT</code>, <code className="text-xs">OPENCLAW</code>, <code className="text-xs">HERMES</code>, <code className="text-xs">AUTOGPT</code>, <code className="text-xs">DOTS</code>, <code className="text-xs">DUET</code>, <code className="text-xs">MUSE</code></TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">id</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Update this bot; it must be one of yours</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">slug</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Match your existing bot by slug (falls back to matching by name)</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">description</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Short summary (max 500 chars)</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">icon / color</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string | null</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">A preset icon and color from the bot form; null resets to the default</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">installUrl</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string | null</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">https one-click install link (Grok Bot template link)</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">routines</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">array</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">{`{name, type: "schedule" | "event", trigger, triggerLabel?, prompt}`} (max 20, replaces all)</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">skills</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">array</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">{`{name, description?, source?}`} (max 20, replaces all)</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">connectors</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string[]</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Connectors the user must connect, e.g. Gmail (max 20, replaces all)</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">category</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string | null</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Category slug; null removes it</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">tags</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string[]</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Tag names (max 10, replaces all)</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">isPrivate</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">boolean</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Override the default privacy setting (applies on create; on update only when given)</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+
+            <div className="bg-muted rounded-lg p-4 font-mono text-sm overflow-x-auto">
+              <pre>{`# Back up a bot via MCP (run it again any time to sync changes)
+curl -X POST ${baseUrl}/api/mcp \\
+  -H "Content-Type: application/json" \\
+  -H "Accept: application/json, text/event-stream" \\
+  -H "PROMPTS_API_KEY: pchat_your_api_key_here" \\
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "tools/call",
+    "params": {
+      "name": "save_bot",
+      "arguments": {
+        "name": "Inbox Triage",
+        "description": "Sorts my inbox every morning",
+        "instructions": "You triage my email. Label, archive and summarize...",
+        "platforms": ["OPENCLAW", "HERMES"],
+        "icon": "inbox",
+        "color": "sky",
+        "routines": [{
+          "name": "Morning triage",
+          "type": "schedule",
+          "trigger": "0 8 * * *",
+          "triggerLabel": "Every day at 08:00",
+          "prompt": "Triage unread email and send me a summary."
+        }],
+        "connectors": ["Gmail"],
+        "tags": ["email"]
+      }
+    }
+  }'
+
+# Result: {"success": true, "action": "created" | "updated" | "unchanged",
+#          "changedFields": [...], "bot": {"id": "...", "slug": "inbox-triage", ...}, "link": ...}`}</pre>
+            </div>
+          </div>
+
+          {/* list_my_bots Tool */}
+          <div className="space-y-4">
+            <h3 className="font-medium flex items-center gap-2">
+              <List className="h-4 w-4" />
+              list_my_bots
+              <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">Requires Auth</span>
+            </h3>
+            <p className="text-muted-foreground">
+              List your own bots, including private ones, newest first, with their ids and slugs.
+            </p>
+
+            <div className="border rounded-lg overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[140px]">Parameter</TableHead>
+                    <TableHead className="w-[100px]">Type</TableHead>
+                    <TableHead className="w-[80px]">Required</TableHead>
+                    <TableHead>Description</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">limit</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">number</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Maximum bots to return (default 50, max 100)</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">offset</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">number</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Bots to skip, for paging</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* get_my_bot Tool */}
+          <div className="space-y-4">
+            <h3 className="font-medium flex items-center gap-2">
+              <Bot className="h-4 w-4" />
+              get_my_bot
+              <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">Requires Auth</span>
+            </h3>
+            <p className="text-muted-foreground">
+              Get the full definition of one of your bots (instructions, platforms, routines, skills, connectors and
+              install options), including private ones, for example to restore a bot from its backup.
+            </p>
+
+            <div className="border rounded-lg overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[140px]">Parameter</TableHead>
+                    <TableHead className="w-[100px]">Type</TableHead>
+                    <TableHead className="w-[80px]">Required</TableHead>
+                    <TableHead>Description</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">id</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string</TableCell>
+                    <TableCell className="text-xs">One of</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Bot id</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">slug</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string</TableCell>
+                    <TableCell className="text-xs">One of</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Bot slug, used when no id is given</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
             </div>
           </div>
         </section>

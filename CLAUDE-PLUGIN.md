@@ -83,6 +83,14 @@ The plugin provides these tools via the prompts.chat MCP server:
 | `update_skill_file` | Update a file in a skill |
 | `remove_file_from_skill` | Remove a file from a skill |
 
+### Bot Tools
+
+| Tool | Description |
+|------|-------------|
+| `save_bot` | Create or update one of your bots (idempotent upsert by id, slug or name; requires API key) |
+| `list_my_bots` | List your own bots, including private ones (requires API key) |
+| `get_my_bot` | Get the full definition of one of your bots (requires API key) |
+
 ## Agents
 
 ### Prompt Manager
