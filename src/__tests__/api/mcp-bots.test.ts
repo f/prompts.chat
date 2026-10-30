@@ -3,7 +3,8 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { db } from "@/lib/db";
 import { createPrompt, updatePrompt, promptCreateSchema } from "@/lib/prompt-write";
-import { createServer } from "@/pages/api/mcp";
+import { isAISearchEnabled, semanticSearch } from "@/lib/ai/embeddings";
+import { createMcpServer } from "@/lib/mcp/server";
 
 vi.mock("@/lib/db", () => ({
   db: {
@@ -11,8 +12,11 @@ vi.mock("@/lib/db", () => ({
     prompt: { findMany: vi.fn(), findFirst: vi.fn(), findUniqueOrThrow: vi.fn(), count: vi.fn() },
     tag: { findUnique: vi.fn(), create: vi.fn() },
     category: { findUnique: vi.fn() },
+    botPairing: { findMany: vi.fn().mockResolvedValue([]) },
   },
 }));
+
+vi.mock("@/lib/ai/embeddings", () => ({ isAISearchEnabled: vi.fn(), semanticSearch: vi.fn() }));
 
 vi.mock("@/lib/prompt-write", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/prompt-write")>();
@@ -65,7 +69,7 @@ function botRecord(overrides: Record<string, unknown> = {}) {
 let client: Client;
 
 async function connect(authenticatedUser: typeof alice | null) {
-  const server = createServer({ authenticatedUser });
+  const server = createMcpServer({ user: authenticatedUser, filters: {}, baseUrl: "https://prompts.chat" });
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
   client = new Client({ name: "test-bot", version: "1.0.0" });
   await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
@@ -78,7 +82,10 @@ async function callTool(name: string, args: Record<string, unknown>) {
 }
 
 describe("MCP bot tools", () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(db.botPairing.findMany).mockResolvedValue([]);
+  });
   afterEach(async () => client?.close());
 
   it("lists the bot tools", async () => {
@@ -279,6 +286,117 @@ describe("MCP bot tools", () => {
       const { isError, data } = await callTool("get_my_bot", { id: "bot-2" });
       expect(isError).toBe(true);
       expect(data.error).toMatch(/not found/);
+    });
+  });
+
+  describe("search_bots", () => {
+    it("filters public bots by platform, category and tags, and pages with a cursor", async () => {
+      vi.mocked(db.prompt.findMany).mockResolvedValue([botRecord({ isPrivate: false })] as never);
+      vi.mocked(db.prompt.count).mockResolvedValue(3);
+      await connect(null);
+
+      const first = await client.callTool({
+        name: "search_bots",
+        arguments: { query: "inbox", platform: "OPENCLAW", category: "productivity", tags: ["email"], limit: 1 },
+      });
+
+      const args = vi.mocked(db.prompt.findMany).mock.calls[0][0];
+      expect(args).toMatchObject({
+        skip: 0,
+        take: 1,
+        where: {
+          type: "BOT",
+          isPrivate: false,
+          isUnlisted: false,
+          deletedAt: null,
+          botPlatforms: { has: "OPENCLAW" },
+          category: { OR: [{ slug: "productivity" }, { parent: { slug: "productivity" } }] },
+          AND: [{ tags: { some: { tag: { slug: "email" } } } }],
+        },
+      });
+      const data = first.structuredContent as { searchMode: string; total: number; bots: unknown[]; nextCursor: string };
+      expect(data).toMatchObject({
+        searchMode: "keyword",
+        total: 3,
+        count: 1,
+        bots: [{ id: "bot-1", name: "Inbox Triage", platforms: ["OPENCLAW"], platformNames: ["OpenClaw"], author: "Alice", link: "https://prompts.chat/bots/bot-1_inbox-triage" }],
+      });
+      expect(first.content).toContainEqual(expect.objectContaining({ type: "resource_link", uri: "prompts-chat://bots/bot-1" }));
+
+      await client.callTool({ name: "search_bots", arguments: { query: "inbox", limit: 1, cursor: data.nextCursor } });
+      expect(vi.mocked(db.prompt.findMany).mock.calls[1][0]).toMatchObject({ skip: 1, take: 1 });
+    });
+
+    it("falls back to keyword search when AI search is off", async () => {
+      vi.mocked(isAISearchEnabled).mockResolvedValue(false);
+      vi.mocked(db.prompt.findMany).mockResolvedValue([]);
+      vi.mocked(db.prompt.count).mockResolvedValue(0);
+      await connect(null);
+
+      const { data } = await callTool("search_bots", { query: "triage", semantic: true });
+
+      expect(data).toMatchObject({ searchMode: "keyword", count: 0, notice: expect.stringMatching(/not enabled/) });
+      expect(semanticSearch).not.toHaveBeenCalled();
+    });
+
+    it("ranks by embeddings when semantic search is available", async () => {
+      vi.mocked(isAISearchEnabled).mockResolvedValue(true);
+      vi.mocked(semanticSearch).mockResolvedValue([{ id: "bot-2" }, { id: "bot-1" }] as never);
+      vi.mocked(db.prompt.findMany).mockResolvedValue([botRecord({ isPrivate: false }), botRecord({ id: "bot-2", title: "Second", isPrivate: false })] as never);
+      await connect(null);
+
+      const { data } = await callTool("search_bots", { query: "triage", semantic: true, platform: "MUSE", limit: 1 });
+
+      expect(vi.mocked(semanticSearch).mock.calls[0]).toEqual([
+        "triage",
+        2,
+        { where: { type: "BOT", isPrivate: false, isUnlisted: false, deletedAt: null, botPlatforms: { has: "MUSE" } } },
+      ]);
+      expect(data).toMatchObject({ searchMode: "semantic", count: 1, bots: [{ id: "bot-2" }], nextCursor: expect.any(String) });
+    });
+  });
+
+  describe("get_bot", () => {
+    it("returns a public bot with install options and pairings, without owner fields", async () => {
+      vi.mocked(db.prompt.findFirst).mockResolvedValue(
+        botRecord({ isPrivate: false, authorId: "user-2", botPlatforms: ["GROK_BOT", "HERMES"], installUrl: "https://grok.com/t/1" }) as never
+      );
+      await connect(null);
+
+      const result = await client.callTool({ name: "get_bot", arguments: { id: "bot-1_inbox-triage" } });
+
+      expect(vi.mocked(db.prompt.findFirst).mock.calls[0][0]?.where).toEqual({ type: "BOT", deletedAt: null, OR: [{ isPrivate: false }], id: "bot-1" });
+      const data = result.structuredContent as Record<string, unknown>;
+      expect(data).toMatchObject({
+        id: "bot-1",
+        install: [
+          { platform: "GROK_BOT", installUrl: "https://grok.com/t/1", command: null },
+          { platform: "HERMES", installUrl: null, command: "hermes skills install https://prompts.chat/bots/bot-1_inbox-triage/SKILL.md" },
+        ],
+        betterTogetherWith: [],
+      });
+      expect(data).not.toHaveProperty("isPrivate");
+    });
+
+    it("lets the owner see a private bot by slug", async () => {
+      vi.mocked(db.prompt.findFirst).mockResolvedValue(botRecord() as never);
+      await connect(alice);
+
+      const { data } = await callTool("get_bot", { slug: "inbox-triage" });
+
+      expect(vi.mocked(db.prompt.findFirst).mock.calls[0][0]?.where).toMatchObject({
+        OR: [{ isPrivate: false }, { authorId: "user-1" }],
+        slug: "inbox-triage",
+      });
+      expect(data).toMatchObject({ id: "bot-1", isPrivate: true });
+    });
+
+    it("reports a missing bot as a tool error", async () => {
+      vi.mocked(db.prompt.findFirst).mockResolvedValue(null);
+      await connect(null);
+      const { isError, data } = await callTool("get_bot", { id: "nope" });
+      expect(isError).toBe(true);
+      expect(data).toEqual({ error: "Bot not found", code: "not_found" });
     });
   });
 });
