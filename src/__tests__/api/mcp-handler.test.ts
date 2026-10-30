@@ -24,6 +24,10 @@ vi.mock("@/../prompts.config", () => ({
   },
 }));
 
+vi.mock("@/lib/seo", () => ({
+  getBaseUrl: () => "https://prompts.chat",
+}));
+
 vi.mock("@/lib/api-key", () => ({
   isValidApiKeyFormat: vi.fn().mockReturnValue(false),
 }));

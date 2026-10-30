@@ -13,6 +13,9 @@ import { isValidApiKeyFormat } from "@/lib/api-key";
 import { parseSkillFiles, serializeSkillFiles, sanitizeFilename, DEFAULT_SKILL_FILE } from "@/lib/skill-files";
 import appConfig from "@/../prompts.config";
 import { NON_BOT_PROMPTS, promptListTypeWhere } from "@/lib/prompt-list";
+import { BOT_COLORS, BOT_ICONS, BOT_PLATFORMS, botRoutineSchema, botSkillSchema, botToJson, getBotUrls, listBotsByAuthor, type BotView } from "@/lib/bots";
+import { findOwnBot, upsertOwnBot } from "@/lib/bots/upsert";
+import { getBaseUrl } from "@/lib/seo";
 import {
   mcpGeneralLimiter,
   mcpToolCallLimiter,
@@ -23,6 +26,7 @@ import {
 interface AuthenticatedUser {
   id: string;
   username: string;
+  role: string;
   mcpPromptsPublicByDefault: boolean;
 }
 
@@ -45,6 +49,7 @@ async function authenticateApiKey(apiKey: string | null): Promise<AuthenticatedU
     select: {
       id: true,
       username: true,
+      role: true,
       mcpPromptsPublicByDefault: true,
     },
   });
@@ -76,6 +81,43 @@ function getPromptName(prompt: { id: string; slug?: string | null; title: string
   const titleSlug = slugify(prompt.title);
   if (titleSlug) return titleSlug;
   return prompt.id;
+}
+
+/** Finds tags by the slug of each name, creating missing ones; returns ids in input order without duplicates */
+async function findOrCreateTagIds(tagNames: string[]): Promise<string[]> {
+  const ids: string[] = [];
+  for (const tagName of tagNames) {
+    const tagSlug = slugify(tagName);
+    if (!tagSlug) continue;
+
+    let tag = await db.tag.findUnique({ where: { slug: tagSlug } });
+    if (!tag) {
+      tag = await db.tag.create({
+        data: { name: tagName, slug: tagSlug },
+      });
+    }
+    if (!ids.includes(tag.id)) ids.push(tag.id);
+  }
+  return ids;
+}
+
+function jsonToolResult(data: unknown, isError = false) {
+  return {
+    content: [{ type: "text" as const, text: JSON.stringify(data) }],
+    ...(isError && { isError: true }),
+  };
+}
+
+const AUTH_REQUIRED_RESULT = jsonToolResult({ error: "Authentication required. Please provide an API key." }, true);
+
+/** A bot as returned to its owner: the public JSON plus visibility fields only the owner sees */
+function ownBotJson(bot: BotView) {
+  return {
+    ...botToJson(bot, getBaseUrl()),
+    isPrivate: bot.isPrivate,
+    isUnlisted: bot.isUnlisted,
+    delistReason: bot.delistReason,
+  };
 }
 
 function extractVariables(content: string): ExtractedVariable[] {
@@ -110,7 +152,7 @@ interface ServerOptions {
   authenticatedUser?: AuthenticatedUser | null;
 }
 
-function createServer(options: ServerOptions = {}) {
+export function createServer(options: ServerOptions = {}) {
   const server = new McpServer(
     {
       name: "prompts-chat",
@@ -607,25 +649,7 @@ function createServer(options: ServerOptions = {}) {
         // Determine privacy setting
         const shouldBePrivate = isPrivate !== undefined ? isPrivate : !authenticatedUser.mcpPromptsPublicByDefault;
 
-        // Find or create tags
-        const tagConnections: { tag: { connect: { id: string } } }[] = [];
-        if (tags && tags.length > 0) {
-          for (const tagName of tags) {
-            const tagSlug = slugify(tagName);
-            if (!tagSlug) continue;
-            
-            let tag = await db.tag.findUnique({ where: { slug: tagSlug } });
-            if (!tag) {
-              tag = await db.tag.create({
-                data: {
-                  name: tagName,
-                  slug: tagSlug,
-                },
-              });
-            }
-            tagConnections.push({ tag: { connect: { id: tag.id } } });
-          }
-        }
+        const tagConnections = (await findOrCreateTagIds(tags ?? [])).map((id) => ({ tag: { connect: { id } } }));
 
         // Find category if provided
         let categoryId: string | undefined;
@@ -793,22 +817,7 @@ function createServer(options: ServerOptions = {}) {
         // Determine privacy setting
         const shouldBePrivate = isPrivate !== undefined ? isPrivate : !authenticatedUser.mcpPromptsPublicByDefault;
 
-        // Find or create tags
-        const tagConnections: { tag: { connect: { id: string } } }[] = [];
-        if (tags && tags.length > 0) {
-          for (const tagName of tags) {
-            const tagSlug = slugify(tagName);
-            if (!tagSlug) continue;
-            
-            let tag = await db.tag.findUnique({ where: { slug: tagSlug } });
-            if (!tag) {
-              tag = await db.tag.create({
-                data: { name: tagName, slug: tagSlug },
-              });
-            }
-            tagConnections.push({ tag: { connect: { id: tag.id } } });
-          }
-        }
+        const tagConnections = (await findOrCreateTagIds(tags ?? [])).map((id) => ({ tag: { connect: { id } } }));
 
         // Find category if provided
         let categoryId: string | undefined;
@@ -1351,6 +1360,166 @@ function createServer(options: ServerOptions = {}) {
     }
   );
 
+  server.registerTool(
+    "save_bot",
+    {
+      title: "Save Bot",
+      description:
+        "Create or update one of your own bots in the prompts.chat bots directory (/bots), e.g. so an agent can back up its own definition. " +
+        "Idempotent upsert: updates your bot matching `id`, else `slug`, else `name` (case-insensitive), and creates a new bot only when none matches. " +
+        "Calling it again with the same definition changes nothing (action \"unchanged\"). On update, omitted optional fields keep their stored values and null clears them. " +
+        "Uses the same validation, limits and moderation as the bot form on the website; new bots are private by default unless configured otherwise in settings. " +
+        "Returns the action taken (created, updated or unchanged), the changed fields, and the saved bot with its id and slug: store the id to target this bot in later calls. Requires API key authentication.",
+      inputSchema: {
+        id: z.string().optional().describe("Id of your existing bot to update. Fails if it is not one of your bots."),
+        slug: z.string().optional().describe("Slug of your existing bot to update, as returned by save_bot or list_my_bots. Falls back to matching by name."),
+        name: z.string().trim().min(1).max(200).describe("Bot name"),
+        description: z.string().trim().max(500).optional().describe("Short summary of what the bot does"),
+        instructions: z.string().trim().min(1).describe("The bot's standing instructions (its system prompt)"),
+        platforms: z.array(z.enum(BOT_PLATFORMS)).min(1).describe("Agent platforms the bot runs on"),
+        icon: z.enum(BOT_ICONS).nullable().optional().describe("Preset icon; null for the default"),
+        color: z.enum(BOT_COLORS).nullable().optional().describe("Preset color; null for the neutral default"),
+        installUrl: z.string().nullable().optional().describe("https link that installs the bot in one click (Grok Bot template link)"),
+        routines: z
+          .array(botRoutineSchema.extend({ triggerLabel: botRoutineSchema.shape.triggerLabel.default("") }))
+          .max(20)
+          .optional()
+          .describe("Routines: type \"schedule\" with a cron trigger, or \"event\" with a plain-language trigger, plus a self-contained task prompt. Replaces all routines."),
+        skills: z
+          .array(botSkillSchema.extend({
+            description: botSkillSchema.shape.description.default(""),
+            source: botSkillSchema.shape.source.default(""),
+          }))
+          .max(20)
+          .optional()
+          .describe("Skills the bot uses; source is a platform install ref or SKILL.md URL. Replaces all skills."),
+        connectors: z.array(z.string().trim().min(1).max(50)).max(20).optional().describe("Connectors the user must connect, e.g. \"Gmail\". Replaces all connectors."),
+        category: z.string().nullable().optional().describe("Category slug; null removes the category"),
+        tags: z.array(z.string()).max(10).optional().describe("Tag names (created if they don't exist). Replaces all tags."),
+        isPrivate: z.boolean().optional().describe("Whether the bot is private (new bots default to your account setting)"),
+      },
+    },
+    async ({ id, slug, name, description, instructions, platforms, icon, color, installUrl, routines, skills, connectors, category, tags, isPrivate }) => {
+      if (!authenticatedUser) return AUTH_REQUIRED_RESULT;
+
+      try {
+        let categoryId: string | null | undefined = category === null ? null : undefined;
+        if (category) {
+          const found = await db.category.findUnique({ where: { slug: category }, select: { id: true } });
+          if (!found) {
+            return jsonToolResult({ error: `Category not found: ${category}`, code: "invalid_category" }, true);
+          }
+          categoryId = found.id;
+        }
+
+        const result = await upsertOwnBot(
+          { id: authenticatedUser.id, role: authenticatedUser.role },
+          {
+            id,
+            slug,
+            title: name,
+            description,
+            content: instructions,
+            botPlatforms: platforms,
+            botIcon: icon,
+            botColor: color,
+            installUrl,
+            routines,
+            skills,
+            connectors,
+            categoryId,
+            tagIds: tags === undefined ? undefined : await findOrCreateTagIds(tags),
+            isPrivate,
+          },
+          { defaultPrivate: !authenticatedUser.mcpPromptsPublicByDefault }
+        );
+
+        if (!result.ok) {
+          const { error: code, message, ...details } = result.body;
+          return jsonToolResult({ error: message, code, ...details }, true);
+        }
+
+        const { action, bot, changedFields } = result.data;
+        return jsonToolResult({
+          success: true,
+          action,
+          changedFields,
+          bot: ownBotJson(bot),
+          link: bot.isPrivate ? null : getBotUrls(bot, getBaseUrl()).page,
+        });
+      } catch (error) {
+        console.error("MCP save_bot error:", error);
+        return jsonToolResult({ error: "Failed to save bot" }, true);
+      }
+    }
+  );
+
+  server.registerTool(
+    "list_my_bots",
+    {
+      title: "List My Bots",
+      description:
+        "List your own bots on prompts.chat, including private ones, newest first. Use it to find the id or slug of a bot before updating it with save_bot. Requires API key authentication.",
+      inputSchema: {
+        limit: z.number().int().min(1).max(100).default(50).describe("Maximum number of bots to return (default 50, max 100)"),
+        offset: z.number().int().min(0).default(0).describe("Number of bots to skip, for paging"),
+      },
+    },
+    async ({ limit = 50, offset = 0 }) => {
+      if (!authenticatedUser) return AUTH_REQUIRED_RESULT;
+
+      try {
+        const { bots, total } = await listBotsByAuthor(authenticatedUser.id, { includePrivate: true, skip: offset, take: limit });
+        const baseUrl = getBaseUrl();
+        return jsonToolResult({
+          total,
+          count: bots.length,
+          bots: bots.map((bot) => ({
+            id: bot.id,
+            slug: bot.slug,
+            name: bot.title,
+            description: bot.description,
+            platforms: bot.platforms,
+            isPrivate: bot.isPrivate,
+            isUnlisted: bot.isUnlisted,
+            createdAt: bot.createdAt.toISOString(),
+            updatedAt: bot.updatedAt.toISOString(),
+            link: getBotUrls(bot, baseUrl).page,
+          })),
+        });
+      } catch (error) {
+        console.error("MCP list_my_bots error:", error);
+        return jsonToolResult({ error: "Failed to list bots" }, true);
+      }
+    }
+  );
+
+  server.registerTool(
+    "get_my_bot",
+    {
+      title: "Get My Bot",
+      description:
+        "Get the full definition of one of your own bots (instructions, platforms, routines, skills, connectors, install options), including private ones, by id or slug. Use it to restore a bot from its prompts.chat backup. Requires API key authentication.",
+      inputSchema: {
+        id: z.string().optional().describe("Bot id"),
+        slug: z.string().optional().describe("Bot slug, used when no id is given"),
+      },
+    },
+    async ({ id, slug }) => {
+      if (!authenticatedUser) return AUTH_REQUIRED_RESULT;
+      if (!id && !slug) return jsonToolResult({ error: "Provide an id or a slug" }, true);
+
+      try {
+        const bot = await findOwnBot(authenticatedUser.id, { id, slug });
+        if (!bot) return jsonToolResult({ error: "Bot not found or you don't own it" }, true);
+        return jsonToolResult(ownBotJson(bot));
+      } catch (error) {
+        console.error("MCP get_my_bot error:", error);
+        return jsonToolResult({ error: "Failed to get bot" }, true);
+      }
+    }
+  );
+
   return server;
 }
 
@@ -1467,7 +1636,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Apply stricter limits for tool calls based on tool name
-    const WRITE_TOOLS = new Set(["save_prompt", "save_skill", "add_file_to_skill", "update_skill_file", "remove_file_from_skill"]);
+    const WRITE_TOOLS = new Set(["save_prompt", "save_skill", "add_file_to_skill", "update_skill_file", "remove_file_from_skill", "save_bot"]);
     const AI_TOOLS = new Set(["improve_prompt"]);
 
     const rpcBody = body as { method?: string; params?: { name?: string } };
