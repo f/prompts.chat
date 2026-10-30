@@ -33,8 +33,30 @@ export function mcpPromptsWhere({ user, filters }: McpContext): Prisma.PromptWhe
   };
 }
 
-function promptArguments(content: string): McpPrompt["arguments"] {
-  const variables = extractVariables(content);
+/** Placeholders read per prompt, and characters kept of each, so a list page stays small */
+const MAX_PLACEHOLDERS = 50;
+const MAX_PLACEHOLDER_LENGTH = 200;
+
+/**
+ * The ${...} placeholders of each prompt, in order of use. Postgres extracts them so list pages
+ * never load full prompt content (see #1118); extractVariables then parses them as usual.
+ */
+async function findPlaceholders(ids: string[]): Promise<Map<string, string>> {
+  if (ids.length === 0) return new Map();
+  const rows = await db.$queryRaw<{ id: string; placeholder: string }[]>`
+    SELECT p.id, left(m.match[1], ${MAX_PLACEHOLDER_LENGTH}::int) AS placeholder
+    FROM prompts p, regexp_matches(p.content, '\\$\\{([^}]*)\\}', 'g') WITH ORDINALITY AS m(match, ord)
+    WHERE p.id = ANY(${ids}) AND m.ord <= ${MAX_PLACEHOLDERS}::int
+    ORDER BY p.id, m.ord`;
+  const placeholders = new Map<string, string>();
+  for (const { id, placeholder } of rows) {
+    placeholders.set(id, `${placeholders.get(id) ?? ""}\${${placeholder}}`);
+  }
+  return placeholders;
+}
+
+function promptArguments(placeholders: string | undefined): McpPrompt["arguments"] {
+  const variables = placeholders ? extractVariables(placeholders) : [];
   if (variables.length === 0) return undefined;
   return variables.map((variable) => ({
     name: variable.name,
@@ -61,16 +83,18 @@ export function registerPrompts(server: McpServer, ctx: McpContext) {
       skip: (page - 1) * PAGE_SIZE,
       take: PAGE_SIZE + 1,
       orderBy: [{ createdAt: "desc" }, { id: "asc" }],
-      select: { id: true, slug: true, title: true, description: true, content: true },
+      select: { id: true, slug: true, title: true, description: true },
     });
 
     const hasMore = prompts.length > PAGE_SIZE;
+    const results = prompts.slice(0, PAGE_SIZE);
+    const placeholders = await findPlaceholders(results.map((p) => p.id));
     return {
-      prompts: prompts.slice(0, PAGE_SIZE).map((p) => ({
+      prompts: results.map((p) => ({
         name: getPromptName(p),
         title: p.title,
         description: p.description || undefined,
-        arguments: promptArguments(p.content),
+        arguments: promptArguments(placeholders.get(p.id)),
       })),
       nextCursor: hasMore ? String(page + 1) : undefined,
     };

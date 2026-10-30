@@ -16,6 +16,7 @@ vi.mock("@/lib/db", () => ({
     tag: { findUnique: vi.fn(), create: vi.fn() },
     category: { findUnique: vi.fn() },
     botPairing: { findMany: vi.fn() },
+    $queryRaw: vi.fn(),
   },
 }));
 
@@ -271,7 +272,13 @@ describe("MCP server", () => {
   describe("prompts capability", () => {
     it("lists prompts with their variables as arguments, narrowed by the URL filters", async () => {
       vi.mocked(db.prompt.findMany).mockResolvedValue([
-        { id: "p-1", slug: "email-writer", title: "Email writer", description: null, content: "To ${recipient}, ${tone:friendly}" },
+        { id: "p-1", slug: "email-writer", title: "Email writer", description: null },
+        { id: "p-2", slug: "plain", title: "Plain", description: null },
+      ] as never);
+      vi.mocked(db.$queryRaw).mockResolvedValue([
+        { id: "p-1", placeholder: "recipient" },
+        { id: "p-1", placeholder: "tone:friendly" },
+        { id: "p-1", placeholder: "recipient" },
       ] as never);
       await connect(alice, { users: ["bob"], tags: ["email"] });
 
@@ -286,6 +293,7 @@ describe("MCP server", () => {
             { name: "tone", description: "Default: friendly", required: false },
           ],
         },
+        { name: "plain", title: "Plain" },
       ]);
       expect(nextCursor).toBeUndefined();
       expect(vi.mocked(db.prompt.findMany).mock.calls[0][0]?.where).toMatchObject({
@@ -294,6 +302,28 @@ describe("MCP server", () => {
         tags: { some: { tag: { slug: { in: ["email"] } } } },
         author: { username: { in: ["bob"] } },
       });
+    });
+
+    it("never loads full prompt content to build the list (#1118)", async () => {
+      vi.mocked(db.prompt.findMany).mockResolvedValue([{ id: "p-1", slug: "a", title: "A", description: null }] as never);
+      vi.mocked(db.$queryRaw).mockResolvedValue([] as never);
+      await connect(null);
+
+      await client.listPrompts();
+
+      const { select } = vi.mocked(db.prompt.findMany).mock.calls[0][0]!;
+      expect(select).not.toHaveProperty("content");
+      const [sql, ...params] = vi.mocked(db.$queryRaw).mock.calls[0] as unknown as [TemplateStringsArray, ...unknown[]];
+      expect(sql.join("?")).toMatch(/regexp_matches\(p\.content/);
+      expect(sql.join("?")).not.toMatch(/SELECT[^]*\bp\.content\b[^]*FROM/);
+      expect(params).toContainEqual(["p-1"]);
+    });
+
+    it("skips the placeholder query for an empty page", async () => {
+      vi.mocked(db.prompt.findMany).mockResolvedValue([]);
+      await connect(null);
+      expect((await client.listPrompts()).prompts).toEqual([]);
+      expect(db.$queryRaw).not.toHaveBeenCalled();
     });
 
     it("fills arguments into the prompt message", async () => {
