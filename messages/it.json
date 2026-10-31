@@ -1091,7 +1091,6 @@
     "teams": {
       "link": "Team",
       "create": "Crea team",
-      "loginToCreate": "Accedi per creare un team",
       "description": "I team sono gruppi di bot che si passano il lavoro. Ogni riquadro è un team e ogni freccia mostra cosa un bot passa al successivo: passa sopra una freccia per vedere il passaggio o seleziona un team per vederne i membri.",
       "count": "{count, plural, one {# team} other {# team}}",
       "searchPlaceholder": "Cerca team...",
@@ -1105,9 +1104,7 @@
       "closePanel": "Chiudi",
       "by": "di {author}",
       "members": "Membri",
-      "membersCount": "{count, plural, one {# bot} other {# bot}}",
       "handoffs": "Flusso dei passaggi",
-      "handoffsCount": "{count, plural, one {# passaggio} other {# passaggi}}",
       "handoffLabel": "{from} passa a {to}",
       "handsOffTo": "passa a",
       "noHandoffLabel": "Nessuna descrizione di cosa viene passato",
@@ -1174,7 +1171,10 @@
       "installBot": "Installa",
       "viewBot": "Apri la pagina del bot",
       "botLoadError": "Impossibile caricare questo bot.",
-      "backToTeam": "Torna al team"
+      "backToTeam": "Torna al team",
+      "pagination": "Pagine dei team",
+      "previousPage": "Pagina precedente",
+      "nextPage": "Pagina successiva"
     },
     "computer": {
       "cloud": "Richiede un computer cloud",

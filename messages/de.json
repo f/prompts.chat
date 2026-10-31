@@ -1091,7 +1091,6 @@
     "teams": {
       "link": "Teams",
       "create": "Team erstellen",
-      "loginToCreate": "Melde dich an, um ein Team zu erstellen",
       "description": "Teams sind Gruppen von Bots, die sich gegenseitig Arbeit übergeben. Jede Box ist ein Team, jeder Pfeil zeigt, was ein Bot an den nächsten übergibt: Fahre über einen Pfeil, um die Übergabe zu sehen, oder wähle ein Team, um seine Mitglieder zu sehen.",
       "count": "{count, plural, one {# Team} other {# Teams}}",
       "searchPlaceholder": "Teams durchsuchen...",
@@ -1105,9 +1104,7 @@
       "closePanel": "Schließen",
       "by": "von {author}",
       "members": "Mitglieder",
-      "membersCount": "{count, plural, one {# Bot} other {# Bots}}",
       "handoffs": "Ablauf der Übergaben",
-      "handoffsCount": "{count, plural, one {# Übergabe} other {# Übergaben}}",
       "handoffLabel": "{from} übergibt an {to}",
       "handsOffTo": "übergibt an",
       "noHandoffLabel": "Keine Beschreibung, was übergeben wird",
@@ -1174,7 +1171,10 @@
       "installBot": "Installieren",
       "viewBot": "Bot-Seite öffnen",
       "botLoadError": "Dieser Bot konnte nicht geladen werden.",
-      "backToTeam": "Zurück zum Team"
+      "backToTeam": "Zurück zum Team",
+      "pagination": "Team-Seiten",
+      "previousPage": "Vorherige Seite",
+      "nextPage": "Nächste Seite"
     },
     "computer": {
       "cloud": "Benötigt einen Cloud-Computer",

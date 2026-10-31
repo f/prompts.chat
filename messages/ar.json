@@ -1091,7 +1091,6 @@
     "teams": {
       "link": "الفرق",
       "create": "إنشاء فريق",
-      "loginToCreate": "سجّل الدخول لإنشاء فريق",
       "description": "الفرق مجموعات من البوتات تسلّم العمل لبعضها. كل مربع فريق، وكل سهم يوضح ما يسلّمه بوت إلى التالي: مرّر المؤشر فوق سهم لرؤية التسليم، أو اختر فريقًا لرؤية أعضائه.",
       "count": "{count, plural, zero {لا توجد فرق} one {فريق واحد} two {فريقان} few {# فرق} many {# فريقًا} other {# فريق}}",
       "searchPlaceholder": "ابحث في الفرق...",
@@ -1105,9 +1104,7 @@
       "closePanel": "إغلاق",
       "by": "بواسطة {author}",
       "members": "الأعضاء",
-      "membersCount": "{count, plural, zero {لا توجد بوتات} one {بوت واحد} two {بوتان} few {# بوتات} many {# بوتًا} other {# بوت}}",
       "handoffs": "مسار التسليم",
-      "handoffsCount": "{count, plural, zero {لا توجد تسليمات} one {تسليم واحد} two {تسليمان} few {# تسليمات} many {# تسليمًا} other {# تسليم}}",
       "handoffLabel": "{from} يسلّم إلى {to}",
       "handsOffTo": "يسلّم إلى",
       "noHandoffLabel": "لا يوجد وصف لما يتم تسليمه",
@@ -1174,7 +1171,10 @@
       "installBot": "تثبيت",
       "viewBot": "فتح صفحة البوت",
       "botLoadError": "تعذّر تحميل هذا البوت.",
-      "backToTeam": "العودة إلى الفريق"
+      "backToTeam": "العودة إلى الفريق",
+      "pagination": "صفحات الفرق",
+      "previousPage": "الصفحة السابقة",
+      "nextPage": "الصفحة التالية"
     },
     "computer": {
       "cloud": "يحتاج إلى حاسوب سحابي",

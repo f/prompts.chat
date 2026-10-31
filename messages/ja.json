@@ -1091,7 +1091,6 @@
     "teams": {
       "link": "チーム",
       "create": "チームを作成",
-      "loginToCreate": "チームを作成するにはログインしてください",
       "description": "チームは、互いに作業を引き継ぐボットのグループです。各ボックスがチームで、各矢印はボットが次のボットに何を引き継ぐかを示します。矢印にカーソルを合わせると引き継ぎ内容が、チームを選択するとメンバーが表示されます。",
       "count": "{count, plural, other {# 件のチーム}}",
       "searchPlaceholder": "チームを検索...",
@@ -1105,9 +1104,7 @@
       "closePanel": "閉じる",
       "by": "作成者: {author}",
       "members": "メンバー",
-      "membersCount": "{count, plural, other {# 個のボット}}",
       "handoffs": "引き継ぎフロー",
-      "handoffsCount": "{count, plural, other {# 件の引き継ぎ}}",
       "handoffLabel": "{from} が {to} に引き継ぐ",
       "handsOffTo": "が引き継ぐ相手",
       "noHandoffLabel": "引き継ぐ内容の説明はありません",
@@ -1174,7 +1171,10 @@
       "installBot": "インストール",
       "viewBot": "ボットのページを開く",
       "botLoadError": "このボットを読み込めませんでした。",
-      "backToTeam": "チームに戻る"
+      "backToTeam": "チームに戻る",
+      "pagination": "チームのページ",
+      "previousPage": "前のページ",
+      "nextPage": "次のページ"
     },
     "computer": {
       "cloud": "クラウドコンピューターが必要",

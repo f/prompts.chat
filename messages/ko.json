@@ -1091,7 +1091,6 @@
     "teams": {
       "link": "팀",
       "create": "팀 만들기",
-      "loginToCreate": "팀을 만들려면 로그인하세요",
       "description": "팀은 서로 작업을 넘겨주는 봇 그룹입니다. 각 상자는 하나의 팀이고, 각 화살표는 한 봇이 다음 봇에게 무엇을 넘기는지 보여줍니다. 화살표에 마우스를 올리면 인계 내용을, 팀을 선택하면 멤버를 볼 수 있습니다.",
       "count": "{count, plural, other {팀 #개}}",
       "searchPlaceholder": "팀 검색...",
@@ -1105,9 +1104,7 @@
       "closePanel": "닫기",
       "by": "작성자: {author}",
       "members": "멤버",
-      "membersCount": "{count, plural, other {봇 #개}}",
       "handoffs": "인계 흐름",
-      "handoffsCount": "{count, plural, other {인계 #개}}",
       "handoffLabel": "{from}이(가) {to}에게 인계",
       "handsOffTo": "인계 대상",
       "noHandoffLabel": "무엇을 인계하는지에 대한 설명이 없습니다",
@@ -1174,7 +1171,10 @@
       "installBot": "설치",
       "viewBot": "봇 페이지 열기",
       "botLoadError": "이 봇을 불러올 수 없습니다.",
-      "backToTeam": "팀으로 돌아가기"
+      "backToTeam": "팀으로 돌아가기",
+      "pagination": "팀 페이지",
+      "previousPage": "이전 페이지",
+      "nextPage": "다음 페이지"
     },
     "computer": {
       "cloud": "클라우드 컴퓨터 필요",

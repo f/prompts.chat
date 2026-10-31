@@ -1091,7 +1091,6 @@
     "teams": {
       "link": "Komandalar",
       "create": "Komanda yarat",
-      "loginToCreate": "Komanda yaratmaq üçün daxil ol",
       "description": "Komandalar işi bir-birinə ötürən bot qruplarıdır. Hər qutu bir komandadır, hər ox isə bir botun növbətiyə nəyi ötürdüyünü göstərir: ötürməni görmək üçün oxun üzərinə gəl və ya üzvlərini görmək üçün komanda seç.",
       "count": "{count, plural, one {# komanda} other {# komanda}}",
       "searchPlaceholder": "Komanda axtar...",
@@ -1105,9 +1104,7 @@
       "closePanel": "Bağla",
       "by": "müəllif: {author}",
       "members": "Üzvlər",
-      "membersCount": "{count, plural, one {# bot} other {# bot}}",
       "handoffs": "Ötürmə axını",
-      "handoffsCount": "{count, plural, one {# ötürmə} other {# ötürmə}}",
       "handoffLabel": "{from} işi {to} botuna ötürür",
       "handsOffTo": "ötürür",
       "noHandoffLabel": "Nəyin ötürüldüyünə dair təsvir yoxdur",
@@ -1174,7 +1171,10 @@
       "installBot": "Quraşdır",
       "viewBot": "Bot səhifəsini aç",
       "botLoadError": "Bu bot yüklənə bilmədi.",
-      "backToTeam": "Komandaya qayıt"
+      "backToTeam": "Komandaya qayıt",
+      "pagination": "Komanda səhifələri",
+      "previousPage": "Əvvəlki səhifə",
+      "nextPage": "Növbəti səhifə"
     },
     "computer": {
       "cloud": "Bulud kompüteri tələb edir",

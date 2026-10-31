@@ -1091,7 +1091,6 @@
     "teams": {
       "link": "Teams",
       "create": "Team maken",
-      "loginToCreate": "Log in om een team te maken",
       "description": "Teams zijn groepen bots die werk aan elkaar overdragen. Elk vak is een team en elke pijl laat zien wat de ene bot aan de volgende overdraagt: beweeg over een pijl om de overdracht te zien, of selecteer een team om de leden te zien.",
       "count": "{count, plural, one {# team} other {# teams}}",
       "searchPlaceholder": "Teams zoeken...",
@@ -1105,9 +1104,7 @@
       "closePanel": "Sluiten",
       "by": "door {author}",
       "members": "Leden",
-      "membersCount": "{count, plural, one {# bot} other {# bots}}",
       "handoffs": "Overdrachtsflow",
-      "handoffsCount": "{count, plural, one {# overdracht} other {# overdrachten}}",
       "handoffLabel": "{from} draagt over aan {to}",
       "handsOffTo": "draagt over aan",
       "noHandoffLabel": "Geen beschrijving van wat wordt overgedragen",
@@ -1174,7 +1171,10 @@
       "installBot": "Installeren",
       "viewBot": "Botpagina openen",
       "botLoadError": "Deze bot kon niet worden geladen.",
-      "backToTeam": "Terug naar team"
+      "backToTeam": "Terug naar team",
+      "pagination": "Teampagina's",
+      "previousPage": "Vorige pagina",
+      "nextPage": "Volgende pagina"
     },
     "computer": {
       "cloud": "Heeft een cloudcomputer nodig",

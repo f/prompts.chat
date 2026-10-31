@@ -1091,7 +1091,6 @@
     "teams": {
       "link": "团队",
       "create": "创建团队",
-      "loginToCreate": "登录以创建团队",
       "description": "团队是一组相互交接工作的机器人。每个方框是一个团队,每个箭头表示一个机器人交给下一个机器人的内容:将鼠标悬停在箭头上可查看交接内容,选择团队可查看其成员。",
       "count": "{count, plural, other {# 个团队}}",
       "searchPlaceholder": "搜索团队...",
@@ -1105,9 +1104,7 @@
       "closePanel": "关闭",
       "by": "作者:{author}",
       "members": "成员",
-      "membersCount": "{count, plural, other {# 个机器人}}",
       "handoffs": "交接流程",
-      "handoffsCount": "{count, plural, other {# 个交接}}",
       "handoffLabel": "{from} 交接给 {to}",
       "handsOffTo": "交接给",
       "noHandoffLabel": "没有说明交接的内容",
@@ -1174,7 +1171,10 @@
       "installBot": "安装",
       "viewBot": "打开机器人页面",
       "botLoadError": "无法加载此机器人。",
-      "backToTeam": "返回团队"
+      "backToTeam": "返回团队",
+      "pagination": "团队分页",
+      "previousPage": "上一页",
+      "nextPage": "下一页"
     },
     "computer": {
       "cloud": "需要云端电脑",

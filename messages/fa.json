@@ -1091,7 +1091,6 @@
     "teams": {
       "link": "تیم‌ها",
       "create": "ساخت تیم",
-      "loginToCreate": "برای ساخت تیم وارد شوید",
       "description": "تیم‌ها گروه‌هایی از بات‌ها هستند که کار را به یکدیگر می‌سپارند. هر کادر یک تیم است و هر پیکان نشان می‌دهد یک بات چه چیزی را به بات بعدی می‌سپارد: برای دیدن واگذاری، نشانگر را روی پیکان ببرید یا برای دیدن اعضا، یک تیم را انتخاب کنید.",
       "count": "{count, plural, one {# تیم} other {# تیم}}",
       "searchPlaceholder": "جست‌وجوی تیم‌ها...",
@@ -1105,9 +1104,7 @@
       "closePanel": "بستن",
       "by": "از {author}",
       "members": "اعضا",
-      "membersCount": "{count, plural, one {# بات} other {# بات}}",
       "handoffs": "جریان واگذاری",
-      "handoffsCount": "{count, plural, one {# واگذاری} other {# واگذاری}}",
       "handoffLabel": "{from} به {to} می‌سپارد",
       "handsOffTo": "می‌سپارد به",
       "noHandoffLabel": "توضیحی درباره آنچه سپرده می‌شود وجود ندارد",
@@ -1174,7 +1171,10 @@
       "installBot": "نصب",
       "viewBot": "باز کردن صفحه بات",
       "botLoadError": "این بات بارگیری نشد.",
-      "backToTeam": "بازگشت به تیم"
+      "backToTeam": "بازگشت به تیم",
+      "pagination": "صفحه‌های تیم‌ها",
+      "previousPage": "صفحه قبل",
+      "nextPage": "صفحه بعد"
     },
     "computer": {
       "cloud": "به رایانه ابری نیاز دارد",

@@ -1091,7 +1091,6 @@
     "teams": {
       "link": "צוותים",
       "create": "יצירת צוות",
-      "loginToCreate": "התחבר כדי ליצור צוות",
       "description": "צוותים הם קבוצות של בוטים שמעבירים עבודה זה לזה. כל תיבה היא צוות וכל חץ מראה מה בוט אחד מעביר לבא אחריו: רחף מעל חץ כדי לראות את ההעברה, או בחר צוות כדי לראות את חבריו.",
       "count": "{count, plural, one {צוות אחד} other {# צוותים}}",
       "searchPlaceholder": "חיפוש צוותים...",
@@ -1105,9 +1104,7 @@
       "closePanel": "סגירה",
       "by": "מאת {author}",
       "members": "חברים",
-      "membersCount": "{count, plural, one {בוט אחד} other {# בוטים}}",
       "handoffs": "זרימת העברות",
-      "handoffsCount": "{count, plural, one {העברה אחת} other {# העברות}}",
       "handoffLabel": "{from} מעביר אל {to}",
       "handsOffTo": "מעביר אל",
       "noHandoffLabel": "אין תיאור של מה שמועבר",
@@ -1174,7 +1171,10 @@
       "installBot": "התקנה",
       "viewBot": "פתיחת דף הבוט",
       "botLoadError": "לא ניתן היה לטעון את הבוט הזה.",
-      "backToTeam": "חזרה לצוות"
+      "backToTeam": "חזרה לצוות",
+      "pagination": "עמודי צוותים",
+      "previousPage": "העמוד הקודם",
+      "nextPage": "העמוד הבא"
     },
     "computer": {
       "cloud": "דורש מחשב בענן",

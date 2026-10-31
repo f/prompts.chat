@@ -1091,7 +1091,6 @@
     "teams": {
       "link": "Équipes",
       "create": "Créer une équipe",
-      "loginToCreate": "Connectez-vous pour créer une équipe",
       "description": "Les équipes sont des groupes de bots qui se passent le travail. Chaque cadre est une équipe et chaque flèche indique ce qu'un bot transmet au suivant : survolez une flèche pour voir la passation, ou sélectionnez une équipe pour voir ses membres.",
       "count": "{count, plural, one {# équipe} other {# équipes}}",
       "searchPlaceholder": "Rechercher des équipes...",
@@ -1105,9 +1104,7 @@
       "closePanel": "Fermer",
       "by": "par {author}",
       "members": "Membres",
-      "membersCount": "{count, plural, one {# bot} other {# bots}}",
       "handoffs": "Flux de passations",
-      "handoffsCount": "{count, plural, one {# passation} other {# passations}}",
       "handoffLabel": "{from} transmet à {to}",
       "handsOffTo": "transmet à",
       "noHandoffLabel": "Aucune description de ce qui est transmis",
@@ -1174,7 +1171,10 @@
       "installBot": "Installer",
       "viewBot": "Ouvrir la page du bot",
       "botLoadError": "Impossible de charger ce bot.",
-      "backToTeam": "Retour à l'équipe"
+      "backToTeam": "Retour à l'équipe",
+      "pagination": "Pages des équipes",
+      "previousPage": "Page précédente",
+      "nextPage": "Page suivante"
     },
     "computer": {
       "cloud": "Nécessite un ordinateur cloud",

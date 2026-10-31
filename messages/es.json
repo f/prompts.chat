@@ -1091,7 +1091,6 @@
     "teams": {
       "link": "Equipos",
       "create": "Crear equipo",
-      "loginToCreate": "Inicia sesión para crear un equipo",
       "description": "Los equipos son grupos de bots que se pasan el trabajo entre sí. Cada caja es un equipo y cada flecha muestra lo que un bot entrega al siguiente: pasa el cursor sobre una flecha para ver la entrega o selecciona un equipo para ver sus miembros.",
       "count": "{count, plural, one {# equipo} other {# equipos}}",
       "searchPlaceholder": "Buscar equipos...",
@@ -1105,9 +1104,7 @@
       "closePanel": "Cerrar",
       "by": "por {author}",
       "members": "Miembros",
-      "membersCount": "{count, plural, one {# bot} other {# bots}}",
       "handoffs": "Flujo de entregas",
-      "handoffsCount": "{count, plural, one {# entrega} other {# entregas}}",
       "handoffLabel": "{from} entrega a {to}",
       "handsOffTo": "entrega a",
       "noHandoffLabel": "Sin descripción de lo que se entrega",
@@ -1174,7 +1171,10 @@
       "installBot": "Instalar",
       "viewBot": "Abrir página del bot",
       "botLoadError": "No se pudo cargar este bot.",
-      "backToTeam": "Volver al equipo"
+      "backToTeam": "Volver al equipo",
+      "pagination": "Páginas de equipos",
+      "previousPage": "Página anterior",
+      "nextPage": "Página siguiente"
     },
     "computer": {
       "cloud": "Necesita un ordenador en la nube",

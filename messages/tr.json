@@ -1091,7 +1091,6 @@
     "teams": {
       "link": "Ekipler",
       "create": "Ekip oluştur",
-      "loginToCreate": "Ekip oluşturmak için giriş yap",
       "description": "Ekipler, işi birbirine devreden bot gruplarıdır. Her kutu bir ekiptir ve her ok bir botun bir sonrakine neyi devrettiğini gösterir: devri görmek için bir okun üzerine gel veya üyelerini görmek için bir ekip seç.",
       "count": "{count, plural, one {# ekip} other {# ekip}}",
       "searchPlaceholder": "Ekip ara...",
@@ -1105,9 +1104,7 @@
       "closePanel": "Kapat",
       "by": "{author} tarafından",
       "members": "Üyeler",
-      "membersCount": "{count, plural, one {# bot} other {# bot}}",
       "handoffs": "Devir akışı",
-      "handoffsCount": "{count, plural, one {# devir} other {# devir}}",
       "handoffLabel": "{from}, {to} botuna devreder",
       "handsOffTo": "devreder",
       "noHandoffLabel": "Neyin devredildiğine dair açıklama yok",
@@ -1174,7 +1171,10 @@
       "installBot": "Kur",
       "viewBot": "Bot sayfasını aç",
       "botLoadError": "Bu bot yüklenemedi.",
-      "backToTeam": "Takıma dön"
+      "backToTeam": "Takıma dön",
+      "pagination": "Ekip sayfaları",
+      "previousPage": "Önceki sayfa",
+      "nextPage": "Sonraki sayfa"
     },
     "computer": {
       "cloud": "Bulut bilgisayarı gerektirir",

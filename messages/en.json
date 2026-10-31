@@ -1091,7 +1091,6 @@
     "teams": {
       "link": "Teams",
       "create": "Create team",
-      "loginToCreate": "Log in to create a team",
       "description": "Teams are groups of bots that hand work off to each other. Each box is a team and each arrow shows what one bot hands to the next: hover an arrow to see the handoff, or select a team to see its members.",
       "count": "{count, plural, one {# team} other {# teams}}",
       "searchPlaceholder": "Search teams...",
@@ -1105,9 +1104,7 @@
       "closePanel": "Close",
       "by": "by {author}",
       "members": "Members",
-      "membersCount": "{count, plural, one {# bot} other {# bots}}",
       "handoffs": "Handoff flow",
-      "handoffsCount": "{count, plural, one {# handoff} other {# handoffs}}",
       "handoffLabel": "{from} hands off to {to}",
       "handsOffTo": "hands off to",
       "noHandoffLabel": "No description of what is handed off",
@@ -1174,7 +1171,10 @@
       "installBot": "Install",
       "viewBot": "Open bot page",
       "botLoadError": "This bot could not be loaded.",
-      "backToTeam": "Back to team"
+      "backToTeam": "Back to team",
+      "pagination": "Team pages",
+      "previousPage": "Previous page",
+      "nextPage": "Next page"
     },
     "computer": {
       "cloud": "Needs a cloud computer",
