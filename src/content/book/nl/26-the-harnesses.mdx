@@ -134,6 +134,45 @@ Verander één instelling en doorloop de uitvoering stap voor stap. Kijk wat er 
 
 Dit zijn voorbeelden van uitkomsten, geen regels voor wat elk model zal doen. Een model kan ook bij een vage prompt een nuttige vraag stellen. Duidelijke instructies maken je verwachtingen makkelijker te volgen en te controleren.
 
+## Als het model de lus schrijft
+
+De lus hierboven heeft een vast ritme: het model vraagt om één tool, de harness voert die uit en het resultaat komt in de context van het model. Voor een paar stappen werkt dat prima. Maar bij een taak die honderden bestanden raakt, wordt elke stap weer een volledige modelaanvraag, en de context loopt vol met uitvoer die het model maar één keer nodig had.
+
+Sommige harnesses bieden een andere aanpak. Het model schrijft een klein programma dat de tools zelf aanroept. Dat programma draait in een sandbox; ruwe gegevens zoals bestanden, logs en zoekresultaten blijven in de variabelen van het programma, en alleen wat het programma afdrukt, gaat terug naar het model. Dit heet **programmatisch tools aanroepen** (programmatic tool calling). Het idee komt voort uit onderzoek zoals [CodeAct](https://arxiv.org/abs/2402.01030) (Wang et al., 2024).
+
+<Compare
+  before={{ label: "Eén toolaanroep tegelijk", content: "Lees bestand A. Hier is A. Lees bestand B. Hier is B. Na elk resultaat wordt het model opnieuw aangeroepen, met zijn instructies, zijn geschiedenis en alles wat het tot nu toe heeft gezien." }}
+  after={{ label: "Een programma dat de tools aanroept", content: "Doorzoek het project, lees elke treffer, houd de bestanden over die nog de oude API gebruiken en druk een korte lijst af. De harness voert het programma uit en geeft alleen de lijst terug." }}
+/>
+
+De context blijft overzichtelijker, omdat het model over een samenvatting nadenkt. Er zijn minder modelaanvragen nodig, omdat instructies en geschiedenis niet om de paar aanroepen opnieuw worden meegestuurd. En lussen en controles draaien in code, zodat een geval dat het model van plan was te behandelen niet stilletjes wegvalt.
+
+Factory maakte dit de standaard in [Droid 1.0](https://factory.com/news/frontier-harness), aangekondigd op 29 oktober 2026. De Script-tool voert JavaScript uit in een sandbox en kan honderden toolaanroepen doen binnen één modelaanvraag. Onafhankelijke aanroepen lopen tegelijk, en een lang script kan op de achtergrond doorgaan en het model wekken zodra het klaar is. Factory noemt CodeAct als basis en merkt op dat Cloudflare en Anthropic het idee eind 2025 in productie brachten en dat Codex het naar codeeragents bracht. In Factory's eigen voorbeeld, het repareren van een falende test, kostten dezelfde 15 toolaanroepen 5 in plaats van 10 modelaanroepen. Het gaat om cijfers die Factory over zijn eigen harness rapporteert.
+
+Er hangt ook een prijskaartje aan. De sandbox heeft zelf geen toegang tot bestanden, netwerk of systeem; hij kan alleen de tools gebruiken die de harness aanbiedt. Rechten en goedkeuringen moeten nog steeds gelden voor elke tool die het programma aanroept. De afgedrukte uitvoer is begrensd. En een programma is voor een mens lastiger te volgen dan een lijst losse stappen.
+
+### Workflows: hetzelfde idee een niveau hoger
+
+Dezelfde zet werkt met complete agents. In Anthropics [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/workflow-runs) (bèta) en [Claude Code](https://code.claude.com/docs/en/workflows) kan een agent een **workflow** schrijven: een programma dat veel agents in fasen laat werken, werk parallel verdeelt, resultaten van de ene agent aan de andere doorgeeft, een stap herhaalt tot een beoordeling slaagt en alles wat terugkomt samenvoegt. Het draait op de achtergrond, terwijl het hoofdgesprek vrij blijft.
+
+Bij subagents beslist de agent zelf over elke volgende stap. In een workflow beslist het programma. Wanneer er een workflow start, kiest de agent wel zelf; die keuze stuur je dus bij in de systeemprompt of de instructies. Ook het budget telt: elke agent in een run verbruikt tokens.
+
+### Prompts voor een programma
+
+Als het model een programma plant, wordt je prompt de specificatie ervan. Beschrijf de hele klus: welke onderdelen aan bod komen, welke controles voor elk ervan moeten kloppen, wat er gebeurt als er een faalt en wat het eindrapport moet bevatten. Vraag bij riskante acties eerst om een samenvatting van het programma.
+
+<TryIt compact prompt={`Pak deze hele klus aan met een programma in plaats van stap voor stap.
+
+Klus: \${job:controleer dat elke API-route die gegevens wijzigt een ingelogde gebruiker vereist}
+Onderdelen: \${items:alle routebestanden onder src/app/api}
+Controle voor elk onderdeel: \${checks:de route controleert de sessie voordat er iets wordt gelezen of geschreven}
+Als een onderdeel faalt: \${failure:noteer het bestandspad en de reden en ga door}
+Eindrapport: \${report:de routes die faalden, hoeveel er slaagden en welke bestanden je niet kon lezen}
+
+Vat het programma voor me samen en wacht op mijn goedkeuring voordat je iets uitvoert dat bestanden wijzigt.`} />
+
+Niet elke taak heeft een programma nodig. Als elke stap afhangt van een oordeel over het vorige resultaat, is één aanroep tegelijk vaak duidelijker. Een programma komt tot zijn recht als de klus groot, herhalend en makkelijk te controleren is.
+
 ## Waarom prompts belangrijk zijn binnen een harness
 
 Een harness geeft het model een manier om te handelen. Je prompts leggen uit welke acties nuttig zijn. Zonder duidelijk doel kan een agent veel stappen besteden aan werk dat je niet nodig had.

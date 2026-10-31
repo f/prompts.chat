@@ -134,6 +134,45 @@ Bir ayarı dəyişin, sonra icranı addım-addım izləyin. Kontekstin, alət so
 
 Bunlar nümunə nəticələrdir, hər modelin nə edəcəyini müəyyən edən qaydalar deyil. Model qeyri-müəyyən prompt ilə də faydalı sual verə bilər. Aydın təlimatlar gözləntilərinizi izləməyi və yoxlamağı asanlaşdırır.
 
+## Dövrü Model Yazanda
+
+Yuxarıdakı dövrün sabit bir ritmi var: model bir alət istəyir, harness onu işə salır, nəticə isə modelin kontekstinə əlavə olunur. Bir neçə addımlıq işlərdə bu ritm yaxşı işləyir. Amma yüzlərlə fayla toxunan bir tapşırıqda hər addım yeni, tam bir model sorğusuna çevrilir və kontekst modelin cəmi bir dəfə ehtiyac duyduğu çıxışlarla dolur.
+
+Bəzi harness-lər başqa yol təklif edir: model alətləri bir-bir istəmək əvəzinə onları özü çağıran kiçik bir proqram yazır. Proqram sandbox içində işləyir. Fayllar, loglar və axtarış nəticələri kimi xam məlumatlar proqramın dəyişənlərində qalır, modelə isə yalnız proqramın çap etdiyi çıxış qayıdır. Buna **proqramlı alət çağırışı** (programmatic tool calling) deyilir. İdeyanın kökündə [CodeAct](https://arxiv.org/abs/2402.01030) (Wang və həmkarları, 2024) kimi tədqiqatlar dayanır.
+
+<Compare
+  before={{ label: "Hər dəfə bir alət çağırışı", content: "A faylını oxu. Budur A. B faylını oxu. Budur B. Hər nəticədən sonra model öz təlimatları, tarixçəsi və indiyədək gördüyü hər şeylə birlikdə yenidən çağırılır." }}
+  after={{ label: "Alətləri çağıran proqram", content: "Layihədə axtar, hər uyğun faylı oxu, hələ köhnə API-dən istifadə edənləri ayır və qısa siyahı çap et. Harness proqramı işə salır və geri yalnız siyahını qaytarır." }}
+/>
+
+Kontekst daha təmiz qalır, çünki model xam çıxışlar əvəzinə xülasə üzərində düşünür. Model sorğularının sayı azalır, çünki təlimatlar və tarixçə bir neçə çağırışdan bir yenidən göndərilmir. Dövrlər və yoxlamalar isə kodun içində işləyir, beləliklə modelin baxmağı planlaşdırdığı bir hal səssizcə yaddan çıxmır.
+
+Factory 29 oktyabr 2026-cı ildə elan etdiyi [Droid 1.0](https://factory.com/news/frontier-harness) ilə bu yanaşmanı standart etdi. Onun Script adlı aləti JavaScript kodunu sandbox içində işə salır və tək bir model sorğusunda yüzlərlə alət çağırışı edə bilir. Bir-birindən asılı olmayan çağırışlar eyni vaxtda işləyir, uzun çəkən script isə arxa planda davam edib iş bitəndə modeli oyada bilir. Factory ideyanın mənbəyi kimi CodeAct-i göstərir və qeyd edir ki, 2025-ci ilin sonunda Cloudflare və Anthropic bu ideyanı real məhsullara gətirib, Codex isə onu kodlaşdırma agentlərinə daşıyıb. Factory-nin öz nümunəsində, uğursuz bir testi düzəldərkən eyni 15 alət çağırışı 10 yox, 5 model çağırışı ilə tamamlanıb. Bunlar Factory-nin öz harness-i üçün açıqladığı rəqəmlərdir.
+
+Bu yanaşmanın da öz qiyməti var. Sandbox-un özünə məxsus fayl, şəbəkə və ya sistem girişi yoxdur, o yalnız harness-in təqdim etdiyi alətlərdən istifadə edə bilir. İcazələr və təsdiqlər proqramın çağırdığı hər alətə yenə də tətbiq olunmalıdır. Çap olunan çıxışın həcmi məhduddur. Proqramı izləmək isə insan üçün ayrı-ayrı addımlardan ibarət siyahını izləməkdən çətindir.
+
+### İş Axınları: Eyni İdeya Bir Səviyyə Yuxarıda
+
+Eyni addım bütöv agentlərlə də atıla bilər. Anthropic-in [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/workflow-runs) (beta) və [Claude Code](https://code.claude.com/docs/en/workflows) məhsullarında agent **iş axını** (workflow) yaza bilər: çoxlu agenti mərhələlərlə işlədən, işi paralel qollara bölən, bir agentin nəticəsini digərinə ötürən, bir addımı yoxlamadan keçənədək təkrarlayan və gələn nəticələri birləşdirən proqram. İş axını arxa planda işləyir, əsas söhbət isə bu müddətdə sərbəst qalır.
+
+Subagentlərdə hər növbəti addıma agentin özü qərar verir. İş axınında isə qərarı proqram verir. Bununla belə, iş axınını nə vaxt başladacağını agent seçir, ona görə də bu seçimi sistem promptunda və ya təlimatlarda istiqamətləndirirsiniz. Büdcəni də nəzərə almaq lazımdır: bir icradakı hər agent token xərcləyir.
+
+### Proqram Üçün Prompt Yazmaq
+
+Model proqram planlaşdıranda promptunuz həmin proqramın texniki tapşırığına çevrilir. İşin hamısını təsvir edin: hansı elementlərin əhatə olunacağını, hər biri üçün hansı yoxlamaların ödənməli olduğunu, biri uğursuz olsa nə ediləcəyini və yekun hesabatda nələrin olmalı olduğunu. Riskli əməliyyatlarda əvvəlcə proqramın xülasəsini görmək istədiyinizi bildirin.
+
+<TryIt compact prompt={`Bu işin hamısını addım-addım getmək əvəzinə bir proqramla həll et.
+
+İş: \${job:məlumat dəyişən hər API marşrutunun daxil olmuş istifadəçi tələb etdiyini yoxla}
+Elementlər: \${items:src/app/api altındakı bütün marşrut faylları}
+Hər element üçün yoxlama: \${checks:marşrut nəyisə oxumazdan və ya yazmazdan əvvəl sessiyanı yoxlayır}
+Element uğursuz olsa: \${failure:fayl yolunu və səbəbi qeyd et, sonra davam et}
+Yekun hesabat: \${report:uğursuz olan marşrutlar, neçəsinin keçdiyi və oxuya bilmədiyin fayllar}
+
+Faylları dəyişən hər hansı bir şeyi işə salmazdan əvvəl proqramı mənə qısaca izah et və təsdiqimi gözlə.`} />
+
+Hər tapşırığa proqram lazım deyil. Hər addım əvvəlki nəticəni dəyərləndirməkdən asılıdırsa, çağırışları bir-bir etmək çox vaxt daha aydın olur. Proqram ən çox iş böyük, təkrarlanan və yoxlanması asan olduqda öz gücünü göstərir.
+
 ## Harness Daxilində Promptlar Niyə Vacibdir?
 
 Harness modelə hərəkət etmək üçün yol verir. Promptlarınız faydalı hərəkətin necə olmalı olduğunu izah edir. Aydın məqsəd olmadıqda agent ehtiyacınız olmayan işlərə çoxlu addım sərf edə bilər.

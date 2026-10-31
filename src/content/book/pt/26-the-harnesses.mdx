@@ -134,6 +134,45 @@ Mude uma configuração e avance pela execução passo a passo. Observe o que mu
 
 Esses são exemplos de resultados, não regras sobre o que todo modelo fará. Um modelo pode fazer uma pergunta útil mesmo com um prompt vago. Instruções claras tornam suas expectativas mais fáceis de seguir e verificar.
 
+## Quando o modelo escreve o loop
+
+O loop descrito acima tem um ritmo constante: o modelo pede uma ferramenta, o harness a executa e o resultado entra no contexto do modelo. Para poucos passos, isso funciona bem. Mas, numa tarefa que mexe em centenas de arquivos, cada passo vira mais uma solicitação completa ao modelo, e o contexto se enche de saídas de que o modelo só precisou uma vez.
+
+Alguns harnesses oferecem outro arranjo. O modelo escreve um pequeno programa que chama as ferramentas por conta própria. O programa roda em um sandbox; os dados brutos, como arquivos, logs e resultados de busca, ficam nas variáveis dele, e só o que o programa imprime volta para o modelo. Isso se chama **chamada programática de ferramentas** (programmatic tool calling). A ideia vem de pesquisas como o [CodeAct](https://arxiv.org/abs/2402.01030) (Wang et al., 2024).
+
+<Compare
+  before={{ label: "Uma chamada de cada vez", content: "Leia o arquivo A. Aqui está A. Leia o arquivo B. Aqui está B. Depois de cada resultado, o modelo é chamado de novo com suas instruções, seu histórico e tudo o que viu até agora." }}
+  after={{ label: "Um programa que chama as ferramentas", content: "Pesquise no projeto, leia cada correspondência, separe os arquivos que ainda usam a API antiga e imprima uma lista curta. O harness executa o programa e devolve só a lista." }}
+/>
+
+O contexto fica mais limpo, porque o modelo raciocina sobre um resumo. São necessárias menos solicitações ao modelo, porque instruções e histórico não são reenviados a cada poucas chamadas. E loops e verificações rodam no código, então um caso que o modelo pretendia tratar não some em silêncio.
+
+A Factory tornou isso o padrão no [Droid 1.0](https://factory.com/news/frontier-harness), anunciado em 29 de outubro de 2026. Sua ferramenta Script executa JavaScript em um sandbox e pode fazer centenas de chamadas de ferramentas numa única solicitação ao modelo. Chamadas independentes rodam ao mesmo tempo, e um script longo pode continuar em segundo plano e acordar o modelo quando terminar. A Factory credita o CodeAct e observa que a Cloudflare e a Anthropic levaram a ideia para produção no fim de 2025, e que o Codex a levou para os agentes de programação. No exemplo da própria Factory, a correção de um teste que falhava, as mesmas 15 chamadas de ferramentas levaram 5 chamadas ao modelo em vez de 10. São números que a Factory divulga sobre o próprio harness.
+
+Também há custos. O sandbox não tem acesso próprio a arquivos, rede ou sistema; só pode usar as ferramentas que o harness expõe. Permissões e aprovações continuam valendo para cada ferramenta que o programa chama. A saída impressa tem limite de tamanho. E, para uma pessoa, um programa é mais difícil de acompanhar do que uma lista de passos isolados.
+
+### Workflows: a mesma ideia, um nível acima
+
+O mesmo movimento funciona com agentes inteiros. No [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/workflow-runs) (em beta) e no [Claude Code](https://code.claude.com/docs/en/workflows), da Anthropic, um agente pode escrever um **workflow**: um programa que coloca muitos agentes para trabalhar em fases, distribui o trabalho em paralelo, passa resultados de um agente para outro, repete um passo até que uma revisão o aprove e junta tudo o que volta. Ele roda em segundo plano, e a conversa principal fica livre.
+
+Com subagentes, o próprio agente decide cada próximo passo. Num workflow, quem decide é o programa. Ainda assim, é o agente que escolhe quando iniciar um, por isso essa escolha é orientada no prompt de sistema ou nas instruções. O orçamento também pesa: cada agente de uma execução gasta tokens.
+
+### Escrevendo prompts para um programa
+
+Quando o modelo planeja um programa, seu prompt vira a especificação dele. Descreva o trabalho inteiro: quais itens cobrir, quais verificações precisam valer para cada um, o que fazer quando um falha e o que o relatório final deve conter. Para ações arriscadas, peça para ver antes um resumo do programa.
+
+<TryIt compact prompt={`Resolva todo este trabalho com um programa em vez de seguir passo a passo.
+
+Trabalho: \${job:verifique se cada rota de API que altera dados exige um usuário autenticado}
+Itens: \${items:todos os arquivos de rota em src/app/api}
+Verificação para cada item: \${checks:a rota valida a sessão antes de ler ou gravar qualquer coisa}
+Se um item falhar: \${failure:anote o caminho do arquivo e o motivo, depois continue}
+Relatório final: \${report:as rotas que falharam, quantas passaram e qualquer arquivo que você não conseguiu ler}
+
+Antes de executar algo que altere arquivos, me mostre um resumo do programa e espere minha aprovação.`} />
+
+Nem toda tarefa precisa de um programa. Quando cada passo depende de avaliar o resultado anterior, uma chamada de cada vez costuma ser mais clara. O programa brilha quando o trabalho é grande, repetitivo e fácil de verificar.
+
 ## Por que os prompts importam dentro de um harness
 
 Um harness dá ao modelo uma forma de agir. Seus prompts explicam quais ações são úteis. Sem um objetivo claro, um agente pode gastar muitas etapas fazendo um trabalho de que você não precisava.

@@ -134,6 +134,45 @@ Change one setting, then step through the run. Watch what changes in the context
 
 These are example outcomes, not rules about what every model will do. A model may ask a useful question even with a vague prompt. Clear instructions make your expectations easier to follow and check.
 
+## When the Model Writes the Loop
+
+The loop above has a steady rhythm: the model asks for one tool, the harness runs it, and the result joins the model's context. For a few steps, that works well. For a task that touches hundreds of files, every step becomes another full model request, and the context fills with output the model needed only once.
+
+Some harnesses offer another arrangement. The model writes a small program that calls the tools itself. The program runs in a sandbox, raw results such as files, logs, and search hits stay in its variables, and only what it prints returns to the model. This is called **programmatic tool calling**, an idea that grew out of research such as [CodeAct](https://arxiv.org/abs/2402.01030) (Wang et al., 2024).
+
+<Compare
+  before={{ label: "One tool call at a time", content: "Read file A. Here is A. Read file B. Here is B. After every result, the model is called again with its instructions, its history, and everything it has seen so far." }}
+  after={{ label: "A program that calls the tools", content: "Search the project, read every match, keep the files that still use the old API, and print a short list. The harness runs the program and returns only the list." }}
+/>
+
+The context stays cleaner, because the model reasons over a summary. Model requests drop, because instructions and history are not re-sent every few calls. And loops and checks run in code, so a case the model meant to handle does not silently fall away.
+
+Factory made this the default in [Droid 1.0](https://factory.com/news/frontier-harness), announced on October 29, 2026. Its Script tool runs JavaScript in a sandbox and can make hundreds of tool calls in one model request. Independent calls run at the same time, and a long script can run in the background and wake the model when it is done. Factory credits CodeAct, and notes that Cloudflare and Anthropic brought the idea to production in late 2025 and Codex brought it to coding agents. In Factory's own example of fixing a failing test, the same 15 tool calls took 5 model calls instead of 10; these are figures Factory reports for its own harness.
+
+The trade-offs are real. The sandbox has no file, network, or system access of its own, only the tools the harness exposes. Permissions and approvals still have to apply to every tool the program calls. Printed output is capped. And a program is harder for a person to follow than a list of single steps.
+
+### Workflows: The Same Idea One Level Up
+
+The same move works with whole agents. In Anthropic's [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/workflow-runs) (beta) and [Claude Code](https://code.claude.com/docs/en/workflows), an agent can write a **workflow**: a program that runs many agents in phases, fans work out, passes results from one agent to another, repeats a step until a review passes, and combines what comes back. It runs in the background while the main conversation stays free.
+
+With subagents, the agent itself decides each next step. In a workflow, the program decides. The agent still chooses when to start one, so you guide that choice in its system prompt or instructions. Budgets matter too: every agent in a run spends tokens.
+
+### Prompting for a Program
+
+When the model plans a program, your prompt becomes its specification. Describe the whole job: which items to cover, the checks that must hold for every one, what to do when one fails, and what the final report should contain. For risky actions, ask to see a summary of the program first.
+
+<TryIt compact prompt={`Handle this whole job with a program instead of one step at a time.
+
+Job: \${job:check that every API route that changes data requires a signed-in user}
+Items: \${items:all route files under src/app/api}
+Check for every item: \${checks:the route verifies the session before it reads or writes anything}
+If an item fails: \${failure:record the file path and the reason, then keep going}
+Final report: \${report:the routes that failed, how many passed, and any file you could not read}
+
+Before running anything that changes files, summarize the program for me and wait for my approval.`} />
+
+Not every task needs a program. When each move depends on judging the last result, one call at a time is often clearer. A program shines when the job is large, repetitive, and easy to check.
+
 ## Why Prompts Matter Inside a Harness
 
 A harness gives the model a way to act. Your prompts explain what useful action looks like. Without a clear goal, an agent can spend many steps doing work you did not need.
