@@ -1125,12 +1125,12 @@
       "form": {
         "createTitle": "Créer une équipe",
         "editTitle": "Modifier l'équipe",
-        "intro": "Choisissez les bots, donnez un rôle à chacun, puis définissez qui transmet quoi à qui.",
+        "intro": "Choisissez les bots, indiquez ce que chacun fait dans l'équipe, puis définissez qui transmet quoi à qui.",
         "title": "Titre",
         "titlePlaceholder": "ex. Recherche et publication",
         "titleRequired": "Donnez un titre à l'équipe.",
         "description": "Description",
-        "descriptionPlaceholder": "Que fait cette équipe ensemble ?",
+        "descriptionPlaceholder": "Que fait cette équipe ensemble, et comment le travail circule-t-il ?",
         "bots": "Bots",
         "botsHint": "Ajoutez de {min} à {max} bots.",
         "botsSearch": "Rechercher des bots à ajouter...",
@@ -1141,7 +1141,7 @@
         "roleLabel": "Rôle de {bot}",
         "removeBot": "Retirer {bot}",
         "handoffs": "Passations",
-        "handoffsHint": "Chaque passation transmet le travail d'un bot au suivant.",
+        "handoffsHint": "Chaque transmission fait passer le travail d'un bot à un autre. Un bot peut transmettre à plusieurs bots et recevoir du travail en retour.",
         "from": "De",
         "to": "À",
         "labelPlaceholder": "Ce qui est transmis, ex. Note de recherche",
@@ -1156,7 +1156,14 @@
         "created": "Équipe créée",
         "updated": "Équipe mise à jour",
         "invalidBots": "Certains bots ne peuvent plus être ajoutés. Retirez-les et réessayez.",
-        "rateLimit": "Trop de modifications d'équipes. Patientez une minute et réessayez."
+        "rateLimit": "Trop de modifications d'équipes. Patientez une minute et réessayez.",
+        "descriptionHint": "Le Markdown est pris en charge : **gras**, listes, liens.",
+        "memberDescriptionPlaceholder": "Ce que fait ce bot dans l'équipe (facultatif)",
+        "memberDescriptionLabel": "Ce que fait {bot} dans l'équipe",
+        "handoffDuplicate": "Cette transmission figure déjà dans la liste.",
+        "handoffSelf": "Choisissez deux bots différents.",
+        "connectEveryone": "Relier un bot à tous",
+        "connectEveryoneHint": "Ajoute des transmissions du bot choisi vers tous les autres bots et retour, comme un chef de cabinet."
       }
     }
   },

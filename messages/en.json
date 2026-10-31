@@ -1125,12 +1125,12 @@
       "form": {
         "createTitle": "Create a team",
         "editTitle": "Edit team",
-        "intro": "Pick the bots, give each a role, then define who hands what to whom.",
+        "intro": "Pick the bots, say what each does in the team, then define who hands what to whom.",
         "title": "Title",
         "titlePlaceholder": "e.g. Research & Publish",
         "titleRequired": "Give the team a title.",
         "description": "Description",
-        "descriptionPlaceholder": "What does this team do together?",
+        "descriptionPlaceholder": "What does this team do together, and how does work flow through it?",
         "bots": "Bots",
         "botsHint": "Add {min} to {max} bots.",
         "botsSearch": "Search bots to add...",
@@ -1141,7 +1141,7 @@
         "roleLabel": "Role of {bot}",
         "removeBot": "Remove {bot}",
         "handoffs": "Handoffs",
-        "handoffsHint": "Each handoff passes work from one bot to the next.",
+        "handoffsHint": "Each handoff passes work from one bot to another. A bot can hand off to several bots, and get work back.",
         "from": "From",
         "to": "To",
         "labelPlaceholder": "What is handed off, e.g. Research brief",
@@ -1156,7 +1156,14 @@
         "created": "Team created",
         "updated": "Team updated",
         "invalidBots": "Some bots can no longer be added. Remove them and try again.",
-        "rateLimit": "Too many team changes. Please wait a minute and try again."
+        "rateLimit": "Too many team changes. Please wait a minute and try again.",
+        "descriptionHint": "Markdown is supported: **bold**, lists, links.",
+        "memberDescriptionPlaceholder": "What this bot does in the team (optional)",
+        "memberDescriptionLabel": "What {bot} does in the team",
+        "handoffDuplicate": "This handoff is already listed.",
+        "handoffSelf": "Pick two different bots.",
+        "connectEveryone": "Connect a bot to everyone",
+        "connectEveryoneHint": "Adds handoffs from the chosen bot to every other bot and back, like a chief of staff."
       }
     }
   },

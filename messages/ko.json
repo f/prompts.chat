@@ -1125,12 +1125,12 @@
       "form": {
         "createTitle": "팀 만들기",
         "editTitle": "팀 편집",
-        "intro": "봇을 고르고 각 봇에 역할을 준 다음, 누가 누구에게 무엇을 넘기는지 정하세요.",
+        "intro": "봇을 고르고 각 봇이 팀에서 하는 일을 적은 다음, 누가 누구에게 무엇을 넘기는지 정하세요.",
         "title": "제목",
         "titlePlaceholder": "예: 리서치 & 게시",
         "titleRequired": "팀 제목을 입력하세요.",
         "description": "설명",
-        "descriptionPlaceholder": "이 팀은 함께 무엇을 하나요?",
+        "descriptionPlaceholder": "이 팀은 함께 무엇을 하며, 작업은 어떻게 흘러가나요?",
         "bots": "봇",
         "botsHint": "봇을 {min}~{max}개 추가하세요.",
         "botsSearch": "추가할 봇 검색...",
@@ -1141,7 +1141,7 @@
         "roleLabel": "{bot}의 역할",
         "removeBot": "{bot} 제거",
         "handoffs": "인계",
-        "handoffsHint": "각 인계는 한 봇에서 다음 봇으로 작업을 넘깁니다.",
+        "handoffsHint": "각 핸드오프는 한 봇에서 다른 봇으로 작업을 넘깁니다. 한 봇이 여러 봇에게 넘기고 작업을 돌려받을 수도 있습니다.",
         "from": "보내는 봇",
         "to": "받는 봇",
         "labelPlaceholder": "인계 내용, 예: 리서치 요약",
@@ -1156,7 +1156,14 @@
         "created": "팀이 생성되었습니다",
         "updated": "팀이 업데이트되었습니다",
         "invalidBots": "일부 봇은 더 이상 추가할 수 없습니다. 제거한 후 다시 시도하세요.",
-        "rateLimit": "팀 변경이 너무 많습니다. 1분 후 다시 시도하세요."
+        "rateLimit": "팀 변경이 너무 많습니다. 1분 후 다시 시도하세요.",
+        "descriptionHint": "Markdown을 지원합니다: **굵게**, 목록, 링크.",
+        "memberDescriptionPlaceholder": "이 봇이 팀에서 하는 일 (선택)",
+        "memberDescriptionLabel": "{bot}이(가) 팀에서 하는 일",
+        "handoffDuplicate": "이 핸드오프는 이미 목록에 있습니다.",
+        "handoffSelf": "서로 다른 봇 두 개를 고르세요.",
+        "connectEveryone": "봇을 모두와 연결",
+        "connectEveryoneHint": "선택한 봇에서 다른 모든 봇으로, 그리고 그 반대로 핸드오프를 추가합니다. 비서실장 같은 구성입니다."
       }
     }
   },

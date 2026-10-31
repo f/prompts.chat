@@ -10,8 +10,9 @@ import { BotCard } from "@/components/bots/bot-card";
 import { BotAvatar } from "@/components/bots/bot-avatar";
 import { BotTeamsGraph } from "@/components/bots/teams/bot-teams-graph";
 import { BotTeamActions } from "@/components/bots/teams/bot-team-actions";
+import { TeamMarkdown } from "@/components/bots/teams/team-markdown";
 import { JsonLd, breadcrumbSchema } from "@/components/seo/structured-data";
-import { canEditTeam, getTeam, getTeamInstallOptions, toTeamGraphTeam } from "@/lib/bots/teams";
+import { canEditTeam, getTeam, getTeamInstallOptions, teamExcerpt, toTeamGraphTeam } from "@/lib/bots/teams";
 import { buildPageMetadata, getBaseUrl, NOINDEX_ROBOTS, toMetaDescription } from "@/lib/seo";
 import { getBotTeamUrl, getBotUrl } from "@/lib/urls";
 
@@ -26,7 +27,7 @@ export async function generateMetadata({ params }: BotTeamPageProps): Promise<Me
   const names = team.members.map(({ bot }) => bot.title).join(", ");
   return buildPageMetadata({
     title: team.title,
-    description: toMetaDescription(team.description || names),
+    description: toMetaDescription(teamExcerpt(team.description, 500) || names),
     path: getBotTeamUrl(team.slug),
   });
 }
@@ -66,19 +67,28 @@ export default async function BotTeamPage({ params }: BotTeamPageProps) {
               slug: team.slug,
               title: team.title,
               description: team.description ?? "",
-              members: team.members.map(({ bot, role }) => ({ botId: bot.id, title: bot.title, icon: bot.icon, color: bot.color, role: role ?? "" })),
+              members: team.members.map(({ bot, role, description }) => ({
+                botId: bot.id,
+                title: bot.title,
+                icon: bot.icon,
+                color: bot.color,
+                role: role ?? "",
+                description: description ?? "",
+              })),
               links: team.links,
             }}
           />
         )}
       </div>
 
-      <header className="mb-6 space-y-3">
+      <header className="mb-6 space-y-4">
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="min-w-0 text-xl font-semibold wrap-anywhere sm:text-2xl">{team.title}</h1>
           {team.isFeatured && <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" aria-label={t("featured")} />}
         </div>
-        {team.description && <p className="text-muted-foreground wrap-anywhere">{team.description}</p>}
+        {team.description && (
+          <TeamMarkdown className="max-w-3xl text-base leading-relaxed text-foreground/85">{team.description}</TeamMarkdown>
+        )}
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Link
             href={`/@${team.author.username}`}
@@ -118,9 +128,14 @@ export default async function BotTeamPage({ params }: BotTeamPageProps) {
           </h2>
           {team.members.length > 0 ? (
             <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {team.members.map(({ bot, role }) => (
-                <li key={bot.id} className="flex min-w-0 flex-col gap-2">
-                  {role && <p className="px-1 text-xs font-medium uppercase tracking-wide text-muted-foreground wrap-anywhere">{role}</p>}
+              {team.members.map(({ bot, role, description }) => (
+                <li key={bot.id} className="flex min-w-0 flex-col gap-3 rounded-lg border bg-muted/30 p-3">
+                  {(role || description) && (
+                    <div className="space-y-1 px-1">
+                      {role && <p className="text-sm font-semibold wrap-anywhere">{role}</p>}
+                      {description && <p className="text-sm text-muted-foreground wrap-anywhere">{description}</p>}
+                    </div>
+                  )}
                   <BotCard bot={bot} />
                 </li>
               ))}

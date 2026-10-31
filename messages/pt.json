@@ -1125,12 +1125,12 @@
       "form": {
         "createTitle": "Criar uma equipe",
         "editTitle": "Editar equipe",
-        "intro": "Escolha os bots, dê um papel a cada um e defina quem entrega o quê para quem.",
+        "intro": "Escolha os bots, diga o que cada um faz na equipe e defina quem passa o quê para quem.",
         "title": "Título",
         "titlePlaceholder": "ex.: Pesquisa e publicação",
         "titleRequired": "Dê um título à equipe.",
         "description": "Descrição",
-        "descriptionPlaceholder": "O que esta equipe faz em conjunto?",
+        "descriptionPlaceholder": "O que esta equipe faz em conjunto e como o trabalho flui por ela?",
         "bots": "Bots",
         "botsHint": "Adicione de {min} a {max} bots.",
         "botsSearch": "Buscar bots para adicionar...",
@@ -1141,7 +1141,7 @@
         "roleLabel": "Papel de {bot}",
         "removeBot": "Remover {bot}",
         "handoffs": "Entregas",
-        "handoffsHint": "Cada entrega passa o trabalho de um bot para o próximo.",
+        "handoffsHint": "Cada repasse passa trabalho de um bot para outro. Um bot pode repassar para vários bots e receber trabalho de volta.",
         "from": "De",
         "to": "Para",
         "labelPlaceholder": "O que é entregue, ex.: Resumo da pesquisa",
@@ -1156,7 +1156,14 @@
         "created": "Equipe criada",
         "updated": "Equipe atualizada",
         "invalidBots": "Alguns bots não podem mais ser adicionados. Remova-os e tente novamente.",
-        "rateLimit": "Muitas alterações em equipes. Aguarde um minuto e tente novamente."
+        "rateLimit": "Muitas alterações em equipes. Aguarde um minuto e tente novamente.",
+        "descriptionHint": "Markdown é suportado: **negrito**, listas, links.",
+        "memberDescriptionPlaceholder": "O que este bot faz na equipe (opcional)",
+        "memberDescriptionLabel": "O que {bot} faz na equipe",
+        "handoffDuplicate": "Este repasse já está na lista.",
+        "handoffSelf": "Escolha dois bots diferentes.",
+        "connectEveryone": "Conectar um bot a todos",
+        "connectEveryoneHint": "Adiciona repasses do bot escolhido para todos os outros bots e de volta, como um chefe de gabinete."
       }
     }
   },

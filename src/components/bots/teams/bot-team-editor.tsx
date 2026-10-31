@@ -4,13 +4,14 @@ import { useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ArrowRight, Loader2, Plus, Search, Users, X } from "lucide-react";
+import { ArrowLeftRight, ArrowRight, ChevronDown, Loader2, Plus, Search, Users, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { BotAvatar } from "@/components/bots/bot-avatar";
 import { useBotSearch, type BotSearchResult } from "@/components/bots/bot-pairing-picker";
@@ -20,12 +21,14 @@ import {
   MIN_TEAM_MEMBERS,
   TEAM_DESCRIPTION_MAX_LENGTH,
   TEAM_LINK_LABEL_MAX_LENGTH,
+  TEAM_MEMBER_DESCRIPTION_MAX_LENGTH,
   TEAM_ROLE_MAX_LENGTH,
   TEAM_TITLE_MAX_LENGTH,
   teamLinkIssues,
 } from "@/lib/bots/team-schema";
 import { isBotColor, isBotIconName, type BotColor, type BotIconName } from "@/lib/bots/schema";
 import { getBotTeamUrl } from "@/lib/urls";
+import { cn } from "@/lib/utils";
 
 export interface TeamEditorMember {
   botId: string;
@@ -33,6 +36,8 @@ export interface TeamEditorMember {
   icon: BotIconName | null;
   color: BotColor | null;
   role: string;
+  /** What this bot does in the team */
+  description: string;
 }
 
 export interface TeamEditorLink {
@@ -61,6 +66,8 @@ function TeamMemberPicker({ value, onChange }: { value: TeamEditorMember[]; onCh
   const selected = new Set(value.map((member) => member.botId));
   const options = results.filter((bot) => !selected.has(bot.id)).slice(0, SEARCH_LIMIT);
   const isFull = value.length >= MAX_TEAM_MEMBERS;
+  const update = (index: number, patch: Partial<TeamEditorMember>) =>
+    onChange(value.map((item, i) => (i === index ? { ...item, ...patch } : item)));
 
   const add = (bot: BotSearchResult) => {
     onChange([
@@ -71,6 +78,7 @@ function TeamMemberPicker({ value, onChange }: { value: TeamEditorMember[]; onCh
         icon: bot.icon && isBotIconName(bot.icon) ? bot.icon : null,
         color: bot.color && isBotColor(bot.color) ? bot.color : null,
         role: "",
+        description: "",
       },
     ]);
     setSearch("");
@@ -82,29 +90,38 @@ function TeamMemberPicker({ value, onChange }: { value: TeamEditorMember[]; onCh
       {value.length > 0 && (
         <ul className="space-y-2">
           {value.map((member, index) => (
-            <li key={member.botId} className="flex flex-col gap-2 rounded-md border p-2 sm:flex-row sm:items-center">
-              <div className="flex min-w-0 items-center gap-2 sm:w-48">
+            <li key={member.botId} className="space-y-2 rounded-md border p-2">
+              <div className="flex min-w-0 items-center gap-2">
                 <BotAvatar icon={member.icon} color={member.color} size="sm" />
-                <span className="min-w-0 truncate text-sm font-medium" title={member.title}>{member.title}</span>
-              </div>
-              <div className="flex flex-1 items-center gap-2">
-                <Input
-                  value={member.role}
-                  maxLength={TEAM_ROLE_MAX_LENGTH}
-                  placeholder={t("rolePlaceholder")}
-                  aria-label={t("roleLabel", { bot: member.title })}
-                  onChange={(event) => onChange(value.map((item, i) => (i === index ? { ...item, role: event.target.value } : item)))}
-                />
+                <span className="min-w-0 flex-1 truncate text-sm font-medium" title={member.title}>{member.title}</span>
                 <Button
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive"
+                  className="h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive"
                   onClick={() => onChange(value.filter((item) => item.botId !== member.botId))}
                   aria-label={t("removeBot", { bot: member.title })}
                 >
                   <X className="h-4 w-4" />
                 </Button>
+              </div>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,11rem)_minmax(0,1fr)]">
+                <Input
+                  value={member.role}
+                  maxLength={TEAM_ROLE_MAX_LENGTH}
+                  placeholder={t("rolePlaceholder")}
+                  aria-label={t("roleLabel", { bot: member.title })}
+                  onChange={(event) => update(index, { role: event.target.value })}
+                />
+                <Textarea
+                  value={member.description}
+                  maxLength={TEAM_MEMBER_DESCRIPTION_MAX_LENGTH}
+                  placeholder={t("memberDescriptionPlaceholder")}
+                  aria-label={t("memberDescriptionLabel", { bot: member.title })}
+                  rows={2}
+                  className="min-h-9 resize-y text-sm"
+                  onChange={(event) => update(index, { description: event.target.value })}
+                />
               </div>
             </li>
           ))}
@@ -185,6 +202,24 @@ function TeamHandoffEditor({
   const t = useTranslations("bots.teams.form");
   const titles = new Map(members.map((member) => [member.botId, member.title]));
   const next = nextFreePair(members, value);
+  const memberIds = members.map((member) => member.botId);
+  const rowIssue = (index: number) => {
+    const link = value[index];
+    const earlier = value.slice(0, index).some((other) => other.fromBotId === link.fromBotId && other.toBotId === link.toBotId);
+    return earlier ? t("handoffDuplicate") : teamLinkIssues(memberIds, [link]).length > 0 ? t("handoffSelf") : null;
+  };
+  /** Adds the missing handoffs from the bot to every other member and back, up to the handoff limit */
+  const connectToEveryone = (botId: string) => {
+    const used = new Set(value.map((link) => `${link.fromBotId}>${link.toBotId}`));
+    const added = memberIds
+      .filter((other) => other !== botId)
+      .flatMap((other) => [
+        { fromBotId: botId, toBotId: other, label: "" },
+        { fromBotId: other, toBotId: botId, label: "" },
+      ])
+      .filter((link) => !used.has(`${link.fromBotId}>${link.toBotId}`));
+    onChange([...value, ...added].slice(0, MAX_TEAM_LINKS));
+  };
   const update = (index: number, patch: Partial<TeamEditorLink>) =>
     onChange(value.map((link, i) => (i === index ? { ...link, ...patch } : link)));
 
@@ -212,8 +247,9 @@ function TeamHandoffEditor({
       {value.map((link, index) => {
         const from = titles.get(link.fromBotId) ?? "";
         const to = titles.get(link.toBotId) ?? "";
+        const issue = rowIssue(index);
         return (
-          <div key={index} className="flex flex-col gap-2 rounded-md border p-2">
+          <div key={index} className={cn("flex flex-col gap-2 rounded-md border p-2", issue && "border-destructive/60")}>
             <div className="flex items-center gap-2">
               {memberSelect(link.fromBotId, (fromBotId) => update(index, { fromBotId }), t("from"))}
               <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
@@ -236,19 +272,40 @@ function TeamHandoffEditor({
               aria-label={t("labelLabel", { from, to })}
               onChange={(event) => update(index, { label: event.target.value })}
             />
+            {issue && <p className="text-xs text-destructive">{issue}</p>}
           </div>
         );
       })}
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        disabled={!next || value.length >= MAX_TEAM_LINKS}
-        onClick={() => next && onChange([...value, next])}
-      >
-        <Plus className="h-4 w-4" />
-        {t("addHandoff")}
-      </Button>
+      <div className="flex flex-wrap gap-2">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={!next || value.length >= MAX_TEAM_LINKS}
+          onClick={() => next && onChange([...value, next])}
+        >
+          <Plus className="h-4 w-4" />
+          {t("addHandoff")}
+        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button type="button" variant="outline" size="sm" disabled={!next || value.length >= MAX_TEAM_LINKS}>
+              <ArrowLeftRight className="h-4 w-4" />
+              {t("connectEveryone")}
+              <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            {members.map((member) => (
+              <DropdownMenuItem key={member.botId} onSelect={() => connectToEveryone(member.botId)}>
+                <BotAvatar icon={member.icon} color={member.color} size="sm" className="h-5 w-5" />
+                <span className="truncate">{member.title}</span>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      <p className="text-xs text-muted-foreground">{t("connectEveryoneHint")}</p>
     </div>
   );
 }
@@ -299,7 +356,11 @@ export function BotTeamEditor({ team, trigger }: BotTeamEditorProps) {
         body: JSON.stringify({
           title: value.title,
           description: value.description || null,
-          members: value.members.map((member) => ({ botId: member.botId, role: member.role || null })),
+          members: value.members.map((member) => ({
+            botId: member.botId,
+            role: member.role || null,
+            description: member.description || null,
+          })),
           links: value.links,
         }),
       });
@@ -357,9 +418,17 @@ export function BotTeamEditor({ team, trigger }: BotTeamEditorProps) {
               value={value.description}
               maxLength={TEAM_DESCRIPTION_MAX_LENGTH}
               placeholder={t("form.descriptionPlaceholder")}
-              rows={2}
+              aria-describedby="team-description-hint"
+              rows={5}
+              className="min-h-28 resize-y"
               onChange={(event) => setValue((current) => ({ ...current, description: event.target.value }))}
             />
+            <div id="team-description-hint" className="flex justify-between gap-3 text-xs text-muted-foreground">
+              <span>{t("form.descriptionHint")}</span>
+              <span className="shrink-0 tabular-nums">
+                {value.description.length}/{TEAM_DESCRIPTION_MAX_LENGTH}
+              </span>
+            </div>
           </div>
 
           <div className="space-y-2">

@@ -8,12 +8,15 @@ import { ArrowRight, Star, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BotAvatar, BOT_ICON_COMPONENTS } from "@/components/bots/bot-avatar";
 import type { BotColor } from "@/lib/bots/schema";
+import { TeamMarkdown } from "@/components/bots/teams/team-markdown";
 import {
   TEAM_NODE_RADIUS,
   cellCenter,
   clampToCell,
   edgeGeometry,
+  findHub,
   initialPositions,
+  ringTarget,
   teamGridLayout,
   truncateLabel,
   type GraphCell,
@@ -29,6 +32,8 @@ interface SimNode extends SimulationNodeDatum {
   key: string;
   teamIndex: number;
   member: Member;
+  /** Sits on the ring around its team's hub */
+  onRing: boolean;
 }
 
 interface SimLink extends SimulationLinkDatum<SimNode> {
@@ -56,15 +61,43 @@ const DEFAULT_NODE_STYLE = "fill-muted stroke-border text-muted-foreground";
 
 const nodeKey = (teamIndex: number, botId: string) => `${teamIndex}:${botId}`;
 
-/** Runs d3-force inside each team's cell and re-renders on every tick until the layout settles */
-function useTeamLayout(teams: TeamGraphTeam[], cells: GraphCell[]) {
+/** Pulls each hub team's other members onto the ring around the hub, so the team reads as a star */
+function ringForce(cells: GraphCell[], strength: number) {
+  let nodes: SimNode[] = [];
+  const force = (alpha: number) => {
+    for (const node of nodes) {
+      if (!node.onRing) continue;
+      const target = ringTarget({ x: node.x ?? 0, y: node.y ?? 0 }, cells[node.teamIndex]);
+      node.vx = (node.vx ?? 0) + (target.x - (node.x ?? 0)) * strength * alpha;
+      node.vy = (node.vy ?? 0) + (target.y - (node.y ?? 0)) * strength * alpha;
+    }
+  };
+  force.initialize = (all: SimNode[]) => {
+    nodes = all;
+  };
+  return force;
+}
+
+/**
+ * Runs d3-force inside each team's cell and re-renders on every tick until the layout settles.
+ * A team with a hub keeps the hub in the center and its other members on a ring around it.
+ */
+function useTeamLayout(teams: TeamGraphTeam[], cells: GraphCell[], hubs: number[]) {
   const [positions, setPositions] = useState<Map<string, GraphPoint>>(new Map());
 
   useEffect(() => {
     if (cells.length !== teams.length || cells.length === 0) return;
     const nodes: SimNode[] = teams.flatMap((team, teamIndex) => {
-      const start = initialPositions(team.members.length, cells[teamIndex]);
-      return team.members.map((member, i) => ({ key: nodeKey(teamIndex, member.id), teamIndex, member, ...start[i] }));
+      const hub = hubs[teamIndex];
+      const start = initialPositions(team.members.length, cells[teamIndex], hub);
+      return team.members.map((member, i) => ({
+        key: nodeKey(teamIndex, member.id),
+        teamIndex,
+        member,
+        onRing: hub >= 0 && i !== hub,
+        ...start[i],
+        ...(i === hub && { fx: start[i].x, fy: start[i].y }),
+      }));
     });
     const links: SimLink[] = teams.flatMap((team, teamIndex) =>
       team.links.map((link, linkIndex) => ({
@@ -86,7 +119,14 @@ function useTeamLayout(teams: TeamGraphTeam[], cells: GraphCell[]) {
     const publish = () => setPositions(new Map(nodes.map((node) => [node.key, { x: node.x ?? 0, y: node.y ?? 0 }])));
 
     const simulation = forceSimulation(nodes)
-      .force("link", forceLink<SimNode, SimLink>(links).id((node) => node.key).distance(TEAM_NODE_RADIUS * 5).strength(0.4))
+      .force(
+        "link",
+        forceLink<SimNode, SimLink>(links)
+          .id((node) => node.key)
+          .distance(TEAM_NODE_RADIUS * 5)
+          .strength((link) => (hubs[link.teamIndex] >= 0 ? 0.05 : 0.4))
+      )
+      .force("ring", ringForce(cells, 0.3))
       .force("charge", forceManyBody<SimNode>().strength(-240).distanceMax(260))
       .force("collide", forceCollide<SimNode>(TEAM_NODE_RADIUS * 2.2))
       .force("x", forceX<SimNode>((node) => cellCenter(cells[node.teamIndex]).x).strength(0.06))
@@ -109,7 +149,7 @@ function useTeamLayout(teams: TeamGraphTeam[], cells: GraphCell[]) {
     return () => {
       simulation.stop();
     };
-  }, [teams, cells]);
+  }, [teams, cells, hubs]);
 
   return positions;
 }
@@ -119,7 +159,7 @@ function GraphNode({ member, point, href }: { member: Member; point: GraphPoint;
   const size = TEAM_NODE_RADIUS;
   const body = (
     <g transform={`translate(${point.x},${point.y})`}>
-      <title>{member.role ? `${member.title} · ${member.role}` : member.title}</title>
+      <title>{[member.role ? `${member.title} · ${member.role}` : member.title, member.description].filter(Boolean).join("\n")}</title>
       <circle r={size} className="fill-background" />
       <circle r={size} strokeWidth={1.5} className={member.color ? NODE_STYLES[member.color] : DEFAULT_NODE_STYLE} />
       <Icon
@@ -179,11 +219,17 @@ export function BotTeamsGraph({ teams, variant = "overview" }: BotTeamsGraphProp
     return () => observer.disconnect();
   }, []);
 
+  const hubs = useMemo(() => teams.map((team) => findHub(team.members.map((m) => m.id), team.links)), [teams]);
   const layout = useMemo(
-    () => teamGridLayout(teams.map((team) => team.members.length), width, { minCellWidth: isOverview ? 300 : width }),
-    [teams, width, isOverview]
+    () =>
+      teamGridLayout(
+        teams.map((team) => team.members.length),
+        width,
+        { minCellWidth: isOverview ? 300 : width, hubs: hubs.map((hub) => hub >= 0) }
+      ),
+    [teams, width, isOverview, hubs]
   );
-  const positions = useTeamLayout(teams, width > 0 ? layout.cells : []);
+  const positions = useTeamLayout(teams, width > 0 ? layout.cells : [], hubs);
 
   const reverseLinks = useMemo(
     () => teams.map((team) => new Set(team.links.map((link) => `${link.fromBotId}>${link.toBotId}`))),
@@ -354,19 +400,20 @@ function TeamDetailPanel({ team, onClose }: { team: TeamGraphTeam; onClose: () =
           <X className="h-4 w-4" />
         </Button>
       </div>
-      {team.description && <p className="text-sm text-muted-foreground wrap-anywhere">{team.description}</p>}
+      {team.description && <TeamMarkdown className="max-h-64 overflow-y-auto text-sm">{team.description}</TeamMarkdown>}
 
       <section className="space-y-2">
         <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("members")}</h3>
         <ul className="space-y-2">
           {team.members.map((member) => (
-            <li key={member.id} className="flex min-w-0 items-center gap-2">
+            <li key={member.id} className="flex min-w-0 items-start gap-2">
               <BotAvatar icon={member.icon} color={member.color} size="sm" />
               <div className="min-w-0">
                 <Link href={getBotUrl(member.id, member.slug)} className="block truncate text-sm font-medium hover:underline">
                   {member.title}
                 </Link>
-                {member.role && <p className="truncate text-xs text-muted-foreground">{member.role}</p>}
+                {member.role && <p className="truncate text-xs font-medium text-muted-foreground">{member.role}</p>}
+                {member.description && <p className="line-clamp-3 text-xs text-muted-foreground wrap-anywhere">{member.description}</p>}
               </div>
             </li>
           ))}

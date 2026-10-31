@@ -1125,12 +1125,12 @@
       "form": {
         "createTitle": "Ekip oluştur",
         "editTitle": "Ekibi düzenle",
-        "intro": "Botları seç, her birine bir rol ver, sonra kimin kime neyi devrettiğini belirle.",
+        "intro": "Botları seç, her birinin ekipte ne yaptığını yaz, sonra kimin kime neyi devrettiğini belirle.",
         "title": "Başlık",
         "titlePlaceholder": "ör. Araştır ve Yayınla",
         "titleRequired": "Ekibe bir başlık ver.",
         "description": "Açıklama",
-        "descriptionPlaceholder": "Bu ekip birlikte ne yapıyor?",
+        "descriptionPlaceholder": "Bu ekip birlikte ne yapıyor ve iş ekip içinde nasıl akıyor?",
         "bots": "Botlar",
         "botsHint": "{min} ile {max} arasında bot ekle.",
         "botsSearch": "Eklenecek bot ara...",
@@ -1141,7 +1141,7 @@
         "roleLabel": "{bot} rolü",
         "removeBot": "{bot} kaldır",
         "handoffs": "Devirler",
-        "handoffsHint": "Her devir, işi bir bottan bir sonrakine aktarır.",
+        "handoffsHint": "Her devir, işi bir bottan diğerine aktarır. Bir bot birden fazla bota devredebilir ve işi geri alabilir.",
         "from": "Kimden",
         "to": "Kime",
         "labelPlaceholder": "Ne devrediliyor, ör. Araştırma özeti",
@@ -1156,7 +1156,14 @@
         "created": "Ekip oluşturuldu",
         "updated": "Ekip güncellendi",
         "invalidBots": "Bazı botlar artık eklenemiyor. Onları kaldırıp tekrar dene.",
-        "rateLimit": "Çok fazla ekip değişikliği. Lütfen bir dakika bekleyip tekrar dene."
+        "rateLimit": "Çok fazla ekip değişikliği. Lütfen bir dakika bekleyip tekrar dene.",
+        "descriptionHint": "Markdown desteklenir: **kalın**, listeler, bağlantılar.",
+        "memberDescriptionPlaceholder": "Bu botun ekipteki görevi (isteğe bağlı)",
+        "memberDescriptionLabel": "{bot} ekipte ne yapıyor",
+        "handoffDuplicate": "Bu devir zaten listede.",
+        "handoffSelf": "İki farklı bot seç.",
+        "connectEveryone": "Bir botu herkese bağla",
+        "connectEveryoneHint": "Seçilen bottan diğer tüm botlara ve geri devirler ekler; bir genel koordinatör gibi."
       }
     }
   },

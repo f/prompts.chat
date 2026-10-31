@@ -1125,12 +1125,12 @@
       "form": {
         "createTitle": "Crear un equipo",
         "editTitle": "Editar equipo",
-        "intro": "Elige los bots, asigna un rol a cada uno y define quién entrega qué a quién.",
+        "intro": "Elige los bots, indica qué hace cada uno en el equipo y define quién pasa qué a quién.",
         "title": "Título",
         "titlePlaceholder": "p. ej., Investigar y publicar",
         "titleRequired": "Ponle un título al equipo.",
         "description": "Descripción",
-        "descriptionPlaceholder": "¿Qué hace este equipo en conjunto?",
+        "descriptionPlaceholder": "¿Qué hace este equipo en conjunto y cómo fluye el trabajo en él?",
         "bots": "Bots",
         "botsHint": "Añade de {min} a {max} bots.",
         "botsSearch": "Buscar bots para añadir...",
@@ -1141,7 +1141,7 @@
         "roleLabel": "Rol de {bot}",
         "removeBot": "Quitar {bot}",
         "handoffs": "Entregas",
-        "handoffsHint": "Cada entrega pasa el trabajo de un bot al siguiente.",
+        "handoffsHint": "Cada traspaso pasa trabajo de un bot a otro. Un bot puede traspasar a varios bots y recibir trabajo de vuelta.",
         "from": "De",
         "to": "A",
         "labelPlaceholder": "Qué se entrega, p. ej., Informe de investigación",
@@ -1156,7 +1156,14 @@
         "created": "Equipo creado",
         "updated": "Equipo actualizado",
         "invalidBots": "Algunos bots ya no se pueden añadir. Quítalos e inténtalo de nuevo.",
-        "rateLimit": "Demasiados cambios en equipos. Espera un minuto e inténtalo de nuevo."
+        "rateLimit": "Demasiados cambios en equipos. Espera un minuto e inténtalo de nuevo.",
+        "descriptionHint": "Se admite Markdown: **negrita**, listas, enlaces.",
+        "memberDescriptionPlaceholder": "Qué hace este bot en el equipo (opcional)",
+        "memberDescriptionLabel": "Qué hace {bot} en el equipo",
+        "handoffDuplicate": "Este traspaso ya está en la lista.",
+        "handoffSelf": "Elige dos bots distintos.",
+        "connectEveryone": "Conectar un bot con todos",
+        "connectEveryoneHint": "Añade traspasos del bot elegido a todos los demás bots y de vuelta, como un jefe de gabinete."
       }
     }
   },

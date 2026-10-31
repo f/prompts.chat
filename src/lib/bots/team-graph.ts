@@ -9,7 +9,15 @@ export interface TeamGraphTeam {
   description: string | null;
   author: string;
   isFeatured: boolean;
-  members: { id: string; slug: string | null; title: string; icon: BotIconName | null; color: BotColor | null; role: string | null }[];
+  members: {
+    id: string;
+    slug: string | null;
+    title: string;
+    icon: BotIconName | null;
+    color: BotColor | null;
+    role: string | null;
+    description: string | null;
+  }[];
   links: { fromBotId: string; toBotId: string; label: string }[];
 }
 
@@ -33,12 +41,43 @@ export const TEAM_BOX_PADDING = 28;
 const NODE_SLOT_WIDTH = 104;
 const NODE_SLOT_HEIGHT = 84;
 const ARROW_SIZE = 7;
+/** Room below a node for its name and role */
+const NODE_LABEL_SPACE = 30;
+/** Spacing between neighbors on a hub's ring */
+const RING_SLOT = 78;
 
-/** Height of a team box that fits `size` nodes in rows across the given width */
-export function teamCellHeight(size: number, width: number): number {
+/**
+ * The member most others hand work to and from, like a "chief of staff" bot: it is connected to
+ * at least three members, and to more members than anyone else. -1 when the team has no hub.
+ */
+export function findHub(memberIds: readonly string[], links: readonly { fromBotId: string; toBotId: string }[]): number {
+  const neighbors = new Map(memberIds.map((id) => [id, new Set<string>()]));
+  for (const { fromBotId, toBotId } of links) {
+    if (fromBotId === toBotId || !neighbors.has(fromBotId) || !neighbors.has(toBotId)) continue;
+    neighbors.get(fromBotId)!.add(toBotId);
+    neighbors.get(toBotId)!.add(fromBotId);
+  }
+  const counts = memberIds.map((id) => neighbors.get(id)!.size);
+  const most = Math.max(0, ...counts);
+  if (most < 3 || counts.filter((count) => count === most).length > 1) return -1;
+  return counts.indexOf(most);
+}
+
+/** Radius of the ring that fits `count` nodes around a hub */
+function ringRadius(count: number): number {
+  return Math.max(70, (count * RING_SLOT) / (2 * Math.PI));
+}
+
+/**
+ * Height of a team box that fits `size` nodes in rows across the given width, or, for a team with
+ * a hub, the hub and a ring of its neighbors around it
+ */
+export function teamCellHeight(size: number, width: number, hub = false): number {
   const perRow = Math.max(1, Math.floor((width - TEAM_BOX_PADDING * 2) / NODE_SLOT_WIDTH));
   const rows = Math.max(1, Math.ceil(size / perRow));
-  return Math.max(200, TEAM_BOX_HEADER + TEAM_BOX_PADDING * 2 + rows * NODE_SLOT_HEIGHT);
+  const grid = TEAM_BOX_HEADER + TEAM_BOX_PADDING * 2 + rows * NODE_SLOT_HEIGHT;
+  const ring = hub ? TEAM_BOX_HEADER + TEAM_BOX_PADDING * 2 + 2 * ringRadius(size - 1) + NODE_LABEL_SPACE : 0;
+  return Math.max(200, grid, ring);
 }
 
 /**
@@ -48,7 +87,7 @@ export function teamCellHeight(size: number, width: number): number {
 export function teamGridLayout(
   teamSizes: number[],
   width: number,
-  { minCellWidth = 300, gap = 16 }: { minCellWidth?: number; gap?: number } = {}
+  { minCellWidth = 300, gap = 16, hubs = [] }: { minCellWidth?: number; gap?: number; hubs?: boolean[] } = {}
 ): { cells: GraphCell[]; height: number; columns: number } {
   const columns = Math.max(1, Math.min(teamSizes.length || 1, Math.floor((width + gap) / (minCellWidth + gap))));
   const cellWidth = (width - gap * (columns - 1)) / columns;
@@ -56,7 +95,7 @@ export function teamGridLayout(
   let y = 0;
   for (let start = 0; start < teamSizes.length; start += columns) {
     const row = teamSizes.slice(start, start + columns);
-    const rowHeight = Math.max(...row.map((size) => teamCellHeight(size, cellWidth)));
+    const rowHeight = Math.max(...row.map((size, column) => teamCellHeight(size, cellWidth, hubs[start + column])));
     row.forEach((_, column) => cells.push({ x: column * (cellWidth + gap), y, width: cellWidth, height: rowHeight }));
     y += rowHeight + gap;
   }
@@ -83,15 +122,36 @@ export function cellCenter(cell: GraphCell): GraphPoint {
   return { x: cell.x + cell.width / 2, y: (minY + maxY) / 2 };
 }
 
-/** Starting positions: evenly spaced on a circle around the cell's center, first member on the left */
-export function initialPositions(count: number, cell: GraphCell): GraphPoint[] {
+/** The ellipse a hub's neighbors sit on: as wide as the cell allows, leaving room for node labels */
+export function ringRadii(cell: GraphCell): { rx: number; ry: number } {
+  const { minX, maxX, minY, maxY } = nodeBounds(cell);
+  return {
+    rx: Math.max(0, (maxX - minX) / 2 - 8),
+    ry: Math.max(0, (maxY - minY - NODE_LABEL_SPACE) / 2),
+  };
+}
+
+/** Where a hub's neighbors are pulled to: the point of the ring in the direction of `point` */
+export function ringTarget(point: GraphPoint, cell: GraphCell): GraphPoint {
+  const center = cellCenter(cell);
+  const { rx, ry } = ringRadii(cell);
+  const angle = Math.atan2(point.y - center.y, point.x - center.x);
+  return { x: center.x + rx * Math.cos(angle), y: center.y + ry * Math.sin(angle) };
+}
+
+/**
+ * Starting positions, first member on the left: evenly spaced on an ellipse around the cell's
+ * center, or with the hub (an index from findHub) in the center and everyone else around it
+ */
+export function initialPositions(count: number, cell: GraphCell, hub = -1): GraphPoint[] {
   const center = cellCenter(cell);
   if (count === 1) return [center];
-  const { minX, maxX, minY, maxY } = nodeBounds(cell);
-  const rx = Math.max(0, (maxX - minX) / 2 - 8);
-  const ry = Math.max(0, (maxY - minY) / 2 - 8);
+  const { rx, ry } = ringRadii(cell);
+  const ringSize = hub >= 0 ? count - 1 : count;
+  let slot = 0;
   return Array.from({ length: count }, (_, i) => {
-    const angle = Math.PI + (2 * Math.PI * i) / count;
+    if (i === hub) return center;
+    const angle = Math.PI + (2 * Math.PI * slot++) / ringSize;
     return { x: center.x + rx * Math.cos(angle), y: center.y + ry * Math.sin(angle) };
   });
 }

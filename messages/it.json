@@ -1125,12 +1125,12 @@
       "form": {
         "createTitle": "Crea un team",
         "editTitle": "Modifica team",
-        "intro": "Scegli i bot, assegna un ruolo a ciascuno e definisci chi passa cosa a chi.",
+        "intro": "Scegli i bot, indica cosa fa ciascuno nel team, poi definisci chi passa cosa a chi.",
         "title": "Titolo",
         "titlePlaceholder": "es. Ricerca e pubblicazione",
         "titleRequired": "Dai un titolo al team.",
         "description": "Descrizione",
-        "descriptionPlaceholder": "Cosa fa questo team insieme?",
+        "descriptionPlaceholder": "Cosa fa questo team insieme e come scorre il lavoro al suo interno?",
         "bots": "Bot",
         "botsHint": "Aggiungi da {min} a {max} bot.",
         "botsSearch": "Cerca bot da aggiungere...",
@@ -1141,7 +1141,7 @@
         "roleLabel": "Ruolo di {bot}",
         "removeBot": "Rimuovi {bot}",
         "handoffs": "Passaggi",
-        "handoffsHint": "Ogni passaggio trasferisce il lavoro da un bot al successivo.",
+        "handoffsHint": "Ogni passaggio trasferisce il lavoro da un bot a un altro. Un bot può passare il lavoro a più bot e riceverlo indietro.",
         "from": "Da",
         "to": "A",
         "labelPlaceholder": "Cosa viene passato, es. Brief di ricerca",
@@ -1156,7 +1156,14 @@
         "created": "Team creato",
         "updated": "Team aggiornato",
         "invalidBots": "Alcuni bot non possono più essere aggiunti. Rimuovili e riprova.",
-        "rateLimit": "Troppe modifiche ai team. Attendi un minuto e riprova."
+        "rateLimit": "Troppe modifiche ai team. Attendi un minuto e riprova.",
+        "descriptionHint": "Markdown supportato: **grassetto**, elenchi, link.",
+        "memberDescriptionPlaceholder": "Cosa fa questo bot nel team (facoltativo)",
+        "memberDescriptionLabel": "Cosa fa {bot} nel team",
+        "handoffDuplicate": "Questo passaggio è già presente.",
+        "handoffSelf": "Scegli due bot diversi.",
+        "connectEveryone": "Collega un bot a tutti",
+        "connectEveryoneHint": "Aggiunge passaggi dal bot scelto a tutti gli altri bot e ritorno, come un capo di gabinetto."
       }
     }
   },

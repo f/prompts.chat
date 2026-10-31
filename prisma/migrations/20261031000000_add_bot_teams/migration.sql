@@ -3,7 +3,7 @@ CREATE TABLE "bot_teams" (
     "id" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "title" VARCHAR(120) NOT NULL,
-    "description" VARCHAR(1000),
+    "description" VARCHAR(4000),
     "authorId" TEXT NOT NULL,
     "isFeatured" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -18,6 +18,7 @@ CREATE TABLE "bot_team_members" (
     "teamId" TEXT NOT NULL,
     "botId" TEXT NOT NULL,
     "role" VARCHAR(80),
+    "description" VARCHAR(500),
     "order" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "bot_team_members_pkey" PRIMARY KEY ("id")

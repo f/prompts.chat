@@ -1125,12 +1125,12 @@
       "form": {
         "createTitle": "チームを作成",
         "editTitle": "チームを編集",
-        "intro": "ボットを選び、それぞれに役割を与えて、誰が誰に何を引き継ぐかを定義します。",
+        "intro": "ボットを選び、チームでのそれぞれの役割を書き、誰が誰に何を引き継ぐかを決めます。",
         "title": "タイトル",
         "titlePlaceholder": "例: リサーチ & 公開",
         "titleRequired": "チームにタイトルを付けてください。",
         "description": "説明",
-        "descriptionPlaceholder": "このチームは一緒に何をしますか?",
+        "descriptionPlaceholder": "このチームは一緒に何をしますか？作業はどのように流れますか？",
         "bots": "ボット",
         "botsHint": "{min}〜{max} 個のボットを追加してください。",
         "botsSearch": "追加するボットを検索...",
@@ -1141,7 +1141,7 @@
         "roleLabel": "{bot} の役割",
         "removeBot": "{bot} を削除",
         "handoffs": "引き継ぎ",
-        "handoffsHint": "各引き継ぎは、あるボットから次のボットへ作業を渡します。",
+        "handoffsHint": "各引き継ぎは、あるボットから別のボットへ作業を渡します。1つのボットが複数のボットに引き継ぎ、作業を受け取ることもできます。",
         "from": "引き継ぎ元",
         "to": "引き継ぎ先",
         "labelPlaceholder": "引き継ぐ内容 例: リサーチの要約",
@@ -1156,7 +1156,14 @@
         "created": "チームを作成しました",
         "updated": "チームを更新しました",
         "invalidBots": "一部のボットは追加できなくなりました。削除してからもう一度お試しください。",
-        "rateLimit": "チームの変更が多すぎます。1 分待ってからもう一度お試しください。"
+        "rateLimit": "チームの変更が多すぎます。1 分待ってからもう一度お試しください。",
+        "descriptionHint": "Markdown に対応しています：**太字**、リスト、リンク。",
+        "memberDescriptionPlaceholder": "チームでのこのボットの役割（任意）",
+        "memberDescriptionLabel": "チームでの {bot} の役割",
+        "handoffDuplicate": "この引き継ぎはすでにあります。",
+        "handoffSelf": "異なる2つのボットを選んでください。",
+        "connectEveryone": "ボットを全員とつなぐ",
+        "connectEveryoneHint": "選んだボットから他のすべてのボットへの引き継ぎと、その逆を追加します。チーフ・オブ・スタッフのような構成です。"
       }
     }
   },

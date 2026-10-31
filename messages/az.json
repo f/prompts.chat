@@ -1125,12 +1125,12 @@
       "form": {
         "createTitle": "Komanda yarat",
         "editTitle": "Komandanı redaktə et",
-        "intro": "Botları seç, hər birinə rol ver, sonra kimin kimə nəyi ötürdüyünü təyin et.",
+        "intro": "Botları seç, hər birinin komandada nə etdiyini yaz, sonra kimin kimə nəyi ötürdüyünü müəyyənləşdir.",
         "title": "Başlıq",
         "titlePlaceholder": "məs. Araşdır və dərc et",
         "titleRequired": "Komandaya başlıq ver.",
         "description": "Təsvir",
-        "descriptionPlaceholder": "Bu komanda birlikdə nə edir?",
+        "descriptionPlaceholder": "Bu komanda birlikdə nə edir və iş komanda daxilində necə axır?",
         "bots": "Botlar",
         "botsHint": "{min}–{max} bot əlavə et.",
         "botsSearch": "Əlavə etmək üçün bot axtar...",
@@ -1141,7 +1141,7 @@
         "roleLabel": "{bot} rolu",
         "removeBot": "{bot} sil",
         "handoffs": "Ötürmələr",
-        "handoffsHint": "Hər ötürmə işi bir botdan növbətiyə keçirir.",
+        "handoffsHint": "Hər ötürmə işi bir botdan digərinə keçirir. Bir bot bir neçə bota ötürə və işi geri ala bilər.",
         "from": "Kimdən",
         "to": "Kimə",
         "labelPlaceholder": "Nə ötürülür, məs. Araşdırma xülasəsi",
@@ -1156,7 +1156,14 @@
         "created": "Komanda yaradıldı",
         "updated": "Komanda yeniləndi",
         "invalidBots": "Bəzi botlar artıq əlavə edilə bilməz. Onları sil və yenidən cəhd et.",
-        "rateLimit": "Komandalarda çox dəyişiklik. Bir dəqiqə gözlə və yenidən cəhd et."
+        "rateLimit": "Komandalarda çox dəyişiklik. Bir dəqiqə gözlə və yenidən cəhd et.",
+        "descriptionHint": "Markdown dəstəklənir: **qalın**, siyahılar, keçidlər.",
+        "memberDescriptionPlaceholder": "Bu botun komandada etdiyi iş (istəyə bağlı)",
+        "memberDescriptionLabel": "{bot} komandada nə edir",
+        "handoffDuplicate": "Bu ötürmə artıq siyahıdadır.",
+        "handoffSelf": "İki fərqli bot seç.",
+        "connectEveryone": "Botu hamı ilə birləşdir",
+        "connectEveryoneHint": "Seçilmiş botdan bütün digər botlara və geri ötürmələr əlavə edir, aparat rəhbəri kimi."
       }
     }
   },

@@ -1125,12 +1125,12 @@
       "form": {
         "createTitle": "Een team maken",
         "editTitle": "Team bewerken",
-        "intro": "Kies de bots, geef elk een rol en bepaal wie wat aan wie overdraagt.",
+        "intro": "Kies de bots, beschrijf wat elk in het team doet en bepaal wie wat aan wie overdraagt.",
         "title": "Titel",
         "titlePlaceholder": "bijv. Onderzoeken & publiceren",
         "titleRequired": "Geef het team een titel.",
         "description": "Beschrijving",
-        "descriptionPlaceholder": "Wat doet dit team samen?",
+        "descriptionPlaceholder": "Wat doet dit team samen, en hoe stroomt het werk erdoorheen?",
         "bots": "Bots",
         "botsHint": "Voeg {min} tot {max} bots toe.",
         "botsSearch": "Bots zoeken om toe te voegen...",
@@ -1141,7 +1141,7 @@
         "roleLabel": "Rol van {bot}",
         "removeBot": "{bot} verwijderen",
         "handoffs": "Overdrachten",
-        "handoffsHint": "Elke overdracht geeft werk door van de ene bot aan de volgende.",
+        "handoffsHint": "Elke overdracht geeft werk door van de ene bot aan de andere. Een bot kan aan meerdere bots overdragen en werk terugkrijgen.",
         "from": "Van",
         "to": "Naar",
         "labelPlaceholder": "Wat wordt overgedragen, bijv. Onderzoeksbriefing",
@@ -1156,7 +1156,14 @@
         "created": "Team gemaakt",
         "updated": "Team bijgewerkt",
         "invalidBots": "Sommige bots kunnen niet meer worden toegevoegd. Verwijder ze en probeer het opnieuw.",
-        "rateLimit": "Te veel wijzigingen aan teams. Wacht een minuut en probeer het opnieuw."
+        "rateLimit": "Te veel wijzigingen aan teams. Wacht een minuut en probeer het opnieuw.",
+        "descriptionHint": "Markdown wordt ondersteund: **vet**, lijsten, links.",
+        "memberDescriptionPlaceholder": "Wat deze bot in het team doet (optioneel)",
+        "memberDescriptionLabel": "Wat {bot} in het team doet",
+        "handoffDuplicate": "Deze overdracht staat al in de lijst.",
+        "handoffSelf": "Kies twee verschillende bots.",
+        "connectEveryone": "Bot met iedereen verbinden",
+        "connectEveryoneHint": "Voegt overdrachten toe van de gekozen bot naar alle andere bots en terug, zoals een stafchef."
       }
     }
   },

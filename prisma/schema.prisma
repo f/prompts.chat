@@ -429,7 +429,8 @@ model BotTeam {
   id          String          @id @default(cuid())
   slug        String          @unique
   title       String          @db.VarChar(120)
-  description String?         @db.VarChar(1000)
+  /// Markdown
+  description String?         @db.VarChar(4000)
   authorId    String
   isFeatured  Boolean         @default(false)
   createdAt   DateTime        @default(now())
@@ -444,16 +445,18 @@ model BotTeam {
 }
 
 model BotTeamMember {
-  id        String        @id @default(cuid())
-  teamId    String
-  botId     String
+  id          String        @id @default(cuid())
+  teamId      String
+  botId       String
   /// What the bot does in this team, e.g. "Researcher"
-  role      String?       @db.VarChar(80)
-  order     Int           @default(0)
-  team      BotTeam       @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  bot       Prompt        @relation(fields: [botId], references: [id], onDelete: Cascade)
-  linksFrom BotTeamLink[] @relation("BotTeamLinkFrom")
-  linksTo   BotTeamLink[] @relation("BotTeamLinkTo")
+  role        String?       @db.VarChar(80)
+  /// What this bot does in the team, in a sentence or two
+  description String?       @db.VarChar(500)
+  order       Int           @default(0)
+  team        BotTeam       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  bot         Prompt        @relation(fields: [botId], references: [id], onDelete: Cascade)
+  linksFrom   BotTeamLink[] @relation("BotTeamLinkFrom")
+  linksTo     BotTeamLink[] @relation("BotTeamLinkTo")
 
   @@unique([teamId, botId])
   @@index([botId])

@@ -4,14 +4,18 @@ export const MAX_TEAM_MEMBERS = 12;
 export const MIN_TEAM_MEMBERS = 2;
 export const MAX_TEAM_LINKS = 40;
 export const TEAM_TITLE_MAX_LENGTH = 120;
-export const TEAM_DESCRIPTION_MAX_LENGTH = 1000;
+/** Team descriptions are markdown */
+export const TEAM_DESCRIPTION_MAX_LENGTH = 4000;
 export const TEAM_ROLE_MAX_LENGTH = 80;
+export const TEAM_MEMBER_DESCRIPTION_MAX_LENGTH = 500;
 export const TEAM_LINK_LABEL_MAX_LENGTH = 200;
 
 export const botTeamMemberInputSchema = z.object({
   botId: z.string().trim().min(1),
   /** What the bot does in this team, e.g. "Researcher" */
   role: z.string().trim().max(TEAM_ROLE_MAX_LENGTH).nullish(),
+  /** What this bot does in the team, in a sentence or two */
+  description: z.string().trim().max(TEAM_MEMBER_DESCRIPTION_MAX_LENGTH).nullish(),
 });
 
 /** A directed handoff: fromBotId passes `label` (what is handed off) to toBotId */
@@ -65,3 +69,15 @@ export const botTeamInputSchema = z
 export type BotTeamInput = z.output<typeof botTeamInputSchema>;
 export type BotTeamMemberInput = z.output<typeof botTeamMemberInputSchema>;
 export type BotTeamLinkInput = z.output<typeof botTeamLinkInputSchema>;
+
+/** Markdown reduced to plain text, for excerpts and meta descriptions */
+export function markdownToPlainText(markdown: string): string {
+  return markdown
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/^\s{0,3}(#{1,6}|>|[-*+]|\d+[.)])\s+/gm, "")
+    .replace(/(\*\*|__|\*|_|~~|`)(.+?)\1/g, "$2")
+    .replace(/\s+/g, " ")
+    .trim();
+}

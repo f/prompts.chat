@@ -70,8 +70,8 @@ function teamRecord(overrides: Record<string, unknown> = {}) {
     updatedAt: new Date("2026-02-01T00:00:00Z"),
     author: { username: "alice", name: "Alice", avatar: null, verified: false },
     members: [
-      { role: "Researcher", bot: bot("a") },
-      { role: null, bot: bot("b", { botPlatforms: ["HERMES"] }) },
+      { role: "Researcher", description: "Finds sources", bot: bot("a") },
+      { role: null, description: null, bot: bot("b", { botPlatforms: ["HERMES"] }) },
     ],
     links: [{ fromBotId: "a", toBotId: "b", label: "Brief" }],
     ...overrides,
@@ -176,7 +176,7 @@ describe("MCP team tools", () => {
 
     const { isError, data } = await callTool("save_team", {
       title: "Research crew",
-      members: [{ bot: "a_bot-a", role: "Researcher" }, { bot: "b" }],
+      members: [{ bot: "a_bot-a", role: "Researcher", description: "Finds sources" }, { bot: "b" }],
       handoffs: [{ from: "a", to: "b", label: "Brief" }],
     });
 
@@ -184,7 +184,14 @@ describe("MCP team tools", () => {
     expect(data).toMatchObject({ success: true, action: "created", team: { slug: "research-crew" } });
     expect(db.botTeam.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({ members: { create: [{ botId: "a", role: "Researcher", order: 0 }, { botId: "b", role: null, order: 1 }] } }),
+        data: expect.objectContaining({
+          members: {
+            create: [
+              { botId: "a", role: "Researcher", description: "Finds sources", order: 0 },
+              { botId: "b", role: null, description: null, order: 1 },
+            ],
+          },
+        }),
       })
     );
   });
@@ -197,6 +204,44 @@ describe("MCP team tools", () => {
 
     expect(data).toMatchObject({ success: true, action: "unchanged", changedFields: [] });
     expect(db.$transaction).not.toHaveBeenCalled();
+  });
+
+  it("get_team returns what each member does in the team", async () => {
+    await connect(null);
+    const { data } = await callTool("get_team", { slug: "research-crew" });
+    expect(data.members.map((m: { role: string | null; description: string | null }) => [m.role, m.description])).toEqual([
+      ["Researcher", "Finds sources"],
+      [null, null],
+    ]);
+  });
+
+  it("save_team saves a hub team with handoffs to every member and back", async () => {
+    const ids = ["chief", "a", "b", "c"];
+    vi.mocked(db.botTeam.findFirst).mockResolvedValue(null);
+    vi.mocked(db.prompt.findMany).mockResolvedValue(ids.map((id) => ({ id })) as never);
+    vi.mocked(db.botTeam.create).mockResolvedValue({ id: "team-1" } as never);
+    await connect(alice);
+
+    const handoffs = ids.slice(1).flatMap((id) => [
+      { from: "chief", to: id, label: "Task" },
+      { from: id, to: "chief", label: "Result" },
+    ]);
+    const { isError, data } = await callTool("save_team", {
+      title: "Chief of staff",
+      description: "## How it works\nThe **chief** routes every request.",
+      members: ids.map((bot) => ({ bot, ...(bot === "chief" && { role: "Chief of staff", description: "Routes work and merges results" }) })),
+      handoffs,
+    });
+
+    expect(isError).toBe(false);
+    expect(data.action).toBe("created");
+    const [{ data: links }] = vi.mocked(db.botTeamLink.createMany).mock.calls[0] as unknown as [{ data: { fromBotId: string; toBotId: string }[] }];
+    expect(links).toHaveLength(6);
+    expect(links.filter((link) => link.fromBotId === "chief")).toHaveLength(3);
+    expect(links.filter((link) => link.toBotId === "chief")).toHaveLength(3);
+    expect(vi.mocked(db.botTeam.create).mock.calls[0][0]).toMatchObject({
+      data: { description: "## How it works\nThe **chief** routes every request." },
+    });
   });
 
   it("save_team rejects invalid handoffs", async () => {

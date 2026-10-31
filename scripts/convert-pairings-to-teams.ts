@@ -84,7 +84,14 @@ async function main() {
           title: team.title,
           description: team.description,
           authorId: team.authorId,
-          members: { create: team.members.map((member, order) => ({ botId: member.botId, role: member.role ?? null, order })) },
+          members: {
+            create: team.members.map((member, order) => ({
+              botId: member.botId,
+              role: member.role ?? null,
+              description: member.description ?? null,
+              order,
+            })),
+          },
         },
         select: { id: true },
       });

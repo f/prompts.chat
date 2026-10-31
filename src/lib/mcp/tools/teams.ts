@@ -7,6 +7,7 @@ import {
   MIN_TEAM_MEMBERS,
   TEAM_DESCRIPTION_MAX_LENGTH,
   TEAM_LINK_LABEL_MAX_LENGTH,
+  TEAM_MEMBER_DESCRIPTION_MAX_LENGTH,
   TEAM_ROLE_MAX_LENGTH,
   TEAM_TITLE_MAX_LENGTH,
   getTeam,
@@ -45,7 +46,12 @@ const teamDetailOutput = z.looseObject({
   isFeatured: z.boolean(),
   author: z.looseObject({ username: z.string(), name: z.string().nullable() }),
   members: z.array(
-    teamMemberOutput.extend({ slug: z.string().nullable(), platforms: z.array(z.string()), link: z.string() })
+    teamMemberOutput.extend({
+      slug: z.string().nullable(),
+      description: z.string().nullable(),
+      platforms: z.array(z.string()),
+      link: z.string(),
+    })
   ),
   handoffs: z.array(
     z.looseObject({ from: z.string(), to: z.string(), fromName: z.string(), toName: z.string(), label: z.string() })
@@ -71,7 +77,7 @@ export function registerTeamTools(server: McpServer, ctx: McpContext) {
       description:
         "List bot teams on prompts.chat (/bots/teams): groups of bots that hand work off to each other, featured first, then newest. " +
         "Optionally filter by keywords matched against the team title, description and member bot names. " +
-        "Returns small summaries (members with roles, handoff count); call get_team for the handoff flow and install prompt.",
+        "Returns small summaries (a plain-text excerpt of the description, members with roles, handoff count); call get_team for the full markdown description, what each member does, the handoff flow and the install prompt.",
       kind: "read",
       inputSchema: {
         query: z.string().optional().describe("Keywords; separate alternatives with commas"),
@@ -105,7 +111,7 @@ export function registerTeamTools(server: McpServer, ctx: McpContext) {
       name: "get_team",
       title: "Get Bot Team",
       description:
-        "Get a bot team by slug or id: its members with roles, the directed handoffs between them (what each bot passes to the next), and the platforms its bots run on. " +
+        "Get a bot team by slug or id: its markdown description, its members with roles and what each does in the team, the directed handoffs between them (what each bot passes to the next; one bot may hand off to many and back), and the platforms its bots run on. " +
         "Pass `platform` to also get one install prompt that sets up every member on that platform and wires up the handoffs. " +
         "Member bots link to their prompts-chat://bots resources; call get_bot for a member's full definition.",
       kind: "read",
@@ -158,7 +164,8 @@ export function registerTeamTools(server: McpServer, ctx: McpContext) {
         "Idempotent upsert: updates your team matching `id`, else `slug`, else `title` (case-insensitive), and creates a new team only when none matches; " +
         "calling it again with the same team changes nothing (action \"unchanged\"). " +
         `A team has ${MIN_TEAM_MEMBERS}-${MAX_TEAM_MEMBERS} member bots (ids from search_bots or list_my_bots; public bots or your own) and directed handoffs between members. ` +
-        "On update, members replace the stored members; omitted handoffs keep the stored ones between bots that stay, and an omitted description keeps the stored one. " +
+        "Handoffs may be N-to-N, e.g. a coordinator bot that hands off to every member and gets results back. " +
+        "On update, members replace the stored members; omitted handoffs keep the stored ones between bots that stay, and an omitted team or member description keeps the stored one. " +
         "Returns the action, the changed fields and the saved team. Requires API key authentication.",
       kind: "write",
       requiresAuth: true,
@@ -167,12 +174,25 @@ export function registerTeamTools(server: McpServer, ctx: McpContext) {
         id: z.string().optional().describe("Id of your existing team to update. Fails if it is not one of your teams."),
         slug: z.string().optional().describe("Slug of your existing team to update. Falls back to matching by title."),
         title: z.string().trim().min(1).max(TEAM_TITLE_MAX_LENGTH).describe("Team title"),
-        description: z.string().trim().max(TEAM_DESCRIPTION_MAX_LENGTH).nullable().optional().describe("What the team does; null clears it"),
+        description: z
+          .string()
+          .trim()
+          .max(TEAM_DESCRIPTION_MAX_LENGTH)
+          .nullable()
+          .optional()
+          .describe("What the team does and how it works, in markdown; null clears it"),
         members: z
           .array(
             z.object({
               bot: z.string().trim().min(1).describe("Bot id (or \"id_slug\" URL segment)"),
-              role: z.string().trim().max(TEAM_ROLE_MAX_LENGTH).optional().describe("What the bot does in the team, e.g. \"Researcher\""),
+              role: z.string().trim().max(TEAM_ROLE_MAX_LENGTH).optional().describe("The bot's role in the team, e.g. \"Researcher\""),
+              description: z
+                .string()
+                .trim()
+                .max(TEAM_MEMBER_DESCRIPTION_MAX_LENGTH)
+                .nullable()
+                .optional()
+                .describe("What this bot does in the team, in a sentence or two; null clears it"),
             })
           )
           .min(MIN_TEAM_MEMBERS)
@@ -199,7 +219,11 @@ export function registerTeamTools(server: McpServer, ctx: McpContext) {
       failureMessage: "Failed to save team",
     },
     async ({ id, slug, title, description, members, handoffs }, { user }) => {
-      const memberInputs = members.map((member) => ({ botId: extractBotId(member.bot), role: member.role || null }));
+      const memberInputs = members.map((member) => ({
+        botId: extractBotId(member.bot),
+        role: member.role || null,
+        description: member.description === undefined ? undefined : member.description || null,
+      }));
       if (new Set(memberInputs.map((m) => m.botId)).size !== memberInputs.length) {
         throw new ToolError("validation_error", "Each bot can only be added to a team once");
       }

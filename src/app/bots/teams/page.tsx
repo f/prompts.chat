@@ -10,7 +10,7 @@ import { BotAvatar } from "@/components/bots/bot-avatar";
 import { BotTeamsGraph } from "@/components/bots/teams/bot-teams-graph";
 import { CreateTeamButton } from "@/components/bots/teams/bot-team-editor";
 import { JsonLd, breadcrumbSchema, collectionPageSchema } from "@/components/seo/structured-data";
-import { listTeams, toTeamGraphTeam } from "@/lib/bots/teams";
+import { listTeams, teamExcerpt, toTeamGraphTeam } from "@/lib/bots/teams";
 import { buildPageMetadata } from "@/lib/seo";
 import { getBotTeamUrl } from "@/lib/urls";
 
@@ -110,7 +110,9 @@ export default async function BotTeamsPage({ searchParams }: BotTeamsPageProps) 
                       <h3 className="min-w-0 font-medium wrap-anywhere">{team.title}</h3>
                       {team.isFeatured && <Star className="h-4 w-4 shrink-0 fill-yellow-500 text-yellow-500" aria-label={t("featured")} />}
                     </div>
-                    {team.description && <p className="line-clamp-2 text-sm text-muted-foreground wrap-anywhere">{team.description}</p>}
+                    {team.description && (
+                      <p className="line-clamp-3 text-sm leading-relaxed text-foreground/80 wrap-anywhere">{teamExcerpt(team.description)}</p>
+                    )}
                     <div className="mt-auto flex items-center justify-between gap-2">
                       <div className="flex -space-x-1.5" aria-hidden="true">
                         {team.members.slice(0, 6).map(({ bot }) => (

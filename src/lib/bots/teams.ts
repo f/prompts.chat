@@ -20,7 +20,13 @@ import {
 } from "./index";
 import { buildBundleInstallOptions, type BotBundleInstallOption } from "./pairings";
 import type { TeamGraphTeam } from "./team-graph";
-import { teamLinkIssues, type BotTeamInput, type BotTeamLinkInput, type BotTeamMemberInput } from "./team-schema";
+import {
+  markdownToPlainText,
+  teamLinkIssues,
+  type BotTeamInput,
+  type BotTeamLinkInput,
+  type BotTeamMemberInput,
+} from "./team-schema";
 
 export * from "./team-schema";
 
@@ -56,8 +62,8 @@ export interface BotTeamView<B extends { id: string } = BotTeamBot> {
   author: { username: string; name: string | null; avatar: string | null; verified: boolean };
   createdAt: Date;
   updatedAt: Date;
-  /** Members the viewer may see, in team order */
-  members: { bot: B; role: string | null }[];
+  /** Members the viewer may see, in team order, with what each does in the team */
+  members: { bot: B; role: string | null; description: string | null }[];
   /** Handoffs between visible members, in team order */
   links: BotTeamLinkView[];
 }
@@ -95,12 +101,15 @@ const memberOrder = [{ order: "asc" }, { id: "asc" }] satisfies Prisma.BotTeamMe
 
 const teamSummarySelect = {
   ...teamBaseSelect,
-  members: { orderBy: memberOrder, select: { role: true, bot: { select: teamBotSummarySelect } } },
+  members: { orderBy: memberOrder, select: { role: true, description: true, bot: { select: teamBotSummarySelect } } },
 } satisfies Prisma.BotTeamSelect;
 
 const teamDetailSelect = {
   ...teamBaseSelect,
-  members: { orderBy: memberOrder, select: { role: true, bot: { select: { ...botSelect, ...visibilityFields } } } },
+  members: {
+    orderBy: memberOrder,
+    select: { role: true, description: true, bot: { select: { ...botSelect, ...visibilityFields } } },
+  },
 } satisfies Prisma.BotTeamSelect;
 
 type TeamSummaryRecord = Prisma.BotTeamGetPayload<{ select: typeof teamSummarySelect }>;
@@ -125,13 +134,13 @@ function toTeamBot(record: TeamSummaryRecord["members"][number]["bot"]): BotTeam
 
 /** Keeps the members the viewer may see and the handoffs between them */
 export function toTeamView<R extends VisibilityRecord & { id: string }, B extends { id: string }>(
-  record: Omit<TeamSummaryRecord, "members"> & { members: { role: string | null; bot: R }[] },
+  record: Omit<TeamSummaryRecord, "members"> & { members: { role: string | null; description: string | null; bot: R }[] },
   mapBot: (bot: R) => B,
   viewer: TeamViewer | null
 ): BotTeamView<B> {
   const members = record.members
     .filter((member) => canViewTeamBot(member.bot, viewer))
-    .map((member) => ({ bot: mapBot(member.bot), role: member.role || null }));
+    .map((member) => ({ bot: mapBot(member.bot), role: member.role || null, description: member.description || null }));
   const visible = new Set(members.map((member) => member.bot.id));
   return {
     id: record.id,
@@ -226,12 +235,13 @@ export function getTeamInstallPrompt(
   baseUrl: string
 ): string {
   const ids = new Set(members.map((bot) => bot.id));
-  const roles = new Map(team.members.map((member) => [member.bot.id, member.role]));
+  const teamMembers = new Map(team.members.map((member) => [member.bot.id, member]));
   const titles = new Map(members.map((bot) => [bot.id, bot.title]));
   const list = members
     .map((bot, index) => {
-      const role = roles.get(bot.id);
-      return `${index + 1}. "${bot.title}"${role ? ` (${role})` : ""}: ${getBotUrls(bot, baseUrl).markdown}`;
+      const { role, description } = teamMembers.get(bot.id) ?? {};
+      const line = `${index + 1}. "${bot.title}"${role ? ` (${role})` : ""}: ${getBotUrls(bot, baseUrl).markdown}`;
+      return description ? `${line}\n   In this team: ${description}` : line;
     })
     .join("\n");
   const handoffs = team.links
@@ -263,7 +273,15 @@ export function toTeamGraphTeam(team: BotTeamView<BotTeamBot | BotView>): TeamGr
     description: team.description,
     author: team.author.name || team.author.username,
     isFeatured: team.isFeatured,
-    members: team.members.map(({ bot, role }) => ({ id: bot.id, slug: bot.slug, title: bot.title, icon: bot.icon, color: bot.color, role })),
+    members: team.members.map(({ bot, role, description }) => ({
+      id: bot.id,
+      slug: bot.slug,
+      title: bot.title,
+      icon: bot.icon,
+      color: bot.color,
+      role,
+      description,
+    })),
     links: team.links,
   };
 }
@@ -272,13 +290,22 @@ function teamUrl(team: { slug: string }, baseUrl: string) {
   return `${baseUrl}${getBotTeamUrl(team.slug)}`;
 }
 
-/** A small team summary for listings and MCP */
+const EXCERPT_LENGTH = 280;
+
+/** The team description as plain text, cut to about `max` characters */
+export function teamExcerpt(description: string | null, max = EXCERPT_LENGTH): string | null {
+  if (!description) return null;
+  const text = markdownToPlainText(description);
+  return text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text || null;
+}
+
+/** A small team summary for listings and MCP; the description is a plain-text excerpt */
 export function teamSummaryJson(team: BotTeamView<BotTeamBot | BotView>, baseUrl: string) {
   return {
     id: team.id,
     slug: team.slug,
     title: team.title,
-    description: team.description,
+    description: teamExcerpt(team.description),
     author: team.author.name || team.author.username,
     isFeatured: team.isFeatured,
     members: team.members.map(({ bot, role }) => ({ id: bot.id, name: bot.title, role })),
@@ -298,11 +325,12 @@ export function teamToJson(team: BotTeamView<BotView>, baseUrl: string) {
     description: team.description,
     isFeatured: team.isFeatured,
     author: { username: team.author.username, name: team.author.name },
-    members: team.members.map(({ bot, role }) => ({
+    members: team.members.map(({ bot, role, description }) => ({
       id: bot.id,
       slug: bot.slug,
       name: bot.title,
       role,
+      description,
       platforms: bot.platforms,
       link: getBotUrls(bot, baseUrl).page,
     })),
@@ -363,7 +391,12 @@ export async function uniqueTeamSlug(title: string, excludeTeamId?: string): Pro
 }
 
 function memberRows(members: BotTeamMemberInput[]) {
-  return members.map((member, order) => ({ botId: member.botId, role: member.role || null, order }));
+  return members.map((member, order) => ({
+    botId: member.botId,
+    role: member.role || null,
+    description: member.description || null,
+    order,
+  }));
 }
 
 function linkRows(teamId: string, links: BotTeamLinkInput[]) {
@@ -471,6 +504,7 @@ export interface OwnTeamInput {
   title: string;
   /** Undefined keeps the stored description on update; null or "" clears it */
   description?: string | null;
+  /** A member's undefined description keeps the stored one */
   members: BotTeamMemberInput[];
   /** Undefined keeps the stored handoffs between bots that stay in the team */
   links?: BotTeamLinkInput[];
@@ -482,7 +516,7 @@ function comparable(team: Pick<BotTeamInput, "title" | "description" | "members"
   return {
     title: team.title,
     description: team.description || null,
-    members: team.members.map((m) => [m.botId, m.role || null]),
+    members: team.members.map((m) => [m.botId, m.role || null, m.description || null]),
     links: team.links.map((l) => [l.fromBotId, l.toBotId, l.label]),
   };
 }
@@ -492,7 +526,7 @@ export function diffTeam(existing: BotTeamView<{ id: string }>, next: BotTeamInp
   const before = comparable({
     title: existing.title,
     description: existing.description,
-    members: existing.members.map((m) => ({ botId: m.bot.id, role: m.role })),
+    members: existing.members.map((m) => ({ botId: m.bot.id, role: m.role, description: m.description })),
     links: existing.links,
   });
   const after = comparable(next);
@@ -511,10 +545,14 @@ export async function upsertOwnTeam(
   if (input.id && !existing) return fail(404, "not_found", "Team not found or you don't own it");
 
   const memberIds = new Set(input.members.map((m) => m.botId));
+  const stored = new Map((existing?.members ?? []).map((m) => [m.bot.id, m]));
   const next: BotTeamInput = {
     title: input.title,
     description: input.description === undefined ? (existing?.description ?? null) : input.description || null,
-    members: input.members,
+    members: input.members.map((member) => ({
+      ...member,
+      description: member.description === undefined ? (stored.get(member.botId)?.description ?? null) : member.description || null,
+    })),
     links:
       input.links ??
       (existing?.links ?? []).filter((link) => memberIds.has(link.fromBotId) && memberIds.has(link.toBotId)),

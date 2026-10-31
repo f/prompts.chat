@@ -8,14 +8,28 @@ import {
   getTeam,
   getTeamInstallPrompt,
   getTeamPlatforms,
+  teamExcerpt,
   teamLinkIssues,
+  teamSummaryJson,
   teamToJson,
   toTeamView,
   uniqueTeamSlug,
   upsertOwnTeam,
 } from "@/lib/bots/teams";
 import { pairingGroups, teamTitleFromBots, teamsFromPairings, type ConversionBot } from "@/lib/bots/team-conversion";
-import { clampToCell, edgeGeometry, initialPositions, nodeBounds, teamGridLayout, truncateLabel } from "@/lib/bots/team-graph";
+import {
+  TEAM_NODE_RADIUS,
+  cellCenter,
+  clampToCell,
+  edgeGeometry,
+  findHub,
+  initialPositions,
+  nodeBounds,
+  ringTarget,
+  teamCellHeight,
+  teamGridLayout,
+  truncateLabel,
+} from "@/lib/bots/team-graph";
 
 vi.mock("@/lib/db", () => ({
   db: {
@@ -72,9 +86,9 @@ function teamRecord(overrides: Record<string, unknown> = {}) {
     updatedAt: new Date("2026-02-02T00:00:00Z"),
     author: { username: "alice", name: "Alice", avatar: null, verified: false },
     members: [
-      { role: "Researcher", bot: botRecord("a") },
-      { role: "Writer", bot: botRecord("b", { botPlatforms: ["OPENCLAW", "HERMES"] }) },
-      { role: null, bot: botRecord("c", { isPrivate: true, authorId: "user-2" }) },
+      { role: "Researcher", description: "Finds sources", bot: botRecord("a") },
+      { role: "Writer", description: "Writes it up", bot: botRecord("b", { botPlatforms: ["OPENCLAW", "HERMES"] }) },
+      { role: null, description: null, bot: botRecord("c", { isPrivate: true, authorId: "user-2" }) },
     ],
     links: [
       { fromBotId: "a", toBotId: "b", label: "Research brief" },
@@ -203,7 +217,7 @@ describe("team writes", () => {
     const result = await createTeam(alice, {
       title: "Research crew",
       description: "",
-      members: [{ botId: "a", role: "Researcher" }, { botId: "b" }],
+      members: [{ botId: "a", role: "Researcher", description: "Finds sources" }, { botId: "b" }],
       links: [{ fromBotId: "a", toBotId: "b", label: "Brief" }],
     });
 
@@ -214,7 +228,12 @@ describe("team writes", () => {
           slug: "research-crew",
           description: null,
           authorId: "user-1",
-          members: { create: [{ botId: "a", role: "Researcher", order: 0 }, { botId: "b", role: null, order: 1 }] },
+          members: {
+            create: [
+              { botId: "a", role: "Researcher", description: "Finds sources", order: 0 },
+              { botId: "b", role: null, description: null, order: 1 },
+            ],
+          },
         }),
       })
     );
@@ -286,7 +305,11 @@ describe("converting pairings to teams", () => {
       title: "A, B & C",
       description: null,
       authorId: "u1",
-      members: [{ botId: "a", role: null }, { botId: "b", role: null }, { botId: "c", role: null }],
+      members: [
+        { botId: "a", role: null, description: null },
+        { botId: "b", role: null, description: null },
+        { botId: "c", role: null, description: null },
+      ],
       links: [
         { fromBotId: "a", toBotId: "b", label: "Plan" },
         { fromBotId: "b", toBotId: "c", label: "" },
@@ -338,5 +361,133 @@ describe("team graph geometry", () => {
   it("truncates long labels", () => {
     expect(truncateLabel("Research brief", 40)).toBe("Research brief");
     expect(truncateLabel("Research brief", 9)).toBe("Research…");
+  });
+});
+
+describe("member descriptions", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(db.$transaction).mockImplementation((async (fn: (tx: typeof db) => unknown) => fn(db)) as never);
+  });
+
+  it("are part of the team JSON and the install prompt", async () => {
+    vi.mocked(db.botTeam.findUnique).mockResolvedValue(teamRecord() as never);
+    const team = (await getTeam({ slug: "research-crew" }, { id: "user-2" }))!;
+    expect(teamToJson(team, baseUrl).members.map((m) => m.description)).toEqual(["Finds sources", "Writes it up", null]);
+    const prompt = getTeamInstallPrompt(team, team.members.map((m) => m.bot), "OPENCLAW", baseUrl);
+    expect(prompt).toContain('1. "Bot a" (Researcher): ');
+    expect(prompt).toContain("   In this team: Finds sources");
+  });
+
+  it("are kept when omitted on update and cleared with null", async () => {
+    vi.mocked(db.botTeam.findFirst).mockResolvedValue(teamRecord({ members: teamRecord().members.slice(0, 2), links: [] }) as never);
+    vi.mocked(db.prompt.findMany).mockResolvedValue([{ id: "a" }, { id: "b" }] as never);
+    vi.mocked(db.botTeam.findUnique).mockResolvedValue(teamRecord() as never);
+
+    const kept = await upsertOwnTeam(alice, { id: "team-1", title: "Research crew", members: [{ botId: "a", role: "Researcher" }, { botId: "b", role: "Writer" }] });
+    expect(kept).toMatchObject({ ok: true, data: { action: "unchanged" } });
+
+    const cleared = await upsertOwnTeam(alice, {
+      id: "team-1",
+      title: "Research crew",
+      members: [{ botId: "a", role: "Researcher", description: null }, { botId: "b", role: "Writer" }],
+    });
+    expect(cleared).toMatchObject({ ok: true, data: { action: "updated", changedFields: ["members"] } });
+    expect(db.botTeamMember.createMany).toHaveBeenCalledWith({
+      data: [
+        { botId: "a", role: "Researcher", description: null, order: 0, teamId: "team-1" },
+        { botId: "b", role: "Writer", description: "Writes it up", order: 1, teamId: "team-1" },
+      ],
+    });
+  });
+});
+
+describe("markdown team descriptions", () => {
+  it("are reduced to a plain-text excerpt for summaries", () => {
+    expect(teamExcerpt("## How it works\n\n- **Plan** the [work](https://x.test)\n- Ship `it`")).toBe("How it works Plan the work Ship it");
+    expect(teamExcerpt("word ".repeat(100), 20)).toBe("word word word word…");
+    expect(teamExcerpt(null)).toBeNull();
+
+    const summary = teamSummaryJson(
+      toTeamView(teamRecord({ description: "**Bold** " + "x".repeat(400) }) as never, (bot) => bot as never, null) as never,
+      baseUrl
+    );
+    expect(summary.description?.startsWith("Bold x")).toBe(true);
+    expect(summary.description!.length).toBeLessThanOrEqual(280);
+  });
+
+  it("allow up to 4000 characters", () => {
+    const team = { title: "Crew", members: [{ botId: "a" }, { botId: "b" }] };
+    expect(botTeamInputSchema.safeParse({ ...team, description: "x".repeat(4000) }).success).toBe(true);
+    expect(botTeamInputSchema.safeParse({ ...team, description: "x".repeat(4001) }).success).toBe(false);
+  });
+});
+
+describe("hub teams", () => {
+  // A "chief of staff" that hands work to every specialist and gets results back
+  const ids = ["chief", "research", "writing", "design", "ops"];
+  const links = ids.slice(1).flatMap((id) => [
+    { fromBotId: "chief", toBotId: id, label: `Brief for ${id}` },
+    { fromBotId: id, toBotId: "chief", label: `Result from ${id}` },
+  ]);
+
+  it("are valid teams, with many handoffs from and to one bot", () => {
+    const parsed = botTeamInputSchema.safeParse({ title: "Chief of staff", members: ids.map((botId) => ({ botId })), links });
+    expect(parsed.success).toBe(true);
+    expect(teamLinkIssues(ids, links)).toEqual([]);
+  });
+
+  it("find the hub, and no hub in chains or with ties", () => {
+    expect(findHub(ids, links)).toBe(0);
+    expect(findHub(["x", ...ids], links)).toBe(1);
+    expect(findHub(["a", "b", "c", "d"], [
+      { fromBotId: "a", toBotId: "b" },
+      { fromBotId: "b", toBotId: "c" },
+      { fromBotId: "c", toBotId: "d" },
+    ])).toBe(-1);
+    const twoHubs = ["a", "b", "c", "d"].flatMap((from) => ["a", "b", "c", "d"].filter((to) => to !== from).map((to) => ({ fromBotId: from, toBotId: to })));
+    expect(findHub(["a", "b", "c", "d"], twoHubs)).toBe(-1);
+  });
+
+  it("put the hub in the center and the other bots on a ring around it, apart from each other", () => {
+    const width = 900;
+    const height = teamCellHeight(ids.length, width, true);
+    expect(height).toBeGreaterThan(teamCellHeight(ids.length, width));
+    const cell = { x: 0, y: 0, width, height };
+    const points = initialPositions(ids.length, cell, 0);
+    expect(points[0]).toEqual(cellCenter(cell));
+
+    const bounds = nodeBounds(cell);
+    for (const point of points.slice(1)) {
+      expect(point.x).toBeGreaterThanOrEqual(bounds.minX);
+      expect(point.x).toBeLessThanOrEqual(bounds.maxX);
+      expect(point.y).toBeGreaterThanOrEqual(bounds.minY);
+      expect(point.y).toBeLessThanOrEqual(bounds.maxY);
+      expect(Math.hypot(point.x - points[0].x, point.y - points[0].y)).toBeGreaterThan(TEAM_NODE_RADIUS * 3);
+      const target = ringTarget(point, cell);
+      expect(Math.hypot(target.x - point.x, target.y - point.y)).toBeLessThan(0.001);
+    }
+    for (let i = 1; i < points.length; i++) {
+      for (let j = i + 1; j < points.length; j++) {
+        expect(Math.hypot(points[i].x - points[j].x, points[i].y - points[j].y)).toBeGreaterThan(TEAM_NODE_RADIUS * 2);
+      }
+    }
+  });
+
+  it("get taller boxes in the grid", () => {
+    const plain = teamGridLayout([ids.length], 900, { minCellWidth: 900 });
+    const hub = teamGridLayout([ids.length], 900, { minCellWidth: 900, hubs: [true] });
+    expect(hub.height).toBeGreaterThan(plain.height);
+  });
+
+  it("draw the two directions of a handoff pair as curves on opposite sides", () => {
+    const chief = { x: 0, y: 0 };
+    const specialist = { x: 200, y: 0 };
+    const out = edgeGeometry(chief, specialist, { curve: 22 })!;
+    const back = edgeGeometry(specialist, chief, { curve: 22 })!;
+    expect(out.d).toContain("Q");
+    expect(back.d).toContain("Q");
+    expect(Math.sign(out.mid.y)).toBe(-Math.sign(back.mid.y));
+    expect(Math.abs(out.mid.y - back.mid.y)).toBeGreaterThan(20);
   });
 });

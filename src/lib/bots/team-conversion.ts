@@ -129,7 +129,7 @@ export function teamsFromPairings(
       title: teamTitleFromBots(group.map((bot) => bot.title)),
       description: null,
       authorId: groupAuthor(group),
-      members: ids.map((botId) => ({ botId, role: null })),
+      members: ids.map((botId) => ({ botId, role: null, description: null })),
       links,
     });
   }

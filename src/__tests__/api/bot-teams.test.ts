@@ -71,15 +71,15 @@ const team = {
   updatedAt: new Date("2026-02-01T00:00:00Z"),
   author: { username: "owner", name: "Owner", avatar: null, verified: false },
   members: [
-    { role: "Researcher", bot: bot("a") },
-    { role: null, bot: bot("b") },
+    { role: "Researcher", description: "Finds sources", bot: bot("a") },
+    { role: null, description: null, bot: bot("b") },
   ],
   links: [{ fromBotId: "a", toBotId: "b", label: "Brief" }],
 };
 
 const validBody = {
   title: "Research crew",
-  members: [{ botId: "a", role: "Researcher" }, { botId: "b" }],
+  members: [{ botId: "a", role: "Researcher", description: "Finds sources" }, { botId: "b" }],
   links: [{ fromBotId: "a", toBotId: "b", label: "Brief" }],
 };
 
@@ -187,8 +187,8 @@ describe("bot teams API", () => {
       expect(db.botTeamLink.deleteMany).toHaveBeenCalledWith({ where: { teamId: "team-1" } });
       expect(db.botTeamMember.createMany).toHaveBeenCalledWith({
         data: [
-          { botId: "a", role: "Researcher", order: 0, teamId: "team-1" },
-          { botId: "b", role: null, order: 1, teamId: "team-1" },
+          { botId: "a", role: "Researcher", description: "Finds sources", order: 0, teamId: "team-1" },
+          { botId: "b", role: null, description: null, order: 1, teamId: "team-1" },
         ],
       });
     });

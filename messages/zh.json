@@ -1125,12 +1125,12 @@
       "form": {
         "createTitle": "创建团队",
         "editTitle": "编辑团队",
-        "intro": "选择机器人,为每个机器人指定角色,然后定义谁把什么交给谁。",
+        "intro": "选择机器人，写下每个机器人在团队中做什么，然后定义谁把什么交给谁。",
         "title": "标题",
         "titlePlaceholder": "例如:调研与发布",
         "titleRequired": "请为团队添加标题。",
         "description": "描述",
-        "descriptionPlaceholder": "这个团队一起做什么?",
+        "descriptionPlaceholder": "这个团队一起做什么？工作如何在其中流转？",
         "bots": "机器人",
         "botsHint": "添加 {min} 到 {max} 个机器人。",
         "botsSearch": "搜索要添加的机器人...",
@@ -1141,7 +1141,7 @@
         "roleLabel": "{bot} 的角色",
         "removeBot": "移除 {bot}",
         "handoffs": "交接",
-        "handoffsHint": "每个交接都会把工作从一个机器人传给下一个。",
+        "handoffsHint": "每次交接都会把工作从一个机器人交给另一个。一个机器人可以交接给多个机器人，并收回工作。",
         "from": "从",
         "to": "到",
         "labelPlaceholder": "交接的内容,例如:调研摘要",
@@ -1156,7 +1156,14 @@
         "created": "团队已创建",
         "updated": "团队已更新",
         "invalidBots": "部分机器人已无法添加。请移除后重试。",
-        "rateLimit": "团队更改过于频繁。请等待一分钟后重试。"
+        "rateLimit": "团队更改过于频繁。请等待一分钟后重试。",
+        "descriptionHint": "支持 Markdown：**粗体**、列表、链接。",
+        "memberDescriptionPlaceholder": "这个机器人在团队中做什么（可选）",
+        "memberDescriptionLabel": "{bot} 在团队中做什么",
+        "handoffDuplicate": "此交接已在列表中。",
+        "handoffSelf": "请选择两个不同的机器人。",
+        "connectEveryone": "将一个机器人与所有人连接",
+        "connectEveryoneHint": "添加从所选机器人到其他所有机器人以及反向的交接，就像幕僚长一样。"
       }
     }
   },

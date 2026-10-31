@@ -1125,12 +1125,12 @@
       "form": {
         "createTitle": "Team erstellen",
         "editTitle": "Team bearbeiten",
-        "intro": "Wähle die Bots, gib jedem eine Rolle und lege fest, wer was an wen übergibt.",
+        "intro": "Wähle die Bots aus, beschreibe, was jeder im Team tut, und lege fest, wer was an wen übergibt.",
         "title": "Titel",
         "titlePlaceholder": "z. B. Recherche & Veröffentlichung",
         "titleRequired": "Gib dem Team einen Titel.",
         "description": "Beschreibung",
-        "descriptionPlaceholder": "Was macht dieses Team gemeinsam?",
+        "descriptionPlaceholder": "Was macht dieses Team gemeinsam, und wie läuft die Arbeit durch das Team?",
         "bots": "Bots",
         "botsHint": "Füge {min} bis {max} Bots hinzu.",
         "botsSearch": "Bots zum Hinzufügen suchen...",
@@ -1141,7 +1141,7 @@
         "roleLabel": "Rolle von {bot}",
         "removeBot": "{bot} entfernen",
         "handoffs": "Übergaben",
-        "handoffsHint": "Jede Übergabe reicht Arbeit von einem Bot an den nächsten weiter.",
+        "handoffsHint": "Jede Übergabe reicht Arbeit von einem Bot an einen anderen weiter. Ein Bot kann an mehrere Bots übergeben und Arbeit zurückbekommen.",
         "from": "Von",
         "to": "An",
         "labelPlaceholder": "Was wird übergeben, z. B. Recherche-Briefing",
@@ -1156,7 +1156,14 @@
         "created": "Team erstellt",
         "updated": "Team aktualisiert",
         "invalidBots": "Einige Bots können nicht mehr hinzugefügt werden. Entferne sie und versuche es erneut.",
-        "rateLimit": "Zu viele Änderungen an Teams. Bitte warte eine Minute und versuche es erneut."
+        "rateLimit": "Zu viele Änderungen an Teams. Bitte warte eine Minute und versuche es erneut.",
+        "descriptionHint": "Markdown wird unterstützt: **fett**, Listen, Links.",
+        "memberDescriptionPlaceholder": "Was dieser Bot im Team tut (optional)",
+        "memberDescriptionLabel": "Was {bot} im Team tut",
+        "handoffDuplicate": "Diese Übergabe ist bereits vorhanden.",
+        "handoffSelf": "Wähle zwei verschiedene Bots.",
+        "connectEveryone": "Bot mit allen verbinden",
+        "connectEveryoneHint": "Fügt Übergaben vom gewählten Bot an alle anderen Bots und zurück hinzu, wie bei einem Stabschef."
       }
     }
   },
