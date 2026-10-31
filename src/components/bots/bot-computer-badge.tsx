@@ -19,10 +19,12 @@ interface BotComputerBadgeProps {
   className?: string;
   /** Size of the icon box: "sm" in dense lists, "md" next to headings */
   size?: "sm" | "md";
+  /** Set to false inside a link or button, which already takes keyboard focus; the tooltip still shows on hover */
+  focusable?: boolean;
 }
 
 /** Icon-only marker for a bot that needs a cloud computer or the user's own; the meaning shows on hover and focus */
-export function BotComputerBadge({ requirement, className, size = "sm" }: BotComputerBadgeProps) {
+export function BotComputerBadge({ requirement, className, size = "sm", focusable = true }: BotComputerBadgeProps) {
   const t = useTranslations("bots.computer");
   if (!requirement || requirement === "NONE") return null;
   const Icon = COMPUTER_REQUIREMENT_ICONS[requirement];
@@ -32,7 +34,7 @@ export function BotComputerBadge({ requirement, className, size = "sm" }: BotCom
       <TooltipTrigger asChild>
         <span
           role="img"
-          tabIndex={0}
+          tabIndex={focusable ? 0 : undefined}
           aria-label={label}
           className={cn(
             "inline-flex shrink-0 items-center justify-center rounded-md border bg-background text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring",

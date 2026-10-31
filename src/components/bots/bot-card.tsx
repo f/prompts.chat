@@ -109,7 +109,7 @@ export function BotCard({ bot, position }: BotCardProps) {
         {bot.description && <p className="text-sm text-muted-foreground line-clamp-3 wrap-anywhere">{bot.description}</p>}
       </div>
       <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-        <BotComputerBadge requirement={bot.computerRequirement} className="-my-0.5" />
+        <BotComputerBadge requirement={bot.computerRequirement} focusable={false} className="-my-0.5" />
         <span className="min-w-0 wrap-anywhere">@{bot.author.username}</span>
         {scheduled > 0 && (
           <span className="flex items-center gap-1">
