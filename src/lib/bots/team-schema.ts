@@ -84,7 +84,9 @@ export function markdownToPlainText(markdown: string): string {
     .replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1")
     .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
     .replace(/^\s{0,3}(#{1,6}|>|[-*+]|\d+[.)])\s+/gm, "")
-    .replace(/(\*\*|__|\*|_|~~|`)(.+?)\1/g, "$2")
+    .replace(/(\*\*|\*|~~|`)(.+?)\1/g, "$2")
+    // Underscores only mark emphasis at word edges, so snake_case names and URLs keep theirs
+    .replace(/(^|[^\p{L}\p{N}_])(__|_)(?=\S)(.+?)(?<=\S)\2(?![\p{L}\p{N}_])/gu, "$1$3")
     .replace(/\s+/g, " ")
     .trim();
 }

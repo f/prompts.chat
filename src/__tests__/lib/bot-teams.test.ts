@@ -479,6 +479,10 @@ describe("markdown team descriptions", () => {
     expect(teamExcerpt("## How it works\n\n- **Plan** the [work](https://x.test)\n- Ship `it`")).toBe("How it works Plan the work Ship it");
     expect(teamExcerpt("word ".repeat(100), 20)).toBe("word word word word…");
     expect(teamExcerpt(null)).toBeNull();
+    expect(teamExcerpt("Set my_var_name, see https://x.test/a_b_c and MAX_TEAM_LINKS")).toBe(
+      "Set my_var_name, see https://x.test/a_b_c and MAX_TEAM_LINKS"
+    );
+    expect(teamExcerpt("An _emphasised_ and __strong__ word, (_aside_)")).toBe("An emphasised and strong word, (aside)");
 
     const summary = teamSummaryJson(
       toTeamView(teamRecord({ description: "**Bold** " + "x".repeat(400) }) as never, (bot) => bot as never, null) as never,
