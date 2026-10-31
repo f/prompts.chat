@@ -180,6 +180,7 @@ describe("MCP team tools", () => {
     expect(data.handoffs).toEqual([{ from: "a", to: "b", fromName: "Bot a", toName: "Bot b", label: "Brief" }]);
     expect(data.install).toMatchObject({ platform: "OPENCLAW", bots: ["Bot a"], skipped: ["Bot b"] });
     expect(data.install.installPrompt).toContain('Set up the "Research crew" team');
+    expect(data.install.installPrompt).toContain("   Team responsibility: Finds sources");
     expect(JSON.stringify(data)).not.toContain("Secret instructions");
     const links = (result.content as { type: string; uri?: string }[]).filter((c) => c.type === "resource_link");
     expect(links).toHaveLength(2);

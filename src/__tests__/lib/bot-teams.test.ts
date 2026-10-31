@@ -448,7 +448,29 @@ describe("member descriptions", () => {
     expect(teamToJson(team, baseUrl).members.map((m) => m.description)).toEqual(["Finds sources", "Writes it up", null]);
     const prompt = getTeamInstallPrompt(team, team.members.map((m) => m.bot), "OPENCLAW", baseUrl);
     expect(prompt).toContain('1. "Bot a" (Researcher): ');
-    expect(prompt).toContain("   In this team: Finds sources");
+    expect(prompt).toContain('1. "Bot a" (Researcher): https://prompts.chat/bots/a_a-slug.md\n   Team responsibility: Finds sources\n2. "Bot b" (Writer)');
+    expect(prompt).toContain("\n\nTeam description:\nFinds and writes things up\n\nBots:\n1. ");
+    expect(prompt.indexOf("Team description:")).toBeLessThan(prompt.indexOf("Bots:"));
+    expect(prompt).toContain(
+      "Then add the team context to each bot's standing instructions: what the team is for (from the team description above) and, where listed, the bot's team responsibility, as its job within this team."
+    );
+  });
+
+  it("tell the agent to add whichever team context exists to each bot's instructions", async () => {
+    vi.mocked(db.botTeam.findUnique).mockResolvedValue(teamRecord() as never);
+    const team = (await getTeam({ slug: "research-crew" }, { id: "user-2" }))!;
+    const bots = team.members.map((m) => m.bot);
+
+    const noDescription = getTeamInstallPrompt({ ...team, description: null }, bots, "OPENCLAW", baseUrl);
+    expect(noDescription).not.toContain("Team description:");
+    expect(noDescription).toContain("Then add each listed team responsibility to that bot's standing instructions, as its job within this team.");
+
+    const onlyDescription = getTeamInstallPrompt(team, bots.slice(2), "OPENCLAW", baseUrl);
+    expect(onlyDescription).not.toContain("Team responsibility:");
+    expect(onlyDescription).toContain("Then add what the team is for (from the team description above) to each bot's standing instructions");
+
+    const neither = getTeamInstallPrompt({ ...team, description: "  " }, bots.slice(2), "OPENCLAW", baseUrl);
+    expect(neither).not.toMatch(/Team description:|Team responsibility:|Then add/);
   });
 
   it("are kept when omitted on update and cleared with null", async () => {

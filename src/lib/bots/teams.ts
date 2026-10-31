@@ -302,9 +302,13 @@ export function getTeamPlatforms(bots: Pick<BotView, "platforms">[]): BotPlatfor
   return BOT_PLATFORMS.filter((platform) => coverage(platform) > 0).sort((a, b) => coverage(b) - coverage(a));
 }
 
-/** One prompt that sets up the team's bots on a platform, with their roles and handoffs */
+/**
+ * One prompt that sets up the team's bots on a platform: the team description, each bot with its
+ * role and in-team description (added to that bot's instructions as its team responsibility), and
+ * the handoffs between them
+ */
 export function getTeamInstallPrompt(
-  team: Pick<BotTeamView<BotView>, "title" | "members" | "links">,
+  team: Pick<BotTeamView<BotView>, "title" | "description" | "members" | "links">,
   members: BotView[],
   platform: BotPlatform,
   baseUrl: string
@@ -316,18 +320,31 @@ export function getTeamInstallPrompt(
     .map((bot, index) => {
       const { role, description } = teamMembers.get(bot.id) ?? {};
       const line = `${index + 1}. "${bot.title}"${role ? ` (${role})` : ""}${computerListMark(bot.computerRequirement)}: ${getBotUrls(bot, baseUrl).markdown}`;
-      return description ? `${line}\n   In this team: ${description}` : line;
+      return description ? `${line}\n   Team responsibility: ${description.trim()}` : line;
     })
     .join("\n");
   const handoffs = team.links
     .filter((link) => ids.has(link.fromBotId) && ids.has(link.toBotId))
     .map((link) => `- "${titles.get(link.fromBotId)}" hands off to "${titles.get(link.toBotId)}"${link.label ? `: ${link.label}` : ""}`);
 
+  const teamDescription = team.description?.trim();
+  const hasResponsibilities = members.some((bot) => !!teamMembers.get(bot.id)?.description?.trim());
+  const teamContext =
+    teamDescription && hasResponsibilities
+      ? " Then add the team context to each bot's standing instructions: what the team is for (from the team description above) and, where listed, the bot's team responsibility, as its job within this team."
+      : teamDescription
+        ? " Then add what the team is for (from the team description above) to each bot's standing instructions, as the context it works in."
+        : hasResponsibilities
+          ? " Then add each listed team responsibility to that bot's standing instructions, as its job within this team."
+          : "";
+
   return [
-    `Set up the "${team.title}" team: ${members.length === 1 ? "1 bot" : `${members.length} bots`} ${getInstallTarget(platform, members.length)} that hand work off to each other. Install all of them:`,
-    list,
+    `Set up the "${team.title}" team: ${members.length === 1 ? "1 bot" : `${members.length} bots`} ${getInstallTarget(platform, members.length)} that hand work off to each other. Install all of them.`,
+    ...(teamDescription ? [`Team description:\n${teamDescription}`] : []),
+    `Bots:\n${list}`,
     ...(handoffs.length > 0 ? [`Handoffs:\n${handoffs.join("\n")}`] : []),
     "For each bot, go to its URL and create it exactly as described there: adopt its instructions as the standing instructions for that bot, install its skills, and set up each routine with the given schedule or trigger." +
+      teamContext +
       (handoffs.length > 0 ? " Then wire up the handoffs: when a bot finishes its part, it passes what is listed to the next bot." : "") +
       " Ask me to connect each required connector once, even when several bots need it. Confirm each bot when done." +
       computerListNotes(members).map((note) => ` ${note}`).join(""),
