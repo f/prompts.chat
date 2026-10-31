@@ -42,6 +42,7 @@ function bot(id: string, overrides: Record<string, unknown> = {}) {
     botIcon: null,
     botColor: null,
     installUrl: null,
+    computerRequirement: "NONE",
     botConfig: null,
     isPrivate: false,
     isUnlisted: false,

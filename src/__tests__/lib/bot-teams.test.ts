@@ -56,6 +56,7 @@ function botRecord(id: string, overrides: Record<string, unknown> = {}) {
     botIcon: null,
     botColor: null,
     installUrl: null,
+    computerRequirement: "NONE",
     botConfig: { routines: [], skills: [], connectors: [] },
     isPrivate: false,
     isUnlisted: false,

@@ -40,6 +40,7 @@ function bot(id: string, overrides: Record<string, unknown> = {}) {
     botIcon: null,
     botColor: null,
     installUrl: null,
+    computerRequirement: "NONE",
     botConfig: null,
     isPrivate: false,
     isUnlisted: false,
@@ -131,8 +132,8 @@ describe("MCP team tools", () => {
       author: "Alice",
       isFeatured: true,
       members: [
-        { id: "a", name: "Bot a", role: "Researcher" },
-        { id: "b", name: "Bot b", role: null },
+        { id: "a", name: "Bot a", role: "Researcher", computerRequirement: "NONE" },
+        { id: "b", name: "Bot b", role: null, computerRequirement: "NONE" },
       ],
       handoffCount: 1,
       link: "https://prompts.chat/bots/teams/research-crew",
@@ -151,6 +152,28 @@ describe("MCP team tools", () => {
     expect(JSON.stringify(data)).not.toContain("Secret instructions");
     const links = (result.content as { type: string; uri?: string }[]).filter((c) => c.type === "resource_link");
     expect(links).toHaveLength(2);
+  });
+
+  it("get_team shows which members need a computer, in its output and install prompt", async () => {
+    vi.mocked(db.botTeam.findUnique).mockResolvedValue(
+      teamRecord({
+        members: [
+          { role: "Researcher", description: null, bot: bot("a", { computerRequirement: "CLOUD" }) },
+          { role: null, description: null, bot: bot("b", { computerRequirement: "LOCAL" }) },
+        ],
+      }) as never
+    );
+    await connect(null);
+
+    const { isError, data } = await callTool("get_team", { slug: "research-crew", platform: "OPENCLAW" });
+
+    expect(isError).toBe(false);
+    expect(data.members).toEqual([
+      expect.objectContaining({ id: "a", computerRequirement: "CLOUD" }),
+      expect.objectContaining({ id: "b", computerRequirement: "LOCAL" }),
+    ]);
+    expect(data.install.installPrompt).toContain('"Bot a" (Researcher) [needs a cloud computer]');
+    expect(data.install.installPrompt).toContain("Bots that need a cloud computer");
   });
 
   it("reports unknown teams and unsupported platforms", async () => {
