@@ -512,6 +512,7 @@
       "webhooks": "Webhooks",
       "prompts": "Prompts",
       "bots": "Bots",
+      "teams": "Équipes",
       "reports": "Signalements"
     },
     "reports": {
@@ -787,6 +788,26 @@
       "deleted": "Bot supprimé",
       "deleteConfirmTitle": "Supprimer le bot ?",
       "deleteConfirmDescription": "Cela supprime définitivement « {title} ». Cette action est irréversible."
+    },
+    "teamsList": {
+      "title": "Équipes",
+      "description": "Gérez les équipes de bots : retirez-les des listes, modifiez-les ou supprimez-les.",
+      "noTeams": "Aucune équipe trouvée",
+      "open": "Ouvrir",
+      "edit": "Modifier",
+      "unlist": "Retirer des listes",
+      "relist": "Remettre en liste",
+      "updated": "Équipe mise à jour",
+      "deleted": "Équipe supprimée",
+      "deleteConfirmTitle": "Supprimer l'équipe ?",
+      "deleteConfirmDescription": "Cela supprime définitivement « {title} ». Ses bots restent inchangés.",
+      "members": "{count, plural, one {# bot} other {# bots}}",
+      "filters": {
+        "all": "Toutes",
+        "listed": "Répertoriées",
+        "unlisted": "Non répertoriées",
+        "featured": "En vedette"
+      }
     }
   },
   "search": {
@@ -843,7 +864,12 @@
     "noBots": "Aucun bot pour le moment.",
     "noBotsOwner": "Vous n'avez encore créé aucun bot.",
     "createFirstBot": "Créez votre premier bot",
-    "botsCount": "bots"
+    "botsCount": "bots",
+    "teams": "Équipes",
+    "teamsCount": "équipes",
+    "noTeams": "Aucune équipe pour le moment.",
+    "noTeamsOwner": "Vous n'avez encore créé aucune équipe.",
+    "createFirstTeam": "Créez votre première équipe"
   },
   "subscription": {
     "subscribe": "S'abonner",
@@ -1180,7 +1206,13 @@
       "backToTeam": "Retour à l'équipe",
       "pagination": "Pages des équipes",
       "previousPage": "Page précédente",
-      "nextPage": "Page suivante"
+      "nextPage": "Page suivante",
+      "unlisted": "Non répertoriée",
+      "unlistedNotice": "Cette équipe n'est pas répertoriée : elle est masquée des listes, de la recherche et des profils, et seuls son auteur et les administrateurs peuvent l'ouvrir.",
+      "unlist": "Retirer des listes",
+      "relist": "Remettre en liste",
+      "unlistedToast": "Équipe retirée des listes",
+      "relistedToast": "Équipe remise en liste"
     },
     "computer": {
       "cloud": "Nécessite un ordinateur cloud",

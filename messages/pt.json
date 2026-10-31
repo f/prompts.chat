@@ -512,6 +512,7 @@
       "webhooks": "Webhooks",
       "prompts": "Prompts",
       "bots": "Bots",
+      "teams": "Equipes",
       "reports": "Denúncias"
     },
     "reports": {
@@ -787,6 +788,26 @@
       "deleted": "Bot excluído",
       "deleteConfirmTitle": "Excluir bot?",
       "deleteConfirmDescription": "Isto exclui \"{title}\" permanentemente. Não é possível desfazer."
+    },
+    "teamsList": {
+      "title": "Equipes",
+      "description": "Gerencie as equipes de bots: remova da listagem, edite ou exclua.",
+      "noTeams": "Nenhuma equipe encontrada",
+      "open": "Abrir",
+      "edit": "Editar",
+      "unlist": "Remover da listagem",
+      "relist": "Listar novamente",
+      "updated": "Equipe atualizada",
+      "deleted": "Equipe excluída",
+      "deleteConfirmTitle": "Excluir equipe?",
+      "deleteConfirmDescription": "Isso exclui \"{title}\" permanentemente. Os bots continuam como estão.",
+      "members": "{count, plural, one {# bot} other {# bots}}",
+      "filters": {
+        "all": "Todas",
+        "listed": "Listadas",
+        "unlisted": "Não listadas",
+        "featured": "Destaques"
+      }
     }
   },
   "search": {
@@ -843,7 +864,12 @@
     "noBots": "Ainda não há bots.",
     "noBotsOwner": "Você ainda não criou nenhum bot.",
     "createFirstBot": "Crie seu primeiro bot",
-    "botsCount": "bots"
+    "botsCount": "bots",
+    "teams": "Equipes",
+    "teamsCount": "equipes",
+    "noTeams": "Ainda não há equipes.",
+    "noTeamsOwner": "Você ainda não criou nenhuma equipe.",
+    "createFirstTeam": "Crie sua primeira equipe"
   },
   "subscription": {
     "subscribe": "Inscrever-se",
@@ -1180,7 +1206,13 @@
       "backToTeam": "Voltar à equipe",
       "pagination": "Páginas de equipes",
       "previousPage": "Página anterior",
-      "nextPage": "Próxima página"
+      "nextPage": "Próxima página",
+      "unlisted": "Não listada",
+      "unlistedNotice": "Esta equipe não está listada: ela fica oculta das listagens, da busca e dos perfis, e só o autor e os administradores podem abri-la.",
+      "unlist": "Remover da listagem",
+      "relist": "Listar novamente",
+      "unlistedToast": "Equipe removida da listagem",
+      "relistedToast": "Equipe listada novamente"
     },
     "computer": {
       "cloud": "Precisa de um computador na nuvem",

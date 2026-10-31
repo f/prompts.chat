@@ -512,6 +512,7 @@
       "webhooks": "Webhooks",
       "prompts": "提示词",
       "bots": "机器人",
+      "teams": "团队",
       "reports": "举报"
     },
     "reports": {
@@ -787,6 +788,26 @@
       "deleted": "机器人已删除",
       "deleteConfirmTitle": "删除机器人？",
       "deleteConfirmDescription": "这将永久删除“{title}”，且无法撤销。"
+    },
+    "teamsList": {
+      "title": "团队",
+      "description": "管理机器人团队：取消列出、编辑或删除。",
+      "noTeams": "未找到团队",
+      "open": "打开",
+      "edit": "编辑",
+      "unlist": "取消列出",
+      "relist": "重新列出",
+      "updated": "团队已更新",
+      "deleted": "团队已删除",
+      "deleteConfirmTitle": "删除团队？",
+      "deleteConfirmDescription": "这将永久删除“{title}”。其中的机器人保持不变。",
+      "members": "{count, plural, other {# 个机器人}}",
+      "filters": {
+        "all": "全部",
+        "listed": "已列出",
+        "unlisted": "未列出",
+        "featured": "精选"
+      }
     }
   },
   "search": {
@@ -843,7 +864,12 @@
     "noBots": "暂无机器人。",
     "noBotsOwner": "你还没有创建任何机器人。",
     "createFirstBot": "创建你的第一个机器人",
-    "botsCount": "个机器人"
+    "botsCount": "个机器人",
+    "teams": "团队",
+    "teamsCount": "个团队",
+    "noTeams": "暂无团队。",
+    "noTeamsOwner": "你还没有创建任何团队。",
+    "createFirstTeam": "创建你的第一个团队"
   },
   "subscription": {
     "subscribe": "订阅",
@@ -1180,7 +1206,13 @@
       "backToTeam": "返回团队",
       "pagination": "团队分页",
       "previousPage": "上一页",
-      "nextPage": "下一页"
+      "nextPage": "下一页",
+      "unlisted": "未列出",
+      "unlistedNotice": "此团队未列出：它不会出现在列表、搜索和个人主页中，只有作者和管理员可以打开。",
+      "unlist": "取消列出",
+      "relist": "重新列出",
+      "unlistedToast": "团队已取消列出",
+      "relistedToast": "团队已重新列出"
     },
     "computer": {
       "cloud": "需要云端电脑",

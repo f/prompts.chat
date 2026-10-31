@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, FolderTree, Tags, FileText, Bot, Webhook, Flag } from "lucide-react";
+import { Users, FolderTree, Tags, FileText, Bot, Webhook, Flag, UsersRound } from "lucide-react";
 
-const VALID_TABS = ["users", "categories", "tags", "webhooks", "prompts", "bots", "reports"] as const;
+const VALID_TABS = ["users", "categories", "tags", "webhooks", "prompts", "bots", "teams", "reports"] as const;
 type TabValue = (typeof VALID_TABS)[number];
 
 interface AdminTabsProps {
@@ -15,6 +15,7 @@ interface AdminTabsProps {
     webhooks: string;
     prompts: string;
     bots: string;
+    teams: string;
     reports: string;
   };
   pendingReportsCount: number;
@@ -25,6 +26,7 @@ interface AdminTabsProps {
     webhooks: React.ReactNode;
     prompts: React.ReactNode;
     bots: React.ReactNode;
+    teams: React.ReactNode;
     reports: React.ReactNode;
   };
 }
@@ -86,6 +88,10 @@ export function AdminTabs({ translations, pendingReportsCount, children }: Admin
             <Bot className="h-4 w-4" />
             <span className="hidden sm:inline">{translations.bots}</span>
           </TabsTrigger>
+          <TabsTrigger value="teams" className="gap-1.5 sm:gap-2 px-2.5 sm:px-3">
+            <UsersRound className="h-4 w-4" />
+            <span className="hidden sm:inline">{translations.teams}</span>
+          </TabsTrigger>
           <TabsTrigger value="reports" className="gap-1.5 sm:gap-2 px-2.5 sm:px-3">
             <Flag className="h-4 w-4" />
             <span className="hidden sm:inline">{translations.reports}</span>
@@ -104,6 +110,7 @@ export function AdminTabs({ translations, pendingReportsCount, children }: Admin
       <TabsContent value="webhooks">{children.webhooks}</TabsContent>
       <TabsContent value="prompts">{children.prompts}</TabsContent>
       <TabsContent value="bots">{children.bots}</TabsContent>
+      <TabsContent value="teams">{children.teams}</TabsContent>
       <TabsContent value="reports">{children.reports}</TabsContent>
     </Tabs>
   );

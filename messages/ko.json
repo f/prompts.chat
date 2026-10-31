@@ -512,6 +512,7 @@
       "webhooks": "웹훅",
       "prompts": "프롬프트",
       "bots": "봇",
+      "teams": "팀",
       "reports": "신고"
     },
     "reports": {
@@ -787,6 +788,26 @@
       "deleted": "봇이 삭제되었습니다",
       "deleteConfirmTitle": "봇을 삭제할까요?",
       "deleteConfirmDescription": "\"{title}\"이(가) 영구적으로 삭제됩니다. 되돌릴 수 없습니다."
+    },
+    "teamsList": {
+      "title": "팀",
+      "description": "봇 팀 관리: 목록에서 숨기기, 편집 또는 삭제.",
+      "noTeams": "팀을 찾을 수 없습니다",
+      "open": "열기",
+      "edit": "편집",
+      "unlist": "목록에서 숨기기",
+      "relist": "다시 표시",
+      "updated": "팀이 업데이트되었습니다",
+      "deleted": "팀이 삭제되었습니다",
+      "deleteConfirmTitle": "팀을 삭제할까요?",
+      "deleteConfirmDescription": "\"{title}\" 팀이 영구적으로 삭제됩니다. 봇은 그대로 유지됩니다.",
+      "members": "{count, plural, other {봇 #개}}",
+      "filters": {
+        "all": "전체",
+        "listed": "표시됨",
+        "unlisted": "목록 미표시",
+        "featured": "추천"
+      }
     }
   },
   "search": {
@@ -843,7 +864,12 @@
     "noBots": "아직 봇이 없습니다.",
     "noBotsOwner": "아직 만든 봇이 없습니다.",
     "createFirstBot": "첫 번째 봇 만들기",
-    "botsCount": "봇"
+    "botsCount": "봇",
+    "teams": "팀",
+    "teamsCount": "팀",
+    "noTeams": "아직 팀이 없습니다.",
+    "noTeamsOwner": "아직 만든 팀이 없습니다.",
+    "createFirstTeam": "첫 번째 팀 만들기"
   },
   "subscription": {
     "subscribe": "구독",
@@ -1180,7 +1206,13 @@
       "backToTeam": "팀으로 돌아가기",
       "pagination": "팀 페이지",
       "previousPage": "이전 페이지",
-      "nextPage": "다음 페이지"
+      "nextPage": "다음 페이지",
+      "unlisted": "목록 미표시",
+      "unlistedNotice": "이 팀은 목록에 표시되지 않습니다. 목록, 검색, 프로필에서 숨겨지며 작성자와 관리자만 열 수 있습니다.",
+      "unlist": "목록에서 숨기기",
+      "relist": "다시 표시",
+      "unlistedToast": "팀을 목록에서 숨겼습니다",
+      "relistedToast": "팀을 다시 표시했습니다"
     },
     "computer": {
       "cloud": "클라우드 컴퓨터 필요",

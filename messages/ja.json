@@ -512,6 +512,7 @@
       "webhooks": "Webhook",
       "prompts": "プロンプト",
       "bots": "ボット",
+      "teams": "チーム",
       "reports": "報告"
     },
     "reports": {
@@ -787,6 +788,26 @@
       "deleted": "ボットを削除しました",
       "deleteConfirmTitle": "ボットを削除しますか？",
       "deleteConfirmDescription": "「{title}」を完全に削除します。元に戻せません。"
+    },
+    "teamsList": {
+      "title": "チーム",
+      "description": "ボットチームを管理: 限定公開、編集、削除。",
+      "noTeams": "チームが見つかりません",
+      "open": "開く",
+      "edit": "編集",
+      "unlist": "限定公開にする",
+      "relist": "再公開",
+      "updated": "チームを更新しました",
+      "deleted": "チームを削除しました",
+      "deleteConfirmTitle": "チームを削除しますか？",
+      "deleteConfirmDescription": "「{title}」を完全に削除します。ボット自体はそのまま残ります。",
+      "members": "{count, plural, other {# 個のボット}}",
+      "filters": {
+        "all": "すべて",
+        "listed": "公開",
+        "unlisted": "限定公開",
+        "featured": "注目"
+      }
     }
   },
   "search": {
@@ -843,7 +864,12 @@
     "noBots": "まだボットはありません。",
     "noBotsOwner": "まだボットを作成していません。",
     "createFirstBot": "最初のボットを作成",
-    "botsCount": "ボット"
+    "botsCount": "ボット",
+    "teams": "チーム",
+    "teamsCount": "チーム",
+    "noTeams": "まだチームはありません。",
+    "noTeamsOwner": "まだチームを作成していません。",
+    "createFirstTeam": "最初のチームを作成"
   },
   "subscription": {
     "subscribe": "購読",
@@ -1180,7 +1206,13 @@
       "backToTeam": "チームに戻る",
       "pagination": "チームのページ",
       "previousPage": "前のページ",
-      "nextPage": "次のページ"
+      "nextPage": "次のページ",
+      "unlisted": "限定公開",
+      "unlistedNotice": "このチームは限定公開です。一覧、検索、プロフィールには表示されず、作成者と管理者のみが開けます。",
+      "unlist": "限定公開にする",
+      "relist": "再公開",
+      "unlistedToast": "チームを限定公開にしました",
+      "relistedToast": "チームを再公開しました"
     },
     "computer": {
       "cloud": "クラウドコンピューターが必要",

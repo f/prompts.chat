@@ -4,9 +4,11 @@ import Link from "next/link";
 import { getTranslations, getLocale } from "next-intl/server";
 import { formatDistanceToNow } from "@/lib/date";
 import { getBotUrl, getPromptUrl } from "@/lib/urls";
-import { Calendar, ArrowBigUp, Bot, ChevronLeft, ChevronRight, FileText, Settings, GitPullRequest, Clock, Check, X, Pin, BadgeCheck, Users, ShieldCheck, Heart, ImageIcon } from "lucide-react";
+import { Calendar, ArrowBigUp, Bot, UsersRound, ChevronLeft, ChevronRight, FileText, Settings, GitPullRequest, Clock, Check, X, Pin, BadgeCheck, Users, ShieldCheck, Heart, ImageIcon } from "lucide-react";
 import { BotCard } from "@/components/bots/bot-card";
 import { listBotsByAuthor, publicBotWhere } from "@/lib/bots";
+import { countTeamsByAuthor, listTeams, teamExcerpt } from "@/lib/bots/teams";
+import { TeamCard } from "@/components/bots/teams/team-card";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import config from "@/../prompts.config";
@@ -34,7 +36,7 @@ import {
 
 interface UserProfilePageProps {
   params: Promise<{ username: string }>;
-  searchParams: Promise<{ page?: string; botsPage?: string; tab?: string; date?: string }>;
+  searchParams: Promise<{ page?: string; botsPage?: string; teamsPage?: string; tab?: string; date?: string }>;
 }
 
 export async function generateMetadata({ params, searchParams }: UserProfilePageProps): Promise<Metadata> {
@@ -53,6 +55,7 @@ export async function generateMetadata({ params, searchParams }: UserProfilePage
     where: { username: { equals: escapeLikePattern(username), mode: "insensitive" } },
     orderBy: { createdAt: "asc" },
     select: {
+      id: true,
       name: true,
       username: true,
       bio: true,
@@ -68,7 +71,10 @@ export async function generateMetadata({ params, searchParams }: UserProfilePage
     return { title: "User Not Found", robots: NOINDEX_ROBOTS };
   }
 
-  const publicBotCount = await db.prompt.count({ where: { ...publicBotWhere, author: { username: user.username } } });
+  const [publicBotCount, publicTeamCount] = await Promise.all([
+    db.prompt.count({ where: { ...publicBotWhere, authorId: user.id } }),
+    countTeamsByAuthor(user.id),
+  ]);
   const promptCount = user._count.prompts;
   const t = await getTranslations("seo");
   const name = user.name || user.username;
@@ -87,14 +93,14 @@ export async function generateMetadata({ params, searchParams }: UserProfilePage
     path: paginatedPath(`/@${user.username}`, page),
     openGraphType: "profile",
     image: "route",
-    // Profiles without public prompts or bots are thin; secondary tabs and day filters repeat other pages
-    noindex: (promptCount === 0 && publicBotCount === 0) || (!!tab && tab !== "prompts") || !!date,
+    // Profiles without public prompts, bots or teams are thin; secondary tabs and day filters repeat other pages
+    noindex: (promptCount === 0 && publicBotCount === 0 && publicTeamCount === 0) || (!!tab && tab !== "prompts") || !!date,
   });
 }
 
 export default async function UserProfilePage({ params, searchParams }: UserProfilePageProps) {
   const { username: rawUsername } = await params;
-  const { page: pageParam, botsPage: botsPageParam, tab, date: dateFilter } = await searchParams;
+  const { page: pageParam, botsPage: botsPageParam, teamsPage: teamsPageParam, tab, date: dateFilter } = await searchParams;
   const session = await auth();
   const t = await getTranslations("user");
   const tChanges = await getTranslations("changeRequests");
@@ -141,7 +147,11 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
   const page = parsePageParam(pageParam);
   const perPage = PROFILE_PROMPTS_PER_PAGE;
   const botsPage = parsePageParam(botsPageParam);
+  const teamsPage = parsePageParam(teamsPageParam);
   const isOwner = session?.user?.id === user.id;
+  // Unlisted bots and teams show only to their owner and admins
+  const canSeeUnlisted = isOwner || session?.user?.role === "ADMIN";
+  const viewer = session?.user ? { id: session.user.id, role: session.user.role } : null;
   const isUnclaimed = user.email?.endsWith("@unclaimed.prompts.chat") ?? false;
 
   const validFilterDateStart = parseDayFilter(dateFilter)?.start ?? null;
@@ -186,7 +196,7 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
   oneYearAgo.setHours(0, 0, 0, 0);
 
   // Fetch prompts, pinned prompts, contributions, liked prompts, user examples, counts, and activity data
-  const [promptsRaw, total, totalUpvotes, pinnedPromptsRaw, contributionsRaw, likedPromptsRaw, userExamplesRaw, privatePromptsCount, activityPrompts, activityVotes, activityChangeRequests, activityComments, { bots, total: botsTotal }, publicBotCount] = await Promise.all([
+  const [promptsRaw, total, totalUpvotes, pinnedPromptsRaw, contributionsRaw, likedPromptsRaw, userExamplesRaw, privatePromptsCount, activityPrompts, activityVotes, activityChangeRequests, activityComments, { bots, total: botsTotal }, publicBotCount, { teams, total: teamsTotal }] = await Promise.all([
     db.prompt.findMany({
       where,
       orderBy: { createdAt: "desc" },
@@ -302,8 +312,16 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
       },
       select: { createdAt: true },
     }),
-    listBotsByAuthor(user.id, { includePrivate: isOwner, skip: (botsPage - 1) * perPage, take: perPage }),
+    listBotsByAuthor(user.id, { includePrivate: isOwner, includeUnlisted: canSeeUnlisted, skip: (botsPage - 1) * perPage, take: perPage }),
     db.prompt.count({ where: { ...publicBotWhere, authorId: user.id } }),
+    listTeams({
+      authorId: user.id,
+      includeUnlisted: canSeeUnlisted,
+      featuredFirst: false,
+      skip: (teamsPage - 1) * perPage,
+      take: perPage,
+      viewer,
+    }),
   ]);
 
   // Transform to include voteCount and contributorCount
@@ -378,6 +396,8 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
 
   const botsTotalPages = Math.ceil(botsTotal / perPage);
   const botsPageHref = (n: number) => `/@${user.username}?tab=bots${n > 1 ? `&botsPage=${n}` : ""}`;
+  const teamsTotalPages = Math.ceil(teamsTotal / perPage);
+  const teamsPageHref = (n: number) => `/@${user.username}?tab=teams${n > 1 ? `&teamsPage=${n}` : ""}`;
 
   // Fetch change requests for this user
   // 1. Change requests the user submitted (all statuses for owner, approved only for others)
@@ -466,7 +486,7 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
 
   const pendingCount = submittedChangeRequests.filter((cr) => cr.status === "PENDING").length +
     receivedChangeRequests.filter((cr) => cr.status === "PENDING").length;
-  const defaultTab = tab === "changes" ? "changes" : tab === "bots" ? "bots" : tab === "contributions" ? "contributions" : tab === "likes" ? "likes" : tab === "examples" ? "examples" : "prompts";
+  const defaultTab = tab === "changes" ? "changes" : tab === "bots" ? "bots" : tab === "teams" ? "teams" : tab === "contributions" ? "contributions" : tab === "likes" ? "likes" : tab === "examples" ? "examples" : "prompts";
 
   const statusColors = {
     PENDING: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20",
@@ -575,13 +595,16 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
             <span className="font-medium">{user._count.prompts}</span>
             <span className="text-muted-foreground">{t("prompts").toLowerCase()}</span>
           </div>
-          {botsTotal > 0 && (
-            <div className="flex items-center gap-1.5">
-              <Bot className="h-4 w-4 text-muted-foreground" />
-              <span className="font-medium">{botsTotal}</span>
-              <span className="text-muted-foreground">{t("botsCount")}</span>
-            </div>
-          )}
+          <div className="flex items-center gap-1.5">
+            <Bot className="h-4 w-4 text-muted-foreground" />
+            <span className="font-medium">{botsTotal}</span>
+            <span className="text-muted-foreground">{t("botsCount")}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <UsersRound className="h-4 w-4 text-muted-foreground" />
+            <span className="font-medium">{teamsTotal}</span>
+            <span className="text-muted-foreground">{t("teamsCount")}</span>
+          </div>
           <div className="flex items-center gap-1.5">
             <ArrowBigUp className="h-4 w-4 text-muted-foreground" />
             <span className="font-medium">{totalUpvotes}</span>
@@ -618,6 +641,15 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
             {botsTotal > 0 && (
               <Badge variant="secondary" className="ml-1 h-5 min-w-5 px-1 text-xs">
                 {botsTotal}
+              </Badge>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="teams" className="gap-2">
+            <UsersRound className="h-4 w-4" />
+            {t("teams")}
+            {teamsTotal > 0 && (
+              <Badge variant="secondary" className="ml-1 h-5 min-w-5 px-1 text-xs">
+                {teamsTotal}
               </Badge>
             )}
           </TabsTrigger>
@@ -765,6 +797,58 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
               <Button size="icon" variant="outline" className="h-8 w-8" disabled={botsPage >= botsTotalPages} asChild={botsPage < botsTotalPages}>
                 {botsPage < botsTotalPages ? (
                   <Link href={botsPageHref(botsPage + 1)}><ChevronRight className="h-4 w-4" /></Link>
+                ) : (
+                  <ChevronRight className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="teams">
+          {teamsTotal === 0 ? (
+            <div className="text-center py-12 border rounded-lg bg-muted/30">
+              <UsersRound className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
+              <p className="text-muted-foreground">{isOwner ? t("noTeamsOwner") : t("noTeams")}</p>
+              {isOwner && (
+                <Button asChild className="mt-4" size="sm">
+                  <Link href="/bots/teams/new">{t("createFirstTeam")}</Link>
+                </Button>
+              )}
+            </div>
+          ) : (
+            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {teams.map((team) => (
+                <li key={team.id} className="min-w-0">
+                  <TeamCard
+                    team={{
+                      slug: team.slug,
+                      title: team.title,
+                      isFeatured: team.isFeatured,
+                      isUnlisted: team.isUnlisted,
+                      voteCount: team.voteCount,
+                      memberCount: team.members.length,
+                      excerpt: teamExcerpt(team.description, 160),
+                      category: team.category,
+                    }}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+          {teamsTotalPages > 1 && (
+            <div className="flex items-center justify-center gap-2 mt-8">
+              <Button size="icon" variant="outline" className="h-8 w-8" disabled={teamsPage <= 1} asChild={teamsPage > 1}>
+                {teamsPage > 1 ? (
+                  <Link href={teamsPageHref(teamsPage - 1)}><ChevronLeft className="h-4 w-4" /></Link>
+                ) : (
+                  <ChevronLeft className="h-4 w-4" />
+                )}
+              </Button>
+              <span className="text-sm tabular-nums px-2">{teamsPage} / {teamsTotalPages}</span>
+              <Button size="icon" variant="outline" className="h-8 w-8" disabled={teamsPage >= teamsTotalPages} asChild={teamsPage < teamsTotalPages}>
+                {teamsPage < teamsTotalPages ? (
+                  <Link href={teamsPageHref(teamsPage + 1)}><ChevronRight className="h-4 w-4" /></Link>
                 ) : (
                   <ChevronRight className="h-4 w-4" />
                 )}

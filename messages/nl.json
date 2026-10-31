@@ -512,6 +512,7 @@
       "webhooks": "Webhooks",
       "prompts": "Prompts",
       "bots": "Bots",
+      "teams": "Teams",
       "reports": "Rapporten"
     },
     "reports": {
@@ -787,6 +788,26 @@
       "deleted": "Bot verwijderd",
       "deleteConfirmTitle": "Bot verwijderen?",
       "deleteConfirmDescription": "Hiermee wordt \"{title}\" definitief verwijderd. Dit kan niet ongedaan worden gemaakt."
+    },
+    "teamsList": {
+      "title": "Teams",
+      "description": "Beheer botteams: uit lijsten halen, bewerken of verwijderen.",
+      "noTeams": "Geen teams gevonden",
+      "open": "Openen",
+      "edit": "Bewerken",
+      "unlist": "Uit lijsten halen",
+      "relist": "Weer vermelden",
+      "updated": "Team bijgewerkt",
+      "deleted": "Team verwijderd",
+      "deleteConfirmTitle": "Team verwijderen?",
+      "deleteConfirmDescription": "Hiermee wordt \"{title}\" definitief verwijderd. De bots blijven zoals ze zijn.",
+      "members": "{count, plural, one {# bot} other {# bots}}",
+      "filters": {
+        "all": "Alles",
+        "listed": "Vermeld",
+        "unlisted": "Niet vermeld",
+        "featured": "Uitgelicht"
+      }
     }
   },
   "search": {
@@ -843,7 +864,12 @@
     "noBots": "Nog geen bots.",
     "noBotsOwner": "Je hebt nog geen bots gemaakt.",
     "createFirstBot": "Maak je eerste bot",
-    "botsCount": "bots"
+    "botsCount": "bots",
+    "teams": "Teams",
+    "teamsCount": "teams",
+    "noTeams": "Nog geen teams.",
+    "noTeamsOwner": "Je hebt nog geen teams gemaakt.",
+    "createFirstTeam": "Maak je eerste team"
   },
   "subscription": {
     "subscribe": "Abonneren",
@@ -1180,7 +1206,13 @@
       "backToTeam": "Terug naar team",
       "pagination": "Teampagina's",
       "previousPage": "Vorige pagina",
-      "nextPage": "Volgende pagina"
+      "nextPage": "Volgende pagina",
+      "unlisted": "Niet vermeld",
+      "unlistedNotice": "Dit team is niet vermeld: het is verborgen in lijsten, zoekresultaten en profielen, en alleen de auteur en beheerders kunnen het openen.",
+      "unlist": "Uit lijsten halen",
+      "relist": "Weer vermelden",
+      "unlistedToast": "Team uit lijsten gehaald",
+      "relistedToast": "Team weer vermeld"
     },
     "computer": {
       "cloud": "Heeft een cloudcomputer nodig",

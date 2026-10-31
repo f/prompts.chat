@@ -512,6 +512,7 @@
       "webhooks": "Webhooks",
       "prompts": "الأوامر",
       "bots": "البوتات",
+      "teams": "الفرق",
       "reports": "البلاغات"
     },
     "reports": {
@@ -787,6 +788,26 @@
       "deleted": "تم حذف البوت",
       "deleteConfirmTitle": "حذف البوت؟",
       "deleteConfirmDescription": "سيؤدي هذا إلى حذف \"{title}\" نهائيًا. لا يمكن التراجع عن ذلك."
+    },
+    "teamsList": {
+      "title": "الفرق",
+      "description": "إدارة فرق البوتات: إلغاء إدراجها أو تعديلها أو حذفها.",
+      "noTeams": "لم يتم العثور على فرق",
+      "open": "فتح",
+      "edit": "تعديل",
+      "unlist": "إلغاء الإدراج",
+      "relist": "إعادة الإدراج",
+      "updated": "تم تحديث الفريق",
+      "deleted": "تم حذف الفريق",
+      "deleteConfirmTitle": "حذف الفريق؟",
+      "deleteConfirmDescription": "سيؤدي هذا إلى حذف \"{title}\" نهائيًا. تبقى بوتاته كما هي.",
+      "members": "{count, plural, one {بوت واحد} two {بوتان} few {# بوتات} many {# بوتًا} other {# بوت}}",
+      "filters": {
+        "all": "الكل",
+        "listed": "مُدرج",
+        "unlisted": "غير مُدرج",
+        "featured": "مميز"
+      }
     }
   },
   "search": {
@@ -843,7 +864,12 @@
     "noBots": "لا توجد بوتات بعد.",
     "noBotsOwner": "لم تنشئ أي بوتات بعد.",
     "createFirstBot": "أنشئ أول بوت لك",
-    "botsCount": "بوتات"
+    "botsCount": "بوتات",
+    "teams": "الفرق",
+    "teamsCount": "فرق",
+    "noTeams": "لا توجد فرق بعد.",
+    "noTeamsOwner": "لم تنشئ أي فرق بعد.",
+    "createFirstTeam": "أنشئ أول فريق لك"
   },
   "subscription": {
     "subscribe": "اشتراك",
@@ -1180,7 +1206,13 @@
       "backToTeam": "العودة إلى الفريق",
       "pagination": "صفحات الفرق",
       "previousPage": "الصفحة السابقة",
-      "nextPage": "الصفحة التالية"
+      "nextPage": "الصفحة التالية",
+      "unlisted": "غير مُدرج",
+      "unlistedNotice": "هذا الفريق غير مُدرج: إنه مخفي من القوائم والبحث والملفات الشخصية، ولا يمكن فتحه إلا لمؤلفه والمشرفين.",
+      "unlist": "إلغاء الإدراج",
+      "relist": "إعادة الإدراج",
+      "unlistedToast": "تم إلغاء إدراج الفريق",
+      "relistedToast": "تمت إعادة إدراج الفريق"
     },
     "computer": {
       "cloud": "يحتاج إلى حاسوب سحابي",

@@ -512,6 +512,7 @@
       "webhooks": "Webhooks",
       "prompts": "Promptlar",
       "bots": "Botlar",
+      "teams": "Komandalar",
       "reports": "Hesabatlar"
     },
     "reports": {
@@ -787,6 +788,26 @@
       "deleted": "Bot silindi",
       "deleteConfirmTitle": "Bot silinsin?",
       "deleteConfirmDescription": "Bu, \"{title}\" botunu həmişəlik siləcək. Geri qaytarmaq mümkün deyil."
+    },
+    "teamsList": {
+      "title": "Komandalar",
+      "description": "Bot komandalarını idarə edin: siyahıdan çıxarın, redaktə edin və ya silin.",
+      "noTeams": "Komanda tapılmadı",
+      "open": "Aç",
+      "edit": "Redaktə et",
+      "unlist": "Siyahıdan çıxar",
+      "relist": "Yenidən siyahıya sal",
+      "updated": "Komanda yeniləndi",
+      "deleted": "Komanda silindi",
+      "deleteConfirmTitle": "Komanda silinsin?",
+      "deleteConfirmDescription": "Bu, \"{title}\" komandasını həmişəlik silir. Onun botları olduğu kimi qalır.",
+      "members": "{count, plural, one {# bot} other {# bot}}",
+      "filters": {
+        "all": "Hamısı",
+        "listed": "Siyahıda",
+        "unlisted": "Siyahıda deyil",
+        "featured": "Seçilmiş"
+      }
     }
   },
   "search": {
@@ -843,7 +864,12 @@
     "noBots": "Hələ bot yoxdur.",
     "noBotsOwner": "Siz hələ heç bir bot yaratmamısınız.",
     "createFirstBot": "İlk botunuzu yaradın",
-    "botsCount": "bot"
+    "botsCount": "bot",
+    "teams": "Komandalar",
+    "teamsCount": "komanda",
+    "noTeams": "Hələ komanda yoxdur.",
+    "noTeamsOwner": "Siz hələ heç bir komanda yaratmamısınız.",
+    "createFirstTeam": "İlk komandanızı yaradın"
   },
   "subscription": {
     "subscribe": "Abunə ol",
@@ -1180,7 +1206,13 @@
       "backToTeam": "Komandaya qayıt",
       "pagination": "Komanda səhifələri",
       "previousPage": "Əvvəlki səhifə",
-      "nextPage": "Növbəti səhifə"
+      "nextPage": "Növbəti səhifə",
+      "unlisted": "Siyahıda deyil",
+      "unlistedNotice": "Bu komanda siyahıda deyil: siyahılardan, axtarışdan və profillərdən gizlədilib və onu yalnız müəllifi və adminlər aça bilər.",
+      "unlist": "Siyahıdan çıxar",
+      "relist": "Yenidən siyahıya sal",
+      "unlistedToast": "Komanda siyahıdan çıxarıldı",
+      "relistedToast": "Komanda yenidən siyahıya salındı"
     },
     "computer": {
       "cloud": "Bulud kompüteri tələb edir",

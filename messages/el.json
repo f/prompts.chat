@@ -512,6 +512,7 @@
       "webhooks": "Webhooks",
       "prompts": "Prompts",
       "bots": "Bots",
+      "teams": "Ομάδες",
       "reports": "Αναφορές"
     },
     "reports": {
@@ -787,6 +788,26 @@
       "deleted": "Το bot διαγράφηκε",
       "deleteConfirmTitle": "Διαγραφή bot;",
       "deleteConfirmDescription": "Αυτό διαγράφει οριστικά το \"{title}\". Δεν μπορεί να αναιρεθεί."
+    },
+    "teamsList": {
+      "title": "Ομάδες",
+      "description": "Διαχείριση ομάδων bots: απόκρυψη από λίστες, επεξεργασία ή διαγραφή.",
+      "noTeams": "Δεν βρέθηκαν ομάδες",
+      "open": "Άνοιγμα",
+      "edit": "Επεξεργασία",
+      "unlist": "Απόκρυψη από λίστες",
+      "relist": "Επανεμφάνιση",
+      "updated": "Η ομάδα ενημερώθηκε",
+      "deleted": "Η ομάδα διαγράφηκε",
+      "deleteConfirmTitle": "Διαγραφή ομάδας;",
+      "deleteConfirmDescription": "Αυτό διαγράφει οριστικά την ομάδα \"{title}\". Τα bots της παραμένουν ως έχουν.",
+      "members": "{count, plural, one {# bot} other {# bots}}",
+      "filters": {
+        "all": "Όλα",
+        "listed": "Καταχωρισμένα",
+        "unlisted": "Μη καταχωρισμένα",
+        "featured": "Προτεινόμενα"
+      }
     }
   },
   "search": {
@@ -843,7 +864,12 @@
     "noBots": "Δεν υπάρχουν bots ακόμα.",
     "noBotsOwner": "Δεν έχετε δημιουργήσει ακόμα κανένα bot.",
     "createFirstBot": "Δημιουργήστε το πρώτο σας bot",
-    "botsCount": "bots"
+    "botsCount": "bots",
+    "teams": "Ομάδες",
+    "teamsCount": "ομάδες",
+    "noTeams": "Δεν υπάρχουν ομάδες ακόμα.",
+    "noTeamsOwner": "Δεν έχετε δημιουργήσει ακόμα καμία ομάδα.",
+    "createFirstTeam": "Δημιουργήστε την πρώτη σας ομάδα"
   },
   "subscription": {
     "subscribe": "Εγγραφή",
@@ -1180,7 +1206,13 @@
       "backToTeam": "Πίσω στην ομάδα",
       "pagination": "Σελίδες ομάδων",
       "previousPage": "Προηγούμενη σελίδα",
-      "nextPage": "Επόμενη σελίδα"
+      "nextPage": "Επόμενη σελίδα",
+      "unlisted": "Μη καταχωρισμένη",
+      "unlistedNotice": "Αυτή η ομάδα δεν είναι καταχωρισμένη: είναι κρυμμένη από λίστες, αναζήτηση και προφίλ και μόνο ο δημιουργός της και οι διαχειριστές μπορούν να την ανοίξουν.",
+      "unlist": "Απόκρυψη από λίστες",
+      "relist": "Επανεμφάνιση",
+      "unlistedToast": "Η ομάδα αποκρύφθηκε από τις λίστες",
+      "relistedToast": "Η ομάδα επανεμφανίστηκε"
     },
     "computer": {
       "cloud": "Χρειάζεται υπολογιστή στο cloud",

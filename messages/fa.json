@@ -512,6 +512,7 @@
       "webhooks": "وب‌هوک‌ها",
       "prompts": "پرامپت‌ها",
       "bots": "ربات‌ها",
+      "teams": "تیم‌ها",
       "reports": "گزارش‌ها"
     },
     "reports": {
@@ -787,6 +788,26 @@
       "deleted": "ربات حذف شد",
       "deleteConfirmTitle": "ربات حذف شود؟",
       "deleteConfirmDescription": "این کار «{title}» را برای همیشه حذف می‌کند و قابل بازگشت نیست."
+    },
+    "teamsList": {
+      "title": "تیم‌ها",
+      "description": "مدیریت تیم‌های ربات: حذف از فهرست، ویرایش یا حذف.",
+      "noTeams": "تیمی یافت نشد",
+      "open": "باز کردن",
+      "edit": "ویرایش",
+      "unlist": "حذف از فهرست",
+      "relist": "بازگرداندن به فهرست",
+      "updated": "تیم به‌روزرسانی شد",
+      "deleted": "تیم حذف شد",
+      "deleteConfirmTitle": "تیم حذف شود؟",
+      "deleteConfirmDescription": "با این کار «{title}» برای همیشه حذف می‌شود. ربات‌های آن دست‌نخورده باقی می‌مانند.",
+      "members": "{count, plural, other {# ربات}}",
+      "filters": {
+        "all": "همه",
+        "listed": "فهرست‌شده",
+        "unlisted": "فهرست‌نشده",
+        "featured": "برگزیده"
+      }
     }
   },
   "search": {
@@ -843,7 +864,12 @@
     "noBots": "هنوز باتی وجود ندارد.",
     "noBotsOwner": "هنوز هیچ باتی نساخته‌اید.",
     "createFirstBot": "اولین بات خود را بسازید",
-    "botsCount": "بات"
+    "botsCount": "بات",
+    "teams": "تیم‌ها",
+    "teamsCount": "تیم",
+    "noTeams": "هنوز تیمی وجود ندارد.",
+    "noTeamsOwner": "هنوز هیچ تیمی نساخته‌اید.",
+    "createFirstTeam": "اولین تیم خود را بسازید"
   },
   "subscription": {
     "subscribe": "دنبال کردن",
@@ -1180,7 +1206,13 @@
       "backToTeam": "بازگشت به تیم",
       "pagination": "صفحه‌های تیم‌ها",
       "previousPage": "صفحه قبل",
-      "nextPage": "صفحه بعد"
+      "nextPage": "صفحه بعد",
+      "unlisted": "فهرست‌نشده",
+      "unlistedNotice": "این تیم فهرست‌نشده است: از فهرست‌ها، جستجو و پروفایل‌ها پنهان است و فقط سازنده آن و مدیران می‌توانند آن را باز کنند.",
+      "unlist": "حذف از فهرست",
+      "relist": "بازگرداندن به فهرست",
+      "unlistedToast": "تیم از فهرست حذف شد",
+      "relistedToast": "تیم به فهرست بازگشت"
     },
     "computer": {
       "cloud": "به رایانه ابری نیاز دارد",

@@ -512,6 +512,7 @@
       "webhooks": "Webhook",
       "prompts": "Prompt",
       "bots": "Bot",
+      "teams": "Team",
       "reports": "Segnalazioni"
     },
     "reports": {
@@ -787,6 +788,26 @@
       "deleted": "Bot eliminato",
       "deleteConfirmTitle": "Eliminare il bot?",
       "deleteConfirmDescription": "Questo elimina definitivamente \"{title}\". L'operazione non può essere annullata."
+    },
+    "teamsList": {
+      "title": "Team",
+      "description": "Gestisci i team di bot: rimuovili dagli elenchi, modificali o eliminali.",
+      "noTeams": "Nessun team trovato",
+      "open": "Apri",
+      "edit": "Modifica",
+      "unlist": "Rimuovi dagli elenchi",
+      "relist": "Rimetti in elenco",
+      "updated": "Team aggiornato",
+      "deleted": "Team eliminato",
+      "deleteConfirmTitle": "Eliminare il team?",
+      "deleteConfirmDescription": "Questo elimina definitivamente \"{title}\". I suoi bot restano invariati.",
+      "members": "{count, plural, one {# bot} other {# bot}}",
+      "filters": {
+        "all": "Tutti",
+        "listed": "In elenco",
+        "unlisted": "Non in elenco",
+        "featured": "In evidenza"
+      }
     }
   },
   "search": {
@@ -843,7 +864,12 @@
     "noBots": "Ancora nessun bot.",
     "noBotsOwner": "Non hai ancora creato nessun bot.",
     "createFirstBot": "Crea il tuo primo bot",
-    "botsCount": "bot"
+    "botsCount": "bot",
+    "teams": "Team",
+    "teamsCount": "team",
+    "noTeams": "Ancora nessun team.",
+    "noTeamsOwner": "Non hai ancora creato nessun team.",
+    "createFirstTeam": "Crea il tuo primo team"
   },
   "subscription": {
     "subscribe": "Iscriviti",
@@ -1180,7 +1206,13 @@
       "backToTeam": "Torna al team",
       "pagination": "Pagine dei team",
       "previousPage": "Pagina precedente",
-      "nextPage": "Pagina successiva"
+      "nextPage": "Pagina successiva",
+      "unlisted": "Non in elenco",
+      "unlistedNotice": "Questo team non è in elenco: è nascosto da elenchi, ricerca e profili, e solo il suo autore e gli amministratori possono aprirlo.",
+      "unlist": "Rimuovi dagli elenchi",
+      "relist": "Rimetti in elenco",
+      "unlistedToast": "Team rimosso dagli elenchi",
+      "relistedToast": "Team rimesso in elenco"
     },
     "computer": {
       "cloud": "Richiede un computer cloud",

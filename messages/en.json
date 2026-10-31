@@ -512,6 +512,7 @@
       "webhooks": "Webhooks",
       "prompts": "Prompts",
       "bots": "Bots",
+      "teams": "Teams",
       "reports": "Reports"
     },
     "reports": {
@@ -787,6 +788,26 @@
       "deleted": "Bot deleted",
       "deleteConfirmTitle": "Delete bot?",
       "deleteConfirmDescription": "This permanently deletes \"{title}\". This cannot be undone."
+    },
+    "teamsList": {
+      "title": "Teams",
+      "description": "Manage bot teams: unlist, edit or delete them.",
+      "noTeams": "No teams found",
+      "open": "Open",
+      "edit": "Edit",
+      "unlist": "Unlist",
+      "relist": "Relist",
+      "updated": "Team updated",
+      "deleted": "Team deleted",
+      "deleteConfirmTitle": "Delete team?",
+      "deleteConfirmDescription": "This permanently deletes \"{title}\". Its bots stay as they are.",
+      "members": "{count, plural, one {# bot} other {# bots}}",
+      "filters": {
+        "all": "All",
+        "listed": "Listed",
+        "unlisted": "Unlisted",
+        "featured": "Featured"
+      }
     }
   },
   "search": {
@@ -843,7 +864,12 @@
     "noBots": "No bots yet.",
     "noBotsOwner": "You haven't created any bots yet.",
     "createFirstBot": "Create your first bot",
-    "botsCount": "bots"
+    "botsCount": "bots",
+    "teams": "Teams",
+    "teamsCount": "teams",
+    "noTeams": "No teams yet.",
+    "noTeamsOwner": "You haven't created any teams yet.",
+    "createFirstTeam": "Create your first team"
   },
   "subscription": {
     "subscribe": "Subscribe",
@@ -1180,7 +1206,13 @@
       "backToTeam": "Back to team",
       "pagination": "Team pages",
       "previousPage": "Previous page",
-      "nextPage": "Next page"
+      "nextPage": "Next page",
+      "unlisted": "Unlisted",
+      "unlistedNotice": "This team is unlisted: it is hidden from listings, search and profiles, and only its author and admins can open it.",
+      "unlist": "Unlist",
+      "relist": "Relist",
+      "unlistedToast": "Team unlisted",
+      "relistedToast": "Team relisted"
     },
     "computer": {
       "cloud": "Needs a cloud computer",

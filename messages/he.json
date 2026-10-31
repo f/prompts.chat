@@ -512,6 +512,7 @@
       "webhooks": "Webhooks",
       "prompts": "פרומפטים",
       "bots": "בוטים",
+      "teams": "צוותים",
       "reports": "דיווחים"
     },
     "reports": {
@@ -787,6 +788,26 @@
       "deleted": "הבוט נמחק",
       "deleteConfirmTitle": "למחוק את הבוט?",
       "deleteConfirmDescription": "פעולה זו תמחק את \"{title}\" לצמיתות. לא ניתן לבטל אותה."
+    },
+    "teamsList": {
+      "title": "צוותים",
+      "description": "ניהול צוותי בוטים: הסרה מהרשימות, עריכה או מחיקה.",
+      "noTeams": "לא נמצאו צוותים",
+      "open": "פתיחה",
+      "edit": "עריכה",
+      "unlist": "הסרה מהרשימות",
+      "relist": "החזרה לרשימות",
+      "updated": "הצוות עודכן",
+      "deleted": "הצוות נמחק",
+      "deleteConfirmTitle": "למחוק את הצוות?",
+      "deleteConfirmDescription": "פעולה זו מוחקת לצמיתות את \"{title}\". הבוטים שלו נשארים כפי שהם.",
+      "members": "{count, plural, one {בוט אחד} other {# בוטים}}",
+      "filters": {
+        "all": "הכל",
+        "listed": "רשומים",
+        "unlisted": "לא רשומים",
+        "featured": "מומלצים"
+      }
     }
   },
   "search": {
@@ -843,7 +864,12 @@
     "noBots": "אין עדיין בוטים.",
     "noBotsOwner": "עדיין לא יצרת בוטים.",
     "createFirstBot": "צור את הבוט הראשון שלך",
-    "botsCount": "בוטים"
+    "botsCount": "בוטים",
+    "teams": "צוותים",
+    "teamsCount": "צוותים",
+    "noTeams": "אין עדיין צוותים.",
+    "noTeamsOwner": "עדיין לא יצרת צוותים.",
+    "createFirstTeam": "צור את הצוות הראשון שלך"
   },
   "subscription": {
     "subscribe": "הירשם",
@@ -1180,7 +1206,13 @@
       "backToTeam": "חזרה לצוות",
       "pagination": "עמודי צוותים",
       "previousPage": "העמוד הקודם",
-      "nextPage": "העמוד הבא"
+      "nextPage": "העמוד הבא",
+      "unlisted": "לא רשום",
+      "unlistedNotice": "צוות זה אינו רשום: הוא מוסתר מרשימות, מחיפוש ומפרופילים, ורק היוצר שלו ומנהלים יכולים לפתוח אותו.",
+      "unlist": "הסרה מהרשימות",
+      "relist": "החזרה לרשימות",
+      "unlistedToast": "הצוות הוסר מהרשימות",
+      "relistedToast": "הצוות הוחזר לרשימות"
     },
     "computer": {
       "cloud": "דורש מחשב בענן",

@@ -512,6 +512,7 @@
       "webhooks": "Webhooklar",
       "prompts": "Promptlar",
       "bots": "Botlar",
+      "teams": "Ekipler",
       "reports": "Şikayetler"
     },
     "reports": {
@@ -787,6 +788,26 @@
       "deleted": "Bot silindi",
       "deleteConfirmTitle": "Bot silinsin mi?",
       "deleteConfirmDescription": "\"{title}\" kalıcı olarak silinecek. Bu işlem geri alınamaz."
+    },
+    "teamsList": {
+      "title": "Ekipler",
+      "description": "Bot ekiplerini yönetin: listeden kaldırın, düzenleyin veya silin.",
+      "noTeams": "Ekip bulunamadı",
+      "open": "Aç",
+      "edit": "Düzenle",
+      "unlist": "Listeden kaldır",
+      "relist": "Yeniden listele",
+      "updated": "Ekip güncellendi",
+      "deleted": "Ekip silindi",
+      "deleteConfirmTitle": "Ekip silinsin mi?",
+      "deleteConfirmDescription": "Bu işlem \"{title}\" ekibini kalıcı olarak siler. Botları olduğu gibi kalır.",
+      "members": "{count, plural, one {# bot} other {# bot}}",
+      "filters": {
+        "all": "Tümü",
+        "listed": "Listelenen",
+        "unlisted": "Listelenmemiş",
+        "featured": "Öne Çıkan"
+      }
     }
   },
   "search": {
@@ -843,7 +864,12 @@
     "noBots": "Henüz bot yok.",
     "noBotsOwner": "Henüz hiç bot oluşturmadınız.",
     "createFirstBot": "İlk botunuzu oluşturun",
-    "botsCount": "bot"
+    "botsCount": "bot",
+    "teams": "Ekipler",
+    "teamsCount": "ekip",
+    "noTeams": "Henüz ekip yok.",
+    "noTeamsOwner": "Henüz hiç ekip oluşturmadınız.",
+    "createFirstTeam": "İlk ekibinizi oluşturun"
   },
   "subscription": {
     "subscribe": "Abone Ol",
@@ -1180,7 +1206,13 @@
       "backToTeam": "Takıma dön",
       "pagination": "Ekip sayfaları",
       "previousPage": "Önceki sayfa",
-      "nextPage": "Sonraki sayfa"
+      "nextPage": "Sonraki sayfa",
+      "unlisted": "Listelenmemiş",
+      "unlistedNotice": "Bu ekip listelenmemiş: listelerde, aramada ve profillerde gizlidir ve yalnızca yazarı ile yöneticiler açabilir.",
+      "unlist": "Listeden kaldır",
+      "relist": "Yeniden listele",
+      "unlistedToast": "Ekip listeden kaldırıldı",
+      "relistedToast": "Ekip yeniden listelendi"
     },
     "computer": {
       "cloud": "Bulut bilgisayarı gerektirir",

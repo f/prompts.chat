@@ -512,6 +512,7 @@
       "webhooks": "Webhooks",
       "prompts": "Prompts",
       "bots": "Bots",
+      "teams": "Equipos",
       "reports": "Reportes"
     },
     "reports": {
@@ -787,6 +788,26 @@
       "deleted": "Bot eliminado",
       "deleteConfirmTitle": "¿Eliminar bot?",
       "deleteConfirmDescription": "Esto elimina \"{title}\" de forma permanente. No se puede deshacer."
+    },
+    "teamsList": {
+      "title": "Equipos",
+      "description": "Gestiona los equipos de bots: ocúltalos del listado, edítalos o elimínalos.",
+      "noTeams": "No se encontraron equipos",
+      "open": "Abrir",
+      "edit": "Editar",
+      "unlist": "Ocultar del listado",
+      "relist": "Volver a listar",
+      "updated": "Equipo actualizado",
+      "deleted": "Equipo eliminado",
+      "deleteConfirmTitle": "¿Eliminar equipo?",
+      "deleteConfirmDescription": "Esto elimina \"{title}\" de forma permanente. Sus bots se mantienen como están.",
+      "members": "{count, plural, one {# bot} other {# bots}}",
+      "filters": {
+        "all": "Todos",
+        "listed": "Listados",
+        "unlisted": "No listados",
+        "featured": "Destacados"
+      }
     }
   },
   "search": {
@@ -843,7 +864,12 @@
     "noBots": "Aún no hay bots.",
     "noBotsOwner": "Aún no has creado ningún bot.",
     "createFirstBot": "Crea tu primer bot",
-    "botsCount": "bots"
+    "botsCount": "bots",
+    "teams": "Equipos",
+    "teamsCount": "equipos",
+    "noTeams": "Aún no hay equipos.",
+    "noTeamsOwner": "Aún no has creado ningún equipo.",
+    "createFirstTeam": "Crea tu primer equipo"
   },
   "subscription": {
     "subscribe": "Suscribirse",
@@ -1180,7 +1206,13 @@
       "backToTeam": "Volver al equipo",
       "pagination": "Páginas de equipos",
       "previousPage": "Página anterior",
-      "nextPage": "Página siguiente"
+      "nextPage": "Página siguiente",
+      "unlisted": "No listado",
+      "unlistedNotice": "Este equipo no está listado: está oculto de los listados, la búsqueda y los perfiles, y solo su autor y los administradores pueden abrirlo.",
+      "unlist": "Ocultar del listado",
+      "relist": "Volver a listar",
+      "unlistedToast": "Equipo ocultado del listado",
+      "relistedToast": "Equipo listado de nuevo"
     },
     "computer": {
       "cloud": "Necesita un ordenador en la nube",

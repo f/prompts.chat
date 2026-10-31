@@ -512,6 +512,7 @@
       "webhooks": "Webhooks",
       "prompts": "Prompts",
       "bots": "Bots",
+      "teams": "Teams",
       "reports": "Meldungen"
     },
     "reports": {
@@ -787,6 +788,26 @@
       "deleted": "Bot gelöscht",
       "deleteConfirmTitle": "Bot löschen?",
       "deleteConfirmDescription": "Dadurch wird „{title}“ endgültig gelöscht. Das kann nicht rückgängig gemacht werden."
+    },
+    "teamsList": {
+      "title": "Teams",
+      "description": "Bot-Teams verwalten: aus Listen entfernen, bearbeiten oder löschen.",
+      "noTeams": "Keine Teams gefunden",
+      "open": "Öffnen",
+      "edit": "Bearbeiten",
+      "unlist": "Aus Listen entfernen",
+      "relist": "Wieder listen",
+      "updated": "Team aktualisiert",
+      "deleted": "Team gelöscht",
+      "deleteConfirmTitle": "Team löschen?",
+      "deleteConfirmDescription": "Dadurch wird \"{title}\" endgültig gelöscht. Die Bots bleiben unverändert.",
+      "members": "{count, plural, one {# Bot} other {# Bots}}",
+      "filters": {
+        "all": "Alle",
+        "listed": "Gelistet",
+        "unlisted": "Nicht gelistet",
+        "featured": "Hervorgehoben"
+      }
     }
   },
   "search": {
@@ -843,7 +864,12 @@
     "noBots": "Noch keine Bots.",
     "noBotsOwner": "Du hast noch keine Bots erstellt.",
     "createFirstBot": "Erstelle deinen ersten Bot",
-    "botsCount": "Bots"
+    "botsCount": "Bots",
+    "teams": "Teams",
+    "teamsCount": "Teams",
+    "noTeams": "Noch keine Teams.",
+    "noTeamsOwner": "Du hast noch keine Teams erstellt.",
+    "createFirstTeam": "Erstelle dein erstes Team"
   },
   "subscription": {
     "subscribe": "Abonnieren",
@@ -1180,7 +1206,13 @@
       "backToTeam": "Zurück zum Team",
       "pagination": "Team-Seiten",
       "previousPage": "Vorherige Seite",
-      "nextPage": "Nächste Seite"
+      "nextPage": "Nächste Seite",
+      "unlisted": "Nicht gelistet",
+      "unlistedNotice": "Dieses Team ist nicht gelistet: Es ist in Listen, der Suche und Profilen ausgeblendet und nur für seinen Autor und Admins sichtbar.",
+      "unlist": "Aus Listen entfernen",
+      "relist": "Wieder listen",
+      "unlistedToast": "Team aus Listen entfernt",
+      "relistedToast": "Team wieder gelistet"
     },
     "computer": {
       "cloud": "Benötigt einen Cloud-Computer",
