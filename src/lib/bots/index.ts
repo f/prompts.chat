@@ -267,6 +267,46 @@ export async function findVisibleBot(
   return record ? toBotView(record) : null;
 }
 
+/** Static segments under /bots that must never be treated as a bot slug */
+export const RESERVED_BOT_SEGMENTS: ReadonlySet<string> = new Set(["new", "teams"]);
+
+/**
+ * The slug to fall back to when a bot URL segment does not resolve by id: the part after the
+ * id in "abc123_some-slug", or the whole segment when it has no id prefix. Slugs never contain
+ * underscores (see slugify), so the first underscore always separates the id.
+ */
+export function botSlugFromParam(param: string): string | null {
+  const underscoreIndex = param.indexOf("_");
+  const slug = (underscoreIndex === -1 ? param : param.substring(underscoreIndex + 1)).toLowerCase();
+  if (!/^[a-z0-9-]+$/.test(slug) || RESERVED_BOT_SEGMENTS.has(slug)) return null;
+  return slug;
+}
+
+/**
+ * The best live bot the viewer may see for a slug, used to redirect slug-only URLs. Slugs are not
+ * unique, so public beats private, listed beats unlisted, then most upvoted, newest, and lowest id
+ * as a deterministic tie-break.
+ */
+export async function findBotBySlug(
+  slug: string,
+  viewer: { id: string; role: string } | null = null
+): Promise<BotView | null> {
+  const visibility: Prisma.PromptWhereInput =
+    viewer?.role === "ADMIN" ? {} : { OR: [{ isPrivate: false }, ...(viewer ? [{ authorId: viewer.id }] : [])] };
+  const record = await db.prompt.findFirst({
+    where: { type: "BOT", deletedAt: null, slug, ...visibility },
+    orderBy: [
+      { isPrivate: "asc" },
+      { isUnlisted: "asc" },
+      { votes: { _count: "desc" } },
+      { createdAt: "desc" },
+      { id: "asc" },
+    ],
+    select: botSelect,
+  });
+  return record ? toBotView(record) : null;
+}
+
 /** Extracts the id from a bot URL segment: "abc123" or "abc123_some-slug" */
 export function extractBotId(param: string): string {
   const underscoreIndex = param.indexOf("_");

@@ -25,7 +25,7 @@ import { FeaturePromptButton } from "@/components/prompts/feature-prompt-button"
 import { RestorePromptButton } from "@/components/prompts/restore-prompt-button";
 import { UnlistPromptButton } from "@/components/prompts/unlist-prompt-button";
 import { JsonLd, botSchema, breadcrumbSchema } from "@/components/seo/structured-data";
-import { BOT_PLATFORM_INFO, extractBotId, formatBotPlatforms, getBotById, getBotInstallOptions, getBotUrls } from "@/lib/bots";
+import { BOT_PLATFORM_INFO, botSlugFromParam, extractBotId, findBotBySlug, formatBotPlatforms, getBotById, getBotInstallOptions, getBotUrls } from "@/lib/bots";
 import { getBotPairings, getBundleInstallOptions } from "@/lib/bots/pairings";
 import { getBotTeams } from "@/lib/bots/teams";
 import { canViewPrompt } from "@/lib/prompt-access";
@@ -60,6 +60,11 @@ export default async function BotPage({ params }: BotPageProps) {
   const isAdmin = session?.user?.role === "ADMIN";
   const bot = await getBotById(extractBotId(slug), { includeDeleted: isAdmin });
   if (!bot || !canViewPrompt(bot, session)) {
+    const fallbackSlug = botSlugFromParam(slug);
+    const bySlug = fallbackSlug ? await findBotBySlug(fallbackSlug, session?.user ?? null) : null;
+    if (bySlug) {
+      permanentRedirect(getBotUrl(bySlug.id, bySlug.slug));
+    }
     notFound();
   }
 
