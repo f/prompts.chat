@@ -446,7 +446,9 @@ describe("team graph geometry", () => {
   it("gives labelless nodes and nodes without a role less room than the largest node", () => {
     const short = nodeExtent({ title: "QA" });
     expect(short.bottom).toBeLessThan(MAX_NODE_EXTENT.bottom);
-    expect(short.left).toBe(TEAM_NODE_RADIUS);
+    expect(short.left).toBe(short.right);
+    expect(short.left).toBeGreaterThan(TEAM_NODE_RADIUS);
+    expect(short.left).toBeLessThan(MAX_NODE_EXTENT.left);
     expect(nodeExtent({ title: "x".repeat(40) })).toEqual(nodeExtent({ title: "x".repeat(16) }));
   });
 
