@@ -38,6 +38,7 @@ vi.mock("@/lib/db", () => ({
     botTeam: { findMany: vi.fn(), findFirst: vi.fn(), findUnique: vi.fn(), create: vi.fn(), update: vi.fn() },
     botTeamMember: { deleteMany: vi.fn(), createMany: vi.fn() },
     botTeamLink: { createMany: vi.fn(), deleteMany: vi.fn() },
+    botTeamTag: {},
   },
 }));
 
@@ -95,6 +96,8 @@ function teamRecord(overrides: Record<string, unknown> = {}) {
       { fromBotId: "a", toBotId: "b", label: "Research brief" },
       { fromBotId: "b", toBotId: "c", label: "Draft" },
     ],
+    category: null,
+    tags: [],
     ...overrides,
   };
 }
@@ -204,7 +207,7 @@ describe("team writes", () => {
 
   it("rejects bots that are missing or private to someone else", async () => {
     vi.mocked(db.prompt.findMany).mockResolvedValue([{ id: "a" }] as never);
-    const result = await createTeam(alice, { title: "Crew", description: null, members: [{ botId: "a" }, { botId: "b" }], links: [] });
+    const result = await createTeam(alice, { title: "Crew", description: null, members: [{ botId: "a" }, { botId: "b" }], links: [], tagIds: [] });
     expect(result).toMatchObject({ ok: false, status: 400, body: { error: "invalid_bots", botIds: ["b"] } });
     expect(db.botTeam.create).not.toHaveBeenCalled();
   });
@@ -220,6 +223,7 @@ describe("team writes", () => {
       description: "",
       members: [{ botId: "a", role: "Researcher", description: "Finds sources" }, { botId: "b" }],
       links: [{ fromBotId: "a", toBotId: "b", label: "Brief" }],
+      tagIds: [],
     });
 
     expect(result.ok).toBe(true);
@@ -262,8 +266,43 @@ describe("team writes", () => {
         description: "Finds and writes things up",
         members: [{ botId: "a", role: "Researcher" }, { botId: "b", role: "Editor" }],
         links: [],
+        categoryId: null,
+        tagIds: [],
       })
     ).toEqual(["members", "links"]);
+  });
+
+  it("reports category and tag changes and keeps them when omitted", async () => {
+    const existing = teamRecord({
+      members: teamRecord().members.slice(0, 2),
+      links: [teamRecord().links[0]],
+      category: { id: "cat-1", name: "Coding", slug: "coding", parent: null },
+      tags: [{ tag: { id: "tag-2", name: "B", slug: "b", color: "#000" } }, { tag: { id: "tag-1", name: "A", slug: "a", color: "#000" } }],
+    });
+    vi.mocked(db.botTeam.findFirst).mockResolvedValue(existing as never);
+    const members = [{ botId: "a", role: "Researcher" }, { botId: "b", role: "Writer" }];
+
+    const kept = await upsertOwnTeam(alice, { id: "team-1", title: "Research crew", members });
+    expect(kept).toMatchObject({ ok: true, data: { action: "unchanged" } });
+    const reordered = await upsertOwnTeam(alice, { id: "team-1", title: "Research crew", members, tagIds: ["tag-1", "tag-2"] });
+    expect(reordered).toMatchObject({ ok: true, data: { action: "unchanged" } });
+
+    const view = toTeamView(existing as never, (bot: { id: string }) => ({ id: bot.id }), alice);
+    expect(view.category?.slug).toBe("coding");
+    expect(view.tags.map((tag) => tag.id)).toEqual(["tag-2", "tag-1"]);
+    expect(
+      diffTeam(view, {
+        title: "Research crew",
+        description: "Finds and writes things up",
+        categoryId: null,
+        tagIds: ["tag-1"],
+        members: [
+          { botId: "a", role: "Researcher", description: "Finds sources" },
+          { botId: "b", role: "Writer", description: "Writes it up" },
+        ],
+        links: [{ fromBotId: "a", toBotId: "b", label: "Research brief" }],
+      })
+    ).toEqual(["category", "tags"]);
   });
 
   it("fails when the id is not one of the caller's teams", async () => {
@@ -315,6 +354,8 @@ describe("converting pairings to teams", () => {
         { fromBotId: "a", toBotId: "b", label: "Plan" },
         { fromBotId: "b", toBotId: "c", label: "" },
       ],
+      categoryId: null,
+      tagIds: [],
     });
     expect(teams[1]).toMatchObject({ title: "D & E", authorId: "u2" });
     for (const team of teams) expect(botTeamInputSchema.safeParse(team).success).toBe(true);

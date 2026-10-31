@@ -210,6 +210,7 @@ model Category {
   children    Category[]             @relation("CategoryHierarchy")
   subscribers CategorySubscription[]
   prompts     Prompt[]
+  botTeams    BotTeam[]
 
   @@index([parentId])
   @@index([pinned])
@@ -217,11 +218,12 @@ model Category {
 }
 
 model Tag {
-  id      String      @id @default(cuid())
-  name    String      @unique
-  slug    String      @unique
-  color   String      @default("#6366f1")
-  prompts PromptTag[]
+  id       String       @id @default(cuid())
+  name     String       @unique
+  slug     String       @unique
+  color    String       @default("#6366f1")
+  prompts  PromptTag[]
+  botTeams BotTeamTag[]
 
   @@map("tags")
 }
@@ -433,16 +435,31 @@ model BotTeam {
   /// Markdown
   description String?         @db.VarChar(4000)
   authorId    String
+  categoryId  String?
   isFeatured  Boolean         @default(false)
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
   author      User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  category    Category?       @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   members     BotTeamMember[]
   links       BotTeamLink[]
+  tags        BotTeamTag[]
 
   @@index([authorId])
+  @@index([categoryId])
   @@index([isFeatured, createdAt(sort: Desc)])
   @@map("bot_teams")
+}
+
+model BotTeamTag {
+  teamId String
+  tagId  String
+  team   BotTeam @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  tag    Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([teamId, tagId])
+  @@index([tagId])
+  @@map("bot_team_tags")
 }
 
 model BotTeamMember {

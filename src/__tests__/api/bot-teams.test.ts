@@ -20,6 +20,8 @@ vi.mock("@/lib/db", () => ({
     },
     botTeamMember: { deleteMany: vi.fn(), createMany: vi.fn() },
     botTeamLink: { deleteMany: vi.fn(), createMany: vi.fn() },
+    category: { findUnique: vi.fn() },
+    tag: { findMany: vi.fn() },
   },
 }));
 
@@ -76,6 +78,8 @@ const team = {
     { role: null, description: null, bot: bot("b") },
   ],
   links: [{ fromBotId: "a", toBotId: "b", label: "Brief" }],
+  category: null,
+  tags: [],
 };
 
 const validBody = {
@@ -114,6 +118,15 @@ describe("bot teams API", () => {
       expect(JSON.stringify(body)).not.toContain("Secret instructions");
       expect(vi.mocked(db.botTeam.findMany).mock.calls[0][0]).toMatchObject({ take: 5 });
     });
+
+    it("filters by category and comma-separated tags", async () => {
+      vi.mocked(db.botTeam.count).mockResolvedValue(0);
+      await LIST(new Request("http://localhost/api/bots/teams?category=coding&tag=agents,ci"));
+      expect(vi.mocked(db.botTeam.findMany).mock.calls[0][0]!.where).toMatchObject({
+        category: { OR: [{ slug: "coding" }, { parent: { slug: "coding" } }] },
+        AND: [{ tags: { some: { tag: { slug: "agents" } } } }, { tags: { some: { tag: { slug: "ci" } } } }],
+      });
+    });
   });
 
   describe("POST /api/bots/teams", () => {
@@ -149,6 +162,36 @@ describe("bot teams API", () => {
       const response = await POST(jsonRequest("http://localhost/api/bots/teams", "POST", validBody));
       expect(response.status).toBe(400);
       expect(await response.json()).toMatchObject({ error: "invalid_bots", botIds: ["b"] });
+    });
+
+    it("rejects unknown categories and tags", async () => {
+      signIn("owner");
+      vi.mocked(db.category.findUnique).mockResolvedValue(null);
+      let response = await POST(jsonRequest("http://localhost/api/bots/teams", "POST", { ...validBody, categoryId: "nope" }));
+      expect(response.status).toBe(400);
+      expect((await response.json()).error).toBe("invalid_category");
+
+      vi.mocked(db.tag.findMany).mockResolvedValue([{ id: "tag-1" }] as never);
+      response = await POST(jsonRequest("http://localhost/api/bots/teams", "POST", { ...validBody, tagIds: ["tag-1", "tag-2"] }));
+      expect(response.status).toBe(400);
+      expect(await response.json()).toMatchObject({ error: "invalid_tags", tagIds: ["tag-2"] });
+      expect(db.botTeam.create).not.toHaveBeenCalled();
+    });
+
+    it("saves the category and tags on update", async () => {
+      signIn("owner");
+      vi.mocked(db.category.findUnique).mockResolvedValue({ id: "cat-1" } as never);
+      vi.mocked(db.tag.findMany).mockResolvedValue([{ id: "tag-1" }] as never);
+      const response = await PUT(
+        jsonRequest("http://localhost/api/bots/teams/research-crew", "PUT", { ...validBody, categoryId: "cat-1", tagIds: ["tag-1", "tag-1"] }),
+        params
+      );
+      expect(response.status).toBe(200);
+      expect(db.botTeam.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ categoryId: "cat-1", tags: { deleteMany: {}, create: [{ tagId: "tag-1" }] } }),
+        })
+      );
     });
 
     it("creates the team", async () => {

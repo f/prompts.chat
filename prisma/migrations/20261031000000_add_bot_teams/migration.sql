@@ -5,6 +5,7 @@ CREATE TABLE "bot_teams" (
     "title" VARCHAR(120) NOT NULL,
     "description" VARCHAR(4000),
     "authorId" TEXT NOT NULL,
+    "categoryId" TEXT,
     "isFeatured" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -39,6 +40,14 @@ CREATE TABLE "bot_team_links" (
     CONSTRAINT "bot_team_links_no_self_check" CHECK ("fromBotId" <> "toBotId")
 );
 
+-- CreateTable
+CREATE TABLE "bot_team_tags" (
+    "teamId" TEXT NOT NULL,
+    "tagId" TEXT NOT NULL,
+
+    CONSTRAINT "bot_team_tags_pkey" PRIMARY KEY ("teamId","tagId")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "bot_teams_slug_key" ON "bot_teams"("slug");
 
@@ -46,7 +55,13 @@ CREATE UNIQUE INDEX "bot_teams_slug_key" ON "bot_teams"("slug");
 CREATE INDEX "bot_teams_authorId_idx" ON "bot_teams"("authorId");
 
 -- CreateIndex
+CREATE INDEX "bot_teams_categoryId_idx" ON "bot_teams"("categoryId");
+
+-- CreateIndex
 CREATE INDEX "bot_teams_isFeatured_createdAt_idx" ON "bot_teams"("isFeatured", "createdAt" DESC);
+
+-- CreateIndex
+CREATE INDEX "bot_team_tags_tagId_idx" ON "bot_team_tags"("tagId");
 
 -- CreateIndex
 CREATE INDEX "bot_team_members_botId_idx" ON "bot_team_members"("botId");
@@ -62,6 +77,15 @@ CREATE UNIQUE INDEX "bot_team_links_teamId_fromBotId_toBotId_key" ON "bot_team_l
 
 -- AddForeignKey
 ALTER TABLE "bot_teams" ADD CONSTRAINT "bot_teams_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "bot_teams" ADD CONSTRAINT "bot_teams_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "categories"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "bot_team_tags" ADD CONSTRAINT "bot_team_tags_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "bot_teams"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "bot_team_tags" ADD CONSTRAINT "bot_team_tags_tagId_fkey" FOREIGN KEY ("tagId") REFERENCES "tags"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "bot_team_members" ADD CONSTRAINT "bot_team_members_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "bot_teams"("id") ON DELETE CASCADE ON UPDATE CASCADE;

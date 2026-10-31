@@ -9,6 +9,7 @@ export const TEAM_DESCRIPTION_MAX_LENGTH = 4000;
 export const TEAM_ROLE_MAX_LENGTH = 80;
 export const TEAM_MEMBER_DESCRIPTION_MAX_LENGTH = 500;
 export const TEAM_LINK_LABEL_MAX_LENGTH = 200;
+export const MAX_TEAM_TAGS = 10;
 
 export const botTeamMemberInputSchema = z.object({
   botId: z.string().trim().min(1),
@@ -57,6 +58,12 @@ export const botTeamInputSchema = z
   .object({
     title: z.string().trim().min(1).max(TEAM_TITLE_MAX_LENGTH),
     description: z.string().trim().max(TEAM_DESCRIPTION_MAX_LENGTH).nullish(),
+    categoryId: z.string().trim().nullish(),
+    tagIds: z
+      .array(z.string().trim().min(1))
+      .max(MAX_TEAM_TAGS)
+      .default([])
+      .transform((ids) => [...new Set(ids)]),
     members: botTeamMembersSchema,
     links: botTeamLinksSchema.default([]),
   })

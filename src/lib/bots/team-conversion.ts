@@ -128,6 +128,8 @@ export function teamsFromPairings(
     teams.push({
       title: teamTitleFromBots(group.map((bot) => bot.title)),
       description: null,
+      categoryId: null,
+      tagIds: [],
       authorId: groupAuthor(group),
       members: ids.map((botId) => ({ botId, role: null, description: null })),
       links,

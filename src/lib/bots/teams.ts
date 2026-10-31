@@ -6,7 +6,9 @@ import { getBotTeamUrl } from "@/lib/urls";
 import {
   BOT_PLATFORM_INFO,
   BOT_PLATFORMS,
+  botCategoryJson,
   botSelect,
+  botTagsJson,
   computerListMark,
   computerListNotes,
   getBotUrls,
@@ -50,6 +52,20 @@ export interface BotTeamBot {
   computerRequirement: BotComputerRequirement;
 }
 
+export interface TeamCategory {
+  id: string;
+  name: string;
+  slug: string;
+  parent: { id: string; name: string; slug: string } | null;
+}
+
+export interface TeamTag {
+  id: string;
+  name: string;
+  slug: string;
+  color: string;
+}
+
 export interface BotTeamLinkView {
   fromBotId: string;
   toBotId: string;
@@ -64,6 +80,8 @@ export interface BotTeamView<B extends { id: string } = BotTeamBot> {
   isFeatured: boolean;
   authorId: string;
   author: { username: string; name: string | null; avatar: string | null; verified: boolean };
+  category: TeamCategory | null;
+  tags: TeamTag[];
   createdAt: Date;
   updatedAt: Date;
   /** Members the viewer may see, in team order, with what each does in the team */
@@ -96,6 +114,8 @@ const teamBaseSelect = {
   createdAt: true,
   updatedAt: true,
   author: { select: { username: true, name: true, avatar: true, verified: true } },
+  category: { select: { id: true, name: true, slug: true, parent: { select: { id: true, name: true, slug: true } } } },
+  tags: { select: { tag: { select: { id: true, name: true, slug: true, color: true } } }, orderBy: { tag: { name: "asc" } } },
   links: {
     orderBy: [{ order: "asc" }, { createdAt: "asc" }],
     select: { fromBotId: true, toBotId: true, label: true },
@@ -156,6 +176,8 @@ export function toTeamView<R extends VisibilityRecord & { id: string }, B extend
     isFeatured: record.isFeatured,
     authorId: record.authorId,
     author: record.author,
+    category: record.category,
+    tags: record.tags.map(({ tag }) => tag),
     createdAt: record.createdAt,
     updatedAt: record.updatedAt,
     members,
@@ -176,11 +198,26 @@ const listedTeamWhere = {
   members: { some: { bot: { type: "BOT", deletedAt: null, isPrivate: false } } },
 } satisfies Prisma.BotTeamWhereInput;
 
-function teamListWhere({ q, authorId }: { q?: string; authorId?: string }): Prisma.BotTeamWhereInput {
+export interface TeamListFilters {
+  q?: string;
+  authorId?: string;
+  /** Matches the category and, for a parent category, its subcategories */
+  categorySlug?: string;
+  /** Every tag must match */
+  tagSlugs?: string[];
+  /** At least one public member runs on the platform */
+  platform?: BotPlatform;
+}
+
+function teamListWhere({ q, authorId, categorySlug, tagSlugs = [], platform }: TeamListFilters): Prisma.BotTeamWhereInput {
   const keywords = (q ?? "").split(",").map((k) => k.trim()).filter(Boolean);
   return {
-    ...listedTeamWhere,
+    ...(platform
+      ? { members: { some: { bot: { type: "BOT", deletedAt: null, isPrivate: false, botPlatforms: { has: platform } } } } }
+      : listedTeamWhere),
     ...(authorId && { authorId }),
+    ...(categorySlug && { category: { OR: [{ slug: categorySlug }, { parent: { slug: categorySlug } }] } }),
+    ...(tagSlugs.length > 0 && { AND: tagSlugs.map((slug) => ({ tags: { some: { tag: { slug } } } })) }),
     ...(keywords.length > 0 && {
       OR: keywords.flatMap((keyword) => [
         { title: { contains: keyword, mode: "insensitive" as const } },
@@ -193,13 +230,12 @@ function teamListWhere({ q, authorId }: { q?: string; authorId?: string }): Pris
 
 /** Featured teams first, then newest */
 export async function listTeams({
-  q,
-  authorId,
   skip = 0,
   take = 24,
   viewer = null,
-}: { q?: string; authorId?: string; skip?: number; take?: number; viewer?: TeamViewer | null } = {}) {
-  const where = teamListWhere({ q, authorId });
+  ...filters
+}: TeamListFilters & { skip?: number; take?: number; viewer?: TeamViewer | null } = {}) {
+  const where = teamListWhere(filters);
   const [records, total] = await Promise.all([
     db.botTeam.findMany({
       where,
@@ -211,6 +247,39 @@ export async function listTeams({
     db.botTeam.count({ where }),
   ]);
   return { teams: records.map((record) => summaryView(record, viewer)), total };
+}
+
+/** Categories (with team counts, parents including their subcategories) and tags used by listed teams */
+export async function getTeamFilterOptions() {
+  const [byCategory, tags] = await Promise.all([
+    db.botTeam.groupBy({ by: ["categoryId"], where: { ...listedTeamWhere, categoryId: { not: null } }, _count: { _all: true } }),
+    db.tag.findMany({
+      where: { botTeams: { some: { team: listedTeamWhere } } },
+      orderBy: { name: "asc" },
+      select: { id: true, name: true, slug: true, color: true },
+    }),
+  ]);
+  const direct = new Map(byCategory.map((row) => [row.categoryId as string, row._count._all]));
+  const used = await db.category.findMany({ where: { id: { in: [...direct.keys()] } }, select: { id: true, parentId: true } });
+  const counts = new Map(direct);
+  for (const category of used) {
+    if (category.parentId) counts.set(category.parentId, (counts.get(category.parentId) ?? 0) + (direct.get(category.id) ?? 0));
+  }
+  const categories = await db.category.findMany({
+    where: { id: { in: [...counts.keys()] } },
+    orderBy: [{ order: "asc" }, { name: "asc" }],
+    select: { id: true, name: true, slug: true, parentId: true },
+  });
+  return { categories: categories.map((category) => ({ ...category, count: counts.get(category.id) ?? 0 })), tags };
+}
+
+/** Every category and tag, for the category and tag pickers of the team form */
+export async function getTeamFormOptions() {
+  const [categories, tags] = await Promise.all([
+    db.category.findMany({ orderBy: [{ order: "asc" }, { name: "asc" }], select: { id: true, name: true, slug: true, parentId: true } }),
+    db.tag.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true, slug: true, color: true } }),
+  ]);
+  return { categories, tags };
 }
 
 /** A team by id, else by slug, with full member bots */
@@ -316,6 +385,8 @@ export function teamSummaryJson(team: BotTeamView<BotTeamBot | BotView>, baseUrl
     description: teamExcerpt(team.description),
     author: team.author.name || team.author.username,
     isFeatured: team.isFeatured,
+    category: botCategoryJson(team),
+    tags: botTagsJson(team),
     members: team.members.map(({ bot, role }) => ({ id: bot.id, name: bot.title, role, computerRequirement: bot.computerRequirement })),
     handoffCount: team.links.length,
     link: teamUrl(team, baseUrl),
@@ -333,6 +404,8 @@ export function teamToJson(team: BotTeamView<BotView>, baseUrl: string) {
     description: team.description,
     isFeatured: team.isFeatured,
     author: { username: team.author.username, name: team.author.name },
+    category: botCategoryJson(team),
+    tags: botTagsJson(team),
     members: team.members.map(({ bot, role, description }) => ({
       id: bot.id,
       slug: bot.slug,
@@ -419,7 +492,20 @@ async function checkTeamInput(user: PromptWriter, input: BotTeamInput): Promise<
   if (invalid.length > 0) {
     return fail(400, "invalid_bots", "Some bots do not exist or cannot be added to a team", { botIds: invalid });
   }
+  if (input.categoryId && !(await db.category.findUnique({ where: { id: input.categoryId }, select: { id: true } }))) {
+    return fail(400, "invalid_category", "Category not found");
+  }
+  if (input.tagIds.length > 0) {
+    const found = await db.tag.findMany({ where: { id: { in: input.tagIds } }, select: { id: true } });
+    const known = new Set(found.map((tag) => tag.id));
+    const unknown = input.tagIds.filter((id) => !known.has(id));
+    if (unknown.length > 0) return fail(400, "invalid_tags", "Some tags do not exist", { tagIds: unknown });
+  }
   return null;
+}
+
+function tagRows(tagIds: string[]) {
+  return tagIds.map((tagId) => ({ tagId }));
 }
 
 function isSlugConflict(error: unknown): boolean {
@@ -441,7 +527,9 @@ export async function createTeam(user: PromptWriter, input: BotTeamInput): Promi
             title: input.title,
             description: input.description || null,
             authorId: user.id,
+            categoryId: input.categoryId || null,
             members: { create: memberRows(input.members) },
+            tags: { create: tagRows(input.tagIds) },
           },
           select: { id: true },
         });
@@ -457,7 +545,7 @@ export async function createTeam(user: PromptWriter, input: BotTeamInput): Promi
   }
 }
 
-/** Replaces the team's title, description, members and handoffs; the slug stays stable */
+/** Replaces the team's title, description, category, tags, members and handoffs; the slug stays stable */
 export async function updateTeam(
   user: PromptWriter,
   teamId: string,
@@ -469,7 +557,12 @@ export async function updateTeam(
   await db.$transaction(async (tx) => {
     await tx.botTeam.update({
       where: { id: teamId },
-      data: { title: input.title, description: input.description || null },
+      data: {
+        title: input.title,
+        description: input.description || null,
+        categoryId: input.categoryId || null,
+        tags: { deleteMany: {}, create: tagRows(input.tagIds) },
+      },
     });
     await tx.botTeamLink.deleteMany({ where: { teamId } });
     await tx.botTeamMember.deleteMany({ where: { teamId } });
@@ -513,6 +606,10 @@ export interface OwnTeamInput {
   title: string;
   /** Undefined keeps the stored description on update; null or "" clears it */
   description?: string | null;
+  /** Undefined keeps the stored category on update; null clears it */
+  categoryId?: string | null;
+  /** Undefined keeps the stored tags on update */
+  tagIds?: string[];
   /** A member's undefined description keeps the stored one */
   members: BotTeamMemberInput[];
   /** Undefined keeps the stored handoffs between bots that stay in the team */
@@ -521,20 +618,27 @@ export interface OwnTeamInput {
 
 export type OwnTeamAction = "created" | "updated" | "unchanged";
 
-function comparable(team: Pick<BotTeamInput, "title" | "description" | "members" | "links">) {
+function comparable(team: Pick<BotTeamInput, "title" | "description" | "categoryId" | "tagIds" | "members" | "links">) {
   return {
     title: team.title,
     description: team.description || null,
+    category: team.categoryId || null,
+    tags: [...new Set(team.tagIds)].sort(),
     members: team.members.map((m) => [m.botId, m.role || null, m.description || null]),
     links: team.links.map((l) => [l.fromBotId, l.toBotId, l.label]),
   };
 }
 
 /** Fields of `next` that differ from the stored team */
-export function diffTeam(existing: BotTeamView<{ id: string }>, next: BotTeamInput): string[] {
+export function diffTeam(
+  existing: Pick<BotTeamView<{ id: string }>, "title" | "description" | "category" | "tags" | "members" | "links">,
+  next: BotTeamInput
+): string[] {
   const before = comparable({
     title: existing.title,
     description: existing.description,
+    categoryId: existing.category?.id ?? null,
+    tagIds: existing.tags.map((tag) => tag.id),
     members: existing.members.map((m) => ({ botId: m.bot.id, role: m.role, description: m.description })),
     links: existing.links,
   });
@@ -558,6 +662,8 @@ export async function upsertOwnTeam(
   const next: BotTeamInput = {
     title: input.title,
     description: input.description === undefined ? (existing?.description ?? null) : input.description || null,
+    categoryId: input.categoryId === undefined ? (existing?.category?.id ?? null) : input.categoryId || null,
+    tagIds: [...new Set(input.tagIds ?? existing?.tags.map((tag) => tag.id) ?? [])],
     members: input.members.map((member) => ({
       ...member,
       description: member.description === undefined ? (stored.get(member.botId)?.description ?? null) : member.description || null,

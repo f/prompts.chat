@@ -12,6 +12,8 @@ export async function GET(request: Request) {
   const session = await auth();
   const { teams, total } = await listTeams({
     q: searchParams.get("q") ?? undefined,
+    categorySlug: searchParams.get("category") || undefined,
+    tagSlugs: (searchParams.get("tag") ?? "").split(",").map((tag) => tag.trim()).filter(Boolean),
     take: Number.isInteger(limit) && limit > 0 ? Math.min(limit, MAX_TEAMS) : MAX_TEAMS,
     viewer: session?.user ? { id: session.user.id, role: session.user.role } : null,
   });
