@@ -10,6 +10,7 @@ import { BotAvatar, BOT_ICON_COMPONENTS } from "@/components/bots/bot-avatar";
 import { BotComputerBadge, COMPUTER_REQUIREMENT_ICONS, COMPUTER_REQUIREMENT_LABELS } from "@/components/bots/bot-computer-badge";
 import type { BotColor } from "@/lib/bots/schema";
 import { TeamMarkdown } from "@/components/bots/teams/team-markdown";
+import { BotTeamMemberDialog } from "@/components/bots/teams/bot-team-member-dialog";
 import {
   TEAM_NODE_RADIUS,
   cellCenter,
@@ -24,7 +25,7 @@ import {
   type GraphPoint,
   type TeamGraphTeam,
 } from "@/lib/bots/team-graph";
-import { getBotTeamUrl, getBotUrl } from "@/lib/urls";
+import { getBotTeamUrl } from "@/lib/urls";
 import { cn } from "@/lib/utils";
 
 type Member = TeamGraphTeam["members"][number];
@@ -155,7 +156,8 @@ function useTeamLayout(teams: TeamGraphTeam[], cells: GraphCell[], hubs: number[
   return positions;
 }
 
-function GraphNode({ member, point, href }: { member: Member; point: GraphPoint; href?: string }) {
+function GraphNode({ member, point, onOpen }: { member: Member; point: GraphPoint; onOpen: () => void }) {
+  const t = useTranslations("bots.teams");
   const tComputer = useTranslations("bots.computer");
   const Icon = BOT_ICON_COMPONENTS[member.icon ?? "bot"];
   const size = TEAM_NODE_RADIUS;
@@ -166,8 +168,24 @@ function GraphNode({ member, point, href }: { member: Member; point: GraphPoint;
     computer && tComputer(COMPUTER_REQUIREMENT_LABELS[computer]),
     member.description,
   ];
-  const body = (
-    <g transform={`translate(${point.x},${point.y})`}>
+  return (
+    <g
+      transform={`translate(${point.x},${point.y})`}
+      role="button"
+      tabIndex={0}
+      aria-label={t("openBot", { bot: member.title })}
+      className="cursor-pointer outline-none [&:focus-visible>circle:nth-of-type(2)]:stroke-primary [&:hover>circle:nth-of-type(2)]:stroke-[2.5]"
+      onClick={(event) => {
+        event.stopPropagation();
+        onOpen();
+      }}
+      onKeyDown={(event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        event.stopPropagation();
+        onOpen();
+      }}
+    >
       <title>{tooltip.filter(Boolean).join("\n")}</title>
       <circle r={size} className="fill-background" />
       <circle r={size} strokeWidth={1.5} className={member.color ? NODE_STYLES[member.color] : DEFAULT_NODE_STYLE} />
@@ -196,13 +214,6 @@ function GraphNode({ member, point, href }: { member: Member; point: GraphPoint;
       )}
     </g>
   );
-  return href ? (
-    <Link href={href} className="outline-none [&:focus-visible_circle]:stroke-primary">
-      {body}
-    </Link>
-  ) : (
-    body
-  );
 }
 
 interface HoveredLink {
@@ -213,7 +224,7 @@ interface HoveredLink {
 
 interface BotTeamsGraphProps {
   teams: TeamGraphTeam[];
-  /** "overview" makes each team box selectable and shows a detail panel; "single" links nodes to their bots */
+  /** "overview" makes each team box selectable and shows a detail panel; bots open a details dialog in both */
   variant?: "overview" | "single";
 }
 
@@ -224,6 +235,7 @@ export function BotTeamsGraph({ teams, variant = "overview" }: BotTeamsGraphProp
   const [width, setWidth] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [hovered, setHovered] = useState<HoveredLink | null>(null);
+  const [openMember, setOpenMember] = useState<{ teamIndex: number; memberId: string } | null>(null);
   const isOverview = variant === "overview";
 
   useEffect(() => {
@@ -263,6 +275,14 @@ export function BotTeamsGraph({ teams, variant = "overview" }: BotTeamsGraphProp
   const hoveredLink = hoveredTeam && hovered ? hoveredTeam.links[hovered.linkIndex] : null;
   const memberTitle = (team: TeamGraphTeam, botId: string) => team.members.find((m) => m.id === botId)?.title ?? "";
   const selectedTeam = selected !== null ? teams[selected] : null;
+  const openTeam = openMember ? teams[openMember.teamIndex] : null;
+  const dialog = (
+    <BotTeamMemberDialog
+      member={openTeam?.members.find((member) => member.id === openMember?.memberId) ?? null}
+      teamTitle={openTeam?.title ?? ""}
+      onOpenChange={(open) => !open && setOpenMember(null)}
+    />
+  );
 
   const graph = (
     <div ref={containerRef} className="relative w-full min-w-0" style={{ minHeight: width > 0 ? layout.height : 240 }}>
@@ -306,15 +326,15 @@ export function BotTeamsGraph({ teams, variant = "overview" }: BotTeamsGraphProp
                   y={cell.y + 0.5}
                   width={cell.width - 1}
                   height={cell.height - 1}
-                  rx={12}
-                  strokeWidth={isSelected ? 2 : 1}
+                  rx={10}
+                  strokeWidth={1}
                   className={cn(
-                    "fill-card transition-colors",
-                    isSelected ? "stroke-primary" : "stroke-border",
-                    isOverview && "group-hover:stroke-primary/60 group-focus-visible:stroke-primary"
+                    "fill-card transition-colors [rx:var(--radius)]",
+                    isSelected ? "stroke-foreground/50" : "stroke-border",
+                    isOverview && !isSelected && "group-hover:stroke-foreground/30 group-focus-visible:stroke-foreground/50"
                   )}
                 />
-                <text x={cell.x + 16} y={cell.y + 26} className="fill-foreground text-[13px] font-semibold">
+                <text x={cell.x + 16} y={cell.y + 28} className="fill-foreground text-sm font-semibold">
                   {truncateLabel(team.title, Math.floor((cell.width - 56) / 7.5))}
                 </text>
                 {team.isFeatured && (
@@ -360,7 +380,7 @@ export function BotTeamsGraph({ teams, variant = "overview" }: BotTeamsGraphProp
                       key={member.id}
                       member={member}
                       point={point}
-                      href={isOverview ? undefined : getBotUrl(member.id, member.slug)}
+                      onOpen={() => setOpenMember({ teamIndex, memberId: member.id })}
                     />
                   );
                 })}
@@ -373,7 +393,7 @@ export function BotTeamsGraph({ teams, variant = "overview" }: BotTeamsGraphProp
       {hovered && hoveredTeam && hoveredLink && (
         <div
           role="tooltip"
-          className="pointer-events-none absolute z-10 max-w-64 -translate-x-1/2 -translate-y-full rounded-md border bg-popover px-2.5 py-1.5 text-xs text-popover-foreground shadow-md"
+          className="pointer-events-none absolute z-10 max-w-64 -translate-x-1/2 -translate-y-full rounded-md bg-foreground px-3 py-1.5 text-xs text-background"
           style={{ left: hovered.point.x, top: hovered.point.y - 8 }}
         >
           <p className="flex items-center gap-1 font-medium">
@@ -381,65 +401,91 @@ export function BotTeamsGraph({ teams, variant = "overview" }: BotTeamsGraphProp
             <ArrowRight className="h-3 w-3 shrink-0" aria-hidden="true" />
             <span className="truncate">{memberTitle(hoveredTeam, hoveredLink.toBotId)}</span>
           </p>
-          <p className="mt-0.5 text-muted-foreground wrap-anywhere">{hoveredLink.label || t("noHandoffLabel")}</p>
+          <p className="mt-0.5 text-background/70 wrap-anywhere">{hoveredLink.label || t("noHandoffLabel")}</p>
         </div>
       )}
     </div>
   );
 
-  if (!isOverview) return graph;
+  if (!isOverview) {
+    return (
+      <>
+        {graph}
+        {dialog}
+      </>
+    );
+  }
 
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
       {graph}
-      <aside aria-live="polite" className="h-fit min-w-0 rounded-md border p-4 lg:sticky lg:top-16">
-        {selectedTeam ? <TeamDetailPanel team={selectedTeam} onClose={() => setSelected(null)} /> : (
+      <aside aria-live="polite" className="h-fit min-w-0 space-y-3 rounded-md border p-3 sm:p-4 lg:sticky lg:top-16">
+        {selectedTeam ? (
+          <TeamDetailPanel
+            team={selectedTeam}
+            onClose={() => setSelected(null)}
+            onOpenMember={(memberId) => selected !== null && setOpenMember({ teamIndex: selected, memberId })}
+          />
+        ) : (
           <p className="text-sm text-muted-foreground">{t("selectHint")}</p>
         )}
       </aside>
+      {dialog}
     </div>
   );
 }
 
-function TeamDetailPanel({ team, onClose }: { team: TeamGraphTeam; onClose: () => void }) {
+function TeamDetailPanel({
+  team,
+  onClose,
+  onOpenMember,
+}: {
+  team: TeamGraphTeam;
+  onClose: () => void;
+  onOpenMember: (memberId: string) => void;
+}) {
   const t = useTranslations("bots.teams");
   const titles = new Map(team.members.map((member) => [member.id, member.title]));
   return (
     <div className="space-y-4">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <h2 className="font-semibold wrap-anywhere">{team.title}</h2>
+          <h2 className="text-base font-semibold wrap-anywhere">{team.title}</h2>
           <p className="text-xs text-muted-foreground">{t("by", { author: team.author })}</p>
         </div>
-        <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={onClose} aria-label={t("closePanel")}>
+        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={onClose} aria-label={t("closePanel")}>
           <X className="h-4 w-4" />
         </Button>
       </div>
-      {team.description && <TeamMarkdown className="max-h-64 overflow-y-auto text-sm">{team.description}</TeamMarkdown>}
+      {team.description && <TeamMarkdown className="max-h-64 overflow-y-auto text-sm text-muted-foreground">{team.description}</TeamMarkdown>}
 
       <section className="space-y-2">
-        <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("members")}</h3>
-        <ul className="space-y-2">
+        <h3 className="text-sm font-semibold">{t("members")}</h3>
+        <ul className="-mx-2 space-y-0.5">
           {team.members.map((member) => (
-            <li key={member.id} className="flex min-w-0 items-start gap-2">
-              <BotAvatar icon={member.icon} color={member.color} size="sm" />
-              <div className="min-w-0">
-                <div className="flex min-w-0 items-center gap-1.5">
-                  <Link href={getBotUrl(member.id, member.slug)} className="truncate text-sm font-medium hover:underline">
-                    {member.title}
-                  </Link>
-                  <BotComputerBadge requirement={member.computerRequirement} className="h-4 w-4 [&_svg]:h-2.5 [&_svg]:w-2.5" />
-                </div>
-                {member.role && <p className="truncate text-xs font-medium text-muted-foreground">{member.role}</p>}
-                {member.description && <p className="line-clamp-3 text-xs text-muted-foreground wrap-anywhere">{member.description}</p>}
-              </div>
+            <li key={member.id} className="flex min-w-0 items-start gap-1">
+              <button
+                type="button"
+                onClick={() => onOpenMember(member.id)}
+                className="flex min-w-0 flex-1 items-start gap-2 rounded-md p-2 text-left transition-colors hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <BotAvatar icon={member.icon} color={member.color} size="sm" />
+                <span className="min-w-0 space-y-0.5">
+                  <span className="block truncate text-sm font-medium">{member.title}</span>
+                  {member.role && <span className="block truncate text-xs text-muted-foreground">{member.role}</span>}
+                  {member.description && (
+                    <span className="line-clamp-2 text-xs text-muted-foreground wrap-anywhere">{member.description}</span>
+                  )}
+                </span>
+              </button>
+              <BotComputerBadge requirement={member.computerRequirement} className="mt-2.5" />
             </li>
           ))}
         </ul>
       </section>
 
       <section className="space-y-2">
-        <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("handoffs")}</h3>
+        <h3 className="text-sm font-semibold">{t("handoffs")}</h3>
         {team.links.length > 0 ? (
           <ul className="space-y-2">
             {team.links.map((link) => (
@@ -458,8 +504,11 @@ function TeamDetailPanel({ team, onClose }: { team: TeamGraphTeam; onClose: () =
         )}
       </section>
 
-      <Button size="sm" className="w-full" asChild>
-        <Link href={getBotTeamUrl(team.slug)}>{t("openTeam")}</Link>
+      <Button size="sm" className="h-8 w-full text-xs" asChild>
+        <Link href={getBotTeamUrl(team.slug)}>
+          {t("openTeam")}
+          <ArrowRight className="h-3.5 w-3.5 ml-1" />
+        </Link>
       </Button>
     </div>
   );

@@ -91,35 +91,39 @@ export default async function BotTeamsPage({ searchParams }: BotTeamsPageProps) 
         </form>
       </div>
 
-      <p className="mb-6 text-sm text-muted-foreground">{t("description")}</p>
+      <p className="mb-4 text-sm text-muted-foreground">
+        {t("description")} {t("botHint")}
+      </p>
 
       {teams.length > 0 ? (
         <>
           <BotTeamsGraph teams={teams.map(toTeamGraphTeam)} />
 
-          <section aria-labelledby="all-teams" className="mt-10 space-y-3">
+          <section aria-labelledby="all-teams" className="mt-8 space-y-2">
             <h2 id="all-teams" className="text-base font-semibold">{t("allTeams")}</h2>
-            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {teams.map((team) => (
-                <li key={team.id}>
+                <li key={team.id} className="flex min-w-0">
                   <Link
                     href={getBotTeamUrl(team.slug)}
-                    className="flex h-full flex-col gap-3 rounded-md border p-4 transition-colors hover:border-primary/50 hover:bg-accent/40"
+                    className="group flex min-w-0 flex-1 flex-col gap-3 rounded-[var(--radius)] border bg-card p-4 transition-colors hover:border-foreground/30 hover:bg-accent/40"
                   >
-                    <div className="flex items-start justify-between gap-2">
-                      <h3 className="min-w-0 font-medium wrap-anywhere">{team.title}</h3>
-                      {team.isFeatured && <Star className="h-4 w-4 shrink-0 fill-yellow-500 text-yellow-500" aria-label={t("featured")} />}
+                    <div className="space-y-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="min-w-0 font-semibold leading-snug wrap-anywhere group-hover:underline">{team.title}</h3>
+                        {team.isFeatured && <Star className="h-4 w-4 shrink-0 fill-yellow-500 text-yellow-500" aria-label={t("featured")} />}
+                      </div>
+                      {team.description && (
+                        <p className="text-sm text-muted-foreground line-clamp-3 wrap-anywhere">{teamExcerpt(team.description)}</p>
+                      )}
                     </div>
-                    {team.description && (
-                      <p className="line-clamp-3 text-sm leading-relaxed text-foreground/80 wrap-anywhere">{teamExcerpt(team.description)}</p>
-                    )}
-                    <div className="mt-auto flex items-center justify-between gap-2">
+                    <div className="mt-auto flex items-center justify-between gap-2 text-xs text-muted-foreground">
                       <div className="flex -space-x-1.5" aria-hidden="true">
                         {team.members.slice(0, 6).map(({ bot }) => (
                           <BotAvatar key={bot.id} icon={bot.icon} color={bot.color} size="sm" className="ring-2 ring-background" />
                         ))}
                       </div>
-                      <span className="text-xs text-muted-foreground">
+                      <span>
                         {t("membersCount", { count: team.members.length })} · {t("handoffsCount", { count: team.links.length })}
                       </span>
                     </div>

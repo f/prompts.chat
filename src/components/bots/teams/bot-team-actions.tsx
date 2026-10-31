@@ -50,7 +50,7 @@ export function BotTeamActions({ team }: { team: TeamEditorValue & { slug: strin
         team={team}
         trigger={
           <Button size="sm" variant="outline" className="h-8 text-xs">
-            <Pencil className="h-3.5 w-3.5" />
+            <Pencil className="h-3.5 w-3.5 mr-1" />
             {t("edit")}
           </Button>
         }
@@ -58,7 +58,7 @@ export function BotTeamActions({ team }: { team: TeamEditorValue & { slug: strin
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button size="sm" variant="outline" className="h-8 text-xs text-destructive hover:text-destructive">
-            <Trash2 className="h-3.5 w-3.5" />
+            <Trash2 className="h-3.5 w-3.5 mr-1" />
             {t("delete")}
           </Button>
         </AlertDialogTrigger>

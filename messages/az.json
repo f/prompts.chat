@@ -1164,7 +1164,13 @@
         "handoffSelf": "İki fərqli bot seç.",
         "connectEveryone": "Botu hamı ilə birləşdir",
         "connectEveryoneHint": "Seçilmiş botdan bütün digər botlara və geri ötürmələr əlavə edir, aparat rəhbəri kimi."
-      }
+      },
+      "openBot": "{bot} haqqında ətraflı göstər",
+      "botHint": "Nə etdiyini görmək və quraşdırmaq üçün bir bot seçin.",
+      "inTeam": "{team} daxilində",
+      "installBot": "Quraşdır",
+      "viewBot": "Bot səhifəsini aç",
+      "botLoadError": "Bu bot yüklənə bilmədi."
     },
     "computer": {
       "cloud": "Bulud kompüteri tələb edir",

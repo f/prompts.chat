@@ -4,7 +4,7 @@ import { useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ArrowLeftRight, ArrowRight, ChevronDown, Loader2, Plus, Search, Users, X } from "lucide-react";
+import { ArrowLeftRight, ArrowRight, ChevronDown, Loader2, Plus, Search, Trash2, Users } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -90,7 +90,7 @@ function TeamMemberPicker({ value, onChange }: { value: TeamEditorMember[]; onCh
       {value.length > 0 && (
         <ul className="space-y-2">
           {value.map((member, index) => (
-            <li key={member.botId} className="space-y-2 rounded-md border p-2">
+            <li key={member.botId} className="space-y-3 rounded-md border p-3">
               <div className="flex min-w-0 items-center gap-2">
                 <BotAvatar icon={member.icon} color={member.color} size="sm" />
                 <span className="min-w-0 flex-1 truncate text-sm font-medium" title={member.title}>{member.title}</span>
@@ -98,14 +98,14 @@ function TeamMemberPicker({ value, onChange }: { value: TeamEditorMember[]; onCh
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive"
+                  className="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive"
                   onClick={() => onChange(value.filter((item) => item.botId !== member.botId))}
                   aria-label={t("removeBot", { bot: member.title })}
                 >
-                  <X className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,11rem)_minmax(0,1fr)]">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,11rem)_minmax(0,1fr)]">
                 <Input
                   value={member.role}
                   maxLength={TEAM_ROLE_MAX_LENGTH}
@@ -119,7 +119,7 @@ function TeamMemberPicker({ value, onChange }: { value: TeamEditorMember[]; onCh
                   placeholder={t("memberDescriptionPlaceholder")}
                   aria-label={t("memberDescriptionLabel", { bot: member.title })}
                   rows={2}
-                  className="min-h-9 resize-y text-sm"
+                  className="min-h-9 resize-y"
                   onChange={(event) => update(index, { description: event.target.value })}
                 />
               </div>
@@ -249,7 +249,7 @@ function TeamHandoffEditor({
         const to = titles.get(link.toBotId) ?? "";
         const issue = rowIssue(index);
         return (
-          <div key={index} className={cn("flex flex-col gap-2 rounded-md border p-2", issue && "border-destructive/60")}>
+          <div key={index} className={cn("space-y-3 rounded-md border p-3", issue && "border-destructive/60")}>
             <div className="flex items-center gap-2">
               {memberSelect(link.fromBotId, (fromBotId) => update(index, { fromBotId }), t("from"))}
               <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
@@ -262,7 +262,7 @@ function TeamHandoffEditor({
                 onClick={() => onChange(value.filter((_, i) => i !== index))}
                 aria-label={t("removeHandoff")}
               >
-                <X className="h-4 w-4" />
+                <Trash2 className="h-4 w-4" />
               </Button>
             </div>
             <Input
@@ -272,7 +272,7 @@ function TeamHandoffEditor({
               aria-label={t("labelLabel", { from, to })}
               onChange={(event) => update(index, { label: event.target.value })}
             />
-            {issue && <p className="text-xs text-destructive">{issue}</p>}
+            {issue && <p className="text-sm text-destructive">{issue}</p>}
           </div>
         );
       })}
@@ -305,7 +305,7 @@ function TeamHandoffEditor({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <p className="text-xs text-muted-foreground">{t("connectEveryoneHint")}</p>
+      <p className="text-sm text-muted-foreground">{t("connectEveryoneHint")}</p>
     </div>
   );
 }
@@ -393,7 +393,7 @@ export function BotTeamEditor({ team, trigger }: BotTeamEditorProps) {
         )}
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
-        <form onSubmit={submit} className="space-y-5">
+        <form onSubmit={submit} className="space-y-6">
           <DialogHeader>
             <DialogTitle>{isEdit ? t("form.editTitle") : t("form.createTitle")}</DialogTitle>
             <DialogDescription>{t("form.intro")}</DialogDescription>
@@ -423,7 +423,7 @@ export function BotTeamEditor({ team, trigger }: BotTeamEditorProps) {
               className="min-h-28 resize-y"
               onChange={(event) => setValue((current) => ({ ...current, description: event.target.value }))}
             />
-            <div id="team-description-hint" className="flex justify-between gap-3 text-xs text-muted-foreground">
+            <div id="team-description-hint" className="flex justify-between gap-3 text-sm text-muted-foreground">
               <span>{t("form.descriptionHint")}</span>
               <span className="shrink-0 tabular-nums">
                 {value.description.length}/{TEAM_DESCRIPTION_MAX_LENGTH}
@@ -433,13 +433,13 @@ export function BotTeamEditor({ team, trigger }: BotTeamEditorProps) {
 
           <div className="space-y-2">
             <Label>{t("form.bots")}</Label>
-            <p className="text-xs text-muted-foreground">{t("form.botsHint", { min: MIN_TEAM_MEMBERS, max: MAX_TEAM_MEMBERS })}</p>
+            <p className="text-sm text-muted-foreground">{t("form.botsHint", { min: MIN_TEAM_MEMBERS, max: MAX_TEAM_MEMBERS })}</p>
             <TeamMemberPicker value={value.members} onChange={setMembers} />
           </div>
 
           <div className="space-y-2">
             <Label>{t("form.handoffs")}</Label>
-            <p className="text-xs text-muted-foreground">{t("form.handoffsHint")}</p>
+            <p className="text-sm text-muted-foreground">{t("form.handoffsHint")}</p>
             <TeamHandoffEditor
               members={value.members}
               value={value.links}

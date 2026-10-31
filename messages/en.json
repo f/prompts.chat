@@ -1164,7 +1164,13 @@
         "handoffSelf": "Pick two different bots.",
         "connectEveryone": "Connect a bot to everyone",
         "connectEveryoneHint": "Adds handoffs from the chosen bot to every other bot and back, like a chief of staff."
-      }
+      },
+      "openBot": "Show details of {bot}",
+      "botHint": "Select a bot to see what it does and install it.",
+      "inTeam": "In {team}",
+      "installBot": "Install",
+      "viewBot": "Open bot page",
+      "botLoadError": "This bot could not be loaded."
     },
     "computer": {
       "cloud": "Needs a cloud computer",

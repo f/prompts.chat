@@ -1164,7 +1164,13 @@
         "handoffSelf": "İki farklı bot seç.",
         "connectEveryone": "Bir botu herkese bağla",
         "connectEveryoneHint": "Seçilen bottan diğer tüm botlara ve geri devirler ekler; bir genel koordinatör gibi."
-      }
+      },
+      "openBot": "{bot} ayrıntılarını göster",
+      "botHint": "Ne yaptığını görmek ve kurmak için bir bot seçin.",
+      "inTeam": "{team} içinde",
+      "installBot": "Kur",
+      "viewBot": "Bot sayfasını aç",
+      "botLoadError": "Bu bot yüklenemedi."
     },
     "computer": {
       "cloud": "Bulut bilgisayarı gerektirir",

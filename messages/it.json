@@ -1164,7 +1164,13 @@
         "handoffSelf": "Scegli due bot diversi.",
         "connectEveryone": "Collega un bot a tutti",
         "connectEveryoneHint": "Aggiunge passaggi dal bot scelto a tutti gli altri bot e ritorno, come un capo di gabinetto."
-      }
+      },
+      "openBot": "Mostra i dettagli di {bot}",
+      "botHint": "Seleziona un bot per vedere cosa fa e installarlo.",
+      "inTeam": "In {team}",
+      "installBot": "Installa",
+      "viewBot": "Apri la pagina del bot",
+      "botLoadError": "Impossibile caricare questo bot."
     },
     "computer": {
       "cloud": "Richiede un computer cloud",

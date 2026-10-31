@@ -1164,7 +1164,13 @@
         "handoffSelf": "Wähle zwei verschiedene Bots.",
         "connectEveryone": "Bot mit allen verbinden",
         "connectEveryoneHint": "Fügt Übergaben vom gewählten Bot an alle anderen Bots und zurück hinzu, wie bei einem Stabschef."
-      }
+      },
+      "openBot": "Details zu {bot} anzeigen",
+      "botHint": "Wähle einen Bot aus, um zu sehen, was er tut, und ihn zu installieren.",
+      "inTeam": "In {team}",
+      "installBot": "Installieren",
+      "viewBot": "Bot-Seite öffnen",
+      "botLoadError": "Dieser Bot konnte nicht geladen werden."
     },
     "computer": {
       "cloud": "Benötigt einen Cloud-Computer",

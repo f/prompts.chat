@@ -1164,7 +1164,13 @@
         "handoffSelf": "请选择两个不同的机器人。",
         "connectEveryone": "将一个机器人与所有人连接",
         "connectEveryoneHint": "添加从所选机器人到其他所有机器人以及反向的交接，就像幕僚长一样。"
-      }
+      },
+      "openBot": "查看 {bot} 的详情",
+      "botHint": "选择一个机器人，查看它做什么并安装它。",
+      "inTeam": "在 {team} 中",
+      "installBot": "安装",
+      "viewBot": "打开机器人页面",
+      "botLoadError": "无法加载此机器人。"
     },
     "computer": {
       "cloud": "需要云端电脑",

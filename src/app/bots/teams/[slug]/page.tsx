@@ -81,14 +81,15 @@ export default async function BotTeamPage({ params }: BotTeamPageProps) {
         )}
       </div>
 
-      <header className="mb-6 space-y-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <h1 className="min-w-0 text-xl font-semibold wrap-anywhere sm:text-2xl">{team.title}</h1>
-          {team.isFeatured && <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" aria-label={t("featured")} />}
+      <header className="mb-6 space-y-3">
+        <div className="flex items-center gap-3">
+          <div aria-hidden="true" className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border bg-muted text-muted-foreground sm:h-14 sm:w-14">
+            <Users className="h-6 w-6 sm:h-7 sm:w-7" />
+          </div>
+          <h1 className="min-w-0 flex-1 text-xl sm:text-2xl font-semibold wrap-anywhere">{team.title}</h1>
+          {team.isFeatured && <Star className="h-4 w-4 shrink-0 fill-yellow-500 text-yellow-500" aria-label={t("featured")} />}
         </div>
-        {team.description && (
-          <TeamMarkdown className="max-w-3xl text-base leading-relaxed text-foreground/85">{team.description}</TeamMarkdown>
-        )}
+        {team.description && <TeamMarkdown className="leading-relaxed">{team.description}</TeamMarkdown>}
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Link
             href={`/@${team.author.username}`}
@@ -120,23 +121,25 @@ export default async function BotTeamPage({ params }: BotTeamPageProps) {
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <section aria-labelledby="team-members" className="min-w-0 space-y-3">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <section aria-labelledby="team-members" className="min-w-0 space-y-2">
           <h2 id="team-members" className="flex items-center gap-2 text-base font-semibold">
             <Users className="h-4 w-4" />
             {t("members")}
           </h2>
           {team.members.length > 0 ? (
-            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {team.members.map(({ bot, role, description }) => (
-                <li key={bot.id} className="flex min-w-0 flex-col gap-3 rounded-lg border bg-muted/30 p-3">
+                <li key={bot.id} className="flex h-full min-w-0 flex-col gap-3 rounded-[var(--radius)] border bg-muted/50 p-3">
                   {(role || description) && (
-                    <div className="space-y-1 px-1">
+                    <div className="flex-1 space-y-1 px-1">
                       {role && <p className="text-sm font-semibold wrap-anywhere">{role}</p>}
                       {description && <p className="text-sm text-muted-foreground wrap-anywhere">{description}</p>}
                     </div>
                   )}
-                  <BotCard bot={bot} />
+                  <div className="mt-auto flex min-w-0 flex-col">
+                    <BotCard bot={bot} />
+                  </div>
                 </li>
               ))}
             </ul>
@@ -145,7 +148,7 @@ export default async function BotTeamPage({ params }: BotTeamPageProps) {
           )}
         </section>
 
-        <section aria-labelledby="team-handoffs" className="h-fit min-w-0 space-y-3 rounded-md border p-4 lg:sticky lg:top-16">
+        <section aria-labelledby="team-handoffs" className="h-fit min-w-0 space-y-3 rounded-md border p-3 sm:p-4 lg:sticky lg:top-16">
           <h2 id="team-handoffs" className="flex items-center gap-2 text-base font-semibold">
             <Workflow className="h-4 w-4" />
             {t("handoffs")}

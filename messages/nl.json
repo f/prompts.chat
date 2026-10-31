@@ -1164,7 +1164,13 @@
         "handoffSelf": "Kies twee verschillende bots.",
         "connectEveryone": "Bot met iedereen verbinden",
         "connectEveryoneHint": "Voegt overdrachten toe van de gekozen bot naar alle andere bots en terug, zoals een stafchef."
-      }
+      },
+      "openBot": "Details van {bot} tonen",
+      "botHint": "Selecteer een bot om te zien wat hij doet en hem te installeren.",
+      "inTeam": "In {team}",
+      "installBot": "Installeren",
+      "viewBot": "Botpagina openen",
+      "botLoadError": "Deze bot kon niet worden geladen."
     },
     "computer": {
       "cloud": "Heeft een cloudcomputer nodig",
