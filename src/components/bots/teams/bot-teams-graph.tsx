@@ -3,7 +3,20 @@
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY, type SimulationLinkDatum, type SimulationNodeDatum } from "d3";
+import {
+  drag,
+  forceCollide,
+  forceLink,
+  forceManyBody,
+  forceSimulation,
+  forceX,
+  forceY,
+  select as d3Select,
+  type DragBehavior,
+  type SimulationLinkDatum,
+  type SimulationNodeDatum,
+  type SubjectPosition,
+} from "d3";
 import { ArrowRight, Star, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BotAvatar, BOT_ICON_COMPONENTS } from "@/components/bots/bot-avatar";
@@ -11,18 +24,30 @@ import { BotComputerBadge, COMPUTER_REQUIREMENT_ICONS, COMPUTER_REQUIREMENT_LABE
 import type { BotColor } from "@/lib/bots/schema";
 import { TeamMarkdown } from "@/components/bots/teams/team-markdown";
 import { BotTeamMemberDialog } from "@/components/bots/teams/bot-team-member-dialog";
+import { TeamInstall } from "@/components/bots/teams/team-install";
+import { PromptAuthor } from "@/components/prompts/prompt-author";
+import { UpvoteButton } from "@/components/prompts/upvote-button";
 import {
+  NODE_BADGE_OFFSET,
+  NODE_BADGE_RADIUS,
+  NODE_ROLE_MAX,
+  NODE_ROLE_OFFSET,
+  NODE_TITLE_MAX,
+  NODE_TITLE_OFFSET,
+  TEAM_BOX_FOOTER,
   TEAM_NODE_RADIUS,
   cellCenter,
   clampToCell,
   edgeGeometry,
   findHub,
   initialPositions,
+  nodeExtent,
   ringTarget,
   teamGridLayout,
   truncateLabel,
   type GraphCell,
   type GraphPoint,
+  type NodeExtent,
   type TeamGraphTeam,
 } from "@/lib/bots/team-graph";
 import { getBotTeamUrl } from "@/lib/urls";
@@ -36,6 +61,8 @@ interface SimNode extends SimulationNodeDatum {
   member: Member;
   /** Sits on the ring around its team's hub */
   onRing: boolean;
+  /** How far the node's circle, badge and labels reach, to keep all of it inside the box */
+  extent: NodeExtent;
 }
 
 interface SimLink extends SimulationLinkDatum<SimNode> {
@@ -63,6 +90,11 @@ const DEFAULT_NODE_STYLE = "fill-muted stroke-border text-muted-foreground";
 
 const nodeKey = (teamIndex: number, botId: string) => `${teamIndex}:${botId}`;
 
+/** Pointer movement in pixels up to which a press on a node still counts as a click that opens it */
+const DRAG_CLICK_DISTANCE = 4;
+
+type NodeDrag = DragBehavior<SVGGElement, unknown, SubjectPosition>;
+
 /** Pulls each hub team's other members onto the ring around the hub, so the team reads as a star */
 function ringForce(cells: GraphCell[], strength: number) {
   let nodes: SimNode[] = [];
@@ -83,9 +115,12 @@ function ringForce(cells: GraphCell[], strength: number) {
 /**
  * Runs d3-force inside each team's cell and re-renders on every tick until the layout settles.
  * A team with a hub keeps the hub in the center and its other members on a ring around it.
+ * Every node, labels included, is kept inside its cell. Also returns a drag behavior for node
+ * elements marked with `data-node-key`, which moves a node within its cell and reheats the layout.
  */
 function useTeamLayout(teams: TeamGraphTeam[], cells: GraphCell[], hubs: number[]) {
   const [positions, setPositions] = useState<Map<string, GraphPoint>>(new Map());
+  const [nodeDrag, setNodeDrag] = useState<NodeDrag | null>(null);
 
   useEffect(() => {
     if (cells.length !== teams.length || cells.length === 0) return;
@@ -97,6 +132,7 @@ function useTeamLayout(teams: TeamGraphTeam[], cells: GraphCell[], hubs: number[
         teamIndex,
         member,
         onRing: hub >= 0 && i !== hub,
+        extent: nodeExtent(member),
         ...start[i],
         ...(i === hub && { fx: start[i].x, fy: start[i].y }),
       }));
@@ -113,7 +149,7 @@ function useTeamLayout(teams: TeamGraphTeam[], cells: GraphCell[], hubs: number[
 
     const clamp = () => {
       for (const node of nodes) {
-        const point = clampToCell({ x: node.x ?? 0, y: node.y ?? 0 }, cells[node.teamIndex]);
+        const point = clampToCell({ x: node.x ?? 0, y: node.y ?? 0 }, cells[node.teamIndex], node.extent);
         node.x = point.x;
         node.y = point.y;
       }
@@ -142,21 +178,52 @@ function useTeamLayout(teams: TeamGraphTeam[], cells: GraphCell[], hubs: number[
         clamp();
       }
       publish();
-    } else {
-      simulation.on("tick", () => {
-        clamp();
-        publish();
-      });
     }
+    simulation.on("tick", () => {
+      clamp();
+      publish();
+    });
+
+    const byKey = new Map(nodes.map((node) => [node.key, node]));
+    const nodeOf = (element: SVGGElement) => byKey.get(element.dataset.nodeKey ?? "");
+    const behavior: NodeDrag = drag<SVGGElement, unknown, SubjectPosition>()
+      .clickDistance(DRAG_CLICK_DISTANCE)
+      .subject(function () {
+        const node = nodeOf(this);
+        return { x: node?.x ?? 0, y: node?.y ?? 0 };
+      })
+      .on("start", function (event) {
+        const node = nodeOf(this);
+        if (!node) return;
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        node.fx = node.x;
+        node.fy = node.y;
+      })
+      .on("drag", function (event) {
+        const node = nodeOf(this);
+        if (!node) return;
+        const point = clampToCell({ x: event.x, y: event.y }, cells[node.teamIndex], node.extent);
+        node.fx = point.x;
+        node.fy = point.y;
+      })
+      .on("end", function (event) {
+        const node = nodeOf(this);
+        if (!event.active) simulation.alphaTarget(0);
+        if (!node) return;
+        node.fx = null;
+        node.fy = null;
+      });
+    setNodeDrag(() => behavior);
+
     return () => {
       simulation.stop();
     };
   }, [teams, cells, hubs]);
 
-  return positions;
+  return { positions, nodeDrag };
 }
 
-function GraphNode({ member, point, onOpen }: { member: Member; point: GraphPoint; onOpen: () => void }) {
+function GraphNode({ member, point, dragKey, onOpen }: { member: Member; point: GraphPoint; dragKey: string; onOpen: () => void }) {
   const t = useTranslations("bots.teams");
   const tComputer = useTranslations("bots.computer");
   const Icon = BOT_ICON_COMPONENTS[member.icon ?? "bot"];
@@ -171,6 +238,7 @@ function GraphNode({ member, point, onOpen }: { member: Member; point: GraphPoin
   return (
     <g
       transform={`translate(${point.x},${point.y})`}
+      data-node-key={dragKey}
       role="button"
       tabIndex={0}
       aria-label={t("openBot", { bot: member.title })}
@@ -199,17 +267,17 @@ function GraphNode({ member, point, onOpen }: { member: Member; point: GraphPoin
         style={{ fill: "none", stroke: "currentColor" }}
       />
       {ComputerIcon && (
-        <g transform={`translate(${size * 0.75},${-size * 0.75})`} aria-hidden="true">
-          <circle r={8} strokeWidth={1} className="fill-background stroke-border" />
+        <g transform={`translate(${NODE_BADGE_OFFSET},${-NODE_BADGE_OFFSET})`} aria-hidden="true">
+          <circle r={NODE_BADGE_RADIUS} strokeWidth={1} className="fill-background stroke-border" />
           <ComputerIcon x={-5} y={-5} width={10} height={10} className="text-muted-foreground" />
         </g>
       )}
-      <text y={size + 14} textAnchor="middle" className="fill-foreground text-[11px] font-medium">
-        {truncateLabel(member.title, 16)}
+      <text y={NODE_TITLE_OFFSET} textAnchor="middle" className="fill-foreground text-[11px] font-medium">
+        {truncateLabel(member.title, NODE_TITLE_MAX)}
       </text>
       {member.role && (
-        <text y={size + 27} textAnchor="middle" className="fill-muted-foreground text-[10px]">
-          {truncateLabel(member.role, 18)}
+        <text y={NODE_ROLE_OFFSET} textAnchor="middle" className="fill-muted-foreground text-[10px]">
+          {truncateLabel(member.role, NODE_ROLE_MAX)}
         </text>
       )}
     </g>
@@ -224,14 +292,19 @@ interface HoveredLink {
 
 interface BotTeamsGraphProps {
   teams: TeamGraphTeam[];
-  /** "overview" makes each team box selectable and shows a detail panel; bots open a details dialog in both */
+  /**
+   * "overview" makes each team box selectable, adds the author, upvotes and install to its footer,
+   * and shows a detail panel; bots open a details dialog in both
+   */
   variant?: "overview" | "single";
+  isLoggedIn?: boolean;
 }
 
-export function BotTeamsGraph({ teams, variant = "overview" }: BotTeamsGraphProps) {
+export function BotTeamsGraph({ teams, variant = "overview", isLoggedIn = false }: BotTeamsGraphProps) {
   const t = useTranslations("bots.teams");
   const markerId = useId().replace(/:/g, "");
   const containerRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   const [width, setWidth] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [hovered, setHovered] = useState<HoveredLink | null>(null);
@@ -252,11 +325,22 @@ export function BotTeamsGraph({ teams, variant = "overview" }: BotTeamsGraphProp
       teamGridLayout(
         teams.map((team) => team.members.length),
         width,
-        { minCellWidth: isOverview ? 300 : width, hubs: hubs.map((hub) => hub >= 0) }
+        { minCellWidth: isOverview ? 300 : width, hubs: hubs.map((hub) => hub >= 0), footer: isOverview ? TEAM_BOX_FOOTER : 0 }
       ),
     [teams, width, isOverview, hubs]
   );
-  const positions = useTeamLayout(teams, width > 0 ? layout.cells : [], hubs);
+  const { positions, nodeDrag } = useTeamLayout(teams, width > 0 ? layout.cells : [], hubs);
+  const hasNodes = positions.size > 0;
+
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg || !nodeDrag || !hasNodes) return;
+    const nodes = d3Select(svg).selectAll<SVGGElement, unknown>("[data-node-key]");
+    nodes.call(nodeDrag);
+    return () => {
+      nodes.on(".drag", null);
+    };
+  }, [nodeDrag, hasNodes]);
 
   const reverseLinks = useMemo(
     () => teams.map((team) => new Set(team.links.map((link) => `${link.fromBotId}>${link.toBotId}`))),
@@ -288,6 +372,7 @@ export function BotTeamsGraph({ teams, variant = "overview" }: BotTeamsGraphProp
     <div ref={containerRef} className="relative w-full min-w-0" style={{ minHeight: width > 0 ? layout.height : 240 }}>
       {width > 0 && (
         <svg
+          ref={svgRef}
           width={width}
           height={layout.height}
           viewBox={`0 0 ${width} ${layout.height}`}
@@ -380,6 +465,7 @@ export function BotTeamsGraph({ teams, variant = "overview" }: BotTeamsGraphProp
                       key={member.id}
                       member={member}
                       point={point}
+                      dragKey={nodeKey(teamIndex, member.id)}
                       onOpen={() => setOpenMember({ teamIndex, memberId: member.id })}
                     />
                   );
@@ -389,6 +475,40 @@ export function BotTeamsGraph({ teams, variant = "overview" }: BotTeamsGraphProp
           })}
         </svg>
       )}
+
+      {isOverview &&
+        width > 0 &&
+        teams.map((team, teamIndex) => {
+          const cell = layout.cells[teamIndex];
+          if (!cell) return null;
+          return (
+            <div
+              key={team.slug}
+              className="pointer-events-none absolute flex items-stretch px-4"
+              style={{ left: cell.x, top: cell.y + cell.height - TEAM_BOX_FOOTER, width: cell.width, height: TEAM_BOX_FOOTER }}
+            >
+              <div className="flex min-w-0 flex-1 items-center justify-between gap-2 border-t text-[11px] text-muted-foreground">
+                <PromptAuthor author={team.author} className="pointer-events-auto" />
+                <div className="pointer-events-auto flex shrink-0 items-center gap-3">
+                  <UpvoteButton
+                    voteUrl={`/api/bots/teams/${encodeURIComponent(team.slug)}/vote`}
+                    initialVoted={team.voted}
+                    initialCount={team.voteCount}
+                    isLoggedIn={isLoggedIn}
+                    size="sm"
+                  />
+                  {team.installable && (
+                    <TeamInstall
+                      team={{ id: team.id, slug: team.slug, title: team.title, memberCount: team.members.length }}
+                      variant="card"
+                      className="h-7 px-2.5"
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
 
       {hovered && hoveredTeam && hoveredLink && (
         <div
@@ -451,7 +571,7 @@ function TeamDetailPanel({
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <h2 className="text-base font-semibold wrap-anywhere">{team.title}</h2>
-          <p className="text-xs text-muted-foreground">{t("by", { author: team.author })}</p>
+          <PromptAuthor author={team.author} className="mt-1 text-xs text-muted-foreground" />
         </div>
         <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={onClose} aria-label={t("closePanel")}>
           <X className="h-4 w-4" />

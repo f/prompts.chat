@@ -4,16 +4,17 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { ArrowLeft, ArrowRight, Star, Users, Workflow } from "lucide-react";
 import { auth } from "@/lib/auth";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { BotBundleInstall } from "@/components/bots/bot-bundle-install";
 import { BotCard } from "@/components/bots/bot-card";
 import { BotAvatar } from "@/components/bots/bot-avatar";
 import { BotTeamsGraph } from "@/components/bots/teams/bot-teams-graph";
 import { BotTeamActions } from "@/components/bots/teams/bot-team-actions";
+import { TeamInstall } from "@/components/bots/teams/team-install";
 import { TeamMarkdown } from "@/components/bots/teams/team-markdown";
+import { PromptAuthor } from "@/components/prompts/prompt-author";
+import { UpvoteButton } from "@/components/prompts/upvote-button";
 import { JsonLd, breadcrumbSchema } from "@/components/seo/structured-data";
-import { canEditTeam, getTeam, getTeamInstallOptions, teamExcerpt, toTeamGraphTeam } from "@/lib/bots/teams";
+import { canEditTeam, getTeam, getTeamInstallOptions, getVotedTeamIds, teamExcerpt, toTeamGraphTeam } from "@/lib/bots/teams";
 import { buildPageMetadata, getBaseUrl, NOINDEX_ROBOTS, toMetaDescription } from "@/lib/seo";
 import { getBotTeamUrl, getBotUrl } from "@/lib/urls";
 
@@ -46,6 +47,7 @@ export default async function BotTeamPage({ params }: BotTeamPageProps) {
   const baseUrl = getBaseUrl();
   const path = getBotTeamUrl(team.slug);
   const titles = new Map(team.members.map(({ bot }) => [bot.id, bot]));
+  const voted = (await getVotedTeamIds(viewer?.id, [team.id])).has(team.id);
 
   return (
     <div className="container max-w-5xl min-w-0 py-6">
@@ -69,6 +71,15 @@ export default async function BotTeamPage({ params }: BotTeamPageProps) {
 
       <header className="mb-6 space-y-3">
         <div className="flex items-center gap-3">
+          {team.members.length > 0 && (
+            <UpvoteButton
+              voteUrl={`/api/bots/teams/${encodeURIComponent(team.slug)}/vote`}
+              initialVoted={voted}
+              initialCount={team.voteCount}
+              isLoggedIn={!!viewer}
+              size="circular"
+            />
+          )}
           <div aria-hidden="true" className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border bg-muted text-muted-foreground sm:h-14 sm:w-14">
             <Users className="h-6 w-6 sm:h-7 sm:w-7" />
           </div>
@@ -101,33 +112,17 @@ export default async function BotTeamPage({ params }: BotTeamPageProps) {
           </div>
         )}
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <Link
-            href={`/@${team.author.username}`}
-            className="inline-flex max-w-full items-center gap-2 text-sm text-muted-foreground hover:text-foreground wrap-anywhere"
-          >
-            <Avatar className="h-5 w-5">
-              <AvatarImage src={team.author.avatar || undefined} alt={team.author.username} />
-              <AvatarFallback className="text-[10px]">{(team.author.name || team.author.username).charAt(0).toUpperCase()}</AvatarFallback>
-            </Avatar>
-            @{team.author.username}
-          </Link>
-          <BotBundleInstall
-            botId={`team:${team.id}`}
-            botTitle={team.title}
-            botCount={team.members.length}
+          <PromptAuthor author={team.author} size="md" />
+          <TeamInstall
+            team={{ id: team.id, slug: team.slug, title: team.title, memberCount: team.members.length }}
             options={getTeamInstallOptions(team, baseUrl)}
-            labels={{
-              trigger: t("install"),
-              title: t("installTitle", { count: team.members.length }),
-              description: t("installDescription", { team: team.title }),
-            }}
           />
         </div>
       </header>
 
       {team.members.length > 0 && (
         <div className="mb-8 overflow-hidden">
-          <BotTeamsGraph teams={[toTeamGraphTeam(team)]} variant="single" />
+          <BotTeamsGraph teams={[toTeamGraphTeam(team, { voted })]} variant="single" />
         </div>
       )}
 

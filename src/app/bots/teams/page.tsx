@@ -9,7 +9,7 @@ import { BotTeamsGraph } from "@/components/bots/teams/bot-teams-graph";
 import { TeamFilters } from "@/components/bots/teams/team-filters";
 import { JsonLd, breadcrumbSchema, collectionPageSchema } from "@/components/seo/structured-data";
 import { platformFromParam } from "@/lib/bots/schema";
-import { getTeamFilterOptions, listTeams, teamExcerpt, toTeamGraphTeam } from "@/lib/bots/teams";
+import { getTeamFilterOptions, getVotedTeamIds, listTeams, teamExcerpt, teamSortFromParam, toTeamGraphTeam } from "@/lib/bots/teams";
 import { buildPageMetadata } from "@/lib/seo";
 import { getBotTeamUrl } from "@/lib/urls";
 
@@ -20,6 +20,7 @@ type TeamsSearchParams = {
   platform?: string;
   category?: string;
   tag?: string;
+  sort?: string;
   page?: string;
 };
 
@@ -27,7 +28,7 @@ interface BotTeamsPageProps {
   searchParams: Promise<TeamsSearchParams>;
 }
 
-const FILTER_KEYS = ["q", "platform", "category", "tag"] as const;
+const FILTER_KEYS = ["q", "platform", "category", "tag", "sort"] as const;
 
 export async function generateMetadata({ searchParams }: BotTeamsPageProps): Promise<Metadata> {
   const params = await searchParams;
@@ -66,6 +67,7 @@ export default async function BotTeamsPage({ searchParams }: BotTeamsPageProps) 
       platform: platformFromParam(params.platform),
       categorySlug: params.category || undefined,
       tagSlugs: params.tag?.split(",").map((slug) => slug.trim()).filter(Boolean),
+      sort: teamSortFromParam(params.sort),
       skip: (page - 1) * PER_PAGE,
       take: PER_PAGE,
       viewer: session?.user ? { id: session.user.id, role: session.user.role } : null,
@@ -74,6 +76,7 @@ export default async function BotTeamsPage({ searchParams }: BotTeamsPageProps) 
   ]);
   const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
   if (page > totalPages) notFound();
+  const voted = await getVotedTeamIds(session?.user?.id, teams.map((team) => team.id));
 
   return (
     <div className="container py-6">
@@ -121,7 +124,11 @@ export default async function BotTeamsPage({ searchParams }: BotTeamsPageProps) 
         <main className="flex-1 min-w-0">
           {teams.length > 0 ? (
             <>
-              <BotTeamsGraph key={pageHref(params, page)} teams={teams.map(toTeamGraphTeam)} />
+              <BotTeamsGraph
+                key={pageHref(params, page)}
+                teams={teams.map((team) => toTeamGraphTeam(team, { voted: voted.has(team.id) }))}
+                isLoggedIn={!!session?.user}
+              />
 
               <nav aria-labelledby="all-teams" className="sr-only focus-within:not-sr-only focus-within:mt-4">
                 <h2 id="all-teams" className="text-sm font-semibold">{t("allTeams")}</h2>

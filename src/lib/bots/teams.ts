@@ -80,6 +80,7 @@ export interface BotTeamView<B extends { id: string } = BotTeamBot> {
   isFeatured: boolean;
   authorId: string;
   author: { username: string; name: string | null; avatar: string | null; verified: boolean };
+  voteCount: number;
   category: TeamCategory | null;
   tags: TeamTag[];
   createdAt: Date;
@@ -114,6 +115,7 @@ const teamBaseSelect = {
   createdAt: true,
   updatedAt: true,
   author: { select: { username: true, name: true, avatar: true, verified: true } },
+  _count: { select: { votes: true } },
   category: { select: { id: true, name: true, slug: true, parent: { select: { id: true, name: true, slug: true } } } },
   tags: { select: { tag: { select: { id: true, name: true, slug: true, color: true } } }, orderBy: { tag: { name: "asc" } } },
   links: {
@@ -176,6 +178,7 @@ export function toTeamView<R extends VisibilityRecord & { id: string }, B extend
     isFeatured: record.isFeatured,
     authorId: record.authorId,
     author: record.author,
+    voteCount: record._count.votes,
     category: record.category,
     tags: record.tags.map(({ tag }) => tag),
     createdAt: record.createdAt,
@@ -209,6 +212,19 @@ export interface TeamListFilters {
   platform?: BotPlatform;
 }
 
+export const TEAM_SORTS = ["newest", "oldest", "upvotes"] as const;
+export type TeamSort = (typeof TEAM_SORTS)[number];
+
+export function teamSortFromParam(param: string | undefined): TeamSort {
+  return TEAM_SORTS.includes(param as TeamSort) ? (param as TeamSort) : "newest";
+}
+
+const TEAM_ORDER: Record<TeamSort, Prisma.BotTeamOrderByWithRelationInput[]> = {
+  newest: [{ isFeatured: "desc" }, { createdAt: "desc" }, { id: "desc" }],
+  oldest: [{ createdAt: "asc" }, { id: "asc" }],
+  upvotes: [{ votes: { _count: "desc" } }, { createdAt: "desc" }, { id: "desc" }],
+};
+
 function teamListWhere({ q, authorId, categorySlug, tagSlugs = [], platform }: TeamListFilters): Prisma.BotTeamWhereInput {
   const keywords = (q ?? "").split(",").map((k) => k.trim()).filter(Boolean);
   return {
@@ -228,18 +244,19 @@ function teamListWhere({ q, authorId, categorySlug, tagSlugs = [], platform }: T
   };
 }
 
-/** Featured teams first, then newest */
+/** Newest first, with featured teams ahead of the rest, unless sorted otherwise */
 export async function listTeams({
   skip = 0,
   take = 24,
   viewer = null,
+  sort = "newest",
   ...filters
-}: TeamListFilters & { skip?: number; take?: number; viewer?: TeamViewer | null } = {}) {
+}: TeamListFilters & { skip?: number; take?: number; viewer?: TeamViewer | null; sort?: TeamSort } = {}) {
   const where = teamListWhere(filters);
   const [records, total] = await Promise.all([
     db.botTeam.findMany({
       where,
-      orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }, { id: "desc" }],
+      orderBy: TEAM_ORDER[sort],
       skip,
       take,
       select: teamSummarySelect,
@@ -247,6 +264,45 @@ export async function listTeams({
     db.botTeam.count({ where }),
   ]);
   return { teams: records.map((record) => summaryView(record, viewer)), total };
+}
+
+/** Which of the given teams the user has upvoted */
+export async function getVotedTeamIds(userId: string | null | undefined, teamIds: string[]): Promise<Set<string>> {
+  if (!userId || teamIds.length === 0) return new Set();
+  const votes = await db.botTeamVote.findMany({ where: { userId, teamId: { in: teamIds } }, select: { teamId: true } });
+  return new Set(votes.map((vote) => vote.teamId));
+}
+
+/** Listed teams the bot is a member of, with its role in each; featured and most upvoted first */
+export async function getBotTeams(botId: string) {
+  const memberships = await db.botTeamMember.findMany({
+    where: { botId, team: listedTeamWhere },
+    orderBy: [{ team: { isFeatured: "desc" } }, { team: { votes: { _count: "desc" } } }, { team: { createdAt: "desc" } }],
+    take: 12,
+    select: {
+      role: true,
+      team: {
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          isFeatured: true,
+          category: { select: { name: true, slug: true, parent: { select: { name: true } } } },
+          _count: { select: { members: true, votes: true } },
+        },
+      },
+    },
+  });
+  return memberships.map(({ role, team }) => ({
+    id: team.id,
+    slug: team.slug,
+    title: team.title,
+    isFeatured: team.isFeatured,
+    category: team.category,
+    memberCount: team._count.members,
+    voteCount: team._count.votes,
+    role: role || null,
+  }));
 }
 
 /** Categories (with team counts, parents including their subcategories) and tags used by listed teams */
@@ -359,13 +415,17 @@ export function getTeamInstallOptions(team: BotTeamView<BotView>, baseUrl: strin
   );
 }
 
-export function toTeamGraphTeam(team: BotTeamView<BotTeamBot | BotView>): TeamGraphTeam {
+export function toTeamGraphTeam(team: BotTeamView<BotTeamBot | BotView>, { voted = false }: { voted?: boolean } = {}): TeamGraphTeam {
   return {
+    id: team.id,
     slug: team.slug,
     title: team.title,
     description: team.description,
-    author: team.author.name || team.author.username,
+    author: team.author,
     isFeatured: team.isFeatured,
+    voteCount: team.voteCount,
+    voted,
+    installable: getTeamPlatforms(team.members.map((member) => member.bot)).length > 0,
     members: team.members.map(({ bot, role, description }) => ({
       id: bot.id,
       slug: bot.slug,

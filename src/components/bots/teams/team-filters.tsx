@@ -12,7 +12,7 @@ interface TeamFiltersProps {
   currentFilters: PromptFiltersProps["currentFilters"];
 }
 
-/** The /bots sidebar for teams: search, member platform, category and tags */
+/** The /bots sidebar for teams: search, member platform, sort, category and tags */
 export function TeamFilters({ categories, tags, currentFilters }: TeamFiltersProps) {
   const t = useTranslations("bots");
 
@@ -23,7 +23,6 @@ export function TeamFilters({ categories, tags, currentFilters }: TeamFiltersPro
       tags={tags}
       currentFilters={currentFilters}
       searchPlaceholder={t("teams.searchPlaceholder")}
-      showSort={false}
       primaryFilter={{
         param: "platform",
         label: t("form.platform"),

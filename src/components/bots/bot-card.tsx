@@ -17,6 +17,8 @@ import {
   type BotPlatform,
 } from "@/lib/bots/schema";
 import { getBotUrl } from "@/lib/urls";
+import { Badge } from "@/components/ui/badge";
+import { PromptAuthor, type PromptAuthorData } from "@/components/prompts/prompt-author";
 import { TrendingBadge } from "@/components/prompts/trending-badge";
 import { isTrending } from "@/lib/trending";
 
@@ -33,7 +35,7 @@ export interface BotCardData {
   trendingUntil?: Date | string | null;
   computerRequirement?: BotComputerRequirement | null;
   config: Pick<BotConfig, "routines">;
-  author: { username: string };
+  author: PromptAuthorData;
   voteCount: number;
 }
 
@@ -51,7 +53,7 @@ export interface BotPromptFields {
   botPlatform?: BotPlatform | null;
   botConfig?: unknown;
   computerRequirement?: string | null;
-  author: { username: string };
+  author: PromptAuthorData;
   voteCount?: number;
   _count?: { votes?: number };
 }
@@ -85,32 +87,41 @@ interface BotCardProps {
 
 export function BotCard({ bot, position }: BotCardProps) {
   const t = useTranslations("bots");
+  const tPrompts = useTranslations("prompts");
   const scheduled = bot.config.routines.filter((r) => r.type === "schedule").length;
   const events = bot.config.routines.length - scheduled;
 
   return (
-    <BotCardLink
-      botId={bot.id}
-      position={position}
-      href={getBotUrl(bot.id, bot.slug)}
-      prefetch={false}
-      className="group flex min-w-0 flex-col gap-3 rounded-[var(--radius)] border bg-card p-4 transition-colors hover:border-foreground/30 hover:bg-accent/40"
-    >
-      <div className="flex items-start justify-between gap-2">
-        <BotAvatar icon={bot.icon} color={bot.color} />
-        <div className="flex flex-wrap items-center justify-end gap-1.5">
+    <div className="group relative flex min-w-0 flex-col rounded-[var(--radius)] border bg-card p-4 transition-colors hover:border-foreground/20">
+      <div className="mb-2 flex items-start justify-between gap-2">
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          <BotAvatar icon={bot.icon} color={bot.color} size="sm" />
+          <h2 className="min-w-0 text-sm font-medium leading-snug">
+            <BotCardLink
+              botId={bot.id}
+              position={position}
+              href={getBotUrl(bot.id, bot.slug)}
+              prefetch={false}
+              className="line-clamp-1 wrap-anywhere hover:underline after:absolute after:inset-0 after:content-['']"
+            >
+              {bot.title}
+            </BotCardLink>
+          </h2>
+        </div>
+        <div className="flex shrink-0 items-center gap-1">
           {isTrending(bot.trendingUntil) && <TrendingBadge className="text-[10px]" />}
-          {bot.isFeatured && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />}
-          <BotPlatformIcons platforms={bot.platforms} />
+          {bot.isFeatured && <Star className="h-3.5 w-3.5 text-yellow-500 fill-yellow-500" />}
+          <Badge variant="outline" className="text-[10px]">
+            {tPrompts("types.bot")}
+          </Badge>
         </div>
       </div>
-      <div className="space-y-1">
-        <h2 className="font-semibold leading-snug wrap-anywhere group-hover:underline">{bot.title}</h2>
-        {bot.description && <p className="text-sm text-muted-foreground line-clamp-3 wrap-anywhere">{bot.description}</p>}
-      </div>
-      <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-        <BotComputerBadge requirement={bot.computerRequirement} focusable={false} className="-my-0.5" />
-        <span className="min-w-0 wrap-anywhere">@{bot.author.username}</span>
+
+      {bot.description && <p className="mb-2 text-xs text-muted-foreground line-clamp-2 wrap-anywhere">{bot.description}</p>}
+
+      <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] text-muted-foreground">
+        <BotPlatformIcons platforms={bot.platforms} className="relative z-10" />
+        <BotComputerBadge requirement={bot.computerRequirement} focusable={false} />
         {scheduled > 0 && (
           <span className="flex items-center gap-1">
             <Clock className="h-3 w-3" />
@@ -123,11 +134,15 @@ export function BotCard({ bot, position }: BotCardProps) {
             {t("eventCount", { count: events })}
           </span>
         )}
-        <span className="ml-auto flex items-center gap-0.5">
+      </div>
+
+      <div className="mt-auto flex items-center justify-between gap-2 border-t pt-2 text-[11px] text-muted-foreground">
+        <PromptAuthor author={bot.author} className="relative z-10" />
+        <span className="flex shrink-0 items-center gap-0.5">
           <ArrowBigUp className="h-3.5 w-3.5" />
           {bot.voteCount}
         </span>
       </div>
-    </BotCardLink>
+    </div>
   );
 }

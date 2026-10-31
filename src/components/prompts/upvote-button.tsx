@@ -26,22 +26,29 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { analyticsPrompt } from "@/lib/analytics";
 
-interface UpvoteButtonProps {
-  promptId: string;
+type UpvoteTarget =
+  | { promptId: string; voteUrl?: never }
+  /** Votes on something other than a prompt, e.g. a bot team; takes POST to vote and DELETE to unvote */
+  | { promptId?: never; voteUrl: string };
+
+type UpvoteButtonProps = UpvoteTarget & {
   initialVoted: boolean;
   initialCount: number;
   isLoggedIn: boolean;
   size?: "sm" | "default" | "circular";
   showLabel?: boolean;
-}
+  className?: string;
+};
 
 export function UpvoteButton({ 
   promptId, 
+  voteUrl,
   initialVoted, 
   initialCount, 
   isLoggedIn,
   size = "default",
-  showLabel = false
+  showLabel = false,
+  className,
 }: UpvoteButtonProps) {
   const t = useTranslations("vote");
   const tCommon = useTranslations("common");
@@ -60,7 +67,7 @@ export function UpvoteButton({
 
     try {
       const method = isVoted ? "DELETE" : "POST";
-      const response = await fetch(`/api/prompts/${promptId}/vote`, {
+      const response = await fetch(voteUrl ?? `/api/prompts/${promptId}/vote`, {
         method,
       });
 
@@ -72,9 +79,9 @@ export function UpvoteButton({
       setIsVoted(data.voted);
       setVoteCount(data.voteCount);
       
-      if (data.voted) {
+      if (promptId && data.voted) {
         analyticsPrompt.upvote(promptId);
-      } else {
+      } else if (promptId) {
         analyticsPrompt.removeUpvote(promptId);
       }
     } catch {
@@ -118,7 +125,8 @@ export function UpvoteButton({
             "flex flex-col items-center justify-center w-14 h-14 rounded-full border-2 transition-all",
             isVoted 
               ? "bg-primary text-primary-foreground border-primary" 
-              : "bg-background text-muted-foreground border-border hover:border-primary hover:text-primary"
+              : "bg-background text-muted-foreground border-border hover:border-primary hover:text-primary",
+            className
           )}
         >
           {isLoading ? (
@@ -143,7 +151,8 @@ export function UpvoteButton({
           disabled={isLoading}
           className={cn(
             "flex items-center gap-0.5 text-xs transition-colors",
-            isVoted ? "text-primary" : "text-muted-foreground hover:text-foreground"
+            isVoted ? "text-primary" : "text-muted-foreground hover:text-foreground",
+            className
           )}
         >
           {isLoading ? (
@@ -165,7 +174,7 @@ export function UpvoteButton({
         size="sm"
         onClick={handleVote}
         disabled={isLoading}
-        className="gap-1.5"
+        className={cn("gap-1.5", className)}
       >
         {isLoading ? (
           <Loader2 className="h-4 w-4 animate-spin" />

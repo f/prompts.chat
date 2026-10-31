@@ -4,11 +4,17 @@ import type { BotColor, BotComputerRequirement, BotIconName } from "./schema";
 
 /** A team as the graph and its detail panel draw it; plain data so it can cross to the client */
 export interface TeamGraphTeam {
+  id: string;
   slug: string;
   title: string;
   description: string | null;
-  author: string;
+  author: { username: string; name: string | null; avatar: string | null; verified: boolean };
   isFeatured: boolean;
+  voteCount: number;
+  /** The viewer has upvoted the team */
+  voted: boolean;
+  /** At least one member runs on a platform the team can be installed on */
+  installable: boolean;
   members: {
     id: string;
     slug: string | null;
@@ -32,20 +38,63 @@ export interface GraphCell {
   y: number;
   width: number;
   height: number;
+  /** Space at the bottom of the box kept free of nodes, e.g. for the team's author and actions */
+  footer?: number;
+}
+
+/** How far a node's drawing (circle, badge and labels) reaches from its center in each direction */
+export interface NodeExtent {
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
 }
 
 export const TEAM_NODE_RADIUS = 20;
 /** Space at the top of a team box for its title */
 export const TEAM_BOX_HEADER = 44;
-/** Inner padding between a team box's border and its nodes, leaving room for node labels */
-export const TEAM_BOX_PADDING = 28;
-const NODE_SLOT_WIDTH = 104;
-const NODE_SLOT_HEIGHT = 84;
+/** Gap between a team box's border and the outermost node drawing */
+export const TEAM_BOX_INSET = 12;
+/** Height of the footer row of a team box in the overview */
+export const TEAM_BOX_FOOTER = 44;
+/** Baselines of a node's name and role, below its center */
+export const NODE_TITLE_OFFSET = TEAM_NODE_RADIUS + 14;
+export const NODE_ROLE_OFFSET = TEAM_NODE_RADIUS + 27;
+export const NODE_TITLE_MAX = 16;
+export const NODE_ROLE_MAX = 18;
+/** The computer badge sits on the node's top-right edge */
+export const NODE_BADGE_OFFSET = TEAM_NODE_RADIUS * 0.75;
+export const NODE_BADGE_RADIUS = 8;
+const NODE_SLOT_WIDTH = 112;
+const NODE_SLOT_HEIGHT = 88;
 const ARROW_SIZE = 7;
-/** Room below a node for its name and role */
-const NODE_LABEL_SPACE = 30;
 /** Spacing between neighbors on a hub's ring */
 const RING_SLOT = 78;
+/** Average glyph widths of the 11px name and 10px role labels; deliberately generous */
+const TITLE_CHAR_WIDTH = 6.6;
+const ROLE_CHAR_WIDTH = 6;
+/** Room below a label baseline for descenders */
+const LABEL_DESCENT = 4;
+
+/**
+ * The area a node draws into around its center: its circle, the computer badge, and its name and
+ * role labels, which are usually wider than the circle
+ */
+export function nodeExtent({ title, role }: { title: string; role?: string | null }): NodeExtent {
+  const titleWidth = truncateLabel(title, NODE_TITLE_MAX).length * TITLE_CHAR_WIDTH;
+  const roleWidth = role ? truncateLabel(role, NODE_ROLE_MAX).length * ROLE_CHAR_WIDTH : 0;
+  const halfLabel = Math.ceil(Math.max(titleWidth, roleWidth) / 2);
+  const badge = NODE_BADGE_OFFSET + NODE_BADGE_RADIUS;
+  return {
+    left: Math.max(TEAM_NODE_RADIUS, halfLabel),
+    right: Math.max(badge, halfLabel),
+    top: Math.max(TEAM_NODE_RADIUS, badge),
+    bottom: (role ? NODE_ROLE_OFFSET : NODE_TITLE_OFFSET) + LABEL_DESCENT,
+  };
+}
+
+/** The extent of a node with the longest name and a role, used to size boxes and rings */
+export const MAX_NODE_EXTENT: NodeExtent = nodeExtent({ title: "W".repeat(NODE_TITLE_MAX), role: "W".repeat(NODE_ROLE_MAX) });
 
 /**
  * The member most others hand work to and from, like a "chief of staff" bot: it is connected to
@@ -73,12 +122,14 @@ function ringRadius(count: number): number {
  * Height of a team box that fits `size` nodes in rows across the given width, or, for a team with
  * a hub, the hub and a ring of its neighbors around it
  */
-export function teamCellHeight(size: number, width: number, hub = false): number {
-  const perRow = Math.max(1, Math.floor((width - TEAM_BOX_PADDING * 2) / NODE_SLOT_WIDTH));
+export function teamCellHeight(size: number, width: number, hub = false, footer = 0): number {
+  const { left, right, top, bottom } = MAX_NODE_EXTENT;
+  const perRow = Math.max(1, 1 + Math.floor((width - TEAM_BOX_INSET * 2 - left - right) / NODE_SLOT_WIDTH));
   const rows = Math.max(1, Math.ceil(size / perRow));
-  const grid = TEAM_BOX_HEADER + TEAM_BOX_PADDING * 2 + rows * NODE_SLOT_HEIGHT;
-  const ring = hub ? TEAM_BOX_HEADER + TEAM_BOX_PADDING * 2 + 2 * ringRadius(size - 1) + NODE_LABEL_SPACE : 0;
-  return Math.max(200, grid, ring);
+  const chrome = TEAM_BOX_HEADER + top + bottom + TEAM_BOX_INSET + footer;
+  const grid = chrome + rows * NODE_SLOT_HEIGHT;
+  const ring = hub ? chrome + 2 * ringRadius(size - 1) : 0;
+  return Math.ceil(Math.max(200 + footer, grid, ring));
 }
 
 /**
@@ -88,7 +139,12 @@ export function teamCellHeight(size: number, width: number, hub = false): number
 export function teamGridLayout(
   teamSizes: number[],
   width: number,
-  { minCellWidth = 300, gap = 16, hubs = [] }: { minCellWidth?: number; gap?: number; hubs?: boolean[] } = {}
+  {
+    minCellWidth = 300,
+    gap = 16,
+    hubs = [],
+    footer = 0,
+  }: { minCellWidth?: number; gap?: number; hubs?: boolean[]; footer?: number } = {}
 ): { cells: GraphCell[]; height: number; columns: number } {
   const columns = Math.max(1, Math.min(teamSizes.length || 1, Math.floor((width + gap) / (minCellWidth + gap))));
   const cellWidth = (width - gap * (columns - 1)) / columns;
@@ -96,40 +152,42 @@ export function teamGridLayout(
   let y = 0;
   for (let start = 0; start < teamSizes.length; start += columns) {
     const row = teamSizes.slice(start, start + columns);
-    const rowHeight = Math.max(...row.map((size, column) => teamCellHeight(size, cellWidth, hubs[start + column])));
-    row.forEach((_, column) => cells.push({ x: column * (cellWidth + gap), y, width: cellWidth, height: rowHeight }));
+    const rowHeight = Math.max(...row.map((size, column) => teamCellHeight(size, cellWidth, hubs[start + column], footer)));
+    row.forEach((_, column) => cells.push({ x: column * (cellWidth + gap), y, width: cellWidth, height: rowHeight, footer }));
     y += rowHeight + gap;
   }
   return { cells, height: Math.max(0, y - gap), columns };
 }
 
-/** The area of a cell that node centers may occupy */
-export function nodeBounds(cell: GraphCell, radius = TEAM_NODE_RADIUS) {
-  return {
-    minX: cell.x + TEAM_BOX_PADDING + radius / 2,
-    maxX: cell.x + cell.width - TEAM_BOX_PADDING - radius / 2,
-    minY: cell.y + TEAM_BOX_HEADER + radius,
-    maxY: cell.y + cell.height - TEAM_BOX_PADDING - radius / 2,
-  };
+/**
+ * The area of a cell that centers of nodes with the given extent may occupy, so the whole node,
+ * labels and badge included, stays inside the box. When the box is too small for the node, both
+ * ends of a range meet in its middle.
+ */
+export function nodeBounds(cell: GraphCell, extent: NodeExtent = MAX_NODE_EXTENT) {
+  let minX = cell.x + TEAM_BOX_INSET + extent.left;
+  let maxX = cell.x + cell.width - TEAM_BOX_INSET - extent.right;
+  let minY = cell.y + TEAM_BOX_HEADER + extent.top;
+  let maxY = cell.y + cell.height - (cell.footer ?? 0) - TEAM_BOX_INSET - extent.bottom;
+  if (minX > maxX) minX = maxX = (minX + maxX) / 2;
+  if (minY > maxY) minY = maxY = (minY + maxY) / 2;
+  return { minX, maxX, minY, maxY };
 }
 
-export function clampToCell(point: GraphPoint, cell: GraphCell, radius = TEAM_NODE_RADIUS): GraphPoint {
-  const { minX, maxX, minY, maxY } = nodeBounds(cell, radius);
+export function clampToCell(point: GraphPoint, cell: GraphCell, extent: NodeExtent = MAX_NODE_EXTENT): GraphPoint {
+  const { minX, maxX, minY, maxY } = nodeBounds(cell, extent);
   return { x: Math.min(maxX, Math.max(minX, point.x)), y: Math.min(maxY, Math.max(minY, point.y)) };
 }
 
 export function cellCenter(cell: GraphCell): GraphPoint {
-  const { minY, maxY } = nodeBounds(cell);
-  return { x: cell.x + cell.width / 2, y: (minY + maxY) / 2 };
+  const { minX, maxX, minY, maxY } = nodeBounds(cell);
+  return { x: (minX + maxX) / 2, y: (minY + maxY) / 2 };
 }
 
-/** The ellipse a hub's neighbors sit on: as wide as the cell allows, leaving room for node labels */
+/** The ellipse a hub's neighbors sit on: as large as the cell allows with every node fully inside */
 export function ringRadii(cell: GraphCell): { rx: number; ry: number } {
   const { minX, maxX, minY, maxY } = nodeBounds(cell);
-  return {
-    rx: Math.max(0, (maxX - minX) / 2 - 8),
-    ry: Math.max(0, (maxY - minY - NODE_LABEL_SPACE) / 2),
-  };
+  return { rx: (maxX - minX) / 2, ry: (maxY - minY) / 2 };
 }
 
 /** Where a hub's neighbors are pulled to: the point of the ring in the direction of `point` */

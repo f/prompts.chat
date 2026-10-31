@@ -1,6 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { GET as LIST, POST } from "@/app/api/bots/teams/route";
 import { GET, PUT, DELETE } from "@/app/api/bots/teams/[slug]/route";
+import { POST as VOTE, DELETE as UNVOTE } from "@/app/api/bots/teams/[slug]/vote/route";
+import { GET as INSTALL } from "@/app/api/bots/teams/[slug]/install/route";
+import { listTeams } from "@/lib/bots/teams";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { botTeamWriteLimiter } from "@/lib/rate-limit";
@@ -20,6 +23,7 @@ vi.mock("@/lib/db", () => ({
     },
     botTeamMember: { deleteMany: vi.fn(), createMany: vi.fn() },
     botTeamLink: { deleteMany: vi.fn(), createMany: vi.fn() },
+    botTeamVote: { upsert: vi.fn(), deleteMany: vi.fn(), count: vi.fn() },
     category: { findUnique: vi.fn() },
     tag: { findMany: vi.fn() },
   },
@@ -73,6 +77,7 @@ const team = {
   createdAt: new Date("2026-02-01T00:00:00Z"),
   updatedAt: new Date("2026-02-01T00:00:00Z"),
   author: { username: "owner", name: "Owner", avatar: null, verified: false },
+  _count: { votes: 0 },
   members: [
     { role: "Researcher", description: "Finds sources", bot: bot("a") },
     { role: null, description: null, bot: bot("b") },
@@ -242,6 +247,69 @@ describe("bot teams API", () => {
       const response = await DELETE(new Request("http://localhost/api/bots/teams/research-crew", { method: "DELETE" }), params);
       expect(response.status).toBe(200);
       expect(db.botTeam.delete).toHaveBeenCalledWith({ where: { id: "team-1" } });
+    });
+  });
+
+  describe("team votes", () => {
+    const voteRequest = (method: string) => new Request("http://localhost/api/bots/teams/research-crew/vote", { method });
+
+    it("require sign-in", async () => {
+      const response = await VOTE(voteRequest("POST"), params);
+      expect(response.status).toBe(401);
+      expect(db.botTeamVote.upsert).not.toHaveBeenCalled();
+    });
+
+    it("404 for unknown teams", async () => {
+      signIn("voter");
+      vi.mocked(db.botTeam.findUnique).mockResolvedValue(null);
+      expect((await VOTE(voteRequest("POST"), params)).status).toBe(404);
+    });
+
+    it("are added once per user and return the new count", async () => {
+      signIn("voter");
+      vi.mocked(db.botTeamVote.count).mockResolvedValue(4);
+      const response = await VOTE(voteRequest("POST"), params);
+      expect(await response.json()).toEqual({ voted: true, voteCount: 4 });
+      expect(db.botTeamVote.upsert).toHaveBeenCalledWith({
+        where: { userId_teamId: { userId: "voter", teamId: "team-1" } },
+        create: { userId: "voter", teamId: "team-1" },
+        update: {},
+      });
+    });
+
+    it("are removed with DELETE", async () => {
+      signIn("voter");
+      vi.mocked(db.botTeamVote.count).mockResolvedValue(3);
+      const response = await UNVOTE(voteRequest("DELETE"), params);
+      expect(await response.json()).toEqual({ voted: false, voteCount: 3 });
+      expect(db.botTeamVote.deleteMany).toHaveBeenCalledWith({ where: { userId: "voter", teamId: "team-1" } });
+    });
+  });
+
+  describe("GET /api/bots/teams/[slug]/install", () => {
+    it("returns the team's install options per platform", async () => {
+      const response = await INSTALL(new Request("http://localhost/api/bots/teams/research-crew/install"), params);
+      const body = await response.json();
+      expect(body.options.map((option: { platform: string }) => option.platform)).toEqual(["OPENCLAW"]);
+      expect(body.options[0].installPrompt).toContain("Research crew");
+    });
+
+    it("404 for unknown teams", async () => {
+      vi.mocked(db.botTeam.findUnique).mockResolvedValue(null);
+      expect((await INSTALL(new Request("http://localhost/api/bots/teams/x/install"), params)).status).toBe(404);
+    });
+  });
+
+  describe("team sorting", () => {
+    it("orders by upvotes, oldest, or newest with featured teams first", async () => {
+      vi.mocked(db.botTeam.count).mockResolvedValue(0);
+      await listTeams({ sort: "upvotes" });
+      await listTeams({ sort: "oldest" });
+      await listTeams();
+      const orders = vi.mocked(db.botTeam.findMany).mock.calls.map((call) => call[0]!.orderBy);
+      expect(orders[0]).toEqual([{ votes: { _count: "desc" } }, { createdAt: "desc" }, { id: "desc" }]);
+      expect(orders[1]).toEqual([{ createdAt: "asc" }, { id: "asc" }]);
+      expect(orders[2]).toEqual([{ isFeatured: "desc" }, { createdAt: "desc" }, { id: "desc" }]);
     });
   });
 });

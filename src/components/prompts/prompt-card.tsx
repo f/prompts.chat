@@ -6,7 +6,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { getPromptUrl } from "@/lib/urls";
 import { BotCard, promptToBotCardData } from "@/components/bots/bot-card";
 import type { BotPlatform } from "@/lib/bots/schema";
-import { ArrowBigUp, Lock, Copy, ImageIcon, Download, Play, BadgeCheck, Volume2, Link2 } from "lucide-react";
+import { ArrowBigUp, Lock, Copy, ImageIcon, Download, Play, Volume2, Link2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { CodeView } from "@/components/ui/code-view";
 import { toast } from "sonner";
@@ -16,6 +16,7 @@ import { RunPromptButton } from "@/components/prompts/run-prompt-button";
 import { VariableFillModal, hasVariables, renderContentWithVariables } from "@/components/prompts/variable-fill-modal";
 import { ExamplesSlider } from "@/components/prompts/examples-slider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { PromptAuthor } from "@/components/prompts/prompt-author";
 import { AudioPlayer } from "@/components/prompts/audio-player";
 import { TrendingBadge } from "@/components/prompts/trending-badge";
 import { isTrending } from "@/lib/trending";
@@ -356,14 +357,7 @@ function StandardPromptCard({ prompt, showPinButton = false, isPinned = false }:
         {/* Footer */}
         <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-2 border-t mt-auto">
           <div className="flex items-center gap-1.5">
-            <Link href={`/@${prompt.author.username}`} prefetch={false} className="hover:text-foreground flex items-center gap-1.5">
-              <Avatar className="h-4 w-4">
-                <AvatarImage src={prompt.author.avatar || undefined} alt={prompt.author.username} />
-                <AvatarFallback className="text-[8px]">{prompt.author.username[0]?.toUpperCase()}</AvatarFallback>
-              </Avatar>
-              @{prompt.author.username}
-              {prompt.author.verified && <BadgeCheck className="h-3 w-3 mt-0.5 text-primary shrink-0" />}
-            </Link>
+            <PromptAuthor author={prompt.author} />
             {prompt.contributors && prompt.contributors.length > 0 ? (
               <Tooltip>
                 <TooltipTrigger asChild>

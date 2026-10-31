@@ -72,6 +72,7 @@ function teamRecord(overrides: Record<string, unknown> = {}) {
     createdAt: new Date("2026-02-01T00:00:00Z"),
     updatedAt: new Date("2026-02-01T00:00:00Z"),
     author: { username: "alice", name: "Alice", avatar: null, verified: false },
+    _count: { votes: 0 },
     members: [
       { role: "Researcher", description: "Finds sources", bot: bot("a") },
       { role: null, description: null, bot: bot("b", { botPlatforms: ["HERMES"] }) },

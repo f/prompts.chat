@@ -2,14 +2,13 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
-import { ArrowLeft, Clock, EyeOff, GitPullRequest, Handshake, Pencil, Plug, Shield, Sparkles, Star, Trash2, Zap } from "lucide-react";
+import { ArrowBigUp, ArrowLeft, Clock, EyeOff, GitPullRequest, Handshake, Pencil, Plug, Shield, Sparkles, Star, Trash2, Users, Zap } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { getConfig } from "@/lib/config";
 import { CommentSection } from "@/components/comments";
 import { ChangeRequestList } from "@/components/prompts/change-request-list";
 import { UpvoteButton } from "@/components/prompts/upvote-button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BotViewTracker } from "@/components/bots/bot-analytics";
@@ -20,15 +19,17 @@ import { BotComputerBadge } from "@/components/bots/bot-computer-badge";
 import { BotInstall } from "@/components/bots/bot-install";
 import { BotPlatformBadge } from "@/components/bots/bot-platform-badge";
 import { DelistBanner } from "@/components/prompts/delist-banner";
+import { PromptAuthor } from "@/components/prompts/prompt-author";
 import { FeaturePromptButton } from "@/components/prompts/feature-prompt-button";
 import { RestorePromptButton } from "@/components/prompts/restore-prompt-button";
 import { UnlistPromptButton } from "@/components/prompts/unlist-prompt-button";
 import { JsonLd, botSchema, breadcrumbSchema } from "@/components/seo/structured-data";
 import { BOT_PLATFORM_INFO, extractBotId, formatBotPlatforms, getBotById, getBotInstallOptions, getBotUrls } from "@/lib/bots";
 import { getBotPairings, getBundleInstallOptions } from "@/lib/bots/pairings";
+import { getBotTeams } from "@/lib/bots/teams";
 import { canViewPrompt } from "@/lib/prompt-access";
 import { buildPageMetadata, getBaseUrl, NOINDEX_ROBOTS, toMetaDescription } from "@/lib/seo";
-import { getBotUrl } from "@/lib/urls";
+import { getBotTeamUrl, getBotUrl } from "@/lib/urls";
 import { isTrending } from "@/lib/trending";
 import { TrendingBadge } from "@/components/prompts/trending-badge";
 import { TrendingPromptButton } from "@/components/prompts/trending-prompt-button";
@@ -79,7 +80,7 @@ export default async function BotPage({ params }: BotPageProps) {
   const tChanges = await getTranslations("changeRequests");
   const canRequestChange = !!session?.user && !isOwner && !bot.isPrivate && !bot.deletedAt;
 
-  const [userVote, changeRequests, pairings] = await Promise.all([
+  const [userVote, changeRequests, pairings, teams] = await Promise.all([
     session?.user
       ? db.promptVote.findUnique({
           where: { userId_promptId: { userId: session.user.id, promptId: bot.id } },
@@ -92,6 +93,7 @@ export default async function BotPage({ params }: BotPageProps) {
       include: { author: { select: { id: true, name: true, username: true, avatar: true } } },
     }),
     getBotPairings(bot.id),
+    getBotTeams(bot.id),
   ]);
   const pendingCount = changeRequests.filter((cr) => cr.status === "PENDING").length;
 
@@ -217,13 +219,7 @@ export default async function BotPage({ params }: BotPageProps) {
             ))}
           </div>
         )}
-        <Link href={`/@${bot.author.username}`} className="inline-flex max-w-full items-center gap-2 text-sm text-muted-foreground hover:text-foreground wrap-anywhere">
-          <Avatar className="h-5 w-5">
-            <AvatarImage src={bot.author.avatar || undefined} alt={bot.author.username} />
-            <AvatarFallback className="text-[10px]">{(bot.author.name || bot.author.username).charAt(0).toUpperCase()}</AvatarFallback>
-          </Avatar>
-          @{bot.author.username}
-        </Link>
+        <PromptAuthor author={bot.author} size="md" className="w-fit max-w-full" />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -320,6 +316,54 @@ export default async function BotPage({ params }: BotPageProps) {
                   <li key={paired.id} className="flex min-w-0 flex-col gap-2">
                     <BotCard bot={paired} />
                     {note && <p className="px-1 text-sm text-muted-foreground wrap-anywhere">{note}</p>}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {teams.length > 0 && (
+            <section aria-labelledby="bot-teams" className="space-y-3">
+              <h2 id="bot-teams" className="flex items-center gap-2 text-base font-semibold">
+                <Users className="h-4 w-4" />
+                {t("teams.memberOf")}
+              </h2>
+              <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {teams.map((team) => (
+                  <li
+                    key={team.id}
+                    className="relative flex min-w-0 items-start gap-3 rounded-[var(--radius)] border bg-card p-3 transition-colors hover:border-foreground/20"
+                  >
+                    <div aria-hidden="true" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border bg-muted text-muted-foreground">
+                      <Users className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <div className="flex min-w-0 items-center gap-1.5">
+                        <Link
+                          href={getBotTeamUrl(team.slug)}
+                          className="min-w-0 truncate text-sm font-medium hover:underline after:absolute after:inset-0 after:content-['']"
+                        >
+                          {team.title}
+                        </Link>
+                        {team.isFeatured && <Star className="h-3.5 w-3.5 shrink-0 fill-yellow-500 text-yellow-500" aria-label={t("teams.featured")} />}
+                      </div>
+                      {team.role && <p className="text-xs text-muted-foreground wrap-anywhere">{team.role}</p>}
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+                        {team.category && (
+                          <Link href={`/bots/teams?category=${team.category.slug}`} className="relative z-10 max-w-full">
+                            <Badge variant="outline" className="max-w-full whitespace-normal text-[10px] wrap-anywhere">
+                              {team.category.parent && `${team.category.parent.name} › `}
+                              {team.category.name}
+                            </Badge>
+                          </Link>
+                        )}
+                        <span>{t("teams.memberCount", { count: team.memberCount })}</span>
+                        <span className="flex items-center gap-0.5">
+                          <ArrowBigUp className="h-3.5 w-3.5" />
+                          {team.voteCount}
+                        </span>
+                      </div>
+                    </div>
                   </li>
                 ))}
               </ul>

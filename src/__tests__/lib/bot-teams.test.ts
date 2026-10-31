@@ -5,6 +5,7 @@ import {
   canEditTeam,
   createTeam,
   diffTeam,
+  getBotTeams,
   getTeam,
   getTeamInstallPrompt,
   getTeamPlatforms,
@@ -18,6 +19,8 @@ import {
 } from "@/lib/bots/teams";
 import { pairingGroups, parseMaxMembers, teamTitleFromBots, teamsFromPairings, type ConversionBot } from "@/lib/bots/team-conversion";
 import {
+  MAX_NODE_EXTENT,
+  TEAM_BOX_HEADER,
   TEAM_NODE_RADIUS,
   cellCenter,
   clampToCell,
@@ -25,6 +28,7 @@ import {
   findHub,
   initialPositions,
   nodeBounds,
+  nodeExtent,
   ringTarget,
   teamCellHeight,
   teamGridLayout,
@@ -36,7 +40,7 @@ vi.mock("@/lib/db", () => ({
     $transaction: vi.fn(),
     prompt: { findMany: vi.fn() },
     botTeam: { findMany: vi.fn(), findFirst: vi.fn(), findUnique: vi.fn(), create: vi.fn(), update: vi.fn() },
-    botTeamMember: { deleteMany: vi.fn(), createMany: vi.fn() },
+    botTeamMember: { deleteMany: vi.fn(), createMany: vi.fn(), findMany: vi.fn() },
     botTeamLink: { createMany: vi.fn(), deleteMany: vi.fn() },
     botTeamTag: {},
   },
@@ -87,6 +91,7 @@ function teamRecord(overrides: Record<string, unknown> = {}) {
     createdAt: new Date("2026-02-01T00:00:00Z"),
     updatedAt: new Date("2026-02-02T00:00:00Z"),
     author: { username: "alice", name: "Alice", avatar: null, verified: false },
+    _count: { votes: 3 },
     members: [
       { role: "Researcher", description: "Finds sources", bot: botRecord("a") },
       { role: "Writer", description: "Writes it up", bot: botRecord("b", { botPlatforms: ["OPENCLAW", "HERMES"] }) },
@@ -424,6 +429,47 @@ describe("team graph geometry", () => {
     }
   });
 
+  it("keeps whole nodes, badge and labels included, between the header and the footer", () => {
+    const cell = { x: 40, y: 100, width: 300, height: 260, footer: 44 };
+    const extent = nodeExtent({ title: "Postmortem Writer Extraordinaire", role: "Postmortem" });
+    expect(extent.bottom).toBeGreaterThan(TEAM_NODE_RADIUS + 27);
+    expect(extent.left).toBeGreaterThan(TEAM_NODE_RADIUS);
+    for (const corner of [{ x: -1e4, y: -1e4 }, { x: 1e4, y: 1e4 }, { x: -1e4, y: 1e4 }, { x: 1e4, y: -1e4 }]) {
+      const point = clampToCell(corner, cell, extent);
+      expect(point.x - extent.left).toBeGreaterThanOrEqual(cell.x);
+      expect(point.x + extent.right).toBeLessThanOrEqual(cell.x + cell.width);
+      expect(point.y - extent.top).toBeGreaterThanOrEqual(cell.y + TEAM_BOX_HEADER);
+      expect(point.y + extent.bottom).toBeLessThanOrEqual(cell.y + cell.height - cell.footer);
+    }
+  });
+
+  it("gives labelless nodes and nodes without a role less room than the largest node", () => {
+    const short = nodeExtent({ title: "QA" });
+    expect(short.bottom).toBeLessThan(MAX_NODE_EXTENT.bottom);
+    expect(short.left).toBe(TEAM_NODE_RADIUS);
+    expect(nodeExtent({ title: "x".repeat(40) })).toEqual(nodeExtent({ title: "x".repeat(16) }));
+  });
+
+  it("sizes boxes so the largest nodes fit in every slot, with or without a footer", () => {
+    for (const hub of [false, true]) {
+      for (const size of [2, 5, 9]) {
+        const { cells } = teamGridLayout([size], 320, { hubs: [hub], footer: 44 });
+        const bounds = nodeBounds(cells[0]);
+        expect(bounds.maxY).toBeGreaterThan(bounds.minY);
+        expect(bounds.maxX).toBeGreaterThan(bounds.minX);
+        for (const point of initialPositions(size, cells[0], hub ? 0 : -1)) {
+          expect(clampToCell(point, cells[0])).toEqual(point);
+        }
+      }
+    }
+  });
+
+  it("centers nodes that do not fit a tiny box instead of flipping the bounds", () => {
+    const bounds = nodeBounds({ x: 0, y: 0, width: 60, height: 60 });
+    expect(bounds.minX).toBe(bounds.maxX);
+    expect(bounds.minY).toBe(bounds.maxY);
+  });
+
   it("draws edges between node borders, curved on request", () => {
     expect(edgeGeometry({ x: 0, y: 0 }, { x: 100, y: 0 })).toEqual({ d: "M20,0 L73,0", mid: { x: 46.5, y: 0 } });
     expect(edgeGeometry({ x: 0, y: 0 }, { x: 100, y: 0 }, { curve: 20 })?.d).toMatch(/^M20,0 Q46.5,20 73,0$/);
@@ -433,6 +479,43 @@ describe("team graph geometry", () => {
   it("truncates long labels", () => {
     expect(truncateLabel("Research brief", 40)).toBe("Research brief");
     expect(truncateLabel("Research brief", 9)).toBe("Research…");
+  });
+});
+
+describe("teams of a bot", () => {
+  it("lists listed teams with the bot's role, category and counts", async () => {
+    vi.mocked(db.botTeamMember.findMany).mockResolvedValue([
+      {
+        role: "Writer",
+        team: {
+          id: "team-1",
+          slug: "research-crew",
+          title: "Research crew",
+          isFeatured: true,
+          category: { name: "Writing", slug: "writing", parent: null },
+          _count: { members: 3, votes: 7 },
+        },
+      },
+      { role: "", team: { id: "team-2", slug: "ops", title: "Ops", isFeatured: false, category: null, _count: { members: 2, votes: 0 } } },
+    ] as never);
+    const teams = await getBotTeams("b");
+    expect(teams).toEqual([
+      {
+        id: "team-1",
+        slug: "research-crew",
+        title: "Research crew",
+        isFeatured: true,
+        category: { name: "Writing", slug: "writing", parent: null },
+        memberCount: 3,
+        voteCount: 7,
+        role: "Writer",
+      },
+      { id: "team-2", slug: "ops", title: "Ops", isFeatured: false, category: null, memberCount: 2, voteCount: 0, role: null },
+    ]);
+    expect(vi.mocked(db.botTeamMember.findMany).mock.calls[0][0]!.where).toEqual({
+      botId: "b",
+      team: { members: { some: { bot: { type: "BOT", deletedAt: null, isPrivate: false } } } },
+    });
   });
 });
 

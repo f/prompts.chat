@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { ExternalLink, Layers } from "lucide-react";
+import { ExternalLink, Layers, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,6 +18,7 @@ import { BOT_PLATFORM_CHAT_INSTALL, isChatInstallPlatform } from "@/lib/bots/sch
 import { BotPlatformTabsList } from "@/components/bots/bot-platform-tabs";
 import type { BotBundleInstallOption } from "@/lib/bots/pairings";
 import { analyticsBot } from "@/lib/analytics";
+import { cn } from "@/lib/utils";
 
 interface BotBundleInstallProps {
   /** Analytics id: the bot's id, or "team:<id>" for a team */
@@ -24,10 +26,14 @@ interface BotBundleInstallProps {
   botTitle: string;
   /** The bot plus every paired bot */
   botCount: number;
-  options: BotBundleInstallOption[];
+  /** The install options, or a URL answering `{ options }` to load them from when the dialog first opens */
+  options: BotBundleInstallOption[] | { url: string };
   /** Replace the "Install all together" button, title and description, e.g. for a team */
   labels?: { trigger: string; title: string; description: string };
+  triggerClassName?: string;
 }
+
+type LoadState = { status: "idle" | "loading" | "error" } | { status: "ready"; options: BotBundleInstallOption[] };
 
 function BundlePlatformInstall({ botId, option }: { botId: string; option: BotBundleInstallOption }) {
   const t = useTranslations("bots");
@@ -96,15 +102,52 @@ function BundlePlatformInstall({ botId, option }: { botId: string; option: BotBu
   );
 }
 
-/** "Install all together": the bot's install prompt and commands, extended to its paired bots */
-export function BotBundleInstall({ botId, botTitle, botCount, options, labels }: BotBundleInstallProps) {
+function BundleInstallOptions({ botId, options }: { botId: string; options: BotBundleInstallOption[] }) {
   const t = useTranslations("bots");
-  if (options.length === 0) return null;
+  if (options.length === 0) return <p className="text-sm text-muted-foreground">{t("installAllUnavailable")}</p>;
+  if (options.length === 1) return <BundlePlatformInstall botId={botId} option={options[0]} />;
+  return (
+    <Tabs defaultValue={options[0].platform} className="min-w-0 gap-4">
+      <BotPlatformTabsList platforms={options.map((option) => option.platform)} label={t("form.platforms")} />
+      {options.map((option) => (
+        <TabsContent key={option.platform} value={option.platform} className="min-w-0">
+          <BundlePlatformInstall botId={botId} option={option} />
+        </TabsContent>
+      ))}
+    </Tabs>
+  );
+}
+
+/** "Install all together": the bot's install prompt and commands, extended to its paired bots */
+export function BotBundleInstall({ botId, botTitle, botCount, options, labels, triggerClassName }: BotBundleInstallProps) {
+  const t = useTranslations("bots");
+  const [loaded, setLoaded] = useState<LoadState>(
+    Array.isArray(options) ? { status: "ready", options } : { status: "idle" }
+  );
+  if (Array.isArray(options) && options.length === 0) return null;
+
+  const load = async (url: string) => {
+    setLoaded({ status: "loading" });
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`Install options: ${response.status}`);
+      const data: { options: BotBundleInstallOption[] } = await response.json();
+      setLoaded({ status: "ready", options: data.options });
+    } catch {
+      setLoaded({ status: "error" });
+    }
+  };
 
   return (
-    <Dialog onOpenChange={(open) => open && analyticsBot.installAllOpen(botId, botCount)}>
+    <Dialog
+      onOpenChange={(open) => {
+        if (!open) return;
+        analyticsBot.installAllOpen(botId, botCount);
+        if (!Array.isArray(options) && (loaded.status === "idle" || loaded.status === "error")) void load(options.url);
+      }}
+    >
       <DialogTrigger asChild>
-        <Button size="sm" variant={labels ? "default" : "outline"} className="h-8 text-xs">
+        <Button size="sm" variant={labels ? "default" : "outline"} className={cn("h-8 text-xs", triggerClassName)}>
           <Layers className="h-3.5 w-3.5" />
           {labels?.trigger ?? t("installAllTogether")}
         </Button>
@@ -114,17 +157,14 @@ export function BotBundleInstall({ botId, botTitle, botCount, options, labels }:
           <DialogTitle>{labels?.title ?? t("installAllTitle", { count: botCount })}</DialogTitle>
           <DialogDescription>{labels?.description ?? t("installAllDescription", { bot: botTitle })}</DialogDescription>
         </DialogHeader>
-        {options.length > 1 ? (
-          <Tabs defaultValue={options[0].platform} className="min-w-0 gap-4">
-            <BotPlatformTabsList platforms={options.map((option) => option.platform)} label={t("form.platforms")} />
-            {options.map((option) => (
-              <TabsContent key={option.platform} value={option.platform} className="min-w-0">
-                <BundlePlatformInstall botId={botId} option={option} />
-              </TabsContent>
-            ))}
-          </Tabs>
+        {loaded.status === "ready" ? (
+          <BundleInstallOptions botId={botId} options={loaded.options} />
+        ) : loaded.status === "error" ? (
+          <p role="alert" className="text-sm text-muted-foreground">{t("installAllLoadError")}</p>
         ) : (
-          <BundlePlatformInstall botId={botId} option={options[0]} />
+          <div className="flex justify-center py-8" aria-busy="true">
+            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+          </div>
         )}
       </DialogContent>
     </Dialog>

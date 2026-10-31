@@ -49,6 +49,7 @@ model User {
   collections                Collection[]
   userPromptExamples         UserPromptExample[]
   botTeams                   BotTeam[]
+  botTeamVotes               BotTeamVote[]
 
   @@map("users")
 }
@@ -444,11 +445,24 @@ model BotTeam {
   members     BotTeamMember[]
   links       BotTeamLink[]
   tags        BotTeamTag[]
+  votes       BotTeamVote[]
 
   @@index([authorId])
   @@index([categoryId])
   @@index([isFeatured, createdAt(sort: Desc)])
   @@map("bot_teams")
+}
+
+model BotTeamVote {
+  userId    String
+  teamId    String
+  createdAt DateTime @default(now())
+  team      BotTeam  @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, teamId])
+  @@index([teamId])
+  @@map("bot_team_votes")
 }
 
 model BotTeamTag {
