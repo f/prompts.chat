@@ -131,7 +131,7 @@ export function registerTeamTools(server: McpServer, ctx: McpContext) {
       title: "Get Bot Team",
       description:
         "Get a bot team by slug or id: its markdown description, its members with roles and what each does in the team, the directed handoffs between them (what each bot passes to the next; one bot may hand off to many and back), and the platforms its bots run on. " +
-        "Pass `platform` to also get one install prompt that sets up every member on that platform and wires up the handoffs. " +
+        "Pass `platform` to also get one install prompt that sets up the members that run on that platform and wires up the handoffs between them; members that do not run there are listed in `install.skipped`. " +
         "Member bots link to their prompts-chat://bots resources; call get_bot for a member's full definition.",
       kind: "read",
       inputSchema: {
