@@ -92,28 +92,28 @@ model VerificationToken {
 }
 
 model Prompt {
-  id                  String              @id @default(cuid())
+  id                  String                 @id @default(cuid())
   title               String
   slug                String?
   description         String?
   content             String
-  type                PromptType          @default(TEXT)
-  isPrivate           Boolean             @default(false)
+  type                PromptType             @default(TEXT)
+  isPrivate           Boolean                @default(false)
   mediaUrl            String?
-  viewCount           Int                 @default(0)
-  createdAt           DateTime            @default(now())
-  updatedAt           DateTime            @updatedAt
+  viewCount           Int                    @default(0)
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
   authorId            String
   categoryId          String?
   embedding           Json?
   requiredMediaCount  Int?
   requiredMediaType   RequiredMediaType?
-  requiresMediaUpload Boolean             @default(false)
+  requiresMediaUpload Boolean                @default(false)
   structuredFormat    StructuredFormat?
   featuredAt          DateTime?
-  isFeatured          Boolean             @default(false)
+  isFeatured          Boolean                @default(false)
   trendingUntil       DateTime? // Shown as trending while this is in the future
-  isUnlisted          Boolean             @default(false)
+  isUnlisted          Boolean                @default(false)
   unlistedAt          DateTime?
   delistReason        DelistReason?
   deletedAt           DateTime?
@@ -124,13 +124,13 @@ model Prompt {
   versions            PromptVersion[]
   votes               PromptVote[]
   comments            Comment[]
-  author              User                @relation("PromptAuthor", fields: [authorId], references: [id], onDelete: Cascade)
-  category            Category?           @relation(fields: [categoryId], references: [id])
-  contributors        User[]              @relation("PromptContributors")
-  outgoingConnections PromptConnection[]  @relation("ConnectionSource")
-  incomingConnections PromptConnection[]  @relation("ConnectionTarget")
-  botPairingsFrom     BotPairing[]        @relation("BotPairingFrom")
-  botPairingsTo       BotPairing[]        @relation("BotPairingTo")
+  author              User                   @relation("PromptAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  category            Category?              @relation(fields: [categoryId], references: [id])
+  contributors        User[]                 @relation("PromptContributors")
+  outgoingConnections PromptConnection[]     @relation("ConnectionSource")
+  incomingConnections PromptConnection[]     @relation("ConnectionTarget")
+  botPairingsFrom     BotPairing[]           @relation("BotPairingFrom")
+  botPairingsTo       BotPairing[]           @relation("BotPairingTo")
   botTeamMemberships  BotTeamMember[]
   collectedBy         Collection[]
   userExamples        UserPromptExample[]
@@ -138,10 +138,11 @@ model Prompt {
   bestWithMCP         Json? // MCP configs array, e.g. [{command: "npx -y @mcp/server", tools: ["tool1"]}]
   workflowLink        String? // URL to test/demo the workflow when prompt has previous/next connections
   botPlatform         BotPlatform? // Deprecated: superseded by botPlatforms, kept in sync with botPlatforms[0] until it is dropped
-  botPlatforms        BotPlatform[]       @default([]) // BOT prompts only: agent platforms the bot supports
+  botPlatforms        BotPlatform[]          @default([]) // BOT prompts only: agent platforms the bot supports
   botIcon             String? // BOT prompts only: a curated lucide icon name or an emoji, see src/lib/bots/schema.ts
   botColor            String? // BOT prompts only: a curated palette color name, see src/lib/bots/schema.ts
   installUrl          String? // BOT prompts only: one-click install link (e.g. Grok Bot template share URL)
+  computerRequirement BotComputerRequirement @default(NONE) // BOT prompts only: whether the bot needs a cloud computer or the user's own
   botConfig           Json? // BOT prompts only: { routines, skills, connectors }, see src/lib/bots/schema.ts
 
   @@index([authorId])
@@ -513,6 +514,15 @@ enum BotPlatform {
   DOTS
   DUET
   MUSE
+}
+
+/// What a bot needs to run besides chat
+enum BotComputerRequirement {
+  NONE
+  /// Its own remote computer, desktop or browser
+  CLOUD
+  /// Access to the user's own machine, files and apps
+  LOCAL
 }
 
 enum StructuredFormat {

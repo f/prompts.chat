@@ -4,11 +4,13 @@ import { getBotUrl } from "@/lib/urls";
 import { isTrending } from "@/lib/trending";
 import {
   BOT_PLATFORM_INFO,
+  computerRequirementText,
   isBotColor,
   isBotIconName,
   parseBotConfig,
   resolveBotPlatforms,
   type BotColor,
+  type BotComputerRequirement,
   type BotConfig,
   type BotIconName,
   type BotPlatform,
@@ -26,6 +28,7 @@ export const botSelect = {
   botPlatforms: true,
   botIcon: true,
   botColor: true,
+  computerRequirement: true,
   installUrl: true,
   botConfig: true,
   isPrivate: true,
@@ -57,6 +60,8 @@ export interface BotView {
   icon: BotIconName | null;
   /** Preset color key; null means the neutral default */
   color: BotColor | null;
+  /** Whether the bot needs a cloud computer or the user's own to run */
+  computerRequirement: BotComputerRequirement;
   installUrl: string | null;
   config: BotConfig;
   isPrivate: boolean;
@@ -88,6 +93,7 @@ export function toBotView(record: BotRecord): BotView {
     platforms: resolveBotPlatforms(record),
     icon: record.botIcon && isBotIconName(record.botIcon) ? record.botIcon : null,
     color: record.botColor && isBotColor(record.botColor) ? record.botColor : null,
+    computerRequirement: record.computerRequirement,
     installUrl: record.installUrl,
     config: parseBotConfig(record.botConfig),
     isPrivate: record.isPrivate,
@@ -119,6 +125,7 @@ export type BotSort = (typeof BOT_SORTS)[number];
 
 export interface BotListFilters {
   platform?: BotPlatform;
+  computerRequirement?: BotComputerRequirement;
   /** Matches the category and, for a parent category, its subcategories */
   categorySlug?: string;
   /** Every tag must match */
@@ -128,11 +135,12 @@ export interface BotListFilters {
   sort?: BotSort;
 }
 
-function botListWhere({ platform, categorySlug, tagSlugs = [], q }: BotListFilters): Prisma.PromptWhereInput {
+function botListWhere({ platform, computerRequirement, categorySlug, tagSlugs = [], q }: BotListFilters): Prisma.PromptWhereInput {
   const keywords = (q ?? "").split(",").map((k) => k.trim()).filter(Boolean);
   return {
     ...publicBotWhere,
     ...(platform && { botPlatforms: { has: platform } }),
+    ...(computerRequirement && { computerRequirement }),
     ...(categorySlug && { category: { OR: [{ slug: categorySlug }, { parent: { slug: categorySlug } }] } }),
     ...(tagSlugs.length > 0 && { AND: tagSlugs.map((slug) => ({ tags: { some: { tag: { slug } } } })) }),
     ...(keywords.length > 0 && {
@@ -282,7 +290,24 @@ export function getInstallTarget(platform: BotPlatform, count = 1): string {
 
 /** Prompt the user pastes into an agent that cannot import bots from a URL */
 export function getInstallPrompt(bot: BotView, platform: BotPlatform, baseUrl: string): string {
-  return `Go to ${getBotUrls(bot, baseUrl).markdown} and create the "${bot.title}" bot ${getInstallTarget(platform)} exactly as described there: adopt its instructions as your standing instructions, install its skills, ask me to connect the required connectors, and set up each routine with the given schedule or trigger. Confirm each step when done.`;
+  const computer = computerRequirementText(bot.computerRequirement, "user");
+  return `${computer ? `${computer} ` : ""}Go to ${getBotUrls(bot, baseUrl).markdown} and create the "${bot.title}" bot ${getInstallTarget(platform)} exactly as described there: adopt its instructions as your standing instructions, install its skills, ask me to connect the required connectors, and set up each routine with the given schedule or trigger. Confirm each step when done.`;
+}
+
+/** Marks a bot in a list of bots to install, e.g. ` [needs a cloud computer]` */
+export function computerListMark(requirement: BotComputerRequirement): string {
+  if (requirement === "CLOUD") return " [needs a cloud computer]";
+  if (requirement === "LOCAL") return " [needs my computer]";
+  return "";
+}
+
+/** What the marks in a list of bots mean, for the requirements present; empty when none are */
+export function computerListNotes(bots: Pick<BotView, "computerRequirement">[]): string[] {
+  const present = new Set(bots.map((bot) => bot.computerRequirement));
+  return [
+    ...(present.has("CLOUD") ? ["Bots that need a cloud computer need their own remote computer, desktop or browser to work in: set one up for each or ask me to connect one."] : []),
+    ...(present.has("LOCAL") ? ["Bots that need my computer need access to my own machine, files and apps: ask me before connecting it."] : []),
+  ];
 }
 
 /** Hermes installs SKILL.md files straight from a URL */
@@ -344,6 +369,8 @@ function botBody(bot: BotView, baseUrl: string): string {
 
   if (bot.description) sections.push(bot.description);
   sections.push(`## Platforms\n\n${bot.platforms.map((platform) => `- ${BOT_PLATFORM_INFO[platform].name}`).join("\n")}`);
+  const computer = computerRequirementText(bot.computerRequirement);
+  if (computer) sections.push(`## Computer\n\n${computer}`);
   sections.push(`## Instructions\n\n${bot.instructions}`);
 
   if (routines.length > 0) {
@@ -402,6 +429,7 @@ export function botToMarkdown(bot: BotView, baseUrl: string): string {
     "---",
     `name: ${JSON.stringify(bot.title)}`,
     `platforms: [${bot.platforms.join(", ")}]`,
+    `computer: ${bot.computerRequirement}`,
     ...(bot.description ? [`description: ${JSON.stringify(bot.description)}`] : []),
     ...(bot.category ? [`category: ${JSON.stringify(bot.category.name)}`] : []),
     ...(bot.tags.length > 0 ? [`tags: [${bot.tags.map((tag) => JSON.stringify(tag.name)).join(", ")}]`] : []),
@@ -443,6 +471,7 @@ export function botToJson(bot: BotView, baseUrl: string) {
     platformNames: bot.platforms.map((platform) => BOT_PLATFORM_INFO[platform].name),
     icon: bot.icon,
     color: bot.color,
+    computerRequirement: bot.computerRequirement,
     instructions: bot.instructions,
     routines: bot.config.routines,
     skills: bot.config.skills,

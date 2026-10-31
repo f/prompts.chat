@@ -4,6 +4,8 @@ import {
   BOT_PLATFORM_INFO,
   botSelect,
   canonicalPair,
+  computerListMark,
+  computerListNotes,
   getBotUrls,
   getHermesInstallCommand,
   getInstallPrompt,
@@ -110,12 +112,16 @@ export function botPairingsJson(pairings: BotPairingView[], baseUrl: string) {
 /** One prompt that sets up every bot of a set on the same platform */
 export function getBundleInstallPrompt(bots: BotView[], platform: BotPlatform, baseUrl: string): string {
   if (bots.length === 1) return getInstallPrompt(bots[0], platform, baseUrl);
-  const list = bots.map((bot, index) => `${index + 1}. "${bot.title}": ${getBotUrls(bot, baseUrl).markdown}`).join("\n");
+  const list = bots
+    .map((bot, index) => `${index + 1}. "${bot.title}"${computerListMark(bot.computerRequirement)}: ${getBotUrls(bot, baseUrl).markdown}`)
+    .join("\n");
   return `Set up these ${bots.length} bots ${getInstallTarget(platform, bots.length)}. They are designed to work together, so install all of them:
 
 ${list}
 
-For each bot, go to its URL and create it exactly as described there: adopt its instructions as the standing instructions for that bot, install its skills, and set up each routine with the given schedule or trigger. Ask me to connect each required connector once, even when several bots need it. Confirm each bot when done.`;
+For each bot, go to its URL and create it exactly as described there: adopt its instructions as the standing instructions for that bot, install its skills, and set up each routine with the given schedule or trigger. Ask me to connect each required connector once, even when several bots need it. Confirm each bot when done.${computerListNotes(bots)
+    .map((note) => ` ${note}`)
+    .join("")}`;
 }
 
 export interface BotBundleInstallOption {

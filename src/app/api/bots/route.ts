@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { BOT_PLATFORM_INFO, BOT_SORTS, botCategoryJson, botTagsJson, getBotUrls, listBots, platformFromParam, type BotSort } from "@/lib/bots";
+import { BOT_PLATFORM_INFO, BOT_SORTS, botCategoryJson, computerRequirementFromParam, botTagsJson, getBotUrls, listBots, platformFromParam, type BotSort } from "@/lib/bots";
 import { getBaseUrl } from "@/lib/seo";
 import { isTrending } from "@/lib/trending";
 
@@ -13,6 +13,7 @@ export async function GET(request: Request) {
   const limit = Number.parseInt(searchParams.get("limit") ?? "", 10);
   const { bots, total } = await listBots({
     platform,
+    computerRequirement: computerRequirementFromParam(searchParams.get("computer")),
     categorySlug: searchParams.get("category") ?? undefined,
     tagSlugs: searchParams.get("tag")?.split(",").map((slug) => slug.trim()).filter(Boolean),
     q: searchParams.get("q") ?? undefined,
@@ -32,6 +33,7 @@ export async function GET(request: Request) {
         platformNames: bot.platforms.map((platform) => BOT_PLATFORM_INFO[platform].name),
         icon: bot.icon,
         color: bot.color,
+        computerRequirement: bot.computerRequirement,
         installUrl: bot.installUrl,
         category: botCategoryJson(bot),
         tags: botTagsJson(bot),

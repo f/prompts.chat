@@ -1,4 +1,4 @@
-import type { BotColor, BotIconName } from "./schema";
+import type { BotColor, BotComputerRequirement, BotIconName } from "./schema";
 
 /** Geometry for the bot teams graph: one box per team on a responsive grid, bots as nodes inside */
 
@@ -15,6 +15,7 @@ export interface TeamGraphTeam {
     title: string;
     icon: BotIconName | null;
     color: BotColor | null;
+    computerRequirement: BotComputerRequirement;
     role: string | null;
     description: string | null;
   }[];

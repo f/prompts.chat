@@ -121,6 +121,42 @@ export function isBotColor(value: string): value is BotColor {
   return (BOT_COLORS as readonly string[]).includes(value);
 }
 
+/**
+ * What a bot needs to run besides chat: NONE, CLOUD (its own remote computer, desktop or browser)
+ * or LOCAL (access to the user's own machine, files and apps)
+ */
+export const BOT_COMPUTER_REQUIREMENTS = ["NONE", "CLOUD", "LOCAL"] as const;
+export type BotComputerRequirement = (typeof BOT_COMPUTER_REQUIREMENTS)[number];
+export const botComputerRequirementSchema = z.enum(BOT_COMPUTER_REQUIREMENTS);
+
+export function isBotComputerRequirement(value: unknown): value is BotComputerRequirement {
+  return (BOT_COMPUTER_REQUIREMENTS as readonly unknown[]).includes(value);
+}
+
+/** "none", "cloud" or "local" in query strings */
+export function computerRequirementFromParam(param: string | null | undefined): BotComputerRequirement | undefined {
+  const value = param?.trim().toUpperCase();
+  return isBotComputerRequirement(value) ? value : undefined;
+}
+
+/**
+ * One sentence about the computer a bot needs, null when it needs none. "user" is written as the
+ * user talking to their agent, for install prompts; "agent" describes it, for bot files.
+ */
+export function computerRequirementText(requirement: BotComputerRequirement, voice: "user" | "agent" = "agent"): string | null {
+  if (requirement === "CLOUD") {
+    return voice === "user"
+      ? "This bot needs a cloud computer, its own remote computer, desktop or browser to work in: set one up for it or ask me to connect one."
+      : "This bot needs a cloud computer: its own remote computer, desktop or browser to work in.";
+  }
+  if (requirement === "LOCAL") {
+    return voice === "user"
+      ? "This bot needs access to my own computer, its files and apps: ask me before connecting it."
+      : "This bot needs the user's computer: access to the user's own machine, files and apps.";
+  }
+  return null;
+}
+
 export const botIconSchema = z.enum(BOT_ICONS);
 export const botColorSchema = z.enum(BOT_COLORS);
 

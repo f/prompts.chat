@@ -7,6 +7,8 @@ import {
   BOT_PLATFORM_INFO,
   BOT_PLATFORMS,
   botSelect,
+  computerListMark,
+  computerListNotes,
   getBotUrls,
   getInstallTarget,
   isBotColor,
@@ -14,6 +16,7 @@ import {
   resolveBotPlatforms,
   toBotView,
   type BotColor,
+  type BotComputerRequirement,
   type BotIconName,
   type BotPlatform,
   type BotView,
@@ -44,6 +47,7 @@ export interface BotTeamBot {
   icon: BotIconName | null;
   color: BotColor | null;
   platforms: BotPlatform[];
+  computerRequirement: BotComputerRequirement;
 }
 
 export interface BotTeamLinkView {
@@ -79,6 +83,7 @@ const teamBotSummarySelect = {
   botColor: true,
   botPlatform: true,
   botPlatforms: true,
+  computerRequirement: true,
 } satisfies Prisma.PromptSelect;
 
 const teamBaseSelect = {
@@ -129,6 +134,7 @@ function toTeamBot(record: TeamSummaryRecord["members"][number]["bot"]): BotTeam
     icon: record.botIcon && isBotIconName(record.botIcon) ? record.botIcon : null,
     color: record.botColor && isBotColor(record.botColor) ? record.botColor : null,
     platforms: resolveBotPlatforms(record),
+    computerRequirement: record.computerRequirement,
   };
 }
 
@@ -240,7 +246,7 @@ export function getTeamInstallPrompt(
   const list = members
     .map((bot, index) => {
       const { role, description } = teamMembers.get(bot.id) ?? {};
-      const line = `${index + 1}. "${bot.title}"${role ? ` (${role})` : ""}: ${getBotUrls(bot, baseUrl).markdown}`;
+      const line = `${index + 1}. "${bot.title}"${role ? ` (${role})` : ""}${computerListMark(bot.computerRequirement)}: ${getBotUrls(bot, baseUrl).markdown}`;
       return description ? `${line}\n   In this team: ${description}` : line;
     })
     .join("\n");
@@ -254,7 +260,8 @@ export function getTeamInstallPrompt(
     ...(handoffs.length > 0 ? [`Handoffs:\n${handoffs.join("\n")}`] : []),
     "For each bot, go to its URL and create it exactly as described there: adopt its instructions as the standing instructions for that bot, install its skills, and set up each routine with the given schedule or trigger." +
       (handoffs.length > 0 ? " Then wire up the handoffs: when a bot finishes its part, it passes what is listed to the next bot." : "") +
-      " Ask me to connect each required connector once, even when several bots need it. Confirm each bot when done.",
+      " Ask me to connect each required connector once, even when several bots need it. Confirm each bot when done." +
+      computerListNotes(members).map((note) => ` ${note}`).join(""),
   ].join("\n\n");
 }
 
@@ -279,6 +286,7 @@ export function toTeamGraphTeam(team: BotTeamView<BotTeamBot | BotView>): TeamGr
       title: bot.title,
       icon: bot.icon,
       color: bot.color,
+      computerRequirement: bot.computerRequirement,
       role,
       description,
     })),
@@ -308,7 +316,7 @@ export function teamSummaryJson(team: BotTeamView<BotTeamBot | BotView>, baseUrl
     description: teamExcerpt(team.description),
     author: team.author.name || team.author.username,
     isFeatured: team.isFeatured,
-    members: team.members.map(({ bot, role }) => ({ id: bot.id, name: bot.title, role })),
+    members: team.members.map(({ bot, role }) => ({ id: bot.id, name: bot.title, role, computerRequirement: bot.computerRequirement })),
     handoffCount: team.links.length,
     link: teamUrl(team, baseUrl),
   };
@@ -331,6 +339,7 @@ export function teamToJson(team: BotTeamView<BotView>, baseUrl: string) {
       name: bot.title,
       role,
       description,
+      computerRequirement: bot.computerRequirement,
       platforms: bot.platforms,
       link: getBotUrls(bot, baseUrl).page,
     })),

@@ -2,7 +2,7 @@ import type { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
 import { createPrompt, updatePrompt, type PromptWriter, type PromptWriteResult } from "@/lib/prompt-write";
 import { botSelect, toBotView, type BotView } from "./index";
-import { botConfigSchema, normalizeBotPlatforms, type BotConfig, type BotPlatform } from "./schema";
+import { botConfigSchema, normalizeBotPlatforms, type BotComputerRequirement, type BotConfig, type BotPlatform } from "./schema";
 
 /**
  * A bot as its owner describes it. Undefined optional fields keep their stored value on update;
@@ -21,6 +21,7 @@ export interface OwnBotInput {
   botIcon?: string | null;
   botColor?: string | null;
   installUrl?: string | null;
+  computerRequirement?: BotComputerRequirement;
   routines?: BotConfig["routines"];
   skills?: BotConfig["skills"];
   connectors?: BotConfig["connectors"];
@@ -84,6 +85,9 @@ export function diffOwnBot(existing: BotView, input: OwnBotInput): Record<string
   if (input.botIcon !== undefined && (input.botIcon || null) !== existing.icon) patch.botIcon = input.botIcon;
   if (input.botColor !== undefined && (input.botColor || null) !== existing.color) patch.botColor = input.botColor;
   if (input.installUrl !== undefined && (input.installUrl || null) !== existing.installUrl) patch.installUrl = input.installUrl;
+  if (input.computerRequirement !== undefined && input.computerRequirement !== existing.computerRequirement) {
+    patch.computerRequirement = input.computerRequirement;
+  }
   if (input.categoryId !== undefined && (input.categoryId || null) !== (existing.category?.id ?? null)) {
     patch.categoryId = input.categoryId;
   }
@@ -147,6 +151,7 @@ export async function upsertOwnBot(
     botIcon: input.botIcon,
     botColor: input.botColor,
     installUrl: input.installUrl ?? undefined,
+    computerRequirement: input.computerRequirement,
     botConfig: {
       routines: input.routines ?? [],
       skills: input.skills ?? [],
