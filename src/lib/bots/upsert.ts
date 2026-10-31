@@ -21,7 +21,7 @@ export interface OwnBotInput {
   botIcon?: string | null;
   botColor?: string | null;
   installUrl?: string | null;
-  computerRequirement?: BotComputerRequirement;
+  computerRequirements?: BotComputerRequirement[];
   routines?: BotConfig["routines"];
   skills?: BotConfig["skills"];
   connectors?: BotConfig["connectors"];
@@ -85,8 +85,8 @@ export function diffOwnBot(existing: BotView, input: OwnBotInput): Record<string
   if (input.botIcon !== undefined && (input.botIcon || null) !== existing.icon) patch.botIcon = input.botIcon;
   if (input.botColor !== undefined && (input.botColor || null) !== existing.color) patch.botColor = input.botColor;
   if (input.installUrl !== undefined && (input.installUrl || null) !== existing.installUrl) patch.installUrl = input.installUrl;
-  if (input.computerRequirement !== undefined && input.computerRequirement !== existing.computerRequirement) {
-    patch.computerRequirement = input.computerRequirement;
+  if (input.computerRequirements !== undefined && !sameList(input.computerRequirements, existing.computerRequirements)) {
+    patch.computerRequirements = input.computerRequirements;
   }
   if (input.categoryId !== undefined && (input.categoryId || null) !== (existing.category?.id ?? null)) {
     patch.categoryId = input.categoryId;
@@ -151,7 +151,7 @@ export async function upsertOwnBot(
     botIcon: input.botIcon,
     botColor: input.botColor,
     installUrl: input.installUrl ?? undefined,
-    computerRequirement: input.computerRequirement,
+    computerRequirements: input.computerRequirements,
     botConfig: {
       routines: input.routines ?? [],
       skills: input.skills ?? [],

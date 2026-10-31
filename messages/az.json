@@ -1163,7 +1163,7 @@
         "connectEveryoneHint": "Seçilmiş botdan bütün digər botlara və geri ötürmələr əlavə edir, aparat rəhbəri kimi.",
         "invalidCategory": "Bu kateqoriya artıq mövcud deyil",
         "invalidTags": "Bəzi teqlər artıq mövcud deyil",
-        "computerHint": "İkonlar bulud kompüteri və ya öz kompüterinizi tələb edən botları göstərir."
+        "computerHint": "İkonlar bulud kompüteri, öz kompüterinizi və ya hər ikisini tələb edən botları göstərir."
       },
       "openBot": "{bot} haqqında ətraflı göstər",
       "botHint": "Nə etdiyini görmək və quraşdırmaq üçün bir bot seçin.",
@@ -1180,12 +1180,8 @@
       "cloud": "Bulud kompüteri tələb edir",
       "local": "Sizin kompüterinizi tələb edir",
       "label": "Kompüter",
-      "hint": "Botun işləmək üçün kompüterə ehtiyacı var? Bu, botda kiçik bir ikon kimi göstərilir.",
-      "none": "Kompüter yoxdur",
-      "noneHint": "Yalnız öz platformasında işləyir.",
-      "cloudOption": "Bulud kompüteri",
+      "hint": "Botun işləmək üçün kompüterə ehtiyacı var? Birini, hər ikisini və ya heç birini seçin. Hər biri botda kiçik bir ikon kimi göstərilir.",
       "cloudHint": "Öz uzaq kompüterinə, masaüstünə və ya brauzerinə ehtiyac duyur.",
-      "localOption": "Sizin kompüteriniz",
       "localHint": "Sizin öz kompüterinizə, fayllarınıza və ya tətbiqlərinizə giriş tələb edir."
     }
   },
@@ -2669,7 +2665,7 @@
     }
   },
   "apiDocs": {
-    "computerRequirementFilter": "Yalnız <code>NONE</code>, <code>CLOUD</code> kompüter və ya istifadəçinin <code>LOCAL</code> kompüterini tələb edən botlar",
-    "computerRequirementInput": "<code>NONE</code> (standart), bot öz uzaq kompüterinə, masaüstünə və ya brauzerinə ehtiyac duyduqda <code>CLOUD</code>, istifadəçinin öz cihazına, fayllarına və ya tətbiqlərinə ehtiyac duyduqda <code>LOCAL</code>"
+    "computerRequirementFilter": "Yalnız <code>CLOUD</code> kompüter və ya istifadəçinin <code>LOCAL</code> kompüterini tələb edən botlar (hər ikisini tələb edənlər istənilən biri ilə uyğun gəlir), və ya kompüter tələb etməyən botlar üçün <code>NONE</code>",
+    "computerRequirementsInput": "<code>CLOUD</code> (bot öz uzaq kompüterinə, masaüstünə və ya brauzerinə ehtiyac duyur) və/və ya <code>LOCAL</code> (istifadəçinin öz cihazına, fayllarına və ya tətbiqlərinə ehtiyac duyur) dəyərlərindən ibarət siyahı; boş siyahı botun kompüterə ehtiyacı olmadığını bildirir. Saxlanmış siyahını əvəz edir"
   }
 }

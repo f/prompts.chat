@@ -1163,7 +1163,7 @@
         "connectEveryoneHint": "添加从所选机器人到其他所有机器人以及反向的交接，就像幕僚长一样。",
         "invalidCategory": "该分类已不存在",
         "invalidTags": "部分标签已不存在",
-        "computerHint": "图标标记需要云端电脑或你自己电脑的机器人。"
+        "computerHint": "图标标记需要云端电脑、你自己的电脑或两者都需要的机器人。"
       },
       "openBot": "查看 {bot} 的详情",
       "botHint": "选择一个机器人，查看它做什么并安装它。",
@@ -1180,12 +1180,8 @@
       "cloud": "需要云端电脑",
       "local": "需要你的电脑",
       "label": "电脑",
-      "hint": "这个机器人需要在电脑上运行吗？这会在机器人上显示为一个小图标。",
-      "none": "无需电脑",
-      "noneHint": "仅在其平台上运行。",
-      "cloudOption": "云端电脑",
+      "hint": "这个机器人需要在电脑上运行吗？可以勾选一个、两个或都不选。每一项都会在机器人上显示为一个小图标。",
       "cloudHint": "需要自己的远程电脑、桌面或浏览器。",
-      "localOption": "你的电脑",
       "localHint": "需要访问你自己的电脑、文件或应用。"
     }
   },
@@ -2657,7 +2653,7 @@
     }
   },
   "apiDocs": {
-    "computerRequirementFilter": "仅限需要 <code>NONE</code>、<code>CLOUD</code> 云端电脑或用户 <code>LOCAL</code> 本地电脑的机器人",
-    "computerRequirementInput": "<code>NONE</code>（默认）；机器人需要自己的远程电脑、桌面或浏览器时为 <code>CLOUD</code>；需要用户自己的机器、文件或应用时为 <code>LOCAL</code>"
+    "computerRequirementFilter": "仅限需要 <code>CLOUD</code> 云端电脑或用户 <code>LOCAL</code> 本地电脑的机器人（两者都需要的机器人匹配任一项），或用 <code>NONE</code> 筛选不需要电脑的机器人",
+    "computerRequirementsInput": "包含 <code>CLOUD</code>（机器人需要自己的远程电脑、桌面或浏览器）和/或 <code>LOCAL</code>（需要用户自己的机器、文件或应用）的列表；空列表表示不需要电脑。会替换已保存的列表"
   }
 }

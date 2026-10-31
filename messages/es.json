@@ -1163,7 +1163,7 @@
         "connectEveryoneHint": "Añade traspasos del bot elegido a todos los demás bots y de vuelta, como un jefe de gabinete.",
         "invalidCategory": "Esa categoría ya no existe",
         "invalidTags": "Algunas etiquetas ya no existen",
-        "computerHint": "Los iconos marcan los bots que necesitan un ordenador en la nube o tu propio ordenador."
+        "computerHint": "Los iconos marcan los bots que necesitan un ordenador en la nube, tu propio ordenador o ambos."
       },
       "openBot": "Ver detalles de {bot}",
       "botHint": "Selecciona un bot para ver qué hace e instalarlo.",
@@ -1180,12 +1180,8 @@
       "cloud": "Necesita un ordenador en la nube",
       "local": "Necesita tu ordenador",
       "label": "Ordenador",
-      "hint": "¿El bot necesita un ordenador para funcionar? Se muestra como un icono pequeño en el bot.",
-      "none": "Sin ordenador",
-      "noneHint": "Funciona solo en su plataforma.",
-      "cloudOption": "Ordenador en la nube",
+      "hint": "¿El bot necesita un ordenador para funcionar? Marca uno, ambos o ninguno. Cada uno se muestra como un icono pequeño en el bot.",
       "cloudHint": "Necesita su propio ordenador remoto, escritorio o navegador.",
-      "localOption": "Tu ordenador",
       "localHint": "Necesita acceso a tu propio equipo, archivos o aplicaciones."
     }
   },
@@ -2672,7 +2668,7 @@
     }
   },
   "apiDocs": {
-    "computerRequirementFilter": "Solo bots que necesitan <code>NONE</code>, un ordenador <code>CLOUD</code> o el ordenador <code>LOCAL</code> del usuario",
-    "computerRequirementInput": "<code>NONE</code> (predeterminado), <code>CLOUD</code> cuando el bot necesita su propio ordenador remoto, escritorio o navegador, o <code>LOCAL</code> cuando necesita la máquina, los archivos o las aplicaciones del propio usuario"
+    "computerRequirementFilter": "Solo bots que necesitan un ordenador <code>CLOUD</code> o el ordenador <code>LOCAL</code> del usuario (los que necesitan ambos coinciden con cualquiera), o <code>NONE</code> para bots que no necesitan ordenador",
+    "computerRequirementsInput": "Una lista con <code>CLOUD</code> (el bot necesita su propio ordenador remoto, escritorio o navegador) y/o <code>LOCAL</code> (necesita la máquina, los archivos o las apps del usuario); una lista vacía significa que no necesita ordenador. Reemplaza la lista guardada"
   }
 }

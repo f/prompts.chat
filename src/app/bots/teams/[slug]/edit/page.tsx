@@ -57,7 +57,7 @@ export default async function EditBotTeamPage({ params }: EditBotTeamPageProps) 
             title: bot.title,
             icon: bot.icon,
             color: bot.color,
-            computerRequirement: bot.computerRequirement,
+            computerRequirements: bot.computerRequirements,
             role: role ?? "",
             description: description ?? "",
           })),

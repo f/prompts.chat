@@ -15,7 +15,7 @@ export interface TeamGraphTeam {
     title: string;
     icon: BotIconName | null;
     color: BotColor | null;
-    computerRequirement: BotComputerRequirement;
+    computerRequirements: BotComputerRequirement[];
     role: string | null;
     description: string | null;
   }[];

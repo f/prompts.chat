@@ -32,7 +32,7 @@ function botRecord(overrides: Record<string, unknown> = {}) {
     botIcon: "inbox",
     botColor: "sky",
     installUrl: null,
-    computerRequirement: "NONE",
+    computerRequirements: [],
     botConfig: {
       routines: [{ name: "Morning", type: "schedule", trigger: "0 8 * * *", triggerLabel: "Every day at 08:00", prompt: "Triage the inbox." }],
       skills: [],

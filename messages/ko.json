@@ -1163,7 +1163,7 @@
         "connectEveryoneHint": "선택한 봇에서 다른 모든 봇으로, 그리고 그 반대로 핸드오프를 추가합니다. 비서실장 같은 구성입니다.",
         "invalidCategory": "해당 카테고리가 더 이상 존재하지 않습니다",
         "invalidTags": "일부 태그가 더 이상 존재하지 않습니다",
-        "computerHint": "아이콘은 클라우드 컴퓨터나 내 컴퓨터가 필요한 봇을 표시합니다."
+        "computerHint": "아이콘은 클라우드 컴퓨터, 내 컴퓨터 또는 둘 다 필요한 봇을 표시합니다."
       },
       "openBot": "{bot} 세부 정보 보기",
       "botHint": "봇을 선택하면 하는 일을 보고 설치할 수 있습니다.",
@@ -1180,12 +1180,8 @@
       "cloud": "클라우드 컴퓨터 필요",
       "local": "내 컴퓨터 필요",
       "label": "컴퓨터",
-      "hint": "봇이 실행될 컴퓨터가 필요한가요? 봇에 작은 아이콘으로 표시됩니다.",
-      "none": "컴퓨터 없음",
-      "noneHint": "플랫폼에서만 실행됩니다.",
-      "cloudOption": "클라우드 컴퓨터",
+      "hint": "봇이 실행될 컴퓨터가 필요한가요? 하나, 둘 다 또는 아무것도 선택하지 않을 수 있습니다. 각각 봇에 작은 아이콘으로 표시됩니다.",
       "cloudHint": "자체 원격 컴퓨터, 데스크톱 또는 브라우저가 필요합니다.",
-      "localOption": "내 컴퓨터",
       "localHint": "내 기기, 파일 또는 앱에 대한 접근이 필요합니다."
     }
   },
@@ -2657,7 +2653,7 @@
     }
   },
   "apiDocs": {
-    "computerRequirementFilter": "<code>NONE</code>, <code>CLOUD</code> 컴퓨터 또는 사용자의 <code>LOCAL</code> 컴퓨터가 필요한 봇만",
-    "computerRequirementInput": "<code>NONE</code>(기본값), 봇이 자체 원격 컴퓨터, 데스크톱 또는 브라우저가 필요하면 <code>CLOUD</code>, 사용자의 기기, 파일 또는 앱이 필요하면 <code>LOCAL</code>"
+    "computerRequirementFilter": "<code>CLOUD</code> 컴퓨터 또는 사용자의 <code>LOCAL</code> 컴퓨터가 필요한 봇만(둘 다 필요한 봇은 어느 쪽에도 일치), 또는 컴퓨터가 필요 없는 봇은 <code>NONE</code>",
+    "computerRequirementsInput": "<code>CLOUD</code>(봇이 자체 원격 컴퓨터, 데스크톱 또는 브라우저가 필요함)와 <code>LOCAL</code>(사용자의 기기, 파일 또는 앱이 필요함) 중 하나 또는 둘 다를 담은 목록. 빈 목록은 컴퓨터가 필요 없다는 뜻입니다. 저장된 목록을 대체합니다"
   }
 }

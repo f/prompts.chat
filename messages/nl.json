@@ -1163,7 +1163,7 @@
         "connectEveryoneHint": "Voegt overdrachten toe van de gekozen bot naar alle andere bots en terug, zoals een stafchef.",
         "invalidCategory": "Die categorie bestaat niet meer",
         "invalidTags": "Sommige tags bestaan niet meer",
-        "computerHint": "Pictogrammen markeren bots die een cloudcomputer of je eigen computer nodig hebben."
+        "computerHint": "Pictogrammen markeren bots die een cloudcomputer, je eigen computer of allebei nodig hebben."
       },
       "openBot": "Details van {bot} tonen",
       "botHint": "Selecteer een bot om te zien wat hij doet en hem te installeren.",
@@ -1180,12 +1180,8 @@
       "cloud": "Heeft een cloudcomputer nodig",
       "local": "Heeft je computer nodig",
       "label": "Computer",
-      "hint": "Heeft de bot een computer nodig om op te draaien? Dit verschijnt als een klein pictogram bij de bot.",
-      "none": "Geen computer",
-      "noneHint": "Draait alleen op zijn platform.",
-      "cloudOption": "Cloudcomputer",
+      "hint": "Heeft de bot een computer nodig om op te draaien? Vink er één, beide of geen aan. Elk verschijnt als een klein pictogram bij de bot.",
       "cloudHint": "Heeft een eigen externe computer, desktop of browser nodig.",
-      "localOption": "Je computer",
       "localHint": "Heeft toegang nodig tot je eigen machine, bestanden of apps."
     }
   },
@@ -2660,7 +2656,7 @@
     }
   },
   "apiDocs": {
-    "computerRequirementFilter": "Alleen bots die <code>NONE</code>, een <code>CLOUD</code>-computer of de <code>LOCAL</code>-computer van de gebruiker nodig hebben",
-    "computerRequirementInput": "<code>NONE</code> (standaard), <code>CLOUD</code> als de bot een eigen externe computer, desktop of browser nodig heeft, of <code>LOCAL</code> als hij de machine, bestanden of apps van de gebruiker nodig heeft"
+    "computerRequirementFilter": "Alleen bots die een <code>CLOUD</code>-computer of de <code>LOCAL</code>-computer van de gebruiker nodig hebben (bots die beide nodig hebben komen bij elk overeen), of <code>NONE</code> voor bots die geen computer nodig hebben",
+    "computerRequirementsInput": "Een lijst met <code>CLOUD</code> (de bot heeft een eigen externe computer, desktop of browser nodig) en/of <code>LOCAL</code> (hij heeft de machine, bestanden of apps van de gebruiker nodig); een lege lijst betekent dat hij geen computer nodig heeft. Vervangt de opgeslagen lijst"
   }
 }

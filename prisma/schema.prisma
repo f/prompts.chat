@@ -142,7 +142,7 @@ model Prompt {
   botIcon             String? // BOT prompts only: a curated lucide icon name or an emoji, see src/lib/bots/schema.ts
   botColor            String? // BOT prompts only: a curated palette color name, see src/lib/bots/schema.ts
   installUrl          String? // BOT prompts only: one-click install link (e.g. Grok Bot template share URL)
-  computerRequirement BotComputerRequirement @default(NONE) // BOT prompts only: whether the bot needs a cloud computer or the user's own
+  computerRequirements BotComputerRequirement[] @default([]) // BOT prompts only: CLOUD and/or LOCAL, empty when the bot needs no computer
   botConfig           Json? // BOT prompts only: { routines, skills, connectors }, see src/lib/bots/schema.ts
 
   @@index([authorId])
@@ -533,8 +533,9 @@ enum BotPlatform {
   MUSE
 }
 
-/// What a bot needs to run besides chat
+/// A computer a bot needs to run besides chat; a bot stores a list of them in computerRequirements
 enum BotComputerRequirement {
+  /// Unused: an empty computerRequirements list means no computer. Kept because Postgres cannot drop an enum value in place.
   NONE
   /// Its own remote computer, desktop or browser
   CLOUD

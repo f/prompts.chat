@@ -1163,7 +1163,7 @@
         "connectEveryoneHint": "Adds handoffs from the chosen bot to every other bot and back, like a chief of staff.",
         "invalidCategory": "That category no longer exists",
         "invalidTags": "Some tags no longer exist",
-        "computerHint": "Icons mark bots that need a cloud computer or your own computer."
+        "computerHint": "Icons mark bots that need a cloud computer, your own computer, or both."
       },
       "openBot": "Show details of {bot}",
       "botHint": "Select a bot to see what it does and install it.",
@@ -1180,12 +1180,8 @@
       "cloud": "Needs a cloud computer",
       "local": "Needs your computer",
       "label": "Computer",
-      "hint": "Does the bot need a computer to run on? This shows as a small icon on the bot.",
-      "none": "No computer",
-      "noneHint": "Runs on its platform alone.",
-      "cloudOption": "Cloud computer",
+      "hint": "Does the bot need a computer to run on? Tick one, both or neither. Each shows as a small icon on the bot.",
       "cloudHint": "Needs its own remote computer, desktop or browser.",
-      "localOption": "Your computer",
       "localHint": "Needs access to your own machine, files or apps."
     }
   },
@@ -2673,7 +2669,7 @@
     }
   },
   "apiDocs": {
-    "computerRequirementFilter": "Only bots that need <code>NONE</code>, a <code>CLOUD</code> computer or the user's <code>LOCAL</code> computer",
-    "computerRequirementInput": "<code>NONE</code> (default), <code>CLOUD</code> when the bot needs its own remote computer, desktop or browser, or <code>LOCAL</code> when it needs the user's own machine, files or apps"
+    "computerRequirementFilter": "Only bots that need a <code>CLOUD</code> computer or the user's <code>LOCAL</code> computer (bots that need both match either), or <code>NONE</code> for bots that need no computer",
+    "computerRequirementsInput": "A list with any of <code>CLOUD</code> (the bot needs its own remote computer, desktop or browser) and <code>LOCAL</code> (it needs the user's own machine, files or apps); an empty list means it needs no computer. Replaces the stored list"
   }
 }

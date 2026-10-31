@@ -6,7 +6,7 @@ import { generatePromptEmbedding, findAndSaveRelatedPrompts } from "@/lib/ai/emb
 import { generatePromptSlug } from "@/lib/slug";
 import { checkPromptQuality } from "@/lib/ai/quality-check";
 import { isSimilarContent, normalizeContent } from "@/lib/similarity";
-import { BOT_PLATFORMS, EMPTY_BOT_CONFIG, botColorSchema, botComputerRequirementSchema, botConfigSchema, botIconSchema, botPairingsSchema, botPlatformsData, botPlatformsSchema, installUrlSchema } from "@/lib/bots/schema";
+import { BOT_PLATFORMS, EMPTY_BOT_CONFIG, botColorSchema, botComputerRequirementsSchema, botConfigSchema, botIconSchema, botPairingsSchema, botPlatformsData, botPlatformsSchema, installUrlSchema } from "@/lib/bots/schema";
 import { BotPairingError, buildPairingRows, findInvalidPairingTargets, replaceBotPairings } from "@/lib/bots/pairings";
 
 /**
@@ -53,7 +53,7 @@ export const promptCreateSchema = z.object({
   botPlatform: z.enum(BOT_PLATFORMS).optional(),
   botIcon: botIconSchema.nullish().or(z.literal("")),
   botColor: botColorSchema.nullish().or(z.literal("")),
-  computerRequirement: botComputerRequirementSchema.optional(),
+  computerRequirements: botComputerRequirementsSchema.optional(),
   installUrl: installUrlSchema.optional().or(z.literal("")),
   botConfig: botConfigSchema.optional(),
   /** "Better together with" links to other bots; admins only */
@@ -92,7 +92,7 @@ export const promptUpdateSchema = z.object({
   botPlatform: z.enum(BOT_PLATFORMS).optional(),
   botIcon: botIconSchema.nullish().or(z.literal("")),
   botColor: botColorSchema.nullish().or(z.literal("")),
-  computerRequirement: botComputerRequirementSchema.optional(),
+  computerRequirements: botComputerRequirementsSchema.optional(),
   installUrl: installUrlSchema.optional().or(z.literal("")).nullable(),
   botConfig: botConfigSchema.optional(),
   /** Replaces every "Better together with" link of the bot; admins only */
@@ -117,7 +117,7 @@ export async function createPrompt(user: PromptWriter, body: unknown) {
     return fail(400, "validation_error", "Invalid input", { details: parsed.error.issues });
   }
 
-  const { title, description, content, type, structuredFormat, categoryId, tagIds, contributorIds, isPrivate, mediaUrl, requiresMediaUpload, requiredMediaType, requiredMediaCount, bestWithModels, bestWithMCP, workflowLink, botPlatforms, botPlatform, botIcon, botColor, computerRequirement, installUrl, botConfig, pairings } = parsed.data;
+  const { title, description, content, type, structuredFormat, categoryId, tagIds, contributorIds, isPrivate, mediaUrl, requiresMediaUpload, requiredMediaType, requiredMediaCount, bestWithModels, bestWithMCP, workflowLink, botPlatforms, botPlatform, botIcon, botColor, computerRequirements, installUrl, botConfig, pairings } = parsed.data;
   const isBot = type === "BOT";
 
   if (pairings !== undefined) {
@@ -249,7 +249,7 @@ export async function createPrompt(user: PromptWriter, body: unknown) {
         ...botPlatformsData(botPlatforms ?? (botPlatform ? [botPlatform] : [])),
         botIcon: botIcon || null,
         botColor: botColor || null,
-        computerRequirement: computerRequirement ?? "NONE",
+        computerRequirements: computerRequirements ?? [],
         installUrl: installUrl || null,
         botConfig: botConfig ?? EMPTY_BOT_CONFIG,
       }),

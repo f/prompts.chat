@@ -114,7 +114,7 @@ export async function GET(request: NextRequest) {
           botPlatforms: true,
           botIcon: true,
           botColor: true,
-          computerRequirement: true,
+          computerRequirements: true,
           isPrivate: true,
           isUnlisted: true,
           isFeatured: true,

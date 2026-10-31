@@ -122,34 +122,56 @@ export function isBotColor(value: string): value is BotColor {
 }
 
 /**
- * What a bot needs to run besides chat: NONE, CLOUD (its own remote computer, desktop or browser)
- * or LOCAL (access to the user's own machine, files and apps)
+ * Computers a bot can need besides chat: CLOUD (its own remote computer, desktop or browser) and
+ * LOCAL (access to the user's own machine, files and apps). A bot stores a list of them; an empty
+ * list means it needs no computer. The database enum still holds an unused NONE value.
  */
-export const BOT_COMPUTER_REQUIREMENTS = ["NONE", "CLOUD", "LOCAL"] as const;
+export const BOT_COMPUTER_REQUIREMENTS = ["CLOUD", "LOCAL"] as const;
 export type BotComputerRequirement = (typeof BOT_COMPUTER_REQUIREMENTS)[number];
 export const botComputerRequirementSchema = z.enum(BOT_COMPUTER_REQUIREMENTS);
+/** Duplicates are dropped and the list is stored in BOT_COMPUTER_REQUIREMENTS order */
+export const botComputerRequirementsSchema = z
+  .array(botComputerRequirementSchema)
+  .max(10)
+  .transform(normalizeComputerRequirements);
 
 export function isBotComputerRequirement(value: unknown): value is BotComputerRequirement {
   return (BOT_COMPUTER_REQUIREMENTS as readonly unknown[]).includes(value);
 }
 
+/** Known requirements only, without duplicates, in BOT_COMPUTER_REQUIREMENTS order */
+export function normalizeComputerRequirements(values: readonly unknown[] | null | undefined): BotComputerRequirement[] {
+  return BOT_COMPUTER_REQUIREMENTS.filter((requirement) => values?.includes(requirement));
+}
+
+/** List filter: bots that need a computer (they may also need the other one), or bots that need none */
+export const BOT_COMPUTER_FILTERS = ["NONE", ...BOT_COMPUTER_REQUIREMENTS] as const;
+export type BotComputerFilter = (typeof BOT_COMPUTER_FILTERS)[number];
+
 /** "none", "cloud" or "local" in query strings */
-export function computerRequirementFromParam(param: string | null | undefined): BotComputerRequirement | undefined {
+export function computerFilterFromParam(param: string | null | undefined): BotComputerFilter | undefined {
   const value = param?.trim().toUpperCase();
-  return isBotComputerRequirement(value) ? value : undefined;
+  return (BOT_COMPUTER_FILTERS as readonly (string | undefined)[]).includes(value) ? (value as BotComputerFilter) : undefined;
 }
 
 /**
- * One sentence about the computer a bot needs, null when it needs none. "user" is written as the
+ * One sentence about the computers a bot needs, null when it needs none. "user" is written as the
  * user talking to their agent, for install prompts; "agent" describes it, for bot files.
  */
-export function computerRequirementText(requirement: BotComputerRequirement, voice: "user" | "agent" = "agent"): string | null {
-  if (requirement === "CLOUD") {
+export function computerRequirementText(requirements: readonly BotComputerRequirement[], voice: "user" | "agent" = "agent"): string | null {
+  const cloud = requirements.includes("CLOUD");
+  const local = requirements.includes("LOCAL");
+  if (cloud && local) {
+    return voice === "user"
+      ? "This bot needs two computers: a cloud computer, its own remote computer, desktop or browser to work in (set one up for it or ask me to connect one), and access to my own computer, its files and apps (ask me before connecting it)."
+      : "This bot needs two computers: a cloud computer, its own remote computer, desktop or browser to work in, and the user's computer, access to the user's own machine, files and apps.";
+  }
+  if (cloud) {
     return voice === "user"
       ? "This bot needs a cloud computer, its own remote computer, desktop or browser to work in: set one up for it or ask me to connect one."
       : "This bot needs a cloud computer: its own remote computer, desktop or browser to work in.";
   }
-  if (requirement === "LOCAL") {
+  if (local) {
     return voice === "user"
       ? "This bot needs access to my own computer, its files and apps: ask me before connecting it."
       : "This bot needs the user's computer: access to the user's own machine, files and apps.";

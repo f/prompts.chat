@@ -264,7 +264,7 @@ describe("GET /api/prompts/[id] for a bot", () => {
         botIcon: null,
         botColor: null,
         installUrl: null,
-        computerRequirement: "NONE",
+        computerRequirements: [],
         botConfig: null,
         isPrivate: false,
         isUnlisted: false,

@@ -113,7 +113,7 @@ export function botPairingsJson(pairings: BotPairingView[], baseUrl: string) {
 export function getBundleInstallPrompt(bots: BotView[], platform: BotPlatform, baseUrl: string): string {
   if (bots.length === 1) return getInstallPrompt(bots[0], platform, baseUrl);
   const list = bots
-    .map((bot, index) => `${index + 1}. "${bot.title}"${computerListMark(bot.computerRequirement)}: ${getBotUrls(bot, baseUrl).markdown}`)
+    .map((bot, index) => `${index + 1}. "${bot.title}"${computerListMark(bot.computerRequirements)}: ${getBotUrls(bot, baseUrl).markdown}`)
     .join("\n");
   return `Set up these ${bots.length} bots ${getInstallTarget(platform, bots.length)}. They are designed to work together, so install all of them:
 

@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { BotAvatar } from "@/components/bots/bot-avatar";
-import { BotComputerBadge, COMPUTER_REQUIREMENT_ICONS, COMPUTER_REQUIREMENT_LABELS } from "@/components/bots/bot-computer-badge";
+import { BotComputerBadges, COMPUTER_REQUIREMENT_ICONS, COMPUTER_REQUIREMENT_LABELS } from "@/components/bots/bot-computer-badge";
 import { useBotSearch, type BotSearchResult } from "@/components/bots/bot-pairing-picker";
 import { CategorySelect, type CategoryOption } from "@/components/prompts/category-select";
 import { TagPicker, type TagOption } from "@/components/prompts/tag-picker";
@@ -29,7 +29,7 @@ import {
   TEAM_TITLE_MAX_LENGTH,
   teamLinkIssues,
 } from "@/lib/bots/team-schema";
-import { isBotColor, isBotIconName, type BotColor, type BotComputerRequirement, type BotIconName } from "@/lib/bots/schema";
+import { isBotColor, isBotIconName, normalizeComputerRequirements, type BotColor, type BotComputerRequirement, type BotIconName } from "@/lib/bots/schema";
 import { getBotTeamUrl } from "@/lib/urls";
 import { cn } from "@/lib/utils";
 
@@ -38,7 +38,7 @@ export interface TeamEditorMember {
   title: string;
   icon: BotIconName | null;
   color: BotColor | null;
-  computerRequirement: BotComputerRequirement;
+  computerRequirements: BotComputerRequirement[];
   role: string;
   /** What this bot does in the team */
   description: string;
@@ -62,20 +62,33 @@ export interface TeamEditorValue {
 const EMPTY_TEAM: TeamEditorValue = { title: "", description: "", categoryId: undefined, tagIds: [], members: [], links: [] };
 const SEARCH_LIMIT = 8;
 
-/** The computer icon inside a search option, where a focusable tooltip trigger can't be nested */
-function ComputerMark({ requirement, label }: { requirement: Exclude<BotComputerRequirement, "NONE">; label: string }) {
-  const Icon = COMPUTER_REQUIREMENT_ICONS[requirement];
+/** Computer icons inside a search option, where a focusable tooltip trigger can't be nested */
+function ComputerMarks({ requirements }: { requirements: BotComputerRequirement[] | undefined }) {
+  const t = useTranslations("bots.computer");
+  const list = normalizeComputerRequirements(requirements);
+  if (list.length === 0) return null;
   return (
-    <span className="ml-auto inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border bg-background text-muted-foreground" title={label}>
-      <Icon className="h-3 w-3" aria-hidden="true" />
-      <span className="sr-only">{label}</span>
+    <span className="ml-auto flex shrink-0 items-center gap-1">
+      {list.map((requirement) => {
+        const Icon = COMPUTER_REQUIREMENT_ICONS[requirement];
+        const label = t(COMPUTER_REQUIREMENT_LABELS[requirement]);
+        return (
+          <span
+            key={requirement}
+            className="inline-flex h-5 w-5 items-center justify-center rounded-md border bg-background text-muted-foreground"
+            title={label}
+          >
+            <Icon className="h-3 w-3" aria-hidden="true" />
+            <span className="sr-only">{label}</span>
+          </span>
+        );
+      })}
     </span>
   );
 }
 
 function TeamMemberPicker({ value, onChange }: { value: TeamEditorMember[]; onChange: (value: TeamEditorMember[]) => void }) {
   const t = useTranslations("bots.teams.form");
-  const tComputer = useTranslations("bots.computer");
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -95,7 +108,7 @@ function TeamMemberPicker({ value, onChange }: { value: TeamEditorMember[]; onCh
         title: bot.name,
         icon: bot.icon && isBotIconName(bot.icon) ? bot.icon : null,
         color: bot.color && isBotColor(bot.color) ? bot.color : null,
-        computerRequirement: bot.computerRequirement ?? "NONE",
+        computerRequirements: normalizeComputerRequirements(bot.computerRequirements),
         role: "",
         description: "",
       },
@@ -113,7 +126,7 @@ function TeamMemberPicker({ value, onChange }: { value: TeamEditorMember[]; onCh
               <div className="flex min-w-0 items-center gap-2">
                 <BotAvatar icon={member.icon} color={member.color} size="sm" />
                 <span className="min-w-0 truncate text-sm font-medium" title={member.title}>{member.title}</span>
-                <BotComputerBadge requirement={member.computerRequirement} />
+                <BotComputerBadges requirements={member.computerRequirements} />
                 <span className="flex-1" />
                 <Button
                   type="button"
@@ -194,9 +207,7 @@ function TeamMemberPicker({ value, onChange }: { value: TeamEditorMember[]; onCh
               >
                 <BotAvatar icon={bot.icon} color={bot.color} size="sm" />
                 <span className="min-w-0 truncate">{bot.name}</span>
-                {bot.computerRequirement && bot.computerRequirement !== "NONE" && (
-                  <ComputerMark label={tComputer(COMPUTER_REQUIREMENT_LABELS[bot.computerRequirement])} requirement={bot.computerRequirement} />
-                )}
+                <ComputerMarks requirements={bot.computerRequirements} />
               </button>
             ))}
             {!loading && options.length === 0 && <p className="p-3 text-sm text-muted-foreground">{t("noResults")}</p>}
