@@ -167,6 +167,12 @@ function TeamMemberPicker({ value, onChange }: { value: TeamEditorMember[]; onCh
           }}
           onFocus={() => setOpen(true)}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
+          onKeyDown={(event) => {
+            // Enter adds the first result instead of submitting the team form
+            if (event.key !== "Enter") return;
+            event.preventDefault();
+            if (query && options[0]) add(options[0]);
+          }}
           className="pl-9"
           autoComplete="off"
           spellCheck={false}
