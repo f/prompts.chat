@@ -4,18 +4,19 @@
  * Every group of bots connected through pairings becomes one team: its members are the group's
  * live bots, each pairing becomes a handoff from the older bot to the newer one labelled with the
  * pairing note, the title is built from the bot names, and the team belongs to the author who owns
- * most of its bots. Pairings are left untouched. Groups whose exact member set already exists as a
+ * most of its bots (or the owner of its private bots, since a team may only include its own author's
+ * private bots). Pairings are left untouched. Groups whose exact member set already exists as a
  * team are skipped, so the script can be run again safely.
  *
  * Usage:
  *   npx tsx scripts/convert-pairings-to-teams.ts                  # dry run: print the teams it would create
  *   npx tsx scripts/convert-pairings-to-teams.ts --apply          # create them
- *   npx tsx scripts/convert-pairings-to-teams.ts --max-members 8  # skip groups larger than 8 bots
+ *   npx tsx scripts/convert-pairings-to-teams.ts --max-members 8  # skip groups larger than 8 bots (2 to 12)
  */
 
 import { PrismaClient } from "@prisma/client";
-import { teamsFromPairings, type ConversionBot } from "../src/lib/bots/team-conversion";
-import { MAX_TEAM_MEMBERS } from "../src/lib/bots/team-schema";
+import { parseMaxMembers, teamsFromPairings, type ConversionBot, type SkippedGroup } from "../src/lib/bots/team-conversion";
+import { MAX_TEAM_LINKS, MAX_TEAM_MEMBERS } from "../src/lib/bots/team-schema";
 import { slugify } from "../src/lib/slug";
 
 const prisma = new PrismaClient();
@@ -23,10 +24,7 @@ const prisma = new PrismaClient();
 function parseArgs(argv: string[]) {
   const apply = argv.includes("--apply");
   const maxIndex = argv.indexOf("--max-members");
-  const maxMembers = maxIndex === -1 ? MAX_TEAM_MEMBERS : Number.parseInt(argv[maxIndex + 1] ?? "", 10);
-  if (!Number.isInteger(maxMembers) || maxMembers < 2) {
-    throw new Error("--max-members must be a whole number of at least 2");
-  }
+  const maxMembers = maxIndex === -1 ? MAX_TEAM_MEMBERS : parseMaxMembers(argv[maxIndex + 1]);
   return { apply, maxMembers };
 }
 
@@ -50,7 +48,7 @@ async function main() {
   const botIds = [...new Set(pairings.flatMap((pairing) => [pairing.fromId, pairing.toId]))];
   const botRecords = await prisma.prompt.findMany({
     where: { id: { in: botIds }, type: "BOT", deletedAt: null },
-    select: { id: true, title: true, authorId: true, createdAt: true },
+    select: { id: true, title: true, authorId: true, createdAt: true, isPrivate: true },
   });
   const bots = new Map<string, ConversionBot>(botRecords.map((bot) => [bot.id, bot]));
 
@@ -63,7 +61,13 @@ async function main() {
   console.log(`${pairings.length} pairings between ${bots.size} live bots`);
   console.log(`${teams.length} teams to create, ${skipped.length} groups skipped`);
   for (const group of skipped) {
-    const reason = group.reason === "exists" ? "a team with these bots exists" : `more than ${maxMembers} bots`;
+    const reasons: Record<SkippedGroup["reason"], string> = {
+      exists: "a team with these bots exists",
+      too_large: `more than ${maxMembers} bots`,
+      too_many_links: `more than ${MAX_TEAM_LINKS} handoffs`,
+      private_bots: "private bots of more than one author",
+    };
+    const reason = reasons[group.reason];
     console.log(`  skipped (${reason}): ${group.botIds.map((id) => bots.get(id)?.title ?? id).join(", ")}`);
   }
 

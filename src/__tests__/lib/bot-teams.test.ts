@@ -16,7 +16,7 @@ import {
   uniqueTeamSlug,
   upsertOwnTeam,
 } from "@/lib/bots/teams";
-import { pairingGroups, teamTitleFromBots, teamsFromPairings, type ConversionBot } from "@/lib/bots/team-conversion";
+import { pairingGroups, parseMaxMembers, teamTitleFromBots, teamsFromPairings, type ConversionBot } from "@/lib/bots/team-conversion";
 import {
   TEAM_NODE_RADIUS,
   cellCenter,
@@ -368,6 +368,36 @@ describe("converting pairings to teams", () => {
       { botIds: ["a", "b", "c"], reason: "too_large" },
       { botIds: ["d", "e"], reason: "exists" },
     ]);
+  });
+
+  it("gives groups with private bots to their owner and skips groups mixing authors' private bots", () => {
+    const withPrivate = new Map(bots);
+    withPrivate.set("c", { ...bot("c", 3, "u2"), isPrivate: true });
+    expect(teamsFromPairings(pairings, withPrivate).teams[0]).toMatchObject({ title: "A, B & C", authorId: "u2" });
+
+    withPrivate.set("a", { ...bot("a", 1), isPrivate: true });
+    const { teams, skipped } = teamsFromPairings(pairings, withPrivate);
+    expect(teams.map((team) => team.title)).toEqual(["D & E"]);
+    expect(skipped).toEqual([{ botIds: ["a", "b", "c"], reason: "private_bots" }]);
+  });
+
+  it("skips groups with more handoffs than a team may have", () => {
+    const many = new Map(Array.from({ length: 10 }, (_, i) => bot(`m${i}`, 1)).map((b) => [b.id, b]));
+    const ids = [...many.keys()];
+    const allPairs = ids.flatMap((fromId, i) => ids.slice(i + 1).map((toId) => ({ fromId, toId, note: null })));
+    expect(allPairs.length).toBeGreaterThan(40);
+    const { teams, skipped } = teamsFromPairings(allPairs, many);
+    expect(teams).toEqual([]);
+    expect(skipped).toEqual([{ botIds: expect.any(Array), reason: "too_many_links" }]);
+    expect(teamsFromPairings(allPairs.slice(0, 40), many).teams).toHaveLength(1);
+  });
+
+  it("only accepts a whole --max-members operand within the team size limits", () => {
+    expect(parseMaxMembers("2")).toBe(2);
+    expect(parseMaxMembers("12")).toBe(12);
+    for (const value of [undefined, "", "1", "13", "8abc", "8.5", "-3", "1e1", " 8"]) {
+      expect(() => parseMaxMembers(value)).toThrow(/--max-members/);
+    }
   });
 });
 

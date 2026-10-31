@@ -1,4 +1,4 @@
-import { MAX_TEAM_MEMBERS, MIN_TEAM_MEMBERS, TEAM_LINK_LABEL_MAX_LENGTH, TEAM_TITLE_MAX_LENGTH, type BotTeamInput } from "./team-schema";
+import { MAX_TEAM_LINKS, MAX_TEAM_MEMBERS, MIN_TEAM_MEMBERS, TEAM_LINK_LABEL_MAX_LENGTH, TEAM_TITLE_MAX_LENGTH, type BotTeamInput } from "./team-schema";
 
 /**
  * Turns "better together" pairings into initial bot teams: every group of bots connected
@@ -16,6 +16,7 @@ export interface ConversionBot {
   title: string;
   authorId: string;
   createdAt: Date;
+  isPrivate?: boolean;
 }
 
 export interface ConvertedTeam extends BotTeamInput {
@@ -24,7 +25,7 @@ export interface ConvertedTeam extends BotTeamInput {
 
 export interface SkippedGroup {
   botIds: string[];
-  reason: "exists" | "too_large";
+  reason: "exists" | "too_large" | "too_many_links" | "private_bots";
 }
 
 function byAge(a: ConversionBot, b: ConversionBot): number {
@@ -74,8 +75,15 @@ export function teamTitleFromBots(titles: string[]): string {
   return title.length > TEAM_TITLE_MAX_LENGTH ? `${title.slice(0, TEAM_TITLE_MAX_LENGTH - 1).trimEnd()}…` : title;
 }
 
-/** The author who owns most of the group's bots; ties go to the author of the older bot */
-function groupAuthor(group: ConversionBot[]): string {
+/**
+ * The author who owns most of the group's bots; ties go to the author of the older bot. A team may
+ * only include private bots of its own author, so private bots pin the author, and private bots of
+ * more than one author leave the group without one (null).
+ */
+function groupAuthor(group: ConversionBot[]): string | null {
+  const privateAuthors = new Set(group.filter((bot) => bot.isPrivate).map((bot) => bot.authorId));
+  if (privateAuthors.size > 1) return null;
+  if (privateAuthors.size === 1) return [...privateAuthors][0];
   const counts = new Map<string, number>();
   for (const bot of group) counts.set(bot.authorId, (counts.get(bot.authorId) ?? 0) + 1);
   let best = group[0].authorId;
@@ -89,10 +97,20 @@ function setKey(ids: string[]): string {
   return [...ids].sort().join(",");
 }
 
+/** The --max-members operand: a whole number within the team size limits */
+export function parseMaxMembers(value: string | undefined): number {
+  const maxMembers = value !== undefined && /^\d+$/.test(value) ? Number(value) : Number.NaN;
+  if (!Number.isSafeInteger(maxMembers) || maxMembers < MIN_TEAM_MEMBERS || maxMembers > MAX_TEAM_MEMBERS) {
+    throw new Error(`--max-members must be a whole number from ${MIN_TEAM_MEMBERS} to ${MAX_TEAM_MEMBERS}`);
+  }
+  return maxMembers;
+}
+
 /**
  * One team per group of paired bots. Pairings have no direction, so each becomes a handoff from
  * the older bot to the newer one, labelled with the pairing's note. Groups matching the members
- * of an existing team, or larger than a team may be, are skipped.
+ * of an existing team, larger than a team may be, with more handoffs than a team may have, or with
+ * private bots of more than one author are skipped.
  */
 export function teamsFromPairings(
   pairings: ConversionPairing[],
@@ -115,6 +133,12 @@ export function teamsFromPairings(
       continue;
     }
 
+    const authorId = groupAuthor(group);
+    if (authorId === null) {
+      skipped.push({ botIds: ids, reason: "private_bots" });
+      continue;
+    }
+
     const members = new Set(ids);
     const order = new Map(ids.map((id, index) => [id, index]));
     const links = pairings
@@ -124,13 +148,17 @@ export function teamsFromPairings(
         return { fromBotId: older.id, toBotId: newer.id, label: (pairing.note ?? "").trim().slice(0, TEAM_LINK_LABEL_MAX_LENGTH) };
       })
       .sort((a, b) => order.get(a.fromBotId)! - order.get(b.fromBotId)! || order.get(a.toBotId)! - order.get(b.toBotId)!);
+    if (links.length > MAX_TEAM_LINKS) {
+      skipped.push({ botIds: ids, reason: "too_many_links" });
+      continue;
+    }
 
     teams.push({
       title: teamTitleFromBots(group.map((bot) => bot.title)),
       description: null,
       categoryId: null,
       tagIds: [],
-      authorId: groupAuthor(group),
+      authorId,
       members: ids.map((botId) => ({ botId, role: null, description: null })),
       links,
     });
