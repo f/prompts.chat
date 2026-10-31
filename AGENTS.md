@@ -239,10 +239,22 @@ OPENAI_API_KEY=         # For AI-powered semantic search
 
 ## Testing
 
-Currently no automated tests. When implementing:
+Run `npm test` (Vitest). When adding tests:
 - Place tests adjacent to source files or in `__tests__/` directories
 - Use descriptive test names
 - Mock external services (database, OAuth)
+
+## Cursor Cloud specific instructions
+
+The Cloud Agent image supplies Node.js 22. This app requires Node.js 24 (`engines` in `package.json`). The environment installs Node.js 24.22.2 under `/usr/local/lib/nodejs` and puts `node`, `npm`, and `npx` first on `PATH`.
+
+PostgreSQL 16 is installed from Ubuntu packages. `policy-rc.d` rejects `service postgresql`, so the boot script starts the cluster with `pg_ctlcluster`. The local role, password, and database are `prompts` / `prompts` / `prompts`, matching `compose.yml`.
+
+On boot, if `.env` is missing, it is created with `DATABASE_URL` and `DIRECT_URL` aimed at `127.0.0.1:5432/prompts`, a generated `AUTH_SECRET`, and `PCHAT_AUTH_PROVIDERS=credentials` plus `PCHAT_ALLOW_REGISTRATION=true`. That local-only switch lets an agent register and sign in without GitHub, Google, or Apple OAuth apps. The committed `prompts.config.ts` is unchanged. Do not commit `.env`.
+
+Boot then runs `npx prisma migrate deploy` and `npm run dev` on port 3000 when `http://127.0.0.1:3000/api/health` is not already healthy. Check that URL before starting another server.
+
+`npm run db:seed` downloads the full public catalog from prompts.chat and is optional. `npm run lint` is the lint command. `npx tsc --noEmit` currently fails on existing test-file type errors; `npm test` is the check that exercises the suite.
 
 ## Common Tasks
 
