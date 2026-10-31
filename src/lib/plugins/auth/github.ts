@@ -1,15 +1,22 @@
 import GitHub from "next-auth/providers/github";
 import type { AuthPlugin } from "../types";
+import { requireAuthEnv } from "./env";
 
 export const githubPlugin: AuthPlugin = {
   id: "github",
   name: "GitHub",
-  getProvider: () =>
-    GitHub({
+  getProvider: () => {
+    const env = requireAuthEnv("GitHub", {
+      GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
+      GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
+    });
+    if (!env) return null;
+
+    return GitHub({
       // GitHub includes this issuer in OAuth authorization responses.
       issuer: "https://github.com/login/oauth",
-      clientId: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+      clientId: env.GITHUB_CLIENT_ID,
+      clientSecret: env.GITHUB_CLIENT_SECRET,
       profile(profile) {
         return {
           id: profile.id.toString(),
@@ -20,5 +27,6 @@ export const githubPlugin: AuthPlugin = {
           githubUsername: profile.login, // Immutable GitHub username for contributor attribution
         };
       },
-    }),
+    });
+  },
 };
