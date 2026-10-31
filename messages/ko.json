@@ -1163,14 +1163,18 @@
         "handoffDuplicate": "이 핸드오프는 이미 목록에 있습니다.",
         "handoffSelf": "서로 다른 봇 두 개를 고르세요.",
         "connectEveryone": "봇을 모두와 연결",
-        "connectEveryoneHint": "선택한 봇에서 다른 모든 봇으로, 그리고 그 반대로 핸드오프를 추가합니다. 비서실장 같은 구성입니다."
+        "connectEveryoneHint": "선택한 봇에서 다른 모든 봇으로, 그리고 그 반대로 핸드오프를 추가합니다. 비서실장 같은 구성입니다.",
+        "invalidCategory": "해당 카테고리가 더 이상 존재하지 않습니다",
+        "invalidTags": "일부 태그가 더 이상 존재하지 않습니다",
+        "computerHint": "아이콘은 클라우드 컴퓨터나 내 컴퓨터가 필요한 봇을 표시합니다."
       },
       "openBot": "{bot} 세부 정보 보기",
       "botHint": "봇을 선택하면 하는 일을 보고 설치할 수 있습니다.",
       "inTeam": "{team}에서",
       "installBot": "설치",
       "viewBot": "봇 페이지 열기",
-      "botLoadError": "이 봇을 불러올 수 없습니다."
+      "botLoadError": "이 봇을 불러올 수 없습니다.",
+      "backToTeam": "팀으로 돌아가기"
     },
     "computer": {
       "cloud": "클라우드 컴퓨터 필요",

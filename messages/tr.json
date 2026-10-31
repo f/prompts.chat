@@ -1163,14 +1163,18 @@
         "handoffDuplicate": "Bu devir zaten listede.",
         "handoffSelf": "İki farklı bot seç.",
         "connectEveryone": "Bir botu herkese bağla",
-        "connectEveryoneHint": "Seçilen bottan diğer tüm botlara ve geri devirler ekler; bir genel koordinatör gibi."
+        "connectEveryoneHint": "Seçilen bottan diğer tüm botlara ve geri devirler ekler; bir genel koordinatör gibi.",
+        "invalidCategory": "Bu kategori artık mevcut değil",
+        "invalidTags": "Bazı etiketler artık mevcut değil",
+        "computerHint": "Simgeler, bulut bilgisayar veya kendi bilgisayarınızı gerektiren botları gösterir."
       },
       "openBot": "{bot} ayrıntılarını göster",
       "botHint": "Ne yaptığını görmek ve kurmak için bir bot seçin.",
       "inTeam": "{team} içinde",
       "installBot": "Kur",
       "viewBot": "Bot sayfasını aç",
-      "botLoadError": "Bu bot yüklenemedi."
+      "botLoadError": "Bu bot yüklenemedi.",
+      "backToTeam": "Takıma dön"
     },
     "computer": {
       "cloud": "Bulut bilgisayarı gerektirir",

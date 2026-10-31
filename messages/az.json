@@ -1163,14 +1163,18 @@
         "handoffDuplicate": "Bu ötürmə artıq siyahıdadır.",
         "handoffSelf": "İki fərqli bot seç.",
         "connectEveryone": "Botu hamı ilə birləşdir",
-        "connectEveryoneHint": "Seçilmiş botdan bütün digər botlara və geri ötürmələr əlavə edir, aparat rəhbəri kimi."
+        "connectEveryoneHint": "Seçilmiş botdan bütün digər botlara və geri ötürmələr əlavə edir, aparat rəhbəri kimi.",
+        "invalidCategory": "Bu kateqoriya artıq mövcud deyil",
+        "invalidTags": "Bəzi teqlər artıq mövcud deyil",
+        "computerHint": "İkonlar bulud kompüteri və ya öz kompüterinizi tələb edən botları göstərir."
       },
       "openBot": "{bot} haqqında ətraflı göstər",
       "botHint": "Nə etdiyini görmək və quraşdırmaq üçün bir bot seçin.",
       "inTeam": "{team} daxilində",
       "installBot": "Quraşdır",
       "viewBot": "Bot səhifəsini aç",
-      "botLoadError": "Bu bot yüklənə bilmədi."
+      "botLoadError": "Bu bot yüklənə bilmədi.",
+      "backToTeam": "Komandaya qayıt"
     },
     "computer": {
       "cloud": "Bulud kompüteri tələb edir",

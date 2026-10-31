@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { ArrowLeft, ArrowRight, Star, Users, Workflow } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { BotBundleInstall } from "@/components/bots/bot-bundle-install";
 import { BotCard } from "@/components/bots/bot-card";
 import { BotAvatar } from "@/components/bots/bot-avatar";
@@ -62,22 +63,7 @@ export default async function BotTeamPage({ params }: BotTeamPageProps) {
           {t("backToTeams")}
         </Link>
         {canEditTeam(team, viewer) && (
-          <BotTeamActions
-            team={{
-              slug: team.slug,
-              title: team.title,
-              description: team.description ?? "",
-              members: team.members.map(({ bot, role, description }) => ({
-                botId: bot.id,
-                title: bot.title,
-                icon: bot.icon,
-                color: bot.color,
-                role: role ?? "",
-                description: description ?? "",
-              })),
-              links: team.links,
-            }}
-          />
+          <BotTeamActions team={{ slug: team.slug }} />
         )}
       </div>
 
@@ -90,6 +76,30 @@ export default async function BotTeamPage({ params }: BotTeamPageProps) {
           {team.isFeatured && <Star className="h-4 w-4 shrink-0 fill-yellow-500 text-yellow-500" aria-label={t("featured")} />}
         </div>
         {team.description && <TeamMarkdown className="leading-relaxed">{team.description}</TeamMarkdown>}
+        {(team.category || team.tags.length > 0) && (
+          <div className="flex flex-wrap items-center gap-2">
+            {team.category && (
+              <Link href={`/bots/teams?category=${team.category.slug}`} className="max-w-full">
+                <Badge variant="outline" className="max-w-full whitespace-normal wrap-anywhere">
+                  {team.category.parent && `${team.category.parent.name} › `}
+                  {team.category.name}
+                </Badge>
+              </Link>
+            )}
+            {team.category && team.tags.length > 0 && <span className="text-muted-foreground">•</span>}
+            {team.tags.map((tag) => (
+              <Link key={tag.id} href={`/bots/teams?tag=${tag.slug}`} className="max-w-full">
+                <Badge
+                  variant="secondary"
+                  className="max-w-full whitespace-normal wrap-anywhere"
+                  style={{ backgroundColor: tag.color + "20", color: tag.color }}
+                >
+                  {tag.name}
+                </Badge>
+              </Link>
+            ))}
+          </div>
+        )}
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Link
             href={`/@${team.author.username}`}

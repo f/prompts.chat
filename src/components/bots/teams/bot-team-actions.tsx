@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Loader2, Pencil, Trash2 } from "lucide-react";
@@ -17,10 +18,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { BotTeamEditor, type TeamEditorValue } from "@/components/bots/teams/bot-team-editor";
+import { getBotTeamEditUrl } from "@/lib/urls";
 
 /** Edit and delete buttons for a team's owner and admins */
-export function BotTeamActions({ team }: { team: TeamEditorValue & { slug: string } }) {
+export function BotTeamActions({ team }: { team: { slug: string } }) {
   const t = useTranslations("bots.teams");
   const tCommon = useTranslations("common");
   const router = useRouter();
@@ -46,15 +47,12 @@ export function BotTeamActions({ team }: { team: TeamEditorValue & { slug: strin
 
   return (
     <div className="flex items-center gap-2">
-      <BotTeamEditor
-        team={team}
-        trigger={
-          <Button size="sm" variant="outline" className="h-8 text-xs">
-            <Pencil className="h-3.5 w-3.5 mr-1" />
-            {t("edit")}
-          </Button>
-        }
-      />
+      <Button size="sm" variant="outline" className="h-8 text-xs" asChild>
+        <Link href={getBotTeamEditUrl(team.slug)}>
+          <Pencil className="h-3.5 w-3.5 mr-1" />
+          {t("edit")}
+        </Link>
+      </Button>
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button size="sm" variant="outline" className="h-8 text-xs text-destructive hover:text-destructive">

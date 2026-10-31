@@ -21,6 +21,10 @@ export function getBotTeamUrl(slug: string): string {
   return `/bots/teams/${slug}`;
 }
 
+export function getBotTeamEditUrl(slug: string): string {
+  return `${getBotTeamUrl(slug)}/edit`;
+}
+
 /**
  * Generates edit URL for a prompt
  */

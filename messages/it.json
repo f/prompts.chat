@@ -1163,14 +1163,18 @@
         "handoffDuplicate": "Questo passaggio è già presente.",
         "handoffSelf": "Scegli due bot diversi.",
         "connectEveryone": "Collega un bot a tutti",
-        "connectEveryoneHint": "Aggiunge passaggi dal bot scelto a tutti gli altri bot e ritorno, come un capo di gabinetto."
+        "connectEveryoneHint": "Aggiunge passaggi dal bot scelto a tutti gli altri bot e ritorno, come un capo di gabinetto.",
+        "invalidCategory": "Questa categoria non esiste più",
+        "invalidTags": "Alcuni tag non esistono più",
+        "computerHint": "Le icone indicano i bot che richiedono un computer cloud o il tuo computer."
       },
       "openBot": "Mostra i dettagli di {bot}",
       "botHint": "Seleziona un bot per vedere cosa fa e installarlo.",
       "inTeam": "In {team}",
       "installBot": "Installa",
       "viewBot": "Apri la pagina del bot",
-      "botLoadError": "Impossibile caricare questo bot."
+      "botLoadError": "Impossibile caricare questo bot.",
+      "backToTeam": "Torna al team"
     },
     "computer": {
       "cloud": "Richiede un computer cloud",

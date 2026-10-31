@@ -1163,14 +1163,18 @@
         "handoffDuplicate": "Este traspaso ya está en la lista.",
         "handoffSelf": "Elige dos bots distintos.",
         "connectEveryone": "Conectar un bot con todos",
-        "connectEveryoneHint": "Añade traspasos del bot elegido a todos los demás bots y de vuelta, como un jefe de gabinete."
+        "connectEveryoneHint": "Añade traspasos del bot elegido a todos los demás bots y de vuelta, como un jefe de gabinete.",
+        "invalidCategory": "Esa categoría ya no existe",
+        "invalidTags": "Algunas etiquetas ya no existen",
+        "computerHint": "Los iconos marcan los bots que necesitan un ordenador en la nube o tu propio ordenador."
       },
       "openBot": "Ver detalles de {bot}",
       "botHint": "Selecciona un bot para ver qué hace e instalarlo.",
       "inTeam": "En {team}",
       "installBot": "Instalar",
       "viewBot": "Abrir página del bot",
-      "botLoadError": "No se pudo cargar este bot."
+      "botLoadError": "No se pudo cargar este bot.",
+      "backToTeam": "Volver al equipo"
     },
     "computer": {
       "cloud": "Necesita un ordenador en la nube",

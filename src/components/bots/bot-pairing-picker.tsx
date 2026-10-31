@@ -12,6 +12,7 @@ import {
   isBotColor,
   isBotIconName,
   type BotColor,
+  type BotComputerRequirement,
   type BotIconName,
 } from "@/lib/bots/schema";
 
@@ -28,6 +29,7 @@ export interface BotSearchResult {
   name: string;
   icon: string | null;
   color: string | null;
+  computerRequirement?: BotComputerRequirement;
 }
 
 /** Public bots matching the query on /api/bots, debounced; `extra` widens the page so filtering out picked bots still fills it */

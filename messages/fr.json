@@ -1163,14 +1163,18 @@
         "handoffDuplicate": "Cette transmission figure déjà dans la liste.",
         "handoffSelf": "Choisissez deux bots différents.",
         "connectEveryone": "Relier un bot à tous",
-        "connectEveryoneHint": "Ajoute des transmissions du bot choisi vers tous les autres bots et retour, comme un chef de cabinet."
+        "connectEveryoneHint": "Ajoute des transmissions du bot choisi vers tous les autres bots et retour, comme un chef de cabinet.",
+        "invalidCategory": "Cette catégorie n'existe plus",
+        "invalidTags": "Certains tags n'existent plus",
+        "computerHint": "Les icônes signalent les bots qui ont besoin d'un ordinateur cloud ou de votre propre ordinateur."
       },
       "openBot": "Afficher les détails de {bot}",
       "botHint": "Sélectionnez un bot pour voir ce qu'il fait et l'installer.",
       "inTeam": "Dans {team}",
       "installBot": "Installer",
       "viewBot": "Ouvrir la page du bot",
-      "botLoadError": "Impossible de charger ce bot."
+      "botLoadError": "Impossible de charger ce bot.",
+      "backToTeam": "Retour à l'équipe"
     },
     "computer": {
       "cloud": "Nécessite un ordinateur cloud",

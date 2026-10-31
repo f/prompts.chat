@@ -1163,14 +1163,18 @@
         "handoffDuplicate": "This handoff is already listed.",
         "handoffSelf": "Pick two different bots.",
         "connectEveryone": "Connect a bot to everyone",
-        "connectEveryoneHint": "Adds handoffs from the chosen bot to every other bot and back, like a chief of staff."
+        "connectEveryoneHint": "Adds handoffs from the chosen bot to every other bot and back, like a chief of staff.",
+        "invalidCategory": "That category no longer exists",
+        "invalidTags": "Some tags no longer exist",
+        "computerHint": "Icons mark bots that need a cloud computer or your own computer."
       },
       "openBot": "Show details of {bot}",
       "botHint": "Select a bot to see what it does and install it.",
       "inTeam": "In {team}",
       "installBot": "Install",
       "viewBot": "Open bot page",
-      "botLoadError": "This bot could not be loaded."
+      "botLoadError": "This bot could not be loaded.",
+      "backToTeam": "Back to team"
     },
     "computer": {
       "cloud": "Needs a cloud computer",

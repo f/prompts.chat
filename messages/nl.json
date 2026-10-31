@@ -1163,14 +1163,18 @@
         "handoffDuplicate": "Deze overdracht staat al in de lijst.",
         "handoffSelf": "Kies twee verschillende bots.",
         "connectEveryone": "Bot met iedereen verbinden",
-        "connectEveryoneHint": "Voegt overdrachten toe van de gekozen bot naar alle andere bots en terug, zoals een stafchef."
+        "connectEveryoneHint": "Voegt overdrachten toe van de gekozen bot naar alle andere bots en terug, zoals een stafchef.",
+        "invalidCategory": "Die categorie bestaat niet meer",
+        "invalidTags": "Sommige tags bestaan niet meer",
+        "computerHint": "Pictogrammen markeren bots die een cloudcomputer of je eigen computer nodig hebben."
       },
       "openBot": "Details van {bot} tonen",
       "botHint": "Selecteer een bot om te zien wat hij doet en hem te installeren.",
       "inTeam": "In {team}",
       "installBot": "Installeren",
       "viewBot": "Botpagina openen",
-      "botLoadError": "Deze bot kon niet worden geladen."
+      "botLoadError": "Deze bot kon niet worden geladen.",
+      "backToTeam": "Terug naar team"
     },
     "computer": {
       "cloud": "Heeft een cloudcomputer nodig",

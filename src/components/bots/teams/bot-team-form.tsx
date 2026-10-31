@@ -1,23 +1,26 @@
 "use client";
 
-import { useRef, useState, type ReactNode } from "react";
-import Link from "next/link";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ArrowLeftRight, ArrowRight, ChevronDown, Loader2, Plus, Search, Trash2, Users } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { ArrowLeftRight, ArrowRight, ChevronDown, Loader2, Plus, Search, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { BotAvatar } from "@/components/bots/bot-avatar";
+import { BotComputerBadge, COMPUTER_REQUIREMENT_ICONS, COMPUTER_REQUIREMENT_LABELS } from "@/components/bots/bot-computer-badge";
 import { useBotSearch, type BotSearchResult } from "@/components/bots/bot-pairing-picker";
+import { CategorySelect, type CategoryOption } from "@/components/prompts/category-select";
+import { TagPicker, type TagOption } from "@/components/prompts/tag-picker";
 import {
   MAX_TEAM_LINKS,
   MAX_TEAM_MEMBERS,
+  MAX_TEAM_TAGS,
   MIN_TEAM_MEMBERS,
   TEAM_DESCRIPTION_MAX_LENGTH,
   TEAM_LINK_LABEL_MAX_LENGTH,
@@ -26,7 +29,7 @@ import {
   TEAM_TITLE_MAX_LENGTH,
   teamLinkIssues,
 } from "@/lib/bots/team-schema";
-import { isBotColor, isBotIconName, type BotColor, type BotIconName } from "@/lib/bots/schema";
+import { isBotColor, isBotIconName, type BotColor, type BotComputerRequirement, type BotIconName } from "@/lib/bots/schema";
 import { getBotTeamUrl } from "@/lib/urls";
 import { cn } from "@/lib/utils";
 
@@ -35,6 +38,7 @@ export interface TeamEditorMember {
   title: string;
   icon: BotIconName | null;
   color: BotColor | null;
+  computerRequirement: BotComputerRequirement;
   role: string;
   /** What this bot does in the team */
   description: string;
@@ -49,15 +53,29 @@ export interface TeamEditorLink {
 export interface TeamEditorValue {
   title: string;
   description: string;
+  categoryId: string | undefined;
+  tagIds: string[];
   members: TeamEditorMember[];
   links: TeamEditorLink[];
 }
 
-const EMPTY_TEAM: TeamEditorValue = { title: "", description: "", members: [], links: [] };
+const EMPTY_TEAM: TeamEditorValue = { title: "", description: "", categoryId: undefined, tagIds: [], members: [], links: [] };
 const SEARCH_LIMIT = 8;
+
+/** The computer icon inside a search option, where a focusable tooltip trigger can't be nested */
+function ComputerMark({ requirement, label }: { requirement: Exclude<BotComputerRequirement, "NONE">; label: string }) {
+  const Icon = COMPUTER_REQUIREMENT_ICONS[requirement];
+  return (
+    <span className="ml-auto inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border bg-background text-muted-foreground" title={label}>
+      <Icon className="h-3 w-3" aria-hidden="true" />
+      <span className="sr-only">{label}</span>
+    </span>
+  );
+}
 
 function TeamMemberPicker({ value, onChange }: { value: TeamEditorMember[]; onChange: (value: TeamEditorMember[]) => void }) {
   const t = useTranslations("bots.teams.form");
+  const tComputer = useTranslations("bots.computer");
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -77,6 +95,7 @@ function TeamMemberPicker({ value, onChange }: { value: TeamEditorMember[]; onCh
         title: bot.name,
         icon: bot.icon && isBotIconName(bot.icon) ? bot.icon : null,
         color: bot.color && isBotColor(bot.color) ? bot.color : null,
+        computerRequirement: bot.computerRequirement ?? "NONE",
         role: "",
         description: "",
       },
@@ -93,7 +112,9 @@ function TeamMemberPicker({ value, onChange }: { value: TeamEditorMember[]; onCh
             <li key={member.botId} className="space-y-3 rounded-md border p-3">
               <div className="flex min-w-0 items-center gap-2">
                 <BotAvatar icon={member.icon} color={member.color} size="sm" />
-                <span className="min-w-0 flex-1 truncate text-sm font-medium" title={member.title}>{member.title}</span>
+                <span className="min-w-0 truncate text-sm font-medium" title={member.title}>{member.title}</span>
+                <BotComputerBadge requirement={member.computerRequirement} />
+                <span className="flex-1" />
                 <Button
                   type="button"
                   variant="ghost"
@@ -167,6 +188,9 @@ function TeamMemberPicker({ value, onChange }: { value: TeamEditorMember[]; onCh
               >
                 <BotAvatar icon={bot.icon} color={bot.color} size="sm" />
                 <span className="min-w-0 truncate">{bot.name}</span>
+                {bot.computerRequirement && bot.computerRequirement !== "NONE" && (
+                  <ComputerMark label={tComputer(COMPUTER_REQUIREMENT_LABELS[bot.computerRequirement])} requirement={bot.computerRequirement} />
+                )}
               </button>
             ))}
             {!loading && options.length === 0 && <p className="p-3 text-sm text-muted-foreground">{t("noResults")}</p>}
@@ -310,43 +334,40 @@ function TeamHandoffEditor({
   );
 }
 
-interface BotTeamEditorProps {
+interface BotTeamFormProps {
   /** Edit this team; omitted to create a new one */
   team?: TeamEditorValue & { slug: string };
-  /** Opens the dialog; defaults to the floating "Create team" button */
-  trigger?: ReactNode;
+  categories: CategoryOption[];
+  tags: TagOption[];
 }
 
-/** Dialog to create or edit a team: pick bots with roles, define handoffs, set a title and description */
-export function BotTeamEditor({ team, trigger }: BotTeamEditorProps) {
+/** Create or edit a team: title, description, category, tags, member bots with roles, and handoffs */
+export function BotTeamForm({ team, categories, tags }: BotTeamFormProps) {
   const t = useTranslations("bots.teams");
+  const tPrompts = useTranslations("prompts");
   const tCommon = useTranslations("common");
   const router = useRouter();
   const isEdit = !!team;
-  const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [value, setValue] = useState<TeamEditorValue>(team ?? EMPTY_TEAM);
+  const form = useForm<TeamEditorValue>({ defaultValues: team ?? EMPTY_TEAM });
+  const members = form.watch("members");
+  const links = form.watch("links");
+  const description = form.watch("description");
 
-  const setMembers = (members: TeamEditorMember[]) => {
-    const ids = new Set(members.map((member) => member.botId));
-    setValue((current) => ({
-      ...current,
-      members,
-      links: current.links.filter((link) => ids.has(link.fromBotId) && ids.has(link.toBotId)),
-    }));
+  const setMembers = (next: TeamEditorMember[]) => {
+    const ids = new Set(next.map((member) => member.botId));
+    form.setValue("members", next, { shouldDirty: true });
+    form.setValue(
+      "links",
+      form.getValues("links").filter((link) => ids.has(link.fromBotId) && ids.has(link.toBotId)),
+      { shouldDirty: true }
+    );
   };
 
-  const validationError = (): string | null => {
-    if (!value.title.trim()) return t("form.titleRequired");
-    if (value.members.length < MIN_TEAM_MEMBERS) return t("form.minBots", { min: MIN_TEAM_MEMBERS });
-    if (teamLinkIssues(value.members.map((m) => m.botId), value.links).length > 0) return t("form.handoffInvalid");
-    return null;
-  };
-
-  const submit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    const error = validationError();
-    if (error) return void toast.error(error);
+  const submit = async (value: TeamEditorValue) => {
+    if (!value.title.trim()) return void form.setError("title", { message: t("form.titleRequired") });
+    if (value.members.length < MIN_TEAM_MEMBERS) return void toast.error(t("form.minBots", { min: MIN_TEAM_MEMBERS }));
+    if (teamLinkIssues(value.members.map((m) => m.botId), value.links).length > 0) return void toast.error(t("form.handoffInvalid"));
 
     setSaving(true);
     try {
@@ -356,6 +377,8 @@ export function BotTeamEditor({ team, trigger }: BotTeamEditorProps) {
         body: JSON.stringify({
           title: value.title,
           description: value.description || null,
+          categoryId: value.categoryId || null,
+          tagIds: value.tagIds,
           members: value.members.map((member) => ({
             botId: member.botId,
             role: member.role || null,
@@ -368,11 +391,11 @@ export function BotTeamEditor({ team, trigger }: BotTeamEditorProps) {
       if (!response.ok) {
         if (result.error === "rate_limit") return void toast.error(t("form.rateLimit"));
         if (result.error === "invalid_bots") return void toast.error(t("form.invalidBots"));
+        if (result.error === "invalid_category") return void toast.error(t("form.invalidCategory"));
+        if (result.error === "invalid_tags") return void toast.error(t("form.invalidTags"));
         return void toast.error(result.message || tCommon("somethingWentWrong"));
       }
       toast.success(isEdit ? t("form.updated") : t("form.created"));
-      setOpen(false);
-      if (!isEdit) setValue(EMPTY_TEAM);
       router.push(getBotTeamUrl(result.slug));
       router.refresh();
     } catch {
@@ -383,95 +406,115 @@ export function BotTeamEditor({ team, trigger }: BotTeamEditorProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger ?? (
-          <Button size="lg" className="fixed bottom-6 right-6 z-40 h-12 rounded-full px-5 shadow-lg">
-            <Plus className="h-5 w-5" />
-            {t("create")}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(submit)} className="space-y-6">
+        <div className="space-y-1">
+          <h1 className="text-lg font-semibold">{isEdit ? t("form.editTitle") : t("form.createTitle")}</h1>
+          <p className="text-sm text-muted-foreground">{t("form.intro")}</p>
+        </div>
+
+        <div className="space-y-4 pb-6 border-b">
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("form.title")}</FormLabel>
+                <FormControl>
+                  <Input maxLength={TEAM_TITLE_MAX_LENGTH} placeholder={t("form.titlePlaceholder")} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("form.description")}</FormLabel>
+                <FormControl>
+                  <Textarea
+                    rows={6}
+                    maxLength={TEAM_DESCRIPTION_MAX_LENGTH}
+                    placeholder={t("form.descriptionPlaceholder")}
+                    className="min-h-32 resize-y"
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription className="flex justify-between gap-3">
+                  <span>{t("form.descriptionHint")}</span>
+                  <span className="shrink-0 tabular-nums">
+                    {description.length}/{TEAM_DESCRIPTION_MAX_LENGTH}
+                  </span>
+                </FormDescription>
+              </FormItem>
+            )}
+          />
+
+          <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+            <FormField
+              control={form.control}
+              name="categoryId"
+              render={({ field }) => (
+                <FormItem className="w-full sm:w-64">
+                  <FormLabel>{tPrompts("promptCategory")}</FormLabel>
+                  <CategorySelect categories={categories} value={field.value} onChange={field.onChange} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="tagIds"
+              render={({ field }) => (
+                <FormItem className="flex-1 min-w-0">
+                  <FormLabel>{tPrompts("promptTags")}</FormLabel>
+                  <TagPicker
+                    tags={tags}
+                    value={field.value}
+                    onChange={(value) => form.setValue("tagIds", value.slice(0, MAX_TEAM_TAGS), { shouldDirty: true })}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        <section className="space-y-3">
+          <div>
+            <h2 className="text-sm font-medium">{t("form.bots")}</h2>
+            <p className="text-xs text-muted-foreground">
+              {t("form.botsHint", { min: MIN_TEAM_MEMBERS, max: MAX_TEAM_MEMBERS })} {t("form.computerHint")}
+            </p>
+          </div>
+          <TeamMemberPicker value={members} onChange={setMembers} />
+        </section>
+
+        <section className="space-y-3">
+          <div>
+            <h2 className="text-sm font-medium">{t("form.handoffs")}</h2>
+            <p className="text-xs text-muted-foreground">{t("form.handoffsHint")}</p>
+          </div>
+          <TeamHandoffEditor
+            members={members}
+            value={links}
+            onChange={(next) => form.setValue("links", next, { shouldDirty: true })}
+          />
+        </section>
+
+        <div className="flex justify-end gap-2 pt-4 border-t">
+          <Button type="button" variant="outline" onClick={() => router.back()} disabled={saving}>
+            {t("form.cancel")}
           </Button>
-        )}
-      </DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
-        <form onSubmit={submit} className="space-y-6">
-          <DialogHeader>
-            <DialogTitle>{isEdit ? t("form.editTitle") : t("form.createTitle")}</DialogTitle>
-            <DialogDescription>{t("form.intro")}</DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-2">
-            <Label htmlFor="team-title">{t("form.title")}</Label>
-            <Input
-              id="team-title"
-              value={value.title}
-              maxLength={TEAM_TITLE_MAX_LENGTH}
-              placeholder={t("form.titlePlaceholder")}
-              onChange={(event) => setValue((current) => ({ ...current, title: event.target.value }))}
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="team-description">{t("form.description")}</Label>
-            <Textarea
-              id="team-description"
-              value={value.description}
-              maxLength={TEAM_DESCRIPTION_MAX_LENGTH}
-              placeholder={t("form.descriptionPlaceholder")}
-              aria-describedby="team-description-hint"
-              rows={5}
-              className="min-h-28 resize-y"
-              onChange={(event) => setValue((current) => ({ ...current, description: event.target.value }))}
-            />
-            <div id="team-description-hint" className="flex justify-between gap-3 text-sm text-muted-foreground">
-              <span>{t("form.descriptionHint")}</span>
-              <span className="shrink-0 tabular-nums">
-                {value.description.length}/{TEAM_DESCRIPTION_MAX_LENGTH}
-              </span>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label>{t("form.bots")}</Label>
-            <p className="text-sm text-muted-foreground">{t("form.botsHint", { min: MIN_TEAM_MEMBERS, max: MAX_TEAM_MEMBERS })}</p>
-            <TeamMemberPicker value={value.members} onChange={setMembers} />
-          </div>
-
-          <div className="space-y-2">
-            <Label>{t("form.handoffs")}</Label>
-            <p className="text-sm text-muted-foreground">{t("form.handoffsHint")}</p>
-            <TeamHandoffEditor
-              members={value.members}
-              value={value.links}
-              onChange={(links) => setValue((current) => ({ ...current, links }))}
-            />
-          </div>
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={saving}>
-              {t("form.cancel")}
-            </Button>
-            <Button type="submit" disabled={saving}>
-              {saving && <Loader2 className="h-4 w-4 animate-spin" />}
-              {isEdit ? t("form.save") : t("form.submit")}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-/** "Create team" floating button; signed-out visitors are sent to log in first */
-export function CreateTeamButton({ isLoggedIn }: { isLoggedIn: boolean }) {
-  const t = useTranslations("bots.teams");
-  if (isLoggedIn) return <BotTeamEditor />;
-  return (
-    <Button size="lg" className="fixed bottom-6 right-6 z-40 h-12 rounded-full px-5 shadow-lg" asChild>
-      <Link href="/login" title={t("loginToCreate")}>
-        <Users className="h-5 w-5" />
-        {t("create")}
-      </Link>
-    </Button>
+          <Button type="submit" disabled={saving}>
+            {saving && <Loader2 className="h-4 w-4 animate-spin" />}
+            {isEdit ? t("form.save") : t("form.submit")}
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 }

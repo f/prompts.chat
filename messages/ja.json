@@ -1163,14 +1163,18 @@
         "handoffDuplicate": "この引き継ぎはすでにあります。",
         "handoffSelf": "異なる2つのボットを選んでください。",
         "connectEveryone": "ボットを全員とつなぐ",
-        "connectEveryoneHint": "選んだボットから他のすべてのボットへの引き継ぎと、その逆を追加します。チーフ・オブ・スタッフのような構成です。"
+        "connectEveryoneHint": "選んだボットから他のすべてのボットへの引き継ぎと、その逆を追加します。チーフ・オブ・スタッフのような構成です。",
+        "invalidCategory": "このカテゴリは存在しません",
+        "invalidTags": "一部のタグは存在しません",
+        "computerHint": "アイコンはクラウドコンピューターまたはご自身のコンピューターが必要なボットを示します。"
       },
       "openBot": "{bot} の詳細を表示",
       "botHint": "ボットを選ぶと、その役割を確認してインストールできます。",
       "inTeam": "{team} での役割",
       "installBot": "インストール",
       "viewBot": "ボットのページを開く",
-      "botLoadError": "このボットを読み込めませんでした。"
+      "botLoadError": "このボットを読み込めませんでした。",
+      "backToTeam": "チームに戻る"
     },
     "computer": {
       "cloud": "クラウドコンピューターが必要",

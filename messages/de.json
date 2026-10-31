@@ -1163,14 +1163,18 @@
         "handoffDuplicate": "Diese Übergabe ist bereits vorhanden.",
         "handoffSelf": "Wähle zwei verschiedene Bots.",
         "connectEveryone": "Bot mit allen verbinden",
-        "connectEveryoneHint": "Fügt Übergaben vom gewählten Bot an alle anderen Bots und zurück hinzu, wie bei einem Stabschef."
+        "connectEveryoneHint": "Fügt Übergaben vom gewählten Bot an alle anderen Bots und zurück hinzu, wie bei einem Stabschef.",
+        "invalidCategory": "Diese Kategorie existiert nicht mehr",
+        "invalidTags": "Einige Tags existieren nicht mehr",
+        "computerHint": "Symbole markieren Bots, die einen Cloud-Computer oder deinen eigenen Computer brauchen."
       },
       "openBot": "Details zu {bot} anzeigen",
       "botHint": "Wähle einen Bot aus, um zu sehen, was er tut, und ihn zu installieren.",
       "inTeam": "In {team}",
       "installBot": "Installieren",
       "viewBot": "Bot-Seite öffnen",
-      "botLoadError": "Dieser Bot konnte nicht geladen werden."
+      "botLoadError": "Dieser Bot konnte nicht geladen werden.",
+      "backToTeam": "Zurück zum Team"
     },
     "computer": {
       "cloud": "Benötigt einen Cloud-Computer",
