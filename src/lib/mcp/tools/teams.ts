@@ -4,6 +4,7 @@ import { BOT_COMPUTER_REQUIREMENTS, BOT_PLATFORMS, extractBotId } from "@/lib/bo
 import {
   MAX_TEAM_LINKS,
   MAX_TEAM_MEMBERS,
+  MAX_TEAM_TAGS,
   MIN_TEAM_MEMBERS,
   TEAM_DESCRIPTION_MAX_LENGTH,
   TEAM_LINK_LABEL_MAX_LENGTH,
@@ -20,8 +21,8 @@ import {
   type BotTeamView,
 } from "@/lib/bots/teams";
 import type { McpContext } from "../context";
-import { cursorInput, decodeCursor, limitInput, nextCursor } from "../schemas";
-import { resourceLink } from "../shared";
+import { cursorInput, decodeCursor, limitInput, nextCursor, taxonomyOutput } from "../schemas";
+import { findOrCreateTagIds, resolveCategoryId, resourceLink } from "../shared";
 import { defineTool, toolResult, ToolError, unwrapWriteResult } from "../tool";
 
 const teamMemberOutput = z.looseObject({
@@ -38,6 +39,8 @@ const teamSummaryOutput = z.looseObject({
   description: z.string().nullable(),
   author: z.string(),
   isFeatured: z.boolean(),
+  category: taxonomyOutput.nullable(),
+  tags: z.array(taxonomyOutput),
   members: z.array(teamMemberOutput),
   handoffCount: z.number(),
   link: z.string(),
@@ -50,6 +53,8 @@ const teamDetailOutput = z.looseObject({
   description: z.string().nullable(),
   isFeatured: z.boolean(),
   author: z.looseObject({ username: z.string(), name: z.string().nullable() }),
+  category: taxonomyOutput.nullable(),
+  tags: z.array(taxonomyOutput),
   members: z.array(
     teamMemberOutput.extend({
       slug: z.string().nullable(),
@@ -81,11 +86,13 @@ export function registerTeamTools(server: McpServer, ctx: McpContext) {
       title: "List Bot Teams",
       description:
         "List bot teams on prompts.chat (/bots/teams): groups of bots that hand work off to each other, featured first, then newest. " +
-        "Optionally filter by keywords matched against the team title, description and member bot names. " +
+        "Optionally filter by keywords matched against the team title, description and member bot names, by category and by tags. " +
         "Returns small summaries (a plain-text excerpt of the description, members with roles, handoff count); call get_team for the full markdown description, what each member does, the handoff flow and the install prompt.",
       kind: "read",
       inputSchema: {
         query: z.string().optional().describe("Keywords; separate alternatives with commas"),
+        category: z.string().optional().describe("Category slug; a parent category also matches its subcategories"),
+        tags: z.array(z.string()).max(MAX_TEAM_TAGS).optional().describe("Tag slugs; every tag must match"),
         limit: limitInput(10, 50, "teams"),
         cursor: cursorInput,
       },
@@ -97,9 +104,16 @@ export function registerTeamTools(server: McpServer, ctx: McpContext) {
       },
       failureMessage: "Failed to list teams",
     },
-    async ({ query, limit, cursor }) => {
+    async ({ query, category, tags, limit, cursor }) => {
       const offset = decodeCursor(cursor);
-      const { teams, total } = await listTeams({ q: query?.trim(), skip: offset, take: limit, viewer });
+      const { teams, total } = await listTeams({
+        q: query?.trim(),
+        categorySlug: category?.trim() || undefined,
+        tagSlugs: tags?.map((tag) => tag.trim()).filter(Boolean),
+        skip: offset,
+        take: limit,
+        viewer,
+      });
       return toolResult({
         total,
         count: teams.length,
@@ -170,7 +184,7 @@ export function registerTeamTools(server: McpServer, ctx: McpContext) {
         "calling it again with the same team changes nothing (action \"unchanged\"). " +
         `A team has ${MIN_TEAM_MEMBERS}-${MAX_TEAM_MEMBERS} member bots (ids from search_bots or list_my_bots; public bots or your own) and directed handoffs between members. ` +
         "Handoffs may be N-to-N, e.g. a coordinator bot that hands off to every member and gets results back. " +
-        "On update, members replace the stored members; omitted handoffs keep the stored ones between bots that stay, and an omitted team or member description keeps the stored one. " +
+        "On update, members replace the stored members; omitted handoffs keep the stored ones between bots that stay, and an omitted team or member description, category or tags keep the stored ones. " +
         "Returns the action, the changed fields and the saved team. Requires API key authentication.",
       kind: "write",
       requiresAuth: true,
@@ -186,6 +200,8 @@ export function registerTeamTools(server: McpServer, ctx: McpContext) {
           .nullable()
           .optional()
           .describe("What the team does and how it works, in markdown; null clears it"),
+        category: z.string().nullable().optional().describe("Category slug; null removes the category"),
+        tags: z.array(z.string()).max(MAX_TEAM_TAGS).optional().describe("Tag names (created if they don't exist). Replaces all tags."),
         members: z
           .array(
             z.object({
@@ -223,7 +239,7 @@ export function registerTeamTools(server: McpServer, ctx: McpContext) {
       },
       failureMessage: "Failed to save team",
     },
-    async ({ id, slug, title, description, members, handoffs }, { user }) => {
+    async ({ id, slug, title, description, category, tags, members, handoffs }, { user }) => {
       const memberInputs = members.map((member) => ({
         botId: extractBotId(member.bot),
         role: member.role || null,
@@ -237,7 +253,19 @@ export function registerTeamTools(server: McpServer, ctx: McpContext) {
       if (issues.length > 0) throw new ToolError("validation_error", issues[0]);
 
       const { action, team, changedFields } = unwrapWriteResult(
-        await upsertOwnTeam({ id: user.id, role: user.role }, { id, slug, title, description, members: memberInputs, links })
+        await upsertOwnTeam(
+          { id: user.id, role: user.role },
+          {
+            id,
+            slug,
+            title,
+            description,
+            categoryId: await resolveCategoryId(category),
+            tagIds: tags === undefined ? undefined : await findOrCreateTagIds(tags),
+            members: memberInputs,
+            links,
+          }
+        )
       );
       return toolResult({ success: true, action, changedFields, team: teamToJson(team, ctx.baseUrl) }, memberLinks(team));
     }

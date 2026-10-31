@@ -39,7 +39,7 @@ export function nextCursor(offset: number, pageSize: number, limit: number, tota
  * Output schemas describe the documented fields; objects stay open so new fields can be added
  * without breaking clients that validate structuredContent.
  */
-const taxonomyOutput = z.looseObject({ name: z.string(), slug: z.string() });
+export const taxonomyOutput = z.looseObject({ name: z.string(), slug: z.string() });
 
 export const promptSummaryOutput = z.looseObject({
   id: z.string(),

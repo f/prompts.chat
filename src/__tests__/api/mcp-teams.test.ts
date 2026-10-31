@@ -12,6 +12,8 @@ vi.mock("@/lib/db", () => ({
     botTeam: { findMany: vi.fn(), findFirst: vi.fn(), findUnique: vi.fn(), count: vi.fn(), create: vi.fn(), update: vi.fn() },
     botTeamMember: { deleteMany: vi.fn(), createMany: vi.fn() },
     botTeamLink: { deleteMany: vi.fn(), createMany: vi.fn() },
+    category: { findUnique: vi.fn() },
+    tag: { findUnique: vi.fn(), findMany: vi.fn(), create: vi.fn() },
   },
 }));
 
@@ -75,6 +77,8 @@ function teamRecord(overrides: Record<string, unknown> = {}) {
       { role: null, description: null, bot: bot("b", { botPlatforms: ["HERMES"] }) },
     ],
     links: [{ fromBotId: "a", toBotId: "b", label: "Brief" }],
+    category: null,
+    tags: [],
     ...overrides,
   };
 }
@@ -131,6 +135,8 @@ describe("MCP team tools", () => {
       description: null,
       author: "Alice",
       isFeatured: true,
+      category: null,
+      tags: [],
       members: [
         { id: "a", name: "Bot a", role: "Researcher", computerRequirement: "NONE" },
         { id: "b", name: "Bot b", role: null, computerRequirement: "NONE" },
@@ -139,6 +145,31 @@ describe("MCP team tools", () => {
       link: "https://prompts.chat/bots/teams/research-crew",
     });
     expect(result.structuredContent).toEqual(data);
+  });
+
+  it("list_teams filters by category, tags and keywords", async () => {
+    vi.mocked(db.botTeam.findMany).mockResolvedValue([
+      teamRecord({
+        category: { id: "cat-1", name: "Coding", slug: "coding", parent: null },
+        tags: [{ tag: { id: "tag-1", name: "Agents", slug: "agents", color: "#000000" } }],
+      }),
+    ] as never);
+    vi.mocked(db.botTeam.count).mockResolvedValue(1);
+    await connect(null);
+
+    const { isError, data } = await callTool("list_teams", { query: "review", category: "coding", tags: ["agents", "ci"] });
+
+    expect(isError).toBe(false);
+    expect(data.teams[0]).toMatchObject({
+      category: { name: "Coding", slug: "coding", parent: null },
+      tags: [{ name: "Agents", slug: "agents" }],
+    });
+    const where = vi.mocked(db.botTeam.findMany).mock.calls[0][0]!.where;
+    expect(where).toMatchObject({
+      category: { OR: [{ slug: "coding" }, { parent: { slug: "coding" } }] },
+      AND: [{ tags: { some: { tag: { slug: "agents" } } } }, { tags: { some: { tag: { slug: "ci" } } } }],
+    });
+    expect(JSON.stringify(where)).toContain("review");
   });
 
   it("gets a team with handoffs and an install prompt for a platform", async () => {
@@ -217,6 +248,39 @@ describe("MCP team tools", () => {
         }),
       })
     );
+  });
+
+  it("save_team sets the category by slug and tags by name", async () => {
+    vi.mocked(db.botTeam.findFirst).mockResolvedValue(null);
+    vi.mocked(db.botTeam.create).mockResolvedValue({ id: "team-1" } as never);
+    vi.mocked(db.category.findUnique).mockResolvedValue({ id: "cat-1" } as never);
+    vi.mocked(db.tag.findUnique).mockImplementation((async ({ where }: { where: { slug: string } }) =>
+      where.slug === "agents" ? { id: "tag-1", slug: "agents" } : null) as never);
+    vi.mocked(db.tag.create).mockResolvedValue({ id: "tag-2", slug: "code-review" } as never);
+    vi.mocked(db.tag.findMany).mockResolvedValue([{ id: "tag-1" }, { id: "tag-2" }] as never);
+    await connect(alice);
+
+    const { isError } = await callTool("save_team", {
+      title: "Review crew",
+      category: "coding",
+      tags: ["Agents", "Code review"],
+      members: [{ bot: "a" }, { bot: "b" }],
+    });
+
+    expect(isError).toBe(false);
+    expect(db.tag.create).toHaveBeenCalledWith({ data: { name: "Code review", slug: "code-review" } });
+    expect(vi.mocked(db.botTeam.create).mock.calls[0][0]).toMatchObject({
+      data: { categoryId: "cat-1", tags: { create: [{ tagId: "tag-1" }, { tagId: "tag-2" }] } },
+    });
+  });
+
+  it("save_team rejects an unknown category", async () => {
+    vi.mocked(db.category.findUnique).mockResolvedValue(null);
+    await connect(alice);
+    const { isError, data } = await callTool("save_team", { title: "Crew", category: "nope", members: [{ bot: "a" }, { bot: "b" }] });
+    expect(isError).toBe(true);
+    expect(data.code).toBe("invalid_category");
+    expect(db.botTeam.create).not.toHaveBeenCalled();
   });
 
   it("save_team is a no-op when nothing changed", async () => {
