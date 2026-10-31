@@ -320,7 +320,7 @@ Grok Bot은 반대로 동료 쪽에 기웁니다. 출시 글은 사람들이 여
 <InfoGrid items={[
   { label: "역할", description: "이 팀에서 한 구성원이 무엇을 책임지는지 한두 문장으로 적은 것. 같은 봇도 다른 팀에서는 다른 역할을 맡을 수 있습니다.", color: "blue" },
   { label: "인계", description: "한 구성원에서 다른 구성원으로 향하는, 방향과 라벨이 있는 화살표. 무엇을 넘기는지, 거기에 무엇이 담겨야 하는지 알려 줍니다.", color: "purple" },
-  { label: "설치", description: "팀 전체를 한 번에 준비하는 일. 봇마다 자기 지시문을 갖추고, 여기에 팀의 목적, 구성원별 책임, 그 사이의 인계를 더합니다.", color: "green" }
+  { label: "목적", description: "팀 전체가 함께 가진 목표. 한 번 적어 두면 모든 구성원이 이 일이 무엇을 위한 것인지 알 수 있습니다.", color: "green" }
 ]} />
 
 ### 팀에게 프롬프트 쓰기
@@ -329,7 +329,7 @@ Grok Bot은 반대로 동료 쪽에 기웁니다. 출시 글은 사람들이 여
 
 그림 속에서 여러분이 어디에 서 있을지도 정하세요. 고객에게 보내는 메시지든, 게시할 글이든, 운영 환경의 변경이든, 무엇이든 팀 밖으로 나가기 전에 적어도 화살표 하나는 여러분에게 닿아야 합니다. 그리고 따로 떨어진 봇에 대해 했던 이야기를 떠올려 보세요. 역할을 나누면 구성원마다 자기 일에 집중하기 쉬워지지만, 역할이 벽이 되어 주지는 않습니다. 두 구성원에게 필요한 접근 수준이 다르다면 서로 다른 자격 증명을 주세요.
 
-이제 많은 도구가 저마다의 용어로 이런 명시적인 방식을 택하고 있습니다. OpenAI의 Agents SDK는 인계를 기본 구성 요소로 다루어, 한 에이전트가 다른 에이전트에게 작업을 넘길 수 있게 합니다([Handoffs](https://openai.github.io/openai-agents-python/handoffs/)). CrewAI는 에이전트마다 역할, 목표, 배경 이야기를 정해 주라고 합니다([CrewAI agents](https://docs.crewai.com/en/concepts/agents)). LangGraph는 워크플로를 노드와 그 사이의 엣지로 이루어진 그래프로 표현합니다([LangGraph graph API](https://docs.langchain.com/oss/python/langgraph/graph-api)). 앞에서 만난 Grok Bot의 *비서실장*(chief of staff) Bot도 곁에서 일하는 전문가들을 조율합니다. prompts.chat에도 봇 카탈로그의 [Teams](https://prompts.chat/bots/teams) 섹션에 나름의 방식이 있습니다. 그곳에서는 공유된 팀이 그래프로 그려집니다. 구성원마다 역할과 그 팀에서 하는 일에 대한 짧은 설명이 있고, 화살표마다 무엇을 넘기는지 알려 주는 라벨이 붙어 있습니다. 화살표는 많은 봇을 다른 많은 봇과 이을 수 있지만, 봇을 자기 자신과 잇지는 않습니다. 봇마다 자기만의 클라우드 컴퓨터가 필요한지, 여러분의 컴퓨터에 접근해야 하는지, 둘 다 필요 없는지도 밝혀 둡니다. *Install team*(팀 설치) 버튼은 여러분이 고른 플랫폼에 맞춰 팀 설명, 봇별 책임, 인계를 하나의 프롬프트로 모아 줍니다. 같은 팀을 prompts.chat의 MCP 서버를 통해 AI 어시스턴트에서 목록으로 보고, 읽고, 저장할 수도 있습니다. 세부 사항은 도구마다 달라도 모양은 같습니다. 이름이 있는 역할들, 그리고 그 사이를 오가는 이름 있는 결과물들입니다.
+이제 많은 도구가 저마다의 용어로 이런 명시적인 방식을 택하고 있습니다. OpenAI의 Agents SDK는 인계를 기본 구성 요소로 다루어, 한 에이전트가 다른 에이전트에게 작업을 넘길 수 있게 합니다([Handoffs](https://openai.github.io/openai-agents-python/handoffs/)). CrewAI는 에이전트마다 역할, 목표, 배경 이야기를 정해 주라고 합니다([CrewAI agents](https://docs.crewai.com/en/concepts/agents)). LangGraph는 워크플로를 노드와 그 사이의 엣지로 이루어진 그래프로 표현합니다([LangGraph graph API](https://docs.langchain.com/oss/python/langgraph/graph-api)). 앞에서 만난 Grok Bot의 *비서실장*(chief of staff) Bot도 곁에서 일하는 전문가들을 조율합니다. prompts.chat의 [Teams](https://prompts.chat/bots/teams) 카탈로그는 팀을 역할과 라벨이 붙은 인계로 이루어진 그래프로 공유합니다. 세부 사항은 도구마다 달라도 모양은 같습니다. 이름이 있는 역할들, 그리고 그 사이를 오가는 이름 있는 결과물들입니다.
 
 <Quiz
   question="봇 세 개로 이루어진 팀이 틀린 통계가 들어간 출시 기사를 건넸습니다. 오류가 어디서 들어왔는지 가장 쉽게 찾을 수 있는 설계는 무엇일까요?"

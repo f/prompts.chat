@@ -320,7 +320,7 @@ Grok Bot 则偏向另一边，也就是队友。它的发布文章介绍了人�
 <InfoGrid items={[
   { label: "角色", description: "一个成员在这个团队里负责什么，用一两句话说明。同一个机器人在另一个团队里可以担任不同的角色。", color: "blue" },
   { label: "交接", description: "从一个成员指向另一个成员、有方向也有标签的箭头，说明传递的是什么、里面必须包含什么。", color: "purple" },
-  { label: "安装", description: "把整个团队一起配置好：每个机器人带上自己的指令，再加上团队的目的、每个成员的职责以及它们之间的交接。", color: "green" }
+  { label: "目的", description: "整个团队共同的目标，写下一次，让每个成员都知道这份工作是为了什么。", color: "green" }
 ]} />
 
 ### 给团队写提示词
@@ -329,7 +329,7 @@ Grok Bot 则偏向另一边，也就是队友。它的发布文章介绍了人�
 
 也要决定你自己站在这幅图的什么位置。在任何东西离开团队之前，无论是发给客户的消息、要发布的文章，还是生产环境里的一项改动，都应该至少有一支箭头指向你。还要记住我们讲过的关于不同机器人的话：不同的角色能帮每个成员保持专注，但它们不是墙。如果两个成员需要不同级别的访问权限，就给它们不同的凭据。
 
-如今许多工具都采用了这种明确的做法，只是各有各的说法。OpenAI 的 Agents SDK 把交接当作基本构件，让一个智能体可以把任务交给另一个（[Handoffs](https://openai.github.io/openai-agents-python/handoffs/)）。CrewAI 要求你为每个智能体设定角色、目标和背景故事（[CrewAI agents](https://docs.crewai.com/en/concepts/agents)）。LangGraph 把工作流描述成由节点和节点之间的边组成的图（[LangGraph graph API](https://docs.langchain.com/oss/python/langgraph/graph-api)）。我们之前见过的 Grok Bot 里那个*幕僚长*（chief of staff）Bot，也负责协调在它身边工作的各位专家。prompts.chat 也有自己的版本，就在机器人目录的 [Teams](https://prompts.chat/bots/teams) 板块。在那里，共享的团队被画成一张图：每个成员都有一个角色，以及一段简短的说明，讲它在这个团队里做什么；每支箭头上都有一个标签，写明交接的是什么。箭头可以把许多机器人连向许多别的机器人，但从不把一个机器人连向它自己。每个机器人还会注明，它需要一台属于自己的云端电脑、需要访问你自己的机器，还是两者都不需要。点一下 *Install team*（安装团队）按钮，就会为你选择的平台把一切汇总成一个提示词，里面有团队说明、每个机器人的职责和各项交接。同样的团队也可以通过 prompts.chat 的 MCP 服务器，在 AI 助手里列出、读取和保存。细节因工具而异，但形状始终如一：有名字的角色，以及在它们之间传递的、有名字的东西。
+如今许多工具都采用了这种明确的做法，只是各有各的说法。OpenAI 的 Agents SDK 把交接当作基本构件，让一个智能体可以把任务交给另一个（[Handoffs](https://openai.github.io/openai-agents-python/handoffs/)）。CrewAI 要求你为每个智能体设定角色、目标和背景故事（[CrewAI agents](https://docs.crewai.com/en/concepts/agents)）。LangGraph 把工作流描述成由节点和节点之间的边组成的图（[LangGraph graph API](https://docs.langchain.com/oss/python/langgraph/graph-api)）。我们之前见过的 Grok Bot 里那个*幕僚长*（chief of staff）Bot，也负责协调在它身边工作的各位专家。prompts.chat 的 [Teams](https://prompts.chat/bots/teams) 目录则把团队分享为一张由角色和带标签的交接组成的图。细节因工具而异，但形状始终如一：有名字的角色，以及在它们之间传递的、有名字的东西。
 
 <Quiz
   question="你那个由三个机器人组成的团队交给你一篇发布文章，里面有一个错误的统计数字。哪种设计最容易让你找到错误是从哪里混进来的？"
