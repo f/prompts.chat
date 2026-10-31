@@ -36,6 +36,7 @@
   },
   "nav": {
     "bots": "봇",
+    "teams": "팀",
     "collection": "내 컬렉션",
     "feed": "피드",
     "promptmasters": "프롬프트마스터",
