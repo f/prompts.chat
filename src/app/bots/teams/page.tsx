@@ -115,7 +115,7 @@ export default async function BotTeamsPage({ searchParams }: BotTeamsPageProps) 
         <main className="flex-1 min-w-0">
           {teams.length > 0 ? (
             <>
-              <BotTeamsGraph teams={teams.map(toTeamGraphTeam)} />
+              <BotTeamsGraph key={pageHref(params, page)} teams={teams.map(toTeamGraphTeam)} />
 
               <section aria-labelledby="all-teams" className="mt-8 space-y-2">
                 <h2 id="all-teams" className="text-base font-semibold">{t("allTeams")}</h2>
