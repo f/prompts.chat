@@ -8,7 +8,9 @@ interface RouteParams {
 }
 
 /** Signs in the voter and finds a team they can see; the error response otherwise */
-async function authorizeVote(slug: string) {
+async function authorizeVote(
+  slug: string
+): Promise<{ response: NextResponse } | { userId: string; teamId: string }> {
   const session = await auth();
   if (!session?.user) {
     return { response: NextResponse.json({ error: "unauthorized", message: "You must be logged in" }, { status: 401 }) };
