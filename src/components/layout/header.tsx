@@ -403,7 +403,7 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
           )}
           <Link
             href="/bots/teams"
-            className={desktopNavClass("/bots/teams", "hidden lg:block")}
+            className={desktopNavClass("/bots/teams")}
           >
             {t("nav.teams")}
           </Link>
@@ -465,11 +465,6 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-              <DropdownMenuItem asChild className="lg:hidden">
-                <Link href="/bots/teams">
-                  {t("nav.teams")}
-                </Link>
-              </DropdownMenuItem>
               <DropdownMenuItem asChild className="xl:hidden">
                 <Link href="/skills">
                   {t("nav.skills")}
