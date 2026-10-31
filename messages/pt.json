@@ -1165,6 +1165,18 @@
         "connectEveryone": "Conectar um bot a todos",
         "connectEveryoneHint": "Adiciona repasses do bot escolhido para todos os outros bots e de volta, como um chefe de gabinete."
       }
+    },
+    "computer": {
+      "cloud": "Precisa de um computador na nuvem",
+      "local": "Precisa do seu computador",
+      "label": "Computador",
+      "hint": "O bot precisa de um computador para funcionar? Isso aparece como um pequeno ícone no bot.",
+      "none": "Sem computador",
+      "noneHint": "Funciona sozinho na sua plataforma.",
+      "cloudOption": "Computador na nuvem",
+      "cloudHint": "Precisa do seu próprio computador remoto, desktop ou navegador.",
+      "localOption": "Seu computador",
+      "localHint": "Precisa de acesso à sua própria máquina, arquivos ou apps."
     }
   },
   "collection": {

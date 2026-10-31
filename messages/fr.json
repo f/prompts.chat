@@ -1165,6 +1165,18 @@
         "connectEveryone": "Relier un bot à tous",
         "connectEveryoneHint": "Ajoute des transmissions du bot choisi vers tous les autres bots et retour, comme un chef de cabinet."
       }
+    },
+    "computer": {
+      "cloud": "Nécessite un ordinateur cloud",
+      "local": "Nécessite votre ordinateur",
+      "label": "Ordinateur",
+      "hint": "Le bot a-t-il besoin d'un ordinateur pour fonctionner ? Cela s'affiche sous forme de petite icône sur le bot.",
+      "none": "Aucun ordinateur",
+      "noneHint": "Fonctionne seul sur sa plateforme.",
+      "cloudOption": "Ordinateur cloud",
+      "cloudHint": "A besoin de son propre ordinateur distant, bureau ou navigateur.",
+      "localOption": "Votre ordinateur",
+      "localHint": "A besoin d'accéder à votre propre machine, vos fichiers ou vos applications."
     }
   },
   "collection": {

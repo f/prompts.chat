@@ -7,6 +7,7 @@ import { forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY
 import { ArrowRight, Star, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BotAvatar, BOT_ICON_COMPONENTS } from "@/components/bots/bot-avatar";
+import { BotComputerBadge, COMPUTER_REQUIREMENT_ICONS, COMPUTER_REQUIREMENT_LABELS } from "@/components/bots/bot-computer-badge";
 import type { BotColor } from "@/lib/bots/schema";
 import { TeamMarkdown } from "@/components/bots/teams/team-markdown";
 import {
@@ -155,11 +156,19 @@ function useTeamLayout(teams: TeamGraphTeam[], cells: GraphCell[], hubs: number[
 }
 
 function GraphNode({ member, point, href }: { member: Member; point: GraphPoint; href?: string }) {
+  const tComputer = useTranslations("bots.computer");
   const Icon = BOT_ICON_COMPONENTS[member.icon ?? "bot"];
   const size = TEAM_NODE_RADIUS;
+  const computer = member.computerRequirement && member.computerRequirement !== "NONE" ? member.computerRequirement : null;
+  const ComputerIcon = computer ? COMPUTER_REQUIREMENT_ICONS[computer] : null;
+  const tooltip = [
+    member.role ? `${member.title} · ${member.role}` : member.title,
+    computer && tComputer(COMPUTER_REQUIREMENT_LABELS[computer]),
+    member.description,
+  ];
   const body = (
     <g transform={`translate(${point.x},${point.y})`}>
-      <title>{[member.role ? `${member.title} · ${member.role}` : member.title, member.description].filter(Boolean).join("\n")}</title>
+      <title>{tooltip.filter(Boolean).join("\n")}</title>
       <circle r={size} className="fill-background" />
       <circle r={size} strokeWidth={1.5} className={member.color ? NODE_STYLES[member.color] : DEFAULT_NODE_STYLE} />
       <Icon
@@ -171,6 +180,12 @@ function GraphNode({ member, point, href }: { member: Member; point: GraphPoint;
         className={member.color ? NODE_STYLES[member.color] : DEFAULT_NODE_STYLE}
         style={{ fill: "none", stroke: "currentColor" }}
       />
+      {ComputerIcon && (
+        <g transform={`translate(${size * 0.75},${-size * 0.75})`} aria-hidden="true">
+          <circle r={8} strokeWidth={1} className="fill-background stroke-border" />
+          <ComputerIcon x={-5} y={-5} width={10} height={10} className="text-muted-foreground" />
+        </g>
+      )}
       <text y={size + 14} textAnchor="middle" className="fill-foreground text-[11px] font-medium">
         {truncateLabel(member.title, 16)}
       </text>
@@ -409,9 +424,12 @@ function TeamDetailPanel({ team, onClose }: { team: TeamGraphTeam; onClose: () =
             <li key={member.id} className="flex min-w-0 items-start gap-2">
               <BotAvatar icon={member.icon} color={member.color} size="sm" />
               <div className="min-w-0">
-                <Link href={getBotUrl(member.id, member.slug)} className="block truncate text-sm font-medium hover:underline">
-                  {member.title}
-                </Link>
+                <div className="flex min-w-0 items-center gap-1.5">
+                  <Link href={getBotUrl(member.id, member.slug)} className="truncate text-sm font-medium hover:underline">
+                    {member.title}
+                  </Link>
+                  <BotComputerBadge requirement={member.computerRequirement} className="h-4 w-4 [&_svg]:h-2.5 [&_svg]:w-2.5" />
+                </div>
                 {member.role && <p className="truncate text-xs font-medium text-muted-foreground">{member.role}</p>}
                 {member.description && <p className="line-clamp-3 text-xs text-muted-foreground wrap-anywhere">{member.description}</p>}
               </div>

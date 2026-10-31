@@ -1165,6 +1165,18 @@
         "connectEveryone": "将一个机器人与所有人连接",
         "connectEveryoneHint": "添加从所选机器人到其他所有机器人以及反向的交接，就像幕僚长一样。"
       }
+    },
+    "computer": {
+      "cloud": "需要云端电脑",
+      "local": "需要你的电脑",
+      "label": "电脑",
+      "hint": "这个机器人需要在电脑上运行吗？这会在机器人上显示为一个小图标。",
+      "none": "无需电脑",
+      "noneHint": "仅在其平台上运行。",
+      "cloudOption": "云端电脑",
+      "cloudHint": "需要自己的远程电脑、桌面或浏览器。",
+      "localOption": "你的电脑",
+      "localHint": "需要访问你自己的电脑、文件或应用。"
     }
   },
   "collection": {

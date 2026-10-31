@@ -1165,6 +1165,18 @@
         "connectEveryone": "Bir botu herkese bağla",
         "connectEveryoneHint": "Seçilen bottan diğer tüm botlara ve geri devirler ekler; bir genel koordinatör gibi."
       }
+    },
+    "computer": {
+      "cloud": "Bulut bilgisayarı gerektirir",
+      "local": "Bilgisayarınızı gerektirir",
+      "label": "Bilgisayar",
+      "hint": "Botun çalışmak için bir bilgisayara ihtiyacı var mı? Bu, botta küçük bir simge olarak gösterilir.",
+      "none": "Bilgisayar yok",
+      "noneHint": "Yalnızca kendi platformunda çalışır.",
+      "cloudOption": "Bulut bilgisayarı",
+      "cloudHint": "Kendi uzak bilgisayarına, masaüstüne veya tarayıcısına ihtiyaç duyar.",
+      "localOption": "Bilgisayarınız",
+      "localHint": "Kendi makinenize, dosyalarınıza veya uygulamalarınıza erişim gerektirir."
     }
   },
   "collection": {

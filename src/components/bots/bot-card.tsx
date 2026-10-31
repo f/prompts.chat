@@ -2,13 +2,16 @@ import { useTranslations } from "next-intl";
 import { ArrowBigUp, Clock, Star, Zap } from "lucide-react";
 import { BotCardLink } from "@/components/bots/bot-analytics";
 import { BotAvatar } from "@/components/bots/bot-avatar";
+import { BotComputerBadge } from "@/components/bots/bot-computer-badge";
 import { BotPlatformIcons } from "@/components/bots/bot-platform-icons";
 import {
   isBotColor,
+  isBotComputerRequirement,
   isBotIconName,
   parseBotConfig,
   resolveBotPlatforms,
   type BotColor,
+  type BotComputerRequirement,
   type BotConfig,
   type BotIconName,
   type BotPlatform,
@@ -28,6 +31,7 @@ export interface BotCardData {
   color: BotColor | null;
   isFeatured: boolean;
   trendingUntil?: Date | string | null;
+  computerRequirement?: BotComputerRequirement | null;
   config: Pick<BotConfig, "routines">;
   author: { username: string };
   voteCount: number;
@@ -46,6 +50,7 @@ export interface BotPromptFields {
   botPlatforms?: readonly BotPlatform[] | null;
   botPlatform?: BotPlatform | null;
   botConfig?: unknown;
+  computerRequirement?: string | null;
   author: { username: string };
   voteCount?: number;
   _count?: { votes?: number };
@@ -62,6 +67,10 @@ export function promptToBotCardData(prompt: BotPromptFields): BotCardData {
     color: prompt.botColor && isBotColor(prompt.botColor) ? prompt.botColor : null,
     isFeatured: prompt.isFeatured ?? false,
     trendingUntil: prompt.trendingUntil ?? null,
+    computerRequirement:
+      prompt.computerRequirement && isBotComputerRequirement(prompt.computerRequirement)
+        ? prompt.computerRequirement
+        : null,
     config: parseBotConfig(prompt.botConfig),
     author: prompt.author,
     voteCount: prompt.voteCount ?? prompt._count?.votes ?? 0,
@@ -100,6 +109,7 @@ export function BotCard({ bot, position }: BotCardProps) {
         {bot.description && <p className="text-sm text-muted-foreground line-clamp-3 wrap-anywhere">{bot.description}</p>}
       </div>
       <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+        <BotComputerBadge requirement={bot.computerRequirement} className="-my-0.5" />
         <span className="min-w-0 wrap-anywhere">@{bot.author.username}</span>
         {scheduled > 0 && (
           <span className="flex items-center gap-1">

@@ -1165,6 +1165,18 @@
         "connectEveryone": "Bot met iedereen verbinden",
         "connectEveryoneHint": "Voegt overdrachten toe van de gekozen bot naar alle andere bots en terug, zoals een stafchef."
       }
+    },
+    "computer": {
+      "cloud": "Heeft een cloudcomputer nodig",
+      "local": "Heeft je computer nodig",
+      "label": "Computer",
+      "hint": "Heeft de bot een computer nodig om op te draaien? Dit verschijnt als een klein pictogram bij de bot.",
+      "none": "Geen computer",
+      "noneHint": "Draait alleen op zijn platform.",
+      "cloudOption": "Cloudcomputer",
+      "cloudHint": "Heeft een eigen externe computer, desktop of browser nodig.",
+      "localOption": "Je computer",
+      "localHint": "Heeft toegang nodig tot je eigen machine, bestanden of apps."
     }
   },
   "collection": {

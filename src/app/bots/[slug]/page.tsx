@@ -16,6 +16,7 @@ import { BotViewTracker } from "@/components/bots/bot-analytics";
 import { BotAvatar } from "@/components/bots/bot-avatar";
 import { BotBundleInstall } from "@/components/bots/bot-bundle-install";
 import { BotCard } from "@/components/bots/bot-card";
+import { BotComputerBadge } from "@/components/bots/bot-computer-badge";
 import { BotInstall } from "@/components/bots/bot-install";
 import { BotPlatformBadge } from "@/components/bots/bot-platform-badge";
 import { DelistBanner } from "@/components/prompts/delist-banner";
@@ -172,6 +173,7 @@ export default async function BotPage({ params }: BotPageProps) {
           {bot.platforms.map((platform) => (
             <BotPlatformBadge key={platform} platform={platform} />
           ))}
+          <BotComputerBadge requirement={bot.computerRequirement} size="md" />
           {isTrending(bot.trendingUntil) && <TrendingBadge />}
           {bot.isFeatured && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />}
           {bot.isPrivate && (

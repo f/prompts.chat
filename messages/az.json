@@ -1165,6 +1165,18 @@
         "connectEveryone": "Botu hamı ilə birləşdir",
         "connectEveryoneHint": "Seçilmiş botdan bütün digər botlara və geri ötürmələr əlavə edir, aparat rəhbəri kimi."
       }
+    },
+    "computer": {
+      "cloud": "Bulud kompüteri tələb edir",
+      "local": "Sizin kompüterinizi tələb edir",
+      "label": "Kompüter",
+      "hint": "Botun işləmək üçün kompüterə ehtiyacı var? Bu, botda kiçik bir ikon kimi göstərilir.",
+      "none": "Kompüter yoxdur",
+      "noneHint": "Yalnız öz platformasında işləyir.",
+      "cloudOption": "Bulud kompüteri",
+      "cloudHint": "Öz uzaq kompüterinə, masaüstünə və ya brauzerinə ehtiyac duyur.",
+      "localOption": "Sizin kompüteriniz",
+      "localHint": "Sizin öz kompüterinizə, fayllarınıza və ya tətbiqlərinizə giriş tələb edir."
     }
   },
   "collection": {

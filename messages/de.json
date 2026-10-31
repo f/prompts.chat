@@ -1165,6 +1165,18 @@
         "connectEveryone": "Bot mit allen verbinden",
         "connectEveryoneHint": "Fügt Übergaben vom gewählten Bot an alle anderen Bots und zurück hinzu, wie bei einem Stabschef."
       }
+    },
+    "computer": {
+      "cloud": "Benötigt einen Cloud-Computer",
+      "local": "Benötigt deinen Computer",
+      "label": "Computer",
+      "hint": "Braucht der Bot einen Computer, auf dem er läuft? Das wird als kleines Symbol am Bot angezeigt.",
+      "none": "Kein Computer",
+      "noneHint": "Läuft allein auf seiner Plattform.",
+      "cloudOption": "Cloud-Computer",
+      "cloudHint": "Benötigt einen eigenen entfernten Computer, Desktop oder Browser.",
+      "localOption": "Dein Computer",
+      "localHint": "Benötigt Zugriff auf deinen eigenen Rechner, deine Dateien oder Apps."
     }
   },
   "collection": {

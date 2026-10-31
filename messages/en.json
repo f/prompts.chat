@@ -1165,6 +1165,18 @@
         "connectEveryone": "Connect a bot to everyone",
         "connectEveryoneHint": "Adds handoffs from the chosen bot to every other bot and back, like a chief of staff."
       }
+    },
+    "computer": {
+      "cloud": "Needs a cloud computer",
+      "local": "Needs your computer",
+      "label": "Computer",
+      "hint": "Does the bot need a computer to run on? This shows as a small icon on the bot.",
+      "none": "No computer",
+      "noneHint": "Runs on its platform alone.",
+      "cloudOption": "Cloud computer",
+      "cloudHint": "Needs its own remote computer, desktop or browser.",
+      "localOption": "Your computer",
+      "localHint": "Needs access to your own machine, files or apps."
     }
   },
   "collection": {
