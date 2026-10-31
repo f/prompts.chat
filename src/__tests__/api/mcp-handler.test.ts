@@ -139,6 +139,9 @@ describe("MCP route", () => {
         "save_bot",
         "list_my_bots",
         "get_my_bot",
+        "list_teams",
+        "get_team",
+        "save_team",
       ]);
     });
 
