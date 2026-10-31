@@ -2655,5 +2655,9 @@
       "description": "서로 작업을 넘겨주는 AI 에이전트 봇 팀을 둘러보고, 각 인계를 확인하고, 팀 전체를 OpenClaw, Hermes Agent, Grok Bot 등에 한 번에 설치하세요.",
       "heading": "봇 팀"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "<code>NONE</code>, <code>CLOUD</code> 컴퓨터 또는 사용자의 <code>LOCAL</code> 컴퓨터가 필요한 봇만",
+    "computerRequirementInput": "<code>NONE</code>(기본값), 봇이 자체 원격 컴퓨터, 데스크톱 또는 브라우저가 필요하면 <code>CLOUD</code>, 사용자의 기기, 파일 또는 앱이 필요하면 <code>LOCAL</code>"
   }
 }

@@ -2667,5 +2667,9 @@
       "description": "İşi bir-birinə ötürən süni intellekt agent botlarından ibarət komandalara bax, hər ötürməni gör və bütün komandanı OpenClaw, Hermes Agent, Grok Bot və digərlərində bir dəfəyə quraşdır.",
       "heading": "Bot komandaları"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "Yalnız <code>NONE</code>, <code>CLOUD</code> kompüter və ya istifadəçinin <code>LOCAL</code> kompüterini tələb edən botlar",
+    "computerRequirementInput": "<code>NONE</code> (standart), bot öz uzaq kompüterinə, masaüstünə və ya brauzerinə ehtiyac duyduqda <code>CLOUD</code>, istifadəçinin öz cihazına, fayllarına və ya tətbiqlərinə ehtiyac duyduqda <code>LOCAL</code>"
   }
 }

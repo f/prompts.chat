@@ -2651,5 +2651,9 @@
       "description": "עיין בצוותים של בוטי סוכני AI שמעבירים עבודה זה לזה, צפה בכל העברה והתקן צוות שלם ב-OpenClaw, ‏Hermes Agent, ‏Grok Bot ועוד בבת אחת.",
       "heading": "צוותי בוטים"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "רק בוטים שצריכים <code>NONE</code>, מחשב <code>CLOUD</code> או את המחשב <code>LOCAL</code> של המשתמש",
+    "computerRequirementInput": "<code>NONE</code> (ברירת מחדל), <code>CLOUD</code> כשהבוט צריך מחשב מרוחק, שולחן עבודה או דפדפן משלו, או <code>LOCAL</code> כשהוא צריך את המחשב, הקבצים או האפליקציות של המשתמש"
   }
 }

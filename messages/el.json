@@ -2658,5 +2658,9 @@
       "description": "Περιηγηθείτε σε ομάδες AI bots που παραδίδουν δουλειά το ένα στο άλλο, δείτε κάθε παράδοση και εγκαταστήστε μια ολόκληρη ομάδα στο OpenClaw, Hermes Agent, Grok Bot και αλλού με μία κίνηση.",
       "heading": "Ομάδες bots"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "Μόνο bots που χρειάζονται <code>NONE</code>, έναν υπολογιστή <code>CLOUD</code> ή τον υπολογιστή <code>LOCAL</code> του χρήστη",
+    "computerRequirementInput": "<code>NONE</code> (προεπιλογή), <code>CLOUD</code> όταν το bot χρειάζεται δικό του απομακρυσμένο υπολογιστή, επιφάνεια εργασίας ή πρόγραμμα περιήγησης, ή <code>LOCAL</code> όταν χρειάζεται τη συσκευή, τα αρχεία ή τις εφαρμογές του χρήστη"
   }
 }

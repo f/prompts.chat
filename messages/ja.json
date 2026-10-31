@@ -2655,5 +2655,9 @@
       "description": "互いに作業を引き継ぐ AI エージェントボットのチームを閲覧し、各引き継ぎを確認して、チーム全体を OpenClaw、Hermes Agent、Grok Bot などに一度にインストールできます。",
       "heading": "ボットチーム"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "<code>NONE</code>、<code>CLOUD</code> コンピューター、またはユーザーの <code>LOCAL</code> コンピューターを必要とするボットのみ",
+    "computerRequirementInput": "<code>NONE</code>（既定）、ボットが専用のリモートコンピューター、デスクトップ、ブラウザーを必要とする場合は <code>CLOUD</code>、ユーザー自身のマシン、ファイル、アプリを必要とする場合は <code>LOCAL</code>"
   }
 }

@@ -2655,5 +2655,9 @@
       "description": "浏览相互交接工作的 AI 智能体机器人团队,查看每一次交接,并将整个团队一次性安装到 OpenClaw、Hermes Agent、Grok Bot 等平台。",
       "heading": "机器人团队"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "仅限需要 <code>NONE</code>、<code>CLOUD</code> 云端电脑或用户 <code>LOCAL</code> 本地电脑的机器人",
+    "computerRequirementInput": "<code>NONE</code>（默认）；机器人需要自己的远程电脑、桌面或浏览器时为 <code>CLOUD</code>；需要用户自己的机器、文件或应用时为 <code>LOCAL</code>"
   }
 }

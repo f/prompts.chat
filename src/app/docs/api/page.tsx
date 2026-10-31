@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { buildPageMetadata } from "@/lib/seo";
@@ -26,6 +27,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ApiDocsPage() {
+  const t = await getTranslations("apiDocs");
+  const code = (chunks: ReactNode) => <code className="text-xs">{chunks}</code>;
   const headersList = await headers();
   const host = headersList.get("host") || "prompts.chat";
   const protocol = host.includes("localhost") ? "http" : "https";
@@ -781,7 +784,7 @@ curl -X POST ${baseUrl}/api/mcp \\
                     <TableCell className="font-mono text-xs">computerRequirement</TableCell>
                     <TableCell className="text-muted-foreground text-xs">string</TableCell>
                     <TableCell className="text-xs">No</TableCell>
-                    <TableCell className="text-muted-foreground text-sm">Only bots that need <code className="text-xs">NONE</code>, a <code className="text-xs">CLOUD</code> computer or the user&apos;s <code className="text-xs">LOCAL</code> computer</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">{t.rich("computerRequirementFilter", { code })}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell className="font-mono text-xs">category</TableCell>
@@ -919,7 +922,7 @@ curl -X POST ${baseUrl}/api/mcp \\
                     <TableCell className="font-mono text-xs">computerRequirement</TableCell>
                     <TableCell className="text-muted-foreground text-xs">string</TableCell>
                     <TableCell className="text-xs">No</TableCell>
-                    <TableCell className="text-muted-foreground text-sm"><code className="text-xs">NONE</code> (default), <code className="text-xs">CLOUD</code> when the bot needs its own remote computer, desktop or browser, or <code className="text-xs">LOCAL</code> when it needs the user&apos;s own machine, files or apps</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">{t.rich("computerRequirementInput", { code })}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell className="font-mono text-xs">routines</TableCell>

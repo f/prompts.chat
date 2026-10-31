@@ -2651,5 +2651,9 @@
       "description": "تیم‌هایی از بات‌های عامل هوش مصنوعی را ببینید که کار را به یکدیگر می‌سپارند، هر واگذاری را مشاهده کنید و یک تیم کامل را یک‌جا روی OpenClaw، Hermes Agent، Grok Bot و دیگر پلتفرم‌ها نصب کنید.",
       "heading": "تیم‌های بات"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "فقط ربات‌هایی که به <code>NONE</code>، رایانه <code>CLOUD</code> یا رایانه <code>LOCAL</code> کاربر نیاز دارند",
+    "computerRequirementInput": "<code>NONE</code> (پیش‌فرض)، <code>CLOUD</code> وقتی ربات به رایانه، دسکتاپ یا مرورگر راه‌دور خودش نیاز دارد، یا <code>LOCAL</code> وقتی به دستگاه، فایل‌ها یا برنامه‌های خود کاربر نیاز دارد"
   }
 }

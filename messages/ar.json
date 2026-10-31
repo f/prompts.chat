@@ -2653,5 +2653,9 @@
       "description": "تصفّح فرقًا من بوتات وكلاء الذكاء الاصطناعي تسلّم العمل لبعضها، وشاهد كل تسليم، وثبّت فريقًا كاملًا على OpenClaw وHermes Agent وGrok Bot وغيرها دفعة واحدة.",
       "heading": "فرق البوتات"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "فقط البوتات التي تحتاج <code>NONE</code> أو حاسوب <code>CLOUD</code> أو حاسوب المستخدم <code>LOCAL</code>",
+    "computerRequirementInput": "<code>NONE</code> (الافتراضي)، و<code>CLOUD</code> عندما يحتاج البوت إلى حاسوب بعيد أو سطح مكتب أو متصفح خاص به، و<code>LOCAL</code> عندما يحتاج إلى جهاز المستخدم أو ملفاته أو تطبيقاته"
   }
 }

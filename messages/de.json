@@ -2667,5 +2667,9 @@
       "description": "Entdecke Teams von KI-Agenten-Bots, die sich gegenseitig Arbeit übergeben, sieh jede Übergabe und installiere ein ganzes Team auf OpenClaw, Hermes Agent, Grok Bot und mehr in einem Schritt.",
       "heading": "Bot-Teams"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "Nur Bots, die <code>NONE</code>, einen <code>CLOUD</code>-Computer oder den <code>LOCAL</code>-Computer des Nutzers benötigen",
+    "computerRequirementInput": "<code>NONE</code> (Standard), <code>CLOUD</code>, wenn der Bot einen eigenen entfernten Computer, Desktop oder Browser braucht, oder <code>LOCAL</code>, wenn er den Rechner, die Dateien oder Apps des Nutzers braucht"
   }
 }

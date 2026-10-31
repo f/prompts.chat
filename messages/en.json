@@ -2671,5 +2671,9 @@
       "description": "Browse teams of AI agent bots that hand work off to each other, see every handoff, and install a whole team on OpenClaw, Hermes Agent, Grok Bot and more in one go.",
       "heading": "Bot Teams"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "Only bots that need <code>NONE</code>, a <code>CLOUD</code> computer or the user's <code>LOCAL</code> computer",
+    "computerRequirementInput": "<code>NONE</code> (default), <code>CLOUD</code> when the bot needs its own remote computer, desktop or browser, or <code>LOCAL</code> when it needs the user's own machine, files or apps"
   }
 }

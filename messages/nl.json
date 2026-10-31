@@ -2658,5 +2658,9 @@
       "description": "Bekijk teams van AI-agentbots die werk aan elkaar overdragen, zie elke overdracht en installeer een heel team in één keer op OpenClaw, Hermes Agent, Grok Bot en meer.",
       "heading": "Botteams"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "Alleen bots die <code>NONE</code>, een <code>CLOUD</code>-computer of de <code>LOCAL</code>-computer van de gebruiker nodig hebben",
+    "computerRequirementInput": "<code>NONE</code> (standaard), <code>CLOUD</code> als de bot een eigen externe computer, desktop of browser nodig heeft, of <code>LOCAL</code> als hij de machine, bestanden of apps van de gebruiker nodig heeft"
   }
 }

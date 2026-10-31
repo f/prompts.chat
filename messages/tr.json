@@ -2666,5 +2666,9 @@
       "description": "İşi birbirine devreden yapay zekâ ajan botlarından oluşan ekiplere göz at, her devri gör ve tüm ekibi OpenClaw, Hermes Agent, Grok Bot ve daha fazlasına tek seferde kur.",
       "heading": "Bot Ekipleri"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "Yalnızca <code>NONE</code>, bir <code>CLOUD</code> bilgisayar veya kullanıcının <code>LOCAL</code> bilgisayarını gerektiren botlar",
+    "computerRequirementInput": "<code>NONE</code> (varsayılan), bot kendi uzak bilgisayarına, masaüstüne veya tarayıcısına ihtiyaç duyduğunda <code>CLOUD</code>, kullanıcının kendi makinesine, dosyalarına veya uygulamalarına ihtiyaç duyduğunda <code>LOCAL</code>"
   }
 }

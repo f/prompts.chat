@@ -2670,5 +2670,9 @@
       "description": "Parcourez des équipes de bots d'agents IA qui se passent le travail, consultez chaque passation et installez une équipe entière sur OpenClaw, Hermes Agent, Grok Bot et plus en une seule fois.",
       "heading": "Équipes de bots"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "Uniquement les bots qui nécessitent <code>NONE</code>, un ordinateur <code>CLOUD</code> ou l'ordinateur <code>LOCAL</code> de l'utilisateur",
+    "computerRequirementInput": "<code>NONE</code> (par défaut), <code>CLOUD</code> quand le bot a besoin de son propre ordinateur distant, bureau ou navigateur, ou <code>LOCAL</code> quand il a besoin de la machine, des fichiers ou des applications de l'utilisateur"
   }
 }
