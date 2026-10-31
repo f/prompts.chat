@@ -91,3 +91,26 @@ export const mcpWriteToolLimiter = new RateLimiter({ max: 5, windowSeconds: 60 }
 
 /** AI-powered tools (improve_prompt) – 2 req / min per identifier */
 export const mcpAiToolLimiter = new RateLimiter({ max: 2, windowSeconds: 60 });
+
+// ---------------------------------------------------------------------------
+// Limiter for public search endpoints
+// ---------------------------------------------------------------------------
+
+/**
+ * AI semantic search (/api/search/ai) – 10 req / min per client IP.
+ * Each request can trigger OpenAI calls and a full scan of stored embeddings.
+ */
+export const aiSearchLimiter = new RateLimiter({ max: 10, windowSeconds: 60 });
+
+/**
+ * Best-effort client identifier for rate limiting Fetch API requests
+ * (App Router route handlers). Like the MCP endpoint, it uses the first
+ * `x-forwarded-for` hop, falling back to `x-real-ip`, then "unknown".
+ */
+export function getClientIdentifier(headers: Headers): string {
+  return (
+    headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    headers.get("x-real-ip")?.trim() ||
+    "unknown"
+  );
+}

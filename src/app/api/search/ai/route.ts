@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { semanticSearch, isAISearchEnabled } from "@/lib/ai/embeddings";
+import { parseLimit } from "@/lib/pagination";
+import { aiSearchLimiter, getClientIdentifier } from "@/lib/rate-limit";
+
+const DEFAULT_LIMIT = 20;
+const MAX_LIMIT = 50;
+const MAX_QUERY_LENGTH = 500;
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,12 +19,35 @@ export async function GET(request: NextRequest) {
 
     const searchParams = request.nextUrl.searchParams;
     const query = searchParams.get("q");
-    const limit = parseInt(searchParams.get("limit") || "20");
+    const limit = parseLimit(searchParams.get("limit"), {
+      defaultValue: DEFAULT_LIMIT,
+      max: MAX_LIMIT,
+    });
 
     if (!query || query.trim().length === 0) {
       return NextResponse.json(
         { error: "Query is required" },
         { status: 400 }
+      );
+    }
+
+    if (query.length > MAX_QUERY_LENGTH) {
+      return NextResponse.json(
+        { error: `Query must be at most ${MAX_QUERY_LENGTH} characters` },
+        { status: 400 }
+      );
+    }
+
+    // Each search may call OpenAI (translation + embedding) and scans all
+    // stored embeddings, so limit how often a single client can trigger it.
+    const rateLimit = aiSearchLimiter.check(getClientIdentifier(request.headers));
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: `Rate limit exceeded. Try again in ${rateLimit.retryAfterSeconds}s.` },
+        {
+          status: 429,
+          headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+        }
       );
     }
 
