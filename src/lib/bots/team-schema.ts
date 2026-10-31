@@ -73,6 +73,9 @@ export const botTeamInputSchema = z
     }
   });
 
+/** Body of PATCH /api/bots/teams/[slug] and /api/admin/teams/[id]; admins only */
+export const teamModerationSchema = z.object({ isUnlisted: z.boolean() }).strict();
+
 export type BotTeamInput = z.output<typeof botTeamInputSchema>;
 export type BotTeamMemberInput = z.output<typeof botTeamMemberInputSchema>;
 export type BotTeamLinkInput = z.output<typeof botTeamLinkInputSchema>;

@@ -143,6 +143,7 @@ describe("MCP team tools", () => {
         { id: "b", name: "Bot b", role: null, computerRequirements: [] },
       ],
       handoffCount: 1,
+      createdAt: "2026-02-01T00:00:00.000Z",
       link: "https://prompts.chat/bots/teams/research-crew",
     });
     expect(result.structuredContent).toEqual(data);

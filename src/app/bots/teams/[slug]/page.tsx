@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { ArrowLeft, ArrowRight, Star, Users, Workflow } from "lucide-react";
+import { ArrowLeft, ArrowRight, Shield, Star, Users, Workflow } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { Badge } from "@/components/ui/badge";
 import { BotCard } from "@/components/bots/bot-card";
@@ -11,6 +11,7 @@ import { BotTeamsGraph } from "@/components/bots/teams/bot-teams-graph";
 import { BotTeamActions } from "@/components/bots/teams/bot-team-actions";
 import { TeamInstall } from "@/components/bots/teams/team-install";
 import { TeamMarkdown } from "@/components/bots/teams/team-markdown";
+import { UnlistTeamButton } from "@/components/bots/teams/unlist-team-button";
 import { PromptAuthor } from "@/components/prompts/prompt-author";
 import { UpvoteButton } from "@/components/prompts/upvote-button";
 import { JsonLd, breadcrumbSchema } from "@/components/seo/structured-data";
@@ -24,13 +25,15 @@ interface BotTeamPageProps {
 
 export async function generateMetadata({ params }: BotTeamPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const team = await getTeam({ slug });
+  const session = await auth();
+  const team = await getTeam({ slug }, session?.user ? { id: session.user.id, role: session.user.role } : null);
   if (!team || team.members.length === 0) return { robots: NOINDEX_ROBOTS };
   const names = team.members.map(({ bot }) => bot.title).join(", ");
   return buildPageMetadata({
     title: team.title,
     description: toMetaDescription(teamExcerpt(team.description, 500) || names),
     path: getBotTeamUrl(team.slug),
+    noindex: team.isUnlisted,
   });
 }
 
@@ -44,6 +47,7 @@ export default async function BotTeamPage({ params }: BotTeamPageProps) {
   const t = await getTranslations("bots.teams");
   const tNav = await getTranslations("nav");
   const tSeo = await getTranslations("seo.botTeams");
+  const tPrompts = await getTranslations("prompts");
   const baseUrl = getBaseUrl();
   const path = getBotTeamUrl(team.slug);
   const titles = new Map(team.members.map(({ bot }) => [bot.id, bot]));
@@ -85,7 +89,9 @@ export default async function BotTeamPage({ params }: BotTeamPageProps) {
           </div>
           <h1 className="min-w-0 flex-1 text-xl sm:text-2xl font-semibold wrap-anywhere">{team.title}</h1>
           {team.isFeatured && <Star className="h-4 w-4 shrink-0 fill-yellow-500 text-yellow-500" aria-label={t("featured")} />}
+          {team.isUnlisted && <Badge variant="outline" className="shrink-0">{t("unlisted")}</Badge>}
         </div>
+        {team.isUnlisted && <p className="text-sm text-muted-foreground">{t("unlistedNotice")}</p>}
         {team.description && <TeamMarkdown className="leading-relaxed">{team.description}</TeamMarkdown>}
         {(team.category || team.tags.length > 0) && (
           <div className="flex flex-wrap items-center gap-2">
@@ -186,6 +192,18 @@ export default async function BotTeamPage({ params }: BotTeamPageProps) {
           )}
         </section>
       </div>
+
+      {viewer?.role === "ADMIN" && (
+        <div className="mt-8 p-4 rounded-lg border border-red-500/30 bg-red-500/5">
+          <div className="flex items-center gap-2 mb-3">
+            <Shield className="h-4 w-4 text-red-500" />
+            <h3 className="text-sm font-semibold text-red-500">{tPrompts("adminArea")}</h3>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <UnlistTeamButton teamId={team.id} isUnlisted={team.isUnlisted} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

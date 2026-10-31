@@ -97,6 +97,8 @@ export const promptUpdateSchema = z.object({
   botConfig: botConfigSchema.optional(),
   /** Replaces every "Better together with" link of the bot; admins only */
   pairings: botPairingsSchema.optional(),
+  /** Hides the prompt or bot from listings, search and profiles; admins only */
+  isUnlisted: z.boolean().optional(),
 });
 
 /** A failed cache revalidation must not fail a write that has already been committed */
@@ -395,7 +397,11 @@ export async function updatePrompt(user: PromptWriter, id: string, body: unknown
     return fail(400, "validation_error", "Invalid input", { details: parsed.error.issues });
   }
 
-  const { tagIds, contributorIds, categoryId, mediaUrl, title, bestWithModels, bestWithMCP, workflowLink, installUrl, botPlatforms, botPlatform, botIcon, botColor, pairings, ...data } = parsed.data;
+  const { tagIds, contributorIds, categoryId, mediaUrl, title, bestWithModels, bestWithMCP, workflowLink, installUrl, botPlatforms, botPlatform, botIcon, botColor, pairings, isUnlisted, ...data } = parsed.data;
+
+  if (isUnlisted !== undefined && user.role !== "ADMIN") {
+    return fail(403, "forbidden", "Only admins can unlist prompts");
+  }
 
   let pairingRows: ReturnType<typeof buildPairingRows> | undefined;
   if (pairings !== undefined) {
@@ -440,6 +446,7 @@ export async function updatePrompt(user: PromptWriter, id: string, body: unknown
     ...(nextBotPlatforms && botPlatformsData(nextBotPlatforms)),
     ...(botIcon !== undefined && { botIcon: botIcon || null }),
     ...(botColor !== undefined && { botColor: botColor || null }),
+    ...(isUnlisted !== undefined && { isUnlisted, unlistedAt: isUnlisted ? new Date() : null }),
   };
 
   // Update prompt
@@ -600,7 +607,7 @@ export async function updatePrompt(user: PromptWriter, id: string, body: unknown
   }
 
   // Revalidate prompts and flow cache
-  revalidateTags(["prompts", "prompt-flow"]);
+  revalidateTags(["prompts", "prompt-flow", ...(isUnlisted !== undefined ? ["categories", "tags"] : [])]);
 
   return {
     ok: true as const,

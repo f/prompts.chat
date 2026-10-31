@@ -438,6 +438,9 @@ model BotTeam {
   authorId    String
   categoryId  String?
   isFeatured  Boolean         @default(false)
+  /// Hidden from listings, search and profiles; the page is visible only to the author and admins
+  isUnlisted  Boolean         @default(false)
+  unlistedAt  DateTime?
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
   author      User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
@@ -450,6 +453,7 @@ model BotTeam {
   @@index([authorId])
   @@index([categoryId])
   @@index([isFeatured, createdAt(sort: Desc)])
+  @@index([isUnlisted, createdAt(sort: Desc)])
   @@map("bot_teams")
 }
 

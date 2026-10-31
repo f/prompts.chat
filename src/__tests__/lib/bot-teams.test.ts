@@ -516,7 +516,7 @@ describe("teams of a bot", () => {
     ]);
     expect(vi.mocked(db.botTeamMember.findMany).mock.calls[0][0]!.where).toEqual({
       botId: "b",
-      team: { members: { some: { bot: { type: "BOT", deletedAt: null, isPrivate: false } } } },
+      team: { isUnlisted: false, members: { some: { bot: { type: "BOT", deletedAt: null, isPrivate: false, isUnlisted: false } } } },
     });
   });
 });

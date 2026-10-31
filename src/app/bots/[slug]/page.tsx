@@ -99,7 +99,7 @@ export default async function BotPage({ params }: BotPageProps) {
       include: { author: { select: { id: true, name: true, username: true, avatar: true } } },
     }),
     getBotPairings(bot.id),
-    getBotTeams(bot.id),
+    getBotTeams(bot.id, session?.user ? { id: session.user.id, role: session.user.role } : null),
   ]);
   const pendingCount = changeRequests.filter((cr) => cr.status === "PENDING").length;
 
@@ -352,6 +352,7 @@ export default async function BotPage({ params }: BotPageProps) {
                           {team.title}
                         </Link>
                         {team.isFeatured && <Star className="h-3.5 w-3.5 shrink-0 fill-yellow-500 text-yellow-500" aria-label={t("teams.featured")} />}
+                        {team.isUnlisted && <EyeOff className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-label={t("unlisted")} />}
                       </div>
                       {team.role && <p className="text-xs text-muted-foreground wrap-anywhere">{team.role}</p>}
                       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">

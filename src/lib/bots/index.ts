@@ -181,12 +181,23 @@ export function countBots(filters: Omit<BotListFilters, "sort"> = {}) {
   return db.prompt.count({ where: botListWhere(filters) });
 }
 
-/** A user's bots for their profile; private ones only for the owner */
+/** A user's bots for their profile; private ones only for the owner, unlisted ones for the owner and admins */
 export async function listBotsByAuthor(
   authorId: string,
-  { includePrivate = false, skip = 0, take = 24 }: { includePrivate?: boolean; skip?: number; take?: number } = {}
+  {
+    includePrivate = false,
+    includeUnlisted = includePrivate,
+    skip = 0,
+    take = 24,
+  }: { includePrivate?: boolean; includeUnlisted?: boolean; skip?: number; take?: number } = {}
 ): Promise<{ bots: BotView[]; total: number }> {
-  const where: Prisma.PromptWhereInput = { authorId, type: "BOT", deletedAt: null, ...(includePrivate ? {} : { isPrivate: false }) };
+  const where: Prisma.PromptWhereInput = {
+    authorId,
+    type: "BOT",
+    deletedAt: null,
+    ...(!includePrivate && { isPrivate: false }),
+    ...(!includeUnlisted && { isUnlisted: false }),
+  };
   const [records, total] = await Promise.all([
     db.prompt.findMany({ where, orderBy: { createdAt: "desc" }, skip, take, select: botSelect }),
     db.prompt.count({ where }),

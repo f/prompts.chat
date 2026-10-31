@@ -243,6 +243,51 @@ describe("PATCH /api/prompts/[id]", () => {
     expect(data.title).toBe("Updated Title");
     expect(db.promptVersion.create).toHaveBeenCalled(); // New version created
   });
+
+  it("lets admins unlist a bot with isUnlisted", async () => {
+    vi.mocked(auth).mockResolvedValue({ user: { id: "admin1", role: "ADMIN" } } as never);
+    vi.mocked(db.prompt.findUnique).mockResolvedValue({ authorId: "other-user", content: "original", type: "BOT" } as never);
+    vi.mocked(db.prompt.update).mockResolvedValue({ id: "123", isPrivate: false, isUnlisted: true } as never);
+
+    const request = new Request("http://localhost:3000/api/prompts/123", {
+      method: "PATCH",
+      body: JSON.stringify({ isUnlisted: true }),
+    });
+    const response = await PATCH(request, { params: Promise.resolve({ id: "123" }) });
+
+    expect(response.status).toBe(200);
+    const data = vi.mocked(db.prompt.update).mock.calls[0][0].data as Record<string, unknown>;
+    expect(data.isUnlisted).toBe(true);
+    expect(data.unlistedAt).toBeInstanceOf(Date);
+  });
+
+  it("clears unlistedAt when an admin relists", async () => {
+    vi.mocked(auth).mockResolvedValue({ user: { id: "admin1", role: "ADMIN" } } as never);
+    vi.mocked(db.prompt.findUnique).mockResolvedValue({ authorId: "other-user", content: "original", type: "BOT" } as never);
+    vi.mocked(db.prompt.update).mockResolvedValue({ id: "123", isPrivate: false, isUnlisted: false } as never);
+
+    const request = new Request("http://localhost:3000/api/prompts/123", {
+      method: "PATCH",
+      body: JSON.stringify({ isUnlisted: false }),
+    });
+    await PATCH(request, { params: Promise.resolve({ id: "123" }) });
+
+    expect(vi.mocked(db.prompt.update).mock.calls[0][0].data).toMatchObject({ isUnlisted: false, unlistedAt: null });
+  });
+
+  it("does not let owners change isUnlisted", async () => {
+    vi.mocked(auth).mockResolvedValue({ user: { id: "user1", role: "USER" } } as never);
+    vi.mocked(db.prompt.findUnique).mockResolvedValue({ authorId: "user1", content: "original", type: "BOT" } as never);
+
+    const request = new Request("http://localhost:3000/api/prompts/123", {
+      method: "PATCH",
+      body: JSON.stringify({ isUnlisted: false }),
+    });
+    const response = await PATCH(request, { params: Promise.resolve({ id: "123" }) });
+
+    expect(response.status).toBe(403);
+    expect(db.prompt.update).not.toHaveBeenCalled();
+  });
 });
 
 describe("DELETE /api/prompts/[id]", () => {

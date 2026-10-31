@@ -103,7 +103,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         having: { authorId: { _count: { gte: MIN_LISTING_PROMPTS } } },
       }),
       db.botTeam.findMany({
-        where: { members: { some: { bot: { ...visiblePromptFilter, type: "BOT" } } } },
+        where: { isUnlisted: false, members: { some: { bot: { ...visiblePromptFilter, type: "BOT" } } } },
         select: { slug: true, updatedAt: true },
         orderBy: { updatedAt: "desc" },
         take: MAX_PROMPTS,

@@ -36,7 +36,7 @@ import {
 
 export * from "./team-schema";
 
-/** Who is looking at a team; private member bots are shown only to their author and admins */
+/** Who is looking at a team; private and unlisted member bots are shown only to their author and admins */
 export interface TeamViewer {
   id: string;
   role?: string | null;
@@ -79,6 +79,9 @@ export interface BotTeamView<B extends { id: string } = BotTeamBot> {
   title: string;
   description: string | null;
   isFeatured: boolean;
+  /** Hidden from listings, search and profiles; only the author and admins can open it */
+  isUnlisted: boolean;
+  unlistedAt: Date | null;
   authorId: string;
   author: { username: string; name: string | null; avatar: string | null; verified: boolean };
   voteCount: number;
@@ -92,7 +95,7 @@ export interface BotTeamView<B extends { id: string } = BotTeamBot> {
   links: BotTeamLinkView[];
 }
 
-const visibilityFields = { type: true, isPrivate: true, deletedAt: true, authorId: true } satisfies Prisma.PromptSelect;
+const visibilityFields = { type: true, isPrivate: true, isUnlisted: true, deletedAt: true, authorId: true } satisfies Prisma.PromptSelect;
 
 const teamBotSummarySelect = {
   ...visibilityFields,
@@ -112,6 +115,8 @@ const teamBaseSelect = {
   title: true,
   description: true,
   isFeatured: true,
+  isUnlisted: true,
+  unlistedAt: true,
   authorId: true,
   createdAt: true,
   updatedAt: true,
@@ -146,7 +151,12 @@ type VisibilityRecord = Prisma.PromptGetPayload<{ select: typeof visibilityField
 
 export function canViewTeamBot(bot: VisibilityRecord, viewer: TeamViewer | null): boolean {
   if (bot.type !== "BOT" || bot.deletedAt) return false;
-  return !bot.isPrivate || viewer?.role === "ADMIN" || viewer?.id === bot.authorId;
+  return (!bot.isPrivate && !bot.isUnlisted) || viewer?.role === "ADMIN" || viewer?.id === bot.authorId;
+}
+
+/** Unlisted teams are visible only to their author and admins */
+export function canViewTeam(team: { isUnlisted: boolean; authorId: string }, viewer: TeamViewer | null): boolean {
+  return !team.isUnlisted || viewer?.role === "ADMIN" || viewer?.id === team.authorId;
 }
 
 function toTeamBot(record: TeamSummaryRecord["members"][number]["bot"]): BotTeamBot {
@@ -177,6 +187,8 @@ export function toTeamView<R extends VisibilityRecord & { id: string }, B extend
     title: record.title,
     description: record.description,
     isFeatured: record.isFeatured,
+    isUnlisted: record.isUnlisted,
+    unlistedAt: record.unlistedAt,
     authorId: record.authorId,
     author: record.author,
     voteCount: record._count.votes,
@@ -197,9 +209,12 @@ function detailView(record: TeamDetailRecord, viewer: TeamViewer | null) {
   return toTeamView(record, toBotView, viewer);
 }
 
-/** Teams are listed when at least one member is a public bot */
-const listedTeamWhere = {
-  members: { some: { bot: { type: "BOT", deletedAt: null, isPrivate: false } } },
+const listedBotWhere = { type: "BOT", deletedAt: null, isPrivate: false, isUnlisted: false } satisfies Prisma.PromptWhereInput;
+
+/** Teams are listed when they are not unlisted and at least one member is a public, listed bot */
+export const listedTeamWhere = {
+  isUnlisted: false,
+  members: { some: { bot: listedBotWhere } },
 } satisfies Prisma.BotTeamWhereInput;
 
 export interface TeamListFilters {
@@ -211,6 +226,8 @@ export interface TeamListFilters {
   tagSlugs?: string[];
   /** At least one public member runs on the platform */
   platform?: BotPlatform;
+  /** Also unlisted teams and teams without public members; for admins and a profile's owner */
+  includeUnlisted?: boolean;
 }
 
 export const TEAM_SORTS = ["newest", "oldest", "upvotes"] as const;
@@ -226,12 +243,14 @@ const TEAM_ORDER: Record<TeamSort, Prisma.BotTeamOrderByWithRelationInput[]> = {
   upvotes: [{ votes: { _count: "desc" } }, { createdAt: "desc" }, { id: "desc" }],
 };
 
-function teamListWhere({ q, authorId, categorySlug, tagSlugs = [], platform }: TeamListFilters): Prisma.BotTeamWhereInput {
+function teamListWhere({ q, authorId, categorySlug, tagSlugs = [], platform, includeUnlisted = false }: TeamListFilters): Prisma.BotTeamWhereInput {
   const keywords = (q ?? "").split(",").map((k) => k.trim()).filter(Boolean);
+  const memberBot: Prisma.PromptWhereInput = includeUnlisted ? { type: "BOT", deletedAt: null } : listedBotWhere;
   return {
+    ...(!includeUnlisted && { isUnlisted: false }),
     ...(platform
-      ? { members: { some: { bot: { type: "BOT", deletedAt: null, isPrivate: false, botPlatforms: { has: platform } } } } }
-      : listedTeamWhere),
+      ? { members: { some: { bot: { ...memberBot, botPlatforms: { has: platform } } } } }
+      : !includeUnlisted && { members: listedTeamWhere.members }),
     ...(authorId && { authorId }),
     ...(categorySlug && { category: { OR: [{ slug: categorySlug }, { parent: { slug: categorySlug } }] } }),
     ...(tagSlugs.length > 0 && { AND: tagSlugs.map((slug) => ({ tags: { some: { tag: { slug } } } })) }),
@@ -239,25 +258,30 @@ function teamListWhere({ q, authorId, categorySlug, tagSlugs = [], platform }: T
       OR: keywords.flatMap((keyword) => [
         { title: { contains: keyword, mode: "insensitive" as const } },
         { description: { contains: keyword, mode: "insensitive" as const } },
-        { members: { some: { bot: { title: { contains: keyword, mode: "insensitive" as const }, isPrivate: false } } } },
+        { members: { some: { bot: { title: { contains: keyword, mode: "insensitive" as const }, ...(!includeUnlisted && { isPrivate: false, isUnlisted: false }) } } } },
       ]),
     }),
   };
 }
 
-/** Newest first, with featured teams ahead of the rest, unless sorted otherwise */
+/**
+ * Newest first, with featured teams ahead of the rest unless `featuredFirst` is false (strictly by
+ * creation date, e.g. for moderation scans), or sorted otherwise
+ */
 export async function listTeams({
   skip = 0,
   take = 24,
   viewer = null,
   sort = "newest",
+  featuredFirst = true,
   ...filters
-}: TeamListFilters & { skip?: number; take?: number; viewer?: TeamViewer | null; sort?: TeamSort } = {}) {
+}: TeamListFilters & { skip?: number; take?: number; viewer?: TeamViewer | null; sort?: TeamSort; featuredFirst?: boolean } = {}) {
   const where = teamListWhere(filters);
+  const orderBy = sort === "newest" && !featuredFirst ? TEAM_ORDER.newest.slice(1) : TEAM_ORDER[sort];
   const [records, total] = await Promise.all([
     db.botTeam.findMany({
       where,
-      orderBy: TEAM_ORDER[sort],
+      orderBy,
       skip,
       take,
       select: teamSummarySelect,
@@ -274,10 +298,15 @@ export async function getVotedTeamIds(userId: string | null | undefined, teamIds
   return new Set(votes.map((vote) => vote.teamId));
 }
 
-/** Listed teams the bot is a member of, with its role in each; featured and most upvoted first */
-export async function getBotTeams(botId: string) {
+/**
+ * Listed teams the bot is a member of, with its role in each; featured and most upvoted first.
+ * Admins also see unlisted teams, and authors their own.
+ */
+export async function getBotTeams(botId: string, viewer: TeamViewer | null = null) {
+  const team: Prisma.BotTeamWhereInput =
+    viewer?.role === "ADMIN" ? {} : viewer ? { OR: [listedTeamWhere, { authorId: viewer.id }] } : listedTeamWhere;
   const memberships = await db.botTeamMember.findMany({
-    where: { botId, team: listedTeamWhere },
+    where: { botId, team },
     orderBy: [{ team: { isFeatured: "desc" } }, { team: { votes: { _count: "desc" } } }, { team: { createdAt: "desc" } }],
     take: 12,
     select: {
@@ -288,6 +317,7 @@ export async function getBotTeams(botId: string) {
           slug: true,
           title: true,
           isFeatured: true,
+          isUnlisted: true,
           category: { select: { name: true, slug: true, parent: { select: { name: true } } } },
           _count: { select: { members: true, votes: true } },
         },
@@ -299,6 +329,7 @@ export async function getBotTeams(botId: string) {
     slug: team.slug,
     title: team.title,
     isFeatured: team.isFeatured,
+    isUnlisted: team.isUnlisted,
     category: team.category,
     memberCount: team._count.members,
     voteCount: team._count.votes,
@@ -339,14 +370,28 @@ export async function getTeamFormOptions() {
   return { categories, tags };
 }
 
-/** A team by id, else by slug, with full member bots */
+/** A team by id, else by slug, with full member bots; null for an unlisted team the viewer may not see */
 export async function getTeam(
   { id, slug }: { id?: string; slug?: string },
   viewer: TeamViewer | null = null
 ): Promise<BotTeamView<BotView> | null> {
   if (!id && !slug) return null;
   const record = await db.botTeam.findUnique({ where: id ? { id } : { slug }, select: teamDetailSelect });
-  return record ? detailView(record, viewer) : null;
+  return record && canViewTeam(record, viewer) ? detailView(record, viewer) : null;
+}
+
+/** Number of teams the user authored that the viewer may see on their profile */
+export function countTeamsByAuthor(authorId: string, { includeUnlisted = false }: { includeUnlisted?: boolean } = {}) {
+  return db.botTeam.count({ where: teamListWhere({ authorId, includeUnlisted }) });
+}
+
+/** Unlists or relists a team */
+export async function setTeamUnlisted(teamId: string, isUnlisted: boolean) {
+  return db.botTeam.update({
+    where: { id: teamId },
+    data: { isUnlisted, unlistedAt: isUnlisted ? new Date() : null },
+    select: { id: true, slug: true, isUnlisted: true, unlistedAt: true },
+  });
 }
 
 export function canEditTeam(team: Pick<BotTeamView<{ id: string }>, "authorId">, user: TeamViewer | null): boolean {
@@ -463,10 +508,12 @@ export function teamSummaryJson(team: BotTeamView<BotTeamBot | BotView>, baseUrl
     description: teamExcerpt(team.description),
     author: team.author.name || team.author.username,
     isFeatured: team.isFeatured,
+    isUnlisted: team.isUnlisted,
     category: botCategoryJson(team),
     tags: botTagsJson(team),
     members: team.members.map(({ bot, role }) => ({ id: bot.id, name: bot.title, role, computerRequirements: bot.computerRequirements })),
     handoffCount: team.links.length,
+    createdAt: team.createdAt.toISOString(),
     link: teamUrl(team, baseUrl),
   };
 }
@@ -481,6 +528,7 @@ export function teamToJson(team: BotTeamView<BotView>, baseUrl: string) {
     title: team.title,
     description: team.description,
     isFeatured: team.isFeatured,
+    isUnlisted: team.isUnlisted,
     author: { username: team.author.username, name: team.author.name },
     category: botCategoryJson(team),
     tags: botTagsJson(team),
@@ -520,15 +568,26 @@ function fail(status: number, error: string, message: string, extra: Record<stri
   return { ok: false, status, body: { error, message, ...extra } };
 }
 
-/** Member ids that are not live bots the writer may add: public ones, their own, or any for admins */
-export async function findInvalidTeamBots(botIds: string[], user: PromptWriter): Promise<string[]> {
+/**
+ * Member ids that are not live bots the writer may add: public, listed ones, their own, or any for
+ * admins. Bots already in the team (`teamId`) stay valid when they are unlisted later.
+ */
+export async function findInvalidTeamBots(botIds: string[], user: PromptWriter, teamId?: string): Promise<string[]> {
   if (botIds.length === 0) return [];
   const found = await db.prompt.findMany({
     where: {
       id: { in: botIds },
       type: "BOT",
       deletedAt: null,
-      ...(user.role === "ADMIN" ? {} : { OR: [{ isPrivate: false }, { authorId: user.id }] }),
+      ...(user.role === "ADMIN"
+        ? {}
+        : {
+            OR: [
+              { isPrivate: false, isUnlisted: false },
+              { authorId: user.id },
+              ...(teamId ? [{ isPrivate: false, botTeamMemberships: { some: { teamId } } }] : []),
+            ],
+          }),
     },
     select: { id: true },
   });
@@ -563,10 +622,10 @@ function linkRows(teamId: string, links: BotTeamLinkInput[]) {
   return links.map((link, order) => ({ teamId, fromBotId: link.fromBotId, toBotId: link.toBotId, label: link.label, order }));
 }
 
-async function checkTeamInput(user: PromptWriter, input: BotTeamInput): Promise<PromptWriteResult<never> | null> {
+async function checkTeamInput(user: PromptWriter, input: BotTeamInput, teamId?: string): Promise<PromptWriteResult<never> | null> {
   const issues = teamLinkIssues(input.members.map((m) => m.botId), input.links);
   if (issues.length > 0) return fail(400, "validation_error", issues[0]);
-  const invalid = await findInvalidTeamBots(input.members.map((m) => m.botId), user);
+  const invalid = await findInvalidTeamBots(input.members.map((m) => m.botId), user, teamId);
   if (invalid.length > 0) {
     return fail(400, "invalid_bots", "Some bots do not exist or cannot be added to a team", { botIds: invalid });
   }
@@ -629,7 +688,7 @@ export async function updateTeam(
   teamId: string,
   input: BotTeamInput
 ): Promise<PromptWriteResult<BotTeamView<BotView>>> {
-  const invalid = await checkTeamInput(user, input);
+  const invalid = await checkTeamInput(user, input, teamId);
   if (invalid) return invalid;
 
   await db.$transaction(async (tx) => {

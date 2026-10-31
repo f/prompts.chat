@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { authorizeTeamWrite, parseTeamBody } from "@/lib/bots/team-api";
-import { canEditTeam, deleteTeam, getTeam, teamToJson, updateTeam } from "@/lib/bots/teams";
+import { canEditTeam, deleteTeam, getTeam, setTeamUnlisted, teamModerationSchema, teamToJson, updateTeam } from "@/lib/bots/teams";
 import { getBaseUrl } from "@/lib/seo";
 
 interface RouteParams {
@@ -35,6 +35,33 @@ export async function PUT(request: Request, { params }: RouteParams) {
     return NextResponse.json({ id: result.data.id, slug: result.data.slug });
   } catch (error) {
     console.error("Update bot team error:", error);
+    return NextResponse.json({ error: "server_error", message: "Something went wrong" }, { status: 500 });
+  }
+}
+
+/** Moderation fields; admins only. Body: { isUnlisted: boolean } */
+export async function PATCH(request: Request, { params }: RouteParams) {
+  try {
+    const { slug } = await params;
+    const authorized = await authorizeTeamWrite(request);
+    if ("response" in authorized) return authorized.response;
+    if (authorized.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "forbidden", message: "Only admins can unlist teams" }, { status: 403 });
+    }
+    const parsed = teamModerationSchema.safeParse(await request.json().catch(() => null));
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "validation_error", message: parsed.error.issues[0]?.message ?? "Invalid body", details: parsed.error.issues },
+        { status: 400 }
+      );
+    }
+    const team = await getTeam({ slug }, authorized.user);
+    if (!team) return notFound();
+
+    const updated = await setTeamUnlisted(team.id, parsed.data.isUnlisted);
+    return NextResponse.json(updated);
+  } catch (error) {
+    console.error("Moderate bot team error:", error);
     return NextResponse.json({ error: "server_error", message: "Something went wrong" }, { status: 500 });
   }
 }
