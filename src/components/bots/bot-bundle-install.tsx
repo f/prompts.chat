@@ -19,11 +19,14 @@ import type { BotBundleInstallOption } from "@/lib/bots/pairings";
 import { analyticsBot } from "@/lib/analytics";
 
 interface BotBundleInstallProps {
+  /** Analytics id: the bot's id, or "team:<id>" for a team */
   botId: string;
   botTitle: string;
   /** The bot plus every paired bot */
   botCount: number;
   options: BotBundleInstallOption[];
+  /** Replace the "Install all together" button, title and description, e.g. for a team */
+  labels?: { trigger: string; title: string; description: string };
 }
 
 function BundlePlatformInstall({ botId, option }: { botId: string; option: BotBundleInstallOption }) {
@@ -94,22 +97,22 @@ function BundlePlatformInstall({ botId, option }: { botId: string; option: BotBu
 }
 
 /** "Install all together": the bot's install prompt and commands, extended to its paired bots */
-export function BotBundleInstall({ botId, botTitle, botCount, options }: BotBundleInstallProps) {
+export function BotBundleInstall({ botId, botTitle, botCount, options, labels }: BotBundleInstallProps) {
   const t = useTranslations("bots");
   if (options.length === 0) return null;
 
   return (
     <Dialog onOpenChange={(open) => open && analyticsBot.installAllOpen(botId, botCount)}>
       <DialogTrigger asChild>
-        <Button size="sm" variant="outline" className="h-8 text-xs">
+        <Button size="sm" variant={labels ? "default" : "outline"} className="h-8 text-xs">
           <Layers className="h-3.5 w-3.5" />
-          {t("installAllTogether")}
+          {labels?.trigger ?? t("installAllTogether")}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>{t("installAllTitle", { count: botCount })}</DialogTitle>
-          <DialogDescription>{t("installAllDescription", { bot: botTitle })}</DialogDescription>
+          <DialogTitle>{labels?.title ?? t("installAllTitle", { count: botCount })}</DialogTitle>
+          <DialogDescription>{labels?.description ?? t("installAllDescription", { bot: botTitle })}</DialogDescription>
         </DialogHeader>
         {options.length > 1 ? (
           <Tabs defaultValue={options[0].platform} className="min-w-0 gap-4">

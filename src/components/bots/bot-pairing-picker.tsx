@@ -23,12 +23,48 @@ export interface BotPairingValue {
   note: string;
 }
 
-interface SearchResult {
+export interface BotSearchResult {
   id: string;
   name: string;
   icon: string | null;
   color: string | null;
 }
+
+/** Public bots matching the query on /api/bots, debounced; `extra` widens the page so filtering out picked bots still fills it */
+export function useBotSearch(query: string, limit: number, extra = 0) {
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState<BotSearchResult[]>([]);
+
+  useEffect(() => {
+    if (!query) {
+      setResults([]);
+      return;
+    }
+    const controller = new AbortController();
+    const timeout = setTimeout(async () => {
+      setLoading(true);
+      try {
+        // A comma would split the query into separate keywords on /api/bots
+        const params = new URLSearchParams({ q: query.replace(/,/g, " "), limit: String(limit + extra) });
+        const response = await fetch(`/api/bots?${params}`, { signal: controller.signal });
+        if (!response.ok) throw new Error("Search failed");
+        const data: { bots: BotSearchResult[] } = await response.json();
+        setResults(data.bots);
+      } catch (error) {
+        if ((error as Error).name !== "AbortError") setResults([]);
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    }, 250);
+    return () => {
+      clearTimeout(timeout);
+      controller.abort();
+    };
+  }, [query, limit, extra]);
+
+  return { loading, results };
+}
+
 
 interface BotPairingPickerProps {
   /** The bot being edited, never offered as its own pair */
@@ -44,43 +80,15 @@ export function BotPairingPicker({ botId, value, onChange }: BotPairingPickerPro
   const t = useTranslations("bots.form");
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState<SearchResult[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const query = search.trim();
-
-  useEffect(() => {
-    if (!query) {
-      setResults([]);
-      return;
-    }
-    const controller = new AbortController();
-    const timeout = setTimeout(async () => {
-      setLoading(true);
-      try {
-        // A comma would split the query into separate keywords on /api/bots
-        const params = new URLSearchParams({ q: query.replace(/,/g, " "), limit: String(SEARCH_LIMIT + value.length + 1) });
-        const response = await fetch(`/api/bots?${params}`, { signal: controller.signal });
-        if (!response.ok) throw new Error("Search failed");
-        const data: { bots: SearchResult[] } = await response.json();
-        setResults(data.bots);
-      } catch (error) {
-        if ((error as Error).name !== "AbortError") setResults([]);
-      } finally {
-        if (!controller.signal.aborted) setLoading(false);
-      }
-    }, 250);
-    return () => {
-      clearTimeout(timeout);
-      controller.abort();
-    };
-  }, [query, value.length]);
+  const { loading, results } = useBotSearch(query, SEARCH_LIMIT, value.length + 1);
 
   const selectedIds = new Set(value.map((pairing) => pairing.botId));
   const options = results.filter((bot) => bot.id !== botId && !selectedIds.has(bot.id)).slice(0, SEARCH_LIMIT);
   const isFull = value.length >= MAX_BOT_PAIRINGS;
 
-  const add = (bot: SearchResult) => {
+  const add = (bot: BotSearchResult) => {
     onChange([
       ...value,
       {

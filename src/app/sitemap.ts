@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { db } from "@/lib/db";
 import { NON_BOT_PROMPTS } from "@/lib/prompt-list";
 import { getAllChapters } from "@/lib/book/chapters";
-import { getBotUrl, getPromptUrl } from "@/lib/urls";
+import { getBotTeamUrl, getBotUrl, getPromptUrl } from "@/lib/urls";
 import { getBaseUrl, toSitemapImageUrl } from "@/lib/seo";
 
 // Revalidate every 5 minutes so new prompts reach crawlers quickly
@@ -34,6 +34,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPaths = [
     "",
     "/bots",
+    "/bots/teams",
     "/prompts",
     "/discover",
     "/categories",
@@ -60,7 +61,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Dynamic pages - skip if database is unavailable (e.g., during build)
   try {
-    const [latestPrompt, categories, categoryUpdates, prompts, bots, tags, authors] = await Promise.all([
+    const [latestPrompt, categories, categoryUpdates, prompts, bots, tags, authors, teams] = await Promise.all([
       db.prompt.findFirst({
         where: listedPromptFilter,
         orderBy: { updatedAt: "desc" },
@@ -101,6 +102,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         _max: { updatedAt: true },
         having: { authorId: { _count: { gte: MIN_LISTING_PROMPTS } } },
       }),
+      db.botTeam.findMany({
+        where: { members: { some: { bot: { ...visiblePromptFilter, type: "BOT" } } } },
+        select: { slug: true, updatedAt: true },
+        orderBy: { updatedAt: "desc" },
+        take: MAX_PROMPTS,
+      }),
     ]);
 
     const authorUsers = await db.user.findMany({
@@ -114,6 +121,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${baseUrl}${path}`,
       ...(latestUpdate && listingPaths.has(path) && { lastModified: latestUpdate }),
       ...(path === "/bots" && bots[0] && { lastModified: bots[0].updatedAt }),
+      ...(path === "/bots/teams" && teams[0] && { lastModified: teams[0].updatedAt }),
     }));
 
     const categoryStats = new Map(categoryUpdates.map((c) => [c.categoryId, c]));
@@ -129,7 +137,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: bot.updatedAt,
     }));
 
-    const promptPages: MetadataRoute.Sitemap = prompts.slice(0, MAX_PROMPTS - bots.length).map((prompt) => {
+    const teamPages: MetadataRoute.Sitemap = teams.map((team) => ({
+      url: `${baseUrl}${getBotTeamUrl(team.slug)}`,
+      lastModified: team.updatedAt,
+    }));
+
+    const promptPages: MetadataRoute.Sitemap = prompts.slice(0, Math.max(0, MAX_PROMPTS - bots.length - teams.length)).map((prompt) => {
       const image = prompt.type === "IMAGE" && prompt.mediaUrl ? toSitemapImageUrl(prompt.mediaUrl) : null;
       return {
         url: `${baseUrl}${getPromptUrl(prompt.id, prompt.slug)}`,
@@ -151,7 +164,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: authorUpdates.get(user.id) ?? undefined,
     }));
 
-    return [...staticPages, ...bookPages, ...categoryPages, ...tagPages, ...botPages, ...promptPages, ...profilePages];
+    return [...staticPages, ...bookPages, ...categoryPages, ...tagPages, ...botPages, ...teamPages, ...promptPages, ...profilePages];
   } catch {
     // Database unavailable (build time) - return static and book pages only
     const staticPages: MetadataRoute.Sitemap = staticPaths.map((path) => ({ url: `${baseUrl}${path}` }));

@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BotCard } from "@/components/bots/bot-card";
 import { BotFilters } from "@/components/bots/bot-filters";
@@ -92,12 +92,20 @@ export default async function BotsPage({ searchParams }: BotsPageProps) {
           <h1 className="text-lg font-semibold">{tSeo("heading")}</h1>
           <span className="text-xs text-muted-foreground">{t("count", { count: total })}</span>
         </div>
-        <Button size="sm" className="h-8 text-xs shrink-0" asChild>
-          <Link href="/bots/new">
-            <Plus className="h-3.5 w-3.5 mr-1" />
-            {t("create")}
-          </Link>
-        </Button>
+        <div className="flex shrink-0 items-center gap-2">
+          <Button size="sm" variant="outline" className="h-8 text-xs" asChild>
+            <Link href="/bots/teams">
+              <Users className="h-3.5 w-3.5 mr-1" />
+              {t("teams.link")}
+            </Link>
+          </Button>
+          <Button size="sm" className="h-8 text-xs" asChild>
+            <Link href="/bots/new">
+              <Plus className="h-3.5 w-3.5 mr-1" />
+              {t("create")}
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <p className="text-sm text-muted-foreground mb-4">{t("description")}</p>
