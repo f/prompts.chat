@@ -331,20 +331,22 @@ docker compose exec -T db psql -U prompts prompts < backup.sql
 
 ## Resource Requirements
 
-**Runtime** (after first build):
+**Runtime** (using the default pre-built image):
 - 1 CPU core
 - 1GB RAM
 - 2GB disk space
 
-**First-run build** (Next.js compilation on startup):
+*Note: The default `docker compose up -d` uses a pre-built image and does **not** compile Next.js on startup, avoiding memory spikes.*
+
+**Local Image Build** (only if using `--build`):
 - 1 CPU core
 - Higher memory required (OOM may occur with low limits)
 - 2GB disk space
 
-> ⚠️ If you see `Killed` followed by `exited with code 137` during first startup,
-> your Docker container likely ran out of memory during the build step.
-> Increasing Docker's memory allocation (e.g., ~4GB or more) can help resolve this.
-> On Docker Desktop: Settings → Resources → Memory.
+> ⚠️ If you run `docker compose up --build` and see `Killed` or `exited with code 137`,
+> your environment ran out of memory during the local Docker image build step.
+> To resolve this, increase Docker's memory allocation (e.g., ~4GB or more) in your settings
+> (On Docker Desktop: Settings → Resources → Memory), or simply omit `--build` to use the pre-built image.
 
 **Recommended for production:**
 - 2 CPU cores
