@@ -247,6 +247,116 @@ Welches Muster du auch nutzt, Arbeit an einen anderen Bot zu übergeben heißt i
 
 Man ist leicht versucht zu glauben, dass Arbeit sicherer wird, wenn man sie auf mehrere Bots verteilt. Das stimmt nicht. Getrennte Rollen helfen jedem Bot, fokussiert zu bleiben; sie sperren nichts weg. Die Dokumentation von Grok Bot sagt ausdrücklich, dass getrennte Bots nicht als Sicherheitsgrenze gelten sollen, und OpenClaw weist darauf hin, dass Bots einander standardmäßig Nachrichten schicken können, solange du das nicht einschränkst. Wenn zwei Arten von Arbeit unterschiedliche Zugriffsrechte brauchen, gib ihnen unterschiedliche Umgebungen oder unterschiedliche Zugangsdaten. Die Vorschau auf die *specialist dots* von OpenAI weist für Organisationen in dieselbe Richtung: Das Unternehmen richtet jeden davon mit einer eigenen Identität, eigenen Zugangsdaten und Zugriff auf genau die Systeme ein, die seine Aufgabe erfordert ([Introducing dots](https://openai.com/index/introducing-dots/)). Hat ein Bot eine eigene Identität, lässt sich sein Zugriff nur für diese Rolle vergeben, überprüfen und wieder entziehen, ganz ähnlich wie bei einer neuen Kollegin oder einem neuen Kollegen.
 
+## Bot-Teams: Rollen und Übergaben
+
+Sobald Sie mehrere Bots haben, taucht eine neue Frage auf. Es geht nicht mehr nur darum, was dieser eine Bot tun soll, sondern darum, wie diese Bots zusammenarbeiten sollen. Grob gesagt gibt es zwei Bilder für die Antwort, und sie führen zu sehr unterschiedlichen Systemen.
+
+Das erste Bild ist ein **Team mit ausdrücklichen Rollen und Übergaben**. Denken Sie an eine kleine Redaktion. Ein Rechercheur sammelt Quellen und übergibt einem Autor ein Recherche-Briefing. Der Autor macht daraus einen Entwurf und reicht ihn an einen Redakteur weiter. Der Redakteur schickt Anmerkungen zurück, und wenn der Text fertig ist, geht er an jemanden, der ihn freigeben darf. Jedes Mitglied weiß, wofür es zuständig ist, und jeder Pfeil zwischen ihnen hat einen Namen: Sie können genau sagen, was darauf weitergereicht wird.
+
+Das zweite Bild ist ein **Schwarm**. Viele Agenten teilen sich ein Ziel und einen Arbeitsbereich, jeder greift auf, was gerade zu tun scheint, und die Ordnung soll sich von selbst einstellen, so wie es in einem Bienenstock oder einem Starenschwarm zu geschehen scheint. Die Idee hat ihren Reiz, und lockere Koordination hat durchaus ihren Nutzen, etwa wenn Sie viele unabhängige Anläufe an ein Problem wollen und den besten behalten möchten. Doch sobald die Arbeit in einer bestimmten Reihenfolge und vor allem richtig erledigt werden muss, wird der Unterschied deutlich:
+
+<Compare
+  before={{ label: "Ein Schwarm, der es selbst herausfinden soll", content: "Ihr seid fünf Agenten: ein Rechercheur, ein Autor, ein Redakteur, ein Faktenprüfer und ein Designer. Arbeitet gemeinsam an einem Launch-Artikel für unser neues Feature. Entscheidet untereinander, wer was macht." }}
+  after={{ label: "Ein Team mit benannten Übergaben", content: "Rechercheur: Sammle fünf aktuelle Quellen zum Feature und übergib dem Autor ein Recherche-Briefing, jede Aussage mit ihrem Link daneben. Autor: Mach aus dem Briefing einen Entwurf mit 600 Wörtern und übergib ihn dem Redakteur. Redakteur: Schick dem Autor höchstens zwei Runden Anmerkungen und übergib dann die Endfassung an mich. Niemand veröffentlicht etwas." }}
+/>
+
+Der erste Prompt ist kürzer, aber er überlässt die wichtigsten Entscheidungen dem Zufall. Wer prüft die Fakten, und wann? Was passiert, wenn Autor und Redakteur sich nicht einig sind? Wann ist der Artikel fertig? Der zweite Prompt beantwortet all das, bevor die Arbeit beginnt, und das hat einen leiseren Vorteil: Sie können ihn **überprüfen**. Steht im fertigen Artikel eine falsche Zahl, können Sie den Übergaben rückwärts folgen und herausfinden, wo der Fehler hineingeraten ist: im Briefing, im Entwurf oder in der Überarbeitung. Sie können ein einzelnes Mitglied für sich testen, indem Sie ihm ein Beispiel dessen geben, was es erhalten würde. Und Sie erfassen die ganze Anordnung mit einem Blick, so wie ein Organigramm. In einem Schwarm lautet die ehrliche Antwort auf die Frage „Wer hat das entschieden?“ oft „Alle, ein bisschen“, und einer solchen Antwort lässt sich schwer vertrauen.
+
+<Callout type="info" title="Ein Schwarm ist eine Metapher">
+Bienen und Stare stimmen sich über Instinkte ab, die sich über Jahrmillionen geformt haben. Software-Agenten haben solche Instinkte nicht. Sie koordinieren sich über die Regeln, die jemand aufgeschrieben hat: wer mit wem sprechen darf und wann Schluss ist. Wenn ein System also einen sich selbst organisierenden Schwarm verspricht, lohnt sich die Frage, wo diese Regeln stehen und ob Sie sie lesen können. Selbst OpenAIs experimentelle Bibliothek mit dem Namen Swarm beruhte auf ausdrücklichen Übergaben, bei denen ein Agent das Gespräch durch einen Funktionsaufruf an einen anderen weitergibt ([OpenAI Swarm](https://github.com/openai/swarm)). Sobald die Regeln dort stehen, wo Sie sie sehen können, haben Sie am Ende doch ein Team mit Übergaben.
+</Callout>
+
+So sieht die Redaktion als Team gezeichnet aus. Jedes Kästchen ist eine Rolle, und jeder Pfeil ist eine Übergabe mit einer Beschriftung, die sagt, was sie transportiert:
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col md:flex-row items-center justify-center gap-3">
+    <div className="px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border-blue-200 dark:border-blue-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">Rechercheur</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">Findet und prüft Quellen</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Recherche-Briefing</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-purple-100 dark:bg-purple-900/50 border-purple-200 dark:border-purple-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">Autor</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">Macht aus dem Briefing einen Entwurf</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Entwurf</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-green-100 dark:bg-green-900/50 border-green-200 dark:border-green-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">Redakteur</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0!">Prüft den Entwurf</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Endfassung</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-amber-100 dark:bg-amber-900/50 border-amber-200 dark:border-amber-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">Sie</p>
+      <p className="text-xs text-amber-600 dark:text-amber-400 m-0!">Geben frei, bevor etwas hinausgeht</p>
+    </div>
+  </div>
+  <p className="text-xs text-center text-muted-foreground mt-4 mb-0!">Redakteur → Autor: Anmerkungen, höchstens zwei Runden</p>
+</div>
+
+### Rollen entwerfen
+
+Eine gute Rolle wird durch das bestimmt, wofür ein Mitglied verantwortlich ist, nicht durch einen beeindruckenden Titel. „Senior-Stratege“ sagt einem Bot sehr wenig. „Lies die Support-Tickets der letzten Woche und übergib die drei häufigsten Beschwerden an den Produkttexter“ sagt ihm fast alles: was er lesen soll, was er liefern soll und wer als Nächstes dran ist. Ein nützlicher Test besteht darin, jede Rolle danach zu beschreiben, was sie **bekommt** und was sie **weitergibt**. Wenn Sie nicht beides ausfüllen können, ist die Rolle wahrscheinlich noch nicht so weit.
+
+Zwei weitere Gewohnheiten helfen. Erstens: Verbinden Sie die Rolle mit dem Team, nicht mit dem Bot. Derselbe Recherche-Bot kann für ein Redaktionsteam Quellen sammeln und für ein Vertriebsteam die Preise der Konkurrenz vergleichen, und jedes Team sollte in ein, zwei Sätzen sagen, was dieser Bot dort tut. Zweitens: Halten Sie das Team klein. Jedes neue Mitglied bringt neue Übergaben mit sich, und jede Übergabe ist eine Stelle, an der Bedeutung verloren gehen kann, ganz wie bei der Stillen Post. Wenn zwei Mitglieder sich immer nur gegenseitig Arbeit zureichen, fragen Sie sich, ob sie nicht eines sein sollten.
+
+### Was in einer Übergabe weitergegeben wird
+
+Wir haben vorhin gesehen, dass die Übergabe von Arbeit an einen anderen Bot eigentlich das Schreiben eines kleinen Prompts ist. In einem Team wandert dieser Prompt einen Pfeil entlang, also lohnt es sich, bei drei Dingen genau zu sein. Die **Beschriftung** benennt, was weitergegeben wird: ein Recherche-Briefing, ein Entwurf, eine Liste fehlschlagender Tests. Der **Inhalt** sagt, was darin stehen muss und in welcher Form, zum Beispiel jede Aussage mit ihrem Link daneben. Und die **Ziellinie** sagt, wann die Arbeit als erledigt gilt, damit das nächste Mitglied weiß, dass es etwas Vollständiges bekommt und nichts Halbfertiges.
+
+Es hilft auch, daran zu denken, dass Übergaben eine Richtung haben. „Der Autor übergibt dem Redakteur einen Entwurf“ ist nicht dasselbe wie „Der Redakteur übergibt dem Autor Anmerkungen“; beide transportieren Verschiedenes aus verschiedenen Gründen. Ein Team kann Pfeile in beide Richtungen haben, aber jede Schleife braucht eine Grenze, etwa höchstens zwei Überarbeitungsrunden, sonst endet sie womöglich nie. Und der empfangende Bot sieht nur, was ihm übergeben wird, nicht das ganze Gespräch des Absenders. Das ist meist ein Vorteil: Der Kontext bleibt bei der Rolle, die ihn braucht, so wie bei Bots, die sich Werkzeuge teilen, ihr Gedächtnis aber für sich behalten.
+
+<InfoGrid items={[
+  { label: "Rolle", description: "Wofür ein Mitglied in diesem Team zuständig ist, in ein, zwei Sätzen. Derselbe Bot kann in einem anderen Team eine andere Rolle spielen.", color: "blue" },
+  { label: "Übergabe", description: "Ein gerichteter, beschrifteter Pfeil von einem Mitglied zum nächsten. Er benennt, was weitergegeben wird und was es enthalten muss.", color: "purple" },
+  { label: "Zweck", description: "Das Ziel, das das ganze Team teilt, einmal aufgeschrieben, damit jedes Mitglied weiß, wozu die Arbeit dient.", color: "green" }
+]} />
+
+### Prompts für ein Team
+
+Wenn Sie ein Team einrichten, schreiben Sie eigentlich einen Prompt in drei Schichten. Die erste ist der **Zweck des Teams**, den alle Mitglieder teilen, damit jedes weiß, wofür die ganze Arbeit gut ist. Die zweite ist die **Verantwortung** jedes Mitglieds, die zu den eigenen Anweisungen des jeweiligen Bots hinzukommt. Die dritte sind die **Übergaben**: wer was an wen weitergibt, und wann. Bevor das Team loslegt, lassen Sie es Ihnen den Ablauf mit eigenen Worten beschreiben, genau wie bei einer Routine. Wenn die Zusammenfassung Sie überrascht, ist eine der Schichten noch nicht klar genug.
+
+Entscheiden Sie auch, wo Sie selbst in diesem Bild stehen. Bevor etwas das Team verlässt, ob eine Nachricht an einen Kunden, ein veröffentlichter Beitrag oder eine Änderung in der Produktion, sollte mindestens ein Pfeil zu Ihnen führen. Und denken Sie daran, was wir über getrennte Bots gesagt haben: Verschiedene Rollen helfen jedem Mitglied, fokussiert zu bleiben, aber sie sind keine Mauern. Brauchen zwei Mitglieder unterschiedliche Zugriffsrechte, geben Sie ihnen unterschiedliche Zugangsdaten.
+
+Viele Werkzeuge verfolgen inzwischen diesen ausdrücklichen Ansatz, jedes mit eigenem Vokabular. OpenAIs Agents SDK behandelt Übergaben als grundlegenden Baustein, sodass ein Agent eine Aufgabe an einen anderen weiterreichen kann ([Handoffs](https://openai.github.io/openai-agents-python/handoffs/)). CrewAI bittet Sie, jedem Agenten eine Rolle, ein Ziel und eine Hintergrundgeschichte zu geben ([CrewAI agents](https://docs.crewai.com/en/concepts/agents)). LangGraph beschreibt einen Arbeitsablauf als Graphen aus Knoten und den Kanten dazwischen ([LangGraph graph API](https://docs.langchain.com/oss/python/langgraph/graph-api)). Der *Chief of Staff*-Bot von Grok Bot, den wir schon kennengelernt haben, koordiniert die Spezialisten, die neben ihm arbeiten. Der [Teams](https://prompts.chat/bots/teams)-Katalog von prompts.chat teilt Teams als Graph aus Rollen und beschrifteten Übergaben. Die Details unterscheiden sich von Werkzeug zu Werkzeug, aber die Form bleibt dieselbe: benannte Rollen und benannte Dinge, die zwischen ihnen weitergereicht werden.
+
+<Quiz
+  question="Ihr Team aus drei Bots liefert Ihnen einen Launch-Artikel mit einer falschen Statistik. Welcher Aufbau macht es am leichtesten herauszufinden, wo der Fehler hineingeraten ist?"
+  options={[
+    "Ein Schwarm, in dem jeder Agent das gemeinsame Dokument jederzeit bearbeiten darf",
+    "Beschriftete Übergaben, bei denen jedes Mitglied ein benanntes Arbeitsergebnis weitergibt, das Sie öffnen und prüfen können",
+    "Ein vierter Agent, der die anderen drei beobachtet und alles Verdächtige meldet",
+    "Eine Erinnerung im Gedächtnis jedes Bots, seine Zahlen doppelt zu prüfen"
+  ]}
+  correctIndex={1}
+  explanation="Wenn jede Übergabe ein benanntes Arbeitsergebnis trägt, etwa ein Briefing oder einen Entwurf, können Sie sie nacheinander öffnen und sehen, wo die falsche Zahl zuerst auftaucht. Die anderen Ideen fangen vielleicht manche Fehler ab, hinterlassen aber keine Spur, der Sie folgen können."
+/>
+
+<Checklist
+  title="Bevor Sie ein Team an die Arbeit schicken"
+  items={[
+    { text: "Schreiben Sie den Zweck des Teams in ein, zwei Sätzen auf, die alle Mitglieder teilen" },
+    { text: "Geben Sie jedem Mitglied eine Verantwortung, beschrieben durch das, was es bekommt und was es weitergibt" },
+    { text: "Benennen Sie jede Übergabe nach dem, was sie weitergibt" },
+    { text: "Legen Sie fest, was jede Übergabe enthalten muss und wann die Arbeit als erledigt gilt" },
+    { text: "Begrenzen Sie jede Schleife, zum Beispiel auf höchstens zwei Überarbeitungsrunden" },
+    { text: "Lassen Sie alles, was das Team verlässt, zur Freigabe über Sie laufen" },
+    { text: "Geben Sie jedem Mitglied nur den Zugriff, den seine eigene Rolle braucht" },
+    { text: "Testen Sie jedes Mitglied für sich mit einem Beispiel dessen, was es bekommt" }
+  ]}
+/>
+
 ## Sicherheit und Genehmigungen
 
 Hier liegt der Kern der Sache: Ein persistenter Bot handelt, wenn du nicht hinsiehst. In einem Chat siehst du jede Antwort, bevor du irgendetwas damit anfängst. Bei einem persistenten Bot schaut vielleicht überhaupt niemand hin. Umso wichtiger sind seine Grenzen.

@@ -247,6 +247,116 @@ Welk patroon je ook gebruikt, werk overdragen aan een andere bot komt eigenlijk 
 
 Het is verleidelijk om te denken dat werk over meerdere bots verdelen het ook veiliger maakt. Dat is niet zo. Aparte rollen helpen elke bot om gefocust te blijven, maar ze sluiten niets af. De documentatie van Grok Bot zegt uitdrukkelijk dat je aparte Bots niet als beveiligingsgrens moet behandelen, en OpenClaw merkt op dat bots elkaar standaard berichten kunnen sturen, tenzij je dat beperkt. Als twee soorten werk verschillende toegang nodig hebben, geef ze dan verschillende omgevingen of verschillende inloggegevens. De preview van *specialist dots* (gespecialiseerde dots) van OpenAI wijst voor organisaties dezelfde kant op: het bedrijf richt elke dot in met een eigen identiteit, eigen inloggegevens en toegang tot precies de systemen die zijn taak vraagt ([Introducing dots](https://openai.com/index/introducing-dots/)). Als een bot een eigen identiteit heeft, kun je zijn toegang voor alleen die rol verlenen, nakijken en weer intrekken, net zoals je dat bij een nieuwe collega zou doen.
 
+## Teams van bots: rollen en overdrachten
+
+Zodra je meerdere bots hebt, dient zich een nieuwe vraag aan. Het gaat niet meer alleen om wat deze ene bot moet doen, maar om hoe deze bots moeten samenwerken. Grofweg zijn er twee beelden van het antwoord, en ze leiden tot heel verschillende systemen.
+
+Het eerste beeld is een **team met expliciete rollen en overdrachten**. Denk aan een kleine redactie. Een onderzoeker verzamelt bronnen en geeft een schrijver een onderzoeksbriefing. De schrijver maakt daar een concept van en geeft dat door aan een redacteur. De redacteur stuurt opmerkingen terug, en als het stuk klaar is, gaat het naar iemand die het mag goedkeuren. Elk lid weet waarvoor het verantwoordelijk is, en elke pijl tussen hen heeft een naam: je kunt precies zeggen wat erlangs reist.
+
+Het tweede beeld is een **zwerm**. Veel agents delen een doel en een werkruimte, elk pakt op wat er te doen lijkt, en de orde zou vanzelf moeten ontstaan, zoals dat in een bijenkorf of een zwerm spreeuwen lijkt te gebeuren. Het idee is aantrekkelijk, en losse coördinatie heeft echte toepassingen: bijvoorbeeld wanneer je veel onafhankelijke pogingen op een probleem wilt en van plan bent de beste te houden. Maar zodra het werk in een bepaalde volgorde moet gebeuren, en goed moet gebeuren, wordt het verschil duidelijk:
+
+<Compare
+  before={{ label: "Een zwerm die het zelf moet uitzoeken", content: "Jullie zijn vijf agents: een onderzoeker, een schrijver, een redacteur, een factchecker en een ontwerper. Werk samen aan een lanceringsartikel voor onze nieuwe functie. Bepaal onderling wie wat doet." }}
+  after={{ label: "Een team met benoemde overdrachten", content: "Onderzoeker: verzamel vijf recente bronnen over de functie en geef de Schrijver een onderzoeksbriefing, met bij elke bewering de bijbehorende link. Schrijver: maak van de briefing een concept van 600 woorden en geef het aan de Redacteur. Redacteur: stuur de Schrijver hooguit twee rondes opmerkingen en geef daarna de eindversie aan mij. Niemand publiceert iets." }}
+/>
+
+De eerste prompt is korter, maar laat de belangrijkste beslissingen aan het toeval over. Wie controleert de feiten, en wanneer? Wat gebeurt er als schrijver en redacteur het oneens zijn? Wanneer is het artikel af? De tweede prompt beantwoordt dat allemaal voordat het werk begint, en dat levert een stiller voordeel op: je kunt hem **nakijken**. Staat er in het eindartikel een verkeerd getal, dan kun je de overdrachten terug volgen en vinden waar de fout erin sloop: in de briefing, in het concept of in de redactie. Je kunt één lid los testen door het een voorbeeld te geven van wat het zou ontvangen. Je overziet de hele opzet in één oogopslag, zoals je een organogram leest. In een zwerm is het eerlijke antwoord op "wie heeft dit besloten?" vaak "iedereen, een beetje", en zo'n antwoord is moeilijk te vertrouwen.
+
+<Callout type="info" title="Een zwerm is een metafoor">
+Bijen en spreeuwen stemmen zich op elkaar af met instincten die in miljoenen jaren zijn gevormd. Software-agents hebben zulke instincten niet. Ze coördineren via de regels die iemand heeft opgeschreven over wie met wie mag praten en wanneer het ophoudt. Dus als een systeem een zelforganiserende zwerm belooft, is het de moeite waard om te vragen waar die regels staan en of je ze kunt lezen. Zelfs de experimentele bibliotheek van OpenAI met de naam Swarm was gebouwd op expliciete overdrachten, waarbij de ene agent het gesprek aan een andere doorgeeft door een functie aan te roepen ([OpenAI Swarm](https://github.com/openai/swarm)). Zodra de regels staan waar je ze kunt zien, heb je uiteindelijk gewoon een team met overdrachten.
+</Callout>
+
+Zo ziet de redactie eruit als team getekend. Elk vak is een rol, en elke pijl is een overdracht met een label dat zegt wat hij vervoert:
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col md:flex-row items-center justify-center gap-3">
+    <div className="px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border-blue-200 dark:border-blue-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">Onderzoeker</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">Zoekt en controleert bronnen</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Onderzoeksbriefing</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-purple-100 dark:bg-purple-900/50 border-purple-200 dark:border-purple-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">Schrijver</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">Maakt van de briefing een concept</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Concept</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-green-100 dark:bg-green-900/50 border-green-200 dark:border-green-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">Redacteur</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0!">Controleert het concept</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Eindversie</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-amber-100 dark:bg-amber-900/50 border-amber-200 dark:border-amber-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">Jij</p>
+      <p className="text-xs text-amber-600 dark:text-amber-400 m-0!">Keurt goed voordat er iets naar buiten gaat</p>
+    </div>
+  </div>
+  <p className="text-xs text-center text-muted-foreground mt-4 mb-0!">Redacteur → Schrijver: opmerkingen, hooguit twee rondes</p>
+</div>
+
+### De rollen ontwerpen
+
+Een goede rol wordt bepaald door waarvoor een lid verantwoordelijk is, niet door een indrukwekkende titel. "Senior strateeg" zegt een bot weinig. "Lees de supporttickets van vorige week en geef de drie meest voorkomende klachten aan de Productschrijver" zegt bijna alles: wat het moet lezen, wat het moet opleveren en wie daarna komt. Een handige toets is om elke rol te beschrijven aan de hand van wat hij **ontvangt** en wat hij **doorgeeft**. Kun je die twee niet allebei invullen, dan is de rol waarschijnlijk nog niet klaar.
+
+Nog twee gewoonten helpen. Ten eerste: koppel de rol aan het team, niet aan de bot. Dezelfde onderzoeksbot kan voor een redactieteam bronnen verzamelen en voor een salesteam prijzen van concurrenten vergelijken, en elk team zou in een zin of twee moeten zeggen wat die bot daar doet. Ten tweede: houd het team klein. Elk nieuw lid brengt overdrachten mee, en elke overdracht is een plek waar betekenis verloren kan gaan, net als bij het spelletje doorfluisteren. Als twee leden alleen werk aan elkaar doorgeven, vraag je dan af of ze niet één zouden moeten zijn.
+
+### Wat er in een overdracht meegaat
+
+We zagen eerder dat werk overdragen aan een andere bot eigenlijk neerkomt op het schrijven van een kleine prompt. In een team reist die prompt langs een pijl, dus het loont om op drie punten precies te zijn. Het **label** noemt wat er wordt doorgegeven: een onderzoeksbriefing, een concept, een lijst falende tests. De **inhoud** zegt wat het moet bevatten en in welke vorm, bijvoorbeeld elke bewering met de link ernaast. En de **finishlijn** zegt wanneer het werk als af geldt, zodat het volgende lid weet dat het iets compleets ontvangt en niet iets halfs.
+
+Het helpt ook om te onthouden dat overdrachten een richting hebben. "De schrijver geeft een concept aan de redacteur" is niet hetzelfde als "de redacteur geeft opmerkingen aan de schrijver"; ze vervoeren verschillende dingen om verschillende redenen. Een team kan pijlen in beide richtingen hebben, maar elke lus heeft een grens nodig, zoals hooguit twee correctierondes, anders houdt hij misschien nooit op. En de ontvangende bot ziet alleen wat hem wordt overgedragen, niet het hele gesprek van de afzender. Dat is meestal een goede zaak: de context blijft bij de rol die hem nodig heeft, net als bij bots die gereedschap delen maar elk hun eigen geheugen houden.
+
+<InfoGrid items={[
+  { label: "Rol", description: "Waarvoor één lid in dit team verantwoordelijk is, in een zin of twee. Dezelfde bot kan in een ander team een andere rol spelen.", color: "blue" },
+  { label: "Overdracht", description: "Een gerichte pijl met een label van het ene lid naar het andere, die zegt wat er wordt doorgegeven en wat het moet bevatten.", color: "purple" },
+  { label: "Doel", description: "Het doel dat het hele team deelt, één keer opgeschreven zodat elk lid weet waar het werk voor dient.", color: "green" }
+]} />
+
+### Prompts voor een team
+
+Als je een team opzet, schrijf je eigenlijk een prompt in drie lagen. De eerste is het **doel van het team**, dat alle leden delen, zodat elk lid weet waar de hele inspanning voor dient. De tweede is de **verantwoordelijkheid** van elk lid, die aan de eigen instructies van die bot wordt toegevoegd. De derde is het geheel van **overdrachten**: wie geeft wat aan wie, en wanneer. Laat het team, voordat het begint, de werkwijze in eigen woorden aan je beschrijven, net zoals je bij een routine zou doen. Verrast de samenvatting je, dan is een van de lagen nog niet duidelijk.
+
+Bepaal ook waar jij zelf in het plaatje staat. Voordat er iets het team verlaat, of het nu een bericht aan een klant is, een gepubliceerde post of een wijziging in productie, moet er minstens één pijl naar jou leiden. En denk aan wat we over aparte bots zeiden: verschillende rollen helpen elk lid gefocust te blijven, maar het zijn geen muren. Hebben twee leden verschillende toegangsniveaus nodig, geef ze dan verschillende inloggegevens.
+
+Veel tools volgen inmiddels deze expliciete aanpak, elk met een eigen vocabulaire. De Agents SDK van OpenAI behandelt overdrachten als een basisbouwsteen, zodat de ene agent een taak aan een andere kan doorgeven ([Handoffs](https://openai.github.io/openai-agents-python/handoffs/)). CrewAI vraagt je elke agent een rol, een doel en een achtergrondverhaal te geven ([CrewAI agents](https://docs.crewai.com/en/concepts/agents)). LangGraph beschrijft een workflow als een graaf van knooppunten en de verbindingen daartussen ([LangGraph graph API](https://docs.langchain.com/oss/python/langgraph/graph-api)). De *chief of staff*-Bot van Grok Bot, die we eerder tegenkwamen, coördineert de specialisten die naast hem werken. De [Teams](https://prompts.chat/bots/teams)-catalogus van prompts.chat deelt teams als een graaf van rollen met gelabelde overdrachten. De details verschillen per tool, maar de vorm blijft dezelfde: benoemde rollen, en benoemde dingen die tussen hen worden doorgegeven.
+
+<Quiz
+  question="Je team van drie bots levert een lanceringsartikel af met een verkeerde statistiek erin. Welke opzet maakt het het makkelijkst om te vinden waar de fout erin sloop?"
+  options={[
+    "Een zwerm waarin elke agent het gedeelde document kan bewerken wanneer hij wil",
+    "Overdrachten met een label, waarbij elk lid een benoemd stuk werk doorgeeft dat je kunt openen en controleren",
+    "Een vierde agent die de andere drie in de gaten houdt en alles meldt wat verdacht lijkt",
+    "Een herinnering in het geheugen van elke bot om zijn cijfers dubbel te controleren"
+  ]}
+  correctIndex={1}
+  explanation="Als elke overdracht een benoemd stuk werk vervoert, zoals een briefing of een concept, kun je ze een voor een openen en zien waar het verkeerde getal voor het eerst opdook. De andere ideeën vangen misschien sommige fouten af, maar laten je geen spoor om te volgen."
+/>
+
+<Checklist
+  title="Voordat je een team aan het werk zet"
+  items={[
+    { text: "Schrijf het doel van het team op in een zin of twee die alle leden delen" },
+    { text: "Geef elk lid één verantwoordelijkheid, beschreven aan de hand van wat het ontvangt en wat het doorgeeft" },
+    { text: "Noem elke overdracht naar wat er wordt doorgegeven" },
+    { text: "Leg vast wat elke overdracht moet bevatten en wanneer het werk als af geldt" },
+    { text: "Begrens elke lus, bijvoorbeeld tot hooguit twee correctierondes" },
+    { text: "Laat alles wat het team verlaat via jou lopen voor goedkeuring" },
+    { text: "Geef elk lid alleen de toegang die zijn eigen rol nodig heeft" },
+    { text: "Test elk lid los met een voorbeeld van wat het ontvangt" }
+  ]}
+/>
+
 ## Veiligheid en goedkeuringen
 
 Hier komen we bij de kern van de zaak: een persistente bot handelt wanneer jij niet kijkt. In een chat zie je elk antwoord voordat je er iets mee doet. Bij een persistente bot kijkt er misschien helemaal niemand mee. Daardoor worden zijn grenzen veel belangrijker.

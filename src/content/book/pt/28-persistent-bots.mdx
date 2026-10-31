@@ -247,6 +247,116 @@ Seja qual for o padrão, passar trabalho para outro bot é, no fundo, escrever u
 
 É tentador achar que dividir o trabalho entre bots também deixa tudo mais seguro. Não deixa. Papéis separados ajudam cada bot a manter o foco; eles não trancam nada. A documentação do Grok Bot diz com todas as letras para não tratar Bots separados como um limite de segurança, e o OpenClaw observa que os bots podem trocar mensagens entre si por padrão, a menos que você restrinja isso. Se dois tipos de trabalho precisam de níveis de acesso diferentes, dê a eles ambientes ou credenciais diferentes. A prévia dos *specialist dots* (dots especialistas) da OpenAI aponta na mesma direção para as organizações: a empresa configura cada um com identidade própria, credenciais próprias e acesso apenas aos sistemas que o trabalho dele exige ([Introducing dots](https://openai.com/index/introducing-dots/)). Quando um bot tem identidade própria, o acesso dele pode ser concedido, revisado e retirado só para aquela função, mais ou menos como aconteceria com um novo colega.
 
+## Equipes de bots: papéis e passagens de bastão
+
+Quando você tem vários bots, surge uma pergunta nova. Já não se trata só do que este bot deve fazer, mas de como esses bots devem trabalhar juntos. De modo geral, há duas imagens para a resposta, e elas levam a sistemas bem diferentes.
+
+A primeira imagem é uma **equipe com papéis e passagens de bastão explícitos**. Pense em uma pequena redação. Um pesquisador reúne fontes e entrega a um redator um resumo da pesquisa. O redator transforma esse resumo em um rascunho e o passa a um editor. O editor devolve suas observações e, quando o texto está pronto, ele chega a alguém que pode aprová-lo. Cada membro sabe pelo que é responsável, e cada seta entre eles tem um nome: você consegue dizer exatamente o que viaja por ela.
+
+A segunda imagem é um **enxame**. Muitos agentes compartilham um objetivo e um espaço de trabalho, cada um pega o que parece precisar ser feito, e espera-se que a ordem surja sozinha, como parece acontecer em uma colmeia ou em uma revoada de estorninhos. A ideia é atraente, e a coordenação solta tem usos reais: por exemplo, quando você quer muitas tentativas independentes para um problema e pretende ficar com a melhor. Mas quando o trabalho precisa acontecer em uma ordem certa, e acontecer direito, a diferença fica evidente:
+
+<Compare
+  before={{ label: "Um enxame que precisa se virar sozinho", content: "Vocês são cinco agentes: um pesquisador, um redator, um editor, um checador de fatos e um designer. Trabalhem juntos em um artigo de lançamento para o nosso novo recurso. Decidam entre vocês quem faz o quê." }}
+  after={{ label: "Uma equipe com passagens de bastão nomeadas", content: "Pesquisador: reúna cinco fontes recentes sobre o recurso e entregue ao Redator um resumo da pesquisa, com cada afirmação ao lado do seu link. Redator: transforme o resumo em um rascunho de 600 palavras e passe-o ao Editor. Editor: envie ao Redator uma lista de observações, no máximo por duas rodadas, e depois me entregue a versão final. Ninguém publica nada." }}
+/>
+
+O primeiro prompt é mais curto, mas deixa ao acaso as decisões mais importantes. Quem confere os fatos, e quando? O que acontece se o redator e o editor discordarem? Quando o artigo está pronto? O segundo prompt responde a tudo isso antes de o trabalho começar, e isso traz um benefício mais discreto: você pode **revisá-lo**. Se o artigo final tiver um número errado, você pode seguir as passagens de bastão de trás para frente e descobrir onde o erro entrou: no resumo, no rascunho ou na edição. Você pode testar um membro sozinho, dando a ele uma amostra do que receberia. Você consegue enxergar todo o arranjo de uma vez, como quem lê um organograma. Em um enxame, a resposta honesta para "quem decidiu isso?" muitas vezes é "todo mundo, um pouco", e é difícil confiar em uma resposta assim.
+
+<Callout type="info" title="Enxame é uma metáfora">
+Abelhas e estorninhos se coordenam por instintos moldados ao longo de milhões de anos. Agentes de software não têm instintos assim. Eles se coordenam pelas regras que alguém escreveu sobre quem pode falar com quem e quando parar. Por isso, quando um sistema promete um enxame que se organiza sozinho, vale perguntar onde essas regras ficam e se você consegue lê-las. Até a biblioteca experimental da OpenAI chamada Swarm era construída sobre passagens de bastão explícitas, em que um agente passa a conversa para outro chamando uma função ([OpenAI Swarm](https://github.com/openai/swarm)). Assim que as regras estão escritas onde você pode vê-las, o que você tem, afinal, é uma equipe com passagens de bastão.
+</Callout>
+
+Veja a redação desenhada como uma equipe. Cada caixa é um papel, e cada seta é uma passagem de bastão com um rótulo que diz o que ela carrega:
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col md:flex-row items-center justify-center gap-3">
+    <div className="px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border-blue-200 dark:border-blue-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">Pesquisador</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">Encontra e confere as fontes</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Resumo da pesquisa</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-purple-100 dark:bg-purple-900/50 border-purple-200 dark:border-purple-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">Redator</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">Transforma o resumo em rascunho</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Rascunho</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-green-100 dark:bg-green-900/50 border-green-200 dark:border-green-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">Editor</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0!">Revisa o rascunho</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Versão final</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-amber-100 dark:bg-amber-900/50 border-amber-200 dark:border-amber-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">Você</p>
+      <p className="text-xs text-amber-600 dark:text-amber-400 m-0!">Aprova antes que algo saia</p>
+    </div>
+  </div>
+  <p className="text-xs text-center text-muted-foreground mt-4 mb-0!">Editor → Redator: observações, no máximo duas rodadas</p>
+</div>
+
+### Desenhando os papéis
+
+Um bom papel se define por aquilo pelo que um membro é responsável, não por um título impressionante. "Estrategista sênior" diz muito pouco a um bot. "Leia os chamados de suporte da semana passada e entregue as três reclamações mais frequentes ao Redator de produto" diz quase tudo: o que ler, o que produzir e quem vem depois. Um teste útil é descrever cada papel pelo que ele **recebe** e pelo que ele **entrega**. Se você não consegue preencher as duas coisas, o papel provavelmente ainda não está pronto.
+
+Dois outros hábitos ajudam. Primeiro, ligue o papel à equipe, não ao bot. O mesmo bot de pesquisa pode reunir fontes para uma equipe de redação e comparar preços da concorrência para uma equipe de vendas, e cada equipe deve dizer, em uma ou duas frases, o que esse bot faz ali. Segundo, mantenha a equipe pequena. Cada novo membro acrescenta passagens de bastão, e cada passagem é um ponto em que o sentido pode se perder, como na brincadeira do telefone sem fio. Se dois membros só passam trabalho um para o outro, pergunte-se se não deveriam ser um só.
+
+### O que vai em uma passagem de bastão
+
+Vimos antes que passar trabalho para outro bot é, na verdade, escrever um pequeno prompt. Em uma equipe, esse prompt viaja por uma seta, então vale ser preciso em três pontos. O **rótulo** dá nome ao que está sendo passado: um resumo da pesquisa, um rascunho, uma lista de testes que falham. O **conteúdo** diz o que isso deve incluir e em que formato, por exemplo cada afirmação com o seu link ao lado. E a **linha de chegada** diz quando o trabalho conta como concluído, para que o próximo membro saiba que está recebendo algo completo, e não algo pela metade.
+
+Também ajuda lembrar que as passagens de bastão têm direção. "O redator entrega um rascunho ao editor" não é o mesmo que "o editor entrega observações ao redator"; elas carregam coisas diferentes por motivos diferentes. Uma equipe pode ter setas nos dois sentidos, mas todo ciclo precisa de um limite, como no máximo duas rodadas de revisão, ou talvez nunca termine. E o bot que recebe vê apenas o que lhe é entregue, não a conversa inteira de quem enviou. Isso costuma ser bom: o contexto fica com o papel que precisa dele, assim como acontece com bots que compartilham ferramentas mas guardam cada um a própria memória.
+
+<InfoGrid items={[
+  { label: "Papel", description: "Pelo que um membro é responsável nesta equipe, em uma ou duas frases. O mesmo bot pode ter outro papel em outra equipe.", color: "blue" },
+  { label: "Passagem de bastão", description: "Uma seta com direção e rótulo, de um membro para outro, que diz o que é passado e o que isso deve conter.", color: "purple" },
+  { label: "Propósito", description: "O objetivo que a equipe inteira compartilha, escrito uma vez para que cada membro saiba para que serve o esforço.", color: "green" }
+]} />
+
+### Escrevendo prompts para uma equipe
+
+Quando você monta uma equipe, na verdade está escrevendo um prompt em três camadas. A primeira é o **propósito da equipe**, compartilhado por todos os membros, para que cada um saiba para que serve o esforço inteiro. A segunda é a **responsabilidade** de cada membro, acrescentada às instruções próprias daquele bot. A terceira é o conjunto de **passagens de bastão**: quem passa o quê para quem, e quando. Antes de a equipe começar, peça que ela descreva o fluxo para você com as próprias palavras, como faria com uma rotina. Se o resumo surpreender você, alguma das camadas ainda não está clara.
+
+Decida também onde você fica no desenho. Antes que algo saia da equipe, seja uma mensagem para um cliente, um post publicado ou uma mudança em produção, pelo menos uma seta deve chegar até você. E lembre-se do que dissemos sobre bots separados: papéis diferentes ajudam cada membro a manter o foco, mas não são paredes. Se dois membros precisam de níveis de acesso diferentes, dê a eles credenciais diferentes.
+
+Muitas ferramentas hoje seguem essa abordagem explícita, cada uma com seu vocabulário. O Agents SDK da OpenAI trata as passagens de bastão como um bloco básico, para que um agente possa passar uma tarefa a outro ([Handoffs](https://openai.github.io/openai-agents-python/handoffs/)). O CrewAI pede que você dê a cada agente um papel, um objetivo e uma história de fundo ([CrewAI agents](https://docs.crewai.com/en/concepts/agents)). O LangGraph descreve um fluxo de trabalho como um grafo de nós e das arestas entre eles ([LangGraph graph API](https://docs.langchain.com/oss/python/langgraph/graph-api)). O Bot *chefe de gabinete* (chief of staff) do Grok Bot, que já conhecemos, coordena os especialistas que trabalham ao seu lado. O catálogo [Teams](https://prompts.chat/bots/teams) do prompts.chat compartilha equipes como um grafo de papéis com passagens de bastão rotuladas. Os detalhes mudam de ferramenta para ferramenta, mas a forma continua a mesma: papéis com nome e coisas com nome passando entre eles.
+
+<Quiz
+  question="Sua equipe de três bots entrega a você um artigo de lançamento com uma estatística errada. Qual desenho torna mais fácil descobrir onde o erro entrou?"
+  options={[
+    "Um enxame em que cada agente pode editar o documento compartilhado quando quiser",
+    "Passagens de bastão com rótulo, em que cada membro entrega um trabalho com nome que você pode abrir e conferir",
+    "Um quarto agente que observa os outros três e avisa sobre qualquer coisa suspeita",
+    "Um lembrete na memória de cada bot para conferir duas vezes os seus números"
+  ]}
+  correctIndex={1}
+  explanation="Quando cada passagem de bastão carrega um trabalho com nome, como um resumo ou um rascunho, você pode abri-los um por um e ver onde o número errado apareceu pela primeira vez. As outras ideias talvez peguem alguns erros, mas não deixam nenhuma trilha para você seguir."
+/>
+
+<Checklist
+  title="Antes de colocar uma equipe para trabalhar"
+  items={[
+    { text: "Escreva o propósito da equipe em uma ou duas frases que todos os membros compartilham" },
+    { text: "Dê a cada membro uma responsabilidade, descrita pelo que ele recebe e pelo que entrega" },
+    { text: "Dê a cada passagem de bastão o nome daquilo que ela passa adiante" },
+    { text: "Diga o que cada passagem deve conter e quando o trabalho conta como concluído" },
+    { text: "Ponha um limite em todo ciclo, como no máximo duas rodadas de revisão" },
+    { text: "Faça tudo o que sai da equipe passar por você para aprovação" },
+    { text: "Dê a cada membro apenas o acesso de que o seu próprio papel precisa" },
+    { text: "Teste cada membro sozinho com uma amostra do que ele recebe" }
+  ]}
+/>
+
 ## Segurança e aprovações
 
 Chegamos ao coração da questão: um bot persistente age quando você não está olhando. Em um chat, você vê cada resposta antes de fazer qualquer coisa com ela. Com um bot persistente, pode não haver ninguém olhando. Isso torna os limites dele muito mais importantes.

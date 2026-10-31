@@ -247,6 +247,116 @@ Whichever pattern you use, handing work to another bot is really just writing a 
 
 It is tempting to think that splitting work across bots also makes it safer. It doesn't. Separate roles help each bot stay focused; they don't keep anything locked away. Grok Bot's documentation explicitly says not to treat separate Bots as a security boundary, and OpenClaw notes that bots can message each other by default unless you restrict it. If two kinds of work need different levels of access, give them different environments or different credentials. OpenAI's preview of *specialist dots* points the same way for organizations: the company sets up each one with its own identity, its own credentials, and access to just the systems its job requires ([Introducing dots](https://openai.com/index/introducing-dots/)). When a bot has an identity of its own, its access can be granted, reviewed, and taken away for that role alone, much as it would be for a new colleague.
 
+## Teams of Bots: Roles and Handoffs
+
+Once you have several bots, a new question arrives. It is no longer only "what should this bot do?" but "how should these bots work together?" Broadly, there are two pictures of the answer, and they lead to very different systems.
+
+The first picture is a **team with explicit roles and handoffs**. Think of a small newsroom. A researcher gathers sources and hands a research brief to a writer. The writer turns the brief into a draft and hands it to an editor. The editor sends notes back, and when the piece is ready, it goes to someone who can approve it. Every member knows what it is responsible for, and every arrow between them has a name: you can say exactly what travels along it.
+
+The second picture is a **swarm**. Many agents share a goal and a workspace, each one picks up whatever seems to need doing, and order is expected to emerge on its own, the way it seems to in a beehive or a flock of starlings. The idea is appealing, and loose coordination has real uses: when you want many independent attempts at a problem, for instance, and plan to keep the best one. But when the work has to happen in a particular order, and happen correctly, the difference becomes clear:
+
+<Compare
+  before={{ label: "A swarm that has to work things out", content: "You are five agents: a researcher, a writer, an editor, a fact-checker, and a designer. Work together on a launch article for our new feature. Decide among yourselves who does what." }}
+  after={{ label: "A team with named handoffs", content: "Researcher: collect five recent sources about the feature and hand the Writer a research brief, with each claim next to its link. Writer: turn the brief into a 600-word draft and hand it to the Editor. Editor: send the Writer a list of notes, for at most two rounds, then hand the final draft to me. No one publishes anything." }}
+/>
+
+The first prompt is shorter, but it leaves the most important decisions to chance. Who checks the facts, and when? What happens if the writer and the editor disagree? When is the article finished? The second prompt answers all of these before the work begins, and that brings a quieter benefit: you can **review** it. If the finished article contains a wrong number, you can follow the handoffs back and find where the error came in: in the brief, in the draft, or in the edit. You can test one member on its own by giving it a sample of what it would receive. You can take in the whole arrangement at a glance, the way you would read an org chart. In a swarm, the honest answer to "who decided this?" is often "everyone, a little," and that is a hard answer to trust.
+
+<Callout type="info" title="A swarm is a metaphor">
+Bees and starlings coordinate through instincts shaped over millions of years. Software agents have no such instincts. They coordinate through whatever rules someone wrote down about who may talk to whom and when to stop. So when a system promises a self-organizing swarm, it is worth asking where those rules live and whether you can read them. Even OpenAI's experimental library called Swarm was built on explicit handoffs, in which one agent passes the conversation to another by calling a function ([OpenAI Swarm](https://github.com/openai/swarm)). Once the rules are written down where you can see them, you have a team with handoffs after all.
+</Callout>
+
+Here is the newsroom drawn as a team. Each box is a role, and each arrow is a handoff with a label that says what it carries:
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col md:flex-row items-center justify-center gap-3">
+    <div className="px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border-blue-200 dark:border-blue-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">Researcher</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">Finds and checks sources</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Research brief</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-purple-100 dark:bg-purple-900/50 border-purple-200 dark:border-purple-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">Writer</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">Turns the brief into a draft</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Draft</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-green-100 dark:bg-green-900/50 border-green-200 dark:border-green-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">Editor</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0!">Checks the draft</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Final draft</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-amber-100 dark:bg-amber-900/50 border-amber-200 dark:border-amber-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">You</p>
+      <p className="text-xs text-amber-600 dark:text-amber-400 m-0!">Approve before anything goes out</p>
+    </div>
+  </div>
+  <p className="text-xs text-center text-muted-foreground mt-4 mb-0!">Editor → Writer: notes, for at most two rounds</p>
+</div>
+
+### Designing the Roles
+
+A good role is defined by what a member is responsible for, not by an impressive title. "Senior Strategist" tells a bot very little. "Read last week's support tickets and hand the three most common complaints to the Product Writer" tells it almost everything: what to read, what to produce, and who comes next. A useful test is to describe each role in terms of what it **receives** and what it **hands on**. If you cannot fill in both, the role is probably not ready yet.
+
+Two more habits help. First, keep the role with the team rather than with the bot. The same research bot might gather sources for a newsroom team and compare competitors' prices for a sales team, and each team should say, in a sentence or two, what that bot does there. Second, keep the team small. Every new member adds handoffs, and every handoff is a place where meaning can get lost, much like a whispered message passed around a circle of friends. If two members only ever pass work to each other, ask whether they should be one.
+
+### What Passes in a Handoff
+
+We saw earlier that handing work to another bot is really writing a small prompt. In a team, that prompt travels along an arrow, so it pays to be precise about three things. The **label** names what is being passed: a research brief, a draft, a list of failing tests. The **contents** say what it must include and in what shape, for example every claim with its link beside it. And the **finish line** says when the work counts as done, so the next member knows it has received something complete rather than something half-made.
+
+It also helps to remember that handoffs have a direction. "The writer hands a draft to the editor" is not the same as "the editor hands notes to the writer"; they carry different things for different reasons. A team can have arrows going both ways, but every loop needs a limit, such as at most two rounds of edits, or it may never end. And the receiving bot sees only what is handed to it, not the sender's whole conversation. That is usually a good thing: context stays with the role that needs it, just as it does for bots that share tools but keep their own memories.
+
+<InfoGrid items={[
+  { label: "Role", description: "What one member is responsible for in this team, in a sentence or two. The same bot can play a different role in another team.", color: "blue" },
+  { label: "Handoff", description: "A directed, labelled arrow from one member to another, naming what is passed along and what it must contain.", color: "purple" },
+  { label: "Purpose", description: "The goal the whole team shares, written once so that every member knows what the effort is for.", color: "green" }
+]} />
+
+### Prompting a Team
+
+When you set up a team, you are really writing three layers of prompt. The first is the **team's purpose**, shared by every member, so each one knows what the whole effort is for. The second is each member's **responsibility**, added to that bot's own instructions. The third is the set of **handoffs**: who passes what to whom, and when. Before the team starts, ask it to describe the flow back to you, just as you would with a routine. If the summary surprises you, one of the layers is not clear yet.
+
+Decide, too, where you sit in the picture. At least one arrow should lead to you before anything leaves the team, whether it is a message to a customer, a published post, or a change in production. And remember what we said about separate bots: different roles help each member stay focused, but they are not walls. If two members need different levels of access, give them different credentials.
+
+Many tools now take this explicit approach, each in its own vocabulary. OpenAI's Agents SDK treats handoffs as a basic building block, so that one agent can pass a task to another ([Handoffs](https://openai.github.io/openai-agents-python/handoffs/)). CrewAI asks you to give every agent a role, a goal, and a backstory ([CrewAI agents](https://docs.crewai.com/en/concepts/agents)). LangGraph describes a workflow as a graph of nodes and the edges between them ([LangGraph graph API](https://docs.langchain.com/oss/python/langgraph/graph-api)). Grok Bot's *chief of staff* Bot, which we met earlier, coordinates the specialists working alongside it. prompts.chat's [Teams](https://prompts.chat/bots/teams) catalog shares teams as a graph of roles with labelled handoffs. The details differ from tool to tool, but the shape stays the same: named roles, and named things passing between them.
+
+<Quiz
+  question="Your three-bot team hands you a launch article with a wrong statistic in it. Which design makes it easiest to find where the mistake came in?"
+  options={[
+    "A swarm in which every agent may edit the shared document whenever it likes",
+    "Labelled handoffs, where each member passes on a named piece of work that you can open and check",
+    "A fourth agent that watches the other three and reports anything suspicious",
+    "A reminder in each bot's memory to double-check its numbers"
+  ]}
+  correctIndex={1}
+  explanation="When each handoff carries a named piece of work, such as a brief or a draft, you can open them one by one and see where the wrong number first appeared. The other ideas may catch some mistakes, but they leave you no trail to follow."
+/>
+
+<Checklist
+  title="Before you put a team to work"
+  items={[
+    { text: "Write the team's purpose in a sentence or two that every member shares" },
+    { text: "Give each member one responsibility, described by what it receives and what it hands on" },
+    { text: "Name every handoff after the thing it passes along" },
+    { text: "Say what each handoff must contain and when the work counts as done" },
+    { text: "Put a limit on every loop, such as at most two rounds of edits" },
+    { text: "Route anything that leaves the team through you for approval" },
+    { text: "Give each member only the access its own role needs" },
+    { text: "Test each member on its own with a sample of what it receives" }
+  ]}
+/>
+
 ## Safety and Approvals
 
 Here is the heart of the matter: a persistent bot acts when you are not watching. In a chat, you see every answer before you do anything with it. With a persistent bot, there may be no one looking at all. That makes its boundaries far more important.

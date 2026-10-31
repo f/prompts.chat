@@ -247,6 +247,116 @@ Hangi yolu seçerseniz seçin, işi başka bir bota devretmek aslında küçük 
 
 İşi botlar arasında bölmenin onu daha güvenli hale getirdiğini düşünmek cazip gelebilir. Öyle değil. Ayrı roller her botun kendi işine odaklanmasına yardım eder, ama hiçbir şeyi kilit altına almaz. Grok Bot'un belgeleri ayrı Bot'ları bir güvenlik sınırı gibi görmemeniz gerektiğini açıkça söylüyor; OpenClaw da siz kısıtlamadıkça botların varsayılan olarak birbirlerine mesaj atabildiğini hatırlatıyor. İki farklı işin farklı düzeyde erişime ihtiyacı varsa, onlara farklı ortamlar ya da farklı kimlik bilgileri verin. OpenAI'ın önizlemesini paylaştığı *specialist dots* (uzman dot'lar) da kurumlar için aynı yönü gösteriyor: şirket her birini kendi kimliği, kendi kimlik bilgileri ve yalnızca işinin gerektirdiği sistemlere erişimiyle kuruyor ([Introducing dots](https://openai.com/index/introducing-dots/)). Bir botun kendine ait bir kimliği olduğunda, tıpkı yeni bir çalışma arkadaşında olduğu gibi, erişimi yalnızca o rol için verilebilir, gözden geçirilebilir ve geri alınabilir.
 
+## Bot Ekipleri: Roller ve Devirler
+
+Birden fazla botunuz olduğunda yeni bir soru belirir. Artık mesele yalnızca "bu bot ne yapsın?" değildir; "bu botlar birlikte nasıl çalışsın?" sorusu da masaya gelir. Bu soruya kabaca iki farklı cevap verilir ve ikisi de bambaşka sistemlere götürür.
+
+İlk cevap, **rolleri ve devirleri açıkça tanımlanmış bir ekiptir**. Küçük bir haber masası düşünün. Araştırmacı kaynakları toplar ve yazara bir araştırma özeti verir. Yazar bu özetten bir taslak çıkarır ve editöre iletir. Editör notlarını geri yollar; yazı hazır olduğunda da onu onaylayacak kişiye gider. Herkes neyden sorumlu olduğunu bilir ve aralarındaki her okun bir adı vardır: o okun üzerinden tam olarak neyin geçtiğini söyleyebilirsiniz.
+
+İkinci cevap ise bir **sürüdür** (swarm). Pek çok ajan aynı hedefi ve aynı çalışma alanını paylaşır, her biri o an yapılması gerekiyor gibi görünen işe el atar ve düzenin kendiliğinden ortaya çıkması beklenir; tıpkı bir arı kovanında ya da gökyüzünde dalgalanan bir sığırcık sürüsünde olduğu gibi. Kulağa hoş gelen bir fikir bu ve gevşek bir eşgüdümün gerçekten işe yaradığı durumlar da var: Örneğin bir soruna birbirinden bağımsız pek çok deneme yaptırıp en iyisini seçmek istediğinizde. Ama iş belli bir sırayla ve doğru biçimde yapılmak zorundaysa aradaki fark hemen göze çarpar:
+
+<Compare
+  before={{ label: "İşi kendi kendine çözmesi beklenen bir sürü", content: "Siz beş ajansınız: bir araştırmacı, bir yazar, bir editör, bir doğruluk denetçisi ve bir tasarımcı. Yeni özelliğimizin tanıtım yazısı üzerinde birlikte çalışın. Kimin ne yapacağına aranızda karar verin." }}
+  after={{ label: "Devirleri adıyla belli bir ekip", content: "Araştırmacı: özellikle ilgili beş güncel kaynak topla ve Yazar'a, her iddianın yanında bağlantısı olan bir araştırma özeti ver. Yazar: özeti 600 kelimelik bir taslağa dönüştür ve Editör'e ilet. Editör: Yazar'a en fazla iki tur not gönder, ardından son taslağı bana ver. Kimse hiçbir şey yayımlamasın." }}
+/>
+
+İlk prompt daha kısa, ama en önemli kararları şansa bırakıyor. Bilgileri kim, ne zaman doğrulayacak? Yazarla editör anlaşamazsa ne olacak? Yazı ne zaman bitmiş sayılacak? İkinci prompt bütün bu soruları iş başlamadan cevaplıyor ve bunun daha sessiz bir faydası da var: Onu **gözden geçirebilirsiniz**. Bitmiş yazıda yanlış bir rakam çıkarsa, devirleri geriye doğru izleyip hatanın nereden girdiğini bulabilirsiniz: özette mi, taslakta mı, yoksa düzeltmede mi? Ekibin bir üyesini, eline geçecek işten bir örnek vererek tek başına deneyebilirsiniz. Bütün düzeni, bir organizasyon şemasına bakar gibi tek bakışta kavrayabilirsiniz. Bir sürüde ise "Buna kim karar verdi?" sorusunun dürüst cevabı çoğu zaman "Biraz herkes" olur ve böyle bir cevaba güvenmek zordur.
+
+<Callout type="info" title="Sürü bir benzetmedir">
+Arılar ve sığırcıklar, milyonlarca yılda şekillenmiş içgüdülerle uyum içinde hareket eder. Yazılım ajanlarının böyle içgüdüleri yoktur. Onlar, birinin kimin kiminle konuşabileceği ve ne zaman durulacağı hakkında yazdığı kurallarla eşgüdüm kurar. Bu yüzden bir sistem size kendi kendini örgütleyen bir sürü vaat ettiğinde, o kuralların nerede durduğunu ve onları okuyup okuyamayacağınızı sormaya değer. OpenAI'ın Swarm adlı deneysel kütüphanesi bile açık devirler üzerine kuruluydu: Bir ajan, bir fonksiyon çağırarak konuşmayı başka bir ajana devrediyordu ([OpenAI Swarm](https://github.com/openai/swarm)). Kurallar görebileceğiniz bir yere yazıldığı anda, elinizde aslında devirleri olan bir ekip vardır.
+</Callout>
+
+İşte aynı haber masası, bir ekip olarak çizildiğinde. Her kutu bir rol, her ok da üzerinde neyi taşıdığını söyleyen bir etiketle birlikte bir devir:
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col md:flex-row items-center justify-center gap-3">
+    <div className="px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border-blue-200 dark:border-blue-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">Araştırmacı</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">Kaynakları bulur ve doğrular</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Araştırma özeti</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-purple-100 dark:bg-purple-900/50 border-purple-200 dark:border-purple-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">Yazar</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">Özetten taslak çıkarır</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Taslak</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-green-100 dark:bg-green-900/50 border-green-200 dark:border-green-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">Editör</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0!">Taslağı elden geçirir</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Son taslak</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-amber-100 dark:bg-amber-900/50 border-amber-200 dark:border-amber-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">Siz</p>
+      <p className="text-xs text-amber-600 dark:text-amber-400 m-0!">Dışarı çıkmadan önce onaylarsınız</p>
+    </div>
+  </div>
+  <p className="text-xs text-center text-muted-foreground mt-4 mb-0!">Editör → Yazar: notlar, en fazla iki tur</p>
+</div>
+
+### Rolleri Tasarlamak
+
+İyi bir rolü gösterişli bir unvan değil, üstlendiği sorumluluk tanımlar. "Kıdemli Strateji Uzmanı" bir bota pek bir şey anlatmaz. "Geçen haftanın destek kayıtlarını oku ve en sık tekrarlanan üç şikâyeti Ürün Yazarı'na ilet" ise neredeyse her şeyi anlatır: neyi okuyacağını, ne üreteceğini ve işi kime bırakacağını. İşe yarar bir sınama yöntemi şudur: Her rolü, eline **ne geçtiği** ve elinden **ne çıktığı** üzerinden tarif etmeye çalışın. İkisini de dolduramıyorsanız, o rol muhtemelen henüz hazır değildir.
+
+İki alışkanlık daha işinizi kolaylaştırır. Birincisi, rolü botla değil ekiple birlikte düşünün. Aynı araştırma botu bir haber ekibinde kaynak toplarken, bir satış ekibinde rakiplerin fiyatlarını karşılaştırıyor olabilir; her ekip, o botun kendi içinde ne iş gördüğünü bir iki cümleyle söylemelidir. İkincisi, ekibi küçük tutun. Her yeni üye yeni devirler getirir ve her devir, anlamın yolda kaybolabileceği bir noktadır; tıpkı kulaktan kulağa oyununda fısıltıyla dolaşan bir cümle gibi. Eğer iki üye işi yalnızca birbirine aktarıyorsa, aslında tek bir üye olup olmamaları gerektiğini düşünün.
+
+### Bir Devirde Neler Aktarılır?
+
+Daha önce, işi başka bir bota devretmenin aslında küçük bir prompt yazmak olduğunu görmüştük. Bir ekipte bu prompt bir okun üzerinden yol alır, bu yüzden üç konuda net olmakta fayda var. **Etiket**, aktarılan şeyin adıdır: bir araştırma özeti, bir taslak, başarısız testlerin listesi. **İçerik**, o şeyin neleri barındırması ve hangi biçimde olması gerektiğini söyler; örneğin her iddianın yanında bağlantısının bulunması gibi. **Bitiş çizgisi** de işin ne zaman tamamlanmış sayılacağını belirtir; böylece sıradaki üye, eline yarım yamalak değil eksiksiz bir iş geçtiğini bilir.
+
+Devirlerin bir yönü olduğunu da akılda tutmak gerekir. "Yazar taslağı editöre verir" ile "editör notları yazara verir" aynı şey değildir; ikisi farklı şeyleri farklı amaçlarla taşır. Bir ekipte iki yönlü oklar olabilir, ama her döngünün bir sınırı olmalıdır, örneğin en fazla iki düzeltme turu; yoksa döngü hiç bitmeyebilir. Bir de şu var: İşi devralan bot yalnızca kendisine verileni görür, gönderenin bütün konuşmasını değil. Bu genellikle iyi bir şeydir. Araçları paylaşıp hafızalarını kendilerine saklayan botlarda olduğu gibi, bağlam ona ihtiyacı olan rolde kalır.
+
+<InfoGrid items={[
+  { label: "Rol", description: "Bir üyenin bu ekipteki sorumluluğu, bir iki cümleyle. Aynı bot başka bir ekipte bambaşka bir rol üstlenebilir.", color: "blue" },
+  { label: "Devir", description: "Bir üyeden ötekine uzanan, yönü ve etiketi belli bir ok. Neyin aktarıldığını ve neleri içermesi gerektiğini söyler.", color: "purple" },
+  { label: "Amaç", description: "Bütün ekibin paylaştığı hedef; her üye emeğin ne için harcandığını bilsin diye bir kez yazılır.", color: "green" }
+]} />
+
+### Bir Ekibe Prompt Yazmak
+
+Bir ekip kurarken aslında üç katmanlı bir prompt yazarsınız. İlk katman **ekibin amacıdır**; bütün üyeler bunu paylaşır ve böylece her biri bu çabanın neye hizmet ettiğini bilir. İkinci katman her üyenin **sorumluluğudur** ve o botun kendi talimatlarına eklenir. Üçüncü katman ise **devirlerdir**: kim, neyi, kime ve ne zaman aktarıyor. Ekip işe koyulmadan önce, tıpkı bir rutinde yaptığınız gibi, akışı size kendi cümleleriyle anlatmasını isteyin. Anlattıkları sizi şaşırtıyorsa, katmanlardan biri henüz yeterince açık değildir.
+
+Bu resimde nerede durduğunuza da karar verin. Ekipten dışarıya bir şey çıkmadan önce, ister bir müşteriye gidecek mesaj, ister yayımlanacak bir yazı, isterse canlı ortamda bir değişiklik olsun, en az bir ok size uzanmalıdır. Ayrı botlar hakkında söylediklerimizi de unutmayın: Farklı roller her üyenin kendi işine odaklanmasını sağlar, ama birer duvar değildir. İki üyenin farklı düzeyde erişime ihtiyacı varsa, onlara farklı kimlik bilgileri verin.
+
+Bugün pek çok araç bu açık yaklaşımı benimsiyor, her biri kendi diliyle. OpenAI'ın Agents SDK'sı devirleri temel yapı taşlarından biri olarak ele alıyor; böylece bir ajan bir görevi başka bir ajana aktarabiliyor ([Handoffs](https://openai.github.io/openai-agents-python/handoffs/)). CrewAI her ajana bir rol, bir hedef ve bir geçmiş hikâyesi vermenizi istiyor ([CrewAI agents](https://docs.crewai.com/en/concepts/agents)). LangGraph bir iş akışını düğümlerden ve aralarındaki kenarlardan oluşan bir grafik olarak tarif ediyor ([LangGraph graph API](https://docs.langchain.com/oss/python/langgraph/graph-api)). Daha önce tanıştığımız Grok Bot'taki *özel kalem* (chief of staff) Bot'u da yanında çalışan uzmanları koordine ediyor. prompts.chat'in [Teams](https://prompts.chat/bots/teams) kataloğu da ekipleri rollerden ve etiketli devirlerden oluşan bir grafik olarak paylaşıyor. Ayrıntılar araçtan araca değişiyor, ama ana hatlar hep aynı kalıyor: adı konmuş roller ve aralarında el değiştiren, adı konmuş işler.
+
+<Quiz
+  question="Üç botlu ekibiniz size içinde yanlış bir istatistik bulunan bir tanıtım yazısı teslim ediyor. Hatanın nereden girdiğini bulmayı en çok hangi tasarım kolaylaştırır?"
+  options={[
+    "Her ajanın ortak belgeyi dilediği zaman düzenleyebildiği bir sürü",
+    "Her üyenin, açıp inceleyebileceğiniz, adı konmuş bir işi devrettiği etiketli devirler",
+    "Diğer üçünü izleyip şüpheli her şeyi bildiren dördüncü bir ajan",
+    "Her botun hafızasına rakamlarını iki kez kontrol etmesini hatırlatan bir not"
+  ]}
+  correctIndex={1}
+  explanation="Her devir bir özet ya da taslak gibi adı konmuş bir iş taşıdığında, bunları tek tek açıp yanlış rakamın ilk nerede ortaya çıktığını görebilirsiniz. Diğer fikirler bazı hataları yakalayabilir, ama size takip edebileceğiniz bir iz bırakmaz."
+/>
+
+<Checklist
+  title="Bir ekibi işe koşmadan önce"
+  items={[
+    { text: "Ekibin amacını, bütün üyelerin paylaştığı bir iki cümleyle yazın" },
+    { text: "Her üyeye, eline ne geçtiği ve elinden ne çıktığıyla tarif edilen tek bir sorumluluk verin" },
+    { text: "Her devre, aktardığı şeyin adını verin" },
+    { text: "Her devrin neleri içermesi gerektiğini ve işin ne zaman bitmiş sayılacağını belirtin" },
+    { text: "Her döngüye bir sınır koyun, örneğin en fazla iki düzeltme turu" },
+    { text: "Ekipten dışarı çıkan her şeyi onay için sizden geçirin" },
+    { text: "Her üyeye yalnızca kendi rolünün gerektirdiği erişimi verin" },
+    { text: "Her üyeyi, eline geçecek işten bir örnekle tek başına deneyin" }
+  ]}
+/>
+
 ## Güvenlik ve Onaylar
 
 Meselenin özü şu: sürekli çalışan bir bot, siz bakmıyorken harekete geçer. Bir sohbette, bir cevapla bir şey yapmadan önce onu görürsünüz. Sürekli çalışan bir botta ise ortada bakan kimse olmayabilir. Bu da botun sınırlarını çok daha önemli hale getirir.

@@ -247,6 +247,116 @@ Quel que soit le modèle retenu, confier du travail à un autre bot revient en r
 
 Il est tentant de croire que répartir le travail entre plusieurs bots le rend aussi plus sûr. Ce n'est pas le cas. Des rôles séparés aident chaque bot à rester concentré ; ils n'enferment rien à clé. La documentation de Grok Bot dit explicitement de ne pas traiter des Bots séparés comme une frontière de sécurité, et OpenClaw signale que les bots peuvent s'envoyer des messages par défaut, à moins que vous ne le restreigniez. Si deux types de travail exigent des niveaux d'accès différents, donnez-leur des environnements ou des identifiants différents. L'aperçu des *specialist dots* (dots spécialisés) d'OpenAI va dans le même sens pour les organisations : l'entreprise dote chacun d'une identité propre, de ses propres identifiants et d'un accès limité aux systèmes dont son travail a besoin ([Introducing dots](https://openai.com/index/introducing-dots/)). Quand un bot a sa propre identité, ses accès peuvent être accordés, revus et retirés pour ce seul rôle, un peu comme pour un nouveau collègue.
 
+## Équipes de bots : rôles et passations
+
+Dès que vous avez plusieurs bots, une nouvelle question se pose. Il ne s'agit plus seulement de savoir ce que doit faire ce bot, mais comment ces bots doivent travailler ensemble. En gros, il existe deux images de la réponse, et elles mènent à des systèmes très différents.
+
+La première image est celle d'une **équipe aux rôles et aux passations explicites**. Pensez à une petite rédaction. Un documentaliste rassemble des sources et remet une note de recherche à un rédacteur. Le rédacteur en tire un brouillon et le transmet à un éditeur. L'éditeur renvoie ses remarques et, quand le texte est prêt, il parvient à quelqu'un qui peut le valider. Chaque membre sait de quoi il est responsable, et chaque flèche entre eux porte un nom : vous pouvez dire exactement ce qui circule le long de chacune.
+
+La seconde image est celle d'un **essaim**. De nombreux agents partagent un objectif et un espace de travail, chacun s'empare de ce qui semble devoir être fait, et l'ordre est censé émerger de lui-même, comme il semble le faire dans une ruche ou dans une nuée d'étourneaux. L'idée séduit, et une coordination lâche a de vrais usages : par exemple, quand vous voulez de nombreuses tentatives indépendantes sur un problème pour ne garder que la meilleure. Mais dès que le travail doit se faire dans un ordre précis, et se faire correctement, la différence saute aux yeux :
+
+<Compare
+  before={{ label: "Un essaim qui doit se débrouiller seul", content: "Vous êtes cinq agents : un documentaliste, un rédacteur, un éditeur, un vérificateur de faits et un designer. Travaillez ensemble sur un article de lancement pour notre nouvelle fonctionnalité. Décidez entre vous qui fait quoi." }}
+  after={{ label: "Une équipe aux passations nommées", content: "Documentaliste : rassemble cinq sources récentes sur la fonctionnalité et remets au Rédacteur une note de recherche, chaque affirmation accompagnée de son lien. Rédacteur : transforme la note en un brouillon de 600 mots et transmets-le à l'Éditeur. Éditeur : envoie au Rédacteur une liste de remarques, deux tours au plus, puis remets-moi la version finale. Personne ne publie rien." }}
+/>
+
+Le premier prompt est plus court, mais il laisse au hasard les décisions les plus importantes. Qui vérifie les faits, et quand ? Que se passe-t-il si le rédacteur et l'éditeur ne sont pas d'accord ? Quand l'article est-il terminé ? Le second prompt répond à tout cela avant que le travail commence, et cela apporte un avantage plus discret : vous pouvez le **relire**. Si l'article final contient un chiffre erroné, vous pouvez remonter les passations et trouver où l'erreur s'est glissée : dans la note, dans le brouillon ou dans la relecture. Vous pouvez tester un membre à part en lui donnant un exemple de ce qu'il recevrait. Vous pouvez saisir toute l'organisation d'un coup d'œil, comme on lit un organigramme. Dans un essaim, la réponse honnête à « qui a décidé cela ? » est souvent « tout le monde, un peu », et c'est une réponse à laquelle il est difficile de se fier.
+
+<Callout type="info" title="Un essaim est une métaphore">
+Les abeilles et les étourneaux se coordonnent grâce à des instincts façonnés sur des millions d'années. Les agents logiciels n'ont pas de tels instincts. Ils se coordonnent selon les règles que quelqu'un a écrites sur qui peut parler à qui et quand s'arrêter. Alors, quand un système promet un essaim qui s'organise tout seul, il vaut la peine de demander où vivent ces règles et si vous pouvez les lire. Même la bibliothèque expérimentale d'OpenAI baptisée Swarm reposait sur des passations explicites, où un agent transmet la conversation à un autre en appelant une fonction ([OpenAI Swarm](https://github.com/openai/swarm)). Dès que les règles sont écrites là où vous pouvez les voir, vous avez finalement une équipe avec des passations.
+</Callout>
+
+Voici la rédaction dessinée comme une équipe. Chaque case est un rôle, et chaque flèche est une passation dont l'étiquette dit ce qu'elle transporte :
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col md:flex-row items-center justify-center gap-3">
+    <div className="px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border-blue-200 dark:border-blue-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">Documentaliste</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">Trouve et vérifie les sources</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Note de recherche</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-purple-100 dark:bg-purple-900/50 border-purple-200 dark:border-purple-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">Rédacteur</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">Transforme la note en brouillon</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Brouillon</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-green-100 dark:bg-green-900/50 border-green-200 dark:border-green-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">Éditeur</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0!">Relit le brouillon</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Version finale</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-amber-100 dark:bg-amber-900/50 border-amber-200 dark:border-amber-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">Vous</p>
+      <p className="text-xs text-amber-600 dark:text-amber-400 m-0!">Validez avant que rien ne sorte</p>
+    </div>
+  </div>
+  <p className="text-xs text-center text-muted-foreground mt-4 mb-0!">Éditeur → Rédacteur : remarques, deux tours au plus</p>
+</div>
+
+### Concevoir les rôles
+
+Un bon rôle se définit par ce dont un membre est responsable, pas par un titre impressionnant. « Stratège senior » ne dit presque rien à un bot. « Lis les tickets de support de la semaine dernière et remets les trois plaintes les plus fréquentes au Rédacteur produit » lui dit presque tout : quoi lire, quoi produire et qui vient ensuite. Un test utile consiste à décrire chaque rôle par ce qu'il **reçoit** et ce qu'il **transmet**. Si vous ne pouvez pas remplir les deux, le rôle n'est sans doute pas encore prêt.
+
+Deux autres habitudes aident. D'abord, rattachez le rôle à l'équipe plutôt qu'au bot. Le même bot de recherche peut rassembler des sources pour une équipe de rédaction et comparer les prix des concurrents pour une équipe commerciale, et chaque équipe devrait dire, en une phrase ou deux, ce que ce bot y fait. Ensuite, gardez l'équipe petite. Chaque nouveau membre ajoute des passations, et chaque passation est un endroit où le sens peut se perdre, un peu comme au jeu du téléphone sans fil. Si deux membres ne se passent jamais le travail qu'entre eux, demandez-vous s'ils ne devraient pas n'en faire qu'un.
+
+### Ce qui circule dans une passation
+
+Nous avons vu plus haut que confier du travail à un autre bot revient, au fond, à écrire un petit prompt. Dans une équipe, ce prompt voyage le long d'une flèche, alors il vaut la peine d'être précis sur trois points. L'**étiquette** nomme ce qui est transmis : une note de recherche, un brouillon, une liste de tests qui échouent. Le **contenu** dit ce que cela doit comporter et sous quelle forme, par exemple chaque affirmation avec son lien à côté. Et la **ligne d'arrivée** dit quand le travail est considéré comme fini, pour que le membre suivant sache qu'il reçoit quelque chose de complet et non un travail à moitié fait.
+
+Il est utile aussi de se rappeler que les passations ont un sens. « Le rédacteur remet un brouillon à l'éditeur » n'est pas la même chose que « l'éditeur remet des remarques au rédacteur » ; elles transportent des choses différentes pour des raisons différentes. Une équipe peut avoir des flèches dans les deux sens, mais toute boucle a besoin d'une limite, comme deux tours de corrections au plus, sinon elle risque de ne jamais finir. Et le bot qui reçoit ne voit que ce qu'on lui remet, pas toute la conversation de l'expéditeur. C'est en général une bonne chose : le contexte reste auprès du rôle qui en a besoin, comme pour les bots qui partagent des outils mais gardent chacun leur mémoire.
+
+<InfoGrid items={[
+  { label: "Rôle", description: "Ce dont un membre est responsable dans cette équipe, en une phrase ou deux. Le même bot peut tenir un autre rôle dans une autre équipe.", color: "blue" },
+  { label: "Passation", description: "Une flèche orientée et étiquetée d'un membre à un autre, qui nomme ce qui est transmis et ce que cela doit contenir.", color: "purple" },
+  { label: "But", description: "L'objectif que partage toute l'équipe, écrit une fois pour que chaque membre sache à quoi sert l'effort commun.", color: "green" }
+]} />
+
+### Écrire des prompts pour une équipe
+
+Quand vous montez une équipe, vous écrivez en réalité un prompt à trois étages. Le premier est le **but de l'équipe**, partagé par tous les membres, pour que chacun sache à quoi sert l'effort commun. Le deuxième est la **responsabilité** de chaque membre, ajoutée aux instructions propres de ce bot. Le troisième est l'ensemble des **passations** : qui transmet quoi à qui, et quand. Avant que l'équipe se mette au travail, demandez-lui de vous décrire le déroulement avec ses propres mots, comme vous le feriez pour une routine. Si le résumé vous surprend, l'un des étages n'est pas encore clair.
+
+Décidez aussi de votre place dans le tableau. Avant que quoi que ce soit ne quitte l'équipe, qu'il s'agisse d'un message à un client, d'un article publié ou d'un changement en production, au moins une flèche devrait mener jusqu'à vous. Et souvenez-vous de ce que nous avons dit des bots séparés : des rôles différents aident chaque membre à rester concentré, mais ce ne sont pas des murs. Si deux membres ont besoin de niveaux d'accès différents, donnez-leur des identifiants différents.
+
+Beaucoup d'outils adoptent aujourd'hui cette approche explicite, chacun avec son vocabulaire. L'Agents SDK d'OpenAI fait des passations une brique de base, pour qu'un agent puisse confier une tâche à un autre ([Handoffs](https://openai.github.io/openai-agents-python/handoffs/)). CrewAI vous demande de donner à chaque agent un rôle, un objectif et une histoire ([CrewAI agents](https://docs.crewai.com/en/concepts/agents)). LangGraph décrit un flux de travail comme un graphe de nœuds et des arêtes qui les relient ([LangGraph graph API](https://docs.langchain.com/oss/python/langgraph/graph-api)). Le Bot *chef de cabinet* (chief of staff) de Grok Bot, que nous avons déjà croisé, coordonne les spécialistes qui travaillent à ses côtés. Le catalogue [Teams](https://prompts.chat/bots/teams) de prompts.chat partage des équipes sous forme de graphe de rôles reliés par des passations étiquetées. Les détails varient d'un outil à l'autre, mais la forme reste la même : des rôles nommés, et des choses nommées qui circulent entre eux.
+
+<Quiz
+  question="Votre équipe de trois bots vous remet un article de lancement qui contient une statistique erronée. Quelle conception permet le plus facilement de trouver où l'erreur s'est glissée ?"
+  options={[
+    "Un essaim où chaque agent peut modifier le document partagé quand il le veut",
+    "Des passations étiquetées, où chaque membre transmet un travail nommé que vous pouvez ouvrir et vérifier",
+    "Un quatrième agent qui surveille les trois autres et signale tout ce qui paraît suspect",
+    "Un rappel dans la mémoire de chaque bot pour qu'il vérifie deux fois ses chiffres"
+  ]}
+  correctIndex={1}
+  explanation="Quand chaque passation transporte un travail nommé, comme une note ou un brouillon, vous pouvez les ouvrir une à une et voir où le mauvais chiffre est apparu pour la première fois. Les autres idées attraperont peut-être certaines erreurs, mais elles ne vous laissent aucune piste à suivre."
+/>
+
+<Checklist
+  title="Avant de mettre une équipe au travail"
+  items={[
+    { text: "Écrivez le but de l'équipe en une phrase ou deux que tous les membres partagent" },
+    { text: "Donnez à chaque membre une responsabilité, décrite par ce qu'il reçoit et ce qu'il transmet" },
+    { text: "Nommez chaque passation d'après ce qu'elle transmet" },
+    { text: "Précisez ce que chaque passation doit contenir et quand le travail est considéré comme fini" },
+    { text: "Limitez chaque boucle, par exemple à deux tours de corrections au plus" },
+    { text: "Faites passer par vous, pour validation, tout ce qui sort de l'équipe" },
+    { text: "Ne donnez à chaque membre que l'accès dont son propre rôle a besoin" },
+    { text: "Testez chaque membre seul avec un exemple de ce qu'il reçoit" }
+  ]}
+/>
+
 ## Sécurité et approbations
 
 Nous voici au cœur du sujet : un bot persistant agit quand vous ne regardez pas. Dans un chat, vous voyez chaque réponse avant d'en faire quoi que ce soit. Avec un bot persistant, il se peut que personne ne regarde du tout. Ses limites en deviennent d'autant plus importantes.

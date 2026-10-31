@@ -247,6 +247,116 @@ Uses el patrón que uses, pasarle trabajo a otro bot no es más que escribir un 
 
 Es tentador pensar que repartir el trabajo entre varios bots también lo hace más seguro. No es así. Las funciones separadas ayudan a que cada bot se centre, pero no dejan nada bajo llave. La documentación de Grok Bot dice expresamente que no se traten los Bots separados como un límite de seguridad, y OpenClaw señala que los bots pueden enviarse mensajes entre sí de forma predeterminada salvo que lo restrinjas. Si dos tipos de trabajo necesitan niveles de acceso distintos, dales entornos o credenciales distintos. El avance de los *specialist dots* (dots especialistas) de OpenAI apunta en la misma dirección para las organizaciones: la empresa configura cada uno con su propia identidad, sus propias credenciales y acceso solo a los sistemas que su trabajo requiere ([Introducing dots](https://openai.com/index/introducing-dots/)). Cuando un bot tiene identidad propia, su acceso puede concederse, revisarse y retirarse solo para ese papel, igual que ocurriría con una nueva compañera de trabajo.
 
+## Equipos de bots: roles y traspasos
+
+Cuando tienes varios bots, aparece una pregunta nueva. Ya no se trata solo de qué debe hacer este bot, sino de cómo deben trabajar juntos. A grandes rasgos hay dos imágenes de la respuesta, y llevan a sistemas muy distintos.
+
+La primera imagen es un **equipo con roles y traspasos explícitos**. Piensa en una pequeña redacción. Un investigador reúne fuentes y le entrega a un redactor un resumen de investigación. El redactor convierte ese resumen en un borrador y se lo pasa a un editor. El editor devuelve sus notas y, cuando el texto está listo, llega a alguien que puede aprobarlo. Cada miembro sabe de qué es responsable, y cada flecha entre ellos tiene un nombre: puedes decir exactamente qué viaja por ella.
+
+La segunda imagen es un **enjambre**. Muchos agentes comparten un objetivo y un espacio de trabajo, cada uno toma lo que parece necesitar hacerse, y se espera que el orden surja por sí solo, como parece ocurrir en una colmena o en una bandada de estorninos. La idea resulta atractiva, y la coordinación suelta tiene usos reales: por ejemplo, cuando quieres muchos intentos independientes de resolver un problema y piensas quedarte con el mejor. Pero cuando el trabajo tiene que hacerse en un orden concreto, y hacerse bien, la diferencia salta a la vista:
+
+<Compare
+  before={{ label: "Un enjambre que tiene que arreglárselas solo", content: "Sois cinco agentes: un investigador, un redactor, un editor, un verificador de datos y un diseñador. Trabajad juntos en un artículo de lanzamiento para nuestra nueva funcionalidad. Decidid entre vosotros quién hace qué." }}
+  after={{ label: "Un equipo con traspasos con nombre", content: "Investigador: reúne cinco fuentes recientes sobre la funcionalidad y entrega al Redactor un resumen de investigación, con cada afirmación junto a su enlace. Redactor: convierte el resumen en un borrador de 600 palabras y pásaselo al Editor. Editor: envía al Redactor una lista de notas, como máximo dos rondas, y luego entrégame la versión final. Nadie publica nada." }}
+/>
+
+El primer prompt es más corto, pero deja al azar las decisiones más importantes. ¿Quién verifica los datos, y cuándo? ¿Qué pasa si el redactor y el editor no se ponen de acuerdo? ¿Cuándo está terminado el artículo? El segundo prompt responde a todo eso antes de empezar, y eso trae un beneficio más discreto: puedes **revisarlo**. Si el artículo final contiene una cifra equivocada, puedes seguir los traspasos hacia atrás y descubrir por dónde se coló el error: en el resumen, en el borrador o en la edición. Puedes probar a un miembro por separado dándole una muestra de lo que recibiría. Puedes abarcar toda la organización de un vistazo, como quien lee un organigrama. En un enjambre, la respuesta honesta a «¿quién decidió esto?» suele ser «todos, un poco», y es difícil confiar en una respuesta así.
+
+<Callout type="info" title="Un enjambre es una metáfora">
+Las abejas y los estorninos se coordinan mediante instintos moldeados a lo largo de millones de años. Los agentes de software no tienen esos instintos. Se coordinan mediante las reglas que alguien dejó escritas sobre quién puede hablar con quién y cuándo hay que detenerse. Por eso, cuando un sistema promete un enjambre que se organiza solo, vale la pena preguntar dónde viven esas reglas y si puedes leerlas. Incluso la biblioteca experimental de OpenAI llamada Swarm se basaba en traspasos explícitos, en los que un agente pasa la conversación a otro llamando a una función ([OpenAI Swarm](https://github.com/openai/swarm)). En cuanto las reglas están escritas donde puedes verlas, lo que tienes, al fin y al cabo, es un equipo con traspasos.
+</Callout>
+
+Así se ve la redacción dibujada como un equipo. Cada recuadro es un rol, y cada flecha es un traspaso con una etiqueta que dice qué lleva:
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col md:flex-row items-center justify-center gap-3">
+    <div className="px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border-blue-200 dark:border-blue-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">Investigador</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">Encuentra y verifica fuentes</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Resumen de investigación</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-purple-100 dark:bg-purple-900/50 border-purple-200 dark:border-purple-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">Redactor</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">Convierte el resumen en un borrador</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Borrador</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-green-100 dark:bg-green-900/50 border-green-200 dark:border-green-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">Editor</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0!">Revisa el borrador</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Versión final</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-amber-100 dark:bg-amber-900/50 border-amber-200 dark:border-amber-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">Tú</p>
+      <p className="text-xs text-amber-600 dark:text-amber-400 m-0!">Apruebas antes de que salga nada</p>
+    </div>
+  </div>
+  <p className="text-xs text-center text-muted-foreground mt-4 mb-0!">Editor → Redactor: notas, como máximo dos rondas</p>
+</div>
+
+### Diseñar los roles
+
+Un buen rol se define por aquello de lo que un miembro es responsable, no por un título impresionante. «Estratega sénior» le dice muy poco a un bot. «Lee los tickets de soporte de la semana pasada y entrega las tres quejas más frecuentes al Redactor de producto» se lo dice casi todo: qué leer, qué producir y quién va después. Una prueba útil es describir cada rol por lo que **recibe** y lo que **entrega**. Si no puedes completar ambas cosas, probablemente el rol aún no está listo.
+
+Ayudan otros dos hábitos. Primero, asocia el rol al equipo y no al bot. El mismo bot de investigación puede reunir fuentes para un equipo de redacción y comparar precios de la competencia para un equipo de ventas, y cada equipo debería decir, en una o dos frases, qué hace ese bot allí. Segundo, mantén el equipo pequeño. Cada miembro nuevo añade traspasos, y cada traspaso es un punto donde el sentido puede perderse, como en el juego del teléfono descompuesto. Si dos miembros solo se pasan trabajo el uno al otro, pregúntate si no deberían ser uno solo.
+
+### Qué pasa en un traspaso
+
+Vimos antes que pasarle trabajo a otro bot es, en realidad, escribir un pequeño prompt. En un equipo, ese prompt viaja por una flecha, así que conviene ser preciso en tres cosas. La **etiqueta** nombra lo que se pasa: un resumen de investigación, un borrador, una lista de pruebas que fallan. El **contenido** dice qué debe incluir y con qué forma, por ejemplo cada afirmación con su enlace al lado. Y la **línea de meta** dice cuándo el trabajo se considera terminado, para que el siguiente miembro sepa que recibe algo completo y no algo a medias.
+
+También ayuda recordar que los traspasos tienen dirección. «El redactor entrega un borrador al editor» no es lo mismo que «el editor entrega notas al redactor»; llevan cosas distintas por motivos distintos. Un equipo puede tener flechas en ambos sentidos, pero todo bucle necesita un límite, como un máximo de dos rondas de corrección, o puede no terminar nunca. Y el bot que recibe solo ve lo que se le entrega, no toda la conversación de quien lo envía. Eso suele ser bueno: el contexto se queda con el rol que lo necesita, igual que en los bots que comparten herramientas pero guardan su propia memoria.
+
+<InfoGrid items={[
+  { label: "Rol", description: "De qué es responsable un miembro en este equipo, en una o dos frases. El mismo bot puede tener otro rol en otro equipo.", color: "blue" },
+  { label: "Traspaso", description: "Una flecha con dirección y etiqueta de un miembro a otro, que nombra lo que se pasa y lo que debe contener.", color: "purple" },
+  { label: "Propósito", description: "El objetivo que comparte todo el equipo, escrito una sola vez para que cada miembro sepa para qué sirve el esfuerzo.", color: "green" }
+]} />
+
+### Dar instrucciones a un equipo
+
+Cuando montas un equipo, en realidad escribes un prompt de tres capas. La primera es el **propósito del equipo**, compartido por todos los miembros, para que cada uno sepa para qué sirve el esfuerzo entero. La segunda es la **responsabilidad** de cada miembro, que se añade a las instrucciones propias de ese bot. La tercera es el conjunto de **traspasos**: quién pasa qué a quién, y cuándo. Antes de que el equipo empiece, pídele que te describa el flujo con sus propias palabras, igual que harías con una rutina. Si el resumen te sorprende, alguna de las capas todavía no está clara.
+
+Decide también dónde estás tú en el dibujo. Antes de que algo salga del equipo, ya sea un mensaje a un cliente, una publicación o un cambio en producción, al menos una flecha debería llegar hasta ti. Y recuerda lo que dijimos sobre los bots separados: los distintos roles ayudan a cada miembro a concentrarse, pero no son muros. Si dos miembros necesitan niveles de acceso diferentes, dales credenciales diferentes.
+
+Muchas herramientas siguen hoy este enfoque explícito, cada una con su propio vocabulario. El Agents SDK de OpenAI trata los traspasos como una pieza básica, de modo que un agente puede pasar una tarea a otro ([Handoffs](https://openai.github.io/openai-agents-python/handoffs/)). CrewAI te pide que des a cada agente un rol, un objetivo y una historia de fondo ([CrewAI agents](https://docs.crewai.com/en/concepts/agents)). LangGraph describe un flujo de trabajo como un grafo de nodos y las aristas que los unen ([LangGraph graph API](https://docs.langchain.com/oss/python/langgraph/graph-api)). El Bot *jefe de gabinete* (chief of staff) de Grok Bot, que ya conocimos, coordina a los especialistas que trabajan a su lado. El catálogo [Teams](https://prompts.chat/bots/teams) de prompts.chat comparte equipos como un grafo de roles con traspasos etiquetados. Los detalles cambian de una herramienta a otra, pero la forma es la misma: roles con nombre y cosas con nombre que pasan entre ellas.
+
+<Quiz
+  question="Tu equipo de tres bots te entrega un artículo de lanzamiento con una estadística equivocada. ¿Qué diseño hace más fácil descubrir por dónde entró el error?"
+  options={[
+    "Un enjambre en el que cada agente puede editar el documento compartido cuando quiera",
+    "Traspasos con etiqueta, en los que cada miembro entrega un trabajo con nombre que puedes abrir y revisar",
+    "Un cuarto agente que vigila a los otros tres e informa de cualquier cosa sospechosa",
+    "Un recordatorio en la memoria de cada bot para que compruebe dos veces sus cifras"
+  ]}
+  correctIndex={1}
+  explanation="Cuando cada traspaso lleva un trabajo con nombre, como un resumen o un borrador, puedes abrirlos uno por uno y ver dónde apareció por primera vez la cifra equivocada. Las otras ideas quizá detecten algunos errores, pero no te dejan ningún rastro que seguir."
+/>
+
+<Checklist
+  title="Antes de poner a trabajar a un equipo"
+  items={[
+    { text: "Escribe el propósito del equipo en una o dos frases que compartan todos los miembros" },
+    { text: "Da a cada miembro una responsabilidad, descrita por lo que recibe y lo que entrega" },
+    { text: "Ponle a cada traspaso el nombre de lo que pasa" },
+    { text: "Indica qué debe contener cada traspaso y cuándo el trabajo se da por terminado" },
+    { text: "Pon un límite a cada bucle, por ejemplo un máximo de dos rondas de corrección" },
+    { text: "Haz que todo lo que salga del equipo pase por ti para su aprobación" },
+    { text: "Da a cada miembro solo el acceso que necesita su propio rol" },
+    { text: "Prueba a cada miembro por separado con una muestra de lo que recibe" }
+  ]}
+/>
+
 ## Seguridad y aprobaciones
 
 Aquí está el meollo del asunto: un bot persistente actúa cuando no estás mirando. En un chat, ves cada respuesta antes de hacer nada con ella. Con un bot persistente, puede que no haya nadie mirando en absoluto. Por eso sus límites importan muchísimo más.

@@ -247,6 +247,116 @@ Grok Bot 则偏向另一边，也就是队友。它的发布文章介绍了人�
 
 人们很容易以为，把工作分给几个机器人也会让它更安全。其实不会。分开的角色能帮助每个机器人保持专注，却不能把任何东西锁起来。Grok Bot 的文档明确表示，不要把不同的 Bot 当作安全边界；OpenClaw 也指出，除非你加以限制，否则机器人之间默认可以互相发消息。如果两类工作需要不同级别的访问权限，就给它们不同的环境或不同的凭据。OpenAI 预告的 *specialist dots*（专职 dot）也为组织指出了同样的方向：公司会给每个 dot 配置独立的身份、独立的凭据，并且只开放它的工作所需的系统（[Introducing dots](https://openai.com/index/introducing-dots/)）。当一个机器人拥有自己的身份时，它的访问权限就可以只针对这个角色来授予、审查和收回，就像对待一位新同事那样。
 
+## 机器人团队：角色与交接
+
+当你有了好几个机器人，一个新问题就出现了。要问的已经不只是"这个机器人该做什么"，还有"这些机器人该怎样一起工作"。大体上，答案有两种画法，而它们会通向非常不同的系统。
+
+第一种画法是一个**角色和交接都明确的团队**。想象一间小小的编辑部。研究员收集资料，把一份研究摘要交给撰稿人。撰稿人根据摘要写出草稿，再交给编辑。编辑把修改意见退回来；等稿子写好了，就送到有权批准它的人手里。每个成员都知道自己负责什么，成员之间的每一支箭头也都有名字：你能准确说出顺着它传过去的是什么。
+
+第二种画法是一个**蜂群**（swarm）。许多智能体共享同一个目标和同一块工作区，每个都去做看起来需要做的事，人们期待秩序会自己浮现，就像蜂巢或一大群椋鸟里似乎发生的那样。这个想法很迷人，松散的协作也确实有用武之地：比如你想对一个问题做许多次互不相干的尝试，再从中挑出最好的那个。但当工作必须按特定顺序完成，而且必须做对时，差别就一目了然了：
+
+<Compare
+  before={{ label: "一个只能自己摸索的蜂群", content: "你们是五个智能体：一个研究员、一个撰稿人、一个编辑、一个事实核查员和一个设计师。一起为我们的新功能写一篇发布文章。谁做什么，你们自己商量决定。" }}
+  after={{ label: "一个交接都有名字的团队", content: "研究员：收集五个关于这项新功能的最新资料，交给撰稿人一份研究摘要，每条说法旁边附上链接。撰稿人：把摘要写成 600 词的草稿，交给编辑。编辑：给撰稿人发修改意见，最多两轮，然后把定稿交给我。谁都不要发布任何内容。" }}
+/>
+
+第一个提示词更短，却把最重要的决定交给了运气。谁来核实事实，什么时候核实？撰稿人和编辑意见不合怎么办？文章什么时候算写完？第二个提示词在工作开始之前就回答了这些问题，而这还带来一个不那么显眼的好处：你可以**审查**它。如果成稿里有个数字错了，你可以顺着交接往回找，看看错误是从哪里混进来的：是在摘要里、草稿里，还是在编辑环节。你可以给某个成员一份它将会收到的东西的样本，单独测试它。你还能像看组织架构图一样，一眼看清整个安排。而在蜂群里，"这是谁决定的？"这个问题的诚实回答往往是"大家都有一点"，这样的回答很难让人信任。
+
+<Callout type="info" title="蜂群只是一个比喻">
+蜜蜂和椋鸟靠的是历经数百万年塑造出来的本能来协调彼此。软件智能体没有这样的本能。它们靠的是某个人写下的规则：谁可以和谁说话，什么时候该停下来。所以，当一个系统承诺给你一个能自我组织的蜂群时，值得问一问：这些规则写在哪里，你能不能读到它们？就连 OpenAI 那个名字就叫 Swarm 的实验性库，也是建立在明确的交接之上的：一个智能体通过调用一个函数，把对话交给另一个智能体（[OpenAI Swarm](https://github.com/openai/swarm)）。一旦规则写在了你看得见的地方，你手里的其实就是一个有交接的团队。
+</Callout>
+
+下面就是把这间编辑部画成一个团队的样子。每个方框是一个角色，每支箭头是一次交接，上面的标签说明它运送的是什么：
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col md:flex-row items-center justify-center gap-3">
+    <div className="px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border-blue-200 dark:border-blue-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">研究员</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">查找并核实资料</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">研究摘要</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-purple-100 dark:bg-purple-900/50 border-purple-200 dark:border-purple-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">撰稿人</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">把摘要写成草稿</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">草稿</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-green-100 dark:bg-green-900/50 border-green-200 dark:border-green-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">编辑</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0!">审阅草稿</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">定稿</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-amber-100 dark:bg-amber-900/50 border-amber-200 dark:border-amber-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">你</p>
+      <p className="text-xs text-amber-600 dark:text-amber-400 m-0!">在任何内容发出前批准</p>
+    </div>
+  </div>
+  <p className="text-xs text-center text-muted-foreground mt-4 mb-0!">编辑 → 撰稿人：修改意见，最多两轮</p>
+</div>
+
+### 设计角色
+
+一个好角色是由成员负责什么来定义的，而不是靠一个响亮的头衔。"高级战略师"对机器人来说几乎什么都没说。"阅读上周的客服工单，把最常见的三条投诉交给产品撰稿人"则几乎说清了一切：读什么，产出什么，下一个是谁。一个实用的检验办法是，用它**收到**什么、**交出**什么来描述每个角色。如果两样填不全，这个角色多半还没准备好。
+
+还有两个习惯会有帮助。第一，把角色和团队绑在一起，而不是和机器人绑在一起。同一个研究机器人，可能在编辑团队里收集资料，在销售团队里比较竞争对手的价格；每个团队都应该用一两句话说明这个机器人在这里做什么。第二，让团队保持小规模。每多一个成员就多出一些交接，而每一次交接都是意思可能走样的地方，就像传话游戏里一句悄悄话从一个人传到下一个人。如果两个成员只在彼此之间传递工作，不妨问问它们是不是本该合成一个。
+
+### 交接里传递什么
+
+我们前面看到，把工作交给另一个机器人，其实就是写一个小小的提示词。在团队里，这个提示词沿着一支箭头传递，所以有三件事值得写清楚。**标签**是所传递之物的名字：一份研究摘要、一份草稿、一份失败测试的清单。**内容**说明它必须包含什么、以什么形式呈现，比如每条说法旁边都附上链接。**终点线**则说明工作什么时候算完成，好让下一个成员知道自己收到的是完整的东西，而不是半成品。
+
+还要记得交接是有方向的。"撰稿人把草稿交给编辑"和"编辑把修改意见交给撰稿人"不是一回事；它们出于不同的原因运送不同的东西。团队里可以有双向的箭头，但每个循环都需要一个上限，比如最多两轮修改，否则它可能永远停不下来。而且接收的机器人只能看到交给它的东西，看不到发送方的整段对话。这通常是好事：上下文留在需要它的角色那里，就像那些共享工具、却各自保留记忆的机器人一样。
+
+<InfoGrid items={[
+  { label: "角色", description: "一个成员在这个团队里负责什么，用一两句话说明。同一个机器人在另一个团队里可以担任不同的角色。", color: "blue" },
+  { label: "交接", description: "从一个成员指向另一个成员、有方向也有标签的箭头，说明传递的是什么、里面必须包含什么。", color: "purple" },
+  { label: "目的", description: "整个团队共同的目标，写下一次，让每个成员都知道这份工作是为了什么。", color: "green" }
+]} />
+
+### 给团队写提示词
+
+组建一个团队时，你其实是在写一个三层的提示词。第一层是**团队的目的**，所有成员共享，让每个成员都知道整件事是为了什么。第二层是每个成员的**职责**，添加到这个机器人自己的指令里。第三层是全部的**交接**：谁在什么时候把什么交给谁。团队开工之前，像对待例行任务那样，请它用自己的话把流程讲给你听。如果它的描述让你意外，就说明某一层还不够清楚。
+
+也要决定你自己站在这幅图的什么位置。在任何东西离开团队之前，无论是发给客户的消息、要发布的文章，还是生产环境里的一项改动，都应该至少有一支箭头指向你。还要记住我们讲过的关于不同机器人的话：不同的角色能帮每个成员保持专注，但它们不是墙。如果两个成员需要不同级别的访问权限，就给它们不同的凭据。
+
+如今许多工具都采用了这种明确的做法，只是各有各的说法。OpenAI 的 Agents SDK 把交接当作基本构件，让一个智能体可以把任务交给另一个（[Handoffs](https://openai.github.io/openai-agents-python/handoffs/)）。CrewAI 要求你为每个智能体设定角色、目标和背景故事（[CrewAI agents](https://docs.crewai.com/en/concepts/agents)）。LangGraph 把工作流描述成由节点和节点之间的边组成的图（[LangGraph graph API](https://docs.langchain.com/oss/python/langgraph/graph-api)）。我们之前见过的 Grok Bot 里那个*幕僚长*（chief of staff）Bot，也负责协调在它身边工作的各位专家。prompts.chat 的 [Teams](https://prompts.chat/bots/teams) 目录则把团队分享为一张由角色和带标签的交接组成的图。细节因工具而异，但形状始终如一：有名字的角色，以及在它们之间传递的、有名字的东西。
+
+<Quiz
+  question="你那个由三个机器人组成的团队交给你一篇发布文章，里面有一个错误的统计数字。哪种设计最容易让你找到错误是从哪里混进来的？"
+  options={[
+    "一个蜂群，每个智能体随时都可以修改共享文档",
+    "带标签的交接，每个成员交出一份有名字、你可以打开检查的成果",
+    "第四个智能体，盯着另外三个，发现可疑之处就报告",
+    "在每个机器人的记忆里加一条提醒，让它把数字检查两遍"
+  ]}
+  correctIndex={1}
+  explanation="当每次交接都带着一份有名字的成果，比如摘要或草稿，你就可以一份一份打开，看看错误的数字最早出现在哪里。其他办法也许能抓住一些错误，却不会给你留下可以追踪的痕迹。"
+/>
+
+<Checklist
+  title="让团队开工之前"
+  items={[
+    { text: "用所有成员共享的一两句话写下团队的目的" },
+    { text: "给每个成员一项职责，用它收到什么、交出什么来描述" },
+    { text: "用每次交接所传递之物来给它命名" },
+    { text: "写明每次交接必须包含什么，以及工作什么时候算完成" },
+    { text: "给每个循环设上限，比如最多两轮修改" },
+    { text: "凡是要离开团队的东西，都先经过你批准" },
+    { text: "只给每个成员它自己的角色所需要的访问权限" },
+    { text: "用它将会收到的东西的样本，单独测试每个成员" }
+  ]}
+/>
+
 ## 安全和批准
 
 问题的核心在这里：常驻机器人会在你没看着的时候采取行动。在聊天里，你会先看到每一个回答，然后才决定怎么用它。而对于常驻机器人，可能根本没有人在看。这就让它的边界变得重要得多。

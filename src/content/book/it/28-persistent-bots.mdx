@@ -247,6 +247,116 @@ Qualunque schema tu scelga, affidare un lavoro a un altro bot significa in fondo
 
 Viene spontaneo pensare che dividere il lavoro tra più bot lo renda anche più sicuro. Non è così. Ruoli separati aiutano ciascun bot a restare concentrato, ma non tengono nulla sotto chiave. La documentazione di Grok Bot dice esplicitamente di non considerare Bot separati come un confine di sicurezza, e OpenClaw fa notare che i bot possono scriversi tra loro per impostazione predefinita, a meno che tu non lo limiti. Se due tipi di lavoro richiedono livelli di accesso diversi, assegna loro ambienti diversi o credenziali diverse. L'anteprima degli *specialist dots* (dots specializzati) di OpenAI va nella stessa direzione per le organizzazioni: l'azienda configura ciascuno con una propria identità, proprie credenziali e accesso solo ai sistemi che il suo lavoro richiede ([Introducing dots](https://openai.com/index/introducing-dots/)). Quando un bot ha un'identità tutta sua, il suo accesso può essere concesso, rivisto e revocato solo per quel ruolo, un po' come accadrebbe con un nuovo collega.
 
+## Squadre di bot: ruoli e passaggi di consegne
+
+Quando hai più bot, si affaccia una domanda nuova. Non si tratta più soltanto di cosa debba fare questo bot, ma di come questi bot debbano lavorare insieme. A grandi linee esistono due immagini della risposta, e portano a sistemi molto diversi.
+
+La prima immagine è una **squadra con ruoli e passaggi di consegne espliciti**. Pensa a una piccola redazione. Un ricercatore raccoglie le fonti e consegna a un autore una sintesi della ricerca. L'autore ne ricava una bozza e la passa a un editor. L'editor rimanda le sue note e, quando il pezzo è pronto, arriva a qualcuno che può approvarlo. Ogni membro sa di cosa è responsabile, e ogni freccia tra loro ha un nome: puoi dire esattamente cosa vi viaggia sopra.
+
+La seconda immagine è uno **sciame**. Molti agenti condividono un obiettivo e uno spazio di lavoro, ognuno prende in mano ciò che sembra da fare, e ci si aspetta che l'ordine emerga da solo, come sembra accadere in un alveare o in uno stormo di storni. L'idea è affascinante, e un coordinamento lasco ha usi reali: per esempio quando vuoi molti tentativi indipendenti su un problema per poi tenere il migliore. Ma quando il lavoro va fatto in un ordine preciso, e fatto bene, la differenza salta all'occhio:
+
+<Compare
+  before={{ label: "Uno sciame che deve arrangiarsi", content: "Siete cinque agenti: un ricercatore, un autore, un editor, un verificatore dei fatti e un designer. Lavorate insieme a un articolo di lancio per la nostra nuova funzionalità. Decidete tra voi chi fa cosa." }}
+  after={{ label: "Una squadra con passaggi di consegne con un nome", content: "Ricercatore: raccogli cinque fonti recenti sulla funzionalità e consegna all'Autore una sintesi della ricerca, con ogni affermazione accanto al suo link. Autore: trasforma la sintesi in una bozza di 600 parole e passala all'Editor. Editor: manda all'Autore un elenco di note, al massimo per due giri, poi consegna a me la versione finale. Nessuno pubblica niente." }}
+/>
+
+Il primo prompt è più corto, ma lascia al caso le decisioni più importanti. Chi verifica i fatti, e quando? Che succede se autore ed editor non sono d'accordo? Quando l'articolo è finito? Il secondo prompt risponde a tutto questo prima che il lavoro cominci, e ne deriva un vantaggio più silenzioso: puoi **rivederlo**. Se l'articolo finale contiene un numero sbagliato, puoi ripercorrere all'indietro i passaggi di consegne e trovare dove si è infilato l'errore: nella sintesi, nella bozza o nella revisione. Puoi mettere alla prova un singolo membro dandogli un esempio di ciò che riceverebbe. Puoi abbracciare l'intera organizzazione con uno sguardo, come si legge un organigramma. In uno sciame, la risposta onesta a «chi l'ha deciso?» è spesso «tutti, un po'», ed è una risposta di cui è difficile fidarsi.
+
+<Callout type="info" title="Lo sciame è una metafora">
+Api e storni si coordinano grazie a istinti plasmati in milioni di anni. Gli agenti software non hanno istinti del genere. Si coordinano attraverso le regole che qualcuno ha scritto su chi può parlare con chi e su quando fermarsi. Perciò, quando un sistema promette uno sciame che si organizza da solo, vale la pena chiedersi dove stiano quelle regole e se tu possa leggerle. Persino la libreria sperimentale di OpenAI chiamata Swarm si basava su passaggi di consegne espliciti, in cui un agente passa la conversazione a un altro chiamando una funzione ([OpenAI Swarm](https://github.com/openai/swarm)). Non appena le regole sono scritte dove puoi vederle, hai comunque una squadra con passaggi di consegne.
+</Callout>
+
+Ecco la redazione disegnata come una squadra. Ogni riquadro è un ruolo, e ogni freccia è un passaggio di consegne con un'etichetta che dice cosa trasporta:
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col md:flex-row items-center justify-center gap-3">
+    <div className="px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border-blue-200 dark:border-blue-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">Ricercatore</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">Trova e verifica le fonti</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Sintesi della ricerca</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-purple-100 dark:bg-purple-900/50 border-purple-200 dark:border-purple-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">Autore</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">Trasforma la sintesi in una bozza</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Bozza</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-green-100 dark:bg-green-900/50 border-green-200 dark:border-green-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">Editor</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0!">Rivede la bozza</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Versione finale</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-amber-100 dark:bg-amber-900/50 border-amber-200 dark:border-amber-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">Tu</p>
+      <p className="text-xs text-amber-600 dark:text-amber-400 m-0!">Approvi prima che esca qualcosa</p>
+    </div>
+  </div>
+  <p className="text-xs text-center text-muted-foreground mt-4 mb-0!">Editor → Autore: note, al massimo due giri</p>
+</div>
+
+### Progettare i ruoli
+
+Un buon ruolo si definisce in base a ciò di cui un membro è responsabile, non con un titolo altisonante. «Stratega senior» dice ben poco a un bot. «Leggi i ticket di assistenza della settimana scorsa e consegna i tre reclami più frequenti al Redattore di prodotto» gli dice quasi tutto: cosa leggere, cosa produrre e chi viene dopo. Una prova utile è descrivere ogni ruolo in base a ciò che **riceve** e a ciò che **consegna**. Se non riesci a riempire entrambe le parti, probabilmente il ruolo non è ancora pronto.
+
+Aiutano altre due abitudini. Primo, lega il ruolo alla squadra anziché al bot. Lo stesso bot di ricerca può raccogliere fonti per una squadra di redazione e confrontare i prezzi della concorrenza per una squadra commerciale, e ogni squadra dovrebbe dire, in una frase o due, cosa fa lì quel bot. Secondo, tieni la squadra piccola. Ogni nuovo membro aggiunge passaggi di consegne, e ogni passaggio è un punto in cui il significato può perdersi, un po' come nel gioco del telefono senza fili. Se due membri si passano il lavoro solo tra loro, chiediti se non dovrebbero essere uno solo.
+
+### Cosa passa in un passaggio di consegne
+
+Abbiamo visto prima che affidare un lavoro a un altro bot significa, in fondo, scrivere un piccolo prompt. In una squadra quel prompt viaggia lungo una freccia, quindi conviene essere precisi su tre cose. L'**etichetta** dà un nome a ciò che viene passato: una sintesi della ricerca, una bozza, un elenco di test che falliscono. Il **contenuto** dice cosa deve includere e in che forma, per esempio ogni affermazione con il suo link accanto. E il **traguardo** dice quando il lavoro si considera finito, così il membro successivo sa di ricevere qualcosa di completo e non un lavoro a metà.
+
+Aiuta anche ricordare che i passaggi di consegne hanno una direzione. «L'autore consegna una bozza all'editor» non è la stessa cosa di «l'editor consegna note all'autore»; trasportano cose diverse per motivi diversi. Una squadra può avere frecce in entrambe le direzioni, ma ogni ciclo ha bisogno di un limite, per esempio al massimo due giri di correzioni, altrimenti potrebbe non finire mai. E il bot che riceve vede solo ciò che gli viene consegnato, non l'intera conversazione di chi lo manda. Di solito è un bene: il contesto resta al ruolo che ne ha bisogno, proprio come nei bot che condividono gli strumenti ma tengono ciascuno la propria memoria.
+
+<InfoGrid items={[
+  { label: "Ruolo", description: "Di cosa è responsabile un membro in questa squadra, in una frase o due. Lo stesso bot può avere un ruolo diverso in un'altra squadra.", color: "blue" },
+  { label: "Passaggio di consegne", description: "Una freccia orientata ed etichettata da un membro a un altro, che dice cosa viene passato e cosa deve contenere.", color: "purple" },
+  { label: "Scopo", description: "L'obiettivo condiviso da tutta la squadra, scritto una volta sola perché ogni membro sappia a che cosa serve il lavoro.", color: "green" }
+]} />
+
+### Dare istruzioni a una squadra
+
+Quando metti in piedi una squadra, in realtà scrivi un prompt a tre strati. Il primo è lo **scopo della squadra**, condiviso da tutti i membri, così ognuno sa a cosa serve l'intero sforzo. Il secondo è la **responsabilità** di ciascun membro, aggiunta alle istruzioni proprie di quel bot. Il terzo è l'insieme dei **passaggi di consegne**: chi passa cosa a chi, e quando. Prima che la squadra parta, chiedile di descriverti il flusso con parole sue, come faresti con una routine. Se il riassunto ti sorprende, uno degli strati non è ancora chiaro.
+
+Decidi anche dove ti trovi tu nel disegno. Prima che qualcosa lasci la squadra, che sia un messaggio a un cliente, un post pubblicato o una modifica in produzione, almeno una freccia dovrebbe arrivare a te. E ricorda quello che abbiamo detto sui bot separati: ruoli diversi aiutano ogni membro a restare concentrato, ma non sono muri. Se due membri hanno bisogno di livelli di accesso diversi, dai loro credenziali diverse.
+
+Molti strumenti oggi seguono questo approccio esplicito, ciascuno con il proprio vocabolario. L'Agents SDK di OpenAI tratta i passaggi di consegne come un elemento di base, così un agente può passare un compito a un altro ([Handoffs](https://openai.github.io/openai-agents-python/handoffs/)). CrewAI ti chiede di dare a ogni agente un ruolo, un obiettivo e una storia alle spalle ([CrewAI agents](https://docs.crewai.com/en/concepts/agents)). LangGraph descrive un flusso di lavoro come un grafo di nodi e degli archi che li collegano ([LangGraph graph API](https://docs.langchain.com/oss/python/langgraph/graph-api)). Il Bot *capo di gabinetto* (chief of staff) di Grok Bot, che abbiamo già incontrato, coordina gli specialisti che lavorano al suo fianco. Il catalogo [Teams](https://prompts.chat/bots/teams) di prompts.chat condivide le squadre come un grafo di ruoli collegati da passaggi di consegne con un'etichetta. I dettagli cambiano da strumento a strumento, ma la forma resta la stessa: ruoli con un nome e cose con un nome che passano dall'uno all'altro.
+
+<Quiz
+  question="La tua squadra di tre bot ti consegna un articolo di lancio con una statistica sbagliata. Quale impostazione rende più facile capire dove è entrato l'errore?"
+  options={[
+    "Uno sciame in cui ogni agente può modificare il documento condiviso quando vuole",
+    "Passaggi di consegne etichettati, in cui ogni membro consegna un lavoro con un nome che puoi aprire e controllare",
+    "Un quarto agente che osserva gli altri tre e segnala qualsiasi cosa sospetta",
+    "Un promemoria nella memoria di ogni bot perché controlli due volte i suoi numeri"
+  ]}
+  correctIndex={1}
+  explanation="Quando ogni passaggio di consegne porta un lavoro con un nome, come una sintesi o una bozza, puoi aprirli uno alla volta e vedere dove è comparso per la prima volta il numero sbagliato. Le altre idee forse intercettano qualche errore, ma non ti lasciano alcuna traccia da seguire."
+/>
+
+<Checklist
+  title="Prima di mettere al lavoro una squadra"
+  items={[
+    { text: "Scrivi lo scopo della squadra in una frase o due condivise da tutti i membri" },
+    { text: "Dai a ogni membro una responsabilità, descritta da ciò che riceve e ciò che consegna" },
+    { text: "Dai a ogni passaggio di consegne il nome di ciò che trasmette" },
+    { text: "Specifica cosa deve contenere ogni passaggio e quando il lavoro si considera finito" },
+    { text: "Metti un limite a ogni ciclo, per esempio al massimo due giri di correzioni" },
+    { text: "Fai passare da te, per l'approvazione, tutto ciò che esce dalla squadra" },
+    { text: "Dai a ogni membro solo l'accesso di cui ha bisogno il suo ruolo" },
+    { text: "Metti alla prova ogni membro da solo con un esempio di ciò che riceve" }
+  ]}
+/>
+
 ## Sicurezza e approvazioni
 
 Eccoci al cuore della questione: un bot persistente agisce quando non lo stai guardando. In una chat vedi ogni risposta prima di farci qualcosa. Con un bot persistente, potrebbe non esserci nessuno a guardare. Ed è per questo che i suoi confini diventano molto più importanti.

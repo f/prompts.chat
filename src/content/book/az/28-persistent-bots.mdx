@@ -247,6 +247,116 @@ Hansı modeldən istifadə etsəniz də, işi başqa bota ötürmək əslində s
 
 İşi botlar arasında bölməyin onu həm də təhlükəsiz etdiyini düşünmək cazibədardır. Amma elə deyil. Ayrı rollar hər botun diqqətini cəmləməsinə kömək edir; heç nəyi kilid altında saxlamır. Grok Bot-un sənədləri ayrı Bot-lara təhlükəsizlik sərhədi kimi baxmamağı açıq deyir, OpenClaw isə qeyd edir ki, siz məhdudlaşdırmasanız, botlar standart olaraq bir-birinə mesaj yaza bilir. İki növ işə fərqli səviyyədə giriş lazımdırsa, onlara fərqli mühitlər və ya fərqli giriş məlumatları verin. OpenAI-ın təqdim etdiyi *specialist dots* (ixtisaslaşmış dots) sınağı da təşkilatlar üçün eyni istiqaməti göstərir: şirkət onların hər birini öz kimliyi, öz giriş məlumatları və yalnız işinin tələb etdiyi sistemlərə girişlə qurur ([Introducing dots](https://openai.com/index/introducing-dots/)). Botun öz kimliyi olanda, ona giriş yalnız həmin rol üçün verilə, yoxlanıla və geri alına bilər, eynilə yeni iş yoldaşında olduğu kimi.
 
+## Bot Komandaları: Rollar və Ötürmələr
+
+Bir neçə botunuz olanda yeni bir sual yaranır. Artıq söhbət təkcə bu botun nə etməli olduğundan getmir, bu botların birlikdə necə işləməli olduğundan da gedir. Ümumi götürsək, cavabın iki mənzərəsi var və onlar çox fərqli sistemlərə aparır.
+
+Birinci mənzərə **rolları və ötürmələri açıq müəyyən olunmuş komandadır**. Kiçik bir redaksiya təsəvvür edin. Tədqiqatçı mənbələri toplayır və müəllifə tədqiqat xülasəsi verir. Müəllif bu xülasədən qaralama hazırlayır və onu redaktora ötürür. Redaktor qeydlərini geri göndərir, mətn hazır olanda isə o, təsdiq verə bilən adama çatır. Hər üzv nəyə görə məsuliyyət daşıdığını bilir, aralarındakı hər oxun da adı var: onun üzərindən nəyin keçdiyini dəqiq deyə bilərsiniz.
+
+İkinci mənzərə **sürüdür**. Çoxlu agent eyni məqsədi və eyni iş sahəsini bölüşür, hər biri o an görülməli kimi görünən işi götürür və nizamın öz-özünə yaranacağı gözlənilir, necə ki arı pətəyində və ya sığırçın sürüsündə belə görünür. Fikir cəlbedicidir və sərbəst koordinasiyanın real faydası da var: məsələn, bir problemə çoxlu müstəqil cəhd etdirib ən yaxşısını saxlamaq istəyəndə. Amma iş müəyyən ardıcıllıqla və düzgün görülməlidirsə, fərq dərhal gözə çarpır:
+
+<Compare
+  before={{ label: "İşi özü həll etməli olan sürü", content: "Siz beş agentsiniz: tədqiqatçı, müəllif, redaktor, fakt yoxlayıcısı və dizayner. Yeni funksiyamız haqqında təqdimat məqaləsi üzərində birlikdə işləyin. Kimin nə edəcəyinə öz aranızda qərar verin." }}
+  after={{ label: "Ötürmələri adla bəlli olan komanda", content: "Tədqiqatçı: funksiya haqqında beş təzə mənbə topla və Müəllifə hər iddianın yanında keçidi olan tədqiqat xülasəsi ver. Müəllif: xülasəni 600 sözlük qaralamaya çevir və Redaktora ötür. Redaktor: Müəllifə ən çoxu iki dövrə qeyd göndər, sonra son variantı mənə ver. Heç kim heç nə dərc etməsin." }}
+/>
+
+Birinci prompt daha qısadır, amma ən vacib qərarları təsadüfə buraxır. Faktları kim və nə vaxt yoxlayacaq? Müəlliflə redaktor razılaşmasa nə olacaq? Məqalə nə vaxt hazır sayılır? İkinci prompt bütün bunlara iş başlamazdan əvvəl cavab verir və bunun daha səssiz bir faydası da var: onu **nəzərdən keçirə** bilərsiniz. Hazır məqalədə səhv rəqəm çıxsa, ötürmələri geriyə doğru izləyib səhvin haradan girdiyini tapa bilərsiniz: xülasədə, qaralamada, yoxsa redaktədə. Bir üzvü, ona çatacaq işdən nümunə verərək ayrıca sınaya bilərsiniz. Bütün quruluşu, təşkilat sxeminə baxırmış kimi, bir baxışda görə bilərsiniz. Sürüdə isə "Bunu kim qərara aldı?" sualının dürüst cavabı çox vaxt "Hamı bir az" olur və belə cavaba güvənmək çətindir.
+
+<Callout type="info" title="Sürü bir bənzətmədir">
+Arılar və sığırçınlar milyon illər ərzində formalaşmış instinktlərlə uyğunlaşır. Proqram agentlərinin belə instinktləri yoxdur. Onlar kiminsə kimin kimlə danışa biləcəyi və nə vaxt dayanmaq lazım olduğu haqqında yazdığı qaydalarla əlaqələnir. Ona görə də bir sistem sizə öz-özünü təşkil edən sürü vəd edəndə, həmin qaydaların harada olduğunu və onları oxuya bilib-bilmədiyinizi soruşmağa dəyər. Hətta OpenAI-ın Swarm adlı eksperimental kitabxanası da açıq ötürmələr üzərində qurulmuşdu: bir agent funksiya çağıraraq söhbəti digərinə ötürürdü ([OpenAI Swarm](https://github.com/openai/swarm)). Qaydalar görə biləcəyiniz yerdə yazılan kimi, əlinizdə əslində ötürmələri olan bir komanda olur.
+</Callout>
+
+Budur, həmin redaksiya komanda kimi çəkilmiş halda. Hər qutu bir roldur, hər ox isə üzərində nə daşıdığını deyən etiketi olan bir ötürmədir:
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col md:flex-row items-center justify-center gap-3">
+    <div className="px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border-blue-200 dark:border-blue-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">Tədqiqatçı</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">Mənbələri tapır və yoxlayır</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Tədqiqat xülasəsi</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-purple-100 dark:bg-purple-900/50 border-purple-200 dark:border-purple-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">Müəllif</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">Xülasədən qaralama hazırlayır</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Qaralama</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-green-100 dark:bg-green-900/50 border-green-200 dark:border-green-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">Redaktor</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0!">Qaralamanı yoxlayır</p>
+    </div>
+    <div className="flex flex-col items-center text-slate-400">
+      <span className="text-xs">Son variant</span>
+      <span className="hidden md:block text-2xl">→</span>
+      <span className="md:hidden text-2xl">↓</span>
+    </div>
+    <div className="px-4 py-3 bg-amber-100 dark:bg-amber-900/50 border-amber-200 dark:border-amber-800 border rounded-lg text-center">
+      <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">Siz</p>
+      <p className="text-xs text-amber-600 dark:text-amber-400 m-0!">Nəsə çölə çıxmazdan əvvəl təsdiqləyirsiniz</p>
+    </div>
+  </div>
+  <p className="text-xs text-center text-muted-foreground mt-4 mb-0!">Redaktor → Müəllif: qeydlər, ən çoxu iki dövrə</p>
+</div>
+
+### Rolları Layihələndirmək
+
+Yaxşı rolu təsirli bir vəzifə adı deyil, üzvün daşıdığı məsuliyyət müəyyən edir. "Baş strateq" bota çox az şey deyir. "Keçən həftənin dəstək müraciətlərini oxu və ən çox təkrarlanan üç şikayəti Məhsul Müəllifinə ötür" isə demək olar ki, hər şeyi deyir: nəyi oxumalı, nə hazırlamalı və işi kimə verməli. Faydalı bir yoxlama üsulu: hər rolu onun nə **aldığı** və nə **ötürdüyü** ilə təsvir edin. Hər ikisini doldura bilmirsinizsə, rol çox güman ki, hələ hazır deyil.
+
+Daha iki vərdiş kömək edir. Birincisi, rolu botla deyil, komanda ilə bağlayın. Eyni tədqiqat botu redaksiya komandası üçün mənbə toplaya, satış komandası üçün isə rəqiblərin qiymətlərini müqayisə edə bilər; hər komanda bir-iki cümlə ilə həmin botun orada nə iş gördüyünü deməlidir. İkincisi, komandanı kiçik saxlayın. Hər yeni üzv yeni ötürmələr gətirir, hər ötürmə isə mənanın yolda itə biləcəyi bir yerdir, eynilə qulaqdan-qulağa pıçıltı ilə ötürülən cümlə kimi. Əgər iki üzv işi yalnız bir-birinə ötürürsə, onların bir üzv olmalı olub-olmadığını düşünün.
+
+### Ötürmədə Nə Keçir
+
+Əvvəl gördük ki, işi başqa bota ötürmək əslində kiçik bir prompt yazmaqdır. Komandada bu prompt bir ox boyunca hərəkət edir, ona görə də üç məsələdə dəqiq olmağa dəyər. **Etiket** ötürülən şeyin adıdır: tədqiqat xülasəsi, qaralama, uğursuz testlərin siyahısı. **Məzmun** onun nələri və hansı formada daxil etməli olduğunu deyir, məsələn hər iddianın yanında keçidi olsun. **Finiş xətti** isə işin nə vaxt bitmiş sayıldığını bildirir ki, növbəti üzv yarımçıq deyil, tam bir iş aldığını bilsin.
+
+Ötürmələrin istiqaməti olduğunu da yadda saxlamaq faydalıdır. "Müəllif qaralamanı redaktora verir" ilə "redaktor qeydləri müəllifə verir" eyni şey deyil; onlar fərqli şeyləri fərqli səbəblərlə daşıyır. Komandada hər iki istiqamətdə ox ola bilər, amma hər dövrənin bir həddi olmalıdır, məsələn ən çoxu iki düzəliş dövrəsi, yoxsa dövrə heç bitməyə bilər. Bir də, işi qəbul edən bot yalnız ona veriləni görür, göndərənin bütün söhbətini yox. Bu adətən yaxşıdır: alətləri bölüşüb yaddaşlarını özlərində saxlayan botlarda olduğu kimi, kontekst ona ehtiyacı olan rolda qalır.
+
+<InfoGrid items={[
+  { label: "Rol", description: "Bir üzvün bu komandadakı məsuliyyəti, bir-iki cümlə ilə. Eyni bot başqa komandada başqa rol oynaya bilər.", color: "blue" },
+  { label: "Ötürmə", description: "Bir üzvdən digərinə uzanan, istiqaməti və etiketi olan ox. Nəyin ötürüldüyünü və onun nələri ehtiva etməli olduğunu deyir.", color: "purple" },
+  { label: "Məqsəd", description: "Bütün komandanın ortaq hədəfi; hər üzv işin nəyə xidmət etdiyini bilsin deyə bir dəfə yazılır.", color: "green" }
+]} />
+
+### Komanda üçün Prompt Yazmaq
+
+Komanda quranda əslində üç qatlı prompt yazırsınız. Birinci qat **komandanın məqsədidir**; bütün üzvlər onu bölüşür ki, hər biri bütün səyin nəyə xidmət etdiyini bilsin. İkinci qat hər üzvün **məsuliyyətidir** və həmin botun öz təlimatlarına əlavə olunur. Üçüncü qat **ötürmələrdir**: kim, nəyi, kimə və nə vaxt ötürür. Komanda işə başlamazdan əvvəl, rutində etdiyiniz kimi, axını sizə öz sözləri ilə danışmasını xahiş edin. Danışdıqları sizi təəccübləndirirsə, qatlardan biri hələ kifayət qədər aydın deyil.
+
+Bu mənzərədə harada dayandığınıza da qərar verin. Komandadan çölə nəsə çıxmazdan əvvəl, istər müştəriyə mesaj, istər dərc olunan yazı, istərsə də canlı mühitdə dəyişiklik olsun, ən azı bir ox sizə çatmalıdır. Ayrı botlar haqqında dediklərimizi də unutmayın: fərqli rollar hər üzvə öz işinə fokuslanmağa kömək edir, amma divar deyil. İki üzvə fərqli səviyyədə giriş lazımdırsa, onlara fərqli giriş məlumatları verin.
+
+Bu gün bir çox alət bu açıq yanaşmanı seçir, hər biri öz dilində. OpenAI-ın Agents SDK-sı ötürmələri əsas tikinti bloku kimi qəbul edir ki, bir agent tapşırığı digərinə ötürə bilsin ([Handoffs](https://openai.github.io/openai-agents-python/handoffs/)). CrewAI hər agentə rol, məqsəd və arxa plan hekayəsi verməyinizi istəyir ([CrewAI agents](https://docs.crewai.com/en/concepts/agents)). LangGraph iş axınını düyünlərdən və onların arasındakı kənarlardan ibarət qraf kimi təsvir edir ([LangGraph graph API](https://docs.langchain.com/oss/python/langgraph/graph-api)). Daha əvvəl tanış olduğumuz Grok Bot-dakı *aparat rəhbəri* (chief of staff) Bot-u da yanında çalışan mütəxəssisləri koordinasiya edir. prompts.chat-ın [Teams](https://prompts.chat/bots/teams) kataloqu isə komandaları rollardan və etiketli ötürmələrdən ibarət qraf kimi paylaşır. Təfərrüatlar alətdən alətə dəyişir, amma əsas forma eyni qalır: adı olan rollar və onların arasında əldən-ələ keçən, adı olan işlər.
+
+<Quiz
+  question="Üç botluq komandanız sizə içində səhv statistika olan təqdimat məqaləsi təhvil verir. Səhvin haradan girdiyini tapmağı ən çox hansı quruluş asanlaşdırır?"
+  options={[
+    "Hər agentin ortaq sənədi istədiyi vaxt redaktə edə bildiyi sürü",
+    "Hər üzvün açıb yoxlaya biləcəyiniz, adı olan bir işi ötürdüyü etiketli ötürmələr",
+    "Digər üçünü izləyib şübhəli hər şeyi bildirən dördüncü agent",
+    "Hər botun yaddaşında rəqəmlərini iki dəfə yoxlamağı xatırladan qeyd"
+  ]}
+  correctIndex={1}
+  explanation="Hər ötürmə xülasə və ya qaralama kimi adı olan bir iş daşıyanda, onları bir-bir açıb səhv rəqəmin ilk dəfə harada göründüyünü görə bilərsiniz. Digər fikirlər bəzi səhvləri tuta bilər, amma sizə izləyəcəyiniz bir iz qoymur."
+/>
+
+<Checklist
+  title="Komandanı işə salmazdan əvvəl"
+  items={[
+    { text: "Komandanın məqsədini bütün üzvlərin bölüşdüyü bir-iki cümlə ilə yazın" },
+    { text: "Hər üzvə nə aldığı və nə ötürdüyü ilə təsvir olunan bir məsuliyyət verin" },
+    { text: "Hər ötürməyə ötürdüyü şeyin adını verin" },
+    { text: "Hər ötürmənin nələri ehtiva etməli olduğunu və işin nə vaxt bitmiş sayıldığını göstərin" },
+    { text: "Hər dövrəyə hədd qoyun, məsələn ən çoxu iki düzəliş dövrəsi" },
+    { text: "Komandadan çölə çıxan hər şeyi təsdiq üçün sizdən keçirin" },
+    { text: "Hər üzvə yalnız öz rolunun tələb etdiyi girişi verin" },
+    { text: "Hər üzvü ona çatacaq işdən nümunə ilə ayrıca sınayın" }
+  ]}
+/>
+
 ## Təhlükəsizlik və Təsdiqlər
 
 Məsələnin əsas nöqtəsi budur: daim işləyən bot siz baxmayanda hərəkət edir. Söhbətdə siz hər cavabı onunla nəsə etməzdən əvvəl görürsünüz. Daim işləyən botda isə ümumiyyətlə heç kim baxmaya bilər. Bu da onun sərhədlərini qat-qat vacib edir.
