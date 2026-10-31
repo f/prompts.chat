@@ -1,6 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { BOT_PLATFORMS, extractBotId } from "@/lib/bots";
+import { BOT_COMPUTER_REQUIREMENTS, BOT_PLATFORMS, extractBotId } from "@/lib/bots";
 import {
   MAX_TEAM_LINKS,
   MAX_TEAM_MEMBERS,
@@ -24,7 +24,12 @@ import { cursorInput, decodeCursor, limitInput, nextCursor } from "../schemas";
 import { resourceLink } from "../shared";
 import { defineTool, toolResult, ToolError, unwrapWriteResult } from "../tool";
 
-const teamMemberOutput = z.looseObject({ id: z.string(), name: z.string(), role: z.string().nullable() });
+const teamMemberOutput = z.looseObject({
+  id: z.string(),
+  name: z.string(),
+  role: z.string().nullable(),
+  computerRequirement: z.enum(BOT_COMPUTER_REQUIREMENTS),
+});
 
 const teamSummaryOutput = z.looseObject({
   id: z.string(),

@@ -778,6 +778,12 @@ curl -X POST ${baseUrl}/api/mcp \\
                     <TableCell className="text-muted-foreground text-sm">Only bots for this platform, e.g. <code className="text-xs">HERMES</code></TableCell>
                   </TableRow>
                   <TableRow>
+                    <TableCell className="font-mono text-xs">computerRequirement</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Only bots that need <code className="text-xs">NONE</code>, a <code className="text-xs">CLOUD</code> computer or the user&apos;s <code className="text-xs">LOCAL</code> computer</TableCell>
+                  </TableRow>
+                  <TableRow>
                     <TableCell className="font-mono text-xs">category</TableCell>
                     <TableCell className="text-muted-foreground text-xs">string</TableCell>
                     <TableCell className="text-xs">No</TableCell>
@@ -908,6 +914,12 @@ curl -X POST ${baseUrl}/api/mcp \\
                     <TableCell className="text-muted-foreground text-xs">string | null</TableCell>
                     <TableCell className="text-xs">No</TableCell>
                     <TableCell className="text-muted-foreground text-sm">https one-click install link (Grok Bot template link)</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">computerRequirement</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string</TableCell>
+                    <TableCell className="text-xs">No</TableCell>
+                    <TableCell className="text-muted-foreground text-sm"><code className="text-xs">NONE</code> (default), <code className="text-xs">CLOUD</code> when the bot needs its own remote computer, desktop or browser, or <code className="text-xs">LOCAL</code> when it needs the user&apos;s own machine, files or apps</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell className="font-mono text-xs">routines</TableCell>
