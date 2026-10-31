@@ -48,6 +48,7 @@ model User {
   notificationsActed         Notification[]         @relation("NotificationActor")
   collections                Collection[]
   userPromptExamples         UserPromptExample[]
+  botTeams                   BotTeam[]
 
   @@map("users")
 }
@@ -130,6 +131,7 @@ model Prompt {
   incomingConnections PromptConnection[]  @relation("ConnectionTarget")
   botPairingsFrom     BotPairing[]        @relation("BotPairingFrom")
   botPairingsTo       BotPairing[]        @relation("BotPairingTo")
+  botTeamMemberships  BotTeamMember[]
   collectedBy         Collection[]
   userExamples        UserPromptExample[]
   bestWithModels      String[] // Model slugs this prompt works best with (max 3), e.g. ["gpt-4o", "claude-3-5-sonnet"]
@@ -420,6 +422,63 @@ model BotPairing {
   @@id([fromId, toId])
   @@index([toId])
   @@map("bot_pairings")
+}
+
+/// A titled group of BOT prompts that hand work off to each other. See src/lib/bots/teams.ts
+model BotTeam {
+  id          String          @id @default(cuid())
+  slug        String          @unique
+  title       String          @db.VarChar(120)
+  description String?         @db.VarChar(1000)
+  authorId    String
+  isFeatured  Boolean         @default(false)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  author      User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  members     BotTeamMember[]
+  links       BotTeamLink[]
+
+  @@index([authorId])
+  @@index([isFeatured, createdAt(sort: Desc)])
+  @@map("bot_teams")
+}
+
+model BotTeamMember {
+  id        String        @id @default(cuid())
+  teamId    String
+  botId     String
+  /// What the bot does in this team, e.g. "Researcher"
+  role      String?       @db.VarChar(80)
+  order     Int           @default(0)
+  team      BotTeam       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  bot       Prompt        @relation(fields: [botId], references: [id], onDelete: Cascade)
+  linksFrom BotTeamLink[] @relation("BotTeamLinkFrom")
+  linksTo   BotTeamLink[] @relation("BotTeamLinkTo")
+
+  @@unique([teamId, botId])
+  @@index([botId])
+  @@map("bot_team_members")
+}
+
+/// A directed handoff between two members of the same team. Both ends reference the
+/// team's member rows, so removing a member also removes its handoffs; the migration
+/// adds a CHECK constraint that rules out self-handoffs.
+model BotTeamLink {
+  id        String        @id @default(cuid())
+  teamId    String
+  fromBotId String
+  toBotId   String
+  /// What is handed off, e.g. "Research brief"
+  label     String        @default("") @db.VarChar(200)
+  order     Int           @default(0)
+  createdAt DateTime      @default(now())
+  team      BotTeam       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  from      BotTeamMember @relation("BotTeamLinkFrom", fields: [teamId, fromBotId], references: [teamId, botId], onDelete: Cascade)
+  to        BotTeamMember @relation("BotTeamLinkTo", fields: [teamId, toBotId], references: [teamId, botId], onDelete: Cascade)
+
+  @@unique([teamId, fromBotId, toBotId])
+  @@index([teamId, toBotId])
+  @@map("bot_team_links")
 }
 
 enum NotificationType {
