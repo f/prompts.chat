@@ -134,6 +134,45 @@ Stell dir vor, die Aufgabe ist, eine Suchergebnisseite ohne Treffer zu verbesser
 
 Das sind beispielhafte Ergebnisse, keine Regeln dafür, was jedes Modell tun wird. Ein Modell kann auch bei einem unklaren Prompt eine hilfreiche Frage stellen. Klare Anweisungen machen deine Erwartungen leichter verständlich und überprüfbar.
 
+## Wenn das Modell die Schleife schreibt
+
+Die Schleife oben hat einen gleichmäßigen Takt: Das Modell fordert ein Werkzeug an, der Harness führt es aus, und das Ergebnis landet im Kontext des Modells. Für ein paar Schritte funktioniert das gut. Bei einer Aufgabe, die Hunderte Dateien berührt, wird aber jeder Schritt zu einer weiteren vollständigen Modellanfrage, und der Kontext füllt sich mit Ausgaben, die das Modell nur ein einziges Mal gebraucht hat.
+
+Manche Harnesses gehen einen anderen Weg. Das Modell schreibt ein kleines Programm, das die Werkzeuge selbst aufruft. Das Programm läuft in einer Sandbox, Rohdaten wie Dateien, Logs und Suchtreffer bleiben in seinen Variablen, und nur was es ausgibt, gelangt zurück zum Modell. Man spricht von **programmatischem Tool-Calling**. Die Idee geht auf Forschung wie [CodeAct](https://arxiv.org/abs/2402.01030) (Wang et al., 2024) zurück.
+
+<Compare
+  before={{ label: "Ein Werkzeugaufruf nach dem anderen", content: "Lies Datei A. Hier ist A. Lies Datei B. Hier ist B. Nach jedem Ergebnis wird das Modell erneut aufgerufen, mit seinen Anweisungen, seinem Verlauf und allem, was es bisher gesehen hat." }}
+  after={{ label: "Ein Programm, das die Werkzeuge aufruft", content: "Durchsuche das Projekt, lies jeden Treffer, behalte die Dateien, die noch die alte API verwenden, und gib eine kurze Liste aus. Der Harness führt das Programm aus und gibt nur die Liste zurück." }}
+/>
+
+Der Kontext bleibt aufgeräumter, weil das Modell über eine Zusammenfassung nachdenkt. Es braucht weniger Modellanfragen, weil Anweisungen und Verlauf nicht alle paar Aufrufe erneut mitgeschickt werden. Und Schleifen und Prüfungen laufen im Code, sodass ein Fall, den das Modell eigentlich bearbeiten wollte, nicht stillschweigend unter den Tisch fällt.
+
+Factory hat das in [Droid 1.0](https://factory.com/news/frontier-harness), angekündigt am 29. Oktober 2026, zum Standard gemacht. Sein Script-Werkzeug führt JavaScript in einer Sandbox aus und kann in einer einzigen Modellanfrage Hunderte Werkzeugaufrufe absetzen. Unabhängige Aufrufe laufen gleichzeitig, und ein langes Skript kann im Hintergrund weiterlaufen und das Modell wecken, sobald es fertig ist. Factory nennt CodeAct als Grundlage und merkt an, dass Cloudflare und Anthropic die Idee Ende 2025 in den produktiven Einsatz brachten und Codex sie zu den Coding-Agents. In Factorys eigenem Beispiel, der Reparatur eines fehlschlagenden Tests, kamen dieselben 15 Werkzeugaufrufe mit 5 statt 10 Modellaufrufen aus. Diese Zahlen gibt Factory für seinen eigenen Harness an.
+
+Die Kehrseiten sind real. Die Sandbox hat keinen eigenen Zugriff auf Dateien, Netzwerk oder System, sondern nur auf die Werkzeuge, die der Harness bereitstellt. Berechtigungen und Freigaben müssen weiterhin für jedes Werkzeug gelten, das das Programm aufruft. Die Ausgabe ist in ihrer Länge begrenzt. Und einem Programm kann ein Mensch schwerer folgen als einer Liste einzelner Schritte.
+
+### Workflows: Dieselbe Idee eine Ebene höher
+
+Derselbe Schritt funktioniert auch mit ganzen Agents. In Anthropics [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/workflow-runs) (Beta) und [Claude Code](https://code.claude.com/docs/en/workflows) kann ein Agent einen **Workflow** schreiben: ein Programm, das viele Agents in Phasen ausführt, Arbeit parallel verteilt, Ergebnisse von einem Agent an den nächsten weiterreicht, einen Schritt wiederholt, bis eine Prüfung besteht, und am Ende alles zusammenführt. Er läuft im Hintergrund, während das Hauptgespräch frei bleibt.
+
+Bei Subagents entscheidet der Agent selbst über jeden nächsten Schritt. In einem Workflow entscheidet das Programm. Wann ein Workflow startet, wählt allerdings weiterhin der Agent, deshalb lenkst du diese Wahl im System-Prompt oder in den Anweisungen. Auch das Budget zählt: Jeder Agent in einem Lauf verbraucht Tokens.
+
+### Prompts für ein Programm
+
+Wenn das Modell ein Programm plant, wird dein Prompt zu dessen Spezifikation. Beschreibe die ganze Aufgabe: welche Elemente abgedeckt werden, welche Prüfungen für jedes einzelne gelten müssen, was passiert, wenn eines scheitert, und was der Abschlussbericht enthalten soll. Bei riskanten Aktionen bitte darum, vorher eine Zusammenfassung des Programms zu sehen.
+
+<TryIt compact prompt={`Erledige diese ganze Aufgabe mit einem Programm statt Schritt für Schritt.
+
+Aufgabe: \${job:prüfe, dass jede API-Route, die Daten ändert, einen angemeldeten Nutzer verlangt}
+Elemente: \${items:alle Routendateien unter src/app/api}
+Prüfung für jedes Element: \${checks:die Route prüft die Sitzung, bevor sie etwas liest oder schreibt}
+Wenn ein Element scheitert: \${failure:notiere Dateipfad und Grund und mach weiter}
+Abschlussbericht: \${report:die fehlgeschlagenen Routen, wie viele bestanden haben und welche Dateien du nicht lesen konntest}
+
+Bevor du etwas ausführst, das Dateien ändert, fasse mir das Programm kurz zusammen und warte auf meine Freigabe.`} />
+
+Nicht jede Aufgabe braucht ein Programm. Wenn jeder Schritt davon abhängt, das letzte Ergebnis zu beurteilen, ist ein Aufruf nach dem anderen oft klarer. Ein Programm spielt seine Stärken aus, wenn die Aufgabe groß, gleichförmig und leicht zu überprüfen ist.
+
 ## Warum Prompts in einem Harness wichtig sind
 
 Ein Harness gibt dem Modell die Möglichkeit zu handeln. Deine Prompts erklären, welche Handlungen nützlich sind. Ohne ein klares Ziel kann ein Agent viele Schritte für Arbeit aufwenden, die du nicht brauchst.

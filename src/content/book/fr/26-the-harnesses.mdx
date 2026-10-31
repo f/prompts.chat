@@ -134,6 +134,45 @@ Changez un réglage, puis avancez étape par étape. Observez ce qui change dans
 
 Ce sont des exemples de résultats, pas des règles sur ce que fera chaque modèle. Un modèle peut poser une question utile même avec un prompt vague. Des instructions claires rendent vos attentes plus faciles à suivre et à vérifier.
 
+## Quand le modèle écrit la boucle
+
+La boucle décrite plus haut a un rythme régulier : le modèle demande un outil, le harness l'exécute, et le résultat rejoint le contexte du modèle. Sur quelques étapes, cela fonctionne bien. Mais pour une tâche qui touche des centaines de fichiers, chaque étape devient une nouvelle requête complète au modèle, et le contexte se remplit de sorties dont le modèle n'avait besoin qu'une fois.
+
+Certains harnesses proposent une autre organisation. Le modèle écrit un petit programme qui appelle lui-même les outils. Ce programme s'exécute dans un bac à sable (sandbox) ; les données brutes, comme les fichiers, les journaux et les résultats de recherche, restent dans ses variables, et seul ce qu'il affiche revient au modèle. On parle d'**appel programmatique d'outils** (programmatic tool calling). L'idée vient de travaux de recherche comme [CodeAct](https://arxiv.org/abs/2402.01030) (Wang et al., 2024).
+
+<Compare
+  before={{ label: "Un appel d'outil à la fois", content: "Lis le fichier A. Voici A. Lis le fichier B. Voici B. Après chaque résultat, le modèle est rappelé avec ses instructions, son historique et tout ce qu'il a vu jusque-là." }}
+  after={{ label: "Un programme qui appelle les outils", content: "Cherche dans le projet, lis chaque correspondance, garde les fichiers qui utilisent encore l'ancienne API et affiche une courte liste. Le harness exécute le programme et ne renvoie que la liste." }}
+/>
+
+Le contexte reste plus propre, car le modèle raisonne sur un résumé. Les requêtes au modèle sont moins nombreuses, car les instructions et l'historique ne sont pas renvoyés tous les deux ou trois appels. Et les boucles comme les vérifications tournent dans le code : un cas que le modèle comptait traiter ne disparaît pas en silence.
+
+Factory en a fait le comportement par défaut de [Droid 1.0](https://factory.com/news/frontier-harness), annoncé le 29 octobre 2026. Son outil Script exécute du JavaScript dans un bac à sable et peut enchaîner des centaines d'appels d'outils en une seule requête au modèle. Les appels indépendants s'exécutent en même temps, et un long script peut tourner en arrière-plan puis réveiller le modèle une fois terminé. Factory cite CodeAct comme point de départ et rappelle que Cloudflare et Anthropic ont porté l'idée en production fin 2025, puis que Codex l'a apportée aux agents de programmation. Dans l'exemple de Factory, la correction d'un test en échec, les mêmes 15 appels d'outils ont demandé 5 appels au modèle au lieu de 10. Ces chiffres sont ceux que Factory publie pour son propre harness.
+
+Il y a aussi un prix à payer. Le bac à sable n'a aucun accès propre aux fichiers, au réseau ou au système ; il ne peut utiliser que les outils exposés par le harness. Les permissions et les validations doivent toujours s'appliquer à chaque outil que le programme appelle. La sortie affichée est plafonnée. Et un programme est plus difficile à suivre, pour une personne, qu'une liste d'étapes simples.
+
+### Les workflows : la même idée, un étage plus haut
+
+Le même geste fonctionne avec des agents entiers. Dans [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/workflow-runs) (en bêta) et [Claude Code](https://code.claude.com/docs/en/workflows), chez Anthropic, un agent peut écrire un **workflow** : un programme qui fait travailler de nombreux agents par phases, répartit le travail en parallèle, transmet les résultats d'un agent à l'autre, répète une étape jusqu'à ce qu'une relecture la valide, puis assemble le tout. Il s'exécute en arrière-plan, et la conversation principale reste libre.
+
+Avec des sous-agents, c'est l'agent lui-même qui choisit chaque étape suivante. Dans un workflow, c'est le programme. L'agent décide toutefois quand en lancer un ; c'est donc dans le prompt système ou les instructions que l'on oriente ce choix. Le budget compte aussi : chaque agent d'une exécution consomme des tokens.
+
+### Écrire un prompt pour un programme
+
+Quand le modèle planifie un programme, votre prompt devient son cahier des charges. Décrivez la tâche entière : quels éléments couvrir, quelles vérifications doivent tenir pour chacun, que faire en cas d'échec et ce que doit contenir le rapport final. Pour les actions risquées, demandez d'abord à voir un résumé du programme.
+
+<TryIt compact prompt={`Traite toute cette tâche avec un programme plutôt qu'étape par étape.
+
+Tâche : \${job:vérifie que chaque route d'API qui modifie des données exige un utilisateur connecté}
+Éléments : \${items:tous les fichiers de routes sous src/app/api}
+Vérification pour chaque élément : \${checks:la route vérifie la session avant de lire ou d'écrire quoi que ce soit}
+Si un élément échoue : \${failure:note le chemin du fichier et la raison, puis continue}
+Rapport final : \${report:les routes en échec, combien ont réussi et les fichiers que tu n'as pas pu lire}
+
+Avant d'exécuter quoi que ce soit qui modifie des fichiers, résume-moi le programme et attends mon accord.`} />
+
+Toutes les tâches n'ont pas besoin d'un programme. Quand chaque étape dépend d'un jugement sur le résultat précédent, un appel à la fois reste souvent plus clair. Le programme prend tout son sens quand la tâche est vaste, répétitive et facile à vérifier.
+
 ## Pourquoi les prompts comptent dans un harness
 
 Un harness donne au modèle un moyen d'agir. Vos prompts expliquent quelles actions sont utiles. Sans objectif clair, un agent peut passer de nombreuses étapes à faire un travail dont vous n'avez pas besoin.
