@@ -6,7 +6,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { getPromptUrl } from "@/lib/urls";
 import { BotCard, promptToBotCardData } from "@/components/bots/bot-card";
 import type { BotPlatform } from "@/lib/bots/schema";
-import { ArrowBigUp, Lock, Copy, ImageIcon, Download, Play, Volume2, Link2 } from "lucide-react";
+import { Lock, Copy, ImageIcon, Download, Play, Volume2, Link2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { CodeView } from "@/components/ui/code-view";
 import { toast } from "sonner";
@@ -19,6 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PromptAuthor } from "@/components/prompts/prompt-author";
 import { AudioPlayer } from "@/components/prompts/audio-player";
 import { TrendingBadge } from "@/components/prompts/trending-badge";
+import { UpvoteCount } from "@/components/prompts/upvote-count";
 import { isTrending } from "@/lib/trending";
 import {
   Tooltip,
@@ -390,10 +391,7 @@ function StandardPromptCard({ prompt, showPinButton = false, isPinned = false }:
             ) : null}
           </div>
           <div className="flex items-center gap-2">
-            <span className="flex items-center gap-0.5">
-              <ArrowBigUp className="h-3.5 w-3.5" />
-              {prompt.voteCount}
-            </span>
+            <UpvoteCount count={prompt.voteCount} />
             <button
               onClick={handleCopyClick}
               className="p-1 rounded hover:bg-accent"

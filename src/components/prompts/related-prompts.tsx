@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { ArrowBigUp } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { getBotUrl, getPromptUrl } from "@/lib/urls";
+import { UpvoteCount } from "@/components/prompts/upvote-count";
 
 interface RelatedPrompt {
   id: string;
@@ -68,7 +68,7 @@ export function RelatedPrompts({ prompts, title }: RelatedPromptsProps) {
             </p>
 
             {/* Footer */}
-            <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto pt-2">
+            <div className="flex items-center justify-between text-[11px] text-muted-foreground mt-auto pt-2">
               <div className="flex items-center gap-1.5">
                 <Avatar className="h-4 w-4">
                   <AvatarImage src={prompt.author.avatar || undefined} />
@@ -80,10 +80,7 @@ export function RelatedPrompts({ prompts, title }: RelatedPromptsProps) {
                   @{prompt.author.username}
                 </span>
               </div>
-              <div className="flex items-center gap-1">
-                <ArrowBigUp className="h-3.5 w-3.5" />
-                <span>{prompt._count.votes}</span>
-              </div>
+              <UpvoteCount count={prompt._count.votes} />
             </div>
           </Link>
         ))}

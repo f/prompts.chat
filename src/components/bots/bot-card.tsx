@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { ArrowBigUp, Clock, Star, Zap } from "lucide-react";
+import { Clock, Star, Zap } from "lucide-react";
 import { BotCardLink } from "@/components/bots/bot-analytics";
 import { BotAvatar } from "@/components/bots/bot-avatar";
 import { BotComputerBadges } from "@/components/bots/bot-computer-badge";
@@ -20,6 +20,7 @@ import { getBotUrl } from "@/lib/urls";
 import { Badge } from "@/components/ui/badge";
 import { PromptAuthor, type PromptAuthorData } from "@/components/prompts/prompt-author";
 import { TrendingBadge } from "@/components/prompts/trending-badge";
+import { UpvoteCount } from "@/components/prompts/upvote-count";
 import { isTrending } from "@/lib/trending";
 
 /** The subset of BotView a card needs; BotView satisfies it */
@@ -135,10 +136,7 @@ export function BotCard({ bot, position }: BotCardProps) {
 
       <div className="mt-auto flex items-center justify-between gap-2 border-t pt-2 text-[11px] text-muted-foreground">
         <PromptAuthor author={bot.author} className="relative z-10" />
-        <span className="flex shrink-0 items-center gap-0.5">
-          <ArrowBigUp className="h-3.5 w-3.5" />
-          {bot.voteCount}
-        </span>
+        <UpvoteCount count={bot.voteCount} />
       </div>
     </div>
   );

@@ -2,13 +2,14 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
-import { ArrowBigUp, ArrowLeft, Clock, EyeOff, GitPullRequest, Handshake, Pencil, Plug, Shield, Sparkles, Star, Trash2, Users, Zap } from "lucide-react";
+import { ArrowLeft, Clock, EyeOff, GitPullRequest, Handshake, Pencil, Plug, Shield, Sparkles, Star, Trash2, Users, Zap } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { getConfig } from "@/lib/config";
 import { CommentSection } from "@/components/comments";
 import { ChangeRequestList } from "@/components/prompts/change-request-list";
 import { UpvoteButton } from "@/components/prompts/upvote-button";
+import { UpvoteCount } from "@/components/prompts/upvote-count";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BotViewTracker } from "@/components/bots/bot-analytics";
@@ -358,10 +359,7 @@ export default async function BotPage({ params }: BotPageProps) {
                           </Link>
                         )}
                         <span>{t("teams.memberCount", { count: team.memberCount })}</span>
-                        <span className="flex items-center gap-0.5">
-                          <ArrowBigUp className="h-3.5 w-3.5" />
-                          {team.voteCount}
-                        </span>
+                        <UpvoteCount count={team.voteCount} />
                       </div>
                     </div>
                   </li>

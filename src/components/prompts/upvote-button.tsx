@@ -4,15 +4,6 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Loader2, LogIn } from "lucide-react";
-
-// Triangle up icon component
-function TriangleUp({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-      <path d="M12 4L3 18h18L12 4z" />
-    </svg>
-  );
-}
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,6 +16,7 @@ import {
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { analyticsPrompt } from "@/lib/analytics";
+import { UpvoteCount, UpvoteIcon } from "@/components/prompts/upvote-count";
 
 type UpvoteTarget =
   | { promptId: string; voteUrl?: never }
@@ -119,10 +111,12 @@ export function UpvoteButton({
     return (
       <>
         <button
+          type="button"
           onClick={handleVote}
           disabled={isLoading}
+          aria-pressed={isVoted}
           className={cn(
-            "flex flex-col items-center justify-center w-14 h-14 rounded-full border-2 transition-all",
+            "flex flex-col items-center justify-center gap-0.5 w-14 h-14 shrink-0 rounded-full border-2 transition-all",
             isVoted 
               ? "bg-primary text-primary-foreground border-primary" 
               : "bg-background text-muted-foreground border-border hover:border-primary hover:text-primary",
@@ -133,8 +127,8 @@ export function UpvoteButton({
             <Loader2 className="h-5 w-5 animate-spin" />
           ) : (
             <>
-              <TriangleUp className={cn("h-6 w-6", isVoted && "fill-current")} />
-              <span className="text-xs font-medium -mt-1">{voteCount}</span>
+              <UpvoteIcon voted={isVoted} className="h-5 w-5" />
+              <span className="text-xs font-medium leading-none">{voteCount}</span>
             </>
           )}
         </button>
@@ -147,20 +141,24 @@ export function UpvoteButton({
     return (
       <>
         <button
+          type="button"
           onClick={handleVote}
           disabled={isLoading}
+          aria-pressed={isVoted}
           className={cn(
-            "flex items-center gap-0.5 text-xs transition-colors",
+            "transition-colors",
             isVoted ? "text-primary" : "text-muted-foreground hover:text-foreground",
             className
           )}
         >
           {isLoading ? (
-            <Loader2 className="h-3 w-3 animate-spin" />
+            <span className="flex items-center gap-0.5">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              {voteCount}
+            </span>
           ) : (
-            <TriangleUp className={cn("h-4 w-4", isVoted && "fill-current")} />
+            <UpvoteCount count={voteCount} voted={isVoted} />
           )}
-          <span>{voteCount}</span>
         </button>
         {loginModal}
       </>
@@ -179,7 +177,7 @@ export function UpvoteButton({
         {isLoading ? (
           <Loader2 className="h-4 w-4 animate-spin" />
         ) : (
-          <TriangleUp className={cn("h-4 w-4", isVoted && "fill-current")} />
+          <UpvoteIcon voted={isVoted} className="h-4 w-4" />
         )}
         <span>{voteCount}{showLabel && ` ${voteCount === 1 ? t("upvote") : t("upvotes")}`}</span>
       </Button>
