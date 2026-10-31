@@ -195,7 +195,11 @@ export function ringTarget(point: GraphPoint, cell: GraphCell): GraphPoint {
   const center = cellCenter(cell);
   const { rx, ry } = ringRadii(cell);
   const angle = Math.atan2(point.y - center.y, point.x - center.x);
-  return { x: center.x + rx * Math.cos(angle), y: center.y + ry * Math.sin(angle) };
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+  if (rx === 0 || ry === 0) return { x: center.x + rx * cos, y: center.y + ry * sin };
+  const distance = 1 / Math.sqrt((cos * cos) / (rx * rx) + (sin * sin) / (ry * ry));
+  return { x: center.x + distance * cos, y: center.y + distance * sin };
 }
 
 /**
@@ -207,10 +211,13 @@ export function initialPositions(count: number, cell: GraphCell, hub = -1): Grap
   if (count === 1) return [center];
   const { rx, ry } = ringRadii(cell);
   const ringSize = hub >= 0 ? count - 1 : count;
+  // Around a hub, start at the top and keep neighbors off the hub's horizontal line, where their
+  // labels would run into the hub's label
+  const start = hub >= 0 ? -Math.PI / 2 + (ringSize % 4 === 0 ? Math.PI / ringSize : 0) : Math.PI;
   let slot = 0;
   return Array.from({ length: count }, (_, i) => {
     if (i === hub) return center;
-    const angle = Math.PI + (2 * Math.PI * slot++) / ringSize;
+    const angle = start + (2 * Math.PI * slot++) / ringSize;
     return { x: center.x + rx * Math.cos(angle), y: center.y + ry * Math.sin(angle) };
   });
 }

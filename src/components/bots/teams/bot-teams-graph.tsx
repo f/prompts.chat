@@ -166,7 +166,7 @@ function useTeamLayout(teams: TeamGraphTeam[], cells: GraphCell[], hubs: number[
       )
       .force("ring", ringForce(cells, 0.3))
       .force("charge", forceManyBody<SimNode>().strength(-240).distanceMax(260))
-      .force("collide", forceCollide<SimNode>(TEAM_NODE_RADIUS * 2.2))
+      .force("collide", forceCollide<SimNode>((node) => Math.max(TEAM_NODE_RADIUS * 2.2, (node.extent.left + node.extent.right) / 2 + 4)))
       .force("x", forceX<SimNode>((node) => cellCenter(cells[node.teamIndex]).x).strength(0.06))
       .force("y", forceY<SimNode>((node) => cellCenter(cells[node.teamIndex]).y).strength(0.1))
       .alphaDecay(0.04);
