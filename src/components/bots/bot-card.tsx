@@ -2,12 +2,12 @@ import { useTranslations } from "next-intl";
 import { ArrowBigUp, Clock, Star, Zap } from "lucide-react";
 import { BotCardLink } from "@/components/bots/bot-analytics";
 import { BotAvatar } from "@/components/bots/bot-avatar";
-import { BotComputerBadge } from "@/components/bots/bot-computer-badge";
+import { BotComputerBadges } from "@/components/bots/bot-computer-badge";
 import { BotPlatformIcons } from "@/components/bots/bot-platform-icons";
 import {
   isBotColor,
-  isBotComputerRequirement,
   isBotIconName,
+  normalizeComputerRequirements,
   parseBotConfig,
   resolveBotPlatforms,
   type BotColor,
@@ -33,7 +33,7 @@ export interface BotCardData {
   color: BotColor | null;
   isFeatured: boolean;
   trendingUntil?: Date | string | null;
-  computerRequirement?: BotComputerRequirement | null;
+  computerRequirements?: readonly BotComputerRequirement[] | null;
   config: Pick<BotConfig, "routines">;
   author: PromptAuthorData;
   voteCount: number;
@@ -52,7 +52,7 @@ export interface BotPromptFields {
   botPlatforms?: readonly BotPlatform[] | null;
   botPlatform?: BotPlatform | null;
   botConfig?: unknown;
-  computerRequirement?: string | null;
+  computerRequirements?: readonly string[] | null;
   author: PromptAuthorData;
   voteCount?: number;
   _count?: { votes?: number };
@@ -69,10 +69,7 @@ export function promptToBotCardData(prompt: BotPromptFields): BotCardData {
     color: prompt.botColor && isBotColor(prompt.botColor) ? prompt.botColor : null,
     isFeatured: prompt.isFeatured ?? false,
     trendingUntil: prompt.trendingUntil ?? null,
-    computerRequirement:
-      prompt.computerRequirement && isBotComputerRequirement(prompt.computerRequirement)
-        ? prompt.computerRequirement
-        : null,
+    computerRequirements: normalizeComputerRequirements(prompt.computerRequirements),
     config: parseBotConfig(prompt.botConfig),
     author: prompt.author,
     voteCount: prompt.voteCount ?? prompt._count?.votes ?? 0,
@@ -121,7 +118,7 @@ export function BotCard({ bot, position }: BotCardProps) {
 
       <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] text-muted-foreground">
         <BotPlatformIcons platforms={bot.platforms} className="relative z-10" />
-        <BotComputerBadge requirement={bot.computerRequirement} focusable={false} />
+        <BotComputerBadges requirements={bot.computerRequirements} focusable={false} />
         {scheduled > 0 && (
           <span className="flex items-center gap-1">
             <Clock className="h-3 w-3" />

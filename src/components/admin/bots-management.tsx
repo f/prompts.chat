@@ -23,7 +23,7 @@ import {
 import { BotAvatar } from "@/components/bots/bot-avatar";
 import { BotPlatformBadge } from "@/components/bots/bot-platform-badge";
 import { resolveBotPlatforms, type BotComputerRequirement, type BotPlatform } from "@/lib/bots/schema";
-import { BotComputerBadge } from "@/components/bots/bot-computer-badge";
+import { BotComputerBadges } from "@/components/bots/bot-computer-badge";
 import { analyticsBot } from "@/lib/analytics";
 import { getBotUrl } from "@/lib/urls";
 
@@ -35,7 +35,7 @@ interface AdminBot {
   botPlatforms: BotPlatform[];
   botIcon: string | null;
   botColor: string | null;
-  computerRequirement?: BotComputerRequirement;
+  computerRequirements?: BotComputerRequirement[];
   isPrivate: boolean;
   isUnlisted: boolean;
   isFeatured: boolean;
@@ -173,7 +173,7 @@ export function BotsManagement() {
                       {resolveBotPlatforms(bot).map((platform) => (
                         <BotPlatformBadge key={platform} platform={platform} />
                       ))}
-                      <BotComputerBadge requirement={bot.computerRequirement} />
+                      <BotComputerBadges requirements={bot.computerRequirements} />
                       {bot.isFeatured && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />}
                       {bot.isPrivate && (
                         <Badge variant="secondary" className="text-xs">

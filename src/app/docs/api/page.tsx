@@ -919,10 +919,10 @@ curl -X POST ${baseUrl}/api/mcp \\
                     <TableCell className="text-muted-foreground text-sm">https one-click install link (Grok Bot template link)</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-mono text-xs">computerRequirement</TableCell>
-                    <TableCell className="text-muted-foreground text-xs">string</TableCell>
+                    <TableCell className="font-mono text-xs">computerRequirements</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">string[]</TableCell>
                     <TableCell className="text-xs">No</TableCell>
-                    <TableCell className="text-muted-foreground text-sm">{t.rich("computerRequirementInput", { code })}</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">{t.rich("computerRequirementsInput", { code })}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell className="font-mono text-xs">routines</TableCell>

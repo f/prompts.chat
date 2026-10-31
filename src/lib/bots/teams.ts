@@ -15,6 +15,7 @@ import {
   getInstallTarget,
   isBotColor,
   isBotIconName,
+  normalizeComputerRequirements,
   resolveBotPlatforms,
   toBotView,
   type BotColor,
@@ -49,7 +50,7 @@ export interface BotTeamBot {
   icon: BotIconName | null;
   color: BotColor | null;
   platforms: BotPlatform[];
-  computerRequirement: BotComputerRequirement;
+  computerRequirements: BotComputerRequirement[];
 }
 
 export interface TeamCategory {
@@ -102,7 +103,7 @@ const teamBotSummarySelect = {
   botColor: true,
   botPlatform: true,
   botPlatforms: true,
-  computerRequirement: true,
+  computerRequirements: true,
 } satisfies Prisma.PromptSelect;
 
 const teamBaseSelect = {
@@ -156,7 +157,7 @@ function toTeamBot(record: TeamSummaryRecord["members"][number]["bot"]): BotTeam
     icon: record.botIcon && isBotIconName(record.botIcon) ? record.botIcon : null,
     color: record.botColor && isBotColor(record.botColor) ? record.botColor : null,
     platforms: resolveBotPlatforms(record),
-    computerRequirement: record.computerRequirement,
+    computerRequirements: normalizeComputerRequirements(record.computerRequirements),
   };
 }
 
@@ -375,7 +376,7 @@ export function getTeamInstallPrompt(
   const list = members
     .map((bot, index) => {
       const { role, description } = teamMembers.get(bot.id) ?? {};
-      const line = `${index + 1}. "${bot.title}"${role ? ` (${role})` : ""}${computerListMark(bot.computerRequirement)}: ${getBotUrls(bot, baseUrl).markdown}`;
+      const line = `${index + 1}. "${bot.title}"${role ? ` (${role})` : ""}${computerListMark(bot.computerRequirements)}: ${getBotUrls(bot, baseUrl).markdown}`;
       return description ? `${line}\n   Team responsibility: ${description.trim()}` : line;
     })
     .join("\n");
@@ -432,7 +433,7 @@ export function toTeamGraphTeam(team: BotTeamView<BotTeamBot | BotView>, { voted
       title: bot.title,
       icon: bot.icon,
       color: bot.color,
-      computerRequirement: bot.computerRequirement,
+      computerRequirements: bot.computerRequirements,
       role,
       description,
     })),
@@ -464,7 +465,7 @@ export function teamSummaryJson(team: BotTeamView<BotTeamBot | BotView>, baseUrl
     isFeatured: team.isFeatured,
     category: botCategoryJson(team),
     tags: botTagsJson(team),
-    members: team.members.map(({ bot, role }) => ({ id: bot.id, name: bot.title, role, computerRequirement: bot.computerRequirement })),
+    members: team.members.map(({ bot, role }) => ({ id: bot.id, name: bot.title, role, computerRequirements: bot.computerRequirements })),
     handoffCount: team.links.length,
     link: teamUrl(team, baseUrl),
   };
@@ -489,7 +490,7 @@ export function teamToJson(team: BotTeamView<BotView>, baseUrl: string) {
       name: bot.title,
       role,
       description,
-      computerRequirement: bot.computerRequirement,
+      computerRequirements: bot.computerRequirements,
       platforms: bot.platforms,
       link: getBotUrls(bot, baseUrl).page,
     })),

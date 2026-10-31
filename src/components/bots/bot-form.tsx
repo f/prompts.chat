@@ -6,7 +6,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
-import { Ban, Loader2, Plus, Trash2 } from "lucide-react";
+import { Loader2, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,7 +25,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { BotPlatformIcon } from "@/components/bots/bot-platform-icon";
 import { BotAppearancePicker } from "@/components/bots/bot-appearance-picker";
-import { COMPUTER_REQUIREMENT_ICONS } from "@/components/bots/bot-computer-badge";
+import { COMPUTER_REQUIREMENT_ICONS, COMPUTER_REQUIREMENT_LABELS } from "@/components/bots/bot-computer-badge";
 import { BotPairingPicker, type BotPairingValue } from "@/components/bots/bot-pairing-picker";
 import { CategorySelect, type CategoryOption } from "@/components/prompts/category-select";
 import { TagPicker, type TagOption } from "@/components/prompts/tag-picker";
@@ -40,6 +40,7 @@ import {
   botRoutineSchema,
   botSkillSchema,
   normalizeBotPlatforms,
+  normalizeComputerRequirements,
   type BotColor,
   type BotComputerRequirement,
   type BotConfig,
@@ -56,7 +57,7 @@ const botFormSchema = z.object({
   botPlatforms: z.array(z.enum(BOT_PLATFORMS)).min(1),
   botIcon: z.union([z.literal(""), z.enum(BOT_ICONS)]),
   botColor: z.union([z.literal(""), z.enum(BOT_COLORS)]),
-  computerRequirement: z.enum(BOT_COMPUTER_REQUIREMENTS),
+  computerRequirements: z.array(z.enum(BOT_COMPUTER_REQUIREMENTS)),
   installUrl: z
     .string()
     .trim()
@@ -89,7 +90,7 @@ export interface BotFormInitialData {
   botPlatforms: BotPlatform[];
   botIcon: BotIconName | null;
   botColor: BotColor | null;
-  computerRequirement: BotComputerRequirement;
+  computerRequirements: BotComputerRequirement[];
   installUrl: string;
   content: string;
   isPrivate: boolean;
@@ -109,11 +110,8 @@ interface BotFormProps {
   canManagePairings?: boolean;
 }
 
-const COMPUTER_OPTION_KEYS = {
-  NONE: { title: "none", hint: "noneHint" },
-  CLOUD: { title: "cloudOption", hint: "cloudHint" },
-  LOCAL: { title: "localOption", hint: "localHint" },
-} as const satisfies Record<BotComputerRequirement, { title: string; hint: string }>;
+/** "bots.computer" message keys for each checkbox's helper text; the label is COMPUTER_REQUIREMENT_LABELS */
+const COMPUTER_HINT_KEYS = { CLOUD: "cloudHint", LOCAL: "localHint" } as const satisfies Record<BotComputerRequirement, string>;
 
 function parseConnectors(value: string): string[] {
   return Array.from(new Set(value.split(",").map((c) => c.trim()).filter(Boolean))).slice(0, 20);
@@ -134,7 +132,7 @@ export function BotForm({ mode, botId, initialData, categories, tags, canManageP
       botPlatforms: initialData?.botPlatforms ?? [],
       botIcon: initialData?.botIcon ?? "",
       botColor: initialData?.botColor ?? "",
-      computerRequirement: initialData?.computerRequirement ?? "NONE",
+      computerRequirements: initialData?.computerRequirements ?? [],
       installUrl: initialData?.installUrl ?? "",
       content: initialData?.content ?? "",
       isPrivate: initialData?.isPrivate ?? false,
@@ -164,7 +162,7 @@ export function BotForm({ mode, botId, initialData, categories, tags, canManageP
         botPlatforms: data.botPlatforms,
         botIcon: data.botIcon || null,
         botColor: data.botColor || null,
-        computerRequirement: data.computerRequirement,
+        computerRequirements: data.computerRequirements,
         installUrl: data.installUrl,
         botConfig: {
           routines: data.routines,
@@ -300,39 +298,45 @@ export function BotForm({ mode, botId, initialData, categories, tags, canManageP
 
           <FormField
             control={form.control}
-            name="computerRequirement"
+            name="computerRequirements"
             render={({ field }) => (
               <FormItem>
                 <p id="bot-computer-label" className="text-sm font-medium leading-none">
                   {t("computer.label")}
                 </p>
                 <FormDescription>{t("computer.hint")}</FormDescription>
-                <div role="radiogroup" aria-labelledby="bot-computer-label" className="grid gap-2 sm:grid-cols-3">
+                <div role="group" aria-labelledby="bot-computer-label" className="grid gap-2 sm:grid-cols-2">
                   {BOT_COMPUTER_REQUIREMENTS.map((requirement) => {
-                    const checked = field.value === requirement;
-                    const Icon = requirement === "NONE" ? Ban : COMPUTER_REQUIREMENT_ICONS[requirement];
-                    const key = COMPUTER_OPTION_KEYS[requirement];
+                    const checked = field.value.includes(requirement);
+                    const Icon = COMPUTER_REQUIREMENT_ICONS[requirement];
+                    const hintId = `bot-computer-${requirement.toLowerCase()}-hint`;
                     return (
                       <label
                         key={requirement}
                         className={cn(
-                          "flex cursor-pointer items-start gap-2 rounded-md border px-3 py-2 text-sm transition-colors hover:bg-accent/50 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring",
+                          "flex cursor-pointer items-start gap-2 rounded-md border px-3 py-2 text-sm transition-colors hover:bg-accent/50",
                           checked && "border-primary bg-primary/5"
                         )}
                       >
-                        <input
-                          type="radio"
-                          name={field.name}
-                          value={requirement}
+                        <Checkbox
                           checked={checked}
-                          onChange={() => field.onChange(requirement)}
+                          aria-describedby={hintId}
+                          onCheckedChange={(value) =>
+                            field.onChange(
+                              value
+                                ? normalizeComputerRequirements([...field.value, requirement])
+                                : field.value.filter((item) => item !== requirement)
+                            )
+                          }
                           onBlur={field.onBlur}
-                          className="sr-only"
+                          className="mt-0.5"
                         />
                         <Icon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
                         <span className="space-y-0.5">
-                          <span className="block font-medium">{t(`computer.${key.title}`)}</span>
-                          <span className="block text-xs text-muted-foreground">{t(`computer.${key.hint}`)}</span>
+                          <span className="block font-medium">{t(`computer.${COMPUTER_REQUIREMENT_LABELS[requirement]}`)}</span>
+                          <span id={hintId} className="block text-xs text-muted-foreground">
+                            {t(`computer.${COMPUTER_HINT_KEYS[requirement]}`)}
+                          </span>
                         </span>
                       </label>
                     );

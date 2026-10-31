@@ -30,7 +30,7 @@ function bot(overrides: Record<string, unknown> = {}): BotView {
     botIcon: null,
     botColor: null,
     installUrl: null,
-    computerRequirement: "NONE",
+    computerRequirements: [],
     botConfig: {
       routines: [{ name: "Daily", type: "schedule", trigger: "0 7 * * *", triggerLabel: "", prompt: "Send the digest." }],
       skills: [{ name: "arxiv", description: "", source: "official/research/arxiv" }],

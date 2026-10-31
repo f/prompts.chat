@@ -29,7 +29,7 @@ const teamMemberOutput = z.looseObject({
   id: z.string(),
   name: z.string(),
   role: z.string().nullable(),
-  computerRequirement: z.enum(BOT_COMPUTER_REQUIREMENTS),
+  computerRequirements: z.array(z.enum(BOT_COMPUTER_REQUIREMENTS)),
 });
 
 const teamSummaryOutput = z.looseObject({

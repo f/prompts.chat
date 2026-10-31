@@ -3,19 +3,19 @@
 import { Cloud, Laptop, type LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import type { BotComputerRequirement } from "@/lib/bots/schema";
+import { normalizeComputerRequirements, type BotComputerRequirement } from "@/lib/bots/schema";
 import { cn } from "@/lib/utils";
 
-export const COMPUTER_REQUIREMENT_ICONS: Record<Exclude<BotComputerRequirement, "NONE">, LucideIcon> = {
+export const COMPUTER_REQUIREMENT_ICONS: Record<BotComputerRequirement, LucideIcon> = {
   CLOUD: Cloud,
   LOCAL: Laptop,
 };
 
 /** "bots.computer" message keys: the short label used in tooltips and aria-labels */
-export const COMPUTER_REQUIREMENT_LABELS = { CLOUD: "cloud", LOCAL: "local" } as const;
+export const COMPUTER_REQUIREMENT_LABELS = { CLOUD: "cloud", LOCAL: "local" } as const satisfies Record<BotComputerRequirement, string>;
 
 interface BotComputerBadgeProps {
-  requirement: BotComputerRequirement | null | undefined;
+  requirement: BotComputerRequirement;
   className?: string;
   /** Size of the icon box: "sm" in dense lists, "md" next to headings */
   size?: "sm" | "md";
@@ -23,10 +23,9 @@ interface BotComputerBadgeProps {
   focusable?: boolean;
 }
 
-/** Icon-only marker for a bot that needs a cloud computer or the user's own; the meaning shows on hover and focus */
+/** Icon-only marker for one computer a bot needs; the meaning shows on hover and focus */
 export function BotComputerBadge({ requirement, className, size = "sm", focusable = true }: BotComputerBadgeProps) {
   const t = useTranslations("bots.computer");
-  if (!requirement || requirement === "NONE") return null;
   const Icon = COMPUTER_REQUIREMENT_ICONS[requirement];
   const label = t(COMPUTER_REQUIREMENT_LABELS[requirement]);
   return (
@@ -47,5 +46,23 @@ export function BotComputerBadge({ requirement, className, size = "sm", focusabl
       </TooltipTrigger>
       <TooltipContent side="bottom">{label}</TooltipContent>
     </Tooltip>
+  );
+}
+
+interface BotComputerBadgesProps extends Omit<BotComputerBadgeProps, "requirement" | "className"> {
+  requirements: readonly BotComputerRequirement[] | null | undefined;
+  className?: string;
+}
+
+/** One marker per computer the bot needs, side by side; nothing when it needs none */
+export function BotComputerBadges({ requirements, className, ...badgeProps }: BotComputerBadgesProps) {
+  const list = normalizeComputerRequirements(requirements);
+  if (list.length === 0) return null;
+  return (
+    <span className={cn("inline-flex shrink-0 items-center gap-1", className)}>
+      {list.map((requirement) => (
+        <BotComputerBadge key={requirement} requirement={requirement} {...badgeProps} />
+      ))}
+    </span>
   );
 }

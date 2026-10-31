@@ -21,7 +21,7 @@ export interface TeamGraphTeam {
     title: string;
     icon: BotIconName | null;
     color: BotColor | null;
-    computerRequirement: BotComputerRequirement;
+    computerRequirements: BotComputerRequirement[];
     role: string | null;
     description: string | null;
   }[];
@@ -62,7 +62,7 @@ export const NODE_TITLE_OFFSET = TEAM_NODE_RADIUS + 14;
 export const NODE_ROLE_OFFSET = TEAM_NODE_RADIUS + 27;
 export const NODE_TITLE_MAX = 16;
 export const NODE_ROLE_MAX = 18;
-/** The computer badge sits on the node's top-right edge */
+/** Computer badges sit on the node's top-right edge, and with two, also on its top-left edge */
 export const NODE_BADGE_OFFSET = TEAM_NODE_RADIUS * 0.75;
 export const NODE_BADGE_RADIUS = 8;
 const NODE_SLOT_WIDTH = 112;
@@ -86,7 +86,7 @@ export function nodeExtent({ title, role }: { title: string; role?: string | nul
   const halfLabel = Math.ceil(Math.max(titleWidth, roleWidth) / 2);
   const badge = NODE_BADGE_OFFSET + NODE_BADGE_RADIUS;
   return {
-    left: Math.max(TEAM_NODE_RADIUS, halfLabel),
+    left: Math.max(badge, halfLabel),
     right: Math.max(badge, halfLabel),
     top: Math.max(TEAM_NODE_RADIUS, badge),
     bottom: (role ? NODE_ROLE_OFFSET : NODE_TITLE_OFFSET) + LABEL_DESCENT,

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BotAvatar } from "@/components/bots/bot-avatar";
-import { BotComputerBadge } from "@/components/bots/bot-computer-badge";
+import { BotComputerBadges } from "@/components/bots/bot-computer-badge";
 import { BotInstall } from "@/components/bots/bot-install";
 import { BotPlatformBadge } from "@/components/bots/bot-platform-badge";
 import type { BotInstallOption } from "@/lib/bots";
@@ -68,7 +68,7 @@ export function BotTeamMemberDialog({ member, teamTitle, onOpenChange }: BotTeam
                 <DialogTitle className="text-lg leading-snug wrap-anywhere">{member.title}</DialogTitle>
                 <div className="flex flex-wrap items-center gap-1.5">
                   {data?.platforms.map((platform) => <BotPlatformBadge key={platform} platform={platform} />)}
-                  <BotComputerBadge requirement={member.computerRequirement} />
+                  <BotComputerBadges requirements={member.computerRequirements} />
                 </div>
               </div>
             </div>

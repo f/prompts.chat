@@ -42,7 +42,7 @@ function bot(id: string, overrides: Record<string, unknown> = {}) {
     botIcon: null,
     botColor: null,
     installUrl: null,
-    computerRequirement: "NONE",
+    computerRequirements: [],
     botConfig: null,
     isPrivate: false,
     isUnlisted: false,
@@ -139,8 +139,8 @@ describe("MCP team tools", () => {
       category: null,
       tags: [],
       members: [
-        { id: "a", name: "Bot a", role: "Researcher", computerRequirement: "NONE" },
-        { id: "b", name: "Bot b", role: null, computerRequirement: "NONE" },
+        { id: "a", name: "Bot a", role: "Researcher", computerRequirements: [] },
+        { id: "b", name: "Bot b", role: null, computerRequirements: [] },
       ],
       handoffCount: 1,
       link: "https://prompts.chat/bots/teams/research-crew",
@@ -191,8 +191,8 @@ describe("MCP team tools", () => {
     vi.mocked(db.botTeam.findUnique).mockResolvedValue(
       teamRecord({
         members: [
-          { role: "Researcher", description: null, bot: bot("a", { computerRequirement: "CLOUD" }) },
-          { role: null, description: null, bot: bot("b", { computerRequirement: "LOCAL" }) },
+          { role: "Researcher", description: null, bot: bot("a", { computerRequirements: ["LOCAL", "CLOUD"] }) },
+          { role: null, description: null, bot: bot("b", { computerRequirements: ["LOCAL"] }) },
         ],
       }) as never
     );
@@ -202,11 +202,13 @@ describe("MCP team tools", () => {
 
     expect(isError).toBe(false);
     expect(data.members).toEqual([
-      expect.objectContaining({ id: "a", computerRequirement: "CLOUD" }),
-      expect.objectContaining({ id: "b", computerRequirement: "LOCAL" }),
+      expect.objectContaining({ id: "a", computerRequirements: ["CLOUD", "LOCAL"] }),
+      expect.objectContaining({ id: "b", computerRequirements: ["LOCAL"] }),
     ]);
-    expect(data.install.installPrompt).toContain('"Bot a" (Researcher) [needs a cloud computer]');
+    expect(data.install.installPrompt).toContain('"Bot a" (Researcher) [needs a cloud computer, needs my computer]');
+    expect(data.install.installPrompt).toContain('"Bot b" [needs my computer]');
     expect(data.install.installPrompt).toContain("Bots that need a cloud computer");
+    expect(data.install.installPrompt).toContain("Bots that need my computer");
   });
 
   it("reports unknown teams and unsupported platforms", async () => {

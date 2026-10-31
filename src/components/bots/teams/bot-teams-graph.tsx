@@ -20,8 +20,8 @@ import {
 import { ArrowRight, Star, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BotAvatar, BOT_ICON_COMPONENTS } from "@/components/bots/bot-avatar";
-import { BotComputerBadge, COMPUTER_REQUIREMENT_ICONS, COMPUTER_REQUIREMENT_LABELS } from "@/components/bots/bot-computer-badge";
-import type { BotColor } from "@/lib/bots/schema";
+import { BotComputerBadges, COMPUTER_REQUIREMENT_ICONS, COMPUTER_REQUIREMENT_LABELS } from "@/components/bots/bot-computer-badge";
+import { normalizeComputerRequirements, type BotColor } from "@/lib/bots/schema";
 import { TeamMarkdown } from "@/components/bots/teams/team-markdown";
 import { BotTeamMemberDialog } from "@/components/bots/teams/bot-team-member-dialog";
 import { TeamInstall } from "@/components/bots/teams/team-install";
@@ -228,11 +228,10 @@ function GraphNode({ member, point, dragKey, onOpen }: { member: Member; point: 
   const tComputer = useTranslations("bots.computer");
   const Icon = BOT_ICON_COMPONENTS[member.icon ?? "bot"];
   const size = TEAM_NODE_RADIUS;
-  const computer = member.computerRequirement && member.computerRequirement !== "NONE" ? member.computerRequirement : null;
-  const ComputerIcon = computer ? COMPUTER_REQUIREMENT_ICONS[computer] : null;
+  const computers = normalizeComputerRequirements(member.computerRequirements);
   const tooltip = [
     member.role ? `${member.title} · ${member.role}` : member.title,
-    computer && tComputer(COMPUTER_REQUIREMENT_LABELS[computer]),
+    ...computers.map((computer) => tComputer(COMPUTER_REQUIREMENT_LABELS[computer])),
     member.description,
   ];
   return (
@@ -266,12 +265,17 @@ function GraphNode({ member, point, dragKey, onOpen }: { member: Member; point: 
         className={member.color ? NODE_STYLES[member.color] : DEFAULT_NODE_STYLE}
         style={{ fill: "none", stroke: "currentColor" }}
       />
-      {ComputerIcon && (
-        <g transform={`translate(${NODE_BADGE_OFFSET},${-NODE_BADGE_OFFSET})`} aria-hidden="true">
-          <circle r={NODE_BADGE_RADIUS} strokeWidth={1} className="fill-background stroke-border" />
-          <ComputerIcon x={-5} y={-5} width={10} height={10} className="text-muted-foreground" />
-        </g>
-      )}
+      {computers.map((computer, index) => {
+        const ComputerIcon = COMPUTER_REQUIREMENT_ICONS[computer];
+        // One mark sits top right; with two, the first moves to top left so neither covers the other
+        const x = computers.length > 1 && index === 0 ? -NODE_BADGE_OFFSET : NODE_BADGE_OFFSET;
+        return (
+          <g key={computer} transform={`translate(${x},${-NODE_BADGE_OFFSET})`} aria-hidden="true">
+            <circle r={NODE_BADGE_RADIUS} strokeWidth={1} className="fill-background stroke-border" />
+            <ComputerIcon x={-5} y={-5} width={10} height={10} className="text-muted-foreground" />
+          </g>
+        );
+      })}
       <text y={NODE_TITLE_OFFSET} textAnchor="middle" className="fill-foreground text-[11px] font-medium">
         {truncateLabel(member.title, NODE_TITLE_MAX)}
       </text>
@@ -598,7 +602,7 @@ function TeamDetailPanel({
                   )}
                 </span>
               </button>
-              <BotComputerBadge requirement={member.computerRequirement} className="mt-2.5" />
+              <BotComputerBadges requirements={member.computerRequirements} className="mt-2.5" />
             </li>
           ))}
         </ul>
