@@ -266,3 +266,35 @@ Currently no automated tests. When implementing:
 1. Update `prisma/schema.prisma`
 2. Run `npm run db:migrate` to create migration
 3. Update related TypeScript types if needed
+
+## Cursor Cloud specific instructions
+
+### Services
+
+| Service | How to start | Notes |
+|---------|-------------|-------|
+| PostgreSQL | `sudo pg_ctlcluster 16 main start` | Must be started before the app. Database `prompts_chat` is pre-created. |
+| Next.js dev server | `npm run dev` | Runs on port 3000 with Turbopack. |
+
+### Environment
+
+- **Node.js 24.x** is required (`engines` in `package.json`). Use `nvm use 24` if not already active.
+- `.env` must contain `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET` (or `NEXTAUTH_SECRET`), and `AUTH_TRUST_HOST=true`. See `.env.example` for the full template.
+- `DIRECT_URL` must be set even for local development — Prisma schema references it for `directUrl`. Set it to the same value as `DATABASE_URL` for local PostgreSQL.
+
+### Database
+
+- Run `npx prisma migrate deploy` (not `db:migrate`) to apply existing migrations non-interactively.
+- `npm run db:seed` fetches live data from prompts.chat and creates an admin user (`admin@prompts.chat` / `password123`).
+- After schema changes, use `npm run db:migrate` which runs `prisma migrate dev` interactively.
+
+### Authentication
+
+- The default config (`prompts.config.ts`) uses GitHub, Google, and Apple OAuth providers — **not** credentials auth. To test registration/login without OAuth secrets, temporarily add `"credentials"` to the `auth.providers` array and set `allowRegistration: true`.
+- Admin login: `admin@prompts.chat` / `password123` (created by seed, requires credentials provider).
+
+### Testing
+
+- `npm test` runs Vitest (709+ tests). All tests use mocks and don't require a running database.
+- `npm run lint` runs ESLint. The codebase has ~200 pre-existing warnings (no errors).
+- No pre-commit hooks or CI-gating lint-staged configuration exists.
