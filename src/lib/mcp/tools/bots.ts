@@ -28,8 +28,8 @@ import { botPairingsJson, getBotPairings } from "@/lib/bots/pairings";
 import { findOwnBot, upsertOwnBot } from "@/lib/bots/upsert";
 import { isTrending } from "@/lib/trending";
 import type { McpContext } from "../context";
-import { botDetailOutput, botSummaryOutput, cursorInput, decodeCursor, limitInput, nextCursor } from "../schemas";
-import { findOrCreateTagIds, resolveCategoryId, resourceLink } from "../shared";
+import { TAG_NAMES_DESCRIPTION, botDetailOutput, botSummaryOutput, cursorInput, decodeCursor, limitInput, nextCursor, unknownTagsOutput } from "../schemas";
+import { resolveCategoryId, resolveTagIds, resourceLink, unknownTagsWarning } from "../shared";
 import { defineTool, toolResult, ToolError, unwrapWriteResult } from "../tool";
 
 /** A bot as returned to its owner: the public JSON plus visibility fields only the owner sees */
@@ -242,7 +242,7 @@ export function registerBotTools(server: McpServer, ctx: McpContext) {
           .optional()
           .describe("Connectors the user must connect, e.g. \"Gmail\". Replaces all connectors."),
         category: z.string().nullable().optional().describe("Category slug; null removes the category"),
-        tags: z.array(z.string()).max(10).optional().describe("Tag names (created if they don't exist). Replaces all tags."),
+        tags: z.array(z.string()).max(10).optional().describe(`${TAG_NAMES_DESCRIPTION} Replaces all tags.`),
         isPrivate: z.boolean().optional().describe("Whether the bot is private (new bots default to your account setting)"),
       },
       outputSchema: {
@@ -251,6 +251,7 @@ export function registerBotTools(server: McpServer, ctx: McpContext) {
         changedFields: z.array(z.string()),
         bot: botDetailOutput,
         link: z.string().nullable(),
+        ...unknownTagsOutput,
       },
       failureMessage: "Failed to save bot",
     },
@@ -258,6 +259,7 @@ export function registerBotTools(server: McpServer, ctx: McpContext) {
       { id, slug, name, description, instructions, platforms, icon, color, installUrl, computerRequirement, routines, skills, connectors, category, tags, isPrivate },
       { user }
     ) => {
+      const resolvedTags = tags === undefined ? undefined : await resolveTagIds(tags);
       const { action, bot, changedFields } = unwrapWriteResult(
         await upsertOwnBot(
           { id: user.id, role: user.role },
@@ -276,7 +278,7 @@ export function registerBotTools(server: McpServer, ctx: McpContext) {
             skills,
             connectors,
             categoryId: await resolveCategoryId(category),
-            tagIds: tags === undefined ? undefined : await findOrCreateTagIds(tags),
+            tagIds: resolvedTags?.ids,
             isPrivate,
           },
           { defaultPrivate: !user.mcpPromptsPublicByDefault }
@@ -290,6 +292,7 @@ export function registerBotTools(server: McpServer, ctx: McpContext) {
           changedFields,
           bot: ownBotJson(ctx, bot),
           link: bot.isPrivate ? null : getBotUrls(bot, ctx.baseUrl).page,
+          ...unknownTagsWarning(resolvedTags?.unknownTags ?? []),
         },
         [botLink(bot)]
       );

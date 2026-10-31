@@ -13,7 +13,7 @@ vi.mock("@/lib/db", () => ({
   db: {
     user: { findUnique: vi.fn() },
     prompt: { findMany: vi.fn(), findFirst: vi.fn(), count: vi.fn() },
-    tag: { findUnique: vi.fn(), create: vi.fn() },
+    tag: { findUnique: vi.fn(), findMany: vi.fn(), create: vi.fn() },
     category: { findUnique: vi.fn() },
     botPairing: { findMany: vi.fn() },
     $queryRaw: vi.fn(),
@@ -164,6 +164,22 @@ describe("MCP server", () => {
         expect.objectContaining({ type: "TEXT", structuredFormat: "YAML", isPrivate: true, tagIds: [] }),
       ]);
       expect(result.structuredContent).toMatchObject({ success: true, prompt: { id: "p-2", link: null } });
+    });
+
+    it("save_prompt only uses existing tags and reports unknown ones", async () => {
+      vi.mocked(db.tag.findMany).mockResolvedValue([{ id: "tag-1", name: "Coding", slug: "coding" }] as never);
+      vi.mocked(createPrompt).mockResolvedValue({
+        ok: true,
+        data: { id: "p-3", slug: "x", title: "X", content: "x", isPrivate: true, type: "TEXT", createdAt: new Date(), tags: [], category: null },
+      } as never);
+      await connect(alice);
+
+      const result = await client.callTool({ name: "save_prompt", arguments: { title: "X", content: "x", tags: ["CODING", "nonexistent"] } });
+
+      expect(vi.mocked(createPrompt).mock.calls[0][1]).toMatchObject({ tagIds: ["tag-1"] });
+      expect(db.tag.create).not.toHaveBeenCalled();
+      expect(result.structuredContent).toMatchObject({ success: true, unknownTags: ["nonexistent"] });
+      expect((result.structuredContent as { warning: string }).warning).toMatch(/nonexistent/);
     });
 
     it("save_prompt surfaces duplicate checks as tool errors", async () => {

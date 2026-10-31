@@ -15,17 +15,19 @@ import {
   nextCursor,
   skillSummaryOutput,
   tagNamesInput,
+  unknownTagsOutput,
 } from "../schemas";
 import {
   authorName,
   directVisibility,
-  findOrCreateTagIds,
   getPromptName,
   listingVisibility,
   promptWebUrl,
   resolveCategoryId,
+  resolveTagIds,
   resourceLink,
   skillFileUri,
+  unknownTagsWarning,
 } from "../shared";
 import { defineTool, toolResult, ToolError, unwrapWriteResult } from "../tool";
 
@@ -281,6 +283,7 @@ export function registerSkillTools(server: McpServer, ctx: McpContext) {
           category: z.string().nullable(),
           link: z.string().nullable(),
         }),
+        ...unknownTagsOutput,
       },
       failureMessage: "Failed to save skill",
     },
@@ -292,6 +295,7 @@ export function registerSkillTools(server: McpServer, ctx: McpContext) {
         if (f.filename !== DEFAULT_SKILL_FILE && !sanitizeFilename(f.filename)) throw invalidFilename(f.filename);
       }
 
+      const resolvedTags = await resolveTagIds(tags ?? []);
       const skill = unwrapWriteResult(
         await createPrompt(user, {
           title,
@@ -299,7 +303,7 @@ export function registerSkillTools(server: McpServer, ctx: McpContext) {
           content: serializeSkillFiles(files),
           type: "SKILL",
           categoryId: (await resolveCategoryId(category)) ?? undefined,
-          tagIds: await findOrCreateTagIds(tags ?? []),
+          tagIds: resolvedTags.ids,
           isPrivate: isPrivate ?? !user.mcpPromptsPublicByDefault,
         })
       );
@@ -319,6 +323,7 @@ export function registerSkillTools(server: McpServer, ctx: McpContext) {
             category: skill.category?.name || null,
             link: skill.isPrivate ? null : promptWebUrl(ctx, skill),
           },
+          ...unknownTagsWarning(resolvedTags.unknownTags),
         },
         [resourceLink("skills", skill)]
       );

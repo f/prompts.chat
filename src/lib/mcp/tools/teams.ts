@@ -21,8 +21,8 @@ import {
   type BotTeamView,
 } from "@/lib/bots/teams";
 import type { McpContext } from "../context";
-import { cursorInput, decodeCursor, limitInput, nextCursor, taxonomyOutput } from "../schemas";
-import { findOrCreateTagIds, resolveCategoryId, resourceLink } from "../shared";
+import { TAG_NAMES_DESCRIPTION, cursorInput, decodeCursor, limitInput, nextCursor, taxonomyOutput, unknownTagsOutput } from "../schemas";
+import { resolveCategoryId, resolveTagIds, resourceLink, unknownTagsWarning } from "../shared";
 import { defineTool, toolResult, ToolError, unwrapWriteResult } from "../tool";
 
 const teamMemberOutput = z.looseObject({
@@ -201,7 +201,7 @@ export function registerTeamTools(server: McpServer, ctx: McpContext) {
           .optional()
           .describe("What the team does and how it works, in markdown; null clears it"),
         category: z.string().nullable().optional().describe("Category slug; null removes the category"),
-        tags: z.array(z.string()).max(MAX_TEAM_TAGS).optional().describe("Tag names (created if they don't exist). Replaces all tags."),
+        tags: z.array(z.string()).max(MAX_TEAM_TAGS).optional().describe(`${TAG_NAMES_DESCRIPTION} Replaces all tags.`),
         members: z
           .array(
             z.object({
@@ -236,6 +236,7 @@ export function registerTeamTools(server: McpServer, ctx: McpContext) {
         action: z.enum(["created", "updated", "unchanged"]),
         changedFields: z.array(z.string()),
         team: teamDetailOutput,
+        ...unknownTagsOutput,
       },
       failureMessage: "Failed to save team",
     },
@@ -252,6 +253,7 @@ export function registerTeamTools(server: McpServer, ctx: McpContext) {
       const issues = links ? teamLinkIssues(memberInputs.map((m) => m.botId), links) : [];
       if (issues.length > 0) throw new ToolError("validation_error", issues[0]);
 
+      const resolvedTags = tags === undefined ? undefined : await resolveTagIds(tags);
       const { action, team, changedFields } = unwrapWriteResult(
         await upsertOwnTeam(
           { id: user.id, role: user.role },
@@ -261,13 +263,16 @@ export function registerTeamTools(server: McpServer, ctx: McpContext) {
             title,
             description,
             categoryId: await resolveCategoryId(category),
-            tagIds: tags === undefined ? undefined : await findOrCreateTagIds(tags),
+            tagIds: resolvedTags?.ids,
             members: memberInputs,
             links,
           }
         )
       );
-      return toolResult({ success: true, action, changedFields, team: teamToJson(team, ctx.baseUrl) }, memberLinks(team));
+      return toolResult(
+        { success: true, action, changedFields, team: teamToJson(team, ctx.baseUrl), ...unknownTagsWarning(resolvedTags?.unknownTags ?? []) },
+        memberLinks(team)
+      );
     }
   );
 }

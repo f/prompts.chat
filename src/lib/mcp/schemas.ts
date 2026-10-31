@@ -8,7 +8,16 @@ export const limitInput = (defaultValue: number, max: number, noun: string) =>
 
 export const cursorInput = z.string().optional().describe("Pass the nextCursor of a previous result to get the next page");
 
-export const tagNamesInput = z.array(z.string()).max(10).optional().describe("Tag names (created if they don't exist)");
+export const TAG_NAMES_DESCRIPTION =
+  "Names or slugs of existing tags (case-insensitive). Only existing tags are accepted; unknown ones are skipped and reported in unknownTags.";
+
+export const tagNamesInput = z.array(z.string()).max(10).optional().describe(TAG_NAMES_DESCRIPTION);
+
+/** Output fields of save tools, present when some requested tags do not exist */
+export const unknownTagsOutput = {
+  unknownTags: z.array(z.string()).optional().describe("Requested tags that do not exist and were not applied"),
+  warning: z.string().optional(),
+};
 
 export const categorySlugInput = z.string().optional().describe("Category slug");
 

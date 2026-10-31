@@ -7,7 +7,7 @@ vi.mock("@/lib/db", () => ({
   db: {
     user: { findUnique: vi.fn() },
     prompt: { findMany: vi.fn(), findFirst: vi.fn(), count: vi.fn() },
-    tag: { findUnique: vi.fn(), create: vi.fn() },
+    tag: { findUnique: vi.fn(), findMany: vi.fn(), create: vi.fn() },
     category: { findUnique: vi.fn() },
   },
 }));

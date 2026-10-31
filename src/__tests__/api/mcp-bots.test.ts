@@ -10,7 +10,7 @@ vi.mock("@/lib/db", () => ({
   db: {
     user: { findUnique: vi.fn() },
     prompt: { findMany: vi.fn(), findFirst: vi.fn(), findUniqueOrThrow: vi.fn(), count: vi.fn() },
-    tag: { findUnique: vi.fn(), create: vi.fn() },
+    tag: { findUnique: vi.fn(), findMany: vi.fn(), create: vi.fn() },
     category: { findUnique: vi.fn() },
     botPairing: { findMany: vi.fn().mockResolvedValue([]) },
   },
@@ -115,8 +115,10 @@ describe("MCP bot tools", () => {
     it("creates a new private bot through the web creation flow", async () => {
       vi.mocked(db.prompt.findFirst).mockResolvedValue(null);
       vi.mocked(db.category.findUnique).mockResolvedValue({ id: "cat-1" } as never);
-      vi.mocked(db.tag.findUnique).mockResolvedValueOnce({ id: "tag-1" } as never).mockResolvedValueOnce(null);
-      vi.mocked(db.tag.create).mockResolvedValue({ id: "tag-2" } as never);
+      vi.mocked(db.tag.findMany).mockResolvedValue([
+        { id: "tag-1", name: "Email", slug: "email" },
+        { id: "tag-2", name: "Inbox", slug: "inbox" },
+      ] as never);
       vi.mocked(createPrompt).mockResolvedValue({ ok: true, data: { id: "bot-1" } } as never);
       vi.mocked(db.prompt.findUniqueOrThrow).mockResolvedValue(botRecord() as never);
       await connect(alice);
@@ -156,6 +158,29 @@ describe("MCP bot tools", () => {
         isPrivate: true,
       });
       expect(promptCreateSchema.safeParse(body).success).toBe(true);
+      expect(data.unknownTags).toBeUndefined();
+      expect(db.tag.create).not.toHaveBeenCalled();
+    });
+
+    it("skips tags that do not exist and reports them instead of creating them", async () => {
+      vi.mocked(db.prompt.findFirst).mockResolvedValue(null);
+      vi.mocked(db.tag.findMany).mockResolvedValue([{ id: "tag-1", name: "Email", slug: "email" }] as never);
+      vi.mocked(createPrompt).mockResolvedValue({ ok: true, data: { id: "bot-1" } } as never);
+      vi.mocked(db.prompt.findUniqueOrThrow).mockResolvedValue(botRecord() as never);
+      await connect(alice);
+
+      const { isError, data } = await callTool("save_bot", {
+        name: "Inbox Triage",
+        instructions: "Triage my inbox.",
+        platforms: ["OPENCLAW"],
+        tags: ["EMAIL", "Brand New Tag"],
+      });
+
+      expect(isError).toBe(false);
+      expect(data.unknownTags).toEqual(["Brand New Tag"]);
+      expect(data.warning).toMatch(/Brand New Tag/);
+      expect(vi.mocked(createPrompt).mock.calls[0][1]).toMatchObject({ tagIds: ["tag-1"] });
+      expect(db.tag.create).not.toHaveBeenCalled();
     });
 
     it("is a no-op when called again with the same definition", async () => {

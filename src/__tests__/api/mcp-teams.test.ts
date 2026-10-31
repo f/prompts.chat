@@ -255,24 +255,46 @@ describe("MCP team tools", () => {
     vi.mocked(db.botTeam.findFirst).mockResolvedValue(null);
     vi.mocked(db.botTeam.create).mockResolvedValue({ id: "team-1" } as never);
     vi.mocked(db.category.findUnique).mockResolvedValue({ id: "cat-1" } as never);
-    vi.mocked(db.tag.findUnique).mockImplementation((async ({ where }: { where: { slug: string } }) =>
-      where.slug === "agents" ? { id: "tag-1", slug: "agents" } : null) as never);
-    vi.mocked(db.tag.create).mockResolvedValue({ id: "tag-2", slug: "code-review" } as never);
-    vi.mocked(db.tag.findMany).mockResolvedValue([{ id: "tag-1" }, { id: "tag-2" }] as never);
+    vi.mocked(db.tag.findMany).mockResolvedValueOnce([
+      { id: "tag-1", name: "Agents", slug: "agents" },
+      { id: "tag-2", name: "Code Review", slug: "code-review" },
+    ] as never);
+    vi.mocked(db.tag.findMany).mockResolvedValueOnce([{ id: "tag-1" }, { id: "tag-2" }] as never);
     await connect(alice);
 
-    const { isError } = await callTool("save_team", {
+    const { isError, data } = await callTool("save_team", {
       title: "Review crew",
       category: "coding",
-      tags: ["Agents", "Code review"],
+      tags: ["agents", "code-review"],
       members: [{ bot: "a" }, { bot: "b" }],
     });
 
     expect(isError).toBe(false);
-    expect(db.tag.create).toHaveBeenCalledWith({ data: { name: "Code review", slug: "code-review" } });
+    expect(data.unknownTags).toBeUndefined();
+    expect(db.tag.create).not.toHaveBeenCalled();
     expect(vi.mocked(db.botTeam.create).mock.calls[0][0]).toMatchObject({
       data: { categoryId: "cat-1", tags: { create: [{ tagId: "tag-1" }, { tagId: "tag-2" }] } },
     });
+  });
+
+  it("save_team skips unknown tags and reports them instead of creating them", async () => {
+    vi.mocked(db.botTeam.findFirst).mockResolvedValue(null);
+    vi.mocked(db.botTeam.create).mockResolvedValue({ id: "team-1" } as never);
+    vi.mocked(db.tag.findMany).mockResolvedValueOnce([{ id: "tag-1", name: "Agents", slug: "agents" }] as never);
+    vi.mocked(db.tag.findMany).mockResolvedValueOnce([{ id: "tag-1" }] as never);
+    await connect(alice);
+
+    const { isError, data } = await callTool("save_team", {
+      title: "Review crew",
+      tags: ["Agents", "Made Up"],
+      members: [{ bot: "a" }, { bot: "b" }],
+    });
+
+    expect(isError).toBe(false);
+    expect(data.unknownTags).toEqual(["Made Up"]);
+    expect(data.warning).toMatch(/Made Up/);
+    expect(db.tag.create).not.toHaveBeenCalled();
+    expect(vi.mocked(db.botTeam.create).mock.calls[0][0]).toMatchObject({ data: { tags: { create: [{ tagId: "tag-1" }] } } });
   });
 
   it("save_team rejects an unknown category", async () => {

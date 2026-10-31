@@ -60,20 +60,46 @@ export function directVisibility(user: McpUser | null): Prisma.PromptWhereInput 
   };
 }
 
-/** Finds tags by the slug of each name, creating missing ones; returns ids in input order without duplicates */
-export async function findOrCreateTagIds(tagNames: string[]): Promise<string[]> {
-  const ids: string[] = [];
-  for (const tagName of tagNames) {
-    const tagSlug = slugify(tagName);
-    if (!tagSlug) continue;
+export interface ResolvedTags {
+  ids: string[];
+  unknownTags: string[];
+}
 
-    let tag = await db.tag.findUnique({ where: { slug: tagSlug } });
-    if (!tag) {
-      tag = await db.tag.create({ data: { name: tagName, slug: tagSlug } });
-    }
-    if (!ids.includes(tag.id)) ids.push(tag.id);
+/**
+ * Matches each name to an existing tag by name or slug, ignoring case; never creates tags, since only
+ * admins may. Returns matched ids in input order without duplicates, and the names that matched nothing.
+ */
+export async function resolveTagIds(tagNames: string[]): Promise<ResolvedTags> {
+  const names = [...new Set(tagNames.map((name) => name.trim()).filter(Boolean))];
+  if (names.length === 0) return { ids: [], unknownTags: [] };
+
+  const slugs = [...new Set([...names, ...names.map(slugify)].filter(Boolean))];
+  const tags = await db.tag.findMany({
+    where: { OR: [{ name: { in: names, mode: "insensitive" } }, { slug: { in: slugs, mode: "insensitive" } }] },
+    select: { id: true, name: true, slug: true },
+  });
+
+  const ids: string[] = [];
+  const unknownTags: string[] = [];
+  for (const name of names) {
+    const lower = name.toLowerCase();
+    const tagSlug = slugify(name);
+    const tag =
+      tags.find((t) => t.name.toLowerCase() === lower) ??
+      tags.find((t) => t.slug.toLowerCase() === lower || (tagSlug && t.slug.toLowerCase() === tagSlug));
+    if (!tag) unknownTags.push(name);
+    else if (!ids.includes(tag.id)) ids.push(tag.id);
   }
-  return ids;
+  return { ids, unknownTags };
+}
+
+/** Fields added to a save result when some requested tags do not exist */
+export function unknownTagsWarning(unknownTags: string[]): { unknownTags?: string[]; warning?: string } {
+  if (unknownTags.length === 0) return {};
+  return {
+    unknownTags,
+    warning: `Ignored tags that do not exist: ${unknownTags.join(", ")}. Only existing tags can be used; new tags are created by admins.`,
+  };
 }
 
 /** The id of the category with this slug; undefined when no slug is given, null to clear */

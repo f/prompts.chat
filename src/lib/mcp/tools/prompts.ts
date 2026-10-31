@@ -14,16 +14,18 @@ import {
   nextCursor,
   promptSummaryOutput,
   tagNamesInput,
+  unknownTagsOutput,
 } from "../schemas";
 import {
   authorName,
   directVisibility,
-  findOrCreateTagIds,
   getPromptName,
   listingVisibility,
   promptWebUrl,
   resolveCategoryId,
+  resolveTagIds,
   resourceLink,
+  unknownTagsWarning,
 } from "../shared";
 import { defineTool, toolResult, ToolError, unwrapWriteResult } from "../tool";
 import { extractVariables, fillVariables, missingVariables } from "../variables";
@@ -241,11 +243,13 @@ export function registerPromptTools(server: McpServer, ctx: McpContext) {
           category: z.string().nullable(),
           link: z.string().nullable(),
         }),
+        ...unknownTagsOutput,
       },
       failureMessage: "Failed to save prompt",
     },
     async ({ title, content, description, tags, category, isPrivate, type, structuredFormat }, { user }) => {
       const isStructured = type === "STRUCTURED";
+      const resolvedTags = await resolveTagIds(tags ?? []);
       const prompt = unwrapWriteResult(
         await createPrompt(user, {
           title,
@@ -254,7 +258,7 @@ export function registerPromptTools(server: McpServer, ctx: McpContext) {
           type: isStructured || !type ? "TEXT" : type,
           structuredFormat: isStructured ? structuredFormat || "JSON" : null,
           categoryId: (await resolveCategoryId(category)) ?? undefined,
-          tagIds: await findOrCreateTagIds(tags ?? []),
+          tagIds: resolvedTags.ids,
           isPrivate: isPrivate ?? !user.mcpPromptsPublicByDefault,
         })
       );
@@ -276,6 +280,7 @@ export function registerPromptTools(server: McpServer, ctx: McpContext) {
             category: prompt.category?.name || null,
             link: prompt.isPrivate ? null : promptWebUrl(ctx, prompt),
           },
+          ...unknownTagsWarning(resolvedTags.unknownTags),
         },
         [resourceLink("prompts", prompt)]
       );
