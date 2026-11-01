@@ -1,15 +1,24 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { ArrowRight, Star } from "lucide-react";
+import { auth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import { TeamCard } from "@/components/bots/teams/team-card";
-import { listFeaturedTeams, teamExcerpt } from "@/lib/bots/teams";
+import { BotTeamsGraph } from "@/components/bots/teams/bot-teams-graph";
+import { teamCardHeights } from "@/lib/bots/team-graph";
+import { getVotedTeamIds, listFeaturedTeams, toTeamGraphTeam } from "@/lib/bots/teams";
 
 export async function FeaturedTeams() {
   const t = await getTranslations("bots");
-  const teams = await listFeaturedTeams(6);
+  const [teams, session] = await Promise.all([listFeaturedTeams(6), auth()]);
 
   if (teams.length === 0) return null;
+
+  const voted = await getVotedTeamIds(session?.user?.id, teams.map((team) => team.id));
+  // Cards have no detail panel, so the team description is left out of the client payload
+  const graphTeams = teams.map((team) => ({ ...toTeamGraphTeam(team, { voted: voted.has(team.id) }), description: null }));
+  // One height per breakpoint, matching the grid's columns, so each row lines up before and after its graphs are drawn
+  const [one, two, three] = [1, 2, 3].map((columns) => teamCardHeights(graphTeams, columns));
 
   return (
     <section className="py-12 border-b" aria-labelledby="featured-teams-heading">
@@ -27,20 +36,13 @@ export async function FeaturedTeams() {
           </Button>
         </div>
         <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {teams.map((team) => (
-            <li key={team.id} className="min-w-0">
-              <TeamCard
-                team={{
-                  slug: team.slug,
-                  title: team.title,
-                  isFeatured: team.isFeatured,
-                  isUnlisted: team.isUnlisted,
-                  voteCount: team.voteCount,
-                  memberCount: team.members.length,
-                  excerpt: teamExcerpt(team.description, 160),
-                  category: team.category,
-                }}
-              />
+          {graphTeams.map((team, index) => (
+            <li
+              key={team.id}
+              className="min-w-0 h-(--card-h) md:h-(--card-h-md) lg:h-(--card-h-lg)"
+              style={{ "--card-h": `${one[index]}px`, "--card-h-md": `${two[index]}px`, "--card-h-lg": `${three[index]}px` } as CSSProperties}
+            >
+              <BotTeamsGraph teams={[team]} variant="card" isLoggedIn={!!session?.user} />
             </li>
           ))}
         </ul>
