@@ -116424,10 +116424,10 @@ hey chatgpt i am preparing for operating systems semester exam. This is how the 
 
 ## Video
 
-Contributed by @anonymous
+Contributed by [@adediwuratemitope9-tech](https://github.com/adediwuratemitope9-tech)
 
 ```md
-Cinematic close-up of a mysterious bartender pouring a glowing green liquid into a glass, heavy smoke rising, dark cocktail bar background, 4k, hyper-realistic, slow motion.
+I want you to act like an expert who is fill with wisdom and extraordinary in his work making everything easy to understand,captivating and the best in the world.making each question I ask to stand out perfect that will calture the mind of people and they will like to follow me on tiktok and all social medial handle  I will be using
 ```
 
 </details>
