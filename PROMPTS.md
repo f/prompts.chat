@@ -215606,3 +215606,55 @@ A cozy isometric 3D cutaway of a small witch's potion shop with a black cat asle
 
 </details>
 
+<details>
+<summary><strong>Covered Bridge Autumn Scene Concept Brief Builder</strong></summary>
+
+## Covered Bridge Autumn Scene Concept Brief Builder
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Act as a cinematic landscape designer who writes image-ready and motion-ready scene briefs. Help me design one hero shot of a red wooden covered bridge over a calm, misty river in peak autumn foliage at sunrise. The shot will first be generated as a still image and then animated into a short video that uses that image as its first frame. Your brief must make the still image rich in elements that can move naturally (low mist drifting over the water, a few leaves falling and floating, soft ripples, light shimmering on the reflection, branches swaying slightly) while keeping the composition calm, balanced, readable, and easy to animate.
+
+My starting idea: ${idea:a classic red covered bridge over a still river at sunrise, with low mist on the water and blazing autumn trees on both banks}
+
+My starting choices:
+- Bridge: ${bridge:a long red wooden covered bridge with a dark grey shingled roof, an open entrance with white trim on the left end, resting on stone abutments}
+- Position: ${position:spanning the river slightly right of center, seen from the water level a little downstream}
+- River: ${river:a calm, mirror-still river filling the lower half of the frame, reflecting the bridge and the trees}
+- Mist: ${mist:a thin low layer of mist drifting over the water and under the bridge}
+- Trees: ${trees:dense orange, red, and yellow maples and birches on both banks, brighter and sunlit on the left, deeper red on the right}
+- Leaves on the water: ${leaves:many small fallen leaves floating in the foreground}
+- Time and light: ${time:just after sunrise, soft golden light from the left and a clear pale blue sky with warm haze}
+- Visual style: ${style:photoreal landscape and travel photography, natural colors}
+- Mood words: ${mood:quiet, crisp, warm, nostalgic, peaceful}
+
+First ask me, in one short message, for anything missing: the camera height (just above the water, bank level, or slightly raised), how much of the frame the bridge should take, how thick the mist should be, how many floating leaves I want, whether I want overhanging branches at the top edge to frame the shot, whether the video should include a few leaves falling onto the water and making ripples, and anything to avoid (people, cars, animals, boats, text, signs, logos, or copying a specific real bridge, photograph, or named landmark).
+
+Then produce the brief with these sections:
+
+1. **Scene Overview**: two or three sentences on the place, the moment, the light, and the feeling. Describe an imagined rural covered bridge in a classic countryside spirit, not a copy of a specific real bridge or a famous photograph.
+
+2. **The Covered Bridge**: its length and position in the frame, the red board siding, the shingled roof, the open entrance and its trim, the stone abutments, and how the morning light falls on it.
+
+3. **The River and Reflection**: the water surface, how still it is, how clearly it mirrors the bridge and trees, where it catches warm light, and the floating leaves in the foreground.
+
+4. **Mist**: how thick it is, where it lies (on the water, under the bridge, along the far bank), which way it drifts, and how it should read as soft morning river mist rather than smoke or fog filling the whole frame.
+
+5. **Autumn Trees and Sky**: the colors and density of the foliage on each bank, where the sunlight hits, the edge of the woods against the sky, and the pale blue sky with warm golden haze.
+
+6. **Light and Color**: the direction and warmth of the sunrise light, the cool shadows, the balance of red, orange, and yellow against blue, and how soft the contrast is.
+
+7. **Fixed Visual Details**: a numbered list of 8 to 10 details that must stay identical in the still image and in the video (bridge position and length, roof line, entrance on the left end, stone abutments, both tree lines, river edges, reflection, camera position, framing, overall mist zone).
+
+8. **Motion Map**: a table of every element that can move in the video, with columns: element, type of motion, direction, speed (very slow, slow, medium), and how strongly it should move. Include the mist, a few leaves falling and landing on the water, the floating leaves, the ripples they make, the shimmer on the reflection, a slight sway of branches, and the camera move. Keep total motion subtle and physically plausible, with one gentle air direction.
+
+9. **Prompt Seed A - Hero Still Image**: a ready-to-paste image prompt under 170 words for a wide landscape 16:9 frame, with the red covered bridge, the misty river, and the peak autumn trees at sunrise in the first sentence, ending with: no people, no text, no logos.
+
+10. **Prompt Seed B - Image-to-Video Animation**: a ready-to-paste video prompt under 120 words that starts from the hero still as the first frame, describes a slow gentle push-in toward the bridge for about 6 seconds, mist drifting over the water and under the bridge, a few red and orange maple leaves fluttering down and landing on the water with soft spreading ripples, and the reflection shimmering, and says to keep the bridge, banks, trees, river, and framing exactly as in the image with no new objects.
+
+Rules: no people, cars, boats, or animals; no text, signs, or logos; no fast camera moves or cuts; and no motion that breaks physics (the bridge, stone abutments, and banks never move, the water stays calm and flows gently in one direction, leaves fall slowly and float on the surface, ripples spread outward in circles and fade, mist drifts and does not pour or swirl violently, the light does not flicker or jump). Use short paragraphs and lists.
+```
+
+</details>
+
