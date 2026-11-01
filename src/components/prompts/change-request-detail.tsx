@@ -79,7 +79,7 @@ export async function ChangeRequestDetail({ promptId, changeId, basePath, backLa
   const hasTitleChange = !isBot && changeRequest.proposedTitle && changeRequest.proposedTitle !== changeRequest.originalTitle;
 
   return (
-    <div className="container max-w-3xl py-6">
+    <div className="container max-w-3xl pt-6 pb-24 sm:pb-6">
       {/* Header */}
       <div className="mb-6">
         <Button variant="ghost" size="sm" asChild className="mb-4 -ml-2">
