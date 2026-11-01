@@ -87,6 +87,23 @@ Burada iki güclü tərəf arasında seçim edirsiniz. Model çevikdir: qeyri-ad
   after={{ label: "Məqsədi və çağırış anını təsvir edən prompt", content: "Müştərilərə ödəniş problemlərini həll etməkdə kömək et. Müştəri pulun qaytarılmasını istəsə və sifariş nömrəsi səndə varsa, geri qaytarma iş axınını həmin nömrə və səbəblə çağır. İş axınının qaytardığı nəticəni bildir. İş axını təsdiqləməmiş pulun qaytarılacağını vəd etmə." }}
 />
 
+### API Olmayanda Ekran Alətə Çevrilir
+
+İndiyə qədər gördüyümüz hər alətin proqram təminatı üçün açılmış bir qapısı vardı: API, bağlayıcı, MCP serveri. Bir çox sistemlərin isə belə qapısı yoxdur. Köhnə daxili portal, təchizatçının bron saytı, başqa bir onillikdən qalmış masaüstü proqram: insanlar onlardan hər gün istifadə edir, amma yalnız ekran vasitəsilə. Belə sistemlər üçün bəzi modellər ekranın özünü alət kimi işlədə bilir. Buna adətən **kompüterdən istifadə** (computer use) deyilir.
+
+Mexanizm artıq tanıdığınız həmin dövrədir, sadəcə məlumatın yerini şəkillər tutur. Modeli işlədən tətbiq tapşırığı və ekran görüntüsünü göndərir. Model ona baxır və adi mətnlə yox, strukturlaşdırılmış əməliyyatla cavab verir: bu nöqtəyə klik et, bu mətni yaz, aşağı sürüşdür. Bəzi alətlər hər əməliyyata qısa niyyət izahı da əlavə edir, məsələn, “Təyinat yerini yazmaq üçün axtarış xanasına klik et.” kimi, bu da icranı izləməyi asanlaşdırır. Model yenə də özbaşına heç nəyi tərpətmir. Əməliyyatı tərtibatçının öz kodu yerinə yetirir, yeni ekran görüntüsü çəkir və onu geri göndərir. Bax, et, yenə bax: tapşırıq bitənə və ya kimsə dövrəni dayandırana qədər. Bu dövrənin harada işləməsi onun necə işləməsi qədər vacibdir. Bu suala Daim İşləyən Botlar bölməsinin [Botun Kompüteri](/book/28-persistent-bots) hissəsi baxır.
+
+Google 30 oktyabr 2026-cı ildə Computer Use alətini Gemini API-də hamı üçün əlçatan etdi ([buraxılış qeydləri](https://ai.google.dev/gemini-api/docs/changelog)). Alətin [sənədləri](https://ai.google.dev/gemini-api/docs/computer-use) brauzer, mobil və masaüstü mühitlərini, `intent` sahəsi daşıyan əməliyyatları, əməliyyatı bloklaya və ya ödəniş kimi addımlardan əvvəl təsdiq istəyə bilən tənzimlənən təhlükəsizlik siyasətlərini və ekran görüntülərində gizlənmiş prompt injection-ı axtaran, istəyə görə qoşulan yoxlamanı təsvir edir. Google özü də vacib tapşırıqlarda yaxından nəzarəti tövsiyə edir. Bu ideya tək bir şirkətə məxsus deyil: Anthropic Claude üçün [kompüterdən istifadə aləti](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool), OpenAI isə Responses API-də [kompüter aləti](https://platform.openai.com/docs/guides/tools-computer-use) təklif edir. Hər ikisi eyni mübadilə üzərində qurulub: ekran görüntüləri gəlir, əməliyyatlar gedir və həmin əməliyyatları sizin tətbiqiniz icra edir.
+
+Bu yolun güzəştlərini açıq sözlərlə demək lazımdır. Ekranı oxumaq API çağırmaqdan yavaşdır, hər ekran görüntüsü token xərcləyir, yeri dəyişmiş düymə və ya gözlənilməz açılan pəncərə dünən işləyən icranı poza bilər. Ona görə də əsl API və ya bağlayıcı varsa, ona üstünlük verin, kompüterdən istifadəni isə başqa giriş yolu qoymayan sistemlər üçün saxlayın. Ekran da başqa hər şey kimi bir girişdir: səhifədəki mətn də sənəd kimi prompt injection daşıya bilər və onu şəklin içində görmək ona daha çox etibar etməyə əsas vermir. Model insanın klikləyə biləcəyi hər şeyə klikləyə bildiyi üçün ödəniş etmək, nəyisə silmək və ya məlumatı dəyişmək kimi riskli addımlar insanın təsdiqini gözləməlidir.
+
+Prompt yazmaq da əvvəlki qaydalarla gedir, sadəcə kənarlar daha itidir, çünki veb sayt modelə nə demək istədiyinizi deyə bilməz. Dəqiq saytı və səhifəni göstərin, tapşırığın harada bitdiyini deyin və nəsə edilməzdən əvvəl nəyin təsdiqlənməli olduğunu yazın.
+
+<Compare
+  before={{ label: "Ucu açıq bir tapşırıq", content: "İnternetə gir və mənim üçün cümə axşamına iclas otağı bron et." }}
+  after={{ label: "Səhifə, dayanma nöqtəsi, təsdiq", content: "rooms.example.com ünvanındakı otaq bron səhifəmizdə cümə axşamı saat 14:00-dan 15:00-dək altı nəfərlik otaq tap. Son təsdiq ekranında dayan və Bron et düyməsini basmazdan əvvəl mənə otağı və vaxtı göstər. Boş otaq yoxdursa, bunu de və dayan. Mövcud bronların heç birini dəyişmə və ya ləğv etmə." }}
+/>
+
 ## Bağlayıcı Nə Əlavə Edir?
 
 Bağlayıcı müəyyən sistemlə inteqrasiyanı birləşdirir. Daxil olmağı, hesab və ya iş sahəsi seçməyi, məlumat tapmağı və dəstəklənən əməliyyatları alət kimi təqdim etməyi idarə edə bilər. Bəzi bağlayıcılar yalnız axtarır və ya oxuyur. Digərləri yazmanı da dəstəkləyir.

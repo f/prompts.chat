@@ -87,6 +87,23 @@ Burada iki gücü dengeliyorsunuz. Model esnektir: alışılmadık bir durumu ok
   after={{ label: "Hedefi ve tetikleyiciyi anlatan prompt", content: "Müşterilerin fatura sorunlarını çözmesine yardım et. Bir müşteri iade isterse ve sipariş numarası elindeyse, iade iş akışını bu numarayla ve iade gerekçesiyle çağır. İş akışının döndürdüğü sonucu bildir. İş akışı onaylamadan iade sözü verme." }}
 />
 
+### API Olmayınca Ekran Araca Dönüşür
+
+Şimdiye kadar gördüğümüz her aracın yazılım için yapılmış bir kapısı vardı: bir API, bir bağlayıcı, bir MCP sunucusu. Pek çok sistemde böyle bir kapı yoktur. Eski bir şirket içi portal, bir tedarikçinin rezervasyon sitesi, başka bir on yıldan kalma bir masaüstü programı: insanlar bunları her gün kullanır, ama yalnızca ekran üzerinden. Bu tür sistemler için bazı modeller ekranın kendisini bir araç gibi kullanabilir. Buna genellikle **bilgisayar kullanımı** (computer use) denir.
+
+İşleyiş, zaten tanıdığınız döngünün ta kendisi; yalnızca verinin yerini görüntüler alıyor. Modeli çalıştıran uygulama, görevi ve bir ekran görüntüsünü gönderir. Model görüntüye bakar ve düz yazıyla değil, yapılandırılmış bir eylemle cevap verir: şu noktaya tıkla, şu metni yaz, aşağı kaydır. Bazı araçlar her eyleme kısa bir niyet açıklaması da iliştirir, örneğin "Varış yerini yazmak için arama kutusuna tıkla." gibi; bu da bir çalıştırmayı takip etmeyi kolaylaştırır. Model yine de kendi başına hiçbir şeyi kıpırdatmaz. Eylemi geliştiricinin kendi kodu gerçekleştirir, yeni bir ekran görüntüsü alır ve onu geri gönderir. Bak, yap, yeniden bak; ta ki görev bitene ya da biri döngüyü durdurana kadar. Bu döngünün nerede çalıştığı da nasıl çalıştığı kadar önemlidir. Bu soruyu Sürekli Çalışan Botlar bölümünün [Botun Bilgisayarı](/book/28-persistent-bots) kısmı ele alıyor.
+
+Google, 30 Ekim 2026'da Computer Use aracını Gemini API'de herkesin kullanımına açtı ([sürüm notları](https://ai.google.dev/gemini-api/docs/changelog)). Aracın [belgeleri](https://ai.google.dev/gemini-api/docs/computer-use); tarayıcı, mobil ve masaüstü ortamlarını, `intent` alanı taşıyan eylemleri, bir eylemi engelleyebilen ya da ödeme gibi adımlardan önce onay isteyebilen ayarlanabilir güvenlik politikalarını ve ekran görüntülerinde gizlenmiş prompt enjeksiyonunu arayan, isteğe bağlı olarak açılan bir taramayı anlatıyor. Google'ın kendisi de önemli görevlerde yakın gözetim öneriyor. Fikir tek bir şirkete özgü değil: Anthropic, Claude için bir [bilgisayar kullanımı aracı](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool), OpenAI da Responses API'sinde bir [bilgisayar aracı](https://platform.openai.com/docs/guides/tools-computer-use) sunuyor. İkisi de aynı alışverişin üzerine kurulu: ekran görüntüleri gelir, eylemler gider ve o eylemleri sizin uygulamanız yerine getirir.
+
+Bu yolun bedellerini açık açık söylemek gerekir. Ekranı okumak bir API çağırmaktan yavaştır, her ekran görüntüsü token harcar ve yeri değişen bir düğme ya da beklenmedik bir açılır pencere, dün sorunsuz çalışan bir işi bozabilir. Bu yüzden gerçek bir API ya da bağlayıcı varsa onu tercih edin; bilgisayar kullanımını, başka hiçbir giriş yolu bırakmayan sistemlere saklayın. Ekran da sonuçta her girdi gibi bir girdidir: bir sayfadaki metin, tıpkı bir belge gibi prompt enjeksiyonu taşıyabilir ve onu bir resmin içinde görmek, ona daha çok güvenmek için bir neden değildir. Model bir insanın tıklayabileceği her şeye tıklayabildiği için de ödeme yapmak, bir şey silmek ya da verileri değiştirmek gibi riskli adımlar bir insanın onayını beklemelidir.
+
+Prompt yazarken de aynı kurallar geçerli, yalnız burada belirsizliğin bedeli daha ağır; çünkü bir web sitesi modele ne demek istediğinizi söyleyemez. Hangi site ve hangi sayfa olduğunu tam olarak belirtin, görevin nerede bittiğini söyleyin ve herhangi bir şey yapılmadan önce neyin onaylanması gerektiğini yazın.
+
+<Compare
+  before={{ label: "Ucu açık bir ayak işi", content: "İnternete gir ve bana perşembe için bir toplantı odası ayır." }}
+  after={{ label: "Bir sayfa, bir durma noktası, bir onay", content: "rooms.example.com adresindeki oda rezervasyon sayfamızda perşembe günü 14:00 ile 15:00 arası için altı kişilik bir oda bul. Son onay ekranında dur ve Rezervasyon Yap düğmesine basmadan önce bana odayı ve saati göster. Boş oda yoksa bunu söyle ve dur. Mevcut hiçbir rezervasyonu değiştirme ya da iptal etme." }}
+/>
+
 ## Bağlayıcı Ne Ekler?
 
 Bağlayıcı, belirli bir sistemle entegrasyonu bir araya getirir. Oturum açmayı, hesap veya çalışma alanı seçmeyi, veri bulmayı ve desteklenen işlemleri araç olarak sunmayı sağlayabilir. Bazı bağlayıcılar yalnızca arama veya okuma yapar. Bazıları yazmayı da destekler.

@@ -87,6 +87,23 @@ Het gaat om het verdelen van twee sterke punten. Het model is flexibel: het kan 
   after={{ label: "Het doel en het moment beschrijven", content: "Help klanten factuurproblemen op te lossen. Als een klant om een terugbetaling vraagt en je het bestelnummer hebt, roep dan de terugbetalingsworkflow aan met dat nummer en de reden. Meld het resultaat dat de workflow teruggeeft. Beloof geen terugbetaling voordat de workflow die heeft bevestigd." }}
 />
 
+### Als er geen API is, wordt het scherm de tool
+
+Elke tool die we tot nu toe zagen, had een deur die voor software is gebouwd: een API, een connector, een MCP-server. Veel systemen hebben zo'n deur niet. Een oud intern portaal, de boekingssite van een leverancier, een desktopprogramma uit een ander decennium: mensen gebruiken ze elke dag, maar alleen via het scherm. Voor zulke systemen kunnen sommige modellen het scherm zelf als tool gebruiken. Dat heet meestal **computer use**.
+
+Het mechanisme is de lus die je al kent, met beelden in plaats van gegevens. De toepassing waarin het model draait, stuurt de taak en een screenshot. Het model bekijkt die en antwoordt niet met lopende tekst, maar met een gestructureerde actie: klik op dit punt, typ deze tekst, scrol omlaag. Sommige tools geven elke actie ook een korte, uitgesproken bedoeling mee, zoals 'Klik op het zoekveld om de bestemming in te typen', zodat je een uitvoering makkelijker kunt volgen. Het model zelf verplaatst nog steeds niets. De eigen code van de ontwikkelaar voert de actie uit, maakt een nieuwe screenshot en stuurt die terug. Kijken, handelen, opnieuw kijken, tot de taak klaar is of iemand de lus stopt. Waar die lus draait, doet er net zoveel toe als hoe hij werkt, en daarover gaat de sectie [De computer van de bot](/book/28-persistent-bots) in het hoofdstuk Altijd-aan-bots.
+
+Google maakte zijn Computer Use-tool op 30 oktober 2026 algemeen beschikbaar in de Gemini API ([releasenotes](https://ai.google.dev/gemini-api/docs/changelog)). De [documentatie](https://ai.google.dev/gemini-api/docs/computer-use) beschrijft omgevingen voor browser, mobiel en desktop, acties met een `intent`-veld, instelbaar veiligheidsbeleid dat een actie kan blokkeren of om bevestiging kan vragen vóór stappen zoals een betaling, en het optioneel scannen van screenshots op verborgen promptinjectie. Google raadt zelf aan belangrijke taken nauwlettend in de gaten te houden. Het idee is niet van één bedrijf: Anthropic biedt een [computer use-tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool) voor Claude, en OpenAI een [computertool](https://platform.openai.com/docs/guides/tools-computer-use) in zijn Responses API, allebei gebouwd rond dezelfde uitwisseling van screenshots en acties die jouw toepassing uitvoert.
+
+De nadelen verdienen heldere woorden. Een scherm lezen gaat trager dan een API aanroepen, elke screenshot kost tokens, en een verschoven knop of een onverwachte pop-up kan een uitvoering laten mislukken die gisteren nog werkte. Bestaat er dus een echte API of connector, kies die dan, en bewaar computer use voor de systemen die geen andere ingang laten. Het scherm is bovendien invoer zoals alle andere: tekst op een pagina kan net zo goed promptinjectie bevatten als een document, en dat je die tekst in een afbeelding ziet, maakt hem geen haar betrouwbaarder. En omdat het model alles kan aanklikken wat een mens ook zou kunnen, horen riskante stappen zoals betalen, verwijderen of gegevens wijzigen te wachten tot een mens ze bevestigt.
+
+Voor het prompten gelden dezelfde regels als eerder, alleen met scherpere randen, want een website kan het model niet vertellen wat je bedoelde. Noem de precieze site en pagina, zeg waar de taak ophoudt en zeg wat er bevestigd moet worden voordat er iets gebeurt.
+
+<Compare
+  before={{ label: "Een boodschap zonder grenzen", content: "Ga online en boek voor donderdag een vergaderruimte voor me." }}
+  after={{ label: "Een pagina, een eindpunt, een bevestiging", content: "Zoek op onze reserveringspagina op rooms.example.com een ruimte voor zes personen op donderdag van 14.00 tot 15.00 uur. Stop op het laatste bevestigingsscherm en laat me de ruimte en het tijdstip zien voordat je op Boeken drukt. Als er geen ruimte vrij is, zeg dat dan en stop. Wijzig of annuleer geen bestaande reservering." }}
+/>
+
 ## Wat een connector toevoegt
 
 Een connector bundelt de integratie met een bepaald systeem. Die kan het aanmelden, de keuze van een account of werkruimte, het zoeken van gegevens en het aanbieden van ondersteunde acties als tools regelen. Sommige connectors kunnen alleen zoeken of lezen. Andere ondersteunen ook schrijven.
