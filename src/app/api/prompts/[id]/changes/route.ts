@@ -1,13 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import type { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { checkPromptAccess } from "@/lib/prompt-access";
+import { botFieldsEqual, botFieldsFromInput, botFieldsFromRecord, botFieldsInputSchema, botFieldsSelect } from "@/lib/bots/change-snapshot";
 
 const createChangeRequestSchema = z.object({
   proposedContent: z.string().min(1),
   proposedTitle: z.string().optional(),
   reason: z.string().optional(),
+  /** BOT prompts only: the proposed bot fields; omitted to keep them as they are */
+  proposedBot: botFieldsInputSchema.optional(),
 });
 
 export async function POST(
@@ -28,10 +32,10 @@ export async function POST(
     // Check if prompt exists
     const prompt = await db.prompt.findUnique({
       where: { id: promptId },
-      select: { id: true, authorId: true, isPrivate: true, content: true, title: true },
+      select: { id: true, authorId: true, isPrivate: true, content: true, title: true, type: true, deletedAt: true, ...botFieldsSelect },
     });
 
-    if (!prompt) {
+    if (!prompt || prompt.deletedAt) {
       return NextResponse.json(
         { error: "not_found", message: "Prompt not found" },
         { status: 404 }
@@ -64,7 +68,25 @@ export async function POST(
       );
     }
 
-    const { proposedContent, proposedTitle, reason } = parsed.data;
+    const { proposedContent, proposedTitle, reason, proposedBot } = parsed.data;
+
+    if (proposedBot && prompt.type !== "BOT") {
+      return NextResponse.json(
+        { error: "validation_error", message: "proposedBot is only supported for bots" },
+        { status: 400 }
+      );
+    }
+
+    const originalBot = prompt.type === "BOT" ? botFieldsFromRecord(prompt) : null;
+    const nextBot = originalBot ? (proposedBot ? botFieldsFromInput(proposedBot) : originalBot) : null;
+    const titleChanged = !!proposedTitle && proposedTitle !== prompt.title;
+    const botChanged = !!originalBot && !!nextBot && !botFieldsEqual(originalBot, nextBot);
+    if (originalBot && proposedContent === prompt.content && !titleChanged && !botChanged) {
+      return NextResponse.json(
+        { error: "no_change", message: "The change request does not change the bot" },
+        { status: 400 }
+      );
+    }
 
     const changeRequest = await db.changeRequest.create({
       data: {
@@ -75,6 +97,10 @@ export async function POST(
         reason,
         promptId,
         authorId: session.user.id,
+        ...(originalBot && {
+          originalBot: originalBot as unknown as Prisma.InputJsonValue,
+          proposedBot: nextBot as unknown as Prisma.InputJsonValue,
+        }),
       },
     });
 

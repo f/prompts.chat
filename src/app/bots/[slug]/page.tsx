@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
-import { ArrowLeft, Clock, EyeOff, GitPullRequest, Handshake, Pencil, Plug, Shield, Sparkles, Star, Trash2, Users, Zap } from "lucide-react";
+import { ArrowLeft, Clock, EyeOff, GitPullRequest, Handshake, History, Pencil, Plug, Shield, Sparkles, Star, Trash2, Users, Zap } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { getConfig } from "@/lib/config";
@@ -16,6 +16,7 @@ import { BotViewTracker } from "@/components/bots/bot-analytics";
 import { BotAvatar } from "@/components/bots/bot-avatar";
 import { BotBundleInstall } from "@/components/bots/bot-bundle-install";
 import { BotCard } from "@/components/bots/bot-card";
+import { BotVersionHistory } from "@/components/bots/bot-version-history";
 import { BotComputerBadges } from "@/components/bots/bot-computer-badge";
 import { BotInstall } from "@/components/bots/bot-install";
 import { BotPlatformBadge } from "@/components/bots/bot-platform-badge";
@@ -29,6 +30,7 @@ import { JsonLd, botSchema, breadcrumbSchema } from "@/components/seo/structured
 import { BOT_PLATFORM_INFO, botSlugFromParam, extractBotId, findBotBySlug, formatBotPlatforms, getBotById, getBotInstallOptions, getBotUrls } from "@/lib/bots";
 import { getBotPairings, getBundleInstallOptions } from "@/lib/bots/pairings";
 import { getBotTeams } from "@/lib/bots/teams";
+import { parseVersionBotSnapshot } from "@/lib/bots/change-snapshot";
 import { canViewPrompt } from "@/lib/prompt-access";
 import { buildPageMetadata, getBaseUrl, NOINDEX_ROBOTS, toMetaDescription } from "@/lib/seo";
 import { getBotTeamUrl, getBotUrl } from "@/lib/urls";
@@ -88,7 +90,7 @@ export default async function BotPage({ params }: BotPageProps) {
   const tChanges = await getTranslations("changeRequests");
   const canRequestChange = !!session?.user && !isOwner && !bot.isPrivate && !bot.deletedAt;
 
-  const [userVote, changeRequests, pairings, teams] = await Promise.all([
+  const [userVote, changeRequests, pairings, teams, versions] = await Promise.all([
     session?.user
       ? db.promptVote.findUnique({
           where: { userId_promptId: { userId: session.user.id, promptId: bot.id } },
@@ -102,7 +104,23 @@ export default async function BotPage({ params }: BotPageProps) {
     }),
     getBotPairings(bot.id),
     getBotTeams(bot.id, session?.user ? { id: session.user.id, role: session.user.role } : null),
+    db.promptVersion.findMany({
+      where: { promptId: bot.id },
+      orderBy: { version: "desc" },
+      select: { id: true, version: true, content: true, changeNote: true, createdAt: true, botSnapshot: true, author: { select: { username: true } } },
+    }),
   ]);
+  const versionHistory = versions.map((version) => {
+    const snapshot = parseVersionBotSnapshot(version.botSnapshot);
+    return {
+      id: version.id,
+      version: version.version,
+      changeNote: version.changeNote,
+      createdAt: version.createdAt,
+      authorUsername: version.author.username,
+      snapshot: { title: snapshot?.title ?? null, instructions: version.content, fields: snapshot?.fields ?? null },
+    };
+  });
   const pendingCount = changeRequests.filter((cr) => cr.status === "PENDING").length;
 
   return (
@@ -395,6 +413,31 @@ export default async function BotPage({ params }: BotPageProps) {
                 )}
               </h2>
               <ChangeRequestList changeRequests={changeRequests} basePath={canonicalPath} />
+            </section>
+          )}
+
+          {versionHistory.length > 0 && (
+            <section aria-labelledby="bot-history" className="space-y-2">
+              <h2 id="bot-history" className="flex items-center gap-2 text-base font-semibold">
+                <History className="h-4 w-4" />
+                {tPrompts("versionHistory")}
+              </h2>
+              <BotVersionHistory
+                versions={versionHistory}
+                current={{
+                  title: bot.title,
+                  instructions: bot.instructions,
+                  fields: {
+                    description: bot.description || null,
+                    platforms: bot.platforms,
+                    icon: bot.icon,
+                    color: bot.color,
+                    computerRequirements: bot.computerRequirements,
+                    installUrl: bot.installUrl || null,
+                    config: bot.config,
+                  },
+                }}
+              />
             </section>
           )}
 

@@ -5,7 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { ArrowLeft } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import { ChangeRequestForm } from "@/components/prompts/change-request-form";
+import { BotForm } from "@/components/bots/bot-form";
 import { extractBotId, getBotById } from "@/lib/bots";
 import { NOINDEX_ROBOTS } from "@/lib/seo";
 import { getBotUrl } from "@/lib/urls";
@@ -41,23 +41,33 @@ export default async function NewBotChangeRequestPage({ params }: NewBotChangeRe
 
   return (
     <div className="container max-w-3xl py-6">
-      <div className="mb-6">
-        <Button variant="ghost" size="sm" asChild className="mb-4 -ml-2">
-          <Link href={botPath}>
-            <ArrowLeft className="h-4 w-4 mr-1.5" />
-            {t("backToBot")}
-          </Link>
-        </Button>
-        <h1 className="text-xl font-semibold">{t("create")}</h1>
-        <p className="text-sm text-muted-foreground mt-1 wrap-anywhere">{bot.title}</p>
-      </div>
+      <Button variant="ghost" size="sm" asChild className="mb-4 -ml-2">
+        <Link href={botPath}>
+          <ArrowLeft className="h-4 w-4 mr-1.5" />
+          {t("backToBot")}
+        </Link>
+      </Button>
 
-      <ChangeRequestForm
-        promptId={bot.id}
-        currentContent={bot.instructions}
-        currentTitle={bot.title}
-        promptType="BOT"
+      <BotForm
+        mode="propose"
+        botId={bot.id}
         basePath={botPath}
+        categories={[]}
+        tags={[]}
+        initialData={{
+          title: bot.title,
+          description: bot.description ?? "",
+          botPlatforms: bot.platforms,
+          botIcon: bot.icon,
+          botColor: bot.color,
+          computerRequirements: bot.computerRequirements,
+          installUrl: bot.installUrl ?? "",
+          content: bot.instructions,
+          isPrivate: bot.isPrivate,
+          categoryId: bot.category?.id,
+          tagIds: bot.tags.map((tag) => tag.id),
+          config: bot.config,
+        }}
       />
     </div>
   );

@@ -47,7 +47,7 @@ import {
   type BotIconName,
   type BotPlatform,
 } from "@/lib/bots/schema";
-import { analyticsBot } from "@/lib/analytics";
+import { analyticsBot, analyticsPrompt } from "@/lib/analytics";
 import { getBotUrl } from "@/lib/urls";
 import { cn } from "@/lib/utils";
 
@@ -80,6 +80,7 @@ const botFormSchema = z.object({
       })
     )
     .max(MAX_BOT_PAIRINGS),
+  reason: z.string().trim().max(2000),
 });
 
 type BotFormValues = z.infer<typeof botFormSchema>;
@@ -101,8 +102,11 @@ export interface BotFormInitialData {
 }
 
 interface BotFormProps {
-  mode: "create" | "edit";
+  /** "propose" submits a change request to someone else's bot instead of saving it */
+  mode: "create" | "edit" | "propose";
   botId?: string;
+  /** Bot page path, where a proposal's change request lives; required for "propose" */
+  basePath?: string;
   initialData?: BotFormInitialData;
   categories: CategoryOption[];
   tags: TagOption[];
@@ -117,8 +121,10 @@ function parseConnectors(value: string): string[] {
   return Array.from(new Set(value.split(",").map((c) => c.trim()).filter(Boolean))).slice(0, 20);
 }
 
-export function BotForm({ mode, botId, initialData, categories, tags, canManagePairings = false }: BotFormProps) {
+export function BotForm({ mode, botId, basePath, initialData, categories, tags, canManagePairings = false }: BotFormProps) {
   const t = useTranslations("bots");
+  const tChanges = useTranslations("changeRequests");
+  const isProposal = mode === "propose";
   const tPrompts = useTranslations("prompts");
   const tCommon = useTranslations("common");
   const router = useRouter();
@@ -142,6 +148,7 @@ export function BotForm({ mode, botId, initialData, categories, tags, canManageP
       skills: initialData?.config.skills ?? [],
       connectors: initialData?.config.connectors.join(", ") ?? "",
       pairings: initialData?.pairings ?? [],
+      reason: "",
     },
   });
 
@@ -149,6 +156,7 @@ export function BotForm({ mode, botId, initialData, categories, tags, canManageP
   const skills = useFieldArray({ control: form.control, name: "skills" });
 
   async function onSubmit(data: BotFormValues) {
+    if (isProposal) return submitProposal(data);
     setIsLoading(true);
     try {
       const isEdit = mode === "edit" && botId;
@@ -206,12 +214,52 @@ export function BotForm({ mode, botId, initialData, categories, tags, canManageP
     }
   }
 
+  async function submitProposal(data: BotFormValues) {
+    if (!botId) return;
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/prompts/${botId}/changes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          proposedTitle: data.title,
+          proposedContent: data.content,
+          reason: data.reason || undefined,
+          proposedBot: {
+            description: data.description || null,
+            platforms: data.botPlatforms,
+            icon: data.botIcon || null,
+            color: data.botColor || null,
+            computerRequirements: data.computerRequirements,
+            installUrl: data.installUrl || null,
+            config: { routines: data.routines, skills: data.skills, connectors: parseConnectors(data.connectors) },
+          },
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        if (result.error === "no_change") return void toast.error(tChanges("mustMakeChanges"));
+        return void toast.error(result.message || tCommon("somethingWentWrong"));
+      }
+      analyticsPrompt.changeRequest(botId, "create");
+      toast.success(tChanges("created"));
+      router.push(`${basePath ?? getBotUrl(botId, null)}/changes/${result.id}`);
+      router.refresh();
+    } catch {
+      toast.error(tCommon("somethingWentWrong"));
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="flex items-center justify-between gap-4">
-          <h1 className="text-lg font-semibold">{mode === "edit" ? t("form.editTitle") : t("form.createTitle")}</h1>
-          <FormField
+          <h1 className="text-lg font-semibold">
+            {isProposal ? tChanges("proposeBotTitle") : mode === "edit" ? t("form.editTitle") : t("form.createTitle")}
+          </h1>
+          {!isProposal && <FormField
             control={form.control}
             name="isPrivate"
             render={({ field }) => (
@@ -222,8 +270,9 @@ export function BotForm({ mode, botId, initialData, categories, tags, canManageP
                 <FormLabel className="!mt-0 text-sm font-normal">{t("private")}</FormLabel>
               </FormItem>
             )}
-          />
+          />}
         </div>
+        {isProposal && <p className="-mt-4 text-sm text-muted-foreground">{tChanges("proposeBotIntro")}</p>}
 
         <div className="space-y-4 pb-6 border-b">
           <div className="flex flex-col sm:flex-row sm:items-start gap-4">
@@ -360,7 +409,7 @@ export function BotForm({ mode, botId, initialData, categories, tags, canManageP
             )}
           />
 
-          <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+          {!isProposal && <div className="flex flex-col sm:flex-row sm:items-start gap-4">
             <FormField
               control={form.control}
               name="categoryId"
@@ -387,7 +436,7 @@ export function BotForm({ mode, botId, initialData, categories, tags, canManageP
                 </FormItem>
               )}
             />
-          </div>
+          </div>}
 
           <FormField
             control={form.control}
@@ -611,7 +660,7 @@ export function BotForm({ mode, botId, initialData, categories, tags, canManageP
           )}
         />
 
-        {canManagePairings && (
+        {canManagePairings && !isProposal && (
           <FormField
             control={form.control}
             name="pairings"
@@ -630,13 +679,29 @@ export function BotForm({ mode, botId, initialData, categories, tags, canManageP
           />
         )}
 
+        {isProposal && (
+          <FormField
+            control={form.control}
+            name="reason"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tChanges("reason")}</FormLabel>
+                <FormControl>
+                  <Textarea rows={3} placeholder={tChanges("reasonPlaceholder")} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
         <div className="flex justify-end gap-2 pt-4 border-t">
           <Button type="button" variant="outline" onClick={() => router.back()} disabled={isLoading}>
             {tCommon("cancel")}
           </Button>
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-            {mode === "edit" ? t("form.save") : t("form.submit")}
+            {isProposal ? tChanges("submit") : mode === "edit" ? t("form.save") : t("form.submit")}
           </Button>
         </div>
       </form>

@@ -8,6 +8,7 @@ import { checkPromptQuality } from "@/lib/ai/quality-check";
 import { isSimilarContent, normalizeContent } from "@/lib/similarity";
 import { BOT_PLATFORMS, EMPTY_BOT_CONFIG, botColorSchema, botComputerRequirementsSchema, botConfigSchema, botIconSchema, botPairingsSchema, botPlatformsData, botPlatformsSchema, installUrlSchema } from "@/lib/bots/schema";
 import { BotPairingError, buildPairingRows, findInvalidPairingTargets, replaceBotPairings } from "@/lib/bots/pairings";
+import { botFieldsFromRecord, botFieldsSelect, botSnapshotsEqual, versionBotSnapshot } from "@/lib/bots/change-snapshot";
 
 /**
  * Prompt (and bot) create and update logic shared by POST /api/prompts, PATCH /api/prompts/[id]
@@ -309,6 +310,7 @@ export async function createPrompt(user: PromptWriter, body: unknown) {
       content,
       changeNote: "Initial version",
       createdBy: user.id,
+      ...(isBot && { botSnapshot: versionBotSnapshot(prompt.title, botFieldsFromRecord(prompt)) }),
     },
   });
 
@@ -380,7 +382,7 @@ export async function updatePrompt(user: PromptWriter, id: string, body: unknown
   // Check if prompt exists and user owns it
   const existing = await db.prompt.findUnique({
     where: { id },
-    select: { authorId: true, content: true, type: true },
+    select: { authorId: true, content: true, type: true, title: true, ...botFieldsSelect },
   });
 
   if (!existing) {
@@ -491,8 +493,13 @@ export async function updatePrompt(user: PromptWriter, id: string, body: unknown
     await replaceBotPairings(id, pairingRows);
   }
 
-  // Create new version if content changed
-  if (data.content && data.content !== existing.content) {
+  // Create a new version if the content changed; bots also when their title or bot fields changed
+  const isBotPrompt = prompt.type === "BOT";
+  const botBefore = existing.type === "BOT" ? { title: existing.title, instructions: existing.content, fields: botFieldsFromRecord(existing) } : null;
+  const botAfter = isBotPrompt ? { title: prompt.title, instructions: prompt.content, fields: botFieldsFromRecord(prompt) } : null;
+  const contentVersionChanged = !!data.content && data.content !== existing.content;
+  const botVersionChanged = !!botAfter && (!botBefore || !botSnapshotsEqual(botBefore, botAfter));
+  if (contentVersionChanged || botVersionChanged) {
     const latestVersion = await db.promptVersion.findFirst({
       where: { promptId: id },
       orderBy: { version: "desc" },
@@ -502,9 +509,10 @@ export async function updatePrompt(user: PromptWriter, id: string, body: unknown
       data: {
         promptId: id,
         version: (latestVersion?.version || 0) + 1,
-        content: data.content,
-        changeNote: "Content updated",
+        content: data.content ?? prompt.content,
+        changeNote: contentVersionChanged ? "Content updated" : "Bot updated",
         createdBy: user.id,
+        ...(botAfter && { botSnapshot: versionBotSnapshot(botAfter.title, botAfter.fields) }),
       },
     });
   }

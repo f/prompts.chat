@@ -12,9 +12,13 @@ import { analyticsPrompt } from "@/lib/analytics";
 interface ChangeRequestActionsProps {
   changeRequestId: string;
   promptId: string;
+  /** API endpoint of the request; defaults to the prompt change request endpoint */
+  apiPath?: string;
+  /** Toast after approving; defaults to the prompt message */
+  approvedMessage?: string;
 }
 
-export function ChangeRequestActions({ changeRequestId, promptId }: ChangeRequestActionsProps) {
+export function ChangeRequestActions({ changeRequestId, promptId, apiPath, approvedMessage }: ChangeRequestActionsProps) {
   const router = useRouter();
   const t = useTranslations("changeRequests");
   const tCommon = useTranslations("common");
@@ -27,7 +31,7 @@ export function ChangeRequestActions({ changeRequestId, promptId }: ChangeReques
     setAction(selectedAction);
 
     try {
-      const response = await fetch(`/api/prompts/${promptId}/changes/${changeRequestId}`, {
+      const response = await fetch(apiPath ?? `/api/prompts/${promptId}/changes/${changeRequestId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -41,8 +45,8 @@ export function ChangeRequestActions({ changeRequestId, promptId }: ChangeReques
         throw new Error(error.message || "Failed to update change request");
       }
 
-      analyticsPrompt.changeRequest(promptId, selectedAction === "approve" ? "approve" : "dismiss");
-      toast.success(selectedAction === "approve" ? t("approvedSuccess") : t("rejectedSuccess"));
+      if (!apiPath) analyticsPrompt.changeRequest(promptId, selectedAction === "approve" ? "approve" : "dismiss");
+      toast.success(selectedAction === "approve" ? (approvedMessage ?? t("approvedSuccess")) : t("rejectedSuccess"));
       router.refresh();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : tCommon("somethingWentWrong"));

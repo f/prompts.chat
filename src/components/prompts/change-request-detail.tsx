@@ -13,6 +13,8 @@ import { SkillDiffViewer } from "@/components/prompts/skill-diff-viewer";
 import { ChangeRequestActions } from "@/components/prompts/change-request-actions";
 import { ReopenChangeRequestButton } from "@/components/prompts/reopen-change-request-button";
 import { DismissChangeRequestButton } from "@/components/prompts/dismiss-change-request-button";
+import { BotDiff } from "@/components/bots/bot-diff";
+import { parseBotFields } from "@/lib/bots/change-snapshot";
 
 interface ChangeRequestDetailProps {
   promptId: string;
@@ -73,7 +75,8 @@ export async function ChangeRequestDetail({ promptId, changeId, basePath, backLa
   };
 
   const StatusIcon = statusConfig[changeRequest.status].icon;
-  const hasTitleChange = changeRequest.proposedTitle && changeRequest.proposedTitle !== changeRequest.originalTitle;
+  const isBot = changeRequest.prompt.type === "BOT";
+  const hasTitleChange = !isBot && changeRequest.proposedTitle && changeRequest.proposedTitle !== changeRequest.originalTitle;
 
   return (
     <div className="container max-w-3xl py-6">
@@ -141,7 +144,26 @@ export async function ChangeRequestDetail({ promptId, changeId, basePath, backLa
         </div>
       )}
 
+      {/* Bots: every changed field */}
+      {isBot && (
+        <div className="mb-6">
+          <BotDiff
+            original={{
+              title: changeRequest.originalTitle,
+              instructions: changeRequest.originalContent,
+              fields: parseBotFields(changeRequest.originalBot),
+            }}
+            modified={{
+              title: changeRequest.proposedTitle || changeRequest.originalTitle,
+              instructions: changeRequest.proposedContent,
+              fields: parseBotFields(changeRequest.proposedBot),
+            }}
+          />
+        </div>
+      )}
+
       {/* Content diff */}
+      {!isBot && (
       <div className="mb-6">
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">{t("contentChanges")}</p>
         {changeRequest.prompt.type === "SKILL" ? (
@@ -156,6 +178,7 @@ export async function ChangeRequestDetail({ promptId, changeId, basePath, backLa
           />
         )}
       </div>
+      )}
 
       {/* Review note (if exists) */}
       {changeRequest.reviewNote && (
