@@ -56,7 +56,14 @@
     "developers": "Desarrolladores",
     "book": "Libro",
     "forKids": "Para Niños",
-    "more": "Más"
+    "more": "Más",
+    "createMenu": {
+      "label": "Crear",
+      "prompt": "Prompt",
+      "skill": "Habilidad",
+      "bot": "Bot",
+      "team": "Equipo"
+    }
   },
   "brand": {
     "copyLogoSvg": "Copiar Logo SVG",

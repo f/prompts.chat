@@ -56,7 +56,14 @@
     "developers": "开发者",
     "book": "书籍",
     "forKids": "儿童版",
-    "more": "更多"
+    "more": "更多",
+    "createMenu": {
+      "label": "创建",
+      "prompt": "提示词",
+      "skill": "技能",
+      "bot": "机器人",
+      "team": "团队"
+    }
   },
   "brand": {
     "copyLogoSvg": "复制Logo SVG",

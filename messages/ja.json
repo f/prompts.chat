@@ -56,7 +56,14 @@
     "developers": "開発者",
     "book": "本",
     "forKids": "子ども向け",
-    "more": "もっと見る"
+    "more": "もっと見る",
+    "createMenu": {
+      "label": "作成",
+      "prompt": "プロンプト",
+      "skill": "スキル",
+      "bot": "ボット",
+      "team": "チーム"
+    }
   },
   "brand": {
     "copyLogoSvg": "ロゴSVGをコピー",
