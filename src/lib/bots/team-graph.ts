@@ -132,6 +132,28 @@ export function teamCellHeight(size: number, width: number, hub = false, footer 
   return Math.ceil(Math.max(200 + footer, grid, ring));
 }
 
+/** Narrowest width a standalone team card is drawn at, e.g. one column of the homepage grid on a phone */
+export const TEAM_CARD_MIN_WIDTH = 300;
+
+/**
+ * Height of each card in a grid of standalone team cards with the given number of columns: the
+ * height that fits the largest team of its row at the narrowest card width, so a row lines up and
+ * every card keeps its size once its graph is drawn
+ */
+export function teamCardHeights(
+  teams: readonly { members: readonly { id: string }[]; links: readonly { fromBotId: string; toBotId: string }[] }[],
+  columns = 1,
+  width = TEAM_CARD_MIN_WIDTH
+): number[] {
+  const own = teams.map((team) =>
+    teamCellHeight(team.members.length, width, findHub(team.members.map((m) => m.id), team.links) >= 0, TEAM_BOX_FOOTER)
+  );
+  return own.map((_, index) => {
+    const start = index - (index % columns);
+    return Math.max(...own.slice(start, start + columns));
+  });
+}
+
 /**
  * Places one cell per team, left to right in as many columns of at least minCellWidth as fit.
  * Each row is as tall as its tallest team.

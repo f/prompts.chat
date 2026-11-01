@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { Fragment, useEffect, useId, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import {
@@ -296,46 +296,112 @@ interface HoveredLink {
   point: GraphPoint;
 }
 
+function TeamBoxTitle({ team, style }: { team: TeamGraphTeam; style: CSSProperties }) {
+  return (
+    <div className="pointer-events-none absolute flex items-center" style={style}>
+      <Link href={getBotTeamUrl(team.slug)} className={cn("pointer-events-auto max-w-full truncate text-sm font-semibold", TEAM_TITLE_LINK_CLASS)}>
+        {team.title}
+      </Link>
+    </div>
+  );
+}
+
+function TeamBoxFooter({ team, isLoggedIn, style }: { team: TeamGraphTeam; isLoggedIn: boolean; style: CSSProperties }) {
+  return (
+    <div className="pointer-events-none absolute flex items-stretch px-4" style={style}>
+      <div className="flex min-w-0 flex-1 items-center justify-between gap-2 border-t text-[11px] text-muted-foreground">
+        <PromptAuthor author={team.author} className="pointer-events-auto" />
+        <div className="pointer-events-auto flex shrink-0 items-center gap-3">
+          <UpvoteButton
+            voteUrl={`/api/bots/teams/${encodeURIComponent(team.slug)}/vote`}
+            initialVoted={team.voted}
+            initialCount={team.voteCount}
+            isLoggedIn={isLoggedIn}
+            size="sm"
+          />
+          {team.installable && (
+            <TeamInstall
+              team={{ id: team.id, slug: team.slug, title: team.title, memberCount: team.members.length }}
+              variant="card"
+              className="h-7 px-2.5"
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** How far below the viewport a card starts laying out its graph, so it is ready when scrolled to */
+const CARD_PRELOAD_MARGIN = "200px";
+
 interface BotTeamsGraphProps {
   teams: TeamGraphTeam[];
   /**
    * "overview" makes each team box selectable, adds the author, upvotes and install to its footer,
-   * and shows a detail panel; bots open a details dialog in both
+   * and shows a detail panel. "card" draws the first team as one box like the overview's, without
+   * selection, that fills its parent's height and fits the graph into it. Its title and footer are
+   * rendered on the server, and it lays out its graph only once it nears the viewport, so the
+   * parent should have a fixed height. Bots open a details dialog in all of them.
    */
-  variant?: "overview" | "single";
+  variant?: "overview" | "single" | "card";
   isLoggedIn?: boolean;
 }
 
-export function BotTeamsGraph({ teams, variant = "overview", isLoggedIn = false }: BotTeamsGraphProps) {
+export function BotTeamsGraph({ teams: allTeams, variant = "overview", isLoggedIn = false }: BotTeamsGraphProps) {
   const t = useTranslations("bots.teams");
   const markerId = useId().replace(/:/g, "");
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [hovered, setHovered] = useState<HoveredLink | null>(null);
   const [openMember, setOpenMember] = useState<{ teamIndex: number; memberId: string } | null>(null);
   const isOverview = variant === "overview";
+  const isCard = variant === "card";
+  const [inView, setInView] = useState(!isCard);
 
   useEffect(() => {
     const element = containerRef.current;
     if (!element) return;
-    const observer = new ResizeObserver(([entry]) => setWidth(Math.floor(entry.contentRect.width)));
+    const observer = new ResizeObserver(([entry]) => {
+      setWidth(Math.floor(entry.contentRect.width));
+      if (isCard) setHeight(Math.floor(entry.contentRect.height));
+    });
     observer.observe(element);
     return () => observer.disconnect();
-  }, []);
+  }, [isCard]);
 
+  useEffect(() => {
+    const element = containerRef.current;
+    if (inView || !element) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setInView(true);
+        observer.disconnect();
+      },
+      { rootMargin: CARD_PRELOAD_MARGIN }
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [inView]);
+
+  const teams = useMemo(() => (isCard ? allTeams.slice(0, 1) : allTeams), [allTeams, isCard]);
   const hubs = useMemo(() => teams.map((team) => findHub(team.members.map((m) => m.id), team.links)), [teams]);
   const layout = useMemo(
     () =>
-      teamGridLayout(
-        teams.map((team) => team.members.length),
-        width,
-        { minCellWidth: isOverview ? 300 : width, hubs: hubs.map((hub) => hub >= 0), footer: isOverview ? TEAM_BOX_FOOTER : 0 }
-      ),
-    [teams, width, isOverview, hubs]
+      isCard
+        ? { cells: teams.map(() => ({ x: 0, y: 0, width, height, footer: TEAM_BOX_FOOTER })), height }
+        : teamGridLayout(
+            teams.map((team) => team.members.length),
+            width,
+            { minCellWidth: isOverview ? 300 : width, hubs: hubs.map((hub) => hub >= 0), footer: isOverview ? TEAM_BOX_FOOTER : 0 }
+          ),
+    [teams, width, height, isOverview, isCard, hubs]
   );
-  const { positions, nodeDrag } = useTeamLayout(teams, width > 0 ? layout.cells : [], hubs);
+  const { positions, nodeDrag } = useTeamLayout(teams, width > 0 && (!isCard || (inView && height > 0)) ? layout.cells : [], hubs);
   const hasNodes = positions.size > 0;
 
   useEffect(() => {
@@ -375,8 +441,13 @@ export function BotTeamsGraph({ teams, variant = "overview", isLoggedIn = false 
   );
 
   const graph = (
-    <div ref={containerRef} className="relative w-full min-w-0" style={{ minHeight: width > 0 ? layout.height : 240 }}>
-      {width > 0 && (
+    <div
+      ref={containerRef}
+      className={cn("relative w-full min-w-0", isCard && "h-full rounded-[var(--radius)] bg-card")}
+      style={isCard ? undefined : { minHeight: width > 0 ? layout.height : 240 }}
+    >
+      {isCard && <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[var(--radius)] border" />}
+      {width > 0 && (!isCard || positions.size > 0) && (
         <svg
           ref={svgRef}
           width={width}
@@ -412,25 +483,27 @@ export function BotTeamsGraph({ teams, variant = "overview", isLoggedIn = false 
               : {};
             return (
               <g key={team.slug} {...boxProps}>
-                <rect
-                  x={cell.x + 0.5}
-                  y={cell.y + 0.5}
-                  width={cell.width - 1}
-                  height={cell.height - 1}
-                  rx={10}
-                  strokeWidth={1}
-                  className={cn(
-                    "fill-card transition-colors [rx:var(--radius)]",
-                    isSelected ? "stroke-foreground/50" : "stroke-border",
-                    isOverview && !isSelected && "group-hover:stroke-foreground/30 group-focus-visible:stroke-foreground/50"
-                  )}
-                />
-                {!isOverview && (
+                {!isCard && (
+                  <rect
+                    x={cell.x + 0.5}
+                    y={cell.y + 0.5}
+                    width={cell.width - 1}
+                    height={cell.height - 1}
+                    rx={10}
+                    strokeWidth={1}
+                    className={cn(
+                      "fill-card transition-colors [rx:var(--radius)]",
+                      isSelected ? "stroke-foreground/50" : "stroke-border",
+                      isOverview && !isSelected && "group-hover:stroke-foreground/30 group-focus-visible:stroke-foreground/50"
+                    )}
+                  />
+                )}
+                {variant === "single" && (
                   <text x={cell.x + 16} y={cell.y + 28} className="fill-foreground text-sm font-semibold">
                     {truncateLabel(team.title, Math.floor((cell.width - 56) / 7.5))}
                   </text>
                 )}
-                {team.isFeatured && (
+                {team.isFeatured && !isCard && (
                   <Star x={cell.x + cell.width - 30} y={cell.y + 13} width={16} height={16} className="fill-yellow-500 text-yellow-500" aria-hidden="true" />
                 )}
 
@@ -490,15 +563,11 @@ export function BotTeamsGraph({ teams, variant = "overview", isLoggedIn = false 
           const cell = layout.cells[teamIndex];
           if (!cell) return null;
           return (
-            <div
+            <TeamBoxTitle
               key={`${team.slug}-title`}
-              className="pointer-events-none absolute flex items-center"
+              team={team}
               style={{ left: cell.x + 16, top: cell.y + 12, width: cell.width - 56, height: TEAM_BOX_HEADER - 20 }}
-            >
-              <Link href={getBotTeamUrl(team.slug)} className={cn("pointer-events-auto max-w-full truncate text-sm font-semibold", TEAM_TITLE_LINK_CLASS)}>
-                {team.title}
-              </Link>
-            </div>
+            />
           );
         })}
 
@@ -508,33 +577,25 @@ export function BotTeamsGraph({ teams, variant = "overview", isLoggedIn = false 
           const cell = layout.cells[teamIndex];
           if (!cell) return null;
           return (
-            <div
+            <TeamBoxFooter
               key={team.slug}
-              className="pointer-events-none absolute flex items-stretch px-4"
+              team={team}
+              isLoggedIn={isLoggedIn}
               style={{ left: cell.x, top: cell.y + cell.height - TEAM_BOX_FOOTER, width: cell.width, height: TEAM_BOX_FOOTER }}
-            >
-              <div className="flex min-w-0 flex-1 items-center justify-between gap-2 border-t text-[11px] text-muted-foreground">
-                <PromptAuthor author={team.author} className="pointer-events-auto" />
-                <div className="pointer-events-auto flex shrink-0 items-center gap-3">
-                  <UpvoteButton
-                    voteUrl={`/api/bots/teams/${encodeURIComponent(team.slug)}/vote`}
-                    initialVoted={team.voted}
-                    initialCount={team.voteCount}
-                    isLoggedIn={isLoggedIn}
-                    size="sm"
-                  />
-                  {team.installable && (
-                    <TeamInstall
-                      team={{ id: team.id, slug: team.slug, title: team.title, memberCount: team.members.length }}
-                      variant="card"
-                      className="h-7 px-2.5"
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
+            />
           );
         })}
+
+      {isCard &&
+        teams.map((team) => (
+          <Fragment key={team.slug}>
+            <TeamBoxTitle team={team} style={{ left: 16, top: 12, right: 40, height: TEAM_BOX_HEADER - 20 }} />
+            {team.isFeatured && (
+              <Star className="absolute right-[14px] top-[13px] h-4 w-4 fill-yellow-500 text-yellow-500" aria-label={t("featured")} />
+            )}
+            <TeamBoxFooter team={team} isLoggedIn={isLoggedIn} style={{ left: 0, right: 0, bottom: 0, height: TEAM_BOX_FOOTER }} />
+          </Fragment>
+        ))}
 
       {hovered && hoveredTeam && hoveredLink && (
         <div
