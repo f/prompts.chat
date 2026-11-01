@@ -2738,5 +2738,8 @@
   "apiDocs": {
     "computerRequirementFilter": "Alleen bots die een <code>CLOUD</code>-computer of de <code>LOCAL</code>-computer van de gebruiker nodig hebben (bots die beide nodig hebben komen bij elk overeen), of <code>NONE</code> voor bots die geen computer nodig hebben",
     "computerRequirementsInput": "Een lijst met <code>CLOUD</code> (de bot heeft een eigen externe computer, desktop of browser nodig) en/of <code>LOCAL</code> (hij heeft de machine, bestanden of apps van de gebruiker nodig); een lege lijst betekent dat hij geen computer nodig heeft. Vervangt de opgeslagen lijst"
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "Implementeren met SpaceFast"
   }
 }

@@ -13,6 +13,9 @@ import { toast } from "sonner";
 import { prettifyJson } from "@/lib/format";
 import { PinButton } from "@/components/prompts/pin-button";
 import { RunPromptButton } from "@/components/prompts/run-prompt-button";
+import { ActionButtonTrigger } from "@/components/action-buttons/action-button-trigger";
+import { InjectedActionButton } from "@/components/action-buttons/injected-action-button";
+import { useActionButton } from "@/components/action-buttons/use-action-button";
 import { VariableFillModal, hasVariables, renderContentWithVariables } from "@/components/prompts/variable-fill-modal";
 import { ExamplesSlider } from "@/components/prompts/examples-slider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -114,6 +117,7 @@ function StandardPromptCard({ prompt, showPinButton = false, isPinned = false }:
   const incomingCount = prompt._count?.incomingConnections || 0;
   const isFlowStart = outgoingCount > 0 && incomingCount === 0;
   const trending = isTrending(prompt.trendingUntil);
+  const actionButton = useActionButton(prompt.category);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"copy" | "run">("copy");
   const [imageError, setImageError] = useState(false);
@@ -332,6 +336,8 @@ function StandardPromptCard({ prompt, showPinButton = false, isPinned = false }:
             open={modalOpen}
             onOpenChange={setModalOpen}
             mode={modalMode}
+            promptId={prompt.id}
+            actionButton={actionButton}
           />
         )}
 
@@ -406,6 +412,17 @@ function StandardPromptCard({ prompt, showPinButton = false, isPinned = false }:
               >
                 <Download className="h-3.5 w-3.5" />
               </button>
+            ) : contentHasVariables && actionButton ? (
+              <ActionButtonTrigger action={actionButton} compact onClick={handleRunClick} />
+            ) : actionButton ? (
+              <InjectedActionButton
+                action={actionButton}
+                content={prompt.content}
+                title={prompt.title}
+                description={prompt.description || undefined}
+                promptId={prompt.id}
+                compact
+              />
             ) : contentHasVariables ? (
               <button
                 onClick={handleRunClick}

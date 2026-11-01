@@ -2735,5 +2735,8 @@
   "apiDocs": {
     "computerRequirementFilter": "<code>CLOUD</code> コンピューターまたはユーザーの <code>LOCAL</code> コンピューターを必要とするボットのみ（両方を必要とするボットはどちらにも一致）、またはコンピューター不要のボットは <code>NONE</code>",
     "computerRequirementsInput": "<code>CLOUD</code>（ボットが専用のリモートコンピューター、デスクトップ、ブラウザーを必要とする）と <code>LOCAL</code>（ユーザー自身のマシン、ファイル、アプリを必要とする）のいずれかまたは両方を含むリスト。空のリストはコンピューター不要を意味します。保存済みのリストを置き換えます"
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "SpaceFast でデプロイ"
   }
 }

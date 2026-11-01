@@ -2733,5 +2733,8 @@
   "apiDocs": {
     "computerRequirementFilter": "فقط البوتات التي تحتاج حاسوب <code>CLOUD</code> أو حاسوب المستخدم <code>LOCAL</code> (البوتات التي تحتاج كليهما تطابق أيًّا منهما)، أو <code>NONE</code> للبوتات التي لا تحتاج حاسوبًا",
     "computerRequirementsInput": "قائمة تضم <code>CLOUD</code> (يحتاج البوت إلى حاسوب بعيد أو سطح مكتب أو متصفح خاص به) و/أو <code>LOCAL</code> (يحتاج إلى جهاز المستخدم أو ملفاته أو تطبيقاته)؛ القائمة الفارغة تعني أنه لا يحتاج حاسوبًا. تستبدل القائمة المحفوظة"
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "انشر باستخدام SpaceFast"
   }
 }

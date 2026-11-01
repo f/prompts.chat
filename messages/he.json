@@ -2731,5 +2731,8 @@
   "apiDocs": {
     "computerRequirementFilter": "רק בוטים שצריכים מחשב <code>CLOUD</code> או את המחשב <code>LOCAL</code> של המשתמש (בוטים שצריכים את שניהם תואמים לכל אחד מהם), או <code>NONE</code> לבוטים שלא צריכים מחשב",
     "computerRequirementsInput": "רשימה עם <code>CLOUD</code> (הבוט צריך מחשב מרוחק, שולחן עבודה או דפדפן משלו) ו/או <code>LOCAL</code> (הוא צריך את המחשב, הקבצים או האפליקציות של המשתמש); רשימה ריקה פירושה שאינו צריך מחשב. מחליפה את הרשימה השמורה"
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "פריסה עם SpaceFast"
   }
 }

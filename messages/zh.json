@@ -2735,5 +2735,8 @@
   "apiDocs": {
     "computerRequirementFilter": "仅限需要 <code>CLOUD</code> 云端电脑或用户 <code>LOCAL</code> 本地电脑的机器人（两者都需要的机器人匹配任一项），或用 <code>NONE</code> 筛选不需要电脑的机器人",
     "computerRequirementsInput": "包含 <code>CLOUD</code>（机器人需要自己的远程电脑、桌面或浏览器）和/或 <code>LOCAL</code>（需要用户自己的机器、文件或应用）的列表；空列表表示不需要电脑。会替换已保存的列表"
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "使用 SpaceFast 部署"
   }
 }

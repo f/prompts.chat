@@ -695,6 +695,7 @@ export default async function PromptPage({ params }: PromptPageProps) {
                 isLoggedIn={!!session?.user}
                 categoryName={prompt.category?.name}
                 parentCategoryName={prompt.category?.parent?.name}
+                category={prompt.category}
                 promptId={prompt.id}
                 promptSlug={prompt.slug ?? undefined}
                 promptType={prompt.type}
@@ -709,6 +710,7 @@ export default async function PromptPage({ params }: PromptPageProps) {
                 isLoggedIn={!!session?.user}
                 categoryName={prompt.category?.name}
                 parentCategoryName={prompt.category?.parent?.name}
+                category={prompt.category}
                 promptId={prompt.id}
                 promptSlug={prompt.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}
                 promptType={prompt.type}

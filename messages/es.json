@@ -2750,5 +2750,8 @@
   "apiDocs": {
     "computerRequirementFilter": "Solo bots que necesitan un ordenador <code>CLOUD</code> o el ordenador <code>LOCAL</code> del usuario (los que necesitan ambos coinciden con cualquiera), o <code>NONE</code> para bots que no necesitan ordenador",
     "computerRequirementsInput": "Una lista con <code>CLOUD</code> (el bot necesita su propio ordenador remoto, escritorio o navegador) y/o <code>LOCAL</code> (necesita la máquina, los archivos o las apps del usuario); una lista vacía significa que no necesita ordenador. Reemplaza la lista guardada"
+  },
+  "actionButtons": {
+    "deployWithSpacefast": "Desplegar con SpaceFast"
   }
 }
