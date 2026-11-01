@@ -1,6 +1,7 @@
 "use client";
 
-import { DiffView, ListDiffView } from "@/components/ui/diff-view";
+import { DiffView } from "@/components/ui/diff-view";
+import { ChipListDiff } from "@/components/changes/chip-list-diff";
 import type { DiffItem } from "@/lib/list-diff";
 
 export interface FieldDiff {
@@ -29,7 +30,7 @@ export function FieldDiffList({ fields, showUnchanged = false }: FieldDiffListPr
         <div key={field.key}>
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">{field.label}</p>
           {field.items ? (
-            <ListDiffView original={field.items.original} modified={field.items.modified} />
+            <ChipListDiff original={field.items.original} modified={field.items.modified} />
           ) : (
             <DiffView original={field.original} modified={field.modified} />
           )}

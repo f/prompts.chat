@@ -2,8 +2,10 @@
 export interface DiffItem {
   /** Identity of the item across both sides, e.g. a platform id or a skill name */
   key: string;
-  /** What is shown; when the key matches but the text differs the item counts as changed */
+  /** Short label shown for the item */
   text: string;
+  /** Full content behind the label, e.g. a routine's prompt; a change here alone marks the item changed */
+  detail?: string;
 }
 
 export type ListDiffEntry =
@@ -15,7 +17,7 @@ export type ListDiffEntry =
 /**
  * Item-level diff of two lists: items are matched by key in order (longest common subsequence),
  * so an item present on both sides is never shown as removed and re-added, only items that were
- * added or removed are, and a kept item whose text changed is reported as changed.
+ * added or removed are, and a kept item whose label or detail changed is reported as changed.
  */
 export function diffItemLists(original: readonly DiffItem[], modified: readonly DiffItem[]): ListDiffEntry[] {
   const m = original.length;
@@ -35,7 +37,7 @@ export function diffItemLists(original: readonly DiffItem[], modified: readonly 
       const before = original[i];
       const after = modified[j];
       entries.push(
-        before.text === after.text
+        before.text === after.text && (before.detail ?? "") === (after.detail ?? "")
           ? { type: "unchanged", key: after.key, text: after.text }
           : { type: "changed", key: after.key, original: before.text, modified: after.text }
       );
@@ -50,6 +52,27 @@ export function diffItemLists(original: readonly DiffItem[], modified: readonly 
     }
   }
   return entries;
+}
+
+export interface DiffChip {
+  key: string;
+  text: string;
+  kind: "added" | "removed" | "unchanged" | "changed";
+}
+
+/**
+ * The diff as chips: a kept item whose label changed becomes its old label removed and its new
+ * label added, and one whose label stayed but whose detail changed becomes a single changed chip
+ */
+export function diffChips(original: readonly DiffItem[], modified: readonly DiffItem[]): DiffChip[] {
+  return diffItemLists(original, modified).flatMap((entry): DiffChip[] => {
+    if (entry.type !== "changed") return [{ key: `${entry.type}:${entry.key}`, text: entry.text, kind: entry.type }];
+    if (entry.original === entry.modified) return [{ key: `changed:${entry.key}`, text: entry.modified, kind: "changed" }];
+    return [
+      { key: `removed:${entry.key}`, text: entry.original, kind: "removed" },
+      { key: `added:${entry.key}`, text: entry.modified, kind: "added" },
+    ];
+  });
 }
 
 /** Items whose key is their text, for plain string lists */

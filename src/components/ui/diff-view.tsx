@@ -3,7 +3,6 @@
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-import { diffItemLists, type DiffItem } from "@/lib/list-diff";
 
 interface DiffViewProps {
   original: string;
@@ -144,85 +143,6 @@ export function DiffView({ original, modified, className, mode = "word", languag
           ))}
         </div>
       )}
-    </div>
-  );
-}
-
-interface ListDiffViewProps {
-  original: readonly DiffItem[];
-  modified: readonly DiffItem[];
-  className?: string;
-}
-
-/**
- * DiffView for list-like fields: one row per item, unchanged items neutral, added items green,
- * removed items red, and a kept item whose text changed as a word diff of that item
- */
-export function ListDiffView({ original, modified, className }: ListDiffViewProps) {
-  const t = useTranslations("diff");
-  const entries = useMemo(() => diffItemLists(original, modified), [original, modified]);
-
-  const stats = useMemo(() => {
-    let additions = 0;
-    let deletions = 0;
-    const estimateTokens = (text: string) => Math.ceil(text.replace(/\s/g, "").length / 4);
-    for (const entry of entries) {
-      if (entry.type === "added") additions += estimateTokens(entry.text);
-      if (entry.type === "removed") deletions += estimateTokens(entry.text);
-      if (entry.type === "changed") {
-        for (const part of computeWordDiff(entry.original, entry.modified)) {
-          if (part.type === "added") additions += estimateTokens(part.text);
-          if (part.type === "removed") deletions += estimateTokens(part.text);
-        }
-      }
-    }
-    return { additions, deletions };
-  }, [entries]);
-
-  const hasChanges = entries.some((entry) => entry.type !== "unchanged");
-
-  return (
-    <div className={cn("border rounded-lg overflow-hidden", className)}>
-      <div className="flex items-center justify-between px-3 py-1.5 bg-muted/50 border-b text-xs">
-        <div className="flex items-center gap-3">
-          {hasChanges ? (
-            <>
-              <span className="text-green-600 dark:text-green-400 font-medium">≈+{stats.additions} {t("tokens")}</span>
-              <span className="text-red-600 dark:text-red-400 font-medium">≈-{stats.deletions} {t("tokens")}</span>
-            </>
-          ) : (
-            <span className="text-muted-foreground">{t("noChanges")}</span>
-          )}
-        </div>
-      </div>
-      <ul className="overflow-auto max-h-[calc(100vh-300px)] p-3 space-y-1 text-sm font-mono whitespace-pre-wrap break-words">
-        {entries.map((entry, idx) => (
-          <li key={`${entry.key}-${idx}`} data-diff={entry.type}>
-            {entry.type === "changed" ? (
-              computeWordDiff(entry.original, entry.modified).map((part, partIdx) => (
-                <span
-                  key={partIdx}
-                  className={cn(
-                    part.type === "added" && "bg-green-500/20 text-green-700 dark:text-green-300",
-                    part.type === "removed" && "bg-red-500/20 text-red-700 dark:text-red-300 line-through"
-                  )}
-                >
-                  {part.text}
-                </span>
-              ))
-            ) : (
-              <span
-                className={cn(
-                  entry.type === "added" && "bg-green-500/20 text-green-700 dark:text-green-300",
-                  entry.type === "removed" && "bg-red-500/20 text-red-700 dark:text-red-300 line-through"
-                )}
-              >
-                {entry.text}
-              </span>
-            )}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }

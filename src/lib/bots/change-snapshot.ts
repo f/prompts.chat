@@ -177,13 +177,23 @@ function skillsText(config: BotConfig): string {
 }
 
 /** The list-like bot fields, diffed item by item rather than as text */
-export const BOT_LIST_FIELDS = ["platforms", "computers", "routines", "skills", "connectors"] as const satisfies readonly BotTextField[];
+export const BOT_LIST_FIELDS = [
+  "platforms",
+  "computers",
+  "appearance",
+  "installUrl",
+  "routines",
+  "skills",
+  "connectors",
+] as const satisfies readonly BotTextField[];
 export type BotListField = (typeof BOT_LIST_FIELDS)[number];
 
 /**
- * The list-like fields of a bot as items, so a diff shows only the platforms, computers,
- * routines, skills and connectors that were added or removed. Routines and skills are matched
- * by name, so editing one shows as a change of that item. Null without bot fields.
+ * The list-like and short fields of a bot as items, so a diff shows only the platforms,
+ * computers, routines, skills and connectors that were added or removed, and an old and new
+ * value for the icon, colour and install URL. Routines and skills are matched
+ * by name and labelled by it; editing one's prompt or description marks that item changed.
+ * Null without bot fields.
  */
 export function botSnapshotItems(
   fields: BotFields | null,
@@ -193,8 +203,17 @@ export function botSnapshotItems(
   return {
     platforms: fields.platforms.map((platform) => ({ key: platform, text: BOT_PLATFORM_INFO[platform].name })),
     computers: fields.computerRequirements.map((requirement) => ({ key: requirement, text: computerLabel(requirement) })),
-    routines: fields.config.routines.map((routine) => ({ key: routine.name, text: routineText(routine) })),
-    skills: fields.config.skills.map((skill) => ({ key: skill.name, text: skillText(skill) })),
+    appearance: [
+      ...(fields.icon ? [{ key: "icon", text: fields.icon }] : []),
+      ...(fields.color ? [{ key: "color", text: fields.color }] : []),
+    ],
+    installUrl: fields.installUrl ? textItems([fields.installUrl]) : [],
+    routines: fields.config.routines.map((routine) => ({
+      key: routine.name,
+      text: `${routine.name} · ${routine.triggerLabel || routine.trigger}`,
+      detail: routineText(routine),
+    })),
+    skills: fields.config.skills.map((skill) => ({ key: skill.name, text: skill.name, detail: skillText(skill) })),
     connectors: textItems(fields.config.connectors),
   };
 }

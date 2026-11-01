@@ -94,8 +94,15 @@ describe("bot change snapshots", () => {
     expect(items.platforms).toEqual([{ key: "OPENCLAW", text: "OpenClaw" }]);
     expect(items.computers).toEqual([{ key: "CLOUD", text: "cloud" }]);
     expect(items.connectors).toEqual([{ key: "github", text: "github" }]);
-    expect(items.skills).toEqual([{ key: "Triage", text: "Triage: Sorts failures" }]);
-    expect(items.routines[0].key).toBe("Nightly");
+    expect(items.skills).toEqual([{ key: "Triage", text: "Triage", detail: "Triage: Sorts failures" }]);
+    expect(items.routines).toEqual([
+      { key: "Nightly", text: "Nightly · Every night", detail: "Nightly (schedule)\nSchedule: 0 2 * * * (Every night)\nCheck CI" },
+    ]);
+    expect(items.appearance).toEqual([]);
+    expect(botSnapshotItems({ ...fields, icon: "bot", installUrl: "https://example.com" } as BotFields)!).toMatchObject({
+      appearance: [{ key: "icon", text: "bot" }],
+      installUrl: [{ key: "https://example.com", text: "https://example.com" }],
+    });
     expect(botSnapshotItems(null)).toBeNull();
 
     const next = botSnapshotItems({ ...fields, platforms: ["OPENCLAW", "HERMES"], computerRequirements: ["CLOUD", "LOCAL"] })!;
@@ -221,6 +228,7 @@ describe("team snapshots", () => {
     };
     const before = teamSnapshotItems(base);
     const after = teamSnapshotItems(modified);
+    expect(before.category).toEqual([{ key: "cat-1", text: "Research" }]);
     expect(diffItemLists(before.tags, after.tags)).toEqual([
       { type: "unchanged", key: "t-1", text: "agents" },
       { type: "added", key: "t-2", text: "writing" },

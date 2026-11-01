@@ -1,5 +1,28 @@
 import { describe, it, expect } from "vitest";
-import { diffItemLists, textItems } from "@/lib/list-diff";
+import { diffChips, diffItemLists, textItems } from "@/lib/list-diff";
+
+describe("diffChips", () => {
+  it("gives one chip per item with its kind", () => {
+    expect(diffChips(textItems(["OpenClaw", "Hermes Agent"]), textItems(["Grok Bot", "OpenClaw"])).map(({ text, kind }) => [text, kind])).toEqual([
+      ["Grok Bot", "added"],
+      ["OpenClaw", "unchanged"],
+      ["Hermes Agent", "removed"],
+    ]);
+  });
+
+  it("shows a relabelled item as its old label removed and new label added", () => {
+    expect(diffChips([{ key: "a>b", text: "A → B: Brief" }], [{ key: "a>b", text: "A → B: Full brief" }])).toEqual([
+      { key: "removed:a>b", text: "A → B: Brief", kind: "removed" },
+      { key: "added:a>b", text: "A → B: Full brief", kind: "added" },
+    ]);
+  });
+
+  it("shows an item edited behind its label as one changed chip", () => {
+    expect(diffChips([{ key: "triage", text: "Triage", detail: "old" }], [{ key: "triage", text: "Triage", detail: "new" }])).toEqual([
+      { key: "changed:triage", text: "Triage", kind: "changed" },
+    ]);
+  });
+});
 
 describe("diffItemLists", () => {
   it("keeps items on both sides unchanged and reports only additions and removals", () => {
@@ -26,6 +49,15 @@ describe("diffItemLists", () => {
     expect(diffItemLists([{ key: "triage", text: "Triage: old" }], [{ key: "triage", text: "Triage: new" }])).toEqual([
       { type: "changed", key: "triage", original: "Triage: old", modified: "Triage: new" },
     ]);
+  });
+
+  it("reports a kept item whose detail alone changed as changed", () => {
+    expect(
+      diffItemLists([{ key: "daily", text: "Daily", detail: "old prompt" }], [{ key: "daily", text: "Daily", detail: "new prompt" }])
+    ).toEqual([{ type: "changed", key: "daily", original: "Daily", modified: "Daily" }]);
+    expect(diffItemLists([{ key: "daily", text: "Daily", detail: "same" }], [{ key: "daily", text: "Daily", detail: "same" }])[0].type).toBe(
+      "unchanged"
+    );
   });
 
   it("handles empty lists", () => {
