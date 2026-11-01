@@ -56,7 +56,14 @@
     "developers": "المطورون",
     "book": "كتاب",
     "forKids": "للأطفال",
-    "more": "المزيد"
+    "more": "المزيد",
+    "createMenu": {
+      "label": "إنشاء",
+      "prompt": "موجه",
+      "skill": "مهارة",
+      "bot": "بوت",
+      "team": "فريق"
+    }
   },
   "brand": {
     "copyLogoSvg": "نسخ شعار SVG",

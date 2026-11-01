@@ -39,7 +39,6 @@ import { useSession, signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import {
   Menu,
-  Plus,
   User,
   Settings,
   LogOut,
@@ -76,6 +75,7 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { NotificationBell } from "@/components/layout/notification-bell";
+import { CreateMenu } from "@/components/layout/create-menu";
 import { setLocale } from "@/lib/i18n/client";
 import { useBranding } from "@/components/providers/branding-provider";
 import { analyticsAuth, analyticsSettings, analyticsExternal } from "@/lib/analytics";
@@ -521,15 +521,7 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
             </Link>
           </Button>
 
-          {/* Create prompt button */}
-          {user && (
-            <Button asChild variant="ghost" size="icon" className="h-8 w-8">
-              <Link href="/prompts/new">
-                <Plus className="h-4 w-4" />
-                <span className="sr-only">{t("prompts.create")}</span>
-              </Link>
-            </Button>
-          )}
+          {user && <CreateMenu />}
 
           {/* Notifications */}
           {user && <NotificationBell />}

@@ -56,7 +56,14 @@
     "developers": "Разработчикам",
     "book": "Книга",
     "forKids": "Для детей",
-    "more": "Ещё"
+    "more": "Ещё",
+    "createMenu": {
+      "label": "Создать",
+      "prompt": "Промпт",
+      "skill": "Навык",
+      "bot": "Бот",
+      "team": "Команда"
+    }
   },
   "brand": {
     "copyLogoSvg": "Скопировать логотип SVG",

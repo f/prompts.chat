@@ -56,7 +56,14 @@
     "developers": "מפתחים",
     "book": "ספר",
     "forKids": "לילדים",
-    "more": "עוד"
+    "more": "עוד",
+    "createMenu": {
+      "label": "יצירה",
+      "prompt": "פרומפט",
+      "skill": "מיומנות",
+      "bot": "בוט",
+      "team": "צוות"
+    }
   },
   "brand": {
     "copyLogoSvg": "העתק לוגו SVG",

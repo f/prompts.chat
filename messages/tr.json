@@ -56,7 +56,14 @@
     "developers": "Geliştiriciler",
     "book": "Kitap",
     "forKids": "Çocuklar İçin",
-    "more": "Daha Fazla"
+    "more": "Daha Fazla",
+    "createMenu": {
+      "label": "Oluştur",
+      "prompt": "Prompt",
+      "skill": "Yetenek",
+      "bot": "Bot",
+      "team": "Takım"
+    }
   },
   "brand": {
     "copyLogoSvg": "Logo SVG'sini Kopyala",

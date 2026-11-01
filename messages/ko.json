@@ -56,7 +56,14 @@
     "developers": "개발자",
     "book": "책",
     "forKids": "어린이용",
-    "more": "더 보기"
+    "more": "더 보기",
+    "createMenu": {
+      "label": "만들기",
+      "prompt": "프롬프트",
+      "skill": "스킬",
+      "bot": "봇",
+      "team": "팀"
+    }
   },
   "brand": {
     "copyLogoSvg": "로고 SVG 복사",

@@ -56,7 +56,14 @@
     "developers": "توسعه‌دهندگان",
     "book": "کتاب",
     "forKids": "برای کودکان",
-    "more": "بیشتر"
+    "more": "بیشتر",
+    "createMenu": {
+      "label": "ایجاد",
+      "prompt": "پرامپت",
+      "skill": "مهارت",
+      "bot": "ربات",
+      "team": "تیم"
+    }
   },
   "brand": {
     "copyLogoSvg": "کپی SVG لوگو",

@@ -56,7 +56,14 @@
     "developers": "Προγραμματιστές",
     "book": "Βιβλίο",
     "forKids": "Για Παιδιά",
-    "more": "Περισσότερα"
+    "more": "Περισσότερα",
+    "createMenu": {
+      "label": "Δημιουργία",
+      "prompt": "Prompt",
+      "skill": "Δεξιότητα",
+      "bot": "Bot",
+      "team": "Ομάδα"
+    }
   },
   "brand": {
     "copyLogoSvg": "Αντιγραφή Logo SVG",

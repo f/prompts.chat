@@ -56,7 +56,14 @@
     "developers": "Ontwikkelaars",
     "book": "Boek",
     "forKids": "Voor kinderen",
-    "more": "Meer"
+    "more": "Meer",
+    "createMenu": {
+      "label": "Aanmaken",
+      "prompt": "Prompt",
+      "skill": "Skill",
+      "bot": "Bot",
+      "team": "Team"
+    }
   },
   "brand": {
     "copyLogoSvg": "Logo SVG kopiëren",
