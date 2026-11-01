@@ -22,6 +22,10 @@ vi.mock("@/components/bots/latest-bots", () => ({
   LatestBots: () => null,
 }));
 
+vi.mock("@/components/bots/teams/featured-teams", () => ({
+  FeaturedTeams: () => null,
+}));
+
 type FindManyArgs = { where: Record<string, unknown> };
 
 function isTrendingQuery(args: FindManyArgs) {
