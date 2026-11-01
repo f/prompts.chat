@@ -446,7 +446,46 @@
     "dismissed": "Änderungsanfrage zurückgezogen",
     "dismissConfirmTitle": "Änderungsanfrage zurückziehen?",
     "dismissConfirmDescription": "Dies wird Ihre Änderungsanfrage dauerhaft löschen. Diese Aktion kann nicht rückgängig gemacht werden.",
-    "backToBot": "Zurück zum Bot"
+    "backToBot": "Zurück zum Bot",
+    "backToTeam": "Zurück zum Team",
+    "proposeBotTitle": "Änderungen an diesem Bot vorschlagen",
+    "proposeBotIntro": "Schlage Verbesserungen für diesen Bot vor. Der Eigentümer prüft deinen Vorschlag und kann ihn annehmen oder ablehnen.",
+    "proposeTeamTitle": "Änderungen an diesem Team vorschlagen",
+    "proposeTeamIntro": "Schlage Verbesserungen für dieses Team vor. Der Eigentümer prüft deinen Vorschlag und kann ihn annehmen oder ablehnen.",
+    "viewVersion": "Version anzeigen",
+    "viewVersionHint": "Änderungen gegenüber Version {previous}",
+    "viewFirstVersionHint": "Erste Version",
+    "memberRole": "Rolle",
+    "memberDescription": "Beschreibung",
+    "membersReordered": "Reihenfolge der Mitglieder geändert",
+    "noFieldChanges": "Keine Änderungen",
+    "reviewedBy": "Geprüft von {user}",
+    "teamApprovedSuccess": "Änderungsanfrage angenommen und Team aktualisiert",
+    "botFields": {
+      "title": "Titel",
+      "description": "Beschreibung",
+      "platforms": "Plattformen",
+      "computers": "Computeranforderungen",
+      "appearance": "Darstellung",
+      "installUrl": "Installations-URL",
+      "instructions": "Anweisungen",
+      "routines": "Routinen",
+      "skills": "Fähigkeiten",
+      "connectors": "Konnektoren"
+    },
+    "teamFields": {
+      "title": "Titel",
+      "description": "Beschreibung",
+      "category": "Kategorie",
+      "tags": "Tags",
+      "handoffs": "Übergaben",
+      "members": "Mitglieder"
+    },
+    "member": {
+      "added": "Hinzugefügt",
+      "removed": "Entfernt",
+      "changed": "Geändert"
+    }
   },
   "categories": {
     "title": "Kategorien",

@@ -446,7 +446,46 @@
     "dismissed": "Dəyişiklik sorğusu ləğv edildi",
     "dismissConfirmTitle": "Dəyişiklik Sorğusu Ləğv Edilsin?",
     "dismissConfirmDescription": "Bu, dəyişiklik sorğunuzu birdəfəlik siləcək. Bu əməliyyat geri alına bilməz.",
-    "backToBot": "Bota qayıt"
+    "backToBot": "Bota qayıt",
+    "backToTeam": "Komandaya qayıt",
+    "proposeBotTitle": "Bu bota dəyişiklik təklif et",
+    "proposeBotIntro": "Bu bot üçün təkmilləşdirmələr təklif edin. Sahibi təklifinizi nəzərdən keçirəcək və təsdiqləyə və ya rədd edə bilər.",
+    "proposeTeamTitle": "Bu komandaya dəyişiklik təklif et",
+    "proposeTeamIntro": "Bu komanda üçün təkmilləşdirmələr təklif edin. Sahibi təklifinizi nəzərdən keçirəcək və təsdiqləyə və ya rədd edə bilər.",
+    "viewVersion": "Versiyaya bax",
+    "viewVersionHint": "{previous} versiyası ilə müqayisədə dəyişikliklər",
+    "viewFirstVersionHint": "İlk versiya",
+    "memberRole": "Rol",
+    "memberDescription": "Təsvir",
+    "membersReordered": "Üzvlərin sırası dəyişdi",
+    "noFieldChanges": "Dəyişiklik yoxdur",
+    "reviewedBy": "Nəzərdən keçirən: {user}",
+    "teamApprovedSuccess": "Dəyişiklik sorğusu təsdiqləndi və komanda yeniləndi",
+    "botFields": {
+      "title": "Başlıq",
+      "description": "Təsvir",
+      "platforms": "Platformalar",
+      "computers": "Kompüter tələbləri",
+      "appearance": "Görünüş",
+      "installUrl": "Quraşdırma URL-i",
+      "instructions": "Təlimatlar",
+      "routines": "Rutinlər",
+      "skills": "Bacarıqlar",
+      "connectors": "Konnektorlar"
+    },
+    "teamFields": {
+      "title": "Başlıq",
+      "description": "Təsvir",
+      "category": "Kateqoriya",
+      "tags": "Teqlər",
+      "handoffs": "Ötürmələr",
+      "members": "Üzvlər"
+    },
+    "member": {
+      "added": "Əlavə edildi",
+      "removed": "Silindi",
+      "changed": "Dəyişdi"
+    }
   },
   "categories": {
     "title": "Kateqoriyalar",

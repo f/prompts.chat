@@ -446,7 +446,46 @@
     "dismissed": "تم سحب طلب التغيير",
     "dismissConfirmTitle": "سحب طلب التغيير؟",
     "dismissConfirmDescription": "سيؤدي هذا إلى حذف طلب التغيير نهائياً. لا يمكن التراجع عن هذا الإجراء.",
-    "backToBot": "العودة إلى البوت"
+    "backToBot": "العودة إلى البوت",
+    "backToTeam": "العودة إلى الفريق",
+    "proposeBotTitle": "اقتراح تغييرات على هذا البوت",
+    "proposeBotIntro": "اقترح تحسينات لهذا البوت. سيراجع المالك اقتراحك ويمكنه قبوله أو رفضه.",
+    "proposeTeamTitle": "اقتراح تغييرات على هذا الفريق",
+    "proposeTeamIntro": "اقترح تحسينات لهذا الفريق. سيراجع المالك اقتراحك ويمكنه قبوله أو رفضه.",
+    "viewVersion": "عرض الإصدار",
+    "viewVersionHint": "التغييرات مقارنة بالإصدار {previous}",
+    "viewFirstVersionHint": "الإصدار الأول",
+    "memberRole": "الدور",
+    "memberDescription": "الوصف",
+    "membersReordered": "تم تغيير ترتيب الأعضاء",
+    "noFieldChanges": "لا توجد تغييرات",
+    "reviewedBy": "تمت المراجعة بواسطة {user}",
+    "teamApprovedSuccess": "تمت الموافقة على طلب التغيير وتحديث الفريق",
+    "botFields": {
+      "title": "العنوان",
+      "description": "الوصف",
+      "platforms": "المنصات",
+      "computers": "متطلبات الحاسوب",
+      "appearance": "المظهر",
+      "installUrl": "رابط التثبيت",
+      "instructions": "التعليمات",
+      "routines": "الروتينات",
+      "skills": "المهارات",
+      "connectors": "الموصلات"
+    },
+    "teamFields": {
+      "title": "العنوان",
+      "description": "الوصف",
+      "category": "الفئة",
+      "tags": "الوسوم",
+      "handoffs": "التسليمات",
+      "members": "الأعضاء"
+    },
+    "member": {
+      "added": "مضاف",
+      "removed": "محذوف",
+      "changed": "معدّل"
+    }
   },
   "categories": {
     "title": "التصنيفات",

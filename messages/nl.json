@@ -446,7 +446,46 @@
     "dismissed": "Wijzigingsverzoek afgewezen",
     "dismissConfirmTitle": "Wijzigingsverzoek afwijzen?",
     "dismissConfirmDescription": "Dit zal je wijzigingsverzoek permanent verwijderen. Deze actie kan niet ongedaan worden gemaakt.",
-    "backToBot": "Terug naar bot"
+    "backToBot": "Terug naar bot",
+    "backToTeam": "Terug naar team",
+    "proposeBotTitle": "Wijzigingen voorstellen voor deze bot",
+    "proposeBotIntro": "Stel verbeteringen voor deze bot voor. De eigenaar beoordeelt je voorstel en kan het goedkeuren of afwijzen.",
+    "proposeTeamTitle": "Wijzigingen voorstellen voor dit team",
+    "proposeTeamIntro": "Stel verbeteringen voor dit team voor. De eigenaar beoordeelt je voorstel en kan het goedkeuren of afwijzen.",
+    "viewVersion": "Versie bekijken",
+    "viewVersionHint": "Wijzigingen ten opzichte van versie {previous}",
+    "viewFirstVersionHint": "Eerste versie",
+    "memberRole": "Rol",
+    "memberDescription": "Beschrijving",
+    "membersReordered": "Volgorde van leden gewijzigd",
+    "noFieldChanges": "Geen wijzigingen",
+    "reviewedBy": "Beoordeeld door {user}",
+    "teamApprovedSuccess": "Wijzigingsverzoek goedgekeurd en team bijgewerkt",
+    "botFields": {
+      "title": "Titel",
+      "description": "Beschrijving",
+      "platforms": "Platforms",
+      "computers": "Computervereisten",
+      "appearance": "Uiterlijk",
+      "installUrl": "Installatie-URL",
+      "instructions": "Instructies",
+      "routines": "Routines",
+      "skills": "Vaardigheden",
+      "connectors": "Connectoren"
+    },
+    "teamFields": {
+      "title": "Titel",
+      "description": "Beschrijving",
+      "category": "Categorie",
+      "tags": "Tags",
+      "handoffs": "Overdrachten",
+      "members": "Leden"
+    },
+    "member": {
+      "added": "Toegevoegd",
+      "removed": "Verwijderd",
+      "changed": "Gewijzigd"
+    }
   },
   "categories": {
     "title": "Categorieën",

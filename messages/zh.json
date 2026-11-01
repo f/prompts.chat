@@ -446,7 +446,46 @@
     "dismissed": "变更请求已撤回",
     "dismissConfirmTitle": "撤回变更请求？",
     "dismissConfirmDescription": "这将永久删除您的变更请求。此操作无法撤销。",
-    "backToBot": "返回机器人"
+    "backToBot": "返回机器人",
+    "backToTeam": "返回团队",
+    "proposeBotTitle": "为此机器人提议更改",
+    "proposeBotIntro": "为此机器人提出改进建议。所有者会审核你的提议，并可以批准或拒绝。",
+    "proposeTeamTitle": "为此团队提议更改",
+    "proposeTeamIntro": "为此团队提出改进建议。所有者会审核你的提议，并可以批准或拒绝。",
+    "viewVersion": "查看版本",
+    "viewVersionHint": "与版本 {previous} 相比的更改",
+    "viewFirstVersionHint": "第一个版本",
+    "memberRole": "角色",
+    "memberDescription": "描述",
+    "membersReordered": "成员顺序已更改",
+    "noFieldChanges": "无更改",
+    "reviewedBy": "审核人：{user}",
+    "teamApprovedSuccess": "更改请求已批准，团队已更新",
+    "botFields": {
+      "title": "标题",
+      "description": "描述",
+      "platforms": "平台",
+      "computers": "计算机要求",
+      "appearance": "外观",
+      "installUrl": "安装 URL",
+      "instructions": "指令",
+      "routines": "例程",
+      "skills": "技能",
+      "connectors": "连接器"
+    },
+    "teamFields": {
+      "title": "标题",
+      "description": "描述",
+      "category": "分类",
+      "tags": "标签",
+      "handoffs": "交接",
+      "members": "成员"
+    },
+    "member": {
+      "added": "已添加",
+      "removed": "已移除",
+      "changed": "已更改"
+    }
   },
   "categories": {
     "title": "分类",

@@ -446,7 +446,46 @@
     "dismissed": "Richiesta di modifica eliminata",
     "dismissConfirmTitle": "Eliminare la Richiesta di Modifica?",
     "dismissConfirmDescription": "Questo eliminerà permanentemente la tua richiesta di modifica. Questa azione non può essere annullata.",
-    "backToBot": "Torna al bot"
+    "backToBot": "Torna al bot",
+    "backToTeam": "Torna al team",
+    "proposeBotTitle": "Proponi modifiche a questo bot",
+    "proposeBotIntro": "Suggerisci miglioramenti per questo bot. Il proprietario esaminerà la tua proposta e potrà approvarla o rifiutarla.",
+    "proposeTeamTitle": "Proponi modifiche a questo team",
+    "proposeTeamIntro": "Suggerisci miglioramenti per questo team. Il proprietario esaminerà la tua proposta e potrà approvarla o rifiutarla.",
+    "viewVersion": "Visualizza versione",
+    "viewVersionHint": "Modifiche rispetto alla versione {previous}",
+    "viewFirstVersionHint": "Prima versione",
+    "memberRole": "Ruolo",
+    "memberDescription": "Descrizione",
+    "membersReordered": "Ordine dei membri modificato",
+    "noFieldChanges": "Nessuna modifica",
+    "reviewedBy": "Revisionato da {user}",
+    "teamApprovedSuccess": "Richiesta di modifica approvata e team aggiornato",
+    "botFields": {
+      "title": "Titolo",
+      "description": "Descrizione",
+      "platforms": "Piattaforme",
+      "computers": "Requisiti del computer",
+      "appearance": "Aspetto",
+      "installUrl": "URL di installazione",
+      "instructions": "Istruzioni",
+      "routines": "Routine",
+      "skills": "Competenze",
+      "connectors": "Connettori"
+    },
+    "teamFields": {
+      "title": "Titolo",
+      "description": "Descrizione",
+      "category": "Categoria",
+      "tags": "Tag",
+      "handoffs": "Passaggi",
+      "members": "Membri"
+    },
+    "member": {
+      "added": "Aggiunto",
+      "removed": "Rimosso",
+      "changed": "Modificato"
+    }
   },
   "categories": {
     "title": "Categorie",

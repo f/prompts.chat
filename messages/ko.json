@@ -446,7 +446,46 @@
     "dismissed": "변경 요청이 철회되었습니다",
     "dismissConfirmTitle": "변경 요청을 철회하시겠습니까?",
     "dismissConfirmDescription": "변경 요청이 영구적으로 삭제됩니다. 이 작업은 취소할 수 없습니다.",
-    "backToBot": "봇으로 돌아가기"
+    "backToBot": "봇으로 돌아가기",
+    "backToTeam": "팀으로 돌아가기",
+    "proposeBotTitle": "이 봇에 변경 제안",
+    "proposeBotIntro": "이 봇의 개선 사항을 제안하세요. 소유자가 제안을 검토하고 승인하거나 거절할 수 있습니다.",
+    "proposeTeamTitle": "이 팀에 변경 제안",
+    "proposeTeamIntro": "이 팀의 개선 사항을 제안하세요. 소유자가 제안을 검토하고 승인하거나 거절할 수 있습니다.",
+    "viewVersion": "버전 보기",
+    "viewVersionHint": "버전 {previous} 대비 변경 사항",
+    "viewFirstVersionHint": "첫 번째 버전",
+    "memberRole": "역할",
+    "memberDescription": "설명",
+    "membersReordered": "멤버 순서가 변경됨",
+    "noFieldChanges": "변경 사항 없음",
+    "reviewedBy": "검토자: {user}",
+    "teamApprovedSuccess": "변경 요청이 승인되어 팀이 업데이트되었습니다",
+    "botFields": {
+      "title": "제목",
+      "description": "설명",
+      "platforms": "플랫폼",
+      "computers": "컴퓨터 요구 사항",
+      "appearance": "모양",
+      "installUrl": "설치 URL",
+      "instructions": "지침",
+      "routines": "루틴",
+      "skills": "스킬",
+      "connectors": "커넥터"
+    },
+    "teamFields": {
+      "title": "제목",
+      "description": "설명",
+      "category": "카테고리",
+      "tags": "태그",
+      "handoffs": "인계",
+      "members": "멤버"
+    },
+    "member": {
+      "added": "추가됨",
+      "removed": "제거됨",
+      "changed": "변경됨"
+    }
   },
   "categories": {
     "title": "카테고리",

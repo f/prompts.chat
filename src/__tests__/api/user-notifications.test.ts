@@ -9,6 +9,9 @@ vi.mock("@/lib/db", () => ({
     changeRequest: {
       count: vi.fn(),
     },
+    botTeamChangeRequest: {
+      count: vi.fn(),
+    },
     notification: {
       findMany: vi.fn(),
       updateMany: vi.fn(),
@@ -26,6 +29,22 @@ vi.mock("@/lib/auth", () => ({
 describe("GET /api/user/notifications", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(db.botTeamChangeRequest.count).mockResolvedValue(0);
+  });
+
+  it("should count pending change requests on the user's teams too", async () => {
+    vi.mocked(auth).mockResolvedValue({ user: { id: "user1" } } as never);
+    vi.mocked(db.changeRequest.count).mockResolvedValue(2);
+    vi.mocked(db.botTeamChangeRequest.count).mockResolvedValue(3);
+    vi.mocked(db.notification.findMany).mockResolvedValue([]);
+    vi.mocked(db.prompt.findMany).mockResolvedValue([]);
+
+    const data = await (await GET()).json();
+
+    expect(data.pendingChangeRequests).toBe(5);
+    expect(db.botTeamChangeRequest.count).toHaveBeenCalledWith({
+      where: { status: "PENDING", team: { authorId: "user1" } },
+    });
   });
 
   it("should return default response if not authenticated", async () => {

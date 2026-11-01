@@ -446,7 +446,46 @@
     "dismissed": "変更リクエストを取り下げました",
     "dismissConfirmTitle": "変更リクエストを取り下げますか？",
     "dismissConfirmDescription": "変更リクエストは完全に削除されます。この操作は取り消せません。",
-    "backToBot": "ボットに戻る"
+    "backToBot": "ボットに戻る",
+    "backToTeam": "チームに戻る",
+    "proposeBotTitle": "このボットへの変更を提案",
+    "proposeBotIntro": "このボットの改善を提案してください。オーナーが提案を確認し、承認または却下できます。",
+    "proposeTeamTitle": "このチームへの変更を提案",
+    "proposeTeamIntro": "このチームの改善を提案してください。オーナーが提案を確認し、承認または却下できます。",
+    "viewVersion": "バージョンを表示",
+    "viewVersionHint": "バージョン {previous} からの変更",
+    "viewFirstVersionHint": "最初のバージョン",
+    "memberRole": "役割",
+    "memberDescription": "説明",
+    "membersReordered": "メンバーの順序が変更されました",
+    "noFieldChanges": "変更なし",
+    "reviewedBy": "レビュー担当: {user}",
+    "teamApprovedSuccess": "変更リクエストが承認され、チームが更新されました",
+    "botFields": {
+      "title": "タイトル",
+      "description": "説明",
+      "platforms": "プラットフォーム",
+      "computers": "コンピューター要件",
+      "appearance": "外観",
+      "installUrl": "インストールURL",
+      "instructions": "指示",
+      "routines": "ルーチン",
+      "skills": "スキル",
+      "connectors": "コネクター"
+    },
+    "teamFields": {
+      "title": "タイトル",
+      "description": "説明",
+      "category": "カテゴリー",
+      "tags": "タグ",
+      "handoffs": "引き継ぎ",
+      "members": "メンバー"
+    },
+    "member": {
+      "added": "追加",
+      "removed": "削除",
+      "changed": "変更"
+    }
   },
   "categories": {
     "title": "カテゴリー",

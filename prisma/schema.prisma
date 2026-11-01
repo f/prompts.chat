@@ -50,6 +50,9 @@ model User {
   userPromptExamples         UserPromptExample[]
   botTeams                   BotTeam[]
   botTeamVotes               BotTeamVote[]
+  botTeamVersions            BotTeamVersion[]
+  botTeamChangeRequests      BotTeamChangeRequest[] @relation("BotTeamChangeRequestAuthor")
+  reviewedTeamChangeRequests BotTeamChangeRequest[] @relation("BotTeamChangeRequestReviewer")
 
   @@map("users")
 }
@@ -168,6 +171,8 @@ model PromptVersion {
   createdAt  DateTime @default(now())
   promptId   String
   createdBy  String
+  /// BOT prompts only: title and bot fields at this version, see src/lib/bots/change-snapshot.ts; null on older versions
+  botSnapshot Json?
   author     User     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   prompt     Prompt   @relation(fields: [promptId], references: [id], onDelete: Cascade)
 
@@ -189,6 +194,9 @@ model ChangeRequest {
   authorId        String
   originalContent String
   originalTitle   String
+  /// BOT prompts only: bot fields when the request was made and as proposed, see src/lib/bots/change-snapshot.ts
+  originalBot     Json?
+  proposedBot     Json?
   author          User                @relation(fields: [authorId], references: [id], onDelete: Cascade)
   prompt          Prompt              @relation(fields: [promptId], references: [id], onDelete: Cascade)
 
@@ -449,12 +457,55 @@ model BotTeam {
   links       BotTeamLink[]
   tags        BotTeamTag[]
   votes       BotTeamVote[]
+  versions       BotTeamVersion[]
+  changeRequests BotTeamChangeRequest[]
 
   @@index([authorId])
   @@index([categoryId])
   @@index([isFeatured, createdAt(sort: Desc)])
   @@index([isUnlisted, createdAt(sort: Desc)])
   @@map("bot_teams")
+}
+
+/// A team as it was after a create, an update or an approved change request. See src/lib/bots/team-snapshot.ts
+model BotTeamVersion {
+  id          String   @id @default(cuid())
+  teamId      String
+  version     Int
+  /// { title, description, category, tags, members, links }
+  snapshot    Json
+  changeNote  String?
+  createdAt   DateTime @default(now())
+  createdById String?
+  team        BotTeam  @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  createdBy   User?    @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@unique([teamId, version])
+  @@map("bot_team_versions")
+}
+
+/// A proposed change to someone else's team; PENDING is open. See src/lib/bots/team-changes.ts
+model BotTeamChangeRequest {
+  id               String              @id @default(cuid())
+  teamId           String
+  authorId         String
+  status           ChangeRequestStatus @default(PENDING)
+  reason           String?
+  reviewNote       String?
+  reviewerId       String?
+  reviewedAt       DateTime?
+  /// The team when the request was made, and the whole team as proposed
+  originalSnapshot Json
+  proposedSnapshot Json
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  team             BotTeam             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  author           User                @relation("BotTeamChangeRequestAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  reviewer         User?               @relation("BotTeamChangeRequestReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+
+  @@index([teamId, status])
+  @@index([authorId])
+  @@map("bot_team_change_requests")
 }
 
 model BotTeamVote {

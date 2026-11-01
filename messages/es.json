@@ -446,7 +446,46 @@
     "dismissed": "Solicitud de cambio retirada",
     "dismissConfirmTitle": "¿Retirar Solicitud de Cambio?",
     "dismissConfirmDescription": "Esto eliminará permanentemente tu solicitud de cambio. Esta acción no se puede deshacer.",
-    "backToBot": "Volver al bot"
+    "backToBot": "Volver al bot",
+    "backToTeam": "Volver al equipo",
+    "proposeBotTitle": "Proponer cambios a este bot",
+    "proposeBotIntro": "Sugiere mejoras para este bot. El propietario revisará tu propuesta y podrá aprobarla o rechazarla.",
+    "proposeTeamTitle": "Proponer cambios a este equipo",
+    "proposeTeamIntro": "Sugiere mejoras para este equipo. El propietario revisará tu propuesta y podrá aprobarla o rechazarla.",
+    "viewVersion": "Ver versión",
+    "viewVersionHint": "Cambios respecto a la versión {previous}",
+    "viewFirstVersionHint": "Primera versión",
+    "memberRole": "Rol",
+    "memberDescription": "Descripción",
+    "membersReordered": "Se cambió el orden de los miembros",
+    "noFieldChanges": "Sin cambios",
+    "reviewedBy": "Revisado por {user}",
+    "teamApprovedSuccess": "Solicitud de cambio aprobada y equipo actualizado",
+    "botFields": {
+      "title": "Título",
+      "description": "Descripción",
+      "platforms": "Plataformas",
+      "computers": "Requisitos de equipo",
+      "appearance": "Apariencia",
+      "installUrl": "URL de instalación",
+      "instructions": "Instrucciones",
+      "routines": "Rutinas",
+      "skills": "Habilidades",
+      "connectors": "Conectores"
+    },
+    "teamFields": {
+      "title": "Título",
+      "description": "Descripción",
+      "category": "Categoría",
+      "tags": "Etiquetas",
+      "handoffs": "Traspasos",
+      "members": "Miembros"
+    },
+    "member": {
+      "added": "Añadido",
+      "removed": "Eliminado",
+      "changed": "Modificado"
+    }
   },
   "categories": {
     "title": "Categorías",

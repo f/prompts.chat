@@ -446,7 +446,46 @@
     "dismissed": "درخواست تغییر رد شد",
     "dismissConfirmTitle": "درخواست تغییر رد شود؟",
     "dismissConfirmDescription": "این کار درخواست تغییر شما را برای همیشه حذف می‌کند. این عمل قابل بازگشت نیست.",
-    "backToBot": "بازگشت به بات"
+    "backToBot": "بازگشت به بات",
+    "backToTeam": "بازگشت به تیم",
+    "proposeBotTitle": "پیشنهاد تغییرات برای این بات",
+    "proposeBotIntro": "بهبودهایی برای این بات پیشنهاد دهید. مالک پیشنهاد شما را بررسی می‌کند و می‌تواند آن را تأیید یا رد کند.",
+    "proposeTeamTitle": "پیشنهاد تغییرات برای این تیم",
+    "proposeTeamIntro": "بهبودهایی برای این تیم پیشنهاد دهید. مالک پیشنهاد شما را بررسی می‌کند و می‌تواند آن را تأیید یا رد کند.",
+    "viewVersion": "مشاهده نسخه",
+    "viewVersionHint": "تغییرات نسبت به نسخه {previous}",
+    "viewFirstVersionHint": "نسخه اول",
+    "memberRole": "نقش",
+    "memberDescription": "توضیحات",
+    "membersReordered": "ترتیب اعضا تغییر کرد",
+    "noFieldChanges": "بدون تغییر",
+    "reviewedBy": "بررسی‌شده توسط {user}",
+    "teamApprovedSuccess": "درخواست تغییر تأیید شد و تیم به‌روزرسانی شد",
+    "botFields": {
+      "title": "عنوان",
+      "description": "توضیحات",
+      "platforms": "پلتفرم‌ها",
+      "computers": "الزامات رایانه",
+      "appearance": "ظاهر",
+      "installUrl": "آدرس نصب",
+      "instructions": "دستورالعمل‌ها",
+      "routines": "روال‌ها",
+      "skills": "مهارت‌ها",
+      "connectors": "اتصال‌دهنده‌ها"
+    },
+    "teamFields": {
+      "title": "عنوان",
+      "description": "توضیحات",
+      "category": "دسته‌بندی",
+      "tags": "برچسب‌ها",
+      "handoffs": "واگذاری‌ها",
+      "members": "اعضا"
+    },
+    "member": {
+      "added": "اضافه شد",
+      "removed": "حذف شد",
+      "changed": "تغییر کرد"
+    }
   },
   "categories": {
     "title": "دسته‌بندی‌ها",

@@ -24,9 +24,11 @@ interface DismissChangeRequestButtonProps {
   promptId: string;
   /** Where to go after dismissing; defaults to the prompt page */
   redirectTo?: string;
+  /** API endpoint of the request; defaults to the prompt change request endpoint */
+  apiPath?: string;
 }
 
-export function DismissChangeRequestButton({ changeRequestId, promptId, redirectTo }: DismissChangeRequestButtonProps) {
+export function DismissChangeRequestButton({ changeRequestId, promptId, redirectTo, apiPath }: DismissChangeRequestButtonProps) {
   const router = useRouter();
   const t = useTranslations("changeRequests");
   const tCommon = useTranslations("common");
@@ -37,7 +39,7 @@ export function DismissChangeRequestButton({ changeRequestId, promptId, redirect
     setIsLoading(true);
 
     try {
-      const response = await fetch(`/api/prompts/${promptId}/changes/${changeRequestId}`, {
+      const response = await fetch(apiPath ?? `/api/prompts/${promptId}/changes/${changeRequestId}`, {
         method: "DELETE",
       });
 
@@ -46,7 +48,7 @@ export function DismissChangeRequestButton({ changeRequestId, promptId, redirect
         throw new Error(error.message || "Failed to dismiss change request");
       }
 
-      analyticsPrompt.changeRequest(promptId, "dismiss");
+      if (!apiPath) analyticsPrompt.changeRequest(promptId, "dismiss");
       toast.success(t("dismissed"));
       router.push(redirectTo ?? `/prompts/${promptId}`);
       router.refresh();

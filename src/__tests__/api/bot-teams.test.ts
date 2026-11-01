@@ -24,6 +24,7 @@ vi.mock("@/lib/db", () => ({
     },
     botTeamMember: { deleteMany: vi.fn(), createMany: vi.fn(), findMany: vi.fn() },
     botTeamLink: { deleteMany: vi.fn(), createMany: vi.fn() },
+    botTeamVersion: { findFirst: vi.fn(), create: vi.fn() },
     botTeamVote: { upsert: vi.fn(), deleteMany: vi.fn(), count: vi.fn() },
     category: { findUnique: vi.fn() },
     tag: { findMany: vi.fn() },
