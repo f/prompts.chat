@@ -123,7 +123,12 @@
       "selectExample": "Selecteer een voorbeeld...",
       "aiGenerate": "AI Genereren",
       "aiPlaceholder": "Beschrijf de SQL-query die je nodig hebt...",
-      "generateSql": "SQL Genereren"
+      "generateSql": "SQL Genereren",
+      "listingQuery": {
+        "skills": "🧩 Agent Skills",
+        "bots": "🤖 Bots en assistenten",
+        "teams": "👥 Multi-agentteams"
+      }
     },
     "edit": "Prompt bewerken",
     "delete": "Prompt verwijderen",
@@ -1481,7 +1486,23 @@
     "categoryPlaceholder": "Categorie-slug toevoegen...",
     "tags": "Tags",
     "tagPlaceholder": "Tag-slug toevoegen...",
-    "generateApiKey": "Genereer API-sleutel om prompts via MCP op te slaan"
+    "generateApiKey": "Genereer API-sleutel om prompts via MCP op te slaan",
+    "clientNotes": {
+      "claudeDesktopRemote": "Open in Claude Desktop Instellingen → Connectors → Aangepaste connector toevoegen en plak deze URL.",
+      "claudeDesktopLocal": "Voeg toe aan claude_desktop_config.json (Instellingen → Ontwikkelaar → Configuratie bewerken) en start Claude Desktop opnieuw.",
+      "codex": "Voeg toe aan ~/.codex/config.toml. De Codex CLI en IDE-extensie delen dit bestand.",
+      "grokBotRemote": "Plak deze URL in een Grok Bot-chat en vraag hem de MCP-server te verbinden.",
+      "grokBotLocal": "Vraag Grok Bot in de chat een command-MCP-server toe te voegen die dit uitvoert. Die draait op de cloudcomputer van de Bot.",
+      "openclaw": "Voeg toe aan openclaw.json en controleer met openclaw mcp doctor prompts-chat --probe.",
+      "devinRemote": "Voor de Devin CLI (~/.config/devin/mcp_config.json). Ga in de Devin-webapp naar Customize → MCPs → Add custom MCP, kies HTTP en plak de server-URL.",
+      "devinLocal": "Voor de Devin CLI (~/.config/devin/mcp_config.json). Voeg in de Devin-webapp een aangepaste MCP toe met het STDIO-transport en deze opdracht.",
+      "urlOnlyApiKey": "Deze client accepteert alleen een URL, dus je API-sleutel wordt niet meegegeven. Zoek- en leestools werken ook zonder."
+    },
+    "resourceHint": {
+      "skills": "Skills gebruiken dezelfde server: search_skills vindt Agent Skills en get_skill geeft al hun bestanden terug.",
+      "bots": "Bots gebruiken dezelfde server: search_bots vindt bots en get_bot geeft hun instructies en installatieopties terug.",
+      "teams": "Teams gebruiken dezelfde server: list_teams vindt botteams en get_team geeft hun leden en overdrachten terug."
+    }
   },
   "footer": {
     "howTo": "Hoe...",

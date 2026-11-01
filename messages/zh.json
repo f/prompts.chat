@@ -123,7 +123,12 @@
       "selectExample": "选择一个示例...",
       "aiGenerate": "AI生成",
       "aiPlaceholder": "描述您需要的SQL查询...",
-      "generateSql": "生成SQL"
+      "generateSql": "生成SQL",
+      "listingQuery": {
+        "skills": "🧩 Agent Skills",
+        "bots": "🤖 机器人与助手",
+        "teams": "👥 多智能体团队"
+      }
     },
     "edit": "编辑提示词",
     "delete": "删除提示词",
@@ -1481,7 +1486,23 @@
     "categoryPlaceholder": "添加分类标识...",
     "tags": "标签",
     "tagPlaceholder": "添加标签标识...",
-    "generateApiKey": "生成 API 密钥以通过 MCP 保存提示词"
+    "generateApiKey": "生成 API 密钥以通过 MCP 保存提示词",
+    "clientNotes": {
+      "claudeDesktopRemote": "在 Claude Desktop 中，打开 设置 → 连接器 → 添加自定义连接器，然后粘贴此 URL。",
+      "claudeDesktopLocal": "添加到 claude_desktop_config.json（设置 → 开发者 → 编辑配置），然后重启 Claude Desktop。",
+      "codex": "添加到 ~/.codex/config.toml。Codex CLI 和 IDE 扩展共用此文件。",
+      "grokBotRemote": "将此 URL 粘贴到 Grok Bot 聊天中，并让它连接该 MCP 服务器。",
+      "grokBotLocal": "在聊天中让 Grok Bot 添加一个运行此命令的命令型 MCP 服务器。它运行在 Bot 的云端计算机上。",
+      "openclaw": "添加到 openclaw.json，然后用 openclaw mcp doctor prompts-chat --probe 检查。",
+      "devinRemote": "适用于 Devin CLI（~/.config/devin/mcp_config.json）。在 Devin 网页应用中，前往 Customize → MCPs → Add custom MCP，选择 HTTP 并粘贴服务器 URL。",
+      "devinLocal": "适用于 Devin CLI（~/.config/devin/mcp_config.json）。在 Devin 网页应用中，使用 STDIO 传输和此命令添加自定义 MCP。",
+      "urlOnlyApiKey": "此客户端只接受 URL，因此不会包含你的 API 密钥。搜索和读取工具无需密钥即可使用。"
+    },
+    "resourceHint": {
+      "skills": "技能使用同一个服务器：search_skills 查找 Agent Skills，get_skill 返回其全部文件。",
+      "bots": "机器人使用同一个服务器：search_bots 查找机器人，get_bot 返回其指令和安装选项。",
+      "teams": "团队使用同一个服务器：list_teams 查找机器人团队，get_team 返回其成员和交接关系。"
+    }
   },
   "footer": {
     "howTo": "指南",

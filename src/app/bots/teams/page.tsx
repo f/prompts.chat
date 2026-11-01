@@ -8,12 +8,16 @@ import { Button } from "@/components/ui/button";
 import { BotTeamsGraph } from "@/components/bots/teams/bot-teams-graph";
 import { TeamFilters } from "@/components/bots/teams/team-filters";
 import { ListingWidgetCard } from "@/components/widgets/listing-widget-card";
+import { HFDataStudioDropdown } from "@/components/prompts/hf-data-studio-dropdown";
+import { McpServerPopup } from "@/components/mcp/mcp-server-popup";
 import { JsonLd, breadcrumbSchema, collectionPageSchema } from "@/components/seo/structured-data";
 import { platformFromParam } from "@/lib/bots/schema";
 import { getTeamFilterOptions, getVotedTeamIds, listTeams, teamExcerpt, teamSortFromParam, toTeamGraphTeam } from "@/lib/bots/teams";
 import { injectWidgets, isWidget } from "@/lib/plugins/widgets";
 import { buildPageMetadata } from "@/lib/seo";
+import { isAIGenerationEnabled } from "@/lib/ai/generation";
 import { getBotTeamUrl } from "@/lib/urls";
+import config from "@/../prompts.config";
 
 const PER_PAGE = 24;
 
@@ -63,7 +67,7 @@ export default async function BotTeamsPage({ searchParams }: BotTeamsPageProps) 
   const page = Math.max(1, Number.parseInt(params.page ?? "1", 10) || 1);
   const isFiltered = FILTER_KEYS.some((key) => !!params[key]);
 
-  const [{ teams, total }, filterOptions] = await Promise.all([
+  const [{ teams, total }, filterOptions, aiGenerationAvailable] = await Promise.all([
     listTeams({
       q: params.q?.trim() || undefined,
       platform: platformFromParam(params.platform),
@@ -75,6 +79,7 @@ export default async function BotTeamsPage({ searchParams }: BotTeamsPageProps) 
       viewer: session?.user ? { id: session.user.id, role: session.user.role } : null,
     }),
     getTeamFilterOptions(),
+    isAIGenerationEnabled(),
   ]);
   const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
   if (page > totalPages) notFound();
@@ -114,17 +119,25 @@ export default async function BotTeamsPage({ searchParams }: BotTeamsPageProps) 
         {tBots("backToBots")}
       </Link>
 
-      <div className="mb-4 flex items-center justify-between gap-4">
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex min-w-0 items-baseline gap-2">
           <h1 className="text-lg font-semibold">{tSeo("heading")}</h1>
           <span className="text-xs text-muted-foreground">{t("count", { count: total })}</span>
         </div>
-        <Button size="sm" className="h-8 shrink-0 text-xs" asChild>
-          <Link href="/bots/teams/new">
-            <Plus className="h-3.5 w-3.5 mr-1" />
-            {t("create")}
-          </Link>
-        </Button>
+        <div className="flex flex-wrap shrink-0 items-center gap-2">
+          {!config.homepage?.useCloneBranding && (
+            <div className="flex items-center gap-2">
+              <HFDataStudioDropdown aiGenerationEnabled={aiGenerationAvailable} listing="teams" />
+              {config.features.mcp !== false && <McpServerPopup showOfficialBranding resource="teams" />}
+            </div>
+          )}
+          <Button size="sm" className="h-8 shrink-0 text-xs" asChild>
+            <Link href="/bots/teams/new">
+              <Plus className="h-3.5 w-3.5 mr-1" />
+              {t("create")}
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <p className="mb-4 text-sm text-muted-foreground">

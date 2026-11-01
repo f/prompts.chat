@@ -123,7 +123,12 @@
       "selectExample": "اختر مثالاً...",
       "aiGenerate": "توليد AI",
       "aiPlaceholder": "صف استعلام SQL الذي تحتاجه...",
-      "generateSql": "إنشاء SQL"
+      "generateSql": "إنشاء SQL",
+      "listingQuery": {
+        "skills": "🧩 Agent Skills",
+        "bots": "🤖 البوتات والمساعدون",
+        "teams": "👥 فرق متعددة الوكلاء"
+      }
     },
     "edit": "تعديل الأمر",
     "delete": "حذف الأمر",
@@ -1481,7 +1486,23 @@
     "categoryPlaceholder": "إضافة رمز الفئة...",
     "tags": "العلامات",
     "tagPlaceholder": "إضافة رمز العلامة...",
-    "generateApiKey": "أنشئ مفتاح API لحفظ الأوامر عبر MCP"
+    "generateApiKey": "أنشئ مفتاح API لحفظ الأوامر عبر MCP",
+    "clientNotes": {
+      "claudeDesktopRemote": "في Claude Desktop، افتح الإعدادات ← الموصلات ← إضافة موصل مخصص والصق هذا الرابط.",
+      "claudeDesktopLocal": "أضفه إلى claude_desktop_config.json (الإعدادات ← المطور ← تحرير الإعدادات)، ثم أعد تشغيل Claude Desktop.",
+      "codex": "أضفه إلى ~/.codex/config.toml. تتشاركه Codex CLI وإضافة بيئة التطوير.",
+      "grokBotRemote": "الصق هذا الرابط في محادثة Grok Bot واطلب منه توصيل خادم MCP.",
+      "grokBotLocal": "اطلب من Grok Bot في المحادثة إضافة خادم MCP بأمر يشغّل هذا. يعمل على حاسوب البوت السحابي.",
+      "openclaw": "أضفه إلى openclaw.json، ثم تحقق منه باستخدام openclaw mcp doctor prompts-chat --probe.",
+      "devinRemote": "لـ Devin CLI (~/.config/devin/mcp_config.json). في تطبيق Devin على الويب، انتقل إلى Customize → MCPs → Add custom MCP، واختر HTTP والصق رابط الخادم.",
+      "devinLocal": "لـ Devin CLI (~/.config/devin/mcp_config.json). في تطبيق Devin على الويب، أضف MCP مخصصًا بنقل STDIO وهذا الأمر.",
+      "urlOnlyApiKey": "هذا العميل يقبل رابطًا فقط، لذا لا يُضمَّن مفتاح API الخاص بك. أدوات البحث والقراءة تعمل بدونه."
+    },
+    "resourceHint": {
+      "skills": "المهارات تستخدم الخادم نفسه: search_skills يبحث عن Agent Skills وget_skill يعيد جميع ملفاتها.",
+      "bots": "البوتات تستخدم الخادم نفسه: search_bots يبحث عن البوتات وget_bot يعيد تعليماتها وخيارات تثبيتها.",
+      "teams": "الفرق تستخدم الخادم نفسه: list_teams يبحث عن فرق البوتات وget_team يعيد أعضاءها وعمليات التسليم بينهم."
+    }
   },
   "footer": {
     "howTo": "كيفية...",

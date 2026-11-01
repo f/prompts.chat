@@ -7,11 +7,15 @@ import { Button } from "@/components/ui/button";
 import { BotCard } from "@/components/bots/bot-card";
 import { BotFilters } from "@/components/bots/bot-filters";
 import { ListingWidgetCard } from "@/components/widgets/listing-widget-card";
+import { HFDataStudioDropdown } from "@/components/prompts/hf-data-studio-dropdown";
+import { McpServerPopup } from "@/components/mcp/mcp-server-popup";
 import { JsonLd, collectionPageSchema } from "@/components/seo/structured-data";
 import { BOT_SORTS, getBotFilterOptions, listBots, platformFromParam, type BotSort } from "@/lib/bots";
 import { injectWidgets, isWidget } from "@/lib/plugins/widgets";
 import { buildPageMetadata } from "@/lib/seo";
+import { isAIGenerationEnabled } from "@/lib/ai/generation";
 import { getBotUrl } from "@/lib/urls";
+import config from "@/../prompts.config";
 
 const PER_PAGE = 24;
 
@@ -60,7 +64,7 @@ export default async function BotsPage({ searchParams }: BotsPageProps) {
   const page = Math.max(1, Number.parseInt(params.page ?? "1", 10) || 1);
   const sort = BOT_SORTS.includes(params.sort as BotSort) ? (params.sort as BotSort) : "newest";
 
-  const [{ bots, total }, filterOptions] = await Promise.all([
+  const [{ bots, total }, filterOptions, aiGenerationAvailable] = await Promise.all([
     listBots({
       platform: platformFromParam(params.platform),
       categorySlug: params.category,
@@ -71,6 +75,7 @@ export default async function BotsPage({ searchParams }: BotsPageProps) {
       take: PER_PAGE,
     }),
     getBotFilterOptions(),
+    isAIGenerationEnabled(),
   ]);
   const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
 
@@ -101,12 +106,18 @@ export default async function BotsPage({ searchParams }: BotsPageProps) {
           items: bots.map((bot) => ({ name: bot.title, path: getBotUrl(bot.id, bot.slug) })),
         })}
       />
-      <div className="flex items-center justify-between gap-4 mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
         <div className="flex items-baseline gap-2 min-w-0">
           <h1 className="text-lg font-semibold">{tSeo("heading")}</h1>
           <span className="text-xs text-muted-foreground">{t("count", { count: total })}</span>
         </div>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex flex-wrap shrink-0 items-center gap-2">
+          {!config.homepage?.useCloneBranding && (
+            <div className="flex items-center gap-2">
+              <HFDataStudioDropdown aiGenerationEnabled={aiGenerationAvailable} listing="bots" />
+              {config.features.mcp !== false && <McpServerPopup showOfficialBranding resource="bots" />}
+            </div>
+          )}
           <Button size="sm" variant="outline" className="h-8 text-xs" asChild>
             <Link href="/bots/teams">
               <Users className="h-3.5 w-3.5 mr-1" />

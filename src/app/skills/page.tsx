@@ -5,8 +5,12 @@ import { unstable_cache } from "next/cache";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InfinitePromptList } from "@/components/prompts/infinite-prompt-list";
+import { HFDataStudioDropdown } from "@/components/prompts/hf-data-studio-dropdown";
+import { McpServerPopup } from "@/components/mcp/mcp-server-popup";
 import { db } from "@/lib/db";
 import { buildPageMetadata } from "@/lib/seo";
+import { isAIGenerationEnabled } from "@/lib/ai/generation";
+import config from "@/../prompts.config";
 
 
 // Query for skills list (cached)
@@ -136,7 +140,10 @@ export default async function SkillsPage({ searchParams }: SkillsPageProps) {
     orderBy = { votes: { _count: "desc" } };
   }
 
-  const result = await getCachedSkills(orderBy, perPage, params.q);
+  const [result, aiGenerationAvailable] = await Promise.all([
+    getCachedSkills(orderBy, perPage, params.q),
+    isAIGenerationEnabled(),
+  ]);
   const skills = result.skills;
   const total = result.total;
 
@@ -147,12 +154,20 @@ export default async function SkillsPage({ searchParams }: SkillsPageProps) {
           <h1 className="text-lg font-semibold">{tSeo("heading")}</h1>
           <span className="text-xs text-muted-foreground">{tSearch("found", { count: total })}</span>
         </div>
-        <Button size="sm" className="h-8 text-xs w-full sm:w-auto" asChild>
-          <Link href="/prompts/new?type=SKILL">
-            <Plus className="h-3.5 w-3.5 mr-1" />
-            {t("createSkill")}
-          </Link>
-        </Button>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+          {!config.homepage?.useCloneBranding && (
+            <div className="flex items-center gap-2">
+              <HFDataStudioDropdown aiGenerationEnabled={aiGenerationAvailable} listing="skills" />
+              {config.features.mcp !== false && <McpServerPopup showOfficialBranding resource="skills" />}
+            </div>
+          )}
+          <Button size="sm" className="h-8 text-xs w-full sm:w-auto" asChild>
+            <Link href="/prompts/new?type=SKILL">
+              <Plus className="h-3.5 w-3.5 mr-1" />
+              {t("createSkill")}
+            </Link>
+          </Button>
+        </div>
       </div>
       
       <p className="text-sm text-muted-foreground mb-6">

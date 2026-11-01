@@ -123,7 +123,12 @@
       "selectExample": "Nümunə seçin...",
       "aiGenerate": "AI ilə Yarat",
       "aiPlaceholder": "Lazım olan SQL sorğusunu təsvir edin...",
-      "generateSql": "SQL Yarat"
+      "generateSql": "SQL Yarat",
+      "listingQuery": {
+        "skills": "🧩 Agent Skills",
+        "bots": "🤖 Botlar və köməkçilər",
+        "teams": "👥 Çox agentli komandalar"
+      }
     },
     "edit": "Promptu Redaktə et",
     "delete": "Promptu Sil",
@@ -1481,7 +1486,23 @@
     "categoryPlaceholder": "Kateqoriya slug əlavə edin...",
     "tags": "Etiketlər",
     "tagPlaceholder": "Etiket slug əlavə edin...",
-    "generateApiKey": "MCP vasitəsilə promptları saxlamaq üçün API açarı yaradın"
+    "generateApiKey": "MCP vasitəsilə promptları saxlamaq üçün API açarı yaradın",
+    "clientNotes": {
+      "claudeDesktopRemote": "Claude Desktop-da Parametrlər → Konnektorlar → Xüsusi konnektor əlavə et bölməsini açın və bu URL-i yapışdırın.",
+      "claudeDesktopLocal": "claude_desktop_config.json faylına əlavə edin (Parametrlər → Developer → Konfiqurasiyanı redaktə et), sonra Claude Desktop-ı yenidən başladın.",
+      "codex": "~/.codex/config.toml faylına əlavə edin. Codex CLI və IDE genişləndirməsi onu paylaşır.",
+      "grokBotRemote": "Bu URL-i Grok Bot söhbətinə yapışdırın və MCP serverini qoşmasını xahiş edin.",
+      "grokBotLocal": "Söhbətdə Grok Bot-dan bunu işlədən əmr tipli MCP server əlavə etməsini xahiş edin. O, Bot-un bulud kompüterində işləyir.",
+      "openclaw": "openclaw.json faylına əlavə edin, sonra openclaw mcp doctor prompts-chat --probe ilə yoxlayın.",
+      "devinRemote": "Devin CLI üçün (~/.config/devin/mcp_config.json). Devin veb tətbiqində Customize → MCPs → Add custom MCP bölməsinə keçin, HTTP seçin və server URL-ini yapışdırın.",
+      "devinLocal": "Devin CLI üçün (~/.config/devin/mcp_config.json). Devin veb tətbiqində STDIO nəqliyyatı və bu əmrlə xüsusi MCP əlavə edin.",
+      "urlOnlyApiKey": "Bu müştəri yalnız URL qəbul edir, ona görə API açarınız daxil edilmir. Axtarış və oxuma alətləri onsuz da işləyir."
+    },
+    "resourceHint": {
+      "skills": "Bacarıqlar eyni serverdən istifadə edir: search_skills Agent Skills tapır, get_skill isə bütün fayllarını qaytarır.",
+      "bots": "Botlar eyni serverdən istifadə edir: search_bots botları tapır, get_bot isə təlimatlarını və quraşdırma seçimlərini qaytarır.",
+      "teams": "Komandalar eyni serverdən istifadə edir: list_teams bot komandalarını tapır, get_team isə üzvlərini və ötürmələrini qaytarır."
+    }
   },
   "footer": {
     "howTo": "Necə...",

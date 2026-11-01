@@ -123,7 +123,12 @@
       "selectExample": "例を選択...",
       "aiGenerate": "AI生成",
       "aiPlaceholder": "必要なSQLクエリを説明してください...",
-      "generateSql": "SQL生成"
+      "generateSql": "SQL生成",
+      "listingQuery": {
+        "skills": "🧩 Agent Skills",
+        "bots": "🤖 ボットとアシスタント",
+        "teams": "👥 マルチエージェントチーム"
+      }
     },
     "edit": "プロンプトを編集",
     "delete": "プロンプトを削除",
@@ -1481,7 +1486,23 @@
     "categoryPlaceholder": "カテゴリースラッグを追加...",
     "tags": "タグ",
     "tagPlaceholder": "タグスラッグを追加...",
-    "generateApiKey": "MCP経由でプロンプトを保存するためのAPIキーを生成"
+    "generateApiKey": "MCP経由でプロンプトを保存するためのAPIキーを生成",
+    "clientNotes": {
+      "claudeDesktopRemote": "Claude Desktop で 設定 → コネクタ → カスタムコネクタを追加 を開き、この URL を貼り付けます。",
+      "claudeDesktopLocal": "claude_desktop_config.json（設定 → 開発者 → 設定を編集）に追加し、Claude Desktop を再起動します。",
+      "codex": "~/.codex/config.toml に追加します。Codex CLI と IDE 拡張機能で共有されます。",
+      "grokBotRemote": "この URL を Grok Bot のチャットに貼り付け、MCP サーバーへの接続を依頼します。",
+      "grokBotLocal": "チャットで Grok Bot に、これを実行するコマンド型 MCP サーバーの追加を依頼します。Bot のクラウドコンピューター上で実行されます。",
+      "openclaw": "openclaw.json に追加し、openclaw mcp doctor prompts-chat --probe で確認します。",
+      "devinRemote": "Devin CLI 用（~/.config/devin/mcp_config.json）。Devin Web アプリでは Customize → MCPs → Add custom MCP で HTTP を選び、サーバー URL を貼り付けます。",
+      "devinLocal": "Devin CLI 用（~/.config/devin/mcp_config.json）。Devin Web アプリでは STDIO トランスポートとこのコマンドでカスタム MCP を追加します。",
+      "urlOnlyApiKey": "このクライアントは URL のみを受け付けるため、API キーは含まれません。検索と読み取りのツールはキーなしで使えます。"
+    },
+    "resourceHint": {
+      "skills": "スキルも同じサーバーを使います：search_skills で Agent Skills を検索し、get_skill ですべてのファイルを取得します。",
+      "bots": "ボットも同じサーバーを使います：search_bots でボットを検索し、get_bot で指示とインストール方法を取得します。",
+      "teams": "チームも同じサーバーを使います：list_teams でボットチームを検索し、get_team でメンバーと引き継ぎを取得します。"
+    }
   },
   "footer": {
     "howTo": "使い方",

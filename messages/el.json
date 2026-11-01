@@ -123,7 +123,12 @@
       "selectExample": "Επιλέξτε παράδειγμα...",
       "aiGenerate": "Δημιουργία με AI",
       "aiPlaceholder": "Περιγράψτε το ερώτημα SQL που χρειάζεστε...",
-      "generateSql": "Δημιουργία SQL"
+      "generateSql": "Δημιουργία SQL",
+      "listingQuery": {
+        "skills": "🧩 Agent Skills",
+        "bots": "🤖 Bots και βοηθοί",
+        "teams": "👥 Ομάδες πολλαπλών πρακτόρων"
+      }
     },
     "edit": "Επεξεργασία Prompt",
     "delete": "Διαγραφή Prompt",
@@ -1481,7 +1486,23 @@
     "categoryPlaceholder": "Προσθέστε slug κατηγορίας...",
     "tags": "Ετικέτες",
     "tagPlaceholder": "Προσθέστε slug ετικέτας...",
-    "generateApiKey": "Δημιουργήστε κλειδί API για αποθήκευση prompts μέσω MCP"
+    "generateApiKey": "Δημιουργήστε κλειδί API για αποθήκευση prompts μέσω MCP",
+    "clientNotes": {
+      "claudeDesktopRemote": "Στο Claude Desktop, ανοίξτε Ρυθμίσεις → Συνδέσεις → Προσθήκη προσαρμοσμένης σύνδεσης και επικολλήστε αυτό το URL.",
+      "claudeDesktopLocal": "Προσθέστε το στο claude_desktop_config.json (Ρυθμίσεις → Developer → Επεξεργασία ρυθμίσεων) και επανεκκινήστε το Claude Desktop.",
+      "codex": "Προσθέστε το στο ~/.codex/config.toml. Το Codex CLI και η επέκταση IDE το μοιράζονται.",
+      "grokBotRemote": "Επικολλήστε αυτό το URL σε μια συνομιλία του Grok Bot και ζητήστε του να συνδέσει τον διακομιστή MCP.",
+      "grokBotLocal": "Ζητήστε από το Grok Bot στη συνομιλία να προσθέσει έναν διακομιστή MCP εντολής που εκτελεί αυτό. Τρέχει στον υπολογιστή cloud του Bot.",
+      "openclaw": "Προσθέστε το στο openclaw.json και ελέγξτε το με openclaw mcp doctor prompts-chat --probe.",
+      "devinRemote": "Για το Devin CLI (~/.config/devin/mcp_config.json). Στην εφαρμογή web του Devin, μεταβείτε στο Customize → MCPs → Add custom MCP, επιλέξτε HTTP και επικολλήστε το URL του διακομιστή.",
+      "devinLocal": "Για το Devin CLI (~/.config/devin/mcp_config.json). Στην εφαρμογή web του Devin, προσθέστε προσαρμοσμένο MCP με τη μεταφορά STDIO και αυτή την εντολή.",
+      "urlOnlyApiKey": "Αυτός ο πελάτης δέχεται μόνο URL, οπότε το κλειδί API σας δεν περιλαμβάνεται. Τα εργαλεία αναζήτησης και ανάγνωσης λειτουργούν χωρίς αυτό."
+    },
+    "resourceHint": {
+      "skills": "Οι δεξιότητες χρησιμοποιούν τον ίδιο διακομιστή: το search_skills βρίσκει Agent Skills και το get_skill επιστρέφει όλα τα αρχεία τους.",
+      "bots": "Τα bots χρησιμοποιούν τον ίδιο διακομιστή: το search_bots βρίσκει bots και το get_bot επιστρέφει τις οδηγίες και τις επιλογές εγκατάστασής τους.",
+      "teams": "Οι ομάδες χρησιμοποιούν τον ίδιο διακομιστή: το list_teams βρίσκει ομάδες bots και το get_team επιστρέφει τα μέλη και τις παραδόσεις τους."
+    }
   },
   "footer": {
     "howTo": "Πώς να ξεκινήσετε",

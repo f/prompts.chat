@@ -123,7 +123,12 @@
       "selectExample": "Beispiel auswählen...",
       "aiGenerate": "KI Generieren",
       "aiPlaceholder": "Beschreiben Sie die SQL-Abfrage, die Sie benötigen...",
-      "generateSql": "SQL generieren"
+      "generateSql": "SQL generieren",
+      "listingQuery": {
+        "skills": "🧩 Agent Skills",
+        "bots": "🤖 Bots & Assistenten",
+        "teams": "👥 Multi-Agent-Teams"
+      }
     },
     "edit": "Prompt bearbeiten",
     "delete": "Prompt löschen",
@@ -1481,7 +1486,23 @@
     "categoryPlaceholder": "Kategorie-Slug hinzufügen...",
     "tags": "Tags",
     "tagPlaceholder": "Tag-Slug hinzufügen...",
-    "generateApiKey": "API-Schlüssel generieren, um Prompts über MCP zu speichern"
+    "generateApiKey": "API-Schlüssel generieren, um Prompts über MCP zu speichern",
+    "clientNotes": {
+      "claudeDesktopRemote": "Öffne in Claude Desktop Einstellungen → Konnektoren → Benutzerdefinierten Konnektor hinzufügen und füge diese URL ein.",
+      "claudeDesktopLocal": "Zu claude_desktop_config.json hinzufügen (Einstellungen → Entwickler → Konfiguration bearbeiten) und Claude Desktop neu starten.",
+      "codex": "Zu ~/.codex/config.toml hinzufügen. Codex CLI und IDE-Erweiterung teilen sich die Datei.",
+      "grokBotRemote": "Füge diese URL in einen Grok-Bot-Chat ein und bitte ihn, den MCP-Server zu verbinden.",
+      "grokBotLocal": "Bitte Grok Bot im Chat, einen Befehls-MCP-Server hinzuzufügen, der dies ausführt. Er läuft auf dem Cloud-Computer des Bots.",
+      "openclaw": "Zu openclaw.json hinzufügen und mit openclaw mcp doctor prompts-chat --probe prüfen.",
+      "devinRemote": "Für die Devin CLI (~/.config/devin/mcp_config.json). In der Devin-Web-App unter Customize → MCPs → Add custom MCP HTTP wählen und die Server-URL einfügen.",
+      "devinLocal": "Für die Devin CLI (~/.config/devin/mcp_config.json). In der Devin-Web-App ein benutzerdefiniertes MCP mit STDIO-Transport und diesem Befehl hinzufügen.",
+      "urlOnlyApiKey": "Dieser Client akzeptiert nur eine URL, daher ist dein API-Schlüssel nicht enthalten. Such- und Lesetools funktionieren auch ohne."
+    },
+    "resourceHint": {
+      "skills": "Skills nutzen denselben Server: search_skills findet Agent Skills, get_skill liefert alle ihre Dateien.",
+      "bots": "Bots nutzen denselben Server: search_bots findet Bots, get_bot liefert ihre Anweisungen und Installationsoptionen.",
+      "teams": "Teams nutzen denselben Server: list_teams findet Bot-Teams, get_team liefert ihre Mitglieder und Übergaben."
+    }
   },
   "footer": {
     "howTo": "Wie man es macht",
