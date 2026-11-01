@@ -141,7 +141,7 @@ export function RunPromptButton({
       }
       analyticsPrompt.run(promptId, pendingPlatform.name);
     }
-  }, [variableValues, onVariablesFilled, pendingPlatform, getContentWithVariables, content, promptId]);
+  }, [variableValues, onVariablesFilled, pendingPlatform, getContentWithVariables, content, title, description, promptId]);
 
   const handleRun = (platform: Platform, baseUrl: string) => {
     // Check if there are any variables to fill
