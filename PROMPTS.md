@@ -215658,3 +215658,16 @@ Rules: no people, cars, boats, or animals; no text, signs, or logos; no fast cam
 
 </details>
 
+<details>
+<summary><strong>Red Covered Bridge Over a Misty River in Peak Autumn Foliage</strong></summary>
+
+## Red Covered Bridge Over a Misty River in Peak Autumn Foliage
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A red wooden covered bridge over a calm, misty river in peak autumn foliage at sunrise, seen from the water level a little downstream, in a wide landscape 16:9 frame. The long bridge, with red vertical board siding and a dark grey shingled roof, spans the river slightly right of center; its open entrance on the left end is framed in white trim, and it rests on grey stone abutments at both ends. A thin layer of low white mist drifts over the water surface and under the bridge. Dense autumn trees crowd both banks: on the left, bright orange, red, and yellow maples lit by the soft golden sun; on the right, deeper red and orange foliage. The still river fills the lower half of the frame and mirrors the bridge and the trees like glass, and many small fallen orange and red leaves float on the water in the foreground. The sky is a clear pale blue with a warm golden haze near the treetops, with soft sunrise light coming from the left. Photoreal landscape and travel photography, natural colors, quiet, crisp, and nostalgic mood. No people, no cars, no text, no logos.
+```
+
+</details>
+
