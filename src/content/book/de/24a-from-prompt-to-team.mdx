@@ -1,0 +1,381 @@
+Fünf Wörter tauchen immer wieder auf, wenn heute über KI gesprochen wird: **Prompt**, **Skill**, **Agent**, **Bot** und **Team**. Oft werden sie recht locker verwendet, manchmal sogar so, als bedeuteten sie alle dasselbe, und genau das macht sie schwerer zu lernen, als nötig wäre. Dieses Kapitel ist eine kleine Verschnaufpause vor den Kapiteln, die noch kommen. Wir bringen die fünf Wörter in eine Reihenfolge, vom einfachsten bis zum aufwendigsten, und schauen uns an, was jedes von ihnen im Kern eigentlich ist.
+
+Die Reihenfolge ist wichtig, denn die fünf Wörter bilden eine Leiter. Jede Sprosse behält alles, was die Sprosse darunter schon hatte, und fügt genau eine neue Sache hinzu. Wer versteht, was auf jeder Stufe dazukommt, versteht das ganze Bild.
+
+Damit wir auf dem Boden bleiben, begleiten wir eine ganz alltägliche Szene die ganze Leiter hinauf: **das Abendessen auf den Tisch bringen**. Wer schon einmal für eine Familie gekocht hat oder bekocht worden ist, weiß bereits, wie das läuft.
+
+<div className="my-8 p-6 bg-muted/30 rounded-xl border">
+  <p className="text-sm font-semibold text-center text-muted-foreground m-0! mb-4!">Die Leiter: Jede Sprosse fügt eine Sache hinzu</p>
+  <div className="flex flex-col items-center gap-2 max-w-md mx-auto">
+    <div className="w-full px-4 py-3 bg-amber-100 dark:bg-amber-900/50 border border-amber-300 dark:border-amber-700 rounded-lg text-center">
+      <p className="font-semibold text-amber-800 dark:text-amber-200 m-0!">1. Prompt</p>
+      <p className="text-xs text-amber-700 dark:text-amber-300 m-0!">Eine Anweisung, eine Antwort</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">plus eine gespeicherte Methode</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-purple-100 dark:bg-purple-900/50 border border-purple-300 dark:border-purple-700 rounded-lg text-center">
+      <p className="font-semibold text-purple-800 dark:text-purple-200 m-0!">2. Skill</p>
+      <p className="text-xs text-purple-700 dark:text-purple-300 m-0!">Wiederverwendbare Anweisungen, geladen bei Bedarf</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">plus Werkzeuge und eine Schleife</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border border-blue-300 dark:border-blue-700 rounded-lg text-center">
+      <p className="font-semibold text-blue-800 dark:text-blue-200 m-0!">3. Agent</p>
+      <p className="text-xs text-blue-700 dark:text-blue-300 m-0!">Arbeitet sich Schritt für Schritt auf ein Ziel zu</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">plus Zeit: Identität, Gedächtnis, Routinen</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-green-100 dark:bg-green-900/50 border border-green-300 dark:border-green-700 rounded-lg text-center">
+      <p className="font-semibold text-green-800 dark:text-green-200 m-0!">4. Bot</p>
+      <p className="text-xs text-green-700 dark:text-green-300 m-0!">Ein Agent, der bleibt und seine Aufgabe behält</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">plus weitere Mitglieder und Übergaben</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-rose-100 dark:bg-rose-900/50 border border-rose-300 dark:border-rose-700 rounded-lg text-center">
+      <p className="font-semibold text-rose-800 dark:text-rose-200 m-0!">5. Team</p>
+      <p className="text-xs text-rose-700 dark:text-rose-300 m-0!">Mehrere Mitglieder mit Rollen, die Arbeit weiterreichen</p>
+    </div>
+  </div>
+</div>
+
+## Erste Sprosse: Der Prompt
+
+Stell dir vor, du hast Hunger und fragst eine Freundin, die gut kochen kann: „Kannst du mir sagen, wie man schnell eine Tomatensuppe macht?“ Sie antwortet, und damit ist die Sache erledigt. Du hast eine Frage gestellt und eine Antwort bekommen.
+
+Das ist ein **Prompt**. Gemeint ist der Text, den du an ein KI-Modell schickst: eine Frage, eine Bitte, eine Anweisung. Wie wir in [KI-Modelle Verstehen](/book/01-understanding-ai-models) gesehen haben, liest das Modell diesen Text und schreibt eine Antwort, Stückchen für Stückchen, indem es vorhersagt, was als Nächstes kommen sollte. Dann hört es auf und wartet. Es geht nirgendwohin, öffnet nichts und erinnert sich morgen nicht an dich. Wenn eine Chat-App sich scheinbar an den früheren Teil eures Gesprächs „erinnert“, dann liegt das daran, dass die App bei jeder neuen Nachricht still und leise das ganze Gespräch noch einmal an das Modell schickt. Das Modell selbst fängt jedes Mal von vorn an.
+
+Fast alles in diesem Buch hat sich bisher um diese erste Sprosse gedreht, und das aus gutem Grund. Jede Sprosse darüber besteht nämlich immer noch aus Prompts. Ein klarer Prompt ist der Ziegelstein, aus dem alles andere gebaut wird.
+
+<InfoGrid columns={2} items={[
+  { label: "Was es ist", description: "Ein Stück Text, das du an ein KI-Modell schickst. Das Modell liest es und schreibt eine Antwort zurück.", color: "amber" },
+  { label: "Ein kleines Beispiel", description: "Eine Bitte wie: Gib mir ein einfaches Rezept für Tomatensuppe für vier Personen, mit Zutaten, die in den meisten Küchen schon da sind. Die Bitte um eine Zusammenfassung einer langen E-Mail oder um zehn Ideen für einen Kindergeburtstag funktioniert genauso.", color: "amber" },
+  { label: "Nimm es, wenn", description: "du einmal eine Antwort brauchst und selbst dabei bist, um sie zu lesen und zu entscheiden, was als Nächstes passiert.", color: "amber" },
+  { label: "Was es nicht ist", description: "Ein Prompt handelt nicht in der Welt, arbeitet nach seiner Antwort nicht weiter und erinnert sich nächste Woche nicht an dich.", color: "amber" }
+]} />
+
+<TryIt prompt="Erkläre, wie eine Tomate von grün zu rot wird, und zwar so, dass ein siebenjähriges Kind Spaß daran hat. Verwende einen kurzen Vergleich und bleib unter 80 Wörtern." description="Eine Anweisung, eine Antwort. Achte darauf, dass das Modell antwortet und dann einfach wartet." />
+
+## Zweite Sprosse: Der Skill
+
+Stell dir jetzt vor, deine Freundin bekommt diese Frage jede Woche gestellt. Statt jedes Mal alles von vorn zu erklären, schreibt sie die Methode auf eine Rezeptkarte und steckt sie in einen Karteikasten in der Küche. Auf der Karte steht, wofür das Gericht gedacht ist, welche Zutaten hineingehören, welche Schritte in welcher Reihenfolge kommen und welche kleinen Kniffe dafür sorgen, dass es gelingt. Wann immer jemand Tomatensuppe möchte, kommt die Karte aus dem Kasten. Den Rest der Zeit bleibt sie, wo sie ist.
+
+Das ist ein **Skill**. Ein Skill ist ein gespeichertes, sauber verpacktes Bündel von Anweisungen, oft zusammen mit ein paar Hilfsdateien, das ein Modell laden kann, wenn eine Aufgabe es verlangt. In der Praxis ist das meist ein kleiner Ordner. Darin liegt eine Hauptdatei, oft `SKILL.md` genannt, die mit einem kurzen Namen und einer einzeiligen Beschreibung beginnt, gefolgt von der vollständigen Methode. Der Ordner kann außerdem Beispiele, Checklisten, Vorlagen oder kleine Skripte enthalten.
+
+Und hier kommt der clevere Teil. Das Modell liest nicht ständig jeden Skill; damit würde es seinen Kontext mit Dingen füllen, die es gar nicht braucht. Zuerst sieht es nur die kurzen Beschreibungen, so wie die Beschriftungen auf den Rezeptkarten. Passt eine Anfrage zu einer davon, wird der vollständige Skill in den Kontext geladen, und das Modell folgt ihm. Auch ein Skill besteht noch aus Prompts, aber aus Prompts, die du einmal geschrieben, ausprobiert und gespeichert hast, sodass du sie nicht noch einmal tippen musst.
+
+Hier ist ein kleiner Skill, wie ihn Eltern oder Lehrkräfte schreiben könnten:
+
+```markdown
+---
+name: homework-helper
+description: Hilf einem Kind bei den Hausaufgaben, indem du lenkende Fragen stellst, statt die Lösung zu verraten.
+---
+
+# Hausaufgabenhelfer
+
+Wenn ein Kind um Hilfe bei den Hausaufgaben bittet:
+1. Frag, was es über die Aufgabe schon weiß.
+2. Gib immer nur einen kleinen Hinweis, nie die ganze Lösung.
+3. Kommt es nach drei Hinweisen nicht weiter, zeig ein ähnliches Beispiel und lass es noch einmal probieren.
+4. Lobe die Mühe, nicht nur die richtige Antwort.
+5. Verwende kurze Sätze und Wörter, die ein zehnjähriges Kind kennt.
+```
+
+<Compare
+  before={{ label: "Ein Prompt, den du jedes Mal tippst", content: "Hilf meinem Sohn bei den Matheaufgaben, aber verrate ihm nicht die Lösung, stell ihm Fragen, gib kleine Hinweise, halte es einfach, lobe seine Mühe ..." }}
+  after={{ label: "Ein Skill, den du einmal schreibst", content: "Der Skill homework-helper ist gespeichert. Sobald eine Hausaufgabenfrage auftaucht, lädt der Assistent ihn und folgt jedes Mal derselben sorgfältigen Methode." }}
+/>
+
+Mehrere KI-Assistenten und Programmierwerkzeuge verschiedener Firmen können inzwischen Skills lesen, die in solchen Ordnern verpackt sind, und viele Leute teilen sie miteinander. Die Einzelheiten unterscheiden sich von Werkzeug zu Werkzeug, aber die Idee ist überall dieselbe: eine Methode, einmal aufgeschrieben und bereit, hervorgeholt zu werden, wenn sie passt. Viel ausführlicher schauen wir uns Skills in [Agenten & Skills](/book/25-agents-and-skills) an.
+
+<InfoGrid columns={2} items={[
+  { label: "Was es ist", description: "Ein wiederverwendbares Paket aus Anweisungen und manchmal Hilfsdateien, das ein Modell nur lädt, wenn eine Aufgabe es braucht.", color: "purple" },
+  { label: "Ein kleines Beispiel", description: "Ein Hausaufgaben-Skill, ein Skill für höfliche E-Mails an die Schule oder ein Skill, der Notizen in einen wöchentlichen Klassenbrief verwandelt.", color: "purple" },
+  { label: "Nimm es, wenn", description: "du immer wieder dieselben ausführlichen Anweisungen gibst und die Arbeit jedes Mal auf dieselbe sorgfältige Weise erledigt haben möchtest.", color: "purple" },
+  { label: "Was es nicht ist", description: "Ein Skill tut von allein gar nichts. Wie eine Rezeptkarte braucht er jemanden, der ihn hervorholt und befolgt. Er ist auch kein neues Modell und kein neues Wissen, das fest in die KI eingebaut wäre.", color: "purple" }
+]} />
+
+## Dritte Sprosse: Der Agent
+
+Bis hierher redet die Köchin nur. Jetzt stell dir vor, du sagst: „Mach bitte bis sieben Uhr ein Abendessen für vier Personen fertig.“ Diesmal geht deine Freundin in die Küche. Sie öffnet den Kühlschrank, um zu sehen, was da ist, merkt, dass keine Zwiebeln mehr da sind, schaut auf die Uhr, sucht sich eine Rezeptkarte aus, fängt an zu kochen, probiert die Suppe, gibt etwas Salz dazu, probiert noch einmal und deckt schließlich den Tisch. Niemand hat ihr die einzelnen Schritte vorgegeben. Du hast ihr ein **Ziel** genannt, und sie hat sich die Schritte selbst erarbeitet: durch Hinschauen, Handeln und Überprüfen.
+
+Das ist ein **Agent**. Ein Agent ist ein KI-Modell, das in einer **Schleife** mit **Werkzeugen** auf ein Ziel hinarbeitet. Die Werkzeuge sind die Hände der Köchin: eine Datei lesen, im Web suchen, einen Kalender öffnen, etwas ausrechnen, einen Entwurf verschicken. Die Schleife ist der Rhythmus aus Hinschauen, Handeln und Überprüfen.
+
+Der Mechanismus ist einfacher, als er klingt. Ein Stück Software rund um das Modell, das dieses Buch den [Harness](/book/26-the-harnesses) nennt, gibt dem Modell ein Ziel und eine Liste von Werkzeugen, die es benutzen darf. Das Modell fasst selbst nichts direkt an. Stattdessen antwortet es mit einer Bitte wie „Benutze das Wetterwerkzeug für Samstag in Lissabon“. Der Harness führt dieses Werkzeug aus und legt das Ergebnis zurück ins Gespräch. Das Modell liest das Ergebnis und entscheidet über den nächsten Schritt. Das wiederholt sich, bis das Ziel erreicht ist oder eine Grenze Halt sagt. Jede Runde dieser Schleife ist immer noch ein Prompt und eine Antwort. Zum Agenten wird das Ganze dadurch, dass die Antworten zu Handlungen führen und die Ergebnisse dieser Handlungen zur nächsten Antwort. Diesem Rhythmus sind wir schon im Kapitel [Loop-Engineering](/book/14a-loop-engineering) begegnet.
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col items-center gap-2 max-w-sm mx-auto">
+    <div className="w-full px-4 py-2 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">Ziel: Abendessen für vier um 19 Uhr</p>
+    </div>
+    <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+    <div className="w-full p-3 border border-dashed rounded-lg flex flex-col items-center gap-2">
+      <div className="w-full px-3 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded text-center">
+        <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">Denken: Was mache ich als Nächstes?</p>
+      </div>
+      <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+      <div className="w-full px-3 py-2 bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800 rounded text-center">
+        <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">Handeln: ein Werkzeug benutzen (Kühlschrank öffnen)</p>
+      </div>
+      <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+      <div className="w-full px-3 py-2 bg-teal-100 dark:bg-teal-900/50 border border-teal-200 dark:border-teal-800 rounded text-center">
+        <p className="text-sm font-medium text-teal-700 dark:text-teal-300 m-0!">Prüfen: das Ergebnis ansehen (keine Zwiebeln)</p>
+      </div>
+      <p className="text-xs text-muted-foreground m-0!">↻ wiederholen, bis es fertig ist oder eine Grenze Halt sagt</p>
+    </div>
+    <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+    <div className="w-full px-4 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">Fertig: Das Essen steht auf dem Tisch</p>
+    </div>
+  </div>
+</div>
+
+Vielleicht hast du schon mit Agenten gearbeitet, ohne sie so zu nennen. Ein Programmierassistent, der dein Projekt liest, eine Datei bearbeitet, die Tests laufen lässt und behebt, was schiefgegangen ist, ist ein Agent. Genauso ein Recherchemodus in einer Chat-App, der viele Seiten durchsucht, bevor er seinen Bericht schreibt, oder ein Browser-Assistent, der ein Formular für dich ausfüllt. Agenten benutzen oft auch Skills: Die Köchin in unserer Küche greift immer noch zur Rezeptkarte, wenn sie passt.
+
+<InfoGrid columns={2} items={[
+  { label: "Was es ist", description: "Ein KI-Modell in einer Schleife mit Werkzeugen. Es schaut hin, handelt, prüft das Ergebnis und macht weiter, bis das Ziel erreicht ist oder es zum Aufhören aufgefordert wird.", color: "blue" },
+  { label: "Ein kleines Beispiel", description: "Du bittest ihn, ein Picknick am Samstag zu planen. Er schaut sich die Wettervorhersage an, wirft einen Blick in deinen Kalender, sucht einen Park aus und schreibt eine Einkaufsliste.", color: "blue" },
+  { label: "Nimm es, wenn", description: "die Aufgabe mehrere Schritte hat, echte Informationen oder Handlungen braucht und du nicht ohne Weiteres jeden Schritt im Voraus aufschreiben kannst.", color: "blue" },
+  { label: "Was es nicht ist", description: "Ein Agent ist kein klügeres Modell; er ist dieselbe Art von Modell, nur mit Händen und einer Schleife. Meist arbeitet er nur, solange du ihn geöffnet hast, und vergisst alles, sobald die Sitzung endet.", color: "blue" }
+]} />
+
+<Callout type="warning" title="Hände können Fehler machen">
+Ein Prompt kann dir höchstens eine falsche Antwort geben. Ein Agent kann eine falsche Handlung ausführen, etwa die falsche Datei löschen oder eine Nachricht zu früh abschicken. Deshalb fragen gute Agenten nach, bevor sie etwas tun, das sich schwer rückgängig machen lässt, und deshalb solltest du ihnen nur die Werkzeuge geben, die die Aufgabe wirklich braucht.
+</Callout>
+
+## Vierte Sprosse: Der Bot
+
+Unsere Köchin ist sehr gut, aber jeden Abend kommt sie, als wäre es das erste Mal. Sie muss wieder fragen, wer gegen Erdnüsse allergisch ist, wo der große Topf steht und was es gestern gab. Und sie kommt nur, wenn du sie rufst.
+
+Stell dir jetzt eine Köchin vor, die **mit der Familie zusammenlebt**. Sie hat einen Namen und eine klare Aufgabe: „die Essensplanerin der Familie“. Sie führt ein Notizbuch über alles, was sie gelernt hat: Ada ist gegen Erdnüsse allergisch, Opa mag es nicht scharf, donnerstags gibt es Pizza. Sie hat einen Schlüssel zur Speisekammer und Zugang zum Konto beim Lebensmittel-Lieferdienst. Und jeden Sonntag um sechs plant sie, ohne dass jemand darum bittet, die Abendessen für die Woche, schaut im Familienkalender nach Abenden, an denen viel los ist, und hängt eine Einkaufsliste an den Kühlschrank, die ein Erwachsener noch absegnen muss.
+
+Das ist ein **Bot**, in dem Sinn, in dem dieses Buch das Wort verwendet: ein **persistenter Agent**. Alles von der Agenten-Sprosse ist noch da, das Modell, die Werkzeuge, die Schleife. Was der Bot hinzufügt, ist **Zeit**. Unter der Haube bedeutet das meist vier zusätzliche Bausteine:
+
+<InfoGrid items={[
+  { label: "Identität", description: "Ein dauerhafter Name und eine dauerhafte Rolle, festgehalten in seinen ständigen Anweisungen, damit er weiß, welche Details für seine Aufgabe zählen.", color: "green" },
+  { label: "Gedächtnis", description: "Notizen, die außerhalb des Modells gespeichert werden, oft in einfachen Dateien oder einer kleinen Datenbank, und zu Beginn jeder Sitzung wieder in den Kontext geladen werden. Das Modell selbst vergisst weiterhin; das Erinnern übernimmt das Notizbuch.", color: "green" },
+  { label: "Routinen", description: "Aufgaben, die nach einem Zeitplan beginnen (jeden Sonntag um 18 Uhr) oder wenn etwas passiert (eine neue E-Mail kommt an), ohne dass du einen neuen Prompt schreibst.", color: "green" },
+  { label: "Konnektoren und ein Arbeitsplatz", description: "Dauerhafter, erlaubter Zugang zu Apps und Konten, dazu ein Computer oder Server, der eingeschaltet bleibt, während du weg bist.", color: "green" }
+]} />
+
+<InfoGrid columns={2} items={[
+  { label: "Was es ist", description: "Ein Agent, der bleibt: Er behält eine Rolle, erinnert sich über Gespräche hinweg und kann nach seinem eigenen Zeitplan mit der Arbeit beginnen.", color: "green" },
+  { label: "Ein kleines Beispiel", description: "Ein Essensplanungs-Bot, der jeden Sonntagabend die Woche plant, Erdnüsse meidet und ein Elternteil bittet, die Einkaufsliste freizugeben.", color: "green" },
+  { label: "Nimm es, wenn", description: "dieselbe Verantwortung immer wiederkehrt und die Arbeit auch dann weiterlaufen soll, wenn du gerade nicht am Bildschirm sitzt.", color: "green" },
+  { label: "Was es nicht ist", description: "Kein Mensch und kein Geist, der sich an alles erinnert. Er erinnert sich nur an das, was gespeichert wurde, und er kann sich trotzdem irren. Er ist auch nicht der geskriptete Chatbot älterer Websites, der bloß festen Menüs folgte.", color: "green" }
+]} />
+
+<Callout type="info" title="Ein altes Wort mit neuer Bedeutung">
+Jahrelang hieß „Bot“ fast jedes automatische Programm: ein Skript, das den Wetterbericht postet, eine Figur in einem Spiel, ein Hilfefenster mit vier festen Knöpfen. Viele davon hatten überhaupt kein KI-Modell. In diesem Buch meint Bot etwas Genaueres: einen Agenten, der bestehen bleibt, mit eigener Identität, eigenem Gedächtnis und eigenen Routinen. Wenn dir das Wort anderswo begegnet, lohnt sich die Frage, welche Art gemeint ist.
+</Callout>
+
+Weil ein Bot arbeitet, während niemand zusieht, sind die Regeln rund um ihn wichtiger als auf jeder Sprosse darunter. Ein guter Bot entwirft und schlägt frei vor, wartet aber auf einen Menschen, bevor er irgendetwas verschickt, kauft, löscht oder veröffentlicht. Das Kapitel [Always-On-Bots: Agenten, die weiterarbeiten](/book/28-persistent-bots) schaut sich Gedächtnis, Routinen und diese Freigaben genau an.
+
+## Fünfte Sprosse: Das Team
+
+Eine Köchin kann ein Familienessen zubereiten. Aber denk an eine geschäftige Restaurantküche. Eine Person nimmt die Bestellung auf. Eine bereitet das Gemüse vor. Eine kocht das Hauptgericht. Eine kontrolliert jeden Teller, bevor er die Küche verlässt. Alle haben eine klare Aufgabe, und die Arbeit wandert auf bekannte Weise zwischen ihnen hin und her: Der Bon geht an den Koch, der fertige Teller an die Person, die ihn kontrolliert. Niemand muss alles wissen; jeder muss seinen Teil kennen und wissen, was er an wen weitergibt.
+
+Das ist ein **Team**: mehrere Bots oder Agenten, jeder mit einer **Rolle**, verbunden durch **Übergaben** und unterwegs zu einem gemeinsamen **Zweck**. Eine Übergabe ist der Moment, in dem ein Mitglied ein benanntes Stück Arbeit an das nächste weiterreicht, so wie einen Bon oder einen fertigen Teller.
+
+Beim Mechanismus geht es vor allem darum, was jedes Mitglied zu sehen bekommt. Jedes Mitglied hat eigene Anweisungen für seine Rolle. Wenn es fertig ist, reicht es ein bestimmtes Ergebnis weiter, etwa eine Liste, einen Entwurf oder einen Bericht, und das nächste Mitglied bekommt nur das, nicht das ganze Gespräch, aus dem es entstanden ist. So bleibt jedes Mitglied bei der Sache, und Fehler lassen sich leichter zurückverfolgen: Ist das fertige Gericht zu salzig, kannst du jeden Teller entlang der Reihe prüfen und sehen, wo das Salz hineingekommen ist.
+
+Eine Schule könnte mit einem kleinen Team wie diesem einen wöchentlichen Elternbrief zusammenstellen:
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col items-center gap-2 max-w-sm mx-auto">
+    <div className="w-full px-4 py-2 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">Sammler</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">Sammelt Neuigkeiten aus jeder Klasse</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">übergibt: eine Liste mit Neuigkeiten</p>
+    </div>
+    <div className="w-full px-4 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">Schreiber</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">Macht aus der Liste einen freundlichen Entwurf</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">übergibt: einen Entwurf des Elternbriefs</p>
+    </div>
+    <div className="w-full px-4 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">Prüfer</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0!">Prüft Namen, Daten und Tonfall</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">übergibt: einen geprüften Entwurf</p>
+    </div>
+    <div className="w-full px-4 py-2 bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">Lehrkraft</p>
+      <p className="text-xs text-amber-600 dark:text-amber-400 m-0!">Gibt frei, bevor irgendetwas verschickt wird</p>
+    </div>
+  </div>
+</div>
+
+Schau, wer am Ende der Reihe steht: ein Mensch. In einem gut durchdachten Team führt mindestens eine Übergabe zu einem Menschen, bevor irgendetwas das Team verlässt.
+
+<InfoGrid columns={2} items={[
+  { label: "Was es ist", description: "Mehrere Bots oder Agenten mit klaren Rollen, die einander benannte Arbeitsstücke weiterreichen, alle für einen gemeinsamen Zweck.", color: "rose" },
+  { label: "Ein kleines Beispiel", description: "Ein Sammler, ein Schreiber und ein Prüfer, die den Klassenbrief vorbereiten, während eine Lehrkraft die Endfassung freigibt.", color: "rose" },
+  { label: "Nimm es, wenn", description: "die Arbeit sich von selbst in verschiedene Aufgaben aufteilt, jede Aufgabe klar genug ist, um sie über das zu beschreiben, was sie bekommt und was sie weitergibt, und ein einzelnes Mitglied immer wieder durcheinanderkommt.", color: "rose" },
+  { label: "Was es nicht ist", description: "Keine Horde von Agenten, die die Dinge unter sich ausmachen sollen, und nicht automatisch besser als ein einzelner. Jedes zusätzliche Mitglied bringt Übergaben mit, und an jeder Übergabe kann Bedeutung verloren gehen.", color: "rose" }
+]} />
+
+## Was ist das hier?
+
+Jetzt, wo wir die ganze Leiter hinaufgestiegen sind, üben wir, die Sprossen auseinanderzuhalten. Frag dich bei jeder Situation, was hinzukommt: eine gespeicherte Methode, Werkzeuge und eine Schleife, Zeit oder weitere Mitglieder.
+
+<Quiz
+  question="Eine Lehrerin tippt: Schreib drei lustige Fragen über Vulkane für eine Klasse von Neunjährigen. Die KI antwortet, und das war es. Was ist das?"
+  options={["Ein Prompt", "Ein Skill", "Ein Agent", "Ein Bot"]}
+  correctIndex={0}
+  explanation="Eine Anweisung, eine Antwort, und danach passiert nichts mehr. Das ist ein Prompt. Hier ist er genau das richtige Werkzeug, denn die Lehrerin ist ja selbst da, um die Fragen zu lesen und zu verwenden."
+/>
+
+<Quiz
+  question="Ein Vater speichert einen Ordner namens bedtime-stories mit Anweisungen: immer sanft, kürzer als fünf Minuten, und am Ende schläft das Kind ein. Der Assistent verwendet ihn, wann immer jemand um eine Gutenachtgeschichte bittet. Was ist das?"
+  options={["Ein Prompt", "Ein Skill", "Ein Bot", "Ein Team"]}
+  correctIndex={1}
+  explanation="Es ist eine gespeicherte, wiederverwendbare Methode, die der Assistent nur lädt, wenn eine Gutenachtgeschichte gewünscht wird. Von selbst tut sie nichts, und sie hat weder einen Zeitplan noch ein eigenes Gedächtnis. Damit ist es ein Skill."
+/>
+
+<Quiz
+  question="Du bittest einen Assistenten, ein Museum in deiner Stadt zu finden, das montags geöffnet hat und für kleine Kinder geeignet ist. Er durchsucht mehrere Websites, vergleicht die Öffnungszeiten, prüft die Eintrittspreise und nennt dir seine Wahl mit Links. Was ist das?"
+  options={["Ein Prompt", "Ein Skill", "Ein Agent", "Ein Team"]}
+  correctIndex={2}
+  explanation="Er hat Werkzeuge (die Websuche) in einer Schleife benutzt und mehrmals nachgeschaut und geprüft, bevor er fertig war. Das ist ein Agent. Er hat gearbeitet, während du dabei warst, und er wird das nächste Woche nicht von selbst wieder tun."
+/>
+
+<Quiz
+  question="Ein Assistent namens Bücherei-Helfer merkt sich, welche Bücher jedes Kind der Klasse schon gelesen hat. Jeden Freitagmorgen schlägt er, ohne dass jemand fragt, die Bücher für die nächste Woche vor und schickt die Liste der Lehrerin zur Freigabe. Was ist das?"
+  options={["Ein Skill", "Ein Agent", "Ein Bot", "Ein Team"]}
+  correctIndex={2}
+  explanation="Er hat einen Namen und eine Aufgabe, er behält sein Gedächtnis über Wochen und beginnt nach seinem eigenen Zeitplan. Genau das fügt ein Bot einem Agenten hinzu."
+/>
+
+<Quiz
+  question="Ein Assistent sammelt Fotos von einem Schulausflug, ein zweiter schreibt Bildunterschriften, und ein dritter prüft, dass nirgends der vollständige Name eines Kindes auftaucht. Dann geht das Album an die Schulleitung. Was ist das?"
+  options={["Ein Agent", "Ein Bot", "Ein Skill", "Ein Team"]}
+  correctIndex={3}
+  explanation="Mehrere Mitglieder mit verschiedenen Rollen, von denen jedes ein benanntes Stück Arbeit an das nächste weitergibt, und am Ende gibt ein Mensch frei. Das ist ein Team."
+/>
+
+## Alle fünf nebeneinander
+
+Hier ist die ganze Leiter auf einen Blick. Lies jede Zeile von links nach rechts und achte darauf, wie jede Spalte behält, was davor kam.
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Frage</th>
+      <th scope="col">Prompt</th>
+      <th scope="col">Skill</th>
+      <th scope="col">Agent</th>
+      <th scope="col">Bot</th>
+      <th scope="col">Team</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Was ist es, in einem Satz?</td>
+      <td>Eine Anweisung, eine Antwort</td>
+      <td>Eine gespeicherte Methode, geladen bei Bedarf</td>
+      <td>Ein Modell in einer Schleife mit Werkzeugen</td>
+      <td>Ein Agent, der bleibt</td>
+      <td>Mehrere Mitglieder mit Rollen</td>
+    </tr>
+    <tr>
+      <td>Was kommt hinzu?</td>
+      <td>Der Ausgangspunkt</td>
+      <td>Wiederverwendung</td>
+      <td>Handlungen</td>
+      <td>Zeit</td>
+      <td>Arbeitsteilung</td>
+    </tr>
+    <tr>
+      <td>In der Küche</td>
+      <td>Nach einem Rezept fragen</td>
+      <td>Eine Rezeptkarte im Kasten</td>
+      <td>Eine Köchin, die heute das Abendessen macht</td>
+      <td>Die Familienköchin, die jede Woche plant</td>
+      <td>Eine Restaurantküche</td>
+    </tr>
+    <tr>
+      <td>Kann es handeln?</td>
+      <td>Nein, es antwortet nur</td>
+      <td>Nein, es leitet nur an</td>
+      <td>Ja, mit seinen Werkzeugen</td>
+      <td>Ja, sogar während du weg bist</td>
+      <td>Ja, jedes Mitglied in seiner Rolle</td>
+    </tr>
+    <tr>
+      <td>Erinnert es sich?</td>
+      <td>Nur an dieses Gespräch</td>
+      <td>Man erinnert sich an ihn, aber er selbst erinnert sich nicht</td>
+      <td>Nur an diese Sitzung</td>
+      <td>Ja, über ein gespeichertes Gedächtnis</td>
+      <td>Jedes Mitglied hat sein eigenes</td>
+    </tr>
+    <tr>
+      <td>Wer setzt es in Gang?</td>
+      <td>Du</td>
+      <td>Das Modell, wenn eine Aufgabe passt</td>
+      <td>Du, mit einem Ziel</td>
+      <td>Du, ein Zeitplan oder ein Ereignis</td>
+      <td>Ein Zweck, danach jede Übergabe</td>
+    </tr>
+  </tbody>
+</table>
+
+## Nimm die einfachste Sprosse, die reicht
+
+Man ist leicht versucht zu glauben, dass weiter oben auf der Leiter auch besser bedeutet. Das stimmt nicht. Jede Sprosse bringt mehr Kraft, aber auch mehr Kosten, mehr Wartezeit und neue Möglichkeiten, dass etwas schiefgeht. Ein Prompt kann eine falsche Antwort geben. Ein Agent kann eine falsche Handlung ausführen. Ein Bot kann eine falsche Handlung um drei Uhr nachts ausführen. Ein Team kann einen Fehler von Mitglied zu Mitglied weiterreichen, bis er aussieht wie eine Tatsache.
+
+Die kluge Gewohnheit ist deshalb die, die gute Köchinnen und Köche ohnehin haben: Nimm das einfachste Werkzeug, das die Aufgabe erledigt. Für ein gekochtes Ei braucht es keine Restaurantküche. Fang unten an der Leiter an und steig erst dann eine Sprosse höher, wenn die, auf der du stehst, eindeutig nicht mehr reicht.
+
+<InfoGrid items={[
+  { label: "Fang mit einem Prompt an", description: "Wenn du eine Antwort brauchst und selbst da bist, um sie zu lesen, genügt ein klarer Prompt.", color: "amber" },
+  { label: "Steig zum Skill auf", description: "Wenn du merkst, dass du immer wieder dieselben langen Anweisungen tippst.", color: "purple" },
+  { label: "Steig zum Agenten auf", description: "Wenn die Arbeit echte Informationen oder echte Handlungen braucht, in mehreren Schritten, die du nicht im Voraus aufzählen kannst.", color: "blue" },
+  { label: "Steig zum Bot auf", description: "Wenn dieselbe Verantwortung nach einem Zeitplan wiederkehrt und weiterlaufen soll, während du weg bist.", color: "green" },
+  { label: "Steig zum Team auf", description: "Wenn ein einzelner Bot wirklich unterschiedliche Aufgaben immer wieder durcheinanderbringt und sich jede Aufgabe über das beschreiben lässt, was sie bekommt und was sie weitergibt.", color: "rose" }
+]} />
+
+<Checklist
+  title="Bevor du eine Sprosse höher steigst"
+  items={[
+    { text: "Ich habe die Sprosse darunter ausprobiert und kann genau sagen, was sie nicht geschafft hat" },
+    { text: "Ich kann das gewünschte Ergebnis in ein oder zwei Sätzen beschreiben" },
+    { text: "Ich weiß, welche Werkzeuge oder Konten die neue Sprosse wirklich braucht, und nicht mehr" },
+    { text: "Alles, was sich schwer rückgängig machen lässt, wartet auf die Freigabe durch einen Menschen" },
+    { text: "Ich weiß, wie ich überprüfen werde, ob die Arbeit wirklich gut erledigt wurde" },
+    { text: "Ich habe eine Möglichkeit, es anzuhalten oder zu stoppen, wenn etwas schiefgeht" }
+  ]}
+/>
+
+Wenn du dir nicht sicher bist, welche Sprosse du brauchst, kannst du eine KI bitten, es mit dir zu durchdenken. Der Prompt unten ist selbst ein gutes Beispiel für die erste Sprosse:
+
+<TryIt compact prompt={`Ich möchte Hilfe bei dieser Aufgabe: \${task:jede Woche gesunde Pausenbrote für meine zwei Kinder planen}.
+
+Nutze diese Leiter, vom Einfachsten zum Aufwendigsten:
+1. Prompt: eine Anweisung, eine Antwort
+2. Skill: eine gespeicherte Methode, die die KI bei Bedarf lädt
+3. Agent: eine KI, die in einer Schleife Werkzeuge benutzt, um ein Ziel zu erreichen
+4. Bot: ein Agent, der bleibt, mit Gedächtnis und Routinen
+5. Team: mehrere Agenten oder Bots mit Rollen und Übergaben
+
+Sag mir, welche Sprosse die einfachste wäre, die für meine Aufgabe gut funktioniert, und warum. Sag mir dann, was sich ändern müsste, bevor ich die nächsthöhere Sprosse bräuchte. Verwende einfache, freundliche Sprache.`} />
+
+Die fünf Wörter müssen jetzt nicht mehr ineinander verschwimmen. Ein **Prompt** fragt. Ein **Skill** weiß, wie es geht. Ein **Agent** handelt. Ein **Bot** bleibt. Ein **Team** teilt sich die Arbeit. Und auf jeder Sprosse ist das Handwerk dasselbe, mit dem dieses Buch begonnen hat: klar sagen, was du willst, wo die Grenzen liegen und woran du erkennst, dass es gut gelaufen ist.
+
+Die nächsten Kapitel steigen die Leiter im Detail hinauf. [Agenten & Skills](/book/25-agents-and-skills) zeigt, wie Skills geschrieben werden und wie Agenten sie benutzen. [Werkzeuge, MCP und Konnektoren](/book/27-tools-mcp-connectors) betrachtet die Hände, mit denen ein Agent arbeitet, und [Die Harnesses](/book/26-the-harnesses) die Software, die seine Schleife antreibt. Zum Schluss begleitet [Always-On-Bots: Agenten, die weiterarbeiten](/book/28-persistent-bots) Agenten, die bleiben, und die Teams, die sie bilden.

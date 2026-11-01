@@ -1580,7 +1580,7 @@
     "interactiveBanner": {
       "badge": "Version Interactive Disponible",
       "title": "Vous voulez une expérience plus détaillée et interactive ?",
-      "description": "Approfondissez avec notre guide interactif complet comprenant 29 chapitres, des exercices pratiques et des exemples concrets pour maîtriser les prompts IA.",
+      "description": "Approfondissez avec notre guide interactif complet comprenant 30 chapitres, des exercices pratiques et des exemples concrets pour maîtriser les prompts IA.",
       "cta": "Lire le Livre Interactif"
     },
     "generalTips": {
@@ -2050,7 +2050,7 @@
     "donate": "Soutenir le projet",
     "subtitle": "Un Guide Interactif pour Créer des Prompts Clairs et Efficaces",
     "metaTitle": "Guide de l'ingénierie des prompts : Le Livre Interactif du Prompting",
-    "metaDescription": "Maîtrisez l'ingénierie des prompts IA avec ce guide interactif gratuit. Apprenez les prompts ChatGPT, le raisonnement chain-of-thought, le few-shot learning et les techniques avancées. 29+ chapitres avec des exemples réels.",
+    "metaDescription": "Maîtrisez l'ingénierie des prompts IA avec ce guide interactif gratuit. Apprenez les prompts ChatGPT, le raisonnement chain-of-thought, le few-shot learning et les techniques avancées. 30+ chapitres avec des exemples réels.",
     "interactiveGuideBy": "Un Guide Interactif par",
     "authorIntro": "Bonjour, je suis <author>Fatih Kadir Akın</author>, le curateur du populaire dépôt <repoLink>Awesome ChatGPT Prompts</repoLink> sur GitHub et de <siteName>prompts.chat</siteName>.",
     "bookDescription": "Dans ce guide complet et interactif, vous découvrirez des stratégies expertes pour créer des prompts IA captivants qui génèrent des conversations efficaces. De la compréhension du fonctionnement des modèles IA à la maîtrise des techniques avancées comme le prompt chaining et les systèmes agentiques, ce livre vous fournit les outils nécessaires pour porter vos interactions IA au niveau supérieur.",
@@ -2072,7 +2072,7 @@
       "part4": "Partie 4 : Bonnes Pratiques",
       "part5": "Partie 5 : Cas d'Utilisation",
       "part6": "Partie 6 : Conclusion",
-      "chapters": "29 Chapitres Interactifs"
+      "chapters": "30 Chapitres Interactifs"
     },
     "startReading": "Commencer la Lecture",
     "skipToChapter1": "Aller au Chapitre 1",
@@ -2130,6 +2130,7 @@
       "13-multimodal-prompting": "Prompting Multimodal",
       "14-context-engineering": "Ingénierie du Contexte",
       "14a-loop-engineering": "Ingénierie de Boucle",
+      "24a-from-prompt-to-team": "Du prompt à l'équipe",
       "25-agents-and-skills": "Agents et Compétences",
       "15-common-pitfalls": "Pièges Courants",
       "16-ethics-responsible-use": "Éthique et Utilisation Responsable",
@@ -2164,6 +2165,7 @@
       "13-multimodal-prompting": "Travailler avec images, audio et vidéo",
       "14-context-engineering": "RAG, embeddings, appels de fonction et MCP",
       "14a-loop-engineering": "Concevoir des boucles de rétroaction qui agissent, vérifient, s'adaptent et savent quand s'arrêter",
+      "24a-from-prompt-to-team": "Prompts, compétences, agents, bots et équipes en termes simples, et ce qui les distingue",
       "25-agents-and-skills": "Construire des agents IA avec des packages de compétences réutilisables",
       "15-common-pitfalls": "Erreurs à éviter",
       "16-ethics-responsible-use": "Considérations éthiques dans l'IA",

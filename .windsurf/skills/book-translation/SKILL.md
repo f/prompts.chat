@@ -9,7 +9,7 @@ This skill guides translation of book content for **The Interactive Book of Prom
 
 ## Overview
 
-The book has **29 chapters** across 7 parts. Translation requires:
+The book has **30 chapters** across 7 parts. Translation requires:
 1. **MDX content files** - Full chapter content in `src/content/book/{locale}/`
 2. **JSON translation keys** - UI strings, chapter titles, and descriptions in `messages/{locale}.json`
 
@@ -78,6 +78,7 @@ Process files one by one:
 | `22-creative-arts` | Creative Arts |
 | `23-research-analysis` | Research & Analysis |
 | `24-future-of-prompting` | The Future of Prompting |
+| `24a-from-prompt-to-team` | From Prompt to Team |
 | `25-agents-and-skills` | Agents & Skills |
 | `27-tools-mcp-connectors` | Tools, MCP and Connectors |
 | `26-the-harnesses` | The Harnesses |

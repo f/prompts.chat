@@ -1580,7 +1580,7 @@
     "interactiveBanner": {
       "badge": "Interaktive Version Verfügbar",
       "title": "Möchten Sie ein detaillierteres und interaktives Erlebnis?",
-      "description": "Tauchen Sie tiefer ein mit unserem umfassenden interaktiven Leitfaden mit 29 Kapiteln, praktischen Übungen und Beispielen aus der Praxis.",
+      "description": "Tauchen Sie tiefer ein mit unserem umfassenden interaktiven Leitfaden mit 30 Kapiteln, praktischen Übungen und Beispielen aus der Praxis.",
       "cta": "Das interaktive Buch lesen"
     },
     "generalTips": {
@@ -2050,7 +2050,7 @@
     "donate": "Projekt unterstützen",
     "subtitle": "Ein Interaktiver Leitfaden zur Erstellung Klarer und Effektiver Prompts",
     "metaTitle": "Prompt-Engineering-Leitfaden: Das Interaktive Buch des Promptings",
-    "metaDescription": "Meistern Sie KI-Prompt-Engineering mit diesem kostenlosen, interaktiven Leitfaden. Lernen Sie ChatGPT-Prompts, Chain-of-Thought-Reasoning, Few-Shot-Learning und fortgeschrittene Techniken. 29+ Kapitel mit echten Beispielen.",
+    "metaDescription": "Meistern Sie KI-Prompt-Engineering mit diesem kostenlosen, interaktiven Leitfaden. Lernen Sie ChatGPT-Prompts, Chain-of-Thought-Reasoning, Few-Shot-Learning und fortgeschrittene Techniken. 30+ Kapitel mit echten Beispielen.",
     "interactiveGuideBy": "Ein Interaktiver Leitfaden von",
     "authorIntro": "Hallo, ich bin <author>Fatih Kadir Akın</author>, der Kurator des beliebten <repoLink>Awesome ChatGPT Prompts</repoLink>-Repositories auf GitHub und von <siteName>prompts.chat</siteName>.",
     "bookDescription": "In diesem umfassenden und interaktiven Leitfaden entdecken Sie Expertenstrategien zur Erstellung überzeugender KI-Prompts, die ansprechende und effektive Gespräche fördern. Vom Verständnis der Funktionsweise von KI-Modellen bis zur Beherrschung fortgeschrittener Techniken wie Prompt-Chaining und agentische Systeme bietet Ihnen dieses Buch die Werkzeuge, die Sie benötigen, um Ihre KI-Interaktionen auf die nächste Stufe zu heben.",
@@ -2072,7 +2072,7 @@
       "part4": "Teil 4: Best Practices",
       "part5": "Teil 5: Anwendungsfälle",
       "part6": "Teil 6: Fazit",
-      "chapters": "29 Interaktive Kapitel"
+      "chapters": "30 Interaktive Kapitel"
     },
     "startReading": "Jetzt Lesen",
     "skipToChapter1": "Zu Kapitel 1 springen",
@@ -2130,6 +2130,7 @@
       "13-multimodal-prompting": "Multimodales Prompting",
       "14-context-engineering": "Kontext-Engineering",
       "14a-loop-engineering": "Loop-Engineering",
+      "24a-from-prompt-to-team": "Vom Prompt zum Team",
       "25-agents-and-skills": "Agenten & Skills",
       "15-common-pitfalls": "Häufige Fallstricke",
       "16-ethics-responsible-use": "Ethik & Verantwortungsvolle Nutzung",
@@ -2164,6 +2165,7 @@
       "13-multimodal-prompting": "Mit Bildern, Audio und Video arbeiten",
       "14-context-engineering": "RAG, Embeddings, Function Calling und MCP",
       "14a-loop-engineering": "Feedbackschleifen entwerfen, die handeln, prüfen, sich anpassen und rechtzeitig stoppen",
+      "24a-from-prompt-to-team": "Prompts, Skills, Agenten, Bots und Teams in einfachen Worten, und was sie unterscheidet",
       "25-agents-and-skills": "KI-Agenten mit wiederverwendbaren Skill-Paketen erstellen",
       "15-common-pitfalls": "Fehler, die Sie vermeiden sollten",
       "16-ethics-responsible-use": "Ethische Überlegungen in der KI",

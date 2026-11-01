@@ -1580,7 +1580,7 @@
     "interactiveBanner": {
       "badge": "Interactieve versie beschikbaar",
       "title": "Wil je een meer gedetailleerde & interactieve ervaring?",
-      "description": "Duik dieper met onze uitgebreide interactieve gids met 29 hoofdstukken, praktische oefeningen en echte voorbeelden om AI-prompting te beheersen.",
+      "description": "Duik dieper met onze uitgebreide interactieve gids met 30 hoofdstukken, praktische oefeningen en echte voorbeelden om AI-prompting te beheersen.",
       "cta": "Lees het interactieve boek"
     },
     "generalTips": {
@@ -2050,7 +2050,7 @@
     "donate": "Steun het project",
     "subtitle": "Een Interactieve Gids voor het Maken van Duidelijke en Effectieve Prompts",
     "metaTitle": "Gids voor prompt engineering: Het Interactieve Prompting Boek",
-    "metaDescription": "Beheers AI prompt engineering met deze gratis interactieve gids. Leer ChatGPT prompts, chain-of-thought redeneren, few-shot leren en geavanceerde technieken. 29+ hoofdstukken met echte voorbeelden.",
+    "metaDescription": "Beheers AI prompt engineering met deze gratis interactieve gids. Leer ChatGPT prompts, chain-of-thought redeneren, few-shot leren en geavanceerde technieken. 30+ hoofdstukken met echte voorbeelden.",
     "interactiveGuideBy": "Een Interactieve Gids door",
     "authorIntro": "Hallo, ik ben <author>Fatih Kadir Akın</author>, de curator van de populaire <repoLink>Awesome ChatGPT Prompts</repoLink> repository op GitHub en <siteName>prompts.chat</siteName>.",
     "bookDescription": "In deze uitgebreide, interactieve gids ontdek je expertstrategieën voor het maken van overtuigende AI-prompts die boeiende en effectieve gesprekken genereren. Van het begrijpen hoe AI-modellen werken tot het beheersen van geavanceerde technieken zoals prompt chaining en agentische systemen, dit boek geeft je de tools om je AI-interacties naar een hoger niveau te tillen.",
@@ -2072,7 +2072,7 @@
       "part4": "Deel 4: Best Practices",
       "part5": "Deel 5: Use Cases",
       "part6": "Deel 6: Conclusie",
-      "chapters": "29 Interactieve Hoofdstukken"
+      "chapters": "30 Interactieve Hoofdstukken"
     },
     "startReading": "Begin met Lezen",
     "skipToChapter1": "Ga naar Hoofdstuk 1",
@@ -2130,6 +2130,7 @@
       "13-multimodal-prompting": "Multimodale Prompting",
       "14-context-engineering": "Context Engineering",
       "14a-loop-engineering": "Loop Engineering",
+      "24a-from-prompt-to-team": "Van prompt tot team",
       "25-agents-and-skills": "Agents en Skills",
       "15-common-pitfalls": "Veelvoorkomende Valkuilen",
       "16-ethics-responsible-use": "Ethiek en Verantwoord Gebruik",
@@ -2164,6 +2165,7 @@
       "13-multimodal-prompting": "Werken met afbeeldingen, audio en video",
       "14-context-engineering": "RAG, embeddings, function calling en MCP",
       "14a-loop-engineering": "Feedbackloops ontwerpen die handelen, verifiëren, bijsturen en weten wanneer ze moeten stoppen",
+      "24a-from-prompt-to-team": "Prompts, skills, agents, bots en teams in gewone woorden, en waarin ze verschillen",
       "25-agents-and-skills": "AI-agents bouwen met herbruikbare skill-pakketten",
       "15-common-pitfalls": "Fouten om te vermijden",
       "16-ethics-responsible-use": "Ethische overwegingen in AI",
