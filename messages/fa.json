@@ -2735,5 +2735,20 @@
   },
   "actionButtons": {
     "deployWithSpacefast": "استقرار با Spacefast"
+  },
+  "widgets": {
+    "sponsored": "حمایت‌شده",
+    "spacefast": {
+      "title": "بات‌هایی که با <hl>لینک زنده</hl> پاسخ می‌دهند",
+      "description": "رابط MCP Spacefast را اضافه کنید تا بات‌هایتان سایت، گزارش و داشبورد منتشر کنند. به‌طور پیش‌فرض خصوصی، با همان لینک در هر انتشار دوباره.",
+      "published": "با Spacefast منتشر شد",
+      "live": "زنده",
+      "connector": "افزودن رابط MCP",
+      "features": {
+        "privateByDefault": "به‌طور پیش‌فرض خصوصی",
+        "sameLink": "همان لینک برای به‌روزرسانی‌ها",
+        "versionHistory": "تاریخچه نسخه‌ها"
+      }
+    }
   }
 }

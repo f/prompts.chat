@@ -7,9 +7,11 @@ import { auth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { BotTeamsGraph } from "@/components/bots/teams/bot-teams-graph";
 import { TeamFilters } from "@/components/bots/teams/team-filters";
+import { ListingWidgetCard } from "@/components/widgets/listing-widget-card";
 import { JsonLd, breadcrumbSchema, collectionPageSchema } from "@/components/seo/structured-data";
 import { platformFromParam } from "@/lib/bots/schema";
 import { getTeamFilterOptions, getVotedTeamIds, listTeams, teamExcerpt, teamSortFromParam, toTeamGraphTeam } from "@/lib/bots/teams";
+import { injectWidgets, isWidget } from "@/lib/plugins/widgets";
 import { buildPageMetadata } from "@/lib/seo";
 import { getBotTeamUrl } from "@/lib/urls";
 
@@ -77,6 +79,18 @@ export default async function BotTeamsPage({ searchParams }: BotTeamsPageProps) 
   const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
   if (page > totalPages) notFound();
   const voted = await getVotedTeamIds(session?.user?.id, teams.map((team) => team.id));
+  const widgets = injectWidgets(
+    teams,
+    {
+      placement: "teams",
+      filters: { q: params.q, category: params.category, categorySlug: params.category, tag: params.tag, sort: params.sort, platform: params.platform },
+      page,
+      offset: (page - 1) * PER_PAGE,
+    },
+    { totalItems: total }
+  ).flatMap((item, slot) =>
+    isWidget(item) ? [{ key: item.id, slot, node: <ListingWidgetCard widget={item} placement="teams" /> }] : []
+  );
 
   return (
     <div className="container py-6">
@@ -128,6 +142,7 @@ export default async function BotTeamsPage({ searchParams }: BotTeamsPageProps) 
                 key={pageHref(params, page)}
                 teams={teams.map((team) => toTeamGraphTeam(team, { voted: voted.has(team.id) }))}
                 isLoggedIn={!!session?.user}
+                widgets={widgets}
               />
 
               <nav aria-labelledby="all-teams" className="sr-only focus-within:not-sr-only focus-within:mt-4">

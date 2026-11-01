@@ -2739,5 +2739,20 @@
   },
   "actionButtons": {
     "deployWithSpacefast": "使用 Spacefast 部署"
+  },
+  "widgets": {
+    "sponsored": "赞助",
+    "spacefast": {
+      "title": "用<hl>在线链接</hl>回复的机器人",
+      "description": "添加 Spacefast MCP 连接器，让你的机器人发布网站、报告和仪表盘。默认私有，每次重新发布都是同一个链接。",
+      "published": "已通过 Spacefast 发布",
+      "live": "在线",
+      "connector": "添加 MCP 连接器",
+      "features": {
+        "privateByDefault": "默认私有",
+        "sameLink": "更新始终同一链接",
+        "versionHistory": "版本历史"
+      }
+    }
   }
 }

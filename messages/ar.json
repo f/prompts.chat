@@ -2737,5 +2737,20 @@
   },
   "actionButtons": {
     "deployWithSpacefast": "انشر باستخدام Spacefast"
+  },
+  "widgets": {
+    "sponsored": "برعاية",
+    "spacefast": {
+      "title": "بوتات تجيب <hl>برابط مباشر</hl>",
+      "description": "أضف موصل Spacefast MCP لتنشر بوتاتك المواقع والتقارير ولوحات المعلومات. خاصة افتراضيًا، والرابط نفسه في كل مرة تعيد فيها النشر.",
+      "published": "تم النشر عبر Spacefast",
+      "live": "مباشر",
+      "connector": "إضافة موصل MCP",
+      "features": {
+        "privateByDefault": "خاص افتراضيًا",
+        "sameLink": "الرابط نفسه للتحديثات",
+        "versionHistory": "سجل الإصدارات"
+      }
+    }
   }
 }

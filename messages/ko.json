@@ -2739,5 +2739,20 @@
   },
   "actionButtons": {
     "deployWithSpacefast": "Spacefast로 배포"
+  },
+  "widgets": {
+    "sponsored": "스폰서",
+    "spacefast": {
+      "title": "<hl>라이브 링크</hl>로 답하는 봇",
+      "description": "Spacefast MCP 커넥터를 추가하면 봇이 사이트, 보고서, 대시보드를 게시합니다. 기본적으로 비공개이며, 다시 게시해도 링크는 그대로입니다.",
+      "published": "Spacefast로 게시됨",
+      "live": "라이브",
+      "connector": "MCP 커넥터 추가",
+      "features": {
+        "privateByDefault": "기본 비공개",
+        "sameLink": "업데이트해도 같은 링크",
+        "versionHistory": "버전 기록"
+      }
+    }
   }
 }

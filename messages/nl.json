@@ -2742,5 +2742,20 @@
   },
   "actionButtons": {
     "deployWithSpacefast": "Implementeren met Spacefast"
+  },
+  "widgets": {
+    "sponsored": "Gesponsord",
+    "spacefast": {
+      "title": "Bots die antwoorden met een <hl>live link</hl>",
+      "description": "Voeg de Spacefast MCP-connector toe en je bots publiceren sites, rapporten en dashboards. Standaard privé, dezelfde link bij elke herpublicatie.",
+      "published": "Gepubliceerd met Spacefast",
+      "live": "Live",
+      "connector": "MCP-connector toevoegen",
+      "features": {
+        "privateByDefault": "Standaard privé",
+        "sameLink": "Zelfde link bij updates",
+        "versionHistory": "Versiegeschiedenis"
+      }
+    }
   }
 }
