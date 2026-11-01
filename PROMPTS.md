@@ -215567,3 +215567,16 @@ output_format:
 
 </details>
 
+<details>
+<summary><strong>Photoreal Carved Jack-o'-Lanterns on Old Farmhouse Porch Steps on Halloween Night</strong></summary>
+
+## Photoreal Carved Jack-o'-Lanterns on Old Farmhouse Porch Steps on Halloween Night
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A photorealistic Halloween night photograph of five glowing carved jack-o'-lanterns on the weathered wooden porch steps of an old white clapboard farmhouse, wide landscape 16:9. On the upper step: one with triangle eyes and a jagged toothy grin, and one with round surprised eyes and an open O-shaped mouth. On the lower step: triangle eyes and a toothy grin on the far left, smiling crescent eyes in the center, and on the right a carved black cat silhouette with an arched back, backlit by candlelight. Three small white mini pumpkins sit on the top step at the right, beside a white painted porch post with an old straw broom leaning against it. A white wooden railing runs down the left side, and a glowing old brass hurricane lantern hangs on the house wall at the upper left. Dry orange and red maple leaves are scattered over the worn grey steps. Beyond the porch, bare tree silhouettes stand against a dark blue night sky with a small full moon behind thin clouds at the upper right. Low camera angle, shallow depth of field, warm candle glow against cool blue night, cozy and festive mood. No people, no text, no logos.
+```
+
+</details>
+
