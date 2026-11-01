@@ -12,8 +12,7 @@ import { CliCommand } from "@/components/layout/cli-command";
 import { ExtensionLink } from "@/components/layout/extension-link";
 import { AnimatedText } from "@/components/layout/animated-text";
 import { SponsorLink, BecomeSponsorLink, BuiltWithLink } from "@/components/layout/sponsor-link";
-import { WebsiteStructuredData } from "@/components/seo/structured-data";
-import { buildPageMetadata } from "@/lib/seo";
+import { WebsiteStructuredData } from "@/components/seo/structured-data";import { buildPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("seo.home");
@@ -303,16 +302,6 @@ export default async function HomePage() {
               <div className="flex flex-col md:flex-row items-center justify-center gap-1.5 mt-4 pt-4 border-t text-xs text-muted-foreground">
                 <span><b>prompts.chat</b> is built with</span>
                 <span className="inline-flex items-center gap-1.5">
-                  <BuiltWithLink href="https://wind.surf/prompts-chat" toolName="Windsurf">
-                    <Image
-                      src="/sponsors/windsurf.svg"
-                      alt="Windsurf"
-                      width={80}
-                      height={20}
-                      className="h-3 w-auto dark:invert"
-                    />
-                  </BuiltWithLink>
-                  <span>and</span>
                   <BuiltWithLink href="https://devin.ai/?utm_source=prompts.chat" toolName="Devin">
                     <Image
                       src="/sponsors/devin.svg"
@@ -330,6 +319,23 @@ export default async function HomePage() {
                     />
                   </BuiltWithLink>
                   <span>by Cognition</span>
+                  <span>and</span>
+                  <BuiltWithLink href="https://grok.com/?utm_source=prompts.chat" toolName="Grok Bot">
+                    <Image
+                      src="/sponsors/grok-bot.svg"
+                      alt="Grok Bot"
+                      width={80}
+                      height={20}
+                      className="h-6 w-auto dark:hidden"
+                    />
+                    <Image
+                      src="/sponsors/grok-bot-dark.svg"
+                      alt="Grok Bot"
+                      width={80}
+                      height={20}
+                      className="h-6 w-auto hidden dark:block"
+                    />
+                  </BuiltWithLink>
                   <span className="mx-0.5">·</span>
                   <span>hosted on</span>
                   <Link href="https://vercel.com/oss" target="_blank" rel="noopener noreferrer" className="inline-flex items-center opacity-60 hover:opacity-100 transition-opacity">
