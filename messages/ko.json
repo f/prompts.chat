@@ -1014,6 +1014,7 @@
     "trigger": "트리거",
     "skills": "스킬",
     "connectors": "필요한 커넥터",
+    "connectorRegistryLink": "MCP Registry의 {name} (새 탭에서 열림)",
     "install": "설치",
     "installOn": "{platform}에 설치",
     "installLinkComingSoon": "설치 링크 준비 중",

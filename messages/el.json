@@ -1014,6 +1014,7 @@
     "trigger": "Έναυσμα",
     "skills": "Δεξιότητες",
     "connectors": "Απαιτούμενοι σύνδεσμοι",
+    "connectorRegistryLink": "{name} στο MCP Registry (ανοίγει σε νέα καρτέλα)",
     "install": "Εγκατάσταση",
     "installOn": "Εγκατάσταση στο {platform}",
     "installLinkComingSoon": "Ο σύνδεσμος εγκατάστασης έρχεται σύντομα",

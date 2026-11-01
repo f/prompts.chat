@@ -2,6 +2,7 @@ import type { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
 import { getBotUrl } from "@/lib/urls";
 import { isTrending } from "@/lib/trending";
+import { connectorToMarkdown } from "@/lib/connectors/registry";
 import {
   BOT_PLATFORM_INFO,
   computerRequirementText,
@@ -459,7 +460,7 @@ function botBody(bot: BotView, baseUrl: string): string {
   }
 
   if (connectors.length > 0) {
-    sections.push(`## Required connectors\n\n${connectors.map((c) => `- ${c}`).join("\n")}`);
+    sections.push(`## Required connectors\n\n${connectors.map(connectorToMarkdown).join("\n")}`);
   }
 
   const setup = [

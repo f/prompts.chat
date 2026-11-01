@@ -1014,6 +1014,7 @@
     "trigger": "Disparador",
     "skills": "Habilidades",
     "connectors": "Conectores necesarios",
+    "connectorRegistryLink": "{name} en el MCP Registry (se abre en una pestaña nueva)",
     "install": "Instalar",
     "installOn": "Instalar en {platform}",
     "installLinkComingSoon": "Enlace de instalación próximamente",

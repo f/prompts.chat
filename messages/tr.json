@@ -1014,6 +1014,7 @@
     "trigger": "Tetikleyici",
     "skills": "Beceriler",
     "connectors": "Gerekli bağlayıcılar",
+    "connectorRegistryLink": "MCP Registry'de {name} (yeni sekmede açılır)",
     "install": "Kur",
     "installOn": "{platform} üzerinde kur",
     "installLinkComingSoon": "Kurulum bağlantısı yakında",

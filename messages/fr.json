@@ -1014,6 +1014,7 @@
     "trigger": "Déclencheur",
     "skills": "Compétences",
     "connectors": "Connecteurs requis",
+    "connectorRegistryLink": "{name} sur le MCP Registry (s'ouvre dans un nouvel onglet)",
     "install": "Installer",
     "installOn": "Installer sur {platform}",
     "installLinkComingSoon": "Lien d'installation bientôt disponible",

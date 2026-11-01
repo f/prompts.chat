@@ -1014,6 +1014,7 @@
     "trigger": "トリガー",
     "skills": "スキル",
     "connectors": "必要なコネクタ",
+    "connectorRegistryLink": "MCP Registry の {name}(新しいタブで開きます)",
     "install": "インストール",
     "installOn": "{platform} にインストール",
     "installLinkComingSoon": "インストールリンクは近日公開",
