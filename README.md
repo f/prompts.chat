@@ -69,9 +69,22 @@ A curated collection of **prompts** for AI chat models. Originally created for C
 
 ---
 
+## 🤖 Bots & Bot Teams
+
+prompts.chat also hosts **always-on AI agents** and the teams they work in.
+
+- **[Bots](https://prompts.chat/bots)** — Share and discover bots (OpenClaw, Hermes Agent, Grok Bot, and more). Each bot page has install instructions per platform, the computer it needs (**cloud**, **the user's computer**, or **both**), "Better together with" pairings, upvotes, comments, and change requests.
+- **[Bot Teams](https://prompts.chat/bots/teams)** — Groups of bots that hand work off to each other, shown as an interactive graph. Upvote a team or install every bot in it at once. Featured teams appear on the homepage, and **Teams** is in the top navigation.
+- **Profiles** — User profiles have Bots and Teams tabs with counts.
+- **Moderation** — Bots and teams can be unlisted to hide them from public listings.
+
+Teams are also available as JSON: `GET /api/teams?sort=newest` (also `oldest` or `upvotes`, paginated with `page` and `perPage`).
+
+---
+
 ## 📖 The Interactive Book of Prompting
 
-Learn prompt engineering with our **free, interactive guide** — 30+ chapters covering everything from basics to advanced techniques like chain-of-thought reasoning, few-shot learning, and AI agents.
+Learn prompt engineering with our **free, interactive guide** — 30+ chapters covering everything from basics to advanced techniques like chain-of-thought reasoning, few-shot learning, and AI agents. Newer chapters cover going **from prompt to team** (prompt, skill, agent, bot, team), always-on bots, agent teams, computer use, and who may give a bot work — available in 17 languages.
 
 **[Start Reading →](https://fka.gumroad.com/l/art-of-chatgpt-prompting)** (Source: https://github.com/f/prompts.chat/tree/main/src/content/book)
 
@@ -172,6 +185,8 @@ Use prompts.chat as an MCP server in your AI tools.
   }
 }
 ```
+
+Tools cover prompts and skills, plus bots (`search_bots`, `get_bot`, `save_bot`, `list_my_bots`, `get_my_bot`) and bot teams (`list_teams`, `get_team`, `save_team`).
 
 📖 [MCP Documentation](https://prompts.chat/docs/api)
 
