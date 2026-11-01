@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useId, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
+import { Fragment, useEffect, useId, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import {
@@ -46,6 +46,7 @@ import {
   nodeExtent,
   ringTarget,
   teamGridLayout,
+  teamGridLayoutWithWidgets,
   truncateLabel,
   type GraphCell,
   type GraphPoint,
@@ -346,9 +347,19 @@ interface BotTeamsGraphProps {
    */
   variant?: "overview" | "single" | "card";
   isLoggedIn?: boolean;
+  /** Overview only: cards drawn in cells between the team boxes, at `slot` in the combined list */
+  widgets?: BotTeamsGraphWidget[];
 }
 
-export function BotTeamsGraph({ teams: allTeams, variant = "overview", isLoggedIn = false }: BotTeamsGraphProps) {
+export interface BotTeamsGraphWidget {
+  key: string;
+  slot: number;
+  node: ReactNode;
+}
+
+const NO_WIDGETS: BotTeamsGraphWidget[] = [];
+
+export function BotTeamsGraph({ teams: allTeams, variant = "overview", isLoggedIn = false, widgets = NO_WIDGETS }: BotTeamsGraphProps) {
   const t = useTranslations("bots.teams");
   const markerId = useId().replace(/:/g, "");
   const containerRef = useRef<HTMLDivElement>(null);
@@ -393,13 +404,23 @@ export function BotTeamsGraph({ teams: allTeams, variant = "overview", isLoggedI
   const layout = useMemo(
     () =>
       isCard
-        ? { cells: teams.map(() => ({ x: 0, y: 0, width, height, footer: TEAM_BOX_FOOTER })), height }
-        : teamGridLayout(
-            teams.map((team) => team.members.length),
-            width,
-            { minCellWidth: isOverview ? 300 : width, hubs: hubs.map((hub) => hub >= 0), footer: isOverview ? TEAM_BOX_FOOTER : 0 }
-          ),
-    [teams, width, height, isOverview, isCard, hubs]
+        ? { cells: teams.map(() => ({ x: 0, y: 0, width, height, footer: TEAM_BOX_FOOTER })), widgetCells: [], height }
+        : isOverview
+          ? teamGridLayoutWithWidgets(
+              teams.map((team) => team.members.length),
+              widgets.map((widget) => widget.slot),
+              width,
+              { minCellWidth: 300, hubs: hubs.map((hub) => hub >= 0), footer: TEAM_BOX_FOOTER }
+            )
+          : {
+              ...teamGridLayout(
+                teams.map((team) => team.members.length),
+                width,
+                { minCellWidth: width, hubs: hubs.map((hub) => hub >= 0) }
+              ),
+              widgetCells: [],
+            },
+    [teams, width, height, isOverview, isCard, hubs, widgets]
   );
   const { positions, nodeDrag } = useTeamLayout(teams, width > 0 && (!isCard || (inView && height > 0)) ? layout.cells : [], hubs);
   const hasNodes = positions.size > 0;
@@ -583,6 +604,18 @@ export function BotTeamsGraph({ teams: allTeams, variant = "overview", isLoggedI
               isLoggedIn={isLoggedIn}
               style={{ left: cell.x, top: cell.y + cell.height - TEAM_BOX_FOOTER, width: cell.width, height: TEAM_BOX_FOOTER }}
             />
+          );
+        })}
+
+      {isOverview &&
+        width > 0 &&
+        widgets.map((widget, index) => {
+          const cell = layout.widgetCells[index];
+          if (!cell) return null;
+          return (
+            <div key={widget.key} className="absolute flex min-w-0 flex-col *:flex-1" style={{ left: cell.x, top: cell.y, width: cell.width, height: cell.height }}>
+              {widget.node}
+            </div>
           );
         })}
 

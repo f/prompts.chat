@@ -6,8 +6,10 @@ import { ChevronLeft, ChevronRight, Plus, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BotCard } from "@/components/bots/bot-card";
 import { BotFilters } from "@/components/bots/bot-filters";
+import { ListingWidgetCard } from "@/components/widgets/listing-widget-card";
 import { JsonLd, collectionPageSchema } from "@/components/seo/structured-data";
 import { BOT_SORTS, getBotFilterOptions, listBots, platformFromParam, type BotSort } from "@/lib/bots";
+import { injectWidgets, isWidget } from "@/lib/plugins/widgets";
 import { buildPageMetadata } from "@/lib/seo";
 import { getBotUrl } from "@/lib/urls";
 
@@ -77,6 +79,18 @@ export default async function BotsPage({ searchParams }: BotsPageProps) {
     notFound();
   }
 
+  const offset = (page - 1) * PER_PAGE;
+  const gridItems = injectWidgets(
+    bots.map((bot, index) => ({ bot, position: offset + index + 1 })),
+    {
+      placement: "bots",
+      filters: { q: params.q, category: params.category, categorySlug: params.category, tag: params.tag, sort: params.sort, platform: params.platform },
+      page,
+      offset,
+    },
+    { totalItems: total }
+  );
+
   return (
     <div className="container py-6">
       <JsonLd
@@ -121,9 +135,13 @@ export default async function BotsPage({ searchParams }: BotsPageProps) {
         <main className="flex-1 min-w-0">
           {bots.length > 0 ? (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {bots.map((bot, index) => (
-                <BotCard key={bot.id} bot={bot} position={(page - 1) * PER_PAGE + index + 1} />
-              ))}
+              {gridItems.map((item) =>
+                isWidget(item) ? (
+                  <ListingWidgetCard key={item.id} widget={item} placement="bots" />
+                ) : (
+                  <BotCard key={item.bot.id} bot={item.bot} position={item.position} />
+                )
+              )}
             </div>
           ) : (
             <p className="py-12 text-center text-sm text-muted-foreground">{t("noBots")}</p>
