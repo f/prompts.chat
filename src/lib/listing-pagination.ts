@@ -75,15 +75,15 @@ export function parseDayFilter(date?: string | null): { start: Date; end: Date }
 
   const [year, month, day] = date.split("-").map(Number);
 
-  const start = new Date(`${date}T00:00:00`);
-  const end = new Date(`${date}T23:59:59`);
+  const start = new Date(`${date}T00:00:00Z`);
+  const end = new Date(`${date}T23:59:59Z`);
 
   if (
     isNaN(start.getTime()) ||
     isNaN(end.getTime()) ||
-    start.getFullYear() !== year ||
-    start.getMonth() !== month - 1 ||
-    start.getDate() !== day
+    start.getUTCFullYear() !== year ||
+    start.getUTCMonth() !== month - 1 ||
+    start.getUTCDate() !== day
   ) {
     return null;
   }

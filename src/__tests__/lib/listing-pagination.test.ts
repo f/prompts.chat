@@ -92,10 +92,14 @@ describe("parseDayFilter", () => {
   });
 
   it("should span the whole day", () => {
-    const day = parseDayFilter("2024-03-15");
-    expect(day?.start.getDate()).toBe(15);
-    expect(day?.start.getHours()).toBe(0);
-    expect(day?.end.getHours()).toBe(23);
+   const day = parseDayFilter("2024-03-15");
+
+   expect(day?.start.getUTCDate()).toBe(15);
+   expect(day?.start.getUTCHours()).toBe(0);
+   expect(day?.end.getUTCDate()).toBe(15);
+   expect(day?.end.getUTCHours()).toBe(23);
+   expect(day?.end.getUTCMinutes()).toBe(59);
+   expect(day?.end.getUTCSeconds()).toBe(59);
   });
 
   it("should reject impossible calendar dates", () => {
