@@ -218735,3 +218735,16 @@ One character, one transformation, one fox with four legs and one tail at the en
 
 </details>
 
+<details>
+<summary><strong>Based on Everything You Know About Me, Carve This Pumpkin (Personalized Jack-o'-Lantern)</strong></summary>
+
+## Based on Everything You Know About Me, Carve This Pumpkin (Personalized Jack-o'-Lantern)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Based on everything you know about me, carve this pumpkin.
+```
+
+</details>
+
