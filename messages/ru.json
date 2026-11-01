@@ -2735,5 +2735,20 @@
   },
   "actionButtons": {
     "deployWithSpacefast": "Развернуть в SpaceFast"
+  },
+  "widgets": {
+    "sponsored": "Спонсор",
+    "spacefast": {
+      "title": "Боты, которые отвечают <hl>живой ссылкой</hl>",
+      "description": "Подключите MCP-коннектор Spacefast, и ваши боты будут публиковать сайты, отчёты и дашборды. По умолчанию приватно, та же ссылка при каждой повторной публикации.",
+      "published": "Опубликовано через Spacefast",
+      "live": "Онлайн",
+      "connector": "Добавить MCP-коннектор",
+      "features": {
+        "privateByDefault": "Приватно по умолчанию",
+        "sameLink": "Та же ссылка при обновлениях",
+        "versionHistory": "История версий"
+      }
+    }
   }
 }

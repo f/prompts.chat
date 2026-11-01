@@ -2752,5 +2752,20 @@
   },
   "actionButtons": {
     "deployWithSpacefast": "Implantar com SpaceFast"
+  },
+  "widgets": {
+    "sponsored": "Patrocinado",
+    "spacefast": {
+      "title": "Bots que respondem com um <hl>link ao vivo</hl>",
+      "description": "Adicione o conector MCP do Spacefast e seus bots publicam sites, relatórios e dashboards. Privado por padrão, o mesmo link sempre que republicam.",
+      "published": "Publicado com Spacefast",
+      "live": "No ar",
+      "connector": "Adicionar conector MCP",
+      "features": {
+        "privateByDefault": "Privado por padrão",
+        "sameLink": "Mesmo link nas atualizações",
+        "versionHistory": "Histórico de versões"
+      }
+    }
   }
 }

@@ -2741,5 +2741,20 @@
   },
   "actionButtons": {
     "deployWithSpacefast": "Ανάπτυξη με SpaceFast"
+  },
+  "widgets": {
+    "sponsored": "Χορηγούμενο",
+    "spacefast": {
+      "title": "Bots που απαντούν με <hl>ζωντανό σύνδεσμο</hl>",
+      "description": "Προσθέστε τον σύνδεσμο MCP του Spacefast και τα bots σας δημοσιεύουν ιστότοπους, αναφορές και πίνακες ελέγχου. Ιδιωτικά από προεπιλογή, ίδιος σύνδεσμος σε κάθε αναδημοσίευση.",
+      "published": "Δημοσιεύτηκε με το Spacefast",
+      "live": "Ζωντανά",
+      "connector": "Προσθήκη συνδέσμου MCP",
+      "features": {
+        "privateByDefault": "Ιδιωτικά από προεπιλογή",
+        "sameLink": "Ίδιος σύνδεσμος στις ενημερώσεις",
+        "versionHistory": "Ιστορικό εκδόσεων"
+      }
+    }
   }
 }

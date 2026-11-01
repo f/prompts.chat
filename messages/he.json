@@ -2734,5 +2734,20 @@
   },
   "actionButtons": {
     "deployWithSpacefast": "פריסה עם SpaceFast"
+  },
+  "widgets": {
+    "sponsored": "ממומן",
+    "spacefast": {
+      "title": "בוטים שעונים עם <hl>קישור חי</hl>",
+      "description": "הוסיפו את מחבר ה-MCP של Spacefast והבוטים שלכם יפרסמו אתרים, דוחות ולוחות מחוונים. פרטי כברירת מחדל, אותו קישור בכל פרסום מחדש.",
+      "published": "פורסם עם Spacefast",
+      "live": "חי",
+      "connector": "הוספת מחבר MCP",
+      "features": {
+        "privateByDefault": "פרטי כברירת מחדל",
+        "sameLink": "אותו קישור לעדכונים",
+        "versionHistory": "היסטוריית גרסאות"
+      }
+    }
   }
 }

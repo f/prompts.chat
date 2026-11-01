@@ -2738,5 +2738,20 @@
   },
   "actionButtons": {
     "deployWithSpacefast": "SpaceFast でデプロイ"
+  },
+  "widgets": {
+    "sponsored": "スポンサー",
+    "spacefast": {
+      "title": "<hl>公開リンク</hl>で答えるボット",
+      "description": "Spacefast MCP コネクタを追加すると、ボットがサイト、レポート、ダッシュボードを公開できます。デフォルトで非公開、再公開してもリンクは同じです。",
+      "published": "Spacefast で公開しました",
+      "live": "公開中",
+      "connector": "MCP コネクタを追加",
+      "features": {
+        "privateByDefault": "デフォルトで非公開",
+        "sameLink": "更新してもリンクは同じ",
+        "versionHistory": "バージョン履歴"
+      }
+    }
   }
 }

@@ -2750,5 +2750,20 @@
   },
   "actionButtons": {
     "deployWithSpacefast": "SpaceFast ilə yerləşdir"
+  },
+  "widgets": {
+    "sponsored": "Sponsorlu",
+    "spacefast": {
+      "title": "<hl>Canlı keçidlə</hl> cavab verən botlar",
+      "description": "Spacefast MCP bağlayıcısını əlavə edin və botlarınız saytlar, hesabatlar və idarə panelləri dərc etsin. Defolt olaraq gizli, hər yenidən dərcdə eyni keçid.",
+      "published": "Spacefast ilə dərc edildi",
+      "live": "Canlı",
+      "connector": "MCP bağlayıcısı əlavə et",
+      "features": {
+        "privateByDefault": "Defolt olaraq gizli",
+        "sameLink": "Yeniləmələr üçün eyni keçid",
+        "versionHistory": "Versiya tarixçəsi"
+      }
+    }
   }
 }
