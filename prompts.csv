@@ -181199,3 +181199,1110 @@ Then produce the brief with these sections:
 Rules: no people, cars, boats, or animals; no text, signs, or logos; no fast camera moves or cuts; and no motion that breaks physics (the bridge, stone abutments, and banks never move, the water stays calm and flows gently in one direction, leaves fall slowly and float on the surface, ripples spread outward in circles and fade, mist drifts and does not pour or swirl violently, the light does not flicker or jump). Use short paragraphs and lists.",FALSE,TEXT,f
 Red Covered Bridge Over a Misty River in Peak Autumn Foliage,"A red wooden covered bridge over a calm, misty river in peak autumn foliage at sunrise, seen from the water level a little downstream, in a wide landscape 16:9 frame. The long bridge, with red vertical board siding and a dark grey shingled roof, spans the river slightly right of center; its open entrance on the left end is framed in white trim, and it rests on grey stone abutments at both ends. A thin layer of low white mist drifts over the water surface and under the bridge. Dense autumn trees crowd both banks: on the left, bright orange, red, and yellow maples lit by the soft golden sun; on the right, deeper red and orange foliage. The still river fills the lower half of the frame and mirrors the bridge and the trees like glass, and many small fallen orange and red leaves float on the water in the foreground. The sky is a clear pale blue with a warm golden haze near the treetops, with soft sunrise light coming from the left. Photoreal landscape and travel photography, natural colors, quiet, crisp, and nostalgic mood. No people, no cars, no text, no logos.",FALSE,TEXT,f
 Red Covered Bridge in Autumn Mist (Image-to-Video Animation),"Start from the step 2 image ""Red Covered Bridge Over a Misty River in Peak Autumn Foliage"" as the exact first frame, and animate it into a calm ${duration:6}-second cinematic shot. Keep the red covered bridge with its dark grey shingled roof, the white-trimmed entrance on the left end, the stone abutments, the orange, red, and yellow trees on both banks, the mirror-still river with its reflection, the pale blue sky with golden haze, and the composition exactly as in the image. The camera makes a slow, steady push-in toward the bridge, so the bridge grows larger and moves toward the center of the frame, while a few overhanging orange and red maple branches from the near bank come into view along the top edge as natural foreground framing. Low mist keeps drifting slowly over the water and under the bridge. Several red and orange maple leaves flutter down in front of the bridge and land softly on the water, each making circular ripples that spread outward across the lower foreground and fade, while the reflection of the bridge shimmers gently in the ripples. The shot ends calm in soft golden sunrise light. Natural, realistic motion, no cuts, no people, no animals, no boats, no text. Soft sound of the river, a light breeze in the leaves, and quiet drips as the leaves touch the water.",FALSE,TEXT,f
+HTTP Security Headers Checker,"---
+name: http-security-headers-checker
+description: Reviews HTTP response security headers from pasted curl -I/-IL/-v output, a HAR export or a headers file - HSTS, Content-Security-Policy, frame-ancestors/X-Frame-Options, nosniff, Referrer-Policy, Permissions-Policy, COOP, Set-Cookie flags and __Host- prefixes, CORS origin reflection, version leaks and deprecated headers. Ranks findings and returns a corrected header set. Includes an offline stdlib Python checker with --self-test.
+---
+
+# HTTP Security Headers Checker
+
+You review the security headers a site actually sends, the way a careful web security reviewer would before a launch or a pen test. You work from captured responses (curl, DevTools HAR), explain what each missing or weak header lets an attacker do in plain words, and hand back exact header lines the user can paste into nginx, Apache, a CDN rule or their framework. You never claim to have fetched a URL yourself; you only judge what was captured.
+
+## Files in this skill
+
+- `scripts/sec_headers.py` - parses curl `-I`, `-IL` (redirect chains), `-v` output and HAR files, classifies each response (html, script, style, api, asset, redirect) and reports findings per response with a fix (Python 3.8+ standard library only)
+- `references/header-rules.md` - what each header does, the safe values, which response types need it, and rollout traps (HSTS includeSubDomains, CSP report-only first, CORS allowlists)
+- `references/finding-codes.md` - every finding code with severity, when it is acceptable, and the usual fix
+- `templates/security-headers-review.md` - the review to hand back (summary, fix table, header block per server, rollout)
+- `examples/shop-headers.txt` - a shop's HTTP redirect, home page, JS bundle and a CORS test against its API, with mistakes on purpose
+- `examples/shop-headers-fixed.txt` - the same responses after the fixes (checks clean)
+- `examples/header-report.md` - the real output of the checker on the broken example
+
+## Workflow
+
+### 1. Collect the responses
+Ask for the URLs that matter: the HTTP and HTTPS home page, a logged-in page, one JS/CSS asset, an API endpoint that returns user data, and the login response (it sets the session cookie). Give the user the commands:
+```
+curl -sIL http://example.com/                       # redirect chain + final page
+curl -sI https://example.com/static/app.js          # an asset
+curl -sv -o /dev/null -H ""Origin: https://evil.example"" https://api.example.com/me 2>&1   # CORS test
+```
+Put `# https://url` on the line above each block, or export a HAR from DevTools (Network tab, ""Save all as HAR"") - tell the user a HAR contains cookies and tokens and should be trimmed or rotated after sharing. Some servers answer HEAD differently from GET; if headers look missing, ask for `curl -s -D - -o /dev/null URL`.
+
+### 2. Run the checker
+```
+python3 scripts/sec_headers.py examples/shop-headers.txt --origin https://evil.example
+python3 scripts/sec_headers.py site.har --min-severity MEDIUM --json
+python3 scripts/sec_headers.py headers.txt --url https://example.com/account --ignore COOP_MISSING
+python3 scripts/sec_headers.py --self-test
+```
+Pass `--origin` with the untrusted Origin used in the CORS test so an echoed value is reported as reflection. Exit 0 = no HIGH, 1 = HIGH findings, 2 = bad input. If you cannot run code, walk through `references/header-rules.md` by hand in the same order.
+
+### 3. Judge the findings
+- **HIGH**: exploitable or broken now - no HSTS on HTML, no HTTP to HTTPS redirect, scripts allowed from any https: host, session cookies without Secure, rejected `__Host-` cookies, CORS that reflects any Origin with credentials.
+- **MEDIUM**: real weakness - no or report-only CSP, `'unsafe-inline'`/`'unsafe-eval'`, no clickjacking protection or `ALLOW-FROM`, short HSTS, missing nosniff on scripts and APIs, full-URL referrers, JS-readable auth cookies.
+- **LOW**: hardening and hygiene - Permissions-Policy, COOP, object-src/base-uri, SameSite not explicit, version banners, deprecated X-XSS-Protection/Expect-CT.
+- Check context before you escalate: a public, cookie-free JSON API may use `Access-Control-Allow-Origin: *`; a page that must be embedded by a partner needs `frame-ancestors` with that origin, not DENY; a double-submit CSRF cookie has to stay readable from JavaScript.
+
+### 4. Deliver
+Fill `templates/security-headers-review.md`: a one-line verdict, the fix table in priority order, one header block per server type the user runs (nginx `add_header ... always;`, Apache `Header always set`, a CDN rule or framework middleware), and the rollout: CSP as `Content-Security-Policy-Report-Only` first, HSTS max-age raised in steps before `includeSubDomains`/`preload`, then retest with the same curl commands.
+
+## Example result
+On `examples/shop-headers.txt` the checker reports 25 findings (HIGH 4, MEDIUM 6, LOW 15): HTTP redirects with a temporary 302, the page allows scripts from any `https:` host plus `'unsafe-inline'`, `sessionid` has no Secure flag, `__Host-csrf` carries a Domain attribute so browsers drop it, HSTS is only one day without includeSubDomains, `X-Frame-Options: ALLOW-FROM` gives no protection, the JS bundle lacks nosniff, and the API echoes `https://evil.example` with `Allow-Credentials: true`, so any site could read `/v1/me`. `examples/shop-headers-fixed.txt` checks clean (exit 0).
+
+## Rules
+
+- Judge only captured headers; mark TLS setup, `<meta>` CSP tags, the preload list and server-side Origin allowlists as ""to verify"".
+- Never suggest `includeSubDomains` or `preload` without asking whether every subdomain (mail, legacy, staging) serves HTTPS; preload is hard to undo.
+- Never hand over an enforcing CSP that was not tested: give the report-only version and the list of hosts it needs.
+- Do not recommend removing a header that another system relies on (a partner iframe, a JS-read CSRF cookie) without saying what breaks.
+- Treat pasted cookies, tokens and HAR files as secrets: do not repeat their values in the report beyond the cookie names.
+- Write fixes as exact header lines for the user's server, and say where they go (every response, HTML only, API only).
+FILE:references/header-rules.md
+# Header rules
+
+Order of review: transport (HTTPS, HSTS) -> script control (CSP) -> framing -> content sniffing -> leaks (Referrer, Permissions) -> cookies -> CORS -> disclosure.
+
+## Which responses need what
+| Header | HTML pages | Scripts / CSS | JSON/XML APIs | Images, fonts | Redirects |
+|---|---|---|---|---|---|
+| Strict-Transport-Security | yes (HIGH if missing) | yes | yes | yes | yes, on HTTPS redirects |
+| Content-Security-Policy | yes | no | optional (`default-src 'none'; frame-ancestors 'none'`) | no | no |
+| frame-ancestors / X-Frame-Options | yes | no | no | no | no |
+| X-Content-Type-Options: nosniff | yes | yes (MEDIUM) | yes (MEDIUM) | yes | no |
+| Referrer-Policy, Permissions-Policy, COOP | yes | no | no | no | no |
+
+## Strict-Transport-Security (RFC 6797)
+- Only valid over HTTPS; browsers ignore it on http:// responses. The HTTP site must answer with 301/308 to https.
+- `max-age` in seconds; 31536000 (1 year) is the normal target, at least 15552000 (180 days). `max-age=0` deletes the policy.
+- `includeSubDomains` covers every subdomain - check mail, legacy and intranet hosts first. Raise max-age in steps (300 -> 1 week -> 1 month -> 1 year).
+- `preload` (hstspreload.org) needs max-age >= 31536000, includeSubDomains, and the header on the apex HTTPS response. Removal from the list takes months.
+
+## Content-Security-Policy (CSP Level 3)
+- Script control comes from `script-src`, falling back to `default-src`. A policy with neither does not restrict scripts.
+- Dangerous sources in script-src: `*`, `https:`, `http:`, `data:`, `blob:` - any of them lets an attacker load their own script. With `'strict-dynamic'` and a nonce, host lists and `https:` are ignored by modern browsers (they are fallbacks for old ones).
+- `'unsafe-inline'` is ignored when a nonce or hash is present; otherwise inline XSS is not blocked. `'unsafe-eval'` allows `eval`/`new Function`.
+- Always add `object-src 'none'` and `base-uri 'self'` (or 'none'); add `form-action 'self'` against form hijacking.
+- Several CSP headers are all enforced (a source must pass every policy). `Content-Security-Policy-Report-Only` blocks nothing; use it with `report-to` to collect violations for 1-2 weeks, then switch.
+- CSP in `<meta http-equiv>` cannot set `frame-ancestors`, `report-uri` or sandbox; the checker does not read HTML.
+
+## Framing (clickjacking)
+- `Content-Security-Policy: frame-ancestors 'self'` is the modern control; `X-Frame-Options: SAMEORIGIN` or `DENY` for old browsers. When both exist, browsers use frame-ancestors.
+- `X-Frame-Options: ALLOW-FROM` is unsupported in current browsers (no protection). Two XFO values (or a comma list) can make browsers ignore the header.
+
+## X-Content-Type-Options
+- Only valid value: `nosniff`. Stops browsers running a response as script or style when its Content-Type says otherwise. Matters most for uploads, JSONP-like APIs and scripts.
+
+## Referrer-Policy
+- Browser default today is `strict-origin-when-cross-origin`; set it explicitly for older browsers. `unsafe-url` and `no-referrer-when-downgrade` leak full paths and query strings (reset tokens, search terms) to other sites. In a comma list the last value the browser understands wins.
+
+## Permissions-Policy
+- Syntax: `camera=(), microphone=(), geolocation=(self ""https://maps.example"")`. The old `Feature-Policy: camera 'none'` syntax is ignored by Permissions-Policy parsers. `=*` allows every origin.
+
+## Cross-Origin-Opener-Policy
+- `same-origin` isolates the window from pages it opens or that open it (XS-leaks, tabnabbing). Use `same-origin-allow-popups` if login or payment pop-ups must talk back.
+
+## Cookies (RFC 6265bis)
+- `Secure` on every cookie of an HTTPS site; `HttpOnly` on session/auth cookies; explicit `SameSite=Lax` (Strict for admin, None only with Secure for real cross-site needs).
+- `__Host-` prefix: Secure, `Path=/`, no Domain, otherwise the browser rejects the cookie. `__Secure-`: Secure required.
+- `Domain=example.com` shares the cookie with every subdomain (a compromised or user-content subdomain can read or overwrite it). Host-only (no Domain) is safer.
+- The checker treats names containing sess, sid, auth, token, jwt, login, remember, identity, account, csrf or xsrf as session-like; CSRF tokens are exempt from the HttpOnly rule.
+
+## CORS (Fetch standard)
+- `Access-Control-Allow-Origin: *` cannot be combined with credentials (browsers block it) - fine only for public, cookie-free data.
+- Reflecting the request Origin with `Access-Control-Allow-Credentials: true` lets any website read logged-in responses. Test by sending `Origin: https://evil.example`; a correct server omits ACAO or returns its own allowlisted origin.
+- Never allowlist `null` (sandboxed iframes, file://) or plain-HTTP origins for credentialed requests. Dynamic ACAO needs `Vary: Origin` so caches keep answers apart.
+
+## Disclosure and deprecated headers
+- `Server: nginx/1.18.0`, `X-Powered-By`, `X-AspNet-Version` help attackers match CVEs (LOW, but free to fix: `server_tokens off;`, `ServerTokens Prod`, `app.disable('x-powered-by')`).
+- Remove `X-XSS-Protection: 1` (or send `0`), `Expect-CT` and `Public-Key-Pins`.
+
+## Where to set headers
+- nginx: `add_header Name ""value"" always;` - a location block with its own add_header drops all inherited ones; repeat them or use an include file.
+- Apache: `Header always set Name ""value""`. Caddy: `header { Name ""value"" }`. CDN: response header transform rule. Express: helmet; Django: SecurityMiddleware settings; Rails: `config.action_dispatch.default_headers`.
+FILE:references/finding-codes.md
+# Finding codes
+
+| Code | Sev | Problem | Acceptable when | Usual fix |
+|---|---|---|---|---|
+| HTTP_NO_HTTPS_REDIRECT | HIGH | http:// URL served without redirect to https | never for a public site | 301/308 to https |
+| HSTS_MISSING | HIGH (HTML, redirects) / MEDIUM | no Strict-Transport-Security on HTTPS | local dev only | `max-age=31536000; includeSubDomains` |
+| HSTS_INVALID | HIGH | no numeric max-age, header ignored | never | fix the syntax |
+| CSP_WILDCARD_SCRIPT | HIGH | script-src allows `*`, `https:`, `data:` ... | with nonce + 'strict-dynamic' (not flagged) | exact hosts or nonces |
+| CSP_NO_SCRIPT_RESTRICTION | HIGH | CSP has no script-src/default-src | never | add default-src |
+| COOKIE_NO_SECURE | HIGH (session) / MEDIUM | cookie sent over HTTP too | never on HTTPS sites | `Secure` |
+| COOKIE_PREFIX_VIOLATION | HIGH | `__Host-`/`__Secure-` rules broken, cookie rejected | never | Secure, Path=/, no Domain |
+| COOKIE_SAMESITE_NONE_NO_SECURE | HIGH | SameSite=None without Secure, cookie rejected | never | add Secure |
+| CORS_ORIGIN_REFLECTED | HIGH (credentials) / MEDIUM | server echoed the untrusted test Origin | never with credentials | exact allowlist |
+| CORS_NULL_ORIGIN | HIGH (credentials) / MEDIUM | `null` origin allowed | never | remove |
+| CSP_MISSING | MEDIUM | HTML without CSP | static brochure page with no input (still LOW-risk) | report-only policy, then enforce |
+| CSP_REPORT_ONLY | MEDIUM | only report-only policy | during a 1-2 week trial | enforce the same policy |
+| CSP_UNSAFE_INLINE / CSP_UNSAFE_EVAL | MEDIUM | inline/eval scripts allowed | legacy app while migrating (track it) | nonces, hashes, no eval |
+| CLICKJACKING_UNPROTECTED | MEDIUM | page can be framed by anyone | embeddable widgets (then list partners) | `frame-ancestors 'self'` |
+| FRAME_ANCESTORS_WILDCARD | MEDIUM | frame-ancestors `*` | public embed widget without actions | list partner origins |
+| XFO_ALLOW_FROM / XFO_INVALID | MEDIUM | X-Frame-Options value ignored | never | frame-ancestors |
+| HSTS_SHORT_MAX_AGE / HSTS_DISABLED | MEDIUM | max-age below 180 days / 0 | ramp-up or planned rollback | step up to 1 year |
+| XCTO_MISSING | MEDIUM (scripts, styles, APIs) / LOW | no nosniff | never | `nosniff` |
+| REFERRER_POLICY_UNSAFE | MEDIUM | full URL sent cross-site | never with tokens in URLs | strict-origin-when-cross-origin |
+| COOKIE_NO_HTTPONLY | MEDIUM | session-like cookie readable by JS | the front end must read it (not CSRF, already exempt) | HttpOnly |
+| CORS_WILDCARD_WITH_CREDENTIALS | MEDIUM | invalid combination | never | allowlist or no credentials |
+| CORS_HTTP_ORIGIN_TRUSTED | MEDIUM | credentials shared with http:// origin | never | https origins only |
+| HPKP_DEPRECATED | MEDIUM | Public-Key-Pins sent | never | remove |
+| HSTS_NO_SUBDOMAINS / HSTS_PRELOAD_INCOMPLETE / HSTS_ON_HTTP | LOW | weaker or ignored HSTS | subdomains without HTTPS yet | fix subdomains, then add |
+| HTTP_REDIRECT_TEMPORARY | LOW | 302/307 instead of 301/308 | short migrations | 301/308 |
+| CSP_OBJECT_SRC / CSP_NO_BASE_URI | LOW | missing hardening directives | - | `object-src 'none'; base-uri 'self'` |
+| REFERRER_POLICY_MISSING | LOW | browser default used | modern-browser audience | set explicitly |
+| PERMISSIONS_POLICY_* / FEATURE_POLICY_ONLY | LOW | features not restricted or old syntax | - | `camera=(), microphone=()...` |
+| COOP_MISSING | LOW | no opener isolation | pages that rely on window.opener | `same-origin(-allow-popups)` |
+| COOKIE_NO_SAMESITE / COOKIE_BROAD_DOMAIN | LOW | default SameSite / shared with subdomains | SSO across subdomains (Domain needed) | `SameSite=Lax`, host-only |
+| CORS_WILDCARD / CORS_NO_VARY_ORIGIN / CORS_ORIGIN_ECHO / CORS_WILDCARD_METHODS | LOW | review CORS scope | public data | allowlist, `Vary: Origin` |
+| SERVER_VERSION_DISCLOSED / TECH_DISCLOSED | LOW | version or stack banner | - | hide banners |
+| X_XSS_PROTECTION_DEPRECATED / EXPECT_CT_DEPRECATED | LOW | obsolete header | - | remove (or `X-XSS-Protection: 0`) |
+| DUPLICATE_HEADER | LOW | repeated single-value header | - | send once |
+
+Exit codes: 0 = no HIGH, 1 = HIGH present, 2 = bad input. In CI, run against staging after deploy and gate on HIGH; keep any `--ignore` list in the repo with a reason per code.
+
+## Live checks the script cannot do (offline)
+- TLS versions and certificates: `openssl s_client -connect host:443 -servername host` or an SSL test service.
+- HSTS preload status: hstspreload.org.
+- `<meta http-equiv=""Content-Security-Policy"">` in the HTML body: `curl -s URL | grep -i content-security-policy`.
+- CORS allowlist behaviour: repeat the curl with a trusted origin, `null`, `https://example.com.evil.example` and `https://evilexample.com` (suffix/prefix match bugs).
+- Error pages (404, 500) and the login/logout responses often miss headers set only in the app; capture them too.
+FILE:templates/security-headers-review.md
+# Security headers review: <site>
+
+**Captured:** <date, curl -sIL / HAR, which URLs>   **Stack:** <nginx + Node app behind Cloudflare>
+**Result:** <HIGH n, MEDIUM n, LOW n> - <one-sentence verdict, e.g. ""session cookie and CORS issues let other sites read user data; fix before launch"">
+
+## Fix now (HIGH)
+| # | URL / response | Header now | Risk | Set instead |
+|---|---|---|---|---|
+| 1 | <https://api.example.com/v1/me> | `<Access-Control-Allow-Origin: (echoes Origin) + credentials>` | <any site reads logged-in data> | <allowlist https://example.com only, Vary: Origin> |
+| 2 | <https://example.com/> | `<Set-Cookie: sessionid=...; HttpOnly>` | <sent over HTTP> | `<__Host-session=...; Path=/; Secure; HttpOnly; SameSite=Lax>` |
+
+## Fix soon (MEDIUM)
+- <CSP: remove https: and 'unsafe-inline' from script-src; deploy as report-only first>
+
+## Hardening (LOW)
+- <Permissions-Policy, COOP, hide Server version>
+
+## Header block for <nginx / Apache / CDN / framework>
+```
+<add_header Strict-Transport-Security ""max-age=31536000; includeSubDomains"" always;>
+<add_header Content-Security-Policy-Report-Only ""default-src 'self'; script-src 'self' 'nonce-$request_id'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'"" always;>
+<add_header X-Content-Type-Options ""nosniff"" always;>
+<add_header Referrer-Policy ""strict-origin-when-cross-origin"" always;>
+<add_header Permissions-Policy ""camera=(), microphone=(), geolocation=()"" always;>
+```
+Where: <server block for every response; CSP/Permissions/COOP on HTML locations only>
+
+## Rollout
+1. <deploy CSP as report-only with report-to; collect violations for 1-2 weeks>
+2. <HSTS max-age 300 -> 604800 -> 31536000; add includeSubDomains after confirming <subdomains> serve HTTPS>
+3. <fix cookies and CORS in the app; retest with the same curl commands, including Origin: https://evil.example>
+4. <switch CSP to enforcing; keep the report endpoint>
+
+## To verify (not checked offline)
+- <TLS configuration; error pages 404/500; login response cookies; meta CSP>
+
+**Rollback:** <remove the CSP header or return to report-only; HSTS cannot be withdrawn quickly - lower max-age only after the old value expires>
+**Open questions:** <must partner.example.net embed the page? does the front end read any cookie?>
+FILE:examples/shop-headers.txt
+# Captured 2026-10-31 for shop.example.com before launch
+# curl -sIL http://shop.example.com/
+# http://shop.example.com/
+HTTP/1.1 302 Found
+Server: nginx/1.18.0
+Date: Sat, 31 Oct 2026 07:10:02 GMT
+Content-Type: text/html
+Content-Length: 145
+Connection: keep-alive
+Location: https://shop.example.com/
+
+HTTP/2 200
+server: nginx/1.18.0
+date: Sat, 31 Oct 2026 07:10:02 GMT
+content-type: text/html; charset=utf-8
+strict-transport-security: max-age=86400
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:
+x-frame-options: ALLOW-FROM https://partner.example.net
+x-xss-protection: 1; mode=block
+referrer-policy: no-referrer-when-downgrade
+x-powered-by: Express
+set-cookie: sessionid=4f2a9c; Path=/; HttpOnly
+set-cookie: cart_id=88213; Path=/; Secure; SameSite=Lax
+set-cookie: __Host-csrf=e1d0; Path=/; Domain=shop.example.com; Secure; SameSite=Strict
+
+# curl -sI https://shop.example.com/static/app.3f9c1e.js
+# https://shop.example.com/static/app.3f9c1e.js
+HTTP/2 200
+server: nginx/1.18.0
+content-type: application/javascript
+cache-control: public, max-age=31536000, immutable
+strict-transport-security: max-age=86400
+
+# curl -sv -o /dev/null -H ""Origin: https://evil.example"" https://api.shop.example.com/v1/me 2>&1
+> GET /v1/me HTTP/2
+> Host: api.shop.example.com
+> Origin: https://evil.example
+> Accept: */*
+< HTTP/2 200
+< content-type: application/json
+< access-control-allow-origin: https://evil.example
+< access-control-allow-credentials: true
+< strict-transport-security: max-age=31536000; includeSubDomains
+< x-content-type-options: nosniff
+FILE:examples/shop-headers-fixed.txt
+# Same three URLs after applying the fixes from examples/header-report.md
+# http://shop.example.com/
+HTTP/1.1 301 Moved Permanently
+Server: nginx
+Content-Type: text/html
+Location: https://shop.example.com/
+
+HTTP/2 200
+server: nginx
+content-type: text/html; charset=utf-8
+strict-transport-security: max-age=31536000; includeSubDomains
+content-security-policy: default-src 'self'; script-src 'self' 'nonce-r4nd0m' 'strict-dynamic'; img-src 'self' data: https://cdn.shop.example.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self' https://partner.example.net; form-action 'self'
+x-content-type-options: nosniff
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: camera=(), microphone=(), geolocation=(), payment=(self)
+cross-origin-opener-policy: same-origin-allow-popups
+set-cookie: __Host-session=4f2a9c; Path=/; Secure; HttpOnly; SameSite=Lax
+set-cookie: cart_id=88213; Path=/; Secure; SameSite=Lax
+set-cookie: __Host-csrf=e1d0; Path=/; Secure; SameSite=Strict
+
+# https://shop.example.com/static/app.3f9c1e.js
+HTTP/2 200
+server: nginx
+content-type: application/javascript
+cache-control: public, max-age=31536000, immutable
+strict-transport-security: max-age=31536000; includeSubDomains
+x-content-type-options: nosniff
+
+> GET /v1/me HTTP/2
+> Host: api.shop.example.com
+> Origin: https://evil.example
+< HTTP/2 200
+< content-type: application/json
+< strict-transport-security: max-age=31536000; includeSubDomains
+< x-content-type-options: nosniff
+< vary: Origin
+FILE:examples/header-report.md
+# HTTP security headers: shop-headers.txt
+
+Responses: 4   Findings: 25 (HIGH 4, MEDIUM 6, LOW 15)
+
+| # | URL | Status | Kind | HSTS | CSP | XFO | nosniff | Referrer | Permissions | COOP | Cookies | CORS |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | http://shop.example.com/ | 302 | redirect | - | - | - | - | - | - | - | - | - |
+| 2 | https://shop.example.com/ | 200 | html | yes | yes | yes | - | yes | - | - | 3 | - |
+| 3 | https://shop.example.com/static/app.3f9c1e.js | 200 | script | yes | - | - | - | - | - | - | - | - |
+| 4 | https://api.shop.example.com/v1/me | 200 | api | yes | - | - | yes | - | - | - | - | https://evil.example |
+
+## 1. http://shop.example.com/ 302 (redirect), line 4
+
+HIGH 0, MEDIUM 0, LOW 2
+
+| Sev | Code | Header | Problem | Fix |
+|---|---|---|---|---|
+| LOW | HTTP_REDIRECT_TEMPORARY | Location | HTTP to HTTPS uses a temporary redirect (302) | use 301 or 308 so browsers and crawlers remember it |
+| LOW | SERVER_VERSION_DISCLOSED | Server | Server: nginx/1.18.0 reveals the software version | hide the version (server_tokens off / ServerTokens Prod) |
+
+## 2. https://shop.example.com/ 200 (html), line 12
+
+HIGH 3, MEDIUM 4, LOW 10
+
+| Sev | Code | Header | Problem | Fix |
+|---|---|---|---|---|
+| HIGH | CSP_WILDCARD_SCRIPT | Content-Security-Policy | script-src allows https:, so scripts load from anywhere | list exact hosts or use nonces with 'strict-dynamic' |
+| HIGH | COOKIE_NO_SECURE | Set-Cookie | sessionid: no Secure flag, the cookie is also sent over plain HTTP | add Secure |
+| HIGH | COOKIE_PREFIX_VIOLATION | Set-Cookie | __Host-csrf: __Host- cookies need Secure, Path=/ and no Domain, so the browser rejects this one | Set-Cookie: __Host-csrf=...; Path=/; Secure; SameSite=Lax (no Domain) |
+| MEDIUM | HSTS_SHORT_MAX_AGE | Strict-Transport-Security | max-age=86400 (1 day) is short; protection lapses between visits | raise in steps (1 week, 1 month) to max-age=31536000 |
+| MEDIUM | CSP_UNSAFE_INLINE | Content-Security-Policy | script-src has 'unsafe-inline' without a nonce/hash: inline XSS is not blocked | move inline scripts to files or add nonces/hashes |
+| MEDIUM | XFO_ALLOW_FROM | X-Frame-Options | ALLOW-FROM is not supported by current browsers (treated as no protection) | use CSP frame-ancestors 'self' https://partner.example |
+| MEDIUM | REFERRER_POLICY_UNSAFE | Referrer-Policy | no-referrer-when-downgrade sends full URLs (paths, query tokens) to other sites | strict-origin-when-cross-origin (or no-referrer) |
+| LOW | HSTS_NO_SUBDOMAINS | Strict-Transport-Security | subdomains are not covered (cookies scoped to the parent domain can leak over HTTP) | add includeSubDomains after checking every subdomain has HTTPS |
+| LOW | CSP_OBJECT_SRC | Content-Security-Policy | object-src is not 'none' (plugins/embeds can bypass script rules) | add object-src 'none' |
+| LOW | CSP_NO_BASE_URI | Content-Security-Policy | no base-uri: an injected <base> tag can redirect relative script URLs | add base-uri 'self' (or 'none') |
+| LOW | XCTO_MISSING | X-Content-Type-Options | no nosniff: browsers may guess a different content type (e.g. run an upload as script) | X-Content-Type-Options: nosniff |
+| LOW | PERMISSIONS_POLICY_MISSING | Permissions-Policy | powerful features (camera, microphone, geolocation) are not switched off for embedded content | Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=() |
+| LOW | COOP_MISSING | Cross-Origin-Opener-Policy | pages opened with window.open keep a handle to this window (tabnabbing/XS-leaks) | Cross-Origin-Opener-Policy: same-origin (same-origin-allow-popups if you use OAuth/payment pop-ups) |
+| LOW | COOKIE_NO_SAMESITE | Set-Cookie | sessionid: no SameSite attribute (browsers apply Lax by default, older ones send it cross-site) | set SameSite=Lax explicitly (Strict for admin areas) |
+| LOW | SERVER_VERSION_DISCLOSED | Server | Server: nginx/1.18.0 reveals the software version | hide the version (server_tokens off / ServerTokens Prod) |
+| LOW | TECH_DISCLOSED | X-Powered-By | X-Powered-By: Express reveals the stack | remove the header |
+| LOW | X_XSS_PROTECTION_DEPRECATED | X-XSS-Protection | the XSS auditor is gone from browsers; '1; mode=block' can even create leaks in old ones | remove it or send X-XSS-Protection: 0, rely on CSP |
+
+## 3. https://shop.example.com/static/app.3f9c1e.js 200 (script), line 28
+
+HIGH 0, MEDIUM 2, LOW 2
+
+| Sev | Code | Header | Problem | Fix |
+|---|---|---|---|---|
+| MEDIUM | HSTS_SHORT_MAX_AGE | Strict-Transport-Security | max-age=86400 (1 day) is short; protection lapses between visits | raise in steps (1 week, 1 month) to max-age=31536000 |
+| MEDIUM | XCTO_MISSING | X-Content-Type-Options | no nosniff: browsers may guess a different content type (e.g. run an upload as script) | X-Content-Type-Options: nosniff |
+| LOW | HSTS_NO_SUBDOMAINS | Strict-Transport-Security | subdomains are not covered (cookies scoped to the parent domain can leak over HTTP) | add includeSubDomains after checking every subdomain has HTTPS |
+| LOW | SERVER_VERSION_DISCLOSED | Server | Server: nginx/1.18.0 reveals the software version | hide the version (server_tokens off / ServerTokens Prod) |
+
+## 4. https://api.shop.example.com/v1/me 200 (api), line 39
+
+HIGH 1, MEDIUM 0, LOW 1
+
+| Sev | Code | Header | Problem | Fix |
+|---|---|---|---|---|
+| HIGH | CORS_ORIGIN_REFLECTED | Access-Control-Allow-Origin | the server echoed the untrusted test Origin https://evil.example, so it trusts any site; with Allow-Credentials: true any site can read a logged-in user's data | compare Origin against an exact allowlist; never echo it unchecked |
+| LOW | CORS_NO_VARY_ORIGIN | Vary | per-origin Access-Control-Allow-Origin without Vary: Origin; a cache can serve one origin's answer to another | add Vary: Origin |
+
+## Suggested baseline for HTML pages (adapt CSP hosts and nonces before enforcing)
+
+```
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-{RANDOM}'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self'
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+Cross-Origin-Opener-Policy: same-origin
+Set-Cookie: __Host-session=...; Path=/; Secure; HttpOnly; SameSite=Lax
+```
+
+Offline check of captured headers only: TLS, the HSTS preload list, CSP in <meta> tags and server-side Origin allowlists were not tested.
+FILE:scripts/sec_headers.py
+#!/usr/bin/env python3
+""""""HTTP security headers checker (Python 3.8+ standard library only).
+
+Reads HTTP response headers and reports security header problems:
+Strict-Transport-Security, Content-Security-Policy, frame-ancestors / X-Frame-Options,
+X-Content-Type-Options, Referrer-Policy, Permissions-Policy, Cross-Origin-Opener-Policy,
+Set-Cookie flags and prefixes, CORS (Access-Control-Allow-*), version disclosure and
+deprecated headers.
+
+Input (auto-detected):
+  * curl output: `curl -sI URL`, `curl -sIL URL` (redirect chain = several blocks) or
+    `curl -sv -o /dev/null URL 2>&1` (""< Header: value"" lines, ""> Origin:"" request lines).
+    Put ""# https://example.com/path"" on the line before a block to name its URL; later
+    blocks of a redirect chain take their URL from the previous Location header.
+  * HAR export from browser DevTools (log.entries[].request.url / response.headers).
+  * a plain ""Name: value"" headers file (one response; give --url).
+
+Usage:
+  python3 sec_headers.py headers.txt [--url https://example.com/] [--origin https://evil.example]
+                         [--min-severity LOW|MEDIUM|HIGH] [--ignore CODE,CODE] [--json]
+  python3 sec_headers.py --self-test
+
+Exit codes: 0 = no HIGH findings, 1 = HIGH findings, 2 = bad input.
+No network calls are made; the checker only reads what you captured.
+""""""
+import argparse
+import json
+import re
+import sys
+from urllib.parse import urljoin, urlsplit
+
+SEV_ORDER = {""LOW"": 1, ""MEDIUM"": 2, ""HIGH"": 3}
+SESSION_HINT = re.compile(r""(sess|sid|auth|token|jwt|login|remember|csrf|xsrf|identity|account)"", re.I)
+CSRF_HINT = re.compile(r""(csrf|xsrf)"", re.I)  # double-submit tokens must stay readable from JavaScript
+HSTS_MIN = 15552000      # 180 days
+HSTS_PRELOAD = 31536000  # 1 year
+PERMISSION_FEATURES = (""camera"", ""microphone"", ""geolocation"", ""payment"", ""usb"")
+
+
+class Response:
+    def __init__(self, url, status, headers, line, request_headers=None):
+        self.url = url or """"
+        self.status = status
+        self.headers = headers            # list of (name, value) in order
+        self.line = line                  # line number of the status line (1-based), 0 for HAR
+        self.request_headers = request_headers or {}
+
+    def get_all(self, name):
+        n = name.lower()
+        return [v for k, v in self.headers if k.lower() == n]
+
+    def get(self, name):
+        vals = self.get_all(name)
+        return vals[0] if vals else None
+
+    @property
+    def scheme(self):
+        return urlsplit(self.url).scheme.lower() if self.url else """"
+
+    @property
+    def kind(self):
+        if 300 <= self.status < 400:
+            return ""redirect""
+        ct = (self.get(""content-type"") or """").lower()
+        if ""html"" in ct:
+            return ""html""
+        if ""javascript"" in ct or ""ecmascript"" in ct:
+            return ""script""
+        if ""css"" in ct:
+            return ""style""
+        if ""json"" in ct or ""xml"" in ct and ""html"" not in ct:
+            return ""api""
+        if ct.startswith((""image/"", ""font/"", ""video/"", ""audio/"")):
+            return ""asset""
+        if not ct and self.status in (204,):
+            return ""api""
+        return ""other"" if ct else ""unknown""
+
+
+# ----------------------------------------------------------------------------- parsing
+
+STATUS_RE = re.compile(r""^\s*[<]?\s*HTTP/(\d(?:\.\d)?)\s+(\d{3})\b"")
+URL_COMMENT_RE = re.compile(r""^\s*#+\s*(?:URL:\s*)?(https?://\S+)"", re.I)
+HEADER_RE = re.compile(r""^\s*[<]?\s*([A-Za-z0-9!#$%&'*+.^_`|~-]+)\s*:\s?(.*)$"")
+
+
+def parse_text(text, default_url=""""):
+    responses, cur, pending_url, req = [], None, default_url or """", {}
+    req_line_host, req_path = None, None
+    lines = text.splitlines()
+    for i, raw in enumerate(lines, 1):
+        line = raw.rstrip(""\r"")
+        m = URL_COMMENT_RE.match(line)
+        if m:
+            if cur:
+                responses.append(cur)
+                cur = None
+            pending_url = m.group(1)
+            continue
+        s = line.strip()
+        if s.startswith("">""):  # curl -v request line
+            body = s[1:].strip()
+            rm = re.match(r""^(GET|HEAD|POST|PUT|DELETE|OPTIONS|PATCH)\s+(\S+)"", body)
+            if rm:
+                req_path = rm.group(2)
+                req = {}
+            hm = HEADER_RE.match(body)
+            if hm and not rm:
+                req[hm.group(1).lower()] = hm.group(2).strip()
+                if hm.group(1).lower() == ""host"":
+                    req_line_host = hm.group(2).strip()
+            continue
+        if s.startswith(""*"") or s.startswith(""{"") or s.startswith(""}""):
+            continue
+        sm = STATUS_RE.match(line)
+        if sm:
+            if cur:
+                responses.append(cur)
+            url = pending_url
+            if not url and req_line_host and req_path:
+                url = (""https://"" if req_line_host else """") + req_line_host + req_path
+            if not url and responses:
+                loc = responses[-1].get(""location"")
+                if loc:
+                    url = urljoin(responses[-1].url or """", loc)
+            cur = Response(url, int(sm.group(2)), [], i, dict(req))
+            pending_url = """"
+            continue
+        if cur is None:
+            hm = HEADER_RE.match(line)
+            if hm and not s.startswith(""#""):  # headers-only file: synthesize a 200
+                cur = Response(pending_url, 200, [], 0, dict(req))
+                pending_url = """"
+            else:
+                continue
+        if not s:
+            continue
+        hm = HEADER_RE.match(line)
+        if hm:
+            cur.headers.append((hm.group(1), hm.group(2).strip()))
+    if cur:
+        responses.append(cur)
+    return responses
+
+
+def parse_har(data):
+    out = []
+    for e in data.get(""log"", {}).get(""entries"", []):
+        req = e.get(""request"", {})
+        res = e.get(""response"", {})
+        rh = {h[""name""].lower(): h[""value""] for h in req.get(""headers"", [])}
+        hs = [(h[""name""], h[""value""]) for h in res.get(""headers"", [])]
+        out.append(Response(req.get(""url"", """"), int(res.get(""status"", 0) or 0), hs, 0, rh))
+    return out
+
+
+def load(text, default_url=""""):
+    st = text.lstrip()
+    if st.startswith(""{""):
+        try:
+            data = json.loads(st)
+        except ValueError as e:
+            raise ValueError(""looks like JSON but does not parse: %s"" % e)
+        if ""log"" not in data:
+            raise ValueError(""JSON input is not a HAR file (no 'log' key)"")
+        return parse_har(data)
+    res = parse_text(text, default_url)
+    if not res:
+        raise ValueError(""no HTTP responses found (expected 'HTTP/x 200' lines, a HAR file or 'Name: value' headers)"")
+    for r in res:
+        if not r.url and default_url:
+            r.url = default_url
+    return res
+
+
+# ----------------------------------------------------------------------------- helpers
+
+def parse_csp(value):
+    d = {}
+    for part in value.split("";""):
+        toks = part.strip().split()
+        if not toks:
+            continue
+        name = toks[0].lower()
+        if name not in d:  # duplicates inside one policy: first wins
+            d[name] = [t for t in toks[1:]]
+    return d
+
+
+def parse_directives(value):
+    out = {}
+    for part in value.split("";""):
+        part = part.strip()
+        if not part:
+            continue
+        k, _, v = part.partition(""="")
+        out[k.strip().lower()] = v.strip().strip('""')
+    return out
+
+
+def parse_cookie(value):
+    parts = [p.strip() for p in value.split("";"")]
+    name, _, val = parts[0].partition(""="")
+    attrs = {}
+    for p in parts[1:]:
+        if not p:
+            continue
+        k, _, v = p.partition(""="")
+        attrs[k.strip().lower()] = v.strip()
+    return name.strip(), val, attrs
+
+
+def _days(sec):
+    d = sec / 86400.0
+    if d < 1:
+        return ""%.0f hours"" % (sec / 3600.0)
+    return ""%g day%s"" % (round(d, 1), """" if round(d, 1) == 1 else ""s"")
+
+
+def same_origin(a, b):
+    try:
+        x, y = urlsplit(a), urlsplit(b)
+    except ValueError:
+        return False
+    return (x.scheme, x.hostname, x.port) == (y.scheme, y.hostname, y.port)
+
+
+# ----------------------------------------------------------------------------- checks
+
+def check(resp, test_origin=None):
+    f = []
+
+    def add(sev, code, header, problem, fix):
+        f.append({""severity"": sev, ""code"": code, ""header"": header, ""problem"": problem, ""fix"": fix,
+                  ""url"": resp.url, ""status"": resp.status, ""line"": resp.line})
+
+    kind = resp.kind
+    https = resp.scheme == ""https""
+    doc = kind in (""html"", ""unknown"")
+
+    # --- transport: HTTP -> HTTPS
+    if resp.scheme == ""http"":
+        loc = resp.get(""location"") or """"
+        if not (300 <= resp.status < 400 and loc.lower().startswith(""https://"")):
+            add(""HIGH"", ""HTTP_NO_HTTPS_REDIRECT"", ""Location"",
+                ""plain-HTTP response is served without redirecting to HTTPS"",
+                ""answer every http:// request with 301/308 to the https:// URL"")
+        elif resp.status in (302, 303, 307):
+            add(""LOW"", ""HTTP_REDIRECT_TEMPORARY"", ""Location"",
+                ""HTTP to HTTPS uses a temporary redirect (%d)"" % resp.status,
+                ""use 301 or 308 so browsers and crawlers remember it"")
+        if resp.get(""strict-transport-security""):
+            add(""LOW"", ""HSTS_ON_HTTP"", ""Strict-Transport-Security"",
+                ""HSTS sent over plain HTTP is ignored by browsers"", ""send it on the HTTPS responses"")
+
+    # --- HSTS
+    hsts_vals = resp.get_all(""strict-transport-security"")
+    if https:
+        if not hsts_vals:
+            if kind != ""asset"" or resp.status < 300:
+                add(""HIGH"" if doc or kind == ""redirect"" else ""MEDIUM"", ""HSTS_MISSING"", ""Strict-Transport-Security"",
+                    ""no HSTS: the first visit or a typed http:// link can be downgraded or intercepted"",
+                    ""Strict-Transport-Security: max-age=31536000; includeSubDomains"")
+        else:
+            if len(hsts_vals) > 1:
+                add(""LOW"", ""DUPLICATE_HEADER"", ""Strict-Transport-Security"",
+                    ""%d HSTS headers; browsers use only the first"" % len(hsts_vals), ""send exactly one"")
+            d = parse_directives(hsts_vals[0])
+            ma = d.get(""max-age"")
+            if ma is None or not ma.isdigit():
+                add(""HIGH"", ""HSTS_INVALID"", ""Strict-Transport-Security"",
+                    ""max-age missing or not a number, so the header is ignored"",
+                    ""max-age=31536000; includeSubDomains"")
+            else:
+                ma = int(ma)
+                if ma == 0:
+                    add(""MEDIUM"", ""HSTS_DISABLED"", ""Strict-Transport-Security"",
+                        ""max-age=0 clears HSTS (only correct while deliberately rolling it back)"",
+                        ""max-age=31536000 once every subdomain serves HTTPS"")
+                elif ma < HSTS_MIN:
+                    add(""MEDIUM"", ""HSTS_SHORT_MAX_AGE"", ""Strict-Transport-Security"",
+                        ""max-age=%d (%s) is short; protection lapses between visits"" % (ma, _days(ma)),
+                        ""raise in steps (1 week, 1 month) to max-age=31536000"")
+                if ""includesubdomains"" not in d and ma:
+                    add(""LOW"", ""HSTS_NO_SUBDOMAINS"", ""Strict-Transport-Security"",
+                        ""subdomains are not covered (cookies scoped to the parent domain can leak over HTTP)"",
+                        ""add includeSubDomains after checking every subdomain has HTTPS"")
+                if ""preload"" in d and (ma < HSTS_PRELOAD or ""includesubdomains"" not in d):
+                    add(""LOW"", ""HSTS_PRELOAD_INCOMPLETE"", ""Strict-Transport-Security"",
+                        ""preload is set but the list requires max-age>=31536000 and includeSubDomains"",
+                        ""max-age=63072000; includeSubDomains; preload (only if you mean to preload)"")
+
+    # --- CSP
+    csp_vals = resp.get_all(""content-security-policy"")
+    csp_ro = resp.get_all(""content-security-policy-report-only"")
+    frame_ancestors = None
+    if csp_vals:
+        merged = {}
+        for v in csp_vals:
+            for k, toks in parse_csp(v).items():
+                merged.setdefault(k, toks)
+        if ""frame-ancestors"" in merged:
+            frame_ancestors = merged[""frame-ancestors""]
+    if doc:
+        if not csp_vals:
+            if csp_ro:
+                add(""MEDIUM"", ""CSP_REPORT_ONLY"", ""Content-Security-Policy-Report-Only"",
+                    ""CSP is only in report-only mode; nothing is blocked"",
+                    ""after reports are clean, send the same policy as Content-Security-Policy"")
+            else:
+                add(""MEDIUM"", ""CSP_MISSING"", ""Content-Security-Policy"",
+                    ""no Content-Security-Policy: an injected <script> runs with full page access"",
+                    ""start with a report-only policy (see the suggested header set), then enforce"")
+        else:
+            for v in csp_vals:
+                d = parse_csp(v)
+                script = d.get(""script-src"", d.get(""default-src""))
+                src_name = ""script-src"" if ""script-src"" in d else ""default-src""
+                if script is None:
+                    add(""HIGH"", ""CSP_NO_SCRIPT_RESTRICTION"", ""Content-Security-Policy"",
+                        ""policy has neither script-src nor default-src, so scripts are not restricted"",
+                        ""add default-src 'self' and a script-src"")
+                else:
+                    low = [t.lower() for t in script]
+                    has_nonce = any(t.startswith((""'nonce-"", ""'sha256-"", ""'sha384-"", ""'sha512-"")) for t in low)
+                    strict = ""'strict-dynamic'"" in low
+                    wild = [t for t in low if t in (""*"", ""http:"", ""https:"", ""data:"", ""blob:"") or t.startswith(""http://"")]
+                    if wild and not strict:
+                        add(""HIGH"", ""CSP_WILDCARD_SCRIPT"", ""Content-Security-Policy"",
+                            ""%s allows %s, so scripts load from anywhere"" % (src_name, "" "".join(wild)),
+                            ""list exact hosts or use nonces with 'strict-dynamic'"")
+                    if ""'unsafe-inline'"" in low and not has_nonce:
+                        add(""MEDIUM"", ""CSP_UNSAFE_INLINE"", ""Content-Security-Policy"",
+                            ""%s has 'unsafe-inline' without a nonce/hash: inline XSS is not blocked"" % src_name,
+                            ""move inline scripts to files or add nonces/hashes"")
+                    if ""'unsafe-eval'"" in low:
+                        add(""MEDIUM"", ""CSP_UNSAFE_EVAL"", ""Content-Security-Policy"",
+                            ""%s has 'unsafe-eval' (eval/new Function allowed)"" % src_name,
+                            ""remove it; replace eval-based libraries or templates"")
+                obj = d.get(""object-src"", d.get(""default-src""))
+                if obj is None or [t.lower() for t in obj] != [""'none'""]:
+                    add(""LOW"", ""CSP_OBJECT_SRC"", ""Content-Security-Policy"",
+                        ""object-src is not 'none' (plugins/embeds can bypass script rules)"", ""add object-src 'none'"")
+                if ""base-uri"" not in d:
+                    add(""LOW"", ""CSP_NO_BASE_URI"", ""Content-Security-Policy"",
+                        ""no base-uri: an injected <base> tag can redirect relative script URLs"",
+                        ""add base-uri 'self' (or 'none')"")
+
+    # --- clickjacking
+    xfo_vals = resp.get_all(""x-frame-options"")
+    if doc:
+        if frame_ancestors is None and not xfo_vals:
+            add(""MEDIUM"", ""CLICKJACKING_UNPROTECTED"", ""X-Frame-Options / frame-ancestors"",
+                ""page can be framed by any site (clickjacking)"",
+                ""Content-Security-Policy: frame-ancestors 'self' (and X-Frame-Options: SAMEORIGIN for old browsers)"")
+        elif frame_ancestors is not None and any(t in (""*"", ""https:"", ""http:"") for t in frame_ancestors):
+            add(""MEDIUM"", ""FRAME_ANCESTORS_WILDCARD"", ""Content-Security-Policy"",
+                ""frame-ancestors %s allows framing by any site"" % "" "".join(frame_ancestors),
+                ""frame-ancestors 'self' plus the exact partner origins"")
+    if xfo_vals:
+        if len(xfo_vals) > 1 or "","" in xfo_vals[0]:
+            add(""MEDIUM"", ""XFO_INVALID"", ""X-Frame-Options"",
+                ""several X-Frame-Options values; some browsers then ignore the header"", ""send one value"")
+        v = xfo_vals[0].strip().upper()
+        if v.startswith(""ALLOW-FROM""):
+            add(""MEDIUM"" if frame_ancestors is None else ""LOW"", ""XFO_ALLOW_FROM"", ""X-Frame-Options"",
+                ""ALLOW-FROM is not supported by current browsers (treated as no protection)"",
+                ""use CSP frame-ancestors 'self' https://partner.example"")
+        elif v not in (""DENY"", ""SAMEORIGIN"") and "","" not in v:
+            add(""MEDIUM"", ""XFO_INVALID"", ""X-Frame-Options"", ""unknown value %r is ignored"" % xfo_vals[0],
+                ""DENY or SAMEORIGIN"")
+
+    # --- nosniff
+    xcto = resp.get(""x-content-type-options"")
+    if kind != ""redirect"":
+        if xcto is None:
+            add(""MEDIUM"" if kind in (""script"", ""style"", ""api"") else ""LOW"", ""XCTO_MISSING"", ""X-Content-Type-Options"",
+                ""no nosniff: browsers may guess a different content type (e.g. run an upload as script)"",
+                ""X-Content-Type-Options: nosniff"")
+        elif xcto.strip().lower() != ""nosniff"":
+            add(""LOW"", ""XCTO_INVALID"", ""X-Content-Type-Options"", ""value %r is ignored"" % xcto,
+                ""X-Content-Type-Options: nosniff"")
+
+    # --- Referrer-Policy
+    if doc:
+        rp = resp.get(""referrer-policy"")
+        if rp is None:
+            add(""LOW"", ""REFERRER_POLICY_MISSING"", ""Referrer-Policy"",
+                ""no Referrer-Policy (modern browsers default to strict-origin-when-cross-origin; older ones send full URLs)"",
+                ""Referrer-Policy: strict-origin-when-cross-origin"")
+        else:
+            last = [t.strip().lower() for t in rp.split("","") if t.strip()][-1:]  # last valid token wins
+            if last and last[0] in (""unsafe-url"", ""no-referrer-when-downgrade""):
+                add(""MEDIUM"", ""REFERRER_POLICY_UNSAFE"", ""Referrer-Policy"",
+                    ""%s sends full URLs (paths, query tokens) to other sites"" % last[0],
+                    ""strict-origin-when-cross-origin (or no-referrer)"")
+
+    # --- Permissions-Policy
+    if doc:
+        pp = resp.get(""permissions-policy"")
+        fp = resp.get(""feature-policy"")
+        if pp is None and fp is not None:
+            add(""LOW"", ""FEATURE_POLICY_ONLY"", ""Feature-Policy"",
+                ""only the old Feature-Policy header is sent; current browsers read Permissions-Policy"",
+                ""Permissions-Policy: camera=(), microphone=(), geolocation=()"")
+        elif pp is None:
+            add(""LOW"", ""PERMISSIONS_POLICY_MISSING"", ""Permissions-Policy"",
+                ""powerful features (camera, microphone, geolocation) are not switched off for embedded content"",
+                ""Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()"")
+        elif re.search(r""\b[a-z-]+\s+'(none|self)'"", pp):
+            add(""LOW"", ""PERMISSIONS_POLICY_SYNTAX"", ""Permissions-Policy"",
+                ""uses Feature-Policy syntax (camera 'none'); Permissions-Policy needs camera=()"",
+                ""rewrite as feature=() / feature=(self)"")
+        elif re.search(r""\b(%s)=\*"" % ""|"".join(PERMISSION_FEATURES), pp):
+            add(""LOW"", ""PERMISSIONS_POLICY_WILDCARD"", ""Permissions-Policy"",
+                ""a powerful feature is allowed for every origin (=*)"", ""use =(self) or =()"")
+
+    # --- COOP (only meaningful for top-level documents)
+    if doc and https and resp.status < 300 and resp.get(""cross-origin-opener-policy"") is None:
+        add(""LOW"", ""COOP_MISSING"", ""Cross-Origin-Opener-Policy"",
+            ""pages opened with window.open keep a handle to this window (tabnabbing/XS-leaks)"",
+            ""Cross-Origin-Opener-Policy: same-origin (same-origin-allow-popups if you use OAuth/payment pop-ups)"")
+
+    # --- cookies
+    for raw in resp.get_all(""set-cookie""):
+        name, val, a = parse_cookie(raw)
+        sessionish = bool(SESSION_HINT.search(name))
+        deleting = a.get(""max-age"") == ""0"" or ""1970"" in a.get(""expires"", """")
+        if deleting:
+            continue
+        ss = a.get(""samesite"", """").lower()
+        prefix_bad = False
+        if name.startswith(""__Host-"") and (""secure"" not in a or a.get(""path"") != ""/"" or ""domain"" in a):
+            add(""HIGH"", ""COOKIE_PREFIX_VIOLATION"", ""Set-Cookie"",
+                ""%s: __Host- cookies need Secure, Path=/ and no Domain, so the browser rejects this one"" % name,
+                ""Set-Cookie: %s=...; Path=/; Secure; SameSite=Lax (no Domain)"" % name)
+            prefix_bad = True
+        elif name.startswith(""__Secure-"") and ""secure"" not in a:
+            add(""HIGH"", ""COOKIE_PREFIX_VIOLATION"", ""Set-Cookie"",
+                ""%s: __Secure- cookies need the Secure flag, so the browser rejects this one"" % name, ""add Secure"")
+            prefix_bad = True
+        if ss == ""none"" and ""secure"" not in a:
+            add(""HIGH"", ""COOKIE_SAMESITE_NONE_NO_SECURE"", ""Set-Cookie"",
+                ""%s: SameSite=None without Secure is rejected by browsers"" % name, ""add Secure (HTTPS only)"")
+        elif https and ""secure"" not in a and not prefix_bad:
+            add(""HIGH"" if sessionish else ""MEDIUM"", ""COOKIE_NO_SECURE"", ""Set-Cookie"",
+                ""%s: no Secure flag, the cookie is also sent over plain HTTP"" % name, ""add Secure"")
+        if sessionish and ""httponly"" not in a and not CSRF_HINT.search(name):
+            add(""MEDIUM"", ""COOKIE_NO_HTTPONLY"", ""Set-Cookie"",
+                ""%s looks like a session/auth cookie but is readable from JavaScript (XSS can steal it)"" % name,
+                ""add HttpOnly (unless the front end must read it, e.g. a double-submit CSRF token)"")
+        if not ss:
+            add(""LOW"", ""COOKIE_NO_SAMESITE"", ""Set-Cookie"",
+                ""%s: no SameSite attribute (browsers apply Lax by default, older ones send it cross-site)"" % name,
+                ""set SameSite=Lax explicitly (Strict for admin areas)"")
+        if ""domain"" in a and sessionish and not prefix_bad:
+            add(""LOW"", ""COOKIE_BROAD_DOMAIN"", ""Set-Cookie"",
+                ""%s is shared with every subdomain of %s"" % (name, a[""domain""].lstrip(""."")),
+                ""drop Domain= (host-only) or use the __Host- prefix"")
+
+    # --- CORS
+    acao = resp.get(""access-control-allow-origin"")
+    acac = (resp.get(""access-control-allow-credentials"") or """").strip().lower() == ""true""
+    req_origin = resp.request_headers.get(""origin"") or test_origin
+    if acao is not None:
+        a = acao.strip()
+        if a == ""*"" and acac:
+            add(""MEDIUM"", ""CORS_WILDCARD_WITH_CREDENTIALS"", ""Access-Control-Allow-Origin"",
+                ""'*' with Allow-Credentials: true is invalid (browsers block it); it usually means someone will ""
+                ""'fix' it by reflecting the Origin"", ""return an allowlisted origin, or drop credentials for public data"")
+        elif a.lower() == ""null"":
+            add(""HIGH"" if acac else ""MEDIUM"", ""CORS_NULL_ORIGIN"", ""Access-Control-Allow-Origin"",
+                ""allows the 'null' origin, which sandboxed iframes and local files can send"",
+                ""never allowlist null"")
+        elif a == ""*"":
+            if kind == ""api"" or acac or resp.get_all(""set-cookie""):
+                add(""LOW"", ""CORS_WILDCARD"", ""Access-Control-Allow-Origin"",
+                    ""any site may read this response; fine for public data, not for anything per-user"",
+                    ""allowlist origins if the endpoint ever returns user data"")
+        else:
+            if req_origin and a == req_origin and not same_origin(a, resp.url):
+                untrusted = test_origin is not None and a == test_origin
+                add(""HIGH"" if (acac and untrusted) else (""MEDIUM"" if untrusted else ""LOW""),
+                    ""CORS_ORIGIN_REFLECTED"" if untrusted else ""CORS_ORIGIN_ECHO"",
+                    ""Access-Control-Allow-Origin"",
+                    (""the server echoed the untrusted test Origin %s, so it trusts any site%s"" %
+                     (a, ""; with Allow-Credentials: true any site can read a logged-in user's data"" if acac else """"))
+                    if untrusted else ""Origin %s was echoed; confirm it is on an allowlist (retest with --origin https://evil.example)"" % a,
+                    ""compare Origin against an exact allowlist; never echo it unchecked"")
+            vary = "","".join(resp.get_all(""vary"")).lower()
+            if ""origin"" not in vary and ""*"" not in vary:
+                add(""LOW"", ""CORS_NO_VARY_ORIGIN"", ""Vary"",
+                    ""per-origin Access-Control-Allow-Origin without Vary: Origin; a cache can serve one origin's answer to another"",
+                    ""add Vary: Origin"")
+        if acac and a not in (""*"",) and a.lower().startswith(""http://""):
+            add(""MEDIUM"", ""CORS_HTTP_ORIGIN_TRUSTED"", ""Access-Control-Allow-Origin"",
+                ""credentials are shared with a plain-HTTP origin (%s), which a network attacker can impersonate"" % a,
+                ""allow only https:// origins"")
+    methods = (resp.get(""access-control-allow-methods"") or """")
+    hdrs = (resp.get(""access-control-allow-headers"") or """")
+    if methods.strip() == ""*"" and acac or hdrs.strip() == ""*"" and acac:
+        add(""LOW"", ""CORS_WILDCARD_METHODS"", ""Access-Control-Allow-Methods/Headers"",
+            ""'*' is treated literally when credentials are allowed"", ""list the methods/headers explicitly"")
+
+    # --- disclosure and deprecated headers
+    srv = resp.get(""server"")
+    if srv and re.search(r""\d"", srv):
+        add(""LOW"", ""SERVER_VERSION_DISCLOSED"", ""Server"",
+            ""Server: %s reveals the software version"" % srv, ""hide the version (server_tokens off / ServerTokens Prod)"")
+    for h in (""x-powered-by"", ""x-aspnet-version"", ""x-aspnetmvc-version"", ""x-generator""):
+        v = resp.get(h)
+        if v:
+            add(""LOW"", ""TECH_DISCLOSED"", h.title(), ""%s: %s reveals the stack"" % (h.title(), v), ""remove the header"")
+    xx = resp.get(""x-xss-protection"")
+    if xx and not xx.strip().startswith(""0""):
+        add(""LOW"", ""X_XSS_PROTECTION_DEPRECATED"", ""X-XSS-Protection"",
+            ""the XSS auditor is gone from browsers; '1; mode=block' can even create leaks in old ones"",
+            ""remove it or send X-XSS-Protection: 0, rely on CSP"")
+    if resp.get(""public-key-pins"") or resp.get(""public-key-pins-report-only""):
+        add(""MEDIUM"", ""HPKP_DEPRECATED"", ""Public-Key-Pins"",
+            ""HPKP is removed from browsers and risky if any client still honours it"", ""remove the header"")
+    if resp.get(""expect-ct""):
+        add(""LOW"", ""EXPECT_CT_DEPRECATED"", ""Expect-CT"", ""Expect-CT is obsolete"", ""remove the header"")
+    return f
+
+
+SUGGESTED = [
+    ""Strict-Transport-Security: max-age=31536000; includeSubDomains"",
+    ""Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-{RANDOM}'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self'"",
+    ""X-Content-Type-Options: nosniff"",
+    ""X-Frame-Options: SAMEORIGIN"",
+    ""Referrer-Policy: strict-origin-when-cross-origin"",
+    ""Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()"",
+    ""Cross-Origin-Opener-Policy: same-origin"",
+    ""Set-Cookie: __Host-session=...; Path=/; Secure; HttpOnly; SameSite=Lax"",
+]
+
+PRESENCE = [(""HSTS"", ""strict-transport-security""), (""CSP"", ""content-security-policy""),
+            (""XFO"", ""x-frame-options""), (""nosniff"", ""x-content-type-options""),
+            (""Referrer"", ""referrer-policy""), (""Permissions"", ""permissions-policy""),
+            (""COOP"", ""cross-origin-opener-policy"")]
+
+
+def run(responses, test_origin=None, min_sev=""LOW"", ignore=()):
+    out = []
+    for r in responses:
+        fs = [x for x in check(r, test_origin)
+              if SEV_ORDER[x[""severity""]] >= SEV_ORDER[min_sev] and x[""code""] not in ignore]
+        fs.sort(key=lambda x: -SEV_ORDER[x[""severity""]])
+        out.append((r, fs))
+    return out
+
+
+def counts(fs):
+    c = {""HIGH"": 0, ""MEDIUM"": 0, ""LOW"": 0}
+    for x in fs:
+        c[x[""severity""]] += 1
+    return c
+
+
+def render_md(results, source):
+    allf = [x for _, fs in results for x in fs]
+    c = counts(allf)
+    o = [""# HTTP security headers: %s"" % source, """",
+         ""Responses: %d   Findings: %d (HIGH %d, MEDIUM %d, LOW %d)"" % (len(results), len(allf), c[""HIGH""], c[""MEDIUM""], c[""LOW""]), """",
+         ""| # | URL | Status | Kind | "" + "" | "".join(p[0] for p in PRESENCE) + "" | Cookies | CORS |"",
+         ""|---|---|---|---|"" + ""---|"" * len(PRESENCE) + ""---|---|""]
+    for i, (r, fs) in enumerate(results, 1):
+        cells = []
+        for _, h in PRESENCE:
+            cells.append(""yes"" if r.get(h) is not None else ""-"")
+        if ""frame-ancestors"" in (r.get(""content-security-policy"") or """") and cells[2] == ""-"":
+            cells[2] = ""CSP""
+        ck = len(r.get_all(""set-cookie""))
+        cors = r.get(""access-control-allow-origin"") or ""-""
+        o.append(""| %d | %s | %d | %s | %s | %s | %s |"" % (i, r.url or ""(unknown)"", r.status, r.kind,
+                                                       "" | "".join(cells), ck or ""-"", cors))
+    for i, (r, fs) in enumerate(results, 1):
+        cc = counts(fs)
+        o += ["""", ""## %d. %s %d (%s)%s"" % (i, r.url or ""(unknown URL)"", r.status, r.kind,
+                                          "", line %d"" % r.line if r.line else """"), """"]
+        if not fs:
+            o.append(""No findings."")
+            continue
+        o.append(""HIGH %d, MEDIUM %d, LOW %d"" % (cc[""HIGH""], cc[""MEDIUM""], cc[""LOW""]))
+        o += ["""", ""| Sev | Code | Header | Problem | Fix |"", ""|---|---|---|---|---|""]
+        for x in fs:
+            o.append(""| %s | %s | %s | %s | %s |"" % (x[""severity""], x[""code""], x[""header""],
+                                                   x[""problem""].replace(""|"", ""/""), x[""fix""].replace(""|"", ""/"")))
+    if any(r.kind in (""html"", ""unknown"") and fs for r, fs in results):
+        o += ["""", ""## Suggested baseline for HTML pages (adapt CSP hosts and nonces before enforcing)"", """", ""```""] + SUGGESTED + [""```""]
+    o += ["""", ""Offline check of captured headers only: TLS, the HSTS preload list, CSP in <meta> tags and ""
+          ""server-side Origin allowlists were not tested.""]
+    return ""\n"".join(o) + ""\n""
+
+
+# ----------------------------------------------------------------------------- self-test
+
+def self_test():
+    cases = []
+
+    def codes(text, url=""https://example.com/"", origin=None):
+        rs = load(text, url)
+        return [x[""code""] for _, fs in run(rs, origin) for x in fs]
+
+    def case(name, fn):
+        try:
+            ok = bool(fn())
+            err = """"
+        except Exception as e:  # noqa
+            ok, err = False, repr(e)
+        cases.append((name, ok, err))
+
+    good = (""HTTP/2 200\ncontent-type: text/html; charset=utf-8\n""
+            ""strict-transport-security: max-age=31536000; includeSubDomains\n""
+            ""content-security-policy: default-src 'self'; script-src 'self' 'nonce-abc'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'\n""
+            ""x-content-type-options: nosniff\nreferrer-policy: strict-origin-when-cross-origin\n""
+            ""permissions-policy: camera=(), microphone=(), geolocation=()\ncross-origin-opener-policy: same-origin\n""
+            ""set-cookie: __Host-sid=abc; Path=/; Secure; HttpOnly; SameSite=Lax\n"")
+    H = ""HTTP/2 200\ncontent-type: text/html\n""
+    case(""hardened page is clean"", lambda: codes(good) == [])
+    case(""missing everything on html"", lambda: {""HSTS_MISSING"", ""CSP_MISSING"", ""CLICKJACKING_UNPROTECTED"", ""XCTO_MISSING"",
+                                                 ""REFERRER_POLICY_MISSING"", ""PERMISSIONS_POLICY_MISSING"", ""COOP_MISSING""} <= set(codes(H)))
+    case(""HSTS missing is HIGH on html"", lambda: [x for _, fs in run(load(H, ""https://a.test/"")) for x in fs if x[""code""] == ""HSTS_MISSING""][0][""severity""] == ""HIGH"")
+    case(""HSTS short max-age"", lambda: ""HSTS_SHORT_MAX_AGE"" in codes(H + ""strict-transport-security: max-age=86400\n""))
+    case(""HSTS invalid"", lambda: ""HSTS_INVALID"" in codes(H + ""strict-transport-security: includeSubDomains\n""))
+    case(""HSTS max-age=0"", lambda: ""HSTS_DISABLED"" in codes(H + ""strict-transport-security: max-age=0\n""))
+    case(""HSTS no subdomains"", lambda: ""HSTS_NO_SUBDOMAINS"" in codes(H + ""strict-transport-security: max-age=31536000\n""))
+    case(""HSTS preload incomplete"", lambda: ""HSTS_PRELOAD_INCOMPLETE"" in codes(H + ""strict-transport-security: max-age=31536000; preload\n""))
+    case(""HSTS ignored on http"", lambda: ""HSTS_ON_HTTP"" in codes(""HTTP/1.1 301 Moved\nlocation: https://a.test/\nstrict-transport-security: max-age=31536000\n"", ""http://a.test/""))
+    case(""http without https redirect"", lambda: ""HTTP_NO_HTTPS_REDIRECT"" in codes(H, ""http://a.test/""))
+    case(""http 302 to https is temporary"", lambda: ""HTTP_REDIRECT_TEMPORARY"" in codes(""HTTP/1.1 302 Found\nlocation: https://a.test/\n"", ""http://a.test/""))
+    case(""http 301 to https ok"", lambda: codes(""HTTP/1.1 301 Moved\nlocation: https://a.test/\n"", ""http://a.test/"") == [])
+    case(""CSP report-only"", lambda: ""CSP_REPORT_ONLY"" in codes(H + ""content-security-policy-report-only: default-src 'self'\n""))
+    case(""CSP unsafe-inline"", lambda: ""CSP_UNSAFE_INLINE"" in codes(H + ""content-security-policy: default-src 'self'; script-src 'self' 'unsafe-inline'\n""))
+    case(""CSP unsafe-inline with nonce ok"", lambda: ""CSP_UNSAFE_INLINE"" not in codes(H + ""content-security-policy: script-src 'nonce-x' 'unsafe-inline'\n""))
+    case(""CSP unsafe-eval"", lambda: ""CSP_UNSAFE_EVAL"" in codes(H + ""content-security-policy: default-src 'self' 'unsafe-eval'\n""))
+    case(""CSP wildcard https:"", lambda: ""CSP_WILDCARD_SCRIPT"" in codes(H + ""content-security-policy: script-src 'self' https:\n""))
+    case(""CSP strict-dynamic tolerates https:"", lambda: ""CSP_WILDCARD_SCRIPT"" not in codes(H + ""content-security-policy: script-src 'nonce-x' 'strict-dynamic' https:\n""))
+    case(""CSP without script restriction"", lambda: ""CSP_NO_SCRIPT_RESTRICTION"" in codes(H + ""content-security-policy: img-src 'self'\n""))
+    case(""CSP object-src and base-uri"", lambda: {""CSP_OBJECT_SRC"", ""CSP_NO_BASE_URI""} <= set(codes(H + ""content-security-policy: script-src 'self'\n"")))
+    case(""frame-ancestors satisfies clickjacking"", lambda: ""CLICKJACKING_UNPROTECTED"" not in codes(H + ""content-security-policy: default-src 'self'; frame-ancestors 'none'\n""))
+    case(""frame-ancestors wildcard"", lambda: ""FRAME_ANCESTORS_WILDCARD"" in codes(H + ""content-security-policy: default-src 'self'; frame-ancestors *\n""))
+    case(""XFO ALLOW-FROM"", lambda: ""XFO_ALLOW_FROM"" in codes(H + ""x-frame-options: ALLOW-FROM https://p.test\n""))
+    case(""XFO duplicate"", lambda: ""XFO_INVALID"" in codes(H + ""x-frame-options: DENY\nx-frame-options: SAMEORIGIN\n""))
+    case(""nosniff MEDIUM on script"", lambda: [x[""severity""] for _, fs in run(load(""HTTP/2 200\ncontent-type: application/javascript\n"", ""https://a.test/a.js"")) for x in fs if x[""code""] == ""XCTO_MISSING""] == [""MEDIUM""])
+    case(""nosniff wrong value"", lambda: ""XCTO_INVALID"" in codes(H + ""x-content-type-options: yes\n""))
+    case(""referrer unsafe-url"", lambda: ""REFERRER_POLICY_UNSAFE"" in codes(H + ""referrer-policy: unsafe-url\n""))
+    case(""referrer last token wins"", lambda: ""REFERRER_POLICY_UNSAFE"" not in codes(H + ""referrer-policy: unsafe-url, strict-origin-when-cross-origin\n""))
+    case(""feature-policy only"", lambda: ""FEATURE_POLICY_ONLY"" in codes(H + ""feature-policy: camera 'none'\n""))
+    case(""permissions-policy old syntax"", lambda: ""PERMISSIONS_POLICY_SYNTAX"" in codes(H + ""permissions-policy: camera 'none'\n""))
+    case(""permissions-policy wildcard"", lambda: ""PERMISSIONS_POLICY_WILDCARD"" in codes(H + ""permissions-policy: geolocation=*\n""))
+    case(""cookie no secure session HIGH"", lambda: [x[""severity""] for _, fs in run(load(H + ""set-cookie: sessionid=1; HttpOnly; SameSite=Lax\n"", ""https://a.test/"")) for x in fs if x[""code""] == ""COOKIE_NO_SECURE""] == [""HIGH""])
+    case(""cookie no httponly"", lambda: ""COOKIE_NO_HTTPONLY"" in codes(H + ""set-cookie: auth_token=1; Secure; SameSite=Lax\n""))
+    case(""cookie no samesite"", lambda: ""COOKIE_NO_SAMESITE"" in codes(H + ""set-cookie: theme=dark; Secure\n""))
+    case(""cookie samesite none no secure"", lambda: ""COOKIE_SAMESITE_NONE_NO_SECURE"" in codes(H + ""set-cookie: tid=1; SameSite=None\n""))
+    case(""cookie __Host- with Domain"", lambda: ""COOKIE_PREFIX_VIOLATION"" in codes(H + ""set-cookie: __Host-sid=1; Path=/; Secure; Domain=a.test\n""))
+    case(""cookie __Secure- without Secure"", lambda: ""COOKIE_PREFIX_VIOLATION"" in codes(H + ""set-cookie: __Secure-x=1; Path=/\n""))
+    case(""csrf cookie may be JS-readable"", lambda: ""COOKIE_NO_HTTPONLY"" not in codes(H + ""set-cookie: csrftoken=1; Secure; SameSite=Lax\n""))
+    case(""prefix violation not double-reported"", lambda: codes(good.replace(""Path=/; Secure; HttpOnly"", ""Path=/; Domain=a.test; HttpOnly"")).count(""COOKIE_PREFIX_VIOLATION"") == 1 and ""COOKIE_NO_SECURE"" not in codes(good.replace(""Path=/; Secure; HttpOnly"", ""Path=/; HttpOnly"")))
+    case(""max-age wording"", lambda: _days(86400) == ""1 day"" and _days(604800) == ""7 days"")
+    case(""cookie broad domain"", lambda: ""COOKIE_BROAD_DOMAIN"" in codes(H + ""set-cookie: session=1; Domain=.a.test; Secure; HttpOnly; SameSite=Lax\n""))
+    case(""deleted cookie ignored"", lambda: not any(c.startswith(""COOKIE"") for c in codes(H + ""set-cookie: session=; Max-Age=0\n"")))
+    J = ""HTTP/2 200\ncontent-type: application/json\nx-content-type-options: nosniff\nstrict-transport-security: max-age=31536000; includeSubDomains\n""
+    case(""api json not checked for CSP"", lambda: ""CSP_MISSING"" not in codes(J))
+    case(""cors * with credentials"", lambda: ""CORS_WILDCARD_WITH_CREDENTIALS"" in codes(J + ""access-control-allow-origin: *\naccess-control-allow-credentials: true\n""))
+    case(""cors null origin"", lambda: ""CORS_NULL_ORIGIN"" in codes(J + ""access-control-allow-origin: null\naccess-control-allow-credentials: true\n""))
+    case(""cors reflected test origin HIGH"", lambda: [x[""severity""] for _, fs in run(load(J + ""access-control-allow-origin: https://evil.example\naccess-control-allow-credentials: true\nvary: Origin\n"", ""https://api.a.test/me""), ""https://evil.example"") for x in fs if x[""code""] == ""CORS_ORIGIN_REFLECTED""] == [""HIGH""])
+    case(""cors request origin from curl -v"", lambda: ""CORS_ORIGIN_ECHO"" in codes(""> GET /me HTTP/2\n> Host: api.a.test\n> Origin: https://app.a.test\n"" + ""\n"".join(""< "" + l for l in (J + ""access-control-allow-origin: https://app.a.test\nvary: Origin"").splitlines()) + ""\n"", """"))
+    case(""cors no vary origin"", lambda: ""CORS_NO_VARY_ORIGIN"" in codes(J + ""access-control-allow-origin: https://app.a.test\n""))
+    case(""cors http origin with credentials"", lambda: ""CORS_HTTP_ORIGIN_TRUSTED"" in codes(J + ""access-control-allow-origin: http://app.a.test\naccess-control-allow-credentials: true\nvary: Origin\n""))
+    case(""cors * public api LOW only"", lambda: [x[""severity""] for _, fs in run(load(J + ""access-control-allow-origin: *\n"", ""https://a.test/api"")) for x in fs] == [""LOW""])
+    case(""server version"", lambda: ""SERVER_VERSION_DISCLOSED"" in codes(H + ""server: nginx/1.18.0\n""))
+    case(""server without version ok"", lambda: ""SERVER_VERSION_DISCLOSED"" not in codes(H + ""server: nginx\n""))
+    case(""x-powered-by"", lambda: ""TECH_DISCLOSED"" in codes(H + ""x-powered-by: Express\n""))
+    case(""x-xss-protection 1"", lambda: ""X_XSS_PROTECTION_DEPRECATED"" in codes(H + ""x-xss-protection: 1; mode=block\n""))
+    case(""x-xss-protection 0 ok"", lambda: ""X_XSS_PROTECTION_DEPRECATED"" not in codes(H + ""x-xss-protection: 0\n""))
+    case(""hpkp"", lambda: ""HPKP_DEPRECATED"" in codes(H + ""public-key-pins: pin-sha256=\""x\""; max-age=10\n""))
+    case(""redirect chain urls from Location"", lambda: [r.url for r in load(""# http://a.test/\nHTTP/1.1 301 Moved\nLocation: https://a.test/\n\nHTTP/2 200\ncontent-type: text/html\n"")] == [""http://a.test/"", ""https://a.test/""])
+    case(""relative Location resolved"", lambda: load(""# https://a.test/old\nHTTP/2 302\nlocation: /new\n\nHTTP/2 200\n"")[1].url == ""https://a.test/new"")
+    case(""headers-only file"", lambda: len(load(""Content-Type: text/html\nX-Frame-Options: DENY\n"", ""https://a.test/"")) == 1)
+    case(""CRLF input"", lambda: load(""HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n"", ""https://a.test/"")[0].get(""content-type"") == ""text/html"")
+    har = json.dumps({""log"": {""entries"": [{""request"": {""url"": ""https://a.test/"", ""headers"": []},
+                                            ""response"": {""status"": 200, ""headers"": [{""name"": ""content-type"", ""value"": ""text/html""}]}}]}})
+    case(""HAR input"", lambda: ""CSP_MISSING"" in codes(har))
+    case(""bad JSON rejected"", lambda: _raises(lambda: load('{""nope"": 1}')))
+    case(""empty input rejected"", lambda: _raises(lambda: load(""hello world\n"")))
+    case(""ignore and min-severity"", lambda: all(x[""severity""] == ""HIGH"" and x[""code""] != ""HSTS_MISSING"" for _, fs in run(load(H, ""https://a.test/""), None, ""HIGH"", {""HSTS_MISSING""}) for x in fs))
+    case(""markdown render"", lambda: ""Suggested baseline"" in render_md(run(load(H, ""https://a.test/"")), ""t""))
+
+    passed = sum(1 for _, ok, _ in cases if ok)
+    for name, ok, err in cases:
+        print((""PASS "" if ok else ""FAIL "") + name + (("" "" + err) if err else """"))
+    print(""%d/%d passed"" % (passed, len(cases)))
+    return 0 if passed == len(cases) else 1
+
+
+def _raises(fn):
+    try:
+        fn()
+    except ValueError:
+        return True
+    return False
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=""Check HTTP security response headers (offline)."")
+    ap.add_argument(""file"", nargs=""?"", help=""curl -I/-IL/-v output, HAR file or headers file ('-' = stdin)"")
+    ap.add_argument(""--url"", default="""", help=""URL of the first response if the file does not name it"")
+    ap.add_argument(""--origin"", default=None, help=""the untrusted Origin you sent in a CORS test (e.g. https://evil.example)"")
+    ap.add_argument(""--min-severity"", default=""LOW"", choices=[""LOW"", ""MEDIUM"", ""HIGH""])
+    ap.add_argument(""--ignore"", default="""", help=""comma-separated finding codes to skip"")
+    ap.add_argument(""--json"", action=""store_true"", help=""print JSON instead of markdown"")
+    ap.add_argument(""--self-test"", action=""store_true"")
+    a = ap.parse_args(argv)
+    if a.self_test:
+        return self_test()
+    if not a.file:
+        ap.error(""give a headers file or --self-test"")
+    try:
+        text = sys.stdin.read() if a.file == ""-"" else open(a.file, encoding=""utf-8"", errors=""replace"").read()
+        responses = load(text, a.url)
+    except (OSError, ValueError) as e:
+        print(""error: %s"" % e, file=sys.stderr)
+        return 2
+    ignore = {c.strip() for c in a.ignore.split("","") if c.strip()}
+    results = run(responses, a.origin, a.min_severity, ignore)
+    if a.json:
+        print(json.dumps({""responses"": [{""url"": r.url, ""status"": r.status, ""kind"": r.kind, ""findings"": fs}
+                                        for r, fs in results]}, indent=2))
+    else:
+        sys.stdout.write(render_md(results, ""-"" if a.file == ""-"" else a.file.split(""/"")[-1]))
+    return 1 if any(x[""severity""] == ""HIGH"" for _, fs in results for x in fs) else 0
+
+
+if __name__ == ""__main__"":
+    sys.exit(main())",FALSE,TEXT,f
