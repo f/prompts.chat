@@ -218918,3 +218918,17 @@ Contributed by @anonymous
 
 </details>
 
+<details>
+<summary><strong>Lost in Motion | A Moment Between Light and Shadows</strong></summary>
+
+## Lost in Motion | A Moment Between Light and Shadows
+
+Contributed by @anonymous
+
+```md
+Vertical 9:16 candid fashion portrait of a 
+beautiful girl in the picture, with long, messy, loose hair. She spins rapidly while looking back at the camera, arms spread wide and hair flying. SLOW SHUTTER SPEED 1/8–1/15 sec, extreme realistic motion blur, ghost trails on arms and hair, blurred body, recognizable face, horizontal background streaks, slight camera shake, double-exposure effect, heavy 35mm film grain, dreamy, moody, underexposed, photorealistic. No CGI, no frozen motion, no sharp arms or hair.
+```
+
+</details>
+
