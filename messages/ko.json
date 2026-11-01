@@ -2737,6 +2737,6 @@
     "computerRequirementsInput": "<code>CLOUD</code>(봇이 자체 원격 컴퓨터, 데스크톱 또는 브라우저가 필요함)와 <code>LOCAL</code>(사용자의 기기, 파일 또는 앱이 필요함) 중 하나 또는 둘 다를 담은 목록. 빈 목록은 컴퓨터가 필요 없다는 뜻입니다. 저장된 목록을 대체합니다"
   },
   "actionButtons": {
-    "deployWithSpacefast": "SpaceFast로 배포"
+    "deployWithSpacefast": "Spacefast로 배포"
   }
 }

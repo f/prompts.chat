@@ -2749,6 +2749,6 @@
     "computerRequirementsInput": "<code>CLOUD</code> (bot öz uzaq kompüterinə, masaüstünə və ya brauzerinə ehtiyac duyur) və/və ya <code>LOCAL</code> (istifadəçinin öz cihazına, fayllarına və ya tətbiqlərinə ehtiyac duyur) dəyərlərindən ibarət siyahı; boş siyahı botun kompüterə ehtiyacı olmadığını bildirir. Saxlanmış siyahını əvəz edir"
   },
   "actionButtons": {
-    "deployWithSpacefast": "SpaceFast ilə yerləşdir"
+    "deployWithSpacefast": "Spacefast ilə yerləşdir"
   }
 }

@@ -2749,6 +2749,6 @@
     "computerRequirementsInput": "Eine Liste mit <code>CLOUD</code> (der Bot braucht einen eigenen entfernten Computer, Desktop oder Browser) und/oder <code>LOCAL</code> (er braucht den Rechner, die Dateien oder Apps des Nutzers); eine leere Liste bedeutet, dass er keinen Computer braucht. Ersetzt die gespeicherte Liste"
   },
   "actionButtons": {
-    "deployWithSpacefast": "Mit SpaceFast bereitstellen"
+    "deployWithSpacefast": "Mit Spacefast bereitstellen"
   }
 }

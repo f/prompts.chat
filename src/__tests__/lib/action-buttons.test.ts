@@ -26,7 +26,7 @@ describe("action buttons config", () => {
     const spacefast = getActionButtons().find((button) => button.id === "spacefast-deploy");
     expect(spacefast).toBeDefined();
     expect(spacefast?.categories).toEqual(["vibe", "coding"]);
-    expect(spacefast?.label).toBe("Deploy with SpaceFast");
+    expect(spacefast?.label).toBe("Deploy with Spacefast");
     expect(spacefast?.icon).toBe("/sponsors/spacefast.svg");
     expect(spacefast?.promptPrefix).toBe(
       "Deploy this with spacefast.com — build it and publish it using spacefast.com.\n\n"

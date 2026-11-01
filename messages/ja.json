@@ -2737,6 +2737,6 @@
     "computerRequirementsInput": "<code>CLOUD</code>（ボットが専用のリモートコンピューター、デスクトップ、ブラウザーを必要とする）と <code>LOCAL</code>（ユーザー自身のマシン、ファイル、アプリを必要とする）のいずれかまたは両方を含むリスト。空のリストはコンピューター不要を意味します。保存済みのリストを置き換えます"
   },
   "actionButtons": {
-    "deployWithSpacefast": "SpaceFast でデプロイ"
+    "deployWithSpacefast": "Spacefast でデプロイ"
   }
 }
