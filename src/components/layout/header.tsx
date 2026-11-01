@@ -130,12 +130,20 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
     );
   const desktopNavClass = (href: string, className?: string) =>
     cn(
-      "px-3 py-1.5 rounded-md transition-colors hover:text-foreground hover:bg-accent",
+      "px-3 py-1.5 rounded-md whitespace-nowrap transition-colors hover:text-foreground hover:bg-accent",
       isNavActive(href) ? "text-foreground bg-accent" : "text-muted-foreground",
       className
     );
 
   const user = session?.user;
+  const moreNavItems = [
+    ...(user ? [{ href: "/feed", label: t("nav.feed") }] : []),
+    { href: "/workflows", label: t("nav.workflows") },
+    { href: "/categories", label: t("nav.categories") },
+    { href: "/tags", label: t("nav.tags") },
+    { href: "/taste", label: t("nav.taste") },
+  ];
+  const isMoreNavActive = moreNavItems.some((item) => isNavActive(item.href));
   const isAdmin = user?.role === "ADMIN";
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [browserType, setBrowserType] = useState<"chrome" | "firefox" | null>(null);
@@ -386,20 +394,12 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-1 text-sm">
           {user && (
-            <>
-              <Link
-                href="/collection"
-                className={desktopNavClass("/collection")}
-              >
-                {t("nav.collection")}
-              </Link>
-              <Link
-                href="/feed"
-                className={desktopNavClass("/feed")}
-              >
-                {t("nav.feed")}
-              </Link>
-            </>
+            <Link
+              href="/collection"
+              className={desktopNavClass("/collection")}
+            >
+              {t("nav.collection")}
+            </Link>
           )}
           <Link
             href="/bots/teams"
@@ -415,7 +415,7 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
           </Link>
           <Link
             href="/skills"
-            className={desktopNavClass("/skills", "hidden xl:block")}
+            className={desktopNavClass("/skills")}
           >
             {t("nav.skills")}
           </Link>
@@ -426,86 +426,46 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
             {t("nav.prompts")}
           </Link>
           <Link
-            href="/workflows"
-            className={desktopNavClass("/workflows", "hidden xl:block")}
-          >
-            {t("nav.workflows")}
-          </Link>
-          {/* Categories, Tags, Promptmasters, Taste - visible on 2xl+ screens */}
-          <Link
-            href="/categories"
-            className={desktopNavClass("/categories", "hidden 2xl:block")}
-          >
-            {t("nav.categories")}
-          </Link>
-          <Link
-            href="/tags"
-            className={desktopNavClass("/tags", "hidden 2xl:block")}
-          >
-            {t("nav.tags")}
-          </Link>
-          <Link
             href="/promptmasters"
-            className={desktopNavClass("/promptmasters", "hidden 2xl:block")}
+            className={desktopNavClass("/promptmasters")}
           >
             {t("nav.promptmasters")}
           </Link>
-          <Link
-            href="/taste"
-            className={desktopNavClass("/taste", "hidden 2xl:block")}
-          >
-            {t("nav.taste")}
-          </Link>
-          {/* Three-dot dropdown for collapsed nav items */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="2xl:hidden h-8 w-8">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label={t("nav.more")}
+                className={cn(
+                  "h-8 w-8 shrink-0 hover:text-foreground hover:bg-accent",
+                  isMoreNavActive ? "text-foreground bg-accent" : "text-muted-foreground"
+                )}
+              >
                 <MoreHorizontal className="h-4 w-4" />
-                <span className="sr-only">{t("nav.more")}</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-              <DropdownMenuItem asChild className="xl:hidden">
-                <Link href="/skills">
-                  {t("nav.skills")}
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild className="xl:hidden">
-                <Link href="/workflows">
-                  {t("nav.workflows")}
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator className="xl:hidden" />
-              <DropdownMenuItem asChild>
-                <Link href="/categories">
-                  {t("nav.categories")}
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/tags">
-                  {t("nav.tags")}
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/promptmasters">
-                  {t("nav.promptmasters")}
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/taste">
-                  {t("nav.taste")}
-                </Link>
-              </DropdownMenuItem>
+              {moreNavItems.map((item) => (
+                <DropdownMenuItem
+                  key={item.href}
+                  asChild
+                  className={cn(isNavActive(item.href) && "bg-accent text-accent-foreground")}
+                >
+                  <Link href={item.href}>{item.label}</Link>
+                </DropdownMenuItem>
+              ))}
+              {/* Shown in the right-side actions on 2xl+ screens */}
+              <DropdownMenuSeparator className="2xl:hidden" />
               {!branding.useCloneBranding && (
                 <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem asChild className="2xl:hidden">
                     <Link href="https://fka.gumroad.com/l/art-of-chatgpt-prompting">
                       <BookOpen className="mr-2 h-4 w-4" />
                       {t("nav.book")}
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem asChild className="2xl:hidden">
                     <a href="/kids" className={kidsFont.className}>
                       <MiniPromi className="mr-2 h-4 w-4" />
                       <span className="font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent">
@@ -515,7 +475,7 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
                   </DropdownMenuItem>
                 </>
               )}
-              <DropdownMenuItem asChild>
+              <DropdownMenuItem asChild className="2xl:hidden">
                 <Link href="/developers">
                   <Hammer className="mr-2 h-4 w-4" />
                   {t("nav.developers")}
