@@ -184219,3 +184219,85 @@ Doorbell, creaking door, wind and dry leaves, candy clinking into the bowl, a lo
 FINAL FEEL
 A clean, clear, beautifully shot Halloween horror short with a chilling final reveal. Not polished influencer content.",FALSE,TEXT,f
 Hi-Viz branded running T-shirt design,Create a design using our brand logo using hi-viz and black vinyl/print. Do this on Hi-visibility running tops.,FALSE,TEXT,glynnp79@gmail.com
+The Ultimate Robot Lunch Break: Hollywood's Greatest Machines Take Five,"
+{
+  ""prompt"": {
+    ""concept"": ""Eleven iconic Hollywood robots and androids taking a lunch break together on a narrow steel construction beam hundreds of meters above a 1930s American metropolis. Recreate the composition of the iconic 1932 Lunch Atop a Skyscraper photograph."",
+
+    ""characters_left_to_right"": [
+      {
+        ""character"": ""C-3PO"",
+        ""pose"": ""Leaning backward, raising one hand to his mouth as if lighting a cigarette.""
+      },
+      {
+        ""character"": ""T-800"",
+        ""pose"": ""Leaning toward C-3PO, cupping hands as if sharing a light.""
+      },
+      {
+        ""character"": ""T-1000"",
+        ""pose"": ""Sitting upright, reading an unfolded newspaper.""
+      },
+      {
+        ""character"": ""Sonny"",
+        ""pose"": ""Leaning forward, elbows on thighs, hands clasped.""
+      },
+      {
+        ""character"": ""Gort"",
+        ""pose"": ""Sitting straight, hands resting on the beam, legs dangling.""
+      },
+      {
+        ""character"": ""Andrew Martin"",
+        ""pose"": ""Sitting upright, arms crossed, relaxed and confident.""
+      },
+      {
+        ""character"": ""Baymax"",
+        ""pose"": ""Hunched slightly forward, holding and eating a small snack.""
+      },
+      {
+        ""character"": ""Ava"",
+        ""pose"": ""Sitting upright, holding a bottle in one hand.""
+      },
+      {
+        ""character"": ""K-2SO"",
+        ""pose"": ""Leaning backward casually, one arm extended behind his neighbor.""
+      },
+      {
+        ""character"": ""RoboCop"",
+        ""pose"": ""Sitting upright, holding a maintenance cloth on his lap.""
+      },
+      {
+        ""character"": ""Iron Man Mark III"",
+        ""pose"": ""At the far right, leaning forward, one hand gripping the beam.""
+      }
+    ],
+
+    ""character_accuracy"": ""Preserve each character's instantly recognizable original movie appearance, silhouette, face, armor, proportions and signature mechanical details. Baymax retains his inflatable white body. Ava and Andrew retain their human-like synthetic appearance. RoboCop remains a human-machine hybrid. Iron Man retains his iconic red-and-gold powered armor and circular chest reactor."",
+
+    ""environment"": {
+      ""setting"": ""1930s skyscraper construction site"",
+      ""foreground"": ""Long horizontal riveted steel I-beam with all eleven characters sitting directly on it."",
+      ""background"": ""Vast 1930s Art Deco city skyline far below, softened by atmospheric haze."",
+      ""details"": ""Vertical and diagonal construction cables clearly visible on the right.""
+    },
+
+    ""composition"": {
+      ""format"": ""Wide horizontal 16:9"",
+      ""camera"": ""Straight-on vintage documentary photography"",
+      ""arrangement"": ""All eleven characters in one continuous row, shoulder-to-shoulder, legs dangling over the beam."",
+      ""framing"": ""Every character fully visible, no cropping, no overlapping identities.""
+    },
+
+    ""visual_style"": {
+      ""photography"": ""Authentic 1930s black-and-white documentary photograph"",
+      ""texture"": ""Heavy analog film grain, aged photographic paper, subtle scratches"",
+      ""lighting"": ""Natural overcast daylight"",
+      ""rendering"": ""Ultra-photorealistic metallic textures, realistic shadows and mechanical details"",
+      ""mood"": ""Surreal, nostalgic, humorous and cinematic""
+    },
+
+    ""negative_prompt"": ""Missing characters, incorrect character order, duplicated robots, generic robot substitutions, merged bodies, cropped characters, missing legs, standing poses, chairs, cartoon style, anime, modern city skyline, color photography, excessive neon, text, logos, watermarks."",
+
+    ""priority"": ""Exactly eleven recognizable Hollywood characters, correct left-to-right order, accurate signature designs, specified poses and authentic 1930s photographic composition.""
+  }
+}
+",FALSE,STRUCTURED,altanatabarezz@gmail.com
