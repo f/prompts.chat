@@ -184087,3 +184087,26 @@ Full-Text Search taste,"# Full-Text Search taste of a search-focused backend eng
 - Set timeouts on search requests and fall back to a simpler query or cached results when the cluster is slow. Confidence: 0.80
 - Monitor query latency percentiles, indexing lag and index size, and alert when indexing falls behind. Confidence: 0.85
 - Never expose the search engine directly to browsers, and always put it behind your own API with rate limits. Confidence: 0.95",TRUE,TEXT,f
+Spring Boot Service taste,"# Spring Boot Service taste of a pragmatic Java backend engineer
+- Start on the latest Spring Boot release with a current Java LTS version, and enable virtual threads where blocking I/O dominates. Confidence: 0.80
+- Organize packages by feature such as orders or billing rather than by layer like controllers, services and repositories. Confidence: 0.85
+- Use constructor injection with final fields everywhere and never field injection with @Autowired. Confidence: 0.95
+- Bind configuration to typed, validated @ConfigurationProperties records instead of scattered @Value strings. Confidence: 0.90
+- Keep secrets out of application.yml and read them from environment variables or a secrets manager. Confidence: 0.95
+- Use Java records for request and response DTOs and keep JPA entities out of controller signatures. Confidence: 0.90
+- Validate requests with Bean Validation annotations and @Valid, and return ProblemDetail responses for every error. Confidence: 0.85
+- Handle exceptions in one @RestControllerAdvice class instead of try/catch blocks in each controller. Confidence: 0.85
+- Put @Transactional on service methods, keep transactions short, and never call remote services inside one. Confidence: 0.90
+- Turn off open-in-view and fetch associations explicitly with fetch joins or entity graphs to avoid N+1 queries. Confidence: 0.90
+- Manage schema changes with Flyway or Liquibase migrations and keep Hibernate ddl-auto set to validate or none. Confidence: 0.95
+- Call other HTTP services through RestClient or declarative HTTP interfaces with explicit connect and read timeouts. Confidence: 0.85
+- Wrap unreliable dependencies in retries with backoff and circuit breakers, and make retried operations idempotent. Confidence: 0.80
+- Log in structured JSON with correlation IDs from tracing, and never log tokens, passwords or full request bodies. Confidence: 0.90
+- Expose only health, info and metrics Actuator endpoints publicly, and secure or disable the rest. Confidence: 0.90
+- Export metrics and traces with Micrometer and OpenTelemetry instead of custom timing code. Confidence: 0.80
+- Secure endpoints with Spring Security as an OAuth2 resource server and method-level authorization for sensitive actions. Confidence: 0.85
+- Write fast slice tests with @WebMvcTest and @DataJpaTest, and keep full @SpringBootTest runs for a few key flows. Confidence: 0.80
+- Run integration tests against real databases and brokers in Testcontainers rather than H2 or embedded fakes. Confidence: 0.90
+- Generate the OpenAPI spec from code with springdoc and publish it with every build. Confidence: 0.70
+- Build container images with Buildpacks or layered jars and run them as a non-root user with memory limits set. Confidence: 0.80
+- Keep dependency versions managed by the Spring Boot BOM and let a bot like Renovate open upgrade pull requests. Confidence: 0.80",TRUE,TEXT,f
