@@ -291,6 +291,17 @@ export async function listTeams({
   return { teams: records.map((record) => summaryView(record, viewer)), total };
 }
 
+/** Featured listed teams, most upvoted first, then newest; members are limited to public, listed bots */
+export async function listFeaturedTeams(take = 6) {
+  const records = await db.botTeam.findMany({
+    where: { ...listedTeamWhere, isFeatured: true },
+    orderBy: TEAM_ORDER.upvotes,
+    take,
+    select: teamSummarySelect,
+  });
+  return records.map((record) => summaryView(record, null));
+}
+
 /** Which of the given teams the user has upvoted */
 export async function getVotedTeamIds(userId: string | null | undefined, teamIds: string[]): Promise<Set<string>> {
   if (!userId || teamIds.length === 0) return new Set();

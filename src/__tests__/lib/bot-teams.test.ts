@@ -9,6 +9,7 @@ import {
   getTeam,
   getTeamInstallPrompt,
   getTeamPlatforms,
+  listFeaturedTeams,
   teamExcerpt,
   teamLinkIssues,
   teamSummaryJson,
@@ -518,6 +519,31 @@ describe("teams of a bot", () => {
       botId: "b",
       team: { isUnlisted: false, members: { some: { bot: { type: "BOT", deletedAt: null, isPrivate: false, isUnlisted: false } } } },
     });
+  });
+});
+
+describe("featured teams", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("lists featured listed teams by upvotes then newest, showing only public members", async () => {
+    vi.mocked(db.botTeam.findMany).mockResolvedValue([teamRecord({ isFeatured: true, isUnlisted: false, unlistedAt: null })] as never);
+    const teams = await listFeaturedTeams(6);
+    const args = vi.mocked(db.botTeam.findMany).mock.calls[0][0]!;
+    expect(args.where).toEqual({
+      isUnlisted: false,
+      isFeatured: true,
+      members: { some: { bot: { type: "BOT", deletedAt: null, isPrivate: false, isUnlisted: false } } },
+    });
+    expect(args.orderBy).toEqual([{ votes: { _count: "desc" } }, { createdAt: "desc" }, { id: "desc" }]);
+    expect(args.take).toBe(6);
+    expect(teams).toHaveLength(1);
+    expect(teams[0].members.map((member) => member.bot.id)).toEqual(["a", "b"]);
+    expect(teams[0].voteCount).toBe(3);
+  });
+
+  it("returns nothing when no team is featured", async () => {
+    vi.mocked(db.botTeam.findMany).mockResolvedValue([]);
+    expect(await listFeaturedTeams()).toEqual([]);
   });
 });
 
