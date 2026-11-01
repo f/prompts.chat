@@ -97,6 +97,15 @@ describe("parseDayFilter", () => {
     expect(day?.start.getHours()).toBe(0);
     expect(day?.end.getHours()).toBe(23);
   });
+
+  it("should reject impossible calendar dates", () => {
+    expect(parseDayFilter("2024-02-31")).toBeNull();
+    expect(parseDayFilter("2024-04-31")).toBeNull();
+  });
+
+  it("should accept valid leap year dates", () => {
+    expect(parseDayFilter("2024-02-29")).not.toBeNull();
+  });
 });
 
 describe("profilePromptsWhere", () => {
