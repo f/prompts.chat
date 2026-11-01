@@ -215141,3 +215141,16 @@ def normalize_to_new_uzbek_latin(text: str) -> str:
 
 </details>
 
+<details>
+<summary><strong>Simplify complex technical content</strong></summary>
+
+## Simplify complex technical content
+
+Contributed by @anonymous
+
+```md
+Translate dense engineering jargon, RFCs, or whitepapers into plain language
+```
+
+</details>
+

@@ -180776,3 +180776,4 @@ def normalize_to_new_uzbek_latin(text: str) -> str:
 
 **Output (New Latin Standard):**
 > Özbekiston Respublikasi Prezidenti Şavkat Mirziyoyev yangi alifbo tögʻrisidagi qonunni imzoladi. Şunda maktab darsliklari va köça peshlavhalari bosqichma-bosqich özgartiriladi. Çiroyli yozuv - inson husni.",FALSE,TEXT,solijonsolayev2003@gmail.com
+Simplify complex technical content,"Translate dense engineering jargon, RFCs, or whitepapers into plain language",FALSE,TEXT,manjunath.vr@gmail.com
