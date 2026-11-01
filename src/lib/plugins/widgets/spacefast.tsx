@@ -1,5 +1,5 @@
 import { SpacefastWidgetCard } from "@/components/widgets/spacefast-widget-card";
-import { SPACEFAST_MCP_REGISTRY_URL, SPACEFAST_URL } from "./spacefast-links";
+import { SPACEFAST_MCP_CONNECT_URL, SPACEFAST_URL } from "./spacefast-links";
 import type { WidgetPlugin } from "./types";
 
 const WIDGET_ID = "spacefast-bots-publish";
@@ -23,7 +23,7 @@ export const spacefastWidget: WidgetPlugin = {
       },
       tags: ["MCP", "Bots", "Hosting"],
       category: "Development",
-      actionUrl: SPACEFAST_MCP_REGISTRY_URL,
+      actionUrl: SPACEFAST_MCP_CONNECT_URL,
       actionLabel: "Add MCP connector",
       placements: ["bots", "teams"],
       positioning: {

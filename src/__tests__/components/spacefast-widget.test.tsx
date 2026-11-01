@@ -8,7 +8,7 @@ import en from "../../../messages/en.json";
 import { SpacefastWidgetCard } from "@/components/widgets/spacefast-widget-card";
 import { ListingWidgetCard } from "@/components/widgets/listing-widget-card";
 import { getWidgetPlugin, injectWidgets, isWidget, type InjectedWidget } from "@/lib/plugins/widgets";
-import { SPACEFAST_MCP_REGISTRY_URL, SPACEFAST_URL } from "@/lib/plugins/widgets/spacefast-links";
+import { SPACEFAST_MCP_CONNECT_URL, SPACEFAST_URL } from "@/lib/plugins/widgets/spacefast-links";
 
 vi.mock("next-intl", async () => await vi.importActual("next-intl"));
 
@@ -48,21 +48,19 @@ describe("SpacefastWidgetCard", () => {
     expect(card.textContent).not.toContain("SpaceFast");
   });
 
-  it("links to spacefast.com and the MCP registry entry", () => {
+  it("links to spacefast.com and the MCP connect page", () => {
     render(withIntl(<SpacefastWidgetCard widgetId="spacefast-bots-publish" placement="bots" />));
     const heading = screen.getByRole("link", { name: "Bots that answer with a live link" });
     const connector = screen.getByRole("link", { name: /Add MCP connector/ });
     const site = screen.getByRole("link", { name: /spacefast\.com/ });
     expect(heading).toHaveAttribute("href", SPACEFAST_URL);
-    expect(connector).toHaveAttribute("href", SPACEFAST_MCP_REGISTRY_URL);
+    expect(connector).toHaveAttribute("href", SPACEFAST_MCP_CONNECT_URL);
     expect(site).toHaveAttribute("href", SPACEFAST_URL);
     for (const link of [heading, connector, site]) {
       expect(link).toHaveAttribute("target", "_blank");
       expect(link).toHaveAttribute("rel", "noopener noreferrer");
     }
-    expect(SPACEFAST_MCP_REGISTRY_URL).toBe(
-      "https://registry.modelcontextprotocol.io/v0.1/servers/io.github.spacefast%2Fmcp/versions/latest"
-    );
+    expect(SPACEFAST_MCP_CONNECT_URL).toBe("https://spacefast.com/mcp/#connect");
   });
 
   it("tracks clicks with the widget id", () => {
@@ -70,7 +68,7 @@ describe("SpacefastWidgetCard", () => {
     fireEvent.click(screen.getByRole("link", { name: "Bots that answer with a live link" }));
     expect(analyticsWidget.click).toHaveBeenCalledWith("spacefast-bots-publish-1", "Spacefast");
     fireEvent.click(screen.getByRole("link", { name: /Add MCP connector/ }));
-    expect(analyticsWidget.action).toHaveBeenCalledWith("spacefast-bots-publish-1", "MCP connector", SPACEFAST_MCP_REGISTRY_URL);
+    expect(analyticsWidget.action).toHaveBeenCalledWith("spacefast-bots-publish-1", "MCP connector", SPACEFAST_MCP_CONNECT_URL);
     fireEvent.click(screen.getByRole("link", { name: /spacefast\.com/ }));
     expect(analyticsWidget.action).toHaveBeenCalledWith("spacefast-bots-publish-1", "spacefast.com", SPACEFAST_URL);
   });

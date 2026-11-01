@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { ArrowUpRight, Check, Plug } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { analyticsWidget } from "@/lib/analytics";
-import { SPACEFAST_MCP_REGISTRY_URL, SPACEFAST_URL } from "@/lib/plugins/widgets/spacefast-links";
+import { SPACEFAST_MCP_CONNECT_URL, SPACEFAST_URL } from "@/lib/plugins/widgets/spacefast-links";
 import type { WidgetPlacement } from "@/lib/plugins/widgets/types";
 import { cn } from "@/lib/utils";
 
@@ -122,10 +122,10 @@ export function SpacefastWidgetCard({ widgetId, placement }: SpacefastWidgetCard
 
       <div className="relative z-10 mt-auto flex items-center justify-between gap-2 border-t pt-2 text-[11px] text-muted-foreground dark:border-white/10">
         <Link
-          href={SPACEFAST_MCP_REGISTRY_URL}
+          href={SPACEFAST_MCP_CONNECT_URL}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={() => analyticsWidget.action(widgetId, "MCP connector", SPACEFAST_MCP_REGISTRY_URL)}
+          onClick={() => analyticsWidget.action(widgetId, "MCP connector", SPACEFAST_MCP_CONNECT_URL)}
           className="inline-flex min-w-0 items-center gap-1 font-medium text-foreground transition-colors hover:text-[#059a35] dark:hover:text-[#1efe57]"
         >
           <Plug className="h-3 w-3 shrink-0" />
