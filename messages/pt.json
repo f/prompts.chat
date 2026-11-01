@@ -1014,6 +1014,7 @@
     "trigger": "Gatilho",
     "skills": "Habilidades",
     "connectors": "Conectores necessários",
+    "connectorRegistryLink": "{name} no MCP Registry (abre em uma nova aba)",
     "install": "Instalar",
     "installOn": "Instalar no {platform}",
     "installLinkComingSoon": "Link de instalação em breve",

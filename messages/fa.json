@@ -1014,6 +1014,7 @@
     "trigger": "محرک",
     "skills": "مهارت‌ها",
     "connectors": "اتصال‌دهنده‌های لازم",
+    "connectorRegistryLink": "{name} در رجیستری MCP (در زبانه جدید باز می‌شود)",
     "install": "نصب",
     "installOn": "نصب روی {platform}",
     "installLinkComingSoon": "لینک نصب به‌زودی",

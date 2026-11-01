@@ -1014,6 +1014,7 @@
     "trigger": "Триггер",
     "skills": "Навыки",
     "connectors": "Необходимые коннекторы",
+    "connectorRegistryLink": "{name} в реестре MCP (откроется в новой вкладке)",
     "install": "Установка",
     "installOn": "Установить в {platform}",
     "installLinkComingSoon": "Ссылка для установки скоро появится",

@@ -1014,6 +1014,7 @@
     "trigger": "Auslöser",
     "skills": "Skills",
     "connectors": "Benötigte Konnektoren",
+    "connectorRegistryLink": "{name} in der MCP Registry (öffnet in neuem Tab)",
     "install": "Installieren",
     "installOn": "Auf {platform} installieren",
     "installLinkComingSoon": "Installationslink folgt in Kürze",

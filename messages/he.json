@@ -1014,6 +1014,7 @@
     "trigger": "טריגר",
     "skills": "מיומנויות",
     "connectors": "מחברים נדרשים",
+    "connectorRegistryLink": "{name} במאגר MCP (נפתח בכרטיסייה חדשה)",
     "install": "התקנה",
     "installOn": "התקנה ב-{platform}",
     "installLinkComingSoon": "קישור התקנה יגיע בקרוב",

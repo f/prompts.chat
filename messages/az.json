@@ -1014,6 +1014,7 @@
     "trigger": "Tetikleyici",
     "skills": "Bacarıqlar",
     "connectors": "Tələb olunan konnektorlar",
+    "connectorRegistryLink": "MCP Reyestrində {name} (yeni tabda açılır)",
     "install": "Quraşdır",
     "installOn": "{platform} üzərində quraşdır",
     "installLinkComingSoon": "Quraşdırma linki tezliklə",

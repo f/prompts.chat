@@ -1014,6 +1014,7 @@
     "trigger": "触发条件",
     "skills": "技能",
     "connectors": "所需连接器",
+    "connectorRegistryLink": "MCP Registry 上的 {name}(在新标签页中打开)",
     "install": "安装",
     "installOn": "安装到 {platform}",
     "installLinkComingSoon": "安装链接即将推出",

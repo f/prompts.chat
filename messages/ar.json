@@ -1014,6 +1014,7 @@
     "trigger": "المشغّل",
     "skills": "المهارات",
     "connectors": "الموصلات المطلوبة",
+    "connectorRegistryLink": "{name} في سجل MCP (يفتح في علامة تبويب جديدة)",
     "install": "تثبيت",
     "installOn": "التثبيت على {platform}",
     "installLinkComingSoon": "رابط التثبيت قريبًا",

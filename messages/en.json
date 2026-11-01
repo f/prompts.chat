@@ -1014,6 +1014,7 @@
     "trigger": "Trigger",
     "skills": "Skills",
     "connectors": "Required connectors",
+    "connectorRegistryLink": "{name} on the MCP Registry (opens in a new tab)",
     "install": "Install",
     "installOn": "Install on {platform}",
     "installLinkComingSoon": "Install link coming soon",
