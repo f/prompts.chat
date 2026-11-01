@@ -218598,3 +218598,37 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Full-Text Search taste</strong></summary>
+
+## Full-Text Search taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Full-Text Search taste of a search-focused backend engineer
+- Start with the database's built-in full-text search, such as PostgreSQL tsvector, and add a dedicated search engine only when relevance or scale really needs it. Confidence: 0.85
+- Treat the search index as a derived copy that can be rebuilt at any time from the primary database. Confidence: 0.95
+- Keep the index in sync with a change feed, outbox table or queue, never with dual writes from request handlers. Confidence: 0.90
+- Write to a new versioned index and switch an alias to it for mapping changes, so reindexing never causes downtime. Confidence: 0.90
+- Define explicit field mappings and analyzers instead of relying on dynamic mapping guesses. Confidence: 0.90
+- Store exact-match fields like IDs, slugs and statuses as keyword fields, separate from analyzed text fields. Confidence: 0.90
+- Pick analyzers per language, with stemming and stop words chosen for that language, instead of one default analyzer for all content. Confidence: 0.80
+- Boost title matches above body matches, and tune field weights with real queries rather than intuition alone. Confidence: 0.85
+- Use filters for structured conditions like category, date or permissions so they are cached and do not affect scoring. Confidence: 0.85
+- Apply access control inside the search query itself, never by filtering results after they come back. Confidence: 0.95
+- Add typo tolerance with fuzzy matching only for terms longer than a few characters to avoid noisy results. Confidence: 0.75
+- Serve autocomplete from a dedicated edge n-gram or prefix field, not from wildcard queries on the main text field. Confidence: 0.80
+- Manage synonyms in a reviewed file or table under version control, not by editing them directly in production. Confidence: 0.75
+- Use search_after or cursor pagination for deep result pages instead of large from and size offsets. Confidence: 0.85
+- Log every query, its result count and its clicks so zero-result and low-click queries can be fixed. Confidence: 0.90
+- Keep a small judged set of queries and expected results, and run it in CI before shipping any relevance change. Confidence: 0.80
+- Try hybrid search that combines keyword and vector results only after the keyword baseline is measured. Confidence: 0.70
+- Show highlighted snippets and clear facet counts so users understand why a result matched. Confidence: 0.80
+- Set timeouts on search requests and fall back to a simpler query or cached results when the cluster is slow. Confidence: 0.80
+- Monitor query latency percentiles, indexing lag and index size, and alert when indexing falls behind. Confidence: 0.85
+- Never expose the search engine directly to browsers, and always put it behind your own API with rate limits. Confidence: 0.95
+```
+
+</details>
+
