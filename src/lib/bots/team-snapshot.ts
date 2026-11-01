@@ -1,3 +1,4 @@
+import type { DiffItem } from "@/lib/list-diff";
 import type { BotTeamInput } from "./team-schema";
 
 /**
@@ -142,6 +143,25 @@ export function teamSnapshotTexts(snapshot: TeamSnapshot): Record<TeamTextField,
     handoffs: snapshot.links
       .map((link) => `${titles.get(link.fromBotId) ?? link.fromBotId} → ${titles.get(link.toBotId) ?? link.toBotId}${link.label ? `: ${link.label}` : ""}`)
       .join("\n"),
+  };
+}
+
+/** The list-like team fields, diffed item by item rather than as text */
+export const TEAM_LIST_FIELDS = ["tags", "handoffs"] as const satisfies readonly TeamTextField[];
+export type TeamListField = (typeof TEAM_LIST_FIELDS)[number];
+
+/**
+ * Tags (by id) and handoffs (by their two bots) as items, so a diff shows only the ones added or
+ * removed; a handoff whose label changed shows as a change of that handoff
+ */
+export function teamSnapshotItems(snapshot: TeamSnapshot): Record<TeamListField, DiffItem[]> {
+  const titles = new Map(snapshot.members.map((member) => [member.botId, member.title]));
+  return {
+    tags: snapshot.tags.map((tag) => ({ key: tag.id, text: tag.name })),
+    handoffs: snapshot.links.map((link) => ({
+      key: `${link.fromBotId}>${link.toBotId}`,
+      text: `${titles.get(link.fromBotId) ?? link.fromBotId} → ${titles.get(link.toBotId) ?? link.toBotId}${link.label ? `: ${link.label}` : ""}`,
+    })),
   };
 }
 

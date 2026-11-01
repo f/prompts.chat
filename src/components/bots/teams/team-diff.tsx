@@ -6,7 +6,21 @@ import { Badge } from "@/components/ui/badge";
 import { DiffView } from "@/components/ui/diff-view";
 import { FieldDiffList } from "@/components/changes/field-diff-list";
 import { cn } from "@/lib/utils";
-import { TEAM_TEXT_FIELDS, diffTeamSnapshots, teamSnapshotTexts, type TeamMemberChangeKind, type TeamSnapshot } from "@/lib/bots/team-snapshot";
+import {
+  TEAM_LIST_FIELDS,
+  TEAM_TEXT_FIELDS,
+  diffTeamSnapshots,
+  teamSnapshotItems,
+  teamSnapshotTexts,
+  type TeamListField,
+  type TeamMemberChangeKind,
+  type TeamSnapshot,
+  type TeamTextField,
+} from "@/lib/bots/team-snapshot";
+
+function isListField(field: TeamTextField): field is TeamListField {
+  return (TEAM_LIST_FIELDS as readonly string[]).includes(field);
+}
 
 interface TeamDiffProps {
   original: TeamSnapshot;
@@ -33,13 +47,21 @@ export function TeamDiff({ original, modified, showUnchanged = false }: TeamDiff
   const diff = diffTeamSnapshots(original, modified);
   const before = teamSnapshotTexts(original);
   const after = teamSnapshotTexts(modified);
+  const beforeItems = teamSnapshotItems(original);
+  const afterItems = teamSnapshotItems(modified);
   const changedFields = new Set(diff.fields.map((field) => field.field));
-  const fields = TEAM_TEXT_FIELDS.filter((field) => showUnchanged || changedFields.has(field)).map((field) => ({
-    key: field,
-    label: t(`teamFields.${field}`),
-    original: before[field],
-    modified: changedFields.has(field) ? after[field] : before[field],
-  }));
+  const fields = TEAM_TEXT_FIELDS.filter((field) => showUnchanged || changedFields.has(field)).map((field) => {
+    const changed = changedFields.has(field);
+    return {
+      key: field,
+      label: t(`teamFields.${field}`),
+      original: before[field],
+      modified: changed ? after[field] : before[field],
+      items: isListField(field)
+        ? { original: beforeItems[field], modified: changed ? afterItems[field] : beforeItems[field] }
+        : undefined,
+    };
+  });
   const members = diff.members.filter((member) => showUnchanged || member.kind !== "unchanged");
   const kept = new Set(modified.members.map((m) => m.botId));
   const keptOrderBefore = original.members.filter((m) => kept.has(m.botId)).map((m) => m.botId);

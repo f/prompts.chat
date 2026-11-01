@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   botFieldsFromRecord,
+  botSnapshotItems,
   botSnapshotTexts,
   changedBotTextFields,
   parseBotFields,
@@ -14,10 +15,12 @@ import {
   redactTeamSnapshot,
   snapshotToTeamInput,
   teamInputToSnapshot,
+  teamSnapshotItems,
   teamSnapshotTexts,
   teamSnapshotsEqual,
   type TeamSnapshot,
 } from "@/lib/bots/team-snapshot";
+import { diffItemLists } from "@/lib/list-diff";
 
 const fields: BotFields = {
   description: "Watches the build",
@@ -84,6 +87,20 @@ describe("bot change snapshots", () => {
       fields: { ...fields, config: { ...fields.config, connectors: ["github", "slack"] } },
     });
     expect(changedBotTextFields(original, modified)).toEqual(["instructions", "connectors"]);
+  });
+
+  it("lists list-like bot fields as items matched by identity", () => {
+    const items = botSnapshotItems(fields, (requirement) => requirement.toLowerCase())!;
+    expect(items.platforms).toEqual([{ key: "OPENCLAW", text: "OpenClaw" }]);
+    expect(items.computers).toEqual([{ key: "CLOUD", text: "cloud" }]);
+    expect(items.connectors).toEqual([{ key: "github", text: "github" }]);
+    expect(items.skills).toEqual([{ key: "Triage", text: "Triage: Sorts failures" }]);
+    expect(items.routines[0].key).toBe("Nightly");
+    expect(botSnapshotItems(null)).toBeNull();
+
+    const next = botSnapshotItems({ ...fields, platforms: ["OPENCLAW", "HERMES"], computerRequirements: ["CLOUD", "LOCAL"] })!;
+    expect(diffItemLists(botSnapshotItems(fields)!.platforms, next.platforms).map((entry) => entry.type)).toEqual(["unchanged", "added"]);
+    expect(diffItemLists(botSnapshotItems(fields)!.computers, next.computers).map((entry) => entry.type)).toEqual(["unchanged", "added"]);
   });
 
   it("compares only title and instructions when one side has no bot fields", () => {
@@ -193,6 +210,24 @@ describe("team snapshots", () => {
         role: { original: "Writer", modified: "" },
         description: { original: "", modified: "" },
       },
+    ]);
+  });
+
+  it("lists tags and handoffs as items so only added and removed ones differ", () => {
+    const modified: TeamSnapshot = {
+      ...base,
+      tags: [...base.tags, { id: "t-2", name: "writing" }],
+      links: [{ fromBotId: "a", toBotId: "b", label: "Full brief" }, { fromBotId: "b", toBotId: "a", label: "" }],
+    };
+    const before = teamSnapshotItems(base);
+    const after = teamSnapshotItems(modified);
+    expect(diffItemLists(before.tags, after.tags)).toEqual([
+      { type: "unchanged", key: "t-1", text: "agents" },
+      { type: "added", key: "t-2", text: "writing" },
+    ]);
+    expect(diffItemLists(before.handoffs, after.handoffs)).toEqual([
+      { type: "changed", key: "a>b", original: "Scout → Scribe: Brief", modified: "Scout → Scribe: Full brief" },
+      { type: "added", key: "b>a", text: "Scribe → Scout" },
     ]);
   });
 

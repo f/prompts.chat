@@ -1,12 +1,15 @@
 "use client";
 
-import { DiffView } from "@/components/ui/diff-view";
+import { DiffView, ListDiffView } from "@/components/ui/diff-view";
+import type { DiffItem } from "@/lib/list-diff";
 
 export interface FieldDiff {
   key: string;
   label: string;
   original: string;
   modified: string;
+  /** Set for list-like fields (platforms, tags, skills, …) to diff them item by item */
+  items?: { original: readonly DiffItem[]; modified: readonly DiffItem[] };
 }
 
 interface FieldDiffListProps {
@@ -15,7 +18,7 @@ interface FieldDiffListProps {
   showUnchanged?: boolean;
 }
 
-/** One word diff per field, with the same diff viewer and section style as prompt change requests */
+/** One diff per field, with the same diff viewer and section style as prompt change requests */
 export function FieldDiffList({ fields, showUnchanged = false }: FieldDiffListProps) {
   const shown = fields.filter((field) =>
     showUnchanged ? field.original !== "" || field.modified !== "" : field.original !== field.modified
@@ -25,7 +28,11 @@ export function FieldDiffList({ fields, showUnchanged = false }: FieldDiffListPr
       {shown.map((field) => (
         <div key={field.key}>
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">{field.label}</p>
-          <DiffView original={field.original} modified={field.modified} />
+          {field.items ? (
+            <ListDiffView original={field.items.original} modified={field.items.modified} />
+          ) : (
+            <DiffView original={field.original} modified={field.modified} />
+          )}
         </div>
       ))}
     </div>

@@ -20,6 +20,7 @@ import {
   type BotIconName,
   type BotPlatform,
 } from "./schema";
+import { textItems, type DiffItem } from "@/lib/list-diff";
 
 /**
  * The fields of a BOT prompt that change requests and versions cover besides its title and
@@ -155,22 +156,47 @@ export const BOT_TEXT_FIELDS = [
 ] as const;
 export type BotTextField = (typeof BOT_TEXT_FIELDS)[number];
 
+function routineText(routine: BotConfig["routines"][number]): string {
+  return [
+    `${routine.name} (${routine.type})`,
+    `${routine.type === "schedule" ? "Schedule" : "Trigger"}: ${routine.trigger}${routine.triggerLabel ? ` (${routine.triggerLabel})` : ""}`,
+    routine.prompt,
+  ].join("\n");
+}
+
+function skillText(skill: BotConfig["skills"][number]): string {
+  return [`${skill.name}${skill.description ? `: ${skill.description}` : ""}`, ...(skill.source ? [skill.source] : [])].join("\n");
+}
+
 function routinesText(config: BotConfig): string {
-  return config.routines
-    .map((routine) =>
-      [
-        `${routine.name} (${routine.type})`,
-        `${routine.type === "schedule" ? "Schedule" : "Trigger"}: ${routine.trigger}${routine.triggerLabel ? ` (${routine.triggerLabel})` : ""}`,
-        routine.prompt,
-      ].join("\n")
-    )
-    .join("\n\n");
+  return config.routines.map(routineText).join("\n\n");
 }
 
 function skillsText(config: BotConfig): string {
-  return config.skills
-    .map((skill) => [`${skill.name}${skill.description ? `: ${skill.description}` : ""}`, ...(skill.source ? [skill.source] : [])].join("\n"))
-    .join("\n\n");
+  return config.skills.map(skillText).join("\n\n");
+}
+
+/** The list-like bot fields, diffed item by item rather than as text */
+export const BOT_LIST_FIELDS = ["platforms", "computers", "routines", "skills", "connectors"] as const satisfies readonly BotTextField[];
+export type BotListField = (typeof BOT_LIST_FIELDS)[number];
+
+/**
+ * The list-like fields of a bot as items, so a diff shows only the platforms, computers,
+ * routines, skills and connectors that were added or removed. Routines and skills are matched
+ * by name, so editing one shows as a change of that item. Null without bot fields.
+ */
+export function botSnapshotItems(
+  fields: BotFields | null,
+  computerLabel: (requirement: BotComputerRequirement) => string = (requirement) => requirement
+): Record<BotListField, DiffItem[]> | null {
+  if (!fields) return null;
+  return {
+    platforms: fields.platforms.map((platform) => ({ key: platform, text: BOT_PLATFORM_INFO[platform].name })),
+    computers: fields.computerRequirements.map((requirement) => ({ key: requirement, text: computerLabel(requirement) })),
+    routines: fields.config.routines.map((routine) => ({ key: routine.name, text: routineText(routine) })),
+    skills: fields.config.skills.map((skill) => ({ key: skill.name, text: skillText(skill) })),
+    connectors: textItems(fields.config.connectors),
+  };
 }
 
 /**
