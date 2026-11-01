@@ -19,6 +19,7 @@ import { BotCard } from "@/components/bots/bot-card";
 import { BotComputerBadges } from "@/components/bots/bot-computer-badge";
 import { BotInstall } from "@/components/bots/bot-install";
 import { BotPlatformBadge } from "@/components/bots/bot-platform-badge";
+import { TEAM_TITLE_LINK_CLASS } from "@/components/bots/teams/team-title-link";
 import { DelistBanner } from "@/components/prompts/delist-banner";
 import { PromptAuthor } from "@/components/prompts/prompt-author";
 import { FeaturePromptButton } from "@/components/prompts/feature-prompt-button";
@@ -31,6 +32,7 @@ import { getBotTeams } from "@/lib/bots/teams";
 import { canViewPrompt } from "@/lib/prompt-access";
 import { buildPageMetadata, getBaseUrl, NOINDEX_ROBOTS, toMetaDescription } from "@/lib/seo";
 import { getBotTeamUrl, getBotUrl } from "@/lib/urls";
+import { cn } from "@/lib/utils";
 import { isTrending } from "@/lib/trending";
 import { TrendingBadge } from "@/components/prompts/trending-badge";
 import { TrendingPromptButton } from "@/components/prompts/trending-prompt-button";
@@ -347,7 +349,7 @@ export default async function BotPage({ params }: BotPageProps) {
                       <div className="flex min-w-0 items-center gap-1.5">
                         <Link
                           href={getBotTeamUrl(team.slug)}
-                          className="min-w-0 truncate text-sm font-medium hover:underline after:absolute after:inset-0 after:content-['']"
+                          className={cn("min-w-0 truncate text-sm font-medium after:absolute after:inset-0 after:content-['']", TEAM_TITLE_LINK_CLASS)}
                         >
                           {team.title}
                         </Link>

@@ -3,7 +3,9 @@ import { useTranslations } from "next-intl";
 import { EyeOff, Star, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { UpvoteCount } from "@/components/prompts/upvote-count";
+import { TEAM_TITLE_LINK_CLASS } from "@/components/bots/teams/team-title-link";
 import { getBotTeamUrl } from "@/lib/urls";
+import { cn } from "@/lib/utils";
 
 export interface TeamCardTeam {
   slug: string;
@@ -27,7 +29,7 @@ export function TeamCard({ team }: { team: TeamCardTeam }) {
         <div className="flex min-w-0 items-center gap-1.5">
           <Link
             href={getBotTeamUrl(team.slug)}
-            className="min-w-0 truncate text-sm font-medium hover:underline after:absolute after:inset-0 after:content-['']"
+            className={cn("min-w-0 truncate text-sm font-medium after:absolute after:inset-0 after:content-['']", TEAM_TITLE_LINK_CLASS)}
           >
             {team.title}
           </Link>
