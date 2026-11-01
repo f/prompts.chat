@@ -4,11 +4,15 @@ import { getBotUrl } from "@/lib/urls";
 import { isTrending } from "@/lib/trending";
 import {
   BOT_PLATFORM_INFO,
+  computerRequirementText,
   isBotColor,
   isBotIconName,
+  normalizeComputerRequirements,
   parseBotConfig,
   resolveBotPlatforms,
   type BotColor,
+  type BotComputerFilter,
+  type BotComputerRequirement,
   type BotConfig,
   type BotIconName,
   type BotPlatform,
@@ -26,6 +30,7 @@ export const botSelect = {
   botPlatforms: true,
   botIcon: true,
   botColor: true,
+  computerRequirements: true,
   installUrl: true,
   botConfig: true,
   isPrivate: true,
@@ -57,6 +62,8 @@ export interface BotView {
   icon: BotIconName | null;
   /** Preset color key; null means the neutral default */
   color: BotColor | null;
+  /** Computers the bot needs to run, in BOT_COMPUTER_REQUIREMENTS order; empty when it needs none */
+  computerRequirements: BotComputerRequirement[];
   installUrl: string | null;
   config: BotConfig;
   isPrivate: boolean;
@@ -88,6 +95,7 @@ export function toBotView(record: BotRecord): BotView {
     platforms: resolveBotPlatforms(record),
     icon: record.botIcon && isBotIconName(record.botIcon) ? record.botIcon : null,
     color: record.botColor && isBotColor(record.botColor) ? record.botColor : null,
+    computerRequirements: normalizeComputerRequirements(record.computerRequirements),
     installUrl: record.installUrl,
     config: parseBotConfig(record.botConfig),
     isPrivate: record.isPrivate,
@@ -119,6 +127,8 @@ export type BotSort = (typeof BOT_SORTS)[number];
 
 export interface BotListFilters {
   platform?: BotPlatform;
+  /** NONE matches bots that need no computer; CLOUD or LOCAL, bots that need that one, alone or with the other */
+  computer?: BotComputerFilter;
   /** Matches the category and, for a parent category, its subcategories */
   categorySlug?: string;
   /** Every tag must match */
@@ -128,11 +138,17 @@ export interface BotListFilters {
   sort?: BotSort;
 }
 
-function botListWhere({ platform, categorySlug, tagSlugs = [], q }: BotListFilters): Prisma.PromptWhereInput {
+export function computerFilterWhere(computer: BotComputerFilter | undefined): Prisma.PromptWhereInput {
+  if (!computer) return {};
+  return { computerRequirements: computer === "NONE" ? { isEmpty: true } : { has: computer } };
+}
+
+function botListWhere({ platform, computer, categorySlug, tagSlugs = [], q }: BotListFilters): Prisma.PromptWhereInput {
   const keywords = (q ?? "").split(",").map((k) => k.trim()).filter(Boolean);
   return {
     ...publicBotWhere,
     ...(platform && { botPlatforms: { has: platform } }),
+    ...computerFilterWhere(computer),
     ...(categorySlug && { category: { OR: [{ slug: categorySlug }, { parent: { slug: categorySlug } }] } }),
     ...(tagSlugs.length > 0 && { AND: tagSlugs.map((slug) => ({ tags: { some: { tag: { slug } } } })) }),
     ...(keywords.length > 0 && {
@@ -146,7 +162,7 @@ function botListWhere({ platform, categorySlug, tagSlugs = [], q }: BotListFilte
 }
 
 const BOT_ORDER: Record<BotSort, Prisma.PromptOrderByWithRelationInput[]> = {
-  newest: [{ isFeatured: "desc" }, { createdAt: "desc" }],
+  newest: [{ createdAt: "desc" }, { id: "desc" }],
   oldest: [{ createdAt: "asc" }],
   upvotes: [{ votes: { _count: "desc" } }, { createdAt: "desc" }],
 };
@@ -165,12 +181,23 @@ export function countBots(filters: Omit<BotListFilters, "sort"> = {}) {
   return db.prompt.count({ where: botListWhere(filters) });
 }
 
-/** A user's bots for their profile; private ones only for the owner */
+/** A user's bots for their profile; private ones only for the owner, unlisted ones for the owner and admins */
 export async function listBotsByAuthor(
   authorId: string,
-  { includePrivate = false, skip = 0, take = 24 }: { includePrivate?: boolean; skip?: number; take?: number } = {}
+  {
+    includePrivate = false,
+    includeUnlisted = includePrivate,
+    skip = 0,
+    take = 24,
+  }: { includePrivate?: boolean; includeUnlisted?: boolean; skip?: number; take?: number } = {}
 ): Promise<{ bots: BotView[]; total: number }> {
-  const where: Prisma.PromptWhereInput = { authorId, type: "BOT", deletedAt: null, ...(includePrivate ? {} : { isPrivate: false }) };
+  const where: Prisma.PromptWhereInput = {
+    authorId,
+    type: "BOT",
+    deletedAt: null,
+    ...(!includePrivate && { isPrivate: false }),
+    ...(!includeUnlisted && { isUnlisted: false }),
+  };
   const [records, total] = await Promise.all([
     db.prompt.findMany({ where, orderBy: { createdAt: "desc" }, skip, take, select: botSelect }),
     db.prompt.count({ where }),
@@ -231,6 +258,66 @@ export async function getBotById(id: string, { includeDeleted = false } = {}): P
   return record ? toBotView(record) : null;
 }
 
+/**
+ * A live bot by id (or "id_slug" URL segment), else by slug, with the visibility rules of the bot page:
+ * public and unlisted bots for everyone, private ones for their author and admins. Slugs are not
+ * unique, so a slug resolves to the oldest visible match.
+ */
+export async function findVisibleBot(
+  { id, slug }: { id?: string; slug?: string },
+  viewer: { id: string; role: string } | null = null
+): Promise<BotView | null> {
+  if (!id && !slug) return null;
+  const visibility: Prisma.PromptWhereInput =
+    viewer?.role === "ADMIN" ? {} : { OR: [{ isPrivate: false }, ...(viewer ? [{ authorId: viewer.id }] : [])] };
+  const record = await db.prompt.findFirst({
+    where: { type: "BOT", deletedAt: null, ...visibility, ...(id ? { id: extractBotId(id) } : { slug }) },
+    orderBy: { createdAt: "asc" },
+    select: botSelect,
+  });
+  return record ? toBotView(record) : null;
+}
+
+/** Static segments under /bots that must never be treated as a bot slug */
+export const RESERVED_BOT_SEGMENTS: ReadonlySet<string> = new Set(["new", "teams"]);
+
+/**
+ * The slug to fall back to when a bot URL segment does not resolve by id: the part after the
+ * id in "abc123_some-slug", or the whole segment when it has no id prefix. Slugs never contain
+ * underscores (see slugify), so the first underscore always separates the id.
+ */
+export function botSlugFromParam(param: string): string | null {
+  const underscoreIndex = param.indexOf("_");
+  const slug = (underscoreIndex === -1 ? param : param.substring(underscoreIndex + 1)).toLowerCase();
+  if (!/^[a-z0-9-]+$/.test(slug) || RESERVED_BOT_SEGMENTS.has(slug)) return null;
+  return slug;
+}
+
+/**
+ * The best live bot the viewer may see for a slug, used to redirect slug-only URLs. Slugs are not
+ * unique, so public beats private, listed beats unlisted, then most upvoted, newest, and lowest id
+ * as a deterministic tie-break.
+ */
+export async function findBotBySlug(
+  slug: string,
+  viewer: { id: string; role: string } | null = null
+): Promise<BotView | null> {
+  const visibility: Prisma.PromptWhereInput =
+    viewer?.role === "ADMIN" ? {} : { OR: [{ isPrivate: false }, ...(viewer ? [{ authorId: viewer.id }] : [])] };
+  const record = await db.prompt.findFirst({
+    where: { type: "BOT", deletedAt: null, slug, ...visibility },
+    orderBy: [
+      { isPrivate: "asc" },
+      { isUnlisted: "asc" },
+      { votes: { _count: "desc" } },
+      { createdAt: "desc" },
+      { id: "asc" },
+    ],
+    select: botSelect,
+  });
+  return record ? toBotView(record) : null;
+}
+
 /** Extracts the id from a bot URL segment: "abc123" or "abc123_some-slug" */
 export function extractBotId(param: string): string {
   const underscoreIndex = param.indexOf("_");
@@ -253,10 +340,37 @@ export function getBotSkillName(bot: Pick<BotView, "id" | "slug">): string {
   return /^[a-z]/.test(name) ? name : `bot-${bot.id.toLowerCase()}`;
 }
 
+/** Where a bot lands on the platform; AutoGPT keeps instructions, skills and routines on an Expert */
+export function getInstallTarget(platform: BotPlatform, count = 1): string {
+  const platformName = BOT_PLATFORM_INFO[platform].name;
+  if (platform === "AUTOGPT") return `as ${count === 1 ? "an Expert" : "Experts"} on ${platformName}`;
+  return `on ${platformName}`;
+}
+
 /** Prompt the user pastes into an agent that cannot import bots from a URL */
 export function getInstallPrompt(bot: BotView, platform: BotPlatform, baseUrl: string): string {
-  const platformName = BOT_PLATFORM_INFO[platform].name;
-  return `Go to ${getBotUrls(bot, baseUrl).markdown} and create the "${bot.title}" bot on ${platformName} exactly as described there: adopt its instructions as your standing instructions, install its skills, ask me to connect the required connectors, and set up each routine with the given schedule or trigger. Confirm each step when done.`;
+  const computer = computerRequirementText(bot.computerRequirements, "user");
+  return `${computer ? `${computer} ` : ""}Go to ${getBotUrls(bot, baseUrl).markdown} and create the "${bot.title}" bot ${getInstallTarget(platform)} exactly as described there: adopt its instructions as your standing instructions, install its skills, ask me to connect the required connectors, and set up each routine with the given schedule or trigger. Confirm each step when done.`;
+}
+
+const COMPUTER_LIST_MARKS: Record<BotComputerRequirement, string> = {
+  CLOUD: "needs a cloud computer",
+  LOCAL: "needs my computer",
+};
+
+/** Marks a bot in a list of bots to install, e.g. ` [needs a cloud computer, needs my computer]` */
+export function computerListMark(requirements: readonly BotComputerRequirement[]): string {
+  const marks = normalizeComputerRequirements(requirements).map((requirement) => COMPUTER_LIST_MARKS[requirement]);
+  return marks.length > 0 ? ` [${marks.join(", ")}]` : "";
+}
+
+/** What the marks in a list of bots mean, for the requirements present; empty when none are */
+export function computerListNotes(bots: Pick<BotView, "computerRequirements">[]): string[] {
+  const present = new Set(bots.flatMap((bot) => bot.computerRequirements));
+  return [
+    ...(present.has("CLOUD") ? ["Bots that need a cloud computer need their own remote computer, desktop or browser to work in: set one up for each or ask me to connect one."] : []),
+    ...(present.has("LOCAL") ? ["Bots that need my computer need access to my own machine, files and apps: ask me before connecting it."] : []),
+  ];
 }
 
 /** Hermes installs SKILL.md files straight from a URL */
@@ -318,6 +432,8 @@ function botBody(bot: BotView, baseUrl: string): string {
 
   if (bot.description) sections.push(bot.description);
   sections.push(`## Platforms\n\n${bot.platforms.map((platform) => `- ${BOT_PLATFORM_INFO[platform].name}`).join("\n")}`);
+  const computer = computerRequirementText(bot.computerRequirements);
+  if (computer) sections.push(`## Computer\n\n${computer}`);
   sections.push(`## Instructions\n\n${bot.instructions}`);
 
   if (routines.length > 0) {
@@ -376,6 +492,7 @@ export function botToMarkdown(bot: BotView, baseUrl: string): string {
     "---",
     `name: ${JSON.stringify(bot.title)}`,
     `platforms: [${bot.platforms.join(", ")}]`,
+    `computers: [${bot.computerRequirements.join(", ")}]`,
     ...(bot.description ? [`description: ${JSON.stringify(bot.description)}`] : []),
     ...(bot.category ? [`category: ${JSON.stringify(bot.category.name)}`] : []),
     ...(bot.tags.length > 0 ? [`tags: [${bot.tags.map((tag) => JSON.stringify(tag.name)).join(", ")}]`] : []),
@@ -417,6 +534,7 @@ export function botToJson(bot: BotView, baseUrl: string) {
     platformNames: bot.platforms.map((platform) => BOT_PLATFORM_INFO[platform].name),
     icon: bot.icon,
     color: bot.color,
+    computerRequirements: bot.computerRequirements,
     instructions: bot.instructions,
     routines: bot.config.routines,
     skills: bot.config.skills,

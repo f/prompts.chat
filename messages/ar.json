@@ -36,6 +36,7 @@
   },
   "nav": {
     "bots": "البوتات",
+    "teams": "الفرق",
     "collection": "مجموعتي",
     "feed": "الخلاصة",
     "promptmasters": "Promptmasters",
@@ -186,6 +187,8 @@
     "relistRequestAlreadySent": "لقد أرسلت بالفعل طلب إعادة إدراج لهذا البرومبت.",
     "relistRequestError": "فشل إرسال طلب إعادة الإدراج. يرجى المحاولة مرة أخرى.",
     "relatedPrompts": "برومبتات ذات صلة",
+    "relatedSkills": "مهارات ذات صلة",
+    "relatedBots": "بوتات ذات صلة",
     "deletePrompt": "حذف البرومبت",
     "deletePromptTitle": "حذف هذا البرومبت؟",
     "deletePromptDescription": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف البرومبت نهائياً.",
@@ -443,7 +446,46 @@
     "dismissed": "تم سحب طلب التغيير",
     "dismissConfirmTitle": "سحب طلب التغيير؟",
     "dismissConfirmDescription": "سيؤدي هذا إلى حذف طلب التغيير نهائياً. لا يمكن التراجع عن هذا الإجراء.",
-    "backToBot": "العودة إلى البوت"
+    "backToBot": "العودة إلى البوت",
+    "backToTeam": "العودة إلى الفريق",
+    "proposeBotTitle": "اقتراح تغييرات على هذا البوت",
+    "proposeBotIntro": "اقترح تحسينات لهذا البوت. سيراجع المالك اقتراحك ويمكنه قبوله أو رفضه.",
+    "proposeTeamTitle": "اقتراح تغييرات على هذا الفريق",
+    "proposeTeamIntro": "اقترح تحسينات لهذا الفريق. سيراجع المالك اقتراحك ويمكنه قبوله أو رفضه.",
+    "viewVersion": "عرض الإصدار",
+    "viewVersionHint": "التغييرات مقارنة بالإصدار {previous}",
+    "viewFirstVersionHint": "الإصدار الأول",
+    "memberRole": "الدور",
+    "memberDescription": "الوصف",
+    "membersReordered": "تم تغيير ترتيب الأعضاء",
+    "noFieldChanges": "لا توجد تغييرات",
+    "reviewedBy": "تمت المراجعة بواسطة {user}",
+    "teamApprovedSuccess": "تمت الموافقة على طلب التغيير وتحديث الفريق",
+    "botFields": {
+      "title": "العنوان",
+      "description": "الوصف",
+      "platforms": "المنصات",
+      "computers": "متطلبات الحاسوب",
+      "appearance": "المظهر",
+      "installUrl": "رابط التثبيت",
+      "instructions": "التعليمات",
+      "routines": "الروتينات",
+      "skills": "المهارات",
+      "connectors": "الموصلات"
+    },
+    "teamFields": {
+      "title": "العنوان",
+      "description": "الوصف",
+      "category": "الفئة",
+      "tags": "الوسوم",
+      "handoffs": "التسليمات",
+      "members": "الأعضاء"
+    },
+    "member": {
+      "added": "مضاف",
+      "removed": "محذوف",
+      "changed": "معدّل"
+    }
   },
   "categories": {
     "title": "التصنيفات",
@@ -509,6 +551,7 @@
       "webhooks": "Webhooks",
       "prompts": "الأوامر",
       "bots": "البوتات",
+      "teams": "الفرق",
       "reports": "البلاغات"
     },
     "reports": {
@@ -784,6 +827,26 @@
       "deleted": "تم حذف البوت",
       "deleteConfirmTitle": "حذف البوت؟",
       "deleteConfirmDescription": "سيؤدي هذا إلى حذف \"{title}\" نهائيًا. لا يمكن التراجع عن ذلك."
+    },
+    "teamsList": {
+      "title": "الفرق",
+      "description": "إدارة فرق البوتات: إلغاء إدراجها أو تعديلها أو حذفها.",
+      "noTeams": "لم يتم العثور على فرق",
+      "open": "فتح",
+      "edit": "تعديل",
+      "unlist": "إلغاء الإدراج",
+      "relist": "إعادة الإدراج",
+      "updated": "تم تحديث الفريق",
+      "deleted": "تم حذف الفريق",
+      "deleteConfirmTitle": "حذف الفريق؟",
+      "deleteConfirmDescription": "سيؤدي هذا إلى حذف \"{title}\" نهائيًا. تبقى بوتاته كما هي.",
+      "members": "{count, plural, one {بوت واحد} two {بوتان} few {# بوتات} many {# بوتًا} other {# بوت}}",
+      "filters": {
+        "all": "الكل",
+        "listed": "مُدرج",
+        "unlisted": "غير مُدرج",
+        "featured": "مميز"
+      }
     }
   },
   "search": {
@@ -840,7 +903,12 @@
     "noBots": "لا توجد بوتات بعد.",
     "noBotsOwner": "لم تنشئ أي بوتات بعد.",
     "createFirstBot": "أنشئ أول بوت لك",
-    "botsCount": "بوتات"
+    "botsCount": "بوتات",
+    "teams": "الفرق",
+    "teamsCount": "فرق",
+    "noTeams": "لا توجد فرق بعد.",
+    "noTeamsOwner": "لم تنشئ أي فرق بعد.",
+    "createFirstTeam": "أنشئ أول فريق لك"
   },
   "subscription": {
     "subscribe": "اشتراك",
@@ -929,7 +997,7 @@
     "browsePrompts": "تصفح الأوامر"
   },
   "bots": {
-    "description": "بوتات وكلاء ذكاء اصطناعي جاهزة مع التعليمات والمهام الروتينية والمهارات. ثبّتها على OpenClaw أو Hermes Agent أو Grok Bot.",
+    "description": "بوتات وكلاء ذكاء اصطناعي جاهزة مع التعليمات والمهام الروتينية والمهارات. ثبّتها على OpenClaw أو AutoGPT أو OpenAI Dots أو Claude Duet أو Meta Muse أو Hermes Agent أو Grok Bot.",
     "count": "{count, plural, zero {لا توجد بوتات} one {بوت واحد} two {بوتان} few {# بوتات} many {# بوتًا} other {# بوت}}",
     "allPlatforms": "الكل",
     "searchPlaceholder": "ابحث في البوتات...",
@@ -954,6 +1022,14 @@
     "installPromptHint": "الصق هذه التعليمة في وكيلك. سيجلب تعريف البوت ويُعدّ التعليمات والمهام الروتينية والمهارات.",
     "installPromptFallbackHint": "أو الصق هذه التعليمة في Grok Bot لإنشاء البوت بنفسك:",
     "installPromptPlatformFallbackHint": "أو الصق هذا الموجّه في {platform} لإنشاء البوت بنفسك:",
+    "autogptPromptHint": "الصق هذا الموجّه في محادثة مع Otto على AutoGPT. سيُعِدّ Otto البوت بوصفه Expert مع تعليماته ومهاراته ومهامه الروتينية.",
+    "openAutogpt": "فتح AutoGPT",
+    "dotsPromptHint": "الصق هذا الموجّه في محادثة مع dot الخاص بك في ChatGPT. سيتبنّى تعليمات البوت، ويطلب منك ربط التطبيقات التي يحتاجها، ويجدول مهامه الروتينية كمهام متكررة.",
+    "openDots": "فتح Dots",
+    "duetPromptHint": "الصق هذا الموجّه في محادثتك على Claude Duet. سيتبنّى Claude Duet تعليمات البوت ومهامه الروتينية، ويستخدم مهارات حسابك على Claude وموصلاته، لذا أضف ما ينقص منها في إعدادات Claude.",
+    "openDuet": "فتح Claude Duet",
+    "musePromptHint": "الصق هذا الموجّه في محادثة مع Muse. مهارات Muse مدمجة، لذا سيتبنّى تعليمات البوت، ويطلب منك ربط التطبيقات التي يحتاجها، ويُعِدّ مهامه الروتينية كمهام مجدولة.",
+    "openMuse": "فتح Muse",
     "copyInstallPrompt": "نسخ تعليمة التثبيت",
     "machineReadable": "قابل للقراءة آليًا",
     "create": "بوت جديد",
@@ -999,7 +1075,15 @@
       "submit": "إنشاء البوت",
       "save": "حفظ البوت",
       "created": "تم إنشاء البوت",
-      "updated": "تم تحديث البوت"
+      "updated": "تم تحديث البوت",
+      "pairingsHint": "اربط البوتات التي تعمل جيدًا مع هذا البوت. تظهر الروابط في صفحتي البوتين.",
+      "pairingsSearch": "ابحث عن بوتات للربط...",
+      "pairingsNoResults": "لم يتم العثور على بوتات",
+      "pairingNotePlaceholder": "لماذا يتكاملان جيدًا؟ (اختياري)",
+      "pairingNoteLabel": "لماذا يتكامل {bot} جيدًا",
+      "removePairing": "إزالة {bot}",
+      "pairingsMax": "يمكنك ربط ما يصل إلى {max} بوتات",
+      "pairingsInvalid": "أحد البوتات المرتبطة لم يعد موجودًا. أزله وحاول مرة أخرى."
     },
     "colors": {
       "slate": "رمادي أردوازي",
@@ -1055,7 +1139,129 @@
       "coffee": "قهوة"
     },
     "latestBots": "أحدث البوتات",
-    "viewAll": "عرض الكل"
+    "featuredTeams": "فرق البوتات المميزة",
+    "viewAll": "عرض الكل",
+    "betterTogether": "أفضل معًا مع",
+    "installAllTogether": "تثبيت الكل معًا",
+    "installAllTitle": "{count, plural, other {تثبيت كل البوتات معًا (#)}}",
+    "installAllDescription": "أعدّ {bot} والبوتات التي تتكامل معه دفعة واحدة.",
+    "installAllUnavailable": "لا توجد خيارات تثبيت متاحة لهذه البوتات بعد.",
+    "installAllLoadError": "تعذر تحميل خيارات التثبيت. أغلق النافذة وحاول مرة أخرى.",
+    "installAllPromptHint": "الصق هذه التعليمات في {platform}. ستُعِدّ كل بوت في المجموعة واحدًا تلو الآخر.",
+    "installAllAutogptPromptHint": "الصق هذه التعليمات في محادثة مع Otto على AutoGPT. سيُعِدّ Otto كل بوت في المجموعة بوصفه Expert، واحدًا تلو الآخر.",
+    "installAllDotsPromptHint": "الصق هذا الموجّه في محادثة مع dot الخاص بك في ChatGPT. سيُعِدّ كل بوت في المجموعة، واحدًا تلو الآخر.",
+    "installAllDuetPromptHint": "الصق هذا الموجّه في محادثتك على Claude Duet. سيُعِدّ Claude Duet كل بوت في المجموعة، واحدًا تلو الآخر. أضف المهارات والموصلات الناقصة في إعدادات Claude.",
+    "installAllMusePromptHint": "الصق هذا الموجّه في محادثة مع Muse. سيُعِدّ Muse كل بوت في المجموعة، واحدًا تلو الآخر، ويطلب منك ربط التطبيقات التي تحتاجها.",
+    "installAllCommandHint": "ثبّت كل بوت في المجموعة كمهارة:",
+    "installAllTemplatesHint": "أو افتح كل قالب من {platform}:",
+    "installAllSkipped": "غير متاح على {platform}: {bots}",
+    "copyCommands": "نسخ الأوامر",
+    "openTemplate": "فتح قالب {bot}",
+    "teams": {
+      "link": "الفرق",
+      "create": "إنشاء فريق",
+      "description": "الفرق مجموعات من البوتات تسلّم العمل لبعضها. كل مربع فريق، وكل سهم يوضح ما يسلّمه بوت إلى التالي: مرّر المؤشر فوق سهم لرؤية التسليم، أو اختر فريقًا لرؤية أعضائه.",
+      "count": "{count, plural, zero {لا توجد فرق} one {فريق واحد} two {فريقان} few {# فرق} many {# فريقًا} other {# فريق}}",
+      "searchPlaceholder": "ابحث في الفرق...",
+      "allTeams": "كل الفرق",
+      "empty": "لا توجد فرق بعد. أنشئ أول فريق.",
+      "noResults": "لا توجد فرق تطابق بحثك.",
+      "featured": "مميز",
+      "graphLabel": "فرق البوتات وتسليماتها",
+      "selectTeam": "عرض تفاصيل {team}",
+      "selectHint": "اختر فريقًا لرؤية أعضائه وتسليماته.",
+      "closePanel": "إغلاق",
+      "by": "بواسطة {author}",
+      "members": "الأعضاء",
+      "handoffs": "مسار التسليم",
+      "handoffLabel": "{from} يسلّم إلى {to}",
+      "handsOffTo": "يسلّم إلى",
+      "noHandoffLabel": "لا يوجد وصف لما يتم تسليمه",
+      "noHandoffs": "لا توجد تسليمات لهذا الفريق بعد.",
+      "noVisibleMembers": "لا يظهر لك أي من بوتات هذا الفريق.",
+      "openTeam": "فتح الفريق",
+      "backToTeams": "كل الفرق",
+      "install": "تثبيت الفريق",
+      "installTitle": "{count, plural, other {تثبيت كل بوتات هذا الفريق (#)}}",
+      "installDescription": "اضبط كل بوتات {team} واربط تسليماتها دفعة واحدة.",
+      "installShort": "تثبيت",
+      "memberOf": "الفرق",
+      "memberCount": "{count, plural, one {بوت واحد} two {بوتان} few {# بوتات} many {# بوتًا} other {# بوت}}",
+      "edit": "تعديل الفريق",
+      "delete": "حذف الفريق",
+      "deleteConfirm": "هل تريد حذف هذا الفريق؟ تبقى البوتات نفسها كما هي.",
+      "deleted": "تم حذف الفريق",
+      "form": {
+        "createTitle": "إنشاء فريق",
+        "editTitle": "تعديل الفريق",
+        "intro": "اختر البوتات، واكتب ما يفعله كل منها في الفريق، ثم حدّد من يسلّم ماذا إلى من.",
+        "title": "العنوان",
+        "titlePlaceholder": "مثلًا: البحث والنشر",
+        "titleRequired": "أعطِ الفريق عنوانًا.",
+        "description": "الوصف",
+        "descriptionPlaceholder": "ماذا يفعل هذا الفريق معًا، وكيف يتدفق العمل خلاله؟",
+        "bots": "البوتات",
+        "botsHint": "أضف من {min} إلى {max} بوتات.",
+        "botsSearch": "ابحث عن بوتات لإضافتها...",
+        "botsMax": "يمكن أن يضم الفريق حتى {max} بوتات",
+        "minBots": "أضف {min} بوتات على الأقل.",
+        "noResults": "لم يتم العثور على بوتات",
+        "rolePlaceholder": "الدور (اختياري)، مثلًا: باحث",
+        "roleLabel": "دور {bot}",
+        "removeBot": "إزالة {bot}",
+        "handoffs": "التسليمات",
+        "handoffsHint": "كل تسليم ينقل العمل من بوت إلى آخر. يمكن لبوت أن يسلّم إلى عدة بوتات ويستلم العمل مرة أخرى.",
+        "from": "من",
+        "to": "إلى",
+        "labelPlaceholder": "ما الذي يتم تسليمه، مثلًا: ملخص البحث",
+        "labelLabel": "ما يسلّمه {from} إلى {to}",
+        "addHandoff": "إضافة تسليم",
+        "removeHandoff": "إزالة التسليم",
+        "needTwoBots": "أضف بوتين على الأقل لتحديد التسليمات.",
+        "handoffInvalid": "يجب أن يربط كل تسليم بوتين مختلفين من الفريق مرة واحدة فقط.",
+        "submit": "إنشاء الفريق",
+        "save": "حفظ الفريق",
+        "cancel": "إلغاء",
+        "created": "تم إنشاء الفريق",
+        "updated": "تم تحديث الفريق",
+        "invalidBots": "لم يعد من الممكن إضافة بعض البوتات. أزلها وحاول مرة أخرى.",
+        "rateLimit": "تغييرات كثيرة على الفرق. انتظر دقيقة وحاول مرة أخرى.",
+        "descriptionHint": "يدعم Markdown: **غامق**، قوائم، روابط.",
+        "memberDescriptionPlaceholder": "ما يفعله هذا البوت في الفريق (اختياري)",
+        "memberDescriptionLabel": "ما يفعله {bot} في الفريق",
+        "handoffDuplicate": "هذا التسليم موجود بالفعل.",
+        "handoffSelf": "اختر بوتين مختلفين.",
+        "connectEveryone": "ربط بوت بالجميع",
+        "connectEveryoneHint": "يضيف تسليمات من البوت المختار إلى كل البوتات الأخرى وبالعكس، مثل رئيس الديوان.",
+        "invalidCategory": "هذه الفئة لم تعد موجودة",
+        "invalidTags": "بعض الوسوم لم تعد موجودة",
+        "computerHint": "تشير الأيقونات إلى البوتات التي تحتاج إلى حاسوب سحابي أو إلى حاسوبك أو إلى كليهما."
+      },
+      "openBot": "عرض تفاصيل {bot}",
+      "botHint": "اختر بوتًا لترى ما يفعله وتثبّته.",
+      "inTeam": "في {team}",
+      "installBot": "تثبيت",
+      "viewBot": "فتح صفحة البوت",
+      "botLoadError": "تعذّر تحميل هذا البوت.",
+      "backToTeam": "العودة إلى الفريق",
+      "pagination": "صفحات الفرق",
+      "previousPage": "الصفحة السابقة",
+      "nextPage": "الصفحة التالية",
+      "unlisted": "غير مُدرج",
+      "unlistedNotice": "هذا الفريق غير مُدرج: إنه مخفي من القوائم والبحث والملفات الشخصية، ولا يمكن فتحه إلا لمؤلفه والمشرفين.",
+      "unlist": "إلغاء الإدراج",
+      "relist": "إعادة الإدراج",
+      "unlistedToast": "تم إلغاء إدراج الفريق",
+      "relistedToast": "تمت إعادة إدراج الفريق"
+    },
+    "computer": {
+      "cloud": "يحتاج إلى حاسوب سحابي",
+      "local": "يحتاج إلى حاسوبك",
+      "label": "الحاسوب",
+      "hint": "هل يحتاج البوت إلى حاسوب ليعمل عليه؟ اختر واحدًا أو كليهما أو لا شيء. يظهر كل منهما كأيقونة صغيرة على البوت.",
+      "cloudHint": "يحتاج إلى حاسوب بعيد أو سطح مكتب أو متصفح خاص به.",
+      "localHint": "يحتاج إلى الوصول إلى جهازك أو ملفاتك أو تطبيقاتك."
+    }
   },
   "collection": {
     "title": "مجموعتي",
@@ -1070,6 +1276,8 @@
     "removed": "تمت الإزالة من المجموعة"
   },
   "discovery": {
+    "trending": "الرائج الآن",
+    "seeAll": "عرض الكل",
     "featuredPrompts": "الأوامر المميزة",
     "todaysMostUpvoted": "الأكثر تصويتاً اليوم",
     "latestPrompts": "أحدث الأوامر",
@@ -1412,7 +1620,7 @@
     "interactiveBanner": {
       "badge": "النسخة التفاعلية متاحة",
       "title": "هل تريد تجربة أكثر تفصيلاً وتفاعلية؟",
-      "description": "تعمق أكثر مع دليلنا التفاعلي الشامل الذي يضم 29 فصلاً وتمارين عملية وأمثلة من الواقع لإتقان كتابة الأوامر.",
+      "description": "تعمق أكثر مع دليلنا التفاعلي الشامل الذي يضم 30 فصلاً وتمارين عملية وأمثلة من الواقع لإتقان كتابة الأوامر.",
       "cta": "اقرأ الكتاب التفاعلي"
     },
     "generalTips": {
@@ -1882,7 +2090,7 @@
     "donate": "ادعم المشروع",
     "subtitle": "دليل تفاعلي لإنشاء أوامر واضحة وفعالة",
     "metaTitle": "دليل هندسة الأوامر: كتاب هندسة الأوامر التفاعلي",
-    "metaDescription": "أتقن هندسة أوامر الذكاء الاصطناعي مع هذا الدليل التفاعلي المجاني. تعلم أوامر ChatGPT، التفكير المتسلسل، التعلم بأمثلة قليلة والتقنيات المتقدمة. أكثر من 29 فصلاً مع أمثلة حقيقية.",
+    "metaDescription": "أتقن هندسة أوامر الذكاء الاصطناعي مع هذا الدليل التفاعلي المجاني. تعلم أوامر ChatGPT، التفكير المتسلسل، التعلم بأمثلة قليلة والتقنيات المتقدمة. أكثر من 30 فصلاً مع أمثلة حقيقية.",
     "interactiveGuideBy": "دليل تفاعلي من",
     "authorIntro": "مرحباً، أنا <author>فاتح قادر آكين</author>، منسق مستودع <repoLink>Awesome ChatGPT Prompts</repoLink> الشهير على GitHub و<siteName>prompts.chat</siteName>.",
     "bookDescription": "في هذا الدليل التفاعلي الشامل، ستكتشف استراتيجيات الخبراء لإنشاء أوامر ذكاء اصطناعي مقنعة تولد محادثات جذابة وفعالة. من فهم كيفية عمل نماذج الذكاء الاصطناعي إلى إتقان التقنيات المتقدمة مثل تسلسل الأوامر والأنظمة الوكيلة، يوفر لك هذا الكتاب الأدوات التي تحتاجها للارتقاء بتفاعلاتك مع الذكاء الاصطناعي.",
@@ -1904,7 +2112,7 @@
       "part4": "الجزء 4: أفضل الممارسات",
       "part5": "الجزء 5: حالات الاستخدام",
       "part6": "الجزء 6: الخاتمة",
-      "chapters": "29 فصلاً تفاعلياً"
+      "chapters": "30 فصلاً تفاعلياً"
     },
     "startReading": "ابدأ القراءة",
     "skipToChapter1": "انتقل إلى الفصل 1",
@@ -1962,6 +2170,7 @@
       "13-multimodal-prompting": "الأوامر متعددة الوسائط",
       "14-context-engineering": "هندسة السياق",
       "14a-loop-engineering": "هندسة الحلقات",
+      "24a-from-prompt-to-team": "من التوجيه إلى الفريق",
       "25-agents-and-skills": "الوكلاء والمهارات",
       "15-common-pitfalls": "الأخطاء الشائعة",
       "16-ethics-responsible-use": "الأخلاق والاستخدام المسؤول",
@@ -1996,6 +2205,7 @@
       "13-multimodal-prompting": "العمل مع الصور والصوت والفيديو",
       "14-context-engineering": "RAG، التضمينات، استدعاءات الوظائف و MCP",
       "14a-loop-engineering": "تصميم حلقات تغذية راجعة تتصرف وتتحقق وتتكيف وتعرف متى تتوقف",
+      "24a-from-prompt-to-team": "التوجيهات والمهارات والوكلاء والبوتات والفرق بكلمات بسيطة، وما الذي يميّز كلاً منها",
       "25-agents-and-skills": "بناء وكلاء ذكاء اصطناعي بحزم مهارات قابلة لإعادة الاستخدام",
       "15-common-pitfalls": "أخطاء يجب تجنبها",
       "16-ethics-responsible-use": "الاعتبارات الأخلاقية في الذكاء الاصطناعي",
@@ -2452,7 +2662,7 @@
     },
     "bots": {
       "title": "بوتات وكلاء ذكاء اصطناعي جاهزة لـ OpenClaw وHermes وGrok",
-      "description": "تصفّح بوتات وكلاء ذكاء اصطناعي جاهزة مع التعليمات والمهام المجدولة والمهارات، وثبّتها على OpenClaw أو Hermes Agent أو Grok Bot بنقرة واحدة.",
+      "description": "تصفّح بوتات وكلاء ذكاء اصطناعي جاهزة مع التعليمات والمهام المجدولة والمهارات، وثبّتها على OpenClaw أو AutoGPT أو OpenAI Dots أو Claude Duet أو Meta Muse أو Hermes Agent أو Grok Bot بنقرة واحدة.",
       "heading": "البوتات"
     },
     "taste": {
@@ -2513,7 +2723,16 @@
       "SKILL": "مهارة وكيل",
       "TASTE": "ملف أسلوب البرمجة",
       "model": "أمر {model}"
+    },
+    "botTeams": {
+      "title": "فرق بوتات الذكاء الاصطناعي: وكلاء يسلّمون العمل لبعضهم",
+      "description": "تصفّح فرقًا من بوتات وكلاء الذكاء الاصطناعي تسلّم العمل لبعضها، وشاهد كل تسليم، وثبّت فريقًا كاملًا على OpenClaw وHermes Agent وGrok Bot وغيرها دفعة واحدة.",
+      "heading": "فرق البوتات"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "فقط البوتات التي تحتاج حاسوب <code>CLOUD</code> أو حاسوب المستخدم <code>LOCAL</code> (البوتات التي تحتاج كليهما تطابق أيًّا منهما)، أو <code>NONE</code> للبوتات التي لا تحتاج حاسوبًا",
+    "computerRequirementsInput": "قائمة تضم <code>CLOUD</code> (يحتاج البوت إلى حاسوب بعيد أو سطح مكتب أو متصفح خاص به) و/أو <code>LOCAL</code> (يحتاج إلى جهاز المستخدم أو ملفاته أو تطبيقاته)؛ القائمة الفارغة تعني أنه لا يحتاج حاسوبًا. تستبدل القائمة المحفوظة"
   },
   "actionButtons": {
     "deployWithSpacefast": "انشر باستخدام SpaceFast"

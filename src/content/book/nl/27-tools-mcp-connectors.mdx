@@ -72,6 +72,38 @@ De naam en het schema voeren zelf niets uit. De implementatie moet de invoer val
 'Ik zal een issue aanmaken' is een uitspraak. Een toolaanroep vraagt de bewerking aan. Een geslaagd antwoord met het ID van het nieuwe issue bewijst dat het is gebeurd. Houd die drie dingen uit elkaar.
 </Callout>
 
+### Een tool kan voor een hele workflow staan
+
+Tot nu toe was elke tool één bewerking: zoeken, aanmaken, exporteren. Maar achter de naam van een tool kan veel meer schuilgaan: een compleet proces, vooraf vastgelegd en uitgevoerd door een workflow-engine. De agent beslist nog steeds **wanneer** het proces start en **welke invoer** het meekrijgt. Alles daarna verloopt precies zoals het proces voorschrijft, in dezelfde volgorde, elke keer weer.
+
+Denk aan een terugbetaling. Een supportagent kan een gefrustreerde klant prima begrijpen, maar je wilt waarschijnlijk niet dat hij je terugbetalingsbeleid improviseert. Verpakt als één tool controleert de terugbetalingsworkflow eerst of de klant er recht op heeft, vraagt dan goedkeuring aan een leidinggevende en schrijft daarna het bedrag bij, ongeacht welk gesprek de workflow heeft gestart. Goedkeuringen, deployments en andere processen waarin de stappen zelf het beleid *zijn*, passen in hetzelfde patroon. Workflow-engines houden meestal van elke uitvoering een logboek bij. Daardoor kan de agent ook eerdere uitvoeringen opzoeken en je vertellen welke er vannacht zijn mislukt en bij welke stap, in plaats van te gokken.
+
+AWS geeft een recent voorbeeld. Op 29 oktober 2026 [kondigde AWS aan](https://aws.amazon.com/about-aws/whats-new/2026/10/step-functions-workflows-ai-agent-tools/) dat Step Functions-workflows als tools voor agents kunnen dienen via Amazon Bedrock AgentCore Gateway, dat agents via MCP met tools verbindt. Het idee hoort niet bij één leverancier: een CI-pipeline, een goedkeuringsstroom in een ticketsysteem of een script dat je team al vertrouwt, kun je op dezelfde manier aan een agent aanbieden.
+
+Het gaat om het verdelen van twee sterke punten. Het model is flexibel: het kan een ongebruikelijke situatie lezen en een verstandige volgende stap kiezen. De workflow is voorspelbaar: dezelfde invoer doorloopt dezelfde stappen. Wie het moment aan de agent laat en de stappen aan de workflow, zet elk sterk punt op de juiste plek. Dat verandert ook de prompt. Beschrijf het doel en wanneer de workflow moet worden aangeroepen, niet de stappen erin. Wie de stappen herhaalt, maakt een tweede versie van het beleid, die kan afwijken van het origineel en die het model misschien zelf met de hand probeert te volgen.
+
+<Compare
+  before={{ label: "De workflow opnieuw beschrijven", content: "Om een klant terug te betalen, controleer je eerst of de bestelling minder dan 30 dagen oud is, vraag je daarna een leidinggevende, schrijf je vervolgens het bedrag bij en stuur je de klant ten slotte een e-mail." }}
+  after={{ label: "Het doel en het moment beschrijven", content: "Help klanten factuurproblemen op te lossen. Als een klant om een terugbetaling vraagt en je het bestelnummer hebt, roep dan de terugbetalingsworkflow aan met dat nummer en de reden. Meld het resultaat dat de workflow teruggeeft. Beloof geen terugbetaling voordat de workflow die heeft bevestigd." }}
+/>
+
+### Als er geen API is, wordt het scherm de tool
+
+Elke tool die we tot nu toe zagen, had een deur die voor software is gebouwd: een API, een connector, een MCP-server. Veel systemen hebben zo'n deur niet. Een oud intern portaal, de boekingssite van een leverancier, een desktopprogramma uit een ander decennium: mensen gebruiken ze elke dag, maar alleen via het scherm. Voor zulke systemen kunnen sommige modellen het scherm zelf als tool gebruiken. Dat heet meestal **computer use**.
+
+Het mechanisme is de lus die je al kent, met beelden in plaats van gegevens. De toepassing waarin het model draait, stuurt de taak en een screenshot. Het model bekijkt die en antwoordt niet met lopende tekst, maar met een gestructureerde actie: klik op dit punt, typ deze tekst, scrol omlaag. Sommige tools geven elke actie ook een korte, uitgesproken bedoeling mee, zoals 'Klik op het zoekveld om de bestemming in te typen', zodat je een uitvoering makkelijker kunt volgen. Het model zelf verplaatst nog steeds niets. De eigen code van de ontwikkelaar voert de actie uit, maakt een nieuwe screenshot en stuurt die terug. Kijken, handelen, opnieuw kijken, tot de taak klaar is of iemand de lus stopt. Waar die lus draait, doet er net zoveel toe als hoe hij werkt, en daarover gaat de sectie [De computer van de bot](/book/28-persistent-bots) in het hoofdstuk Altijd-aan-bots.
+
+Google maakte zijn Computer Use-tool op 30 oktober 2026 algemeen beschikbaar in de Gemini API ([releasenotes](https://ai.google.dev/gemini-api/docs/changelog)). De [documentatie](https://ai.google.dev/gemini-api/docs/computer-use) beschrijft omgevingen voor browser, mobiel en desktop, acties met een `intent`-veld, instelbaar veiligheidsbeleid dat een actie kan blokkeren of om bevestiging kan vragen vóór stappen zoals een betaling, en het optioneel scannen van screenshots op verborgen promptinjectie. Google raadt zelf aan belangrijke taken nauwlettend in de gaten te houden. Het idee is niet van één bedrijf: Anthropic biedt een [computer use-tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool) voor Claude, en OpenAI een [computertool](https://platform.openai.com/docs/guides/tools-computer-use) in zijn Responses API, allebei gebouwd rond dezelfde uitwisseling van screenshots en acties die jouw toepassing uitvoert.
+
+De nadelen verdienen heldere woorden. Een scherm lezen gaat trager dan een API aanroepen, elke screenshot kost tokens, en een verschoven knop of een onverwachte pop-up kan een uitvoering laten mislukken die gisteren nog werkte. Bestaat er dus een echte API of connector, kies die dan, en bewaar computer use voor de systemen die geen andere ingang laten. Het scherm is bovendien invoer zoals alle andere: tekst op een pagina kan net zo goed promptinjectie bevatten als een document, en dat je die tekst in een afbeelding ziet, maakt hem geen haar betrouwbaarder. En omdat het model alles kan aanklikken wat een mens ook zou kunnen, horen riskante stappen zoals betalen, verwijderen of gegevens wijzigen te wachten tot een mens ze bevestigt.
+
+Voor het prompten gelden dezelfde regels als eerder, alleen met scherpere randen, want een website kan het model niet vertellen wat je bedoelde. Noem de precieze site en pagina, zeg waar de taak ophoudt en zeg wat er bevestigd moet worden voordat er iets gebeurt.
+
+<Compare
+  before={{ label: "Een boodschap zonder grenzen", content: "Ga online en boek voor donderdag een vergaderruimte voor me." }}
+  after={{ label: "Een pagina, een eindpunt, een bevestiging", content: "Zoek op onze reserveringspagina op rooms.example.com een ruimte voor zes personen op donderdag van 14.00 tot 15.00 uur. Stop op het laatste bevestigingsscherm en laat me de ruimte en het tijdstip zien voordat je op Boeken drukt. Als er geen ruimte vrij is, zeg dat dan en stop. Wijzig of annuleer geen bestaande reservering." }}
+/>
+
 ## Wat een connector toevoegt
 
 Een connector bundelt de integratie met een bepaald systeem. Die kan het aanmelden, de keuze van een account of werkruimte, het zoeken van gegevens en het aanbieden van ondersteunde acties als tools regelen. Sommige connectors kunnen alleen zoeken of lezen. Andere ondersteunen ook schrijven.
@@ -111,6 +143,66 @@ MCP definieert ook **bronnen** en **prompts**. Deze woorden hebben specifieke be
 De [gids voor MCP-serverconcepten](https://modelcontextprotocol.io/docs/learn/server-concepts) beschrijft ze als tools die door het model worden aangestuurd, bronnen die door de toepassing worden aangestuurd en prompts die door de gebruiker worden aangestuurd. Dit beschrijft de bedoelde interactiepatronen. Het neemt de machtigingscontroles van de toepassing niet weg.
 
 Een MCP-promptsjabloon is niet automatisch een skill. Een skill kan een langere procedure, referenties en scripts bundelen. Die kan de agent vertellen hoe hij tools moet gebruiken die via MCP, een directe connector of lokale functies beschikbaar zijn.
+
+### Skills kunnen ook met de server meekomen
+
+Tot voor kort kwamen deze twee onderdelen meestal los van elkaar binnen. Een server kon een agent zijn tools geven, maar de kennis om ze goed te gebruiken zat ergens anders: in een apart geïnstalleerde skill, in een README of in de eigen prompt van de gebruiker. Als de dienst veranderde, konden die instructies ongemerkt achterlopen.
+
+De officiële **Skills-extensie** van MCP, sinds september 2026 definitief, dicht een groot deel van dat gat. Een server kan nu niet alleen zijn tools aanbieden, maar ook de skills die uitleggen hoe je ze gebruikt, geschreven in hetzelfde `SKILL.md`-formaat dat in [Agents en Skills](/book/25-agents-and-skills) wordt beschreven. Tools vertellen een agent wat hij kan doen. Skills vertellen hem hoe hij het werk goed doet. Nu kunnen beide van dezelfde server komen, zodat de instructies naast de dienst staan die ze beschrijven en de beheerders van die dienst ze actueel kunnen houden.
+
+Het mechanisme bouwt voort op onderdelen die je al kent. Elk bestand in een skill wordt aangeboden als MCP-bron, meestal met een `skill://`-URI. Een client kan de skills van een server opvragen met `skills/list`, er één ophalen met `skills/get` en de bijbehorende bestanden lezen met `resources/read`.
+
+<Compare
+  before={{ label: "Een server met alleen tools", content: "De trackerserver biedt search_issues en create_issue aan. De beoordelingsmethode (op duplicaten controleren, het issuesjabloon volgen) moet uit een apart geïnstalleerde skill of uit je eigen prompt komen, en kan verouderen als de dienst verandert." }}
+  after={{ label: "Een server die ook een skill meelevert", content: "Dezelfde server biedt ook een skill voor het beoordelen van issues. De host ziet eerst alleen de naam en beschrijving, en laadt de volledige instructies pas wanneer een taak erom vraagt. Als de beheerders de dienst aanpassen, kunnen ze de skill meteen mee bijwerken." }}
+/>
+
+De host beslist nog steeds hoe een skill bij het model terechtkomt. Het model kan er een kiezen op basis van naam en beschrijving, of de gebruiker kiest hem zelf. In beide gevallen komen de volledige instructies pas in de context wanneer ze nodig zijn, en het lezen van een `SKILL.md`-bestand activeert de skill niet vanzelf.
+
+<Callout type="warning" title="Een skill van een server blijft een instructie">
+Een skill van een server is tekst die in de context van de agent terechtkomt en kan bepalen wat de agent daarna doet. Hij verdient dus dezelfde kritische blik als de server zelf. Een zorgvuldige host controleert de inhoud en vraagt om eventuele vereiste goedkeuring voordat hij die laadt. Net als andere officiële MCP-extensies, zoals MCP Apps en de Tasks-extensie die hierna aan bod komt, is Skills optioneel: de extensie wordt alleen gebruikt als zowel de client als de server ondersteuning aangeeft. Ondersteuning in clients staat nog in de kinderschoenen, dus controleer of je toepassing echt skills van servers laadt voordat je erop vertrouwt.
+</Callout>
+
+### Als een tool tijd of een antwoord nodig heeft
+
+De meeste toolaanroepen zijn korte uitwisselingen: de agent vraagt, de server antwoordt en het werk gaat verder. Sommige klussen passen niet in dat ritme. Een grondig onderzoek, een grote rapportexport of een build kan vele minuten duren, en sommige klussen komen op een punt waarop alleen de gebruiker kan beslissen hoe het verder moet. MCP biedt voor zulke momenten twee ideeën: **Tasks**, voor werk dat tijd nodig heeft, en **elicitation**, voor werk dat een mens nodig heeft.
+
+De officiële [Tasks-extensie](https://tasks.extensions.modelcontextprotocol.io/) (`io.modelcontextprotocol/tasks`) verandert hoe een trage `tools/call` afloopt. In plaats van het verzoek open te houden tot het werk klaar is, kan de server meteen antwoorden met een blijvende taakverwijzing (task handle), een beetje zoals het bonnetje dat je bij de garderobe krijgt. De client kan de taak bekijken met `tasks/get`, updates of antwoorden sturen met `tasks/update`, de taak stoppen met `tasks/cancel` en het resultaat ophalen zodra het klaar is. Intussen kan de agent gewoon doorwerken en later terugkomen. Dat telt vooral voor [altijd-aan-bots](/book/28-persistent-bots) die klussen uitvoeren terwijl jij weg bent. Tasks is aan beide kanten optioneel: de client geeft bij elk verzoek aan dat hij het ondersteunt, en de server beslist per verzoek of hij een taak aanmaakt. Bestaande tools krijgen dit vermogen niet vanzelf; de maker van de server moet het toevoegen.
+
+<Compare
+  before={{ label: "Een blokkerende toolaanroep", content: "De agent roept export_report aan en wacht. Het verzoek blijft minutenlang open. Valt de verbinding weg, dan weet niemand of de export klaar is, en tot het antwoord komt kan de agent niets anders doen." }}
+  after={{ label: "Een taakverwijzing", content: "De agent roept export_report aan en krijgt meteen een taakverwijzing terug. Hij gaat verder met ander werk, controleert de taak met tasks/get en haalt het rapport op zodra het klaar is. Veranderen de plannen, dan stopt tasks/cancel de taak." }}
+/>
+
+Met [elicitation](https://modelcontextprotocol.io/specification/latest/client/elicitation) kan een server even pauzeren en de gebruiker om gestructureerde invoer vragen: ‘Naar staging deployen?’, ‘Deze terugbetaling bevestigen?’ of een ontbrekend gegeven waarzonder het werk niet verder kan. De host toont een klein formulier, en de gebruiker kan antwoorden, weigeren of annuleren. Weigeren is ook een geldig antwoord, en de server beslist wat er daarna gebeurt. De twee ideeën komen vanzelf samen: een lopende taak kan pauzeren in de toestand `input_required` en halverwege de gebruiker iets vragen. Vóór een schrijfactie is zo'n vraag een natuurlijk controlepunt waarop een mens meebeslist, precies op de plek waar de beslissing ertoe doet.
+
+<Callout type="warning" title="Een formulier van een server blijft een verzoek van een server">
+Een elicitation komt van de server, niet van je toepassing, en verdient dus dezelfde kritische blik als elke tooluitvoer. Lees wat er gevraagd wordt voordat je antwoordt, en typ nooit een wachtwoord, API-sleutel of ander geheim in zo'n formulier, tenzij je de server vertrouwt. Ook de ondersteuning verschilt per toepassing: VS Code [documenteert ondersteuning voor elicitation](https://code.visualstudio.com/api/extension-guides/ai/mcp), Cursor ondersteunt elicitation, en Claude Code heeft [MCP Tasks en elicitations](https://code.claude.com/docs/en/mcp) als publieke bèta toegevoegd aan zijn terminal-app, maar nog niet overal waar het draait. Het officiële [overzicht van clientondersteuning](https://modelcontextprotocol.io/extensions/client-matrix) houdt bij welke toepassingen welke extensies ondersteunen, dus controleer de jouwe voordat je op een van beide functies vertrouwt.
+</Callout>
+
+### Een server vinden en maar één keer verbinden
+
+Voordat een agent een externe server kan gebruiken, moet iemand die server vinden, uitzoeken hoe je verbinding maakt en inloggen. Lange tijd betekende dat: een URL uit een README kopiëren, raden welk transport je nodig hebt en de installatie in elke toepassing herhalen. Nu komen er twee soorten hulp bij: informatie die een client **vóór** het verbinden kan lezen, en verbindingen die je **één keer** instelt en daarna hergebruikt.
+
+Aan de kant van het vinden werd de **Server Cards**-extensie van MCP ([SEP-2127](https://modelcontextprotocol.io/seps/2127-mcp-server-cards)) op 6 oktober 2026 definitief. Die beschrijft een klein, statisch document over een externe server: de naam, de endpoints en transporten, en de protocolversies die hij ondersteunt. Een website kan haar cards opnemen in een AI-catalogus op `/.well-known/ai-catalog.json`, zodat een client die je naar een domein verwijst zonder handmatige installatie leert waar en hoe hij verbinding kan maken. De card laat de lijst met tools bewust weg, omdat de tools die een server aanbiedt kunnen verschillen per ingelogde gebruiker. Die komen nog steeds na het verbinden uit `tools/list`.
+
+Aan de kant van het verbinden begon GitHub op 28 oktober 2026 met het uitrollen van [door GitHub geverifieerde MCP-servers](https://github.blog/changelog/2026-10-28-connect-your-tools-to-copilot-without-all-the-setup/) als openbare preview. GitHub noemt ze ook connectors. Je logt één keer in bij een dienst als Slack of Sentry, en de verbinding werkt in de Copilot-app, Copilot CLI, VS Code, Copilot in de cloud en GitHub Mobile.
+
+Tools zijn bovendien niet alleen webdiensten. Op dezelfde dag [kondigde Google](https://developer.android.com/blog/posts/build-it-your-way-a-next-era-of-android-development) op de Android Dev Summit aan dat **AppFunctions**, door Google omschreven als de uniforme laag voor toolaanroepen in Android, nu in bèta is. Via Android MCP kan een app op je telefoon functies zoals een notitie maken of een bericht versturen aanbieden aan een eigen agent op het apparaat of aan agents op systeemniveau, zonder dat iemand de app hoeft te openen.
+
+Dat brengt ons terug bij een eerder punt: **connector** is een productterm. Een server card, een verificatiebadge en één keer inloggen maken de installatie makkelijker en helpen je te vertrouwen *met wie* je verbinding maakt. Ze beslissen niet *wat* je toestaat. Je kiest nog steeds zelf welk account je koppelt, welke machtigingen je geeft en welke acties op goedkeuring moeten wachten. Noch vindbaarheidsgegevens noch verificatie vervangen het nalopen van wat de tools werkelijk kunnen zodra ze in de lijst staan.
+
+<Quiz
+  question="Een externe server publiceert een Server Card en verschijnt in je toepassing als geverifieerde connector. Wat blijft toch jouw taak?"
+  options={[
+    "Niets. Verificatie betekent dat elke tool op de server zonder risico kan worden uitgevoerd",
+    "Kiezen welk account en welke machtigingen je geeft, en nagaan wat de vermelde tools kunnen",
+    "De toollijst uit de Server Card in je prompt kopiëren",
+    "Het endpointadres van de server in elke prompt typen"
+  ]}
+  correctIndex={1}
+  explanation="Vindbaarheidsgegevens en verificatie helpen bij de installatie en laten zien wie de server beheert. Ze kiezen je account of toegangsbereik niet voor je, en een Server Card somt de tools niet eens op. Loop de tools na het verbinden na en geef alleen de toegang die de taak nodig heeft."
+/>
 
 ## Probeer lezen en schrijven
 

@@ -36,6 +36,7 @@
   },
   "nav": {
     "bots": "Botlar",
+    "teams": "Komandalar",
     "collection": "Kolleksiyam",
     "feed": "Lent",
     "promptmasters": "Promptmasterlər",
@@ -186,6 +187,8 @@
     "relistRequestAlreadySent": "Bu prompt üçün artıq sorğu göndərmisiniz.",
     "relistRequestError": "Sorğu göndərilmədi. Yenidən cəhd edin.",
     "relatedPrompts": "Əlaqəli Promptlar",
+    "relatedSkills": "Əlaqəli Bacarıqlar",
+    "relatedBots": "Əlaqəli Botlar",
     "deletePrompt": "Promptu Sil",
     "deletePromptTitle": "Bu promptu silmək istəyirsiniz?",
     "deletePromptDescription": "Bu əməliyyat geri alına bilməz. Prompt birdəfəlik silinəcək.",
@@ -443,7 +446,46 @@
     "dismissed": "Dəyişiklik sorğusu ləğv edildi",
     "dismissConfirmTitle": "Dəyişiklik Sorğusu Ləğv Edilsin?",
     "dismissConfirmDescription": "Bu, dəyişiklik sorğunuzu birdəfəlik siləcək. Bu əməliyyat geri alına bilməz.",
-    "backToBot": "Bota qayıt"
+    "backToBot": "Bota qayıt",
+    "backToTeam": "Komandaya qayıt",
+    "proposeBotTitle": "Bu bota dəyişiklik təklif et",
+    "proposeBotIntro": "Bu bot üçün təkmilləşdirmələr təklif edin. Sahibi təklifinizi nəzərdən keçirəcək və təsdiqləyə və ya rədd edə bilər.",
+    "proposeTeamTitle": "Bu komandaya dəyişiklik təklif et",
+    "proposeTeamIntro": "Bu komanda üçün təkmilləşdirmələr təklif edin. Sahibi təklifinizi nəzərdən keçirəcək və təsdiqləyə və ya rədd edə bilər.",
+    "viewVersion": "Versiyaya bax",
+    "viewVersionHint": "{previous} versiyası ilə müqayisədə dəyişikliklər",
+    "viewFirstVersionHint": "İlk versiya",
+    "memberRole": "Rol",
+    "memberDescription": "Təsvir",
+    "membersReordered": "Üzvlərin sırası dəyişdi",
+    "noFieldChanges": "Dəyişiklik yoxdur",
+    "reviewedBy": "Nəzərdən keçirən: {user}",
+    "teamApprovedSuccess": "Dəyişiklik sorğusu təsdiqləndi və komanda yeniləndi",
+    "botFields": {
+      "title": "Başlıq",
+      "description": "Təsvir",
+      "platforms": "Platformalar",
+      "computers": "Kompüter tələbləri",
+      "appearance": "Görünüş",
+      "installUrl": "Quraşdırma URL-i",
+      "instructions": "Təlimatlar",
+      "routines": "Rutinlər",
+      "skills": "Bacarıqlar",
+      "connectors": "Konnektorlar"
+    },
+    "teamFields": {
+      "title": "Başlıq",
+      "description": "Təsvir",
+      "category": "Kateqoriya",
+      "tags": "Teqlər",
+      "handoffs": "Ötürmələr",
+      "members": "Üzvlər"
+    },
+    "member": {
+      "added": "Əlavə edildi",
+      "removed": "Silindi",
+      "changed": "Dəyişdi"
+    }
   },
   "categories": {
     "title": "Kateqoriyalar",
@@ -509,6 +551,7 @@
       "webhooks": "Webhooks",
       "prompts": "Promptlar",
       "bots": "Botlar",
+      "teams": "Komandalar",
       "reports": "Hesabatlar"
     },
     "reports": {
@@ -784,6 +827,26 @@
       "deleted": "Bot silindi",
       "deleteConfirmTitle": "Bot silinsin?",
       "deleteConfirmDescription": "Bu, \"{title}\" botunu həmişəlik siləcək. Geri qaytarmaq mümkün deyil."
+    },
+    "teamsList": {
+      "title": "Komandalar",
+      "description": "Bot komandalarını idarə edin: siyahıdan çıxarın, redaktə edin və ya silin.",
+      "noTeams": "Komanda tapılmadı",
+      "open": "Aç",
+      "edit": "Redaktə et",
+      "unlist": "Siyahıdan çıxar",
+      "relist": "Yenidən siyahıya sal",
+      "updated": "Komanda yeniləndi",
+      "deleted": "Komanda silindi",
+      "deleteConfirmTitle": "Komanda silinsin?",
+      "deleteConfirmDescription": "Bu, \"{title}\" komandasını həmişəlik silir. Onun botları olduğu kimi qalır.",
+      "members": "{count, plural, one {# bot} other {# bot}}",
+      "filters": {
+        "all": "Hamısı",
+        "listed": "Siyahıda",
+        "unlisted": "Siyahıda deyil",
+        "featured": "Seçilmiş"
+      }
     }
   },
   "search": {
@@ -840,7 +903,12 @@
     "noBots": "Hələ bot yoxdur.",
     "noBotsOwner": "Siz hələ heç bir bot yaratmamısınız.",
     "createFirstBot": "İlk botunuzu yaradın",
-    "botsCount": "bot"
+    "botsCount": "bot",
+    "teams": "Komandalar",
+    "teamsCount": "komanda",
+    "noTeams": "Hələ komanda yoxdur.",
+    "noTeamsOwner": "Siz hələ heç bir komanda yaratmamısınız.",
+    "createFirstTeam": "İlk komandanızı yaradın"
   },
   "subscription": {
     "subscribe": "Abunə ol",
@@ -929,7 +997,7 @@
     "browsePrompts": "Promptlara Bax"
   },
   "bots": {
-    "description": "Təlimatları, rutinləri və bacarıqları olan hazır süni intellekt agent botları. Onları OpenClaw, Hermes Agent və ya Grok Bot-a quraşdırın.",
+    "description": "Təlimatları, rutinləri və bacarıqları olan hazır süni intellekt agent botları. Onları OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent və ya Grok Bot-a quraşdırın.",
     "count": "{count, plural, one {# bot} other {# bot}}",
     "allPlatforms": "Hamısı",
     "searchPlaceholder": "Botlarda axtar...",
@@ -954,6 +1022,14 @@
     "installPromptHint": "Bu promptu agentinizə yapışdırın. O, bot tərifini alır və təlimatları, rutinləri və bacarıqları qurur.",
     "installPromptFallbackHint": "Və ya botu özünüz yaratmaq üçün bu promptu Grok Bot-a yapışdırın:",
     "installPromptPlatformFallbackHint": "Və ya botu özünüz yaratmaq üçün bu promptu {platform} daxilinə yapışdırın:",
+    "autogptPromptHint": "Bu promptu AutoGPT-də Otto ilə söhbətə yapışdırın. Otto botu təlimatları, bacarıqları və rutinləri ilə birlikdə Expert kimi quraşdırır.",
+    "openAutogpt": "AutoGPT-ni aç",
+    "dotsPromptHint": "Bu promptu ChatGPT-də dot-unuzla söhbətə yapışdırın. Dot-unuz botun təlimatlarını qəbul edir, lazım olan tətbiqləri qoşmağınızı xahiş edir və rutinlərini təkrarlanan tapşırıqlar kimi planlaşdırır.",
+    "openDots": "Dots-u aç",
+    "duetPromptHint": "Bu promptu Claude Duet söhbətinizə yapışdırın. Claude Duet botun təlimatlarını və rutinlərini qəbul edir, Claude hesabınızın bacarıqlarından və konnektorlarından istifadə edir, ona görə çatışmayanları Claude parametrlərində əlavə edin.",
+    "openDuet": "Claude Duet-i aç",
+    "musePromptHint": "Bu promptu Muse ilə söhbətə yapışdırın. Muse-un bacarıqları daxilidir: botun təlimatlarını qəbul edir, lazım olan tətbiqləri qoşmağınızı xahiş edir və rutinlərini planlaşdırılmış tapşırıqlar kimi quraşdırır.",
+    "openMuse": "Muse-u aç",
     "copyInstallPrompt": "Quraşdırma promptunu kopyala",
     "machineReadable": "Maşın tərəfindən oxunan",
     "create": "Yeni bot",
@@ -999,7 +1075,15 @@
       "submit": "Bot yarat",
       "save": "Botu yadda saxla",
       "created": "Bot yaradıldı",
-      "updated": "Bot yeniləndi"
+      "updated": "Bot yeniləndi",
+      "pairingsHint": "Bununla yaxşı işləyən botları əlaqələndirin. Əlaqələr hər iki botun səhifəsində görünür.",
+      "pairingsSearch": "Əlaqələndirmək üçün bot axtarın...",
+      "pairingsNoResults": "Bot tapılmadı",
+      "pairingNotePlaceholder": "Niyə yaxşı uyğun gəlirlər? (istəyə bağlı)",
+      "pairingNoteLabel": "{bot} niyə yaxşı uyğun gəlir",
+      "removePairing": "{bot} sil",
+      "pairingsMax": "Ən çox {max} bot əlaqələndirə bilərsiniz",
+      "pairingsInvalid": "Əlaqələndirilmiş botlardan biri artıq mövcud deyil. Onu silib yenidən cəhd edin."
     },
     "colors": {
       "slate": "Şifer",
@@ -1055,7 +1139,129 @@
       "coffee": "Qəhvə"
     },
     "latestBots": "Ən son botlar",
-    "viewAll": "Hamısına bax"
+    "featuredTeams": "Seçilmiş bot komandaları",
+    "viewAll": "Hamısına bax",
+    "betterTogether": "Birlikdə daha yaxşı",
+    "installAllTogether": "Hamısını birlikdə quraşdır",
+    "installAllTitle": "{count, plural, other {# botun hamısını birlikdə quraşdır}}",
+    "installAllDescription": "{bot} və ona uyğun botları bir dəfəyə quraşdırın.",
+    "installAllUnavailable": "Bu botlar üçün hələ quraşdırma seçimi yoxdur.",
+    "installAllLoadError": "Quraşdırma seçimləri yüklənmədi. Pəncərəni bağlayıb yenidən cəhd edin.",
+    "installAllPromptHint": "Bu təlimatı {platform} daxilinə yapışdırın. Dəstdəki hər botu ardıcıl quraşdırır.",
+    "installAllAutogptPromptHint": "Bu təlimatı AutoGPT-də Otto ilə söhbətə yapışdırın. Otto dəstdəki hər botu ardıcıl olaraq Expert kimi quraşdırır.",
+    "installAllDotsPromptHint": "Bu promptu ChatGPT-də dot-unuzla söhbətə yapışdırın. Dot-unuz dəstdəki hər botu ardıcıl olaraq quraşdırır.",
+    "installAllDuetPromptHint": "Bu promptu Claude Duet söhbətinizə yapışdırın. Claude Duet dəstdəki hər botu ardıcıl olaraq quraşdırır. Çatışmayan bacarıq və konnektorları Claude parametrlərində əlavə edin.",
+    "installAllMusePromptHint": "Bu promptu Muse ilə söhbətə yapışdırın. Muse dəstdəki hər botu ardıcıl olaraq quraşdırır və lazım olan tətbiqləri qoşmağınızı xahiş edir.",
+    "installAllCommandHint": "Dəstdəki hər botu bacarıq kimi quraşdırın:",
+    "installAllTemplatesHint": "Və ya hər {platform} şablonunu açın:",
+    "installAllSkipped": "{platform} üçün mövcud deyil: {bots}",
+    "copyCommands": "Əmrləri kopyala",
+    "openTemplate": "{bot} şablonunu aç",
+    "teams": {
+      "link": "Komandalar",
+      "create": "Komanda yarat",
+      "description": "Komandalar işi bir-birinə ötürən bot qruplarıdır. Hər qutu bir komandadır, hər ox isə bir botun növbətiyə nəyi ötürdüyünü göstərir: ötürməni görmək üçün oxun üzərinə gəl və ya üzvlərini görmək üçün komanda seç.",
+      "count": "{count, plural, one {# komanda} other {# komanda}}",
+      "searchPlaceholder": "Komanda axtar...",
+      "allTeams": "Bütün komandalar",
+      "empty": "Hələ komanda yoxdur. İlkini yarat.",
+      "noResults": "Axtarışına uyğun komanda yoxdur.",
+      "featured": "Seçilmiş",
+      "graphLabel": "Bot komandaları və ötürmələri",
+      "selectTeam": "{team} təfərrüatlarını göstər",
+      "selectHint": "Üzvlərini və ötürmələrini görmək üçün komanda seç.",
+      "closePanel": "Bağla",
+      "by": "müəllif: {author}",
+      "members": "Üzvlər",
+      "handoffs": "Ötürmə axını",
+      "handoffLabel": "{from} işi {to} botuna ötürür",
+      "handsOffTo": "ötürür",
+      "noHandoffLabel": "Nəyin ötürüldüyünə dair təsvir yoxdur",
+      "noHandoffs": "Bu komandanın hələ ötürməsi yoxdur.",
+      "noVisibleMembers": "Bu komandanın botlarından heç biri sənə görünmür.",
+      "openTeam": "Komandanı aç",
+      "backToTeams": "Bütün komandalar",
+      "install": "Komandanı quraşdır",
+      "installTitle": "{count, plural, one {# botu quraşdır} other {Bu komandanın # botunun hamısını quraşdır}}",
+      "installDescription": "{team} komandasının bütün botlarını ötürmələri ilə birlikdə bir dəfəyə qur.",
+      "installShort": "Quraşdır",
+      "memberOf": "Komandalar",
+      "memberCount": "{count, plural, one {# bot} other {# bot}}",
+      "edit": "Komandanı redaktə et",
+      "delete": "Komandanı sil",
+      "deleteConfirm": "Bu komanda silinsin? Botların özləri olduğu kimi qalır.",
+      "deleted": "Komanda silindi",
+      "form": {
+        "createTitle": "Komanda yarat",
+        "editTitle": "Komandanı redaktə et",
+        "intro": "Botları seç, hər birinin komandada nə etdiyini yaz, sonra kimin kimə nəyi ötürdüyünü müəyyənləşdir.",
+        "title": "Başlıq",
+        "titlePlaceholder": "məs. Araşdır və dərc et",
+        "titleRequired": "Komandaya başlıq ver.",
+        "description": "Təsvir",
+        "descriptionPlaceholder": "Bu komanda birlikdə nə edir və iş komanda daxilində necə axır?",
+        "bots": "Botlar",
+        "botsHint": "{min}–{max} bot əlavə et.",
+        "botsSearch": "Əlavə etmək üçün bot axtar...",
+        "botsMax": "Komandada ən çox {max} bot ola bilər",
+        "minBots": "Ən azı {min} bot əlavə et.",
+        "noResults": "Bot tapılmadı",
+        "rolePlaceholder": "Rol (istəyə bağlı), məs. Tədqiqatçı",
+        "roleLabel": "{bot} rolu",
+        "removeBot": "{bot} sil",
+        "handoffs": "Ötürmələr",
+        "handoffsHint": "Hər ötürmə işi bir botdan digərinə keçirir. Bir bot bir neçə bota ötürə və işi geri ala bilər.",
+        "from": "Kimdən",
+        "to": "Kimə",
+        "labelPlaceholder": "Nə ötürülür, məs. Araşdırma xülasəsi",
+        "labelLabel": "{from} botunun {to} botuna ötürdüyü",
+        "addHandoff": "Ötürmə əlavə et",
+        "removeHandoff": "Ötürməni sil",
+        "needTwoBots": "Ötürmələri təyin etmək üçün ən azı iki bot əlavə et.",
+        "handoffInvalid": "Hər ötürmə komandanın iki fərqli botunu yalnız bir dəfə birləşdirməlidir.",
+        "submit": "Komanda yarat",
+        "save": "Komandanı yadda saxla",
+        "cancel": "Ləğv et",
+        "created": "Komanda yaradıldı",
+        "updated": "Komanda yeniləndi",
+        "invalidBots": "Bəzi botlar artıq əlavə edilə bilməz. Onları sil və yenidən cəhd et.",
+        "rateLimit": "Komandalarda çox dəyişiklik. Bir dəqiqə gözlə və yenidən cəhd et.",
+        "descriptionHint": "Markdown dəstəklənir: **qalın**, siyahılar, keçidlər.",
+        "memberDescriptionPlaceholder": "Bu botun komandada etdiyi iş (istəyə bağlı)",
+        "memberDescriptionLabel": "{bot} komandada nə edir",
+        "handoffDuplicate": "Bu ötürmə artıq siyahıdadır.",
+        "handoffSelf": "İki fərqli bot seç.",
+        "connectEveryone": "Botu hamı ilə birləşdir",
+        "connectEveryoneHint": "Seçilmiş botdan bütün digər botlara və geri ötürmələr əlavə edir, aparat rəhbəri kimi.",
+        "invalidCategory": "Bu kateqoriya artıq mövcud deyil",
+        "invalidTags": "Bəzi teqlər artıq mövcud deyil",
+        "computerHint": "İkonlar bulud kompüteri, öz kompüterinizi və ya hər ikisini tələb edən botları göstərir."
+      },
+      "openBot": "{bot} haqqında ətraflı göstər",
+      "botHint": "Nə etdiyini görmək və quraşdırmaq üçün bir bot seçin.",
+      "inTeam": "{team} daxilində",
+      "installBot": "Quraşdır",
+      "viewBot": "Bot səhifəsini aç",
+      "botLoadError": "Bu bot yüklənə bilmədi.",
+      "backToTeam": "Komandaya qayıt",
+      "pagination": "Komanda səhifələri",
+      "previousPage": "Əvvəlki səhifə",
+      "nextPage": "Növbəti səhifə",
+      "unlisted": "Siyahıda deyil",
+      "unlistedNotice": "Bu komanda siyahıda deyil: siyahılardan, axtarışdan və profillərdən gizlədilib və onu yalnız müəllifi və adminlər aça bilər.",
+      "unlist": "Siyahıdan çıxar",
+      "relist": "Yenidən siyahıya sal",
+      "unlistedToast": "Komanda siyahıdan çıxarıldı",
+      "relistedToast": "Komanda yenidən siyahıya salındı"
+    },
+    "computer": {
+      "cloud": "Bulud kompüteri tələb edir",
+      "local": "Sizin kompüterinizi tələb edir",
+      "label": "Kompüter",
+      "hint": "Botun işləmək üçün kompüterə ehtiyacı var? Birini, hər ikisini və ya heç birini seçin. Hər biri botda kiçik bir ikon kimi göstərilir.",
+      "cloudHint": "Öz uzaq kompüterinə, masaüstünə və ya brauzerinə ehtiyac duyur.",
+      "localHint": "Sizin öz kompüterinizə, fayllarınıza və ya tətbiqlərinizə giriş tələb edir."
+    }
   },
   "collection": {
     "title": "Kolleksiyam",
@@ -1070,6 +1276,8 @@
     "removed": "Kolleksiyadan silindi"
   },
   "discovery": {
+    "trending": "İndi trenddə",
+    "seeAll": "Hamısına bax",
     "featuredPrompts": "Seçilmiş Promptlar",
     "todaysMostUpvoted": "Bu Günün Ən Çox Bəyənilənləri",
     "latestPrompts": "Ən Son Promptlar",
@@ -1412,7 +1620,7 @@
     "interactiveBanner": {
       "badge": "İnteraktiv Versiya Mövcuddur",
       "title": "Daha Ətraflı və İnteraktiv Təcrübə İstəyirsiniz?",
-      "description": "29 fəsil, praktiki təmrinlər və real dünya nümunələri ilə hərtarafəli interaktiv rəhbərimizlə AI prompt yazmağı mənimsaəyin.",
+      "description": "30 fəsil, praktiki təmrinlər və real dünya nümunələri ilə hərtarafəli interaktiv rəhbərimizlə AI prompt yazmağı mənimsaəyin.",
       "cta": "İnteraktiv Kitabı Oxuyun"
     },
     "generalTips": {
@@ -1882,7 +2090,7 @@
     "donate": "Layihəni dəstəkləyin",
     "subtitle": "Aydın və Effektiv Promptlar Yaratmaq üçün İnteraktiv Bələdçi",
     "metaTitle": "Prompt Mühəndisliyi Bələdçisi: İnteraktiv Prompting Kitabı",
-    "metaDescription": "Bu pulsuz, interaktiv bələdçi ilə AI prompt mühəndisliyini mənimsəyin. ChatGPT promptları, düşüncə zənciri, az nümunə ilə öyrənmə və qabaqcıl texnikaları öyrənin. Real nümunələrlə 29+ fəsil.",
+    "metaDescription": "Bu pulsuz, interaktiv bələdçi ilə AI prompt mühəndisliyini mənimsəyin. ChatGPT promptları, düşüncə zənciri, az nümunə ilə öyrənmə və qabaqcıl texnikaları öyrənin. Real nümunələrlə 30+ fəsil.",
     "interactiveGuideBy": "İnteraktiv Bələdçi",
     "authorIntro": "Salam, mən <author>Fatih Kadir Akın</author>-am, GitHub-da populyar <repoLink>Awesome ChatGPT Prompts</repoLink> deposunun və <siteName>prompts.chat</siteName> saytının yaradıcısıyam.",
     "bookDescription": "Bu hərtərəfli və interaktiv bələdçidə, cəlbedici və effektiv söhbətlər aparan AI promptları yaratmaq üçün ekspert strategiyaları kəşf edəcəksiniz. AI modellərinin necə işlədiyini anlamaqdan prompt zəncirləmə və agent sistemləri kimi qabaqcıl texnikalara qədər, bu kitab AI qarşılıqlı əlaqələrinizi növbəti səviyyəyə çatdırmaq üçün lazım olan alətləri təqdim edir.",
@@ -1904,7 +2112,7 @@
       "part4": "Hissə 4: Ən Yaxşı Təcrübələr",
       "part5": "Hissə 5: İstifadə Halları",
       "part6": "Hissə 6: Nəticə",
-      "chapters": "29 İnteraktiv Fəsil"
+      "chapters": "30 İnteraktiv Fəsil"
     },
     "startReading": "Oxumağa Başla",
     "skipToChapter1": "1-ci Fəsilə Keç",
@@ -1962,6 +2170,7 @@
       "13-multimodal-prompting": "Multimodal Prompting",
       "14-context-engineering": "Kontekst Mühəndisliyi",
       "14a-loop-engineering": "Dövrə Mühəndisliyi",
+      "24a-from-prompt-to-team": "Promptdan Komandaya",
       "25-agents-and-skills": "Agentlər və Bacarıqlar",
       "15-common-pitfalls": "Ümumi Səhvlər",
       "16-ethics-responsible-use": "Etika və Məsuliyyətli İstifadə",
@@ -1996,6 +2205,7 @@
       "13-multimodal-prompting": "Şəkillər, audio və video ilə işləmək",
       "14-context-engineering": "RAG, embeddinglər, funksiya çağırışı və MCP",
       "14a-loop-engineering": "Hərəkət edən, yoxlayan, uyğunlaşan və nə vaxt dayanacağını bilən əks əlaqə dövrələri hazırlamaq",
+      "24a-from-prompt-to-team": "Prompt, bacarıq, agent, bot və komanda sadə dillə: nədir və bir-birindən nə ilə fərqlənir",
       "25-agents-and-skills": "Təkrar istifadə edilə bilən bacarıq paketləri ilə AI agentləri qurmaq",
       "15-common-pitfalls": "Qarşısı alınmalı səhvlər",
       "16-ethics-responsible-use": "AI-da etik mülahizələr",
@@ -2466,7 +2676,7 @@
     },
     "bots": {
       "title": "OpenClaw, Hermes və Grok üçün hazır süni intellekt agent botları",
-      "description": "Təlimatları, planlaşdırılmış rutinləri və bacarıqları olan hazır süni intellekt agent botlarına baxın və onları bir kliklə OpenClaw, Hermes Agent və ya Grok Bot-a quraşdırın.",
+      "description": "Təlimatları, planlaşdırılmış rutinləri və bacarıqları olan hazır süni intellekt agent botlarına baxın və onları bir kliklə OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent və ya Grok Bot-a quraşdırın.",
       "heading": "Botlar"
     },
     "taste": {
@@ -2527,7 +2737,16 @@
       "SKILL": "Agent Bacarığı",
       "TASTE": "Kod Üslubu Profili",
       "model": "{model} Promptu"
+    },
+    "botTeams": {
+      "title": "Süni intellekt bot komandaları: işi bir-birinə ötürən agentlər",
+      "description": "İşi bir-birinə ötürən süni intellekt agent botlarından ibarət komandalara bax, hər ötürməni gör və bütün komandanı OpenClaw, Hermes Agent, Grok Bot və digərlərində bir dəfəyə quraşdır.",
+      "heading": "Bot komandaları"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "Yalnız <code>CLOUD</code> kompüter və ya istifadəçinin <code>LOCAL</code> kompüterini tələb edən botlar (hər ikisini tələb edənlər istənilən biri ilə uyğun gəlir), və ya kompüter tələb etməyən botlar üçün <code>NONE</code>",
+    "computerRequirementsInput": "<code>CLOUD</code> (bot öz uzaq kompüterinə, masaüstünə və ya brauzerinə ehtiyac duyur) və/və ya <code>LOCAL</code> (istifadəçinin öz cihazına, fayllarına və ya tətbiqlərinə ehtiyac duyur) dəyərlərindən ibarət siyahı; boş siyahı botun kompüterə ehtiyacı olmadığını bildirir. Saxlanmış siyahını əvəz edir"
   },
   "actionButtons": {
     "deployWithSpacefast": "SpaceFast ilə yerləşdir"

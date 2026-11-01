@@ -35,7 +35,7 @@ export default async function NewBotPage() {
         <Info className="h-4 w-4" />
         <AlertDescription>{t("createInfo")}</AlertDescription>
       </Alert>
-      <BotForm mode="create" categories={categories} tags={tags} />
+      <BotForm mode="create" categories={categories} tags={tags} canManagePairings={session.user.role === "ADMIN"} />
     </div>
   );
 }

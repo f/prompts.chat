@@ -15,6 +15,7 @@
     "db:seed": "prisma db seed",
     "db:resetadmin": "npx tsx prisma/reset-admin.ts",
     "db:seed:bots": "npx tsx prisma/seed-bots.ts",
+    "db:convert:teams": "npx tsx scripts/convert-pairings-to-teams.ts",
     "db:setup": "prisma generate && prisma migrate dev && prisma db seed",
     "setup": "node scripts/setup.js",
     "generate:examples": "npx tsx scripts/generate-examples.ts",

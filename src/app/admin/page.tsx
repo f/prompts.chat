@@ -14,6 +14,7 @@ import { WebhooksTable } from "@/components/admin/webhooks-table";
 import { PromptsManagement } from "@/components/admin/prompts-management";
 import { ReportsTable } from "@/components/admin/reports-table";
 import { BotsManagement } from "@/components/admin/bots-management";
+import { TeamsManagement } from "@/components/admin/teams-management";
 import { isAISearchEnabled } from "@/lib/ai/embeddings";
 import { NOINDEX_ROBOTS } from "@/lib/seo";
 
@@ -189,6 +190,7 @@ export default async function AdminPage() {
           webhooks: t("tabs.webhooks"),
           prompts: t("tabs.prompts"),
           bots: t("tabs.bots"),
+          teams: t("tabs.teams"),
           reports: t("tabs.reports"),
         }}
         pendingReportsCount={reports.filter(r => r.status === "PENDING").length}
@@ -207,6 +209,7 @@ export default async function AdminPage() {
             />
           ),
           bots: <BotsManagement />,
+          teams: <TeamsManagement />,
           reports: <ReportsTable reports={reports} />,
         }}
       />

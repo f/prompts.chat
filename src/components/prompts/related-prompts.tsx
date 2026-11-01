@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { ArrowBigUp } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { getBotUrl, getPromptUrl } from "@/lib/urls";
+import { UpvoteCount } from "@/components/prompts/upvote-count";
 
 interface RelatedPrompt {
   id: string;
@@ -29,9 +29,11 @@ interface RelatedPrompt {
 
 interface RelatedPromptsProps {
   prompts: RelatedPrompt[];
+  /** Defaults to "Related Prompts" */
+  title?: string;
 }
 
-export function RelatedPrompts({ prompts }: RelatedPromptsProps) {
+export function RelatedPrompts({ prompts, title }: RelatedPromptsProps) {
   const t = useTranslations("prompts");
 
   if (prompts.length === 0) {
@@ -39,9 +41,9 @@ export function RelatedPrompts({ prompts }: RelatedPromptsProps) {
   }
 
   return (
-    <div className="mt-8 space-y-4">
+    <section className="mt-8 space-y-4">
       <div className="flex items-center gap-2">
-        <h2 className="font-semibold">{t("relatedPrompts")}</h2>
+        <h2 className="font-semibold">{title ?? t("relatedPrompts")}</h2>
       </div>
       <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
         {prompts.map((prompt) => (
@@ -66,7 +68,7 @@ export function RelatedPrompts({ prompts }: RelatedPromptsProps) {
             </p>
 
             {/* Footer */}
-            <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto pt-2">
+            <div className="flex items-center justify-between text-[11px] text-muted-foreground mt-auto pt-2">
               <div className="flex items-center gap-1.5">
                 <Avatar className="h-4 w-4">
                   <AvatarImage src={prompt.author.avatar || undefined} />
@@ -78,14 +80,11 @@ export function RelatedPrompts({ prompts }: RelatedPromptsProps) {
                   @{prompt.author.username}
                 </span>
               </div>
-              <div className="flex items-center gap-1">
-                <ArrowBigUp className="h-3.5 w-3.5" />
-                <span>{prompt._count.votes}</span>
-              </div>
+              <UpvoteCount count={prompt._count.votes} />
             </div>
           </Link>
         ))}
       </div>
-    </div>
+    </section>
   );
 }

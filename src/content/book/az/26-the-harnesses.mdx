@@ -134,6 +134,45 @@ Bir ayarı dəyişin, sonra icranı addım-addım izləyin. Kontekstin, alət so
 
 Bunlar nümunə nəticələrdir, hər modelin nə edəcəyini müəyyən edən qaydalar deyil. Model qeyri-müəyyən prompt ilə də faydalı sual verə bilər. Aydın təlimatlar gözləntilərinizi izləməyi və yoxlamağı asanlaşdırır.
 
+## Dövrü Model Yazanda
+
+Yuxarıdakı dövrün sabit bir ritmi var: model bir alət istəyir, harness onu işə salır, nəticə isə modelin kontekstinə əlavə olunur. Bir neçə addımlıq işlərdə bu ritm yaxşı işləyir. Amma yüzlərlə fayla toxunan bir tapşırıqda hər addım yeni, tam bir model sorğusuna çevrilir və kontekst modelin cəmi bir dəfə ehtiyac duyduğu çıxışlarla dolur.
+
+Bəzi harness-lər başqa yol təklif edir: model alətləri bir-bir istəmək əvəzinə onları özü çağıran kiçik bir proqram yazır. Proqram sandbox içində işləyir. Fayllar, loglar və axtarış nəticələri kimi xam məlumatlar proqramın dəyişənlərində qalır, modelə isə yalnız proqramın çap etdiyi çıxış qayıdır. Buna **proqramlı alət çağırışı** (programmatic tool calling) deyilir. İdeyanın kökündə [CodeAct](https://arxiv.org/abs/2402.01030) (Wang və həmkarları, 2024) kimi tədqiqatlar dayanır.
+
+<Compare
+  before={{ label: "Hər dəfə bir alət çağırışı", content: "A faylını oxu. Budur A. B faylını oxu. Budur B. Hər nəticədən sonra model öz təlimatları, tarixçəsi və indiyədək gördüyü hər şeylə birlikdə yenidən çağırılır." }}
+  after={{ label: "Alətləri çağıran proqram", content: "Layihədə axtar, hər uyğun faylı oxu, hələ köhnə API-dən istifadə edənləri ayır və qısa siyahı çap et. Harness proqramı işə salır və geri yalnız siyahını qaytarır." }}
+/>
+
+Kontekst daha təmiz qalır, çünki model xam çıxışlar əvəzinə xülasə üzərində düşünür. Model sorğularının sayı azalır, çünki təlimatlar və tarixçə bir neçə çağırışdan bir yenidən göndərilmir. Dövrlər və yoxlamalar isə kodun içində işləyir, beləliklə modelin baxmağı planlaşdırdığı bir hal səssizcə yaddan çıxmır.
+
+Factory 29 oktyabr 2026-cı ildə elan etdiyi [Droid 1.0](https://factory.com/news/frontier-harness) ilə bu yanaşmanı standart etdi. Onun Script adlı aləti JavaScript kodunu sandbox içində işə salır və tək bir model sorğusunda yüzlərlə alət çağırışı edə bilir. Bir-birindən asılı olmayan çağırışlar eyni vaxtda işləyir, uzun çəkən script isə arxa planda davam edib iş bitəndə modeli oyada bilir. Factory ideyanın mənbəyi kimi CodeAct-i göstərir və qeyd edir ki, 2025-ci ilin sonunda Cloudflare və Anthropic bu ideyanı real məhsullara gətirib, Codex isə onu kodlaşdırma agentlərinə daşıyıb. Factory-nin öz nümunəsində, uğursuz bir testi düzəldərkən eyni 15 alət çağırışı 10 yox, 5 model çağırışı ilə tamamlanıb. Bunlar Factory-nin öz harness-i üçün açıqladığı rəqəmlərdir.
+
+Bu yanaşmanın da öz qiyməti var. Sandbox-un özünə məxsus fayl, şəbəkə və ya sistem girişi yoxdur, o yalnız harness-in təqdim etdiyi alətlərdən istifadə edə bilir. İcazələr və təsdiqlər proqramın çağırdığı hər alətə yenə də tətbiq olunmalıdır. Çap olunan çıxışın həcmi məhduddur. Proqramı izləmək isə insan üçün ayrı-ayrı addımlardan ibarət siyahını izləməkdən çətindir.
+
+### İş Axınları: Eyni İdeya Bir Səviyyə Yuxarıda
+
+Eyni addım bütöv agentlərlə də atıla bilər. Anthropic-in [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/workflow-runs) (beta) və [Claude Code](https://code.claude.com/docs/en/workflows) məhsullarında agent **iş axını** (workflow) yaza bilər: çoxlu agenti mərhələlərlə işlədən, işi paralel qollara bölən, bir agentin nəticəsini digərinə ötürən, bir addımı yoxlamadan keçənədək təkrarlayan və gələn nəticələri birləşdirən proqram. İş axını arxa planda işləyir, əsas söhbət isə bu müddətdə sərbəst qalır.
+
+Subagentlərdə hər növbəti addıma agentin özü qərar verir. İş axınında isə qərarı proqram verir. Bununla belə, iş axınını nə vaxt başladacağını agent seçir, ona görə də bu seçimi sistem promptunda və ya təlimatlarda istiqamətləndirirsiniz. Büdcəni də nəzərə almaq lazımdır: bir icradakı hər agent token xərcləyir.
+
+### Proqram Üçün Prompt Yazmaq
+
+Model proqram planlaşdıranda promptunuz həmin proqramın texniki tapşırığına çevrilir. İşin hamısını təsvir edin: hansı elementlərin əhatə olunacağını, hər biri üçün hansı yoxlamaların ödənməli olduğunu, biri uğursuz olsa nə ediləcəyini və yekun hesabatda nələrin olmalı olduğunu. Riskli əməliyyatlarda əvvəlcə proqramın xülasəsini görmək istədiyinizi bildirin.
+
+<TryIt compact prompt={`Bu işin hamısını addım-addım getmək əvəzinə bir proqramla həll et.
+
+İş: \${job:məlumat dəyişən hər API marşrutunun daxil olmuş istifadəçi tələb etdiyini yoxla}
+Elementlər: \${items:src/app/api altındakı bütün marşrut faylları}
+Hər element üçün yoxlama: \${checks:marşrut nəyisə oxumazdan və ya yazmazdan əvvəl sessiyanı yoxlayır}
+Element uğursuz olsa: \${failure:fayl yolunu və səbəbi qeyd et, sonra davam et}
+Yekun hesabat: \${report:uğursuz olan marşrutlar, neçəsinin keçdiyi və oxuya bilmədiyin fayllar}
+
+Faylları dəyişən hər hansı bir şeyi işə salmazdan əvvəl proqramı mənə qısaca izah et və təsdiqimi gözlə.`} />
+
+Hər tapşırığa proqram lazım deyil. Hər addım əvvəlki nəticəni dəyərləndirməkdən asılıdırsa, çağırışları bir-bir etmək çox vaxt daha aydın olur. Proqram ən çox iş böyük, təkrarlanan və yoxlanması asan olduqda öz gücünü göstərir.
+
 ## Harness Daxilində Promptlar Niyə Vacibdir?
 
 Harness modelə hərəkət etmək üçün yol verir. Promptlarınız faydalı hərəkətin necə olmalı olduğunu izah edir. Aydın məqsəd olmadıqda agent ehtiyacınız olmayan işlərə çoxlu addım sərf edə bilər.
@@ -210,6 +249,55 @@ Eyni fərq alətlərdən qayıdan məlumat üçün də vacibdir. Veb səhifə v�
   correctIndex={2}
   explanation="Promptlar davranışı istiqamətləndirir. Model icazəsiz əməliyyat istəsə belə, alət və ya mühit giriş sərhədini tətbiq etməlidir."
 />
+
+## Harness Harada Yaşayır?
+
+Hər agent bir harness-in içində işləyir, amma həmin harness-i kimsə qurmalı, yerləşdirməli və işlək saxlamalıdır. Bu işi kimin gördüyü nəyin sizin nəzarətinizdə olacağını və nəyin baxımını özünüzün aparacağınızı müəyyən edir. Bu gün harness adətən sizə bu dörd yoldan biri ilə gəlir:
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Haradan gəlir?</th>
+      <th scope="col">Dövrü kim işlədir?</th>
+      <th scope="col">Siz nə təqdim edirsiniz?</th>
+      <th scope="col">Qazanc və bədəl</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Özünüzün yazdığınız dövr</td>
+      <td>Siz</td>
+      <td>Hər şey: kontekst, alət sorğularının emalı, icazələr, limitlər</td>
+      <td>Tam nəzarət, eləcə də bütün baxım işi</td>
+    </tr>
+    <tr>
+      <td>SDK və ya framework</td>
+      <td>Siz, öz kompüterinizdə və ya seçdiyiniz hostinqdə</td>
+      <td>Layihənizdəki fayllar şəklində agentin özü: promptlar, alətlər, testlər</td>
+      <td>Dəyişikliklər adi kod yoxlamasından keçir; yayımlamaq və yeniləmək yenə sizin işinizdir</td>
+    </tr>
+    <tr>
+      <td>İdarə olunan xidmət</td>
+      <td>Provayder</td>
+      <td>Təlimatlar, bacarıqlar, alətlər və model seçimi</td>
+      <td>Baxım tələb edən mexanizm azdır; sərhədləri provayderin izolyasiya mühiti və limitləri müəyyən edir</td>
+    </tr>
+    <tr>
+      <td>CI kimi avtomatlaşdırma sisteminin bir hissəsi</td>
+      <td>Hadisə baş verəndə avtomatlaşdırma platforması</td>
+      <td>Tapşırığın təsviri və onun yaratmağa icazəsi olan nəticələr</td>
+      <td>Mövcud pipeline-larınıza uyğunlaşır; o işləyərkən heç kim söhbət pəncərəsinə baxmır</td>
+    </tr>
+  </tbody>
+</table>
+
+2026-cı ilin oktyabr ayının sonu son üç yolun hər biri üçün aydın nümunə gətirdi. Cursor-un 20 oktyabrdan bəri hamı üçün əlçatan olan [Agent SDK](https://cursor.com/blog/agent-sdk) aləti agenti kiçik bir layihə kimi qəbul edir: promptlar Markdown-da, alətlər TypeScript funksiyaları kimi yazılır, qiymətləndirmələr (eval) isə onların yanında durur. Agenti öz kompüterinizdə işlədə, Cursor-un infrastrukturunda yayımlaya və ya tək Node prosesi kimi öz serverlərinizdə işlədə bilərsiniz. 28 oktyabrda Microsoft [Foundry Agent Service-dəki Copilot harness-ini](https://devblogs.microsoft.com/foundry/microsoft-copilot-harness-in-foundry/) ictimai ilkin baxış (public preview) kimi təqdim etdi. Bu, GitHub Copilot-u tətbiqində, CLI-da və VS Code-da işlədən [həmin harness-dir](https://blogs.microsoft.com/blog/2026/10/28/introducing-the-microsoft-copilot-harness-unlocking-the-potential-of-truly-multi-model-agentic-work/). Agent dövrünü və izolyasiya mühitini Microsoft idarə edir; siz isə bacarıqları, MCP alətlərini və versiya nəzarətində saxlaya biləcəyiniz agent təriflərini gətirirsiniz. Həmin gün [GitHub Agentic Workflows](https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available/) da hamı üçün əlçatan oldu. Burada yeni issue-ları çeşidləmək kimi bir işi Markdown faylında təsvir edirsiniz, fayl isə Copilot-u və ya başqa bir kodlaşdırma agentini işə salan adi GitHub Actions iş axınına kompilyasiya olunur.
+
+Harness-in harada yaşadığı onun sərhədlərinin harada məcburi tətbiq olunduğunu da müəyyən edir. Təlimatlar istiqamət verir, icazələr isə buna əməl olunmasını təmin edir. Öz dövrünüzdə bu nəzarəti özünüz qurursunuz. İdarə olunan xidmətdə və ya avtomatlaşdırma platformasında isə onu platforma təmin edir, siz də tənzimləyirsiniz. Agentic Workflows bunun neçə qat demək ola biləcəyini yaxşı göstərir: agentlərə standart olaraq yalnız oxuma icazəsi verilir və onlar firewall arxasındakı izolyasiya olunmuş konteynerdə işləyir. Təklif etdikləri dəyişikliklər isə nəsə tətbiq olunmazdan əvvəl yoxlanılmış "təhlükəsiz nəticələr" (safe outputs) mərhələsindən və ayrıca təhdid yoxlamasından keçir. Nə ediləcəyini yenə də promptunuz deyir. Səhvin nə qədər zərər verə biləcəyini isə platforma məhdudlaşdırır.
+
+Sizin yazdığınız hissələr adətən dövrün özündən daha asan köçürülür. Bacarıqlar və MCP açıq standartlardır və Microsoft-un elanı onları dəstəkləməyi ciddi harness-in əlaməti sayır. Aydın yazılmış bacarıq və ya alət təsviri çox vaxt kiçik düzəlişlərlə başqa harness-ə keçə bilir; müəyyən bir dövrün ətrafında yazılmış kod isə nadir hallarda. Əvvəlcə harness-ləri müqayisə edərkən modeli sabit saxlamağı tövsiyə etmişdik. Çox modelli harness bunun əksini sınamağa imkan verir: Foundry orkestrasiyanı yenidən yazmadan dəstəklənən modeli seçməyə imkan verir, Agentic Workflows isə hər iş axınının öz model provayderini seçməsinə. Modeli dəyişib qalan hər şeyi olduğu kimi saxlaya bilərsiniz.
+
+Hansı yolu seçsəniz də, bəzi şeylər heç vaxt provayderə keçmir: istədiyiniz nəticə, onu təsvir edən təlimatlar və bacarıqlar, verdiyiniz alətlər və giriş hüquqları, işin bitdiyini göstərən yoxlamalar. Harness dövrü sizin əvəzinizə işlədə bilər. Amma "hazırdır" sözünün nə demək olduğuna o qərar verə bilməz.
 
 ## Harness-i Faydalı Edən Nədir?
 

@@ -3,10 +3,12 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getTranslations, getLocale } from "next-intl/server";
 import { formatDistanceToNow } from "@/lib/date";
-import { getBotUrl, getPromptUrl } from "@/lib/urls";
-import { Calendar, ArrowBigUp, Bot, ChevronLeft, ChevronRight, FileText, Settings, GitPullRequest, Clock, Check, X, Pin, BadgeCheck, Users, ShieldCheck, Heart, ImageIcon } from "lucide-react";
+import { getBotTeamUrl, getBotUrl, getPromptUrl } from "@/lib/urls";
+import { Calendar, ArrowBigUp, Bot, UsersRound, ChevronLeft, ChevronRight, FileText, Settings, GitPullRequest, Clock, Check, X, Pin, BadgeCheck, Users, ShieldCheck, Heart, ImageIcon } from "lucide-react";
 import { BotCard } from "@/components/bots/bot-card";
 import { listBotsByAuthor, publicBotWhere } from "@/lib/bots";
+import { countTeamsByAuthor, listTeams, teamExcerpt } from "@/lib/bots/teams";
+import { TeamCard } from "@/components/bots/teams/team-card";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import config from "@/../prompts.config";
@@ -24,10 +26,17 @@ import { ProfileLinks, type CustomLink } from "@/components/user/profile-links";
 import { JsonLd, profilePageSchema } from "@/components/seo/structured-data";
 import { buildPageMetadata, NOINDEX_ROBOTS, paginatedPath, toMetaDescription } from "@/lib/seo";
 import { escapeLikePattern } from "@/lib/utils";
+import {
+  isPageOutOfRange,
+  parseDayFilter,
+  parsePageParam,
+  PROFILE_PROMPTS_PER_PAGE,
+  profilePromptsWhere,
+} from "@/lib/listing-pagination";
 
 interface UserProfilePageProps {
   params: Promise<{ username: string }>;
-  searchParams: Promise<{ page?: string; botsPage?: string; tab?: string; date?: string }>;
+  searchParams: Promise<{ page?: string; botsPage?: string; teamsPage?: string; tab?: string; date?: string }>;
 }
 
 export async function generateMetadata({ params, searchParams }: UserProfilePageProps): Promise<Metadata> {
@@ -46,6 +55,7 @@ export async function generateMetadata({ params, searchParams }: UserProfilePage
     where: { username: { equals: escapeLikePattern(username), mode: "insensitive" } },
     orderBy: { createdAt: "asc" },
     select: {
+      id: true,
       name: true,
       username: true,
       bio: true,
@@ -61,7 +71,10 @@ export async function generateMetadata({ params, searchParams }: UserProfilePage
     return { title: "User Not Found", robots: NOINDEX_ROBOTS };
   }
 
-  const publicBotCount = await db.prompt.count({ where: { ...publicBotWhere, author: { username: user.username } } });
+  const [publicBotCount, publicTeamCount] = await Promise.all([
+    db.prompt.count({ where: { ...publicBotWhere, authorId: user.id } }),
+    countTeamsByAuthor(user.id),
+  ]);
   const promptCount = user._count.prompts;
   const t = await getTranslations("seo");
   const name = user.name || user.username;
@@ -80,14 +93,14 @@ export async function generateMetadata({ params, searchParams }: UserProfilePage
     path: paginatedPath(`/@${user.username}`, page),
     openGraphType: "profile",
     image: "route",
-    // Profiles without public prompts or bots are thin; secondary tabs and day filters repeat other pages
-    noindex: (promptCount === 0 && publicBotCount === 0) || (!!tab && tab !== "prompts") || !!date,
+    // Profiles without public prompts, bots or teams are thin; secondary tabs and day filters repeat other pages
+    noindex: (promptCount === 0 && publicBotCount === 0 && publicTeamCount === 0) || (!!tab && tab !== "prompts") || !!date,
   });
 }
 
 export default async function UserProfilePage({ params, searchParams }: UserProfilePageProps) {
   const { username: rawUsername } = await params;
-  const { page: pageParam, botsPage: botsPageParam, tab, date: dateFilter } = await searchParams;
+  const { page: pageParam, botsPage: botsPageParam, teamsPage: teamsPageParam, tab, date: dateFilter } = await searchParams;
   const session = await auth();
   const t = await getTranslations("user");
   const tChanges = await getTranslations("changeRequests");
@@ -131,36 +144,18 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
     notFound();
   }
 
-  const page = Math.max(1, parseInt(pageParam || "1") || 1);
-  const perPage = 24;
-  const botsPage = Math.max(1, parseInt(botsPageParam || "1") || 1);
+  const page = parsePageParam(pageParam);
+  const perPage = PROFILE_PROMPTS_PER_PAGE;
+  const botsPage = parsePageParam(botsPageParam);
+  const teamsPage = parsePageParam(teamsPageParam);
   const isOwner = session?.user?.id === user.id;
+  // Unlisted bots and teams show only to their owner and admins
+  const canSeeUnlisted = isOwner || session?.user?.role === "ADMIN";
+  const viewer = session?.user ? { id: session.user.id, role: session.user.role } : null;
   const isUnclaimed = user.email?.endsWith("@unclaimed.prompts.chat") ?? false;
 
-  // Parse date filter for filtering prompts by day (validate YYYY-MM-DD format)
-  const isValidDateFilter = dateFilter && /^\d{4}-\d{2}-\d{2}$/.test(dateFilter);
-  const filterDateStart = isValidDateFilter ? new Date(dateFilter + "T00:00:00") : null;
-  const filterDateEnd = isValidDateFilter ? new Date(dateFilter + "T23:59:59") : null;
-  // Also verify the Date objects are valid (e.g., 2024-02-30 would fail)
-  const validFilterDateStart = filterDateStart && !isNaN(filterDateStart.getTime()) ? filterDateStart : null;
-  const validFilterDateEnd = filterDateEnd && !isNaN(filterDateEnd.getTime()) ? filterDateEnd : null;
-
-  // Build where clause - show private prompts only if owner (unlisted prompts are visible on profiles)
-  // Exclude intermediate flow prompts (only show first prompts or standalone)
-  // Note: "related" connections are AI-suggested similar prompts, not flow connections
-  const where = {
-    authorId: user.id,
-    deletedAt: null,
-    type: { not: "BOT" as const },
-    incomingConnections: { none: { label: { not: "related" } } },
-    ...(isOwner ? {} : { isPrivate: false }),
-    ...(validFilterDateStart && validFilterDateEnd ? {
-      createdAt: {
-        gte: validFilterDateStart,
-        lte: validFilterDateEnd,
-      },
-    } : {}),
-  };
+  const validFilterDateStart = parseDayFilter(dateFilter)?.start ?? null;
+  const where = profilePromptsWhere(user.id, { includePrivate: isOwner, date: dateFilter });
 
   // Common prompt include for both queries
   const promptInclude = {
@@ -201,7 +196,7 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
   oneYearAgo.setHours(0, 0, 0, 0);
 
   // Fetch prompts, pinned prompts, contributions, liked prompts, user examples, counts, and activity data
-  const [promptsRaw, total, totalUpvotes, pinnedPromptsRaw, contributionsRaw, likedPromptsRaw, userExamplesRaw, privatePromptsCount, activityPrompts, activityVotes, activityChangeRequests, activityComments, { bots, total: botsTotal }, publicBotCount] = await Promise.all([
+  const [promptsRaw, total, totalUpvotes, pinnedPromptsRaw, contributionsRaw, likedPromptsRaw, userExamplesRaw, privatePromptsCount, activityPrompts, activityVotes, activityChangeRequests, activityComments, { bots, total: botsTotal }, publicBotCount, { teams, total: teamsTotal }] = await Promise.all([
     db.prompt.findMany({
       where,
       orderBy: { createdAt: "desc" },
@@ -317,8 +312,15 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
       },
       select: { createdAt: true },
     }),
-    listBotsByAuthor(user.id, { includePrivate: isOwner, skip: (botsPage - 1) * perPage, take: perPage }),
+    listBotsByAuthor(user.id, { includePrivate: isOwner, includeUnlisted: canSeeUnlisted, skip: (botsPage - 1) * perPage, take: perPage }),
     db.prompt.count({ where: { ...publicBotWhere, authorId: user.id } }),
+    listTeams({
+      authorId: user.id,
+      includeUnlisted: canSeeUnlisted,
+      skip: (teamsPage - 1) * perPage,
+      take: perPage,
+      viewer,
+    }),
   ]);
 
   // Transform to include voteCount and contributorCount
@@ -384,14 +386,30 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
   const pinnedIds = new Set<string>(pinnedPrompts.map((p: { id: string }) => p.id));
 
   const totalPages = Math.ceil(total / perPage);
+
+  // Pages past the end would be empty duplicates of the listing. The layout
+  // already rejects them on full page loads; this covers client navigation.
+  if (isPageOutOfRange(page, total, perPage)) {
+    notFound();
+  }
+
   const botsTotalPages = Math.ceil(botsTotal / perPage);
   const botsPageHref = (n: number) => `/@${user.username}?tab=bots${n > 1 ? `&botsPage=${n}` : ""}`;
+  const teamsTotalPages = Math.ceil(teamsTotal / perPage);
+  const teamsPageHref = (n: number) => `/@${user.username}?tab=teams${n > 1 ? `&teamsPage=${n}` : ""}`;
 
   // Fetch change requests for this user
   // 1. Change requests the user submitted (all statuses for owner, approved only for others)
   // 2. Change requests received on user's prompts (approved ones)
   // Limited to 100 each to prevent memory issues
-  const [submittedChangeRequests, receivedChangeRequests] = await Promise.all([
+  const teamChangeRequestSelect = {
+    id: true,
+    status: true,
+    createdAt: true,
+    author: { select: { name: true, username: true } },
+    team: { select: { slug: true, title: true, author: { select: { name: true, username: true } } } },
+  } as const;
+  const [submittedChangeRequests, receivedChangeRequests, submittedTeamChangeRequests, receivedTeamChangeRequests] = await Promise.all([
     // CRs user submitted
     db.changeRequest.findMany({
       where: {
@@ -464,17 +482,58 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
         },
       },
     }),
+    db.botTeamChangeRequest.findMany({
+      where: {
+        authorId: user.id,
+        ...(isOwner ? {} : { status: "APPROVED", team: { isUnlisted: false } }),
+      },
+      orderBy: { createdAt: "desc" },
+      take: 100,
+      select: teamChangeRequestSelect,
+    }),
+    db.botTeamChangeRequest.findMany({
+      where: {
+        team: { authorId: user.id, ...(isOwner ? {} : { isUnlisted: false }) },
+        ...(isOwner ? {} : { status: "APPROVED" }),
+        authorId: { not: user.id },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 100,
+      select: teamChangeRequestSelect,
+    }),
   ]);
+
+  const promptChangeItem = (cr: (typeof submittedChangeRequests)[number], type: "submitted" | "received") => ({
+    id: cr.id,
+    type,
+    status: cr.status,
+    createdAt: cr.createdAt,
+    title: cr.prompt.title,
+    href: `${cr.prompt.type === "BOT" ? getBotUrl(cr.prompt.id, cr.prompt.slug) : getPromptUrl(cr.prompt.id, cr.prompt.slug)}/changes/${cr.id}`,
+    ownerName: cr.prompt.author?.name || cr.prompt.author?.username,
+    authorName: cr.author.name || cr.author.username,
+  });
+  const teamChangeItem = (cr: (typeof submittedTeamChangeRequests)[number], type: "submitted" | "received") => ({
+    id: cr.id,
+    type,
+    status: cr.status,
+    createdAt: cr.createdAt,
+    title: cr.team.title,
+    href: `${getBotTeamUrl(cr.team.slug)}/changes/${cr.id}`,
+    ownerName: cr.team.author.name || cr.team.author.username,
+    authorName: cr.author.name || cr.author.username,
+  });
 
   // Combine and sort by date, marking the type
   const allChangeRequests = [
-    ...submittedChangeRequests.map((cr) => ({ ...cr, type: "submitted" as const })),
-    ...receivedChangeRequests.map((cr) => ({ ...cr, type: "received" as const })),
+    ...submittedChangeRequests.map((cr) => promptChangeItem(cr, "submitted")),
+    ...receivedChangeRequests.map((cr) => promptChangeItem(cr, "received")),
+    ...submittedTeamChangeRequests.map((cr) => teamChangeItem(cr, "submitted")),
+    ...receivedTeamChangeRequests.map((cr) => teamChangeItem(cr, "received")),
   ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-  const pendingCount = submittedChangeRequests.filter((cr) => cr.status === "PENDING").length +
-    receivedChangeRequests.filter((cr) => cr.status === "PENDING").length;
-  const defaultTab = tab === "changes" ? "changes" : tab === "bots" ? "bots" : tab === "contributions" ? "contributions" : tab === "likes" ? "likes" : tab === "examples" ? "examples" : "prompts";
+  const pendingCount = allChangeRequests.filter((cr) => cr.status === "PENDING").length;
+  const defaultTab = tab === "changes" ? "changes" : tab === "bots" ? "bots" : tab === "teams" ? "teams" : tab === "contributions" ? "contributions" : tab === "likes" ? "likes" : tab === "examples" ? "examples" : "prompts";
 
   const statusColors = {
     PENDING: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20",
@@ -583,13 +642,16 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
             <span className="font-medium">{user._count.prompts}</span>
             <span className="text-muted-foreground">{t("prompts").toLowerCase()}</span>
           </div>
-          {botsTotal > 0 && (
-            <div className="flex items-center gap-1.5">
-              <Bot className="h-4 w-4 text-muted-foreground" />
-              <span className="font-medium">{botsTotal}</span>
-              <span className="text-muted-foreground">{t("botsCount")}</span>
-            </div>
-          )}
+          <div className="flex items-center gap-1.5">
+            <Bot className="h-4 w-4 text-muted-foreground" />
+            <span className="font-medium">{botsTotal}</span>
+            <span className="text-muted-foreground">{t("botsCount")}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <UsersRound className="h-4 w-4 text-muted-foreground" />
+            <span className="font-medium">{teamsTotal}</span>
+            <span className="text-muted-foreground">{t("teamsCount")}</span>
+          </div>
           <div className="flex items-center gap-1.5">
             <ArrowBigUp className="h-4 w-4 text-muted-foreground" />
             <span className="font-medium">{totalUpvotes}</span>
@@ -626,6 +688,15 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
             {botsTotal > 0 && (
               <Badge variant="secondary" className="ml-1 h-5 min-w-5 px-1 text-xs">
                 {botsTotal}
+              </Badge>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="teams" className="gap-2">
+            <UsersRound className="h-4 w-4" />
+            {t("teams")}
+            {teamsTotal > 0 && (
+              <Badge variant="secondary" className="ml-1 h-5 min-w-5 px-1 text-xs">
+                {teamsTotal}
               </Badge>
             )}
           </TabsTrigger>
@@ -781,6 +852,58 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
           )}
         </TabsContent>
 
+        <TabsContent value="teams">
+          {teamsTotal === 0 ? (
+            <div className="text-center py-12 border rounded-lg bg-muted/30">
+              <UsersRound className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
+              <p className="text-muted-foreground">{isOwner ? t("noTeamsOwner") : t("noTeams")}</p>
+              {isOwner && (
+                <Button asChild className="mt-4" size="sm">
+                  <Link href="/bots/teams/new">{t("createFirstTeam")}</Link>
+                </Button>
+              )}
+            </div>
+          ) : (
+            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {teams.map((team) => (
+                <li key={team.id} className="min-w-0">
+                  <TeamCard
+                    team={{
+                      slug: team.slug,
+                      title: team.title,
+                      isFeatured: team.isFeatured,
+                      isUnlisted: team.isUnlisted,
+                      voteCount: team.voteCount,
+                      memberCount: team.members.length,
+                      excerpt: teamExcerpt(team.description, 160),
+                      category: team.category,
+                    }}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+          {teamsTotalPages > 1 && (
+            <div className="flex items-center justify-center gap-2 mt-8">
+              <Button size="icon" variant="outline" className="h-8 w-8" disabled={teamsPage <= 1} asChild={teamsPage > 1}>
+                {teamsPage > 1 ? (
+                  <Link href={teamsPageHref(teamsPage - 1)}><ChevronLeft className="h-4 w-4" /></Link>
+                ) : (
+                  <ChevronLeft className="h-4 w-4" />
+                )}
+              </Button>
+              <span className="text-sm tabular-nums px-2">{teamsPage} / {teamsTotalPages}</span>
+              <Button size="icon" variant="outline" className="h-8 w-8" disabled={teamsPage >= teamsTotalPages} asChild={teamsPage < teamsTotalPages}>
+                {teamsPage < teamsTotalPages ? (
+                  <Link href={teamsPageHref(teamsPage + 1)}><ChevronRight className="h-4 w-4" /></Link>
+                ) : (
+                  <ChevronRight className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+          )}
+        </TabsContent>
+
         <TabsContent value="contributions">
           {contributions.length === 0 ? (
             <div className="text-center py-12 border rounded-lg bg-muted/30">
@@ -839,15 +962,15 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
                 return (
                   <Link 
                     key={cr.id} 
-                    href={`${cr.prompt.type === "BOT" ? getBotUrl(cr.prompt.id, cr.prompt.slug) : getPromptUrl(cr.prompt.id, cr.prompt.slug)}/changes/${cr.id}`}
+                    href={cr.href}
                     className="flex items-center justify-between px-3 py-2 hover:bg-accent/50 transition-colors"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium truncate">{cr.prompt.title}</p>
+                      <p className="text-sm font-medium truncate">{cr.title}</p>
                       <p className="text-xs text-muted-foreground">
                         {cr.type === "submitted" 
-                          ? tChanges("submittedTo", { author: cr.prompt.author?.name || cr.prompt.author?.username })
-                          : tChanges("receivedFrom", { author: cr.author.name || cr.author.username })
+                          ? tChanges("submittedTo", { author: cr.ownerName })
+                          : tChanges("receivedFrom", { author: cr.authorName })
                         }
                         {" · "}
                         {formatDistanceToNow(cr.createdAt, locale)}

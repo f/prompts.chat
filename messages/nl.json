@@ -36,6 +36,7 @@
   },
   "nav": {
     "bots": "Bots",
+    "teams": "Teams",
     "collection": "Mijn Collectie",
     "feed": "Feed",
     "promptmasters": "Promptmasters",
@@ -186,6 +187,8 @@
     "relistRequestAlreadySent": "Je hebt al een herlistingsverzoek ingediend voor deze prompt.",
     "relistRequestError": "Kon herlistingsverzoek niet indienen. Probeer het opnieuw.",
     "relatedPrompts": "Gerelateerde prompts",
+    "relatedSkills": "Gerelateerde skills",
+    "relatedBots": "Gerelateerde bots",
     "deletePrompt": "Prompt verwijderen",
     "deletePromptTitle": "Deze prompt verwijderen?",
     "deletePromptDescription": "Deze actie kan niet ongedaan worden gemaakt. De prompt wordt permanent verwijderd.",
@@ -443,7 +446,46 @@
     "dismissed": "Wijzigingsverzoek afgewezen",
     "dismissConfirmTitle": "Wijzigingsverzoek afwijzen?",
     "dismissConfirmDescription": "Dit zal je wijzigingsverzoek permanent verwijderen. Deze actie kan niet ongedaan worden gemaakt.",
-    "backToBot": "Terug naar bot"
+    "backToBot": "Terug naar bot",
+    "backToTeam": "Terug naar team",
+    "proposeBotTitle": "Wijzigingen voorstellen voor deze bot",
+    "proposeBotIntro": "Stel verbeteringen voor deze bot voor. De eigenaar beoordeelt je voorstel en kan het goedkeuren of afwijzen.",
+    "proposeTeamTitle": "Wijzigingen voorstellen voor dit team",
+    "proposeTeamIntro": "Stel verbeteringen voor dit team voor. De eigenaar beoordeelt je voorstel en kan het goedkeuren of afwijzen.",
+    "viewVersion": "Versie bekijken",
+    "viewVersionHint": "Wijzigingen ten opzichte van versie {previous}",
+    "viewFirstVersionHint": "Eerste versie",
+    "memberRole": "Rol",
+    "memberDescription": "Beschrijving",
+    "membersReordered": "Volgorde van leden gewijzigd",
+    "noFieldChanges": "Geen wijzigingen",
+    "reviewedBy": "Beoordeeld door {user}",
+    "teamApprovedSuccess": "Wijzigingsverzoek goedgekeurd en team bijgewerkt",
+    "botFields": {
+      "title": "Titel",
+      "description": "Beschrijving",
+      "platforms": "Platforms",
+      "computers": "Computervereisten",
+      "appearance": "Uiterlijk",
+      "installUrl": "Installatie-URL",
+      "instructions": "Instructies",
+      "routines": "Routines",
+      "skills": "Vaardigheden",
+      "connectors": "Connectoren"
+    },
+    "teamFields": {
+      "title": "Titel",
+      "description": "Beschrijving",
+      "category": "Categorie",
+      "tags": "Tags",
+      "handoffs": "Overdrachten",
+      "members": "Leden"
+    },
+    "member": {
+      "added": "Toegevoegd",
+      "removed": "Verwijderd",
+      "changed": "Gewijzigd"
+    }
   },
   "categories": {
     "title": "Categorieën",
@@ -509,6 +551,7 @@
       "webhooks": "Webhooks",
       "prompts": "Prompts",
       "bots": "Bots",
+      "teams": "Teams",
       "reports": "Rapporten"
     },
     "reports": {
@@ -784,6 +827,26 @@
       "deleted": "Bot verwijderd",
       "deleteConfirmTitle": "Bot verwijderen?",
       "deleteConfirmDescription": "Hiermee wordt \"{title}\" definitief verwijderd. Dit kan niet ongedaan worden gemaakt."
+    },
+    "teamsList": {
+      "title": "Teams",
+      "description": "Beheer botteams: uit lijsten halen, bewerken of verwijderen.",
+      "noTeams": "Geen teams gevonden",
+      "open": "Openen",
+      "edit": "Bewerken",
+      "unlist": "Uit lijsten halen",
+      "relist": "Weer vermelden",
+      "updated": "Team bijgewerkt",
+      "deleted": "Team verwijderd",
+      "deleteConfirmTitle": "Team verwijderen?",
+      "deleteConfirmDescription": "Hiermee wordt \"{title}\" definitief verwijderd. De bots blijven zoals ze zijn.",
+      "members": "{count, plural, one {# bot} other {# bots}}",
+      "filters": {
+        "all": "Alles",
+        "listed": "Vermeld",
+        "unlisted": "Niet vermeld",
+        "featured": "Uitgelicht"
+      }
     }
   },
   "search": {
@@ -840,7 +903,12 @@
     "noBots": "Nog geen bots.",
     "noBotsOwner": "Je hebt nog geen bots gemaakt.",
     "createFirstBot": "Maak je eerste bot",
-    "botsCount": "bots"
+    "botsCount": "bots",
+    "teams": "Teams",
+    "teamsCount": "teams",
+    "noTeams": "Nog geen teams.",
+    "noTeamsOwner": "Je hebt nog geen teams gemaakt.",
+    "createFirstTeam": "Maak je eerste team"
   },
   "subscription": {
     "subscribe": "Abonneren",
@@ -929,7 +997,7 @@
     "browsePrompts": "Prompts bekijken"
   },
   "bots": {
-    "description": "Kant-en-klare AI-agentbots met instructies, routines en skills. Installeer ze op OpenClaw, Hermes Agent of Grok Bot.",
+    "description": "Kant-en-klare AI-agentbots met instructies, routines en skills. Installeer ze op OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent of Grok Bot.",
     "count": "{count, plural, one {# bot} other {# bots}}",
     "allPlatforms": "Alle",
     "searchPlaceholder": "Bots zoeken...",
@@ -954,6 +1022,14 @@
     "installPromptHint": "Plak deze prompt in je agent. Die haalt de botdefinitie op en stelt de instructies, routines en skills in.",
     "installPromptFallbackHint": "Of plak deze prompt in Grok Bot om de bot zelf te maken:",
     "installPromptPlatformFallbackHint": "Of plak deze prompt in {platform} om de bot zelf te maken:",
+    "autogptPromptHint": "Plak deze prompt in een chat met Otto op AutoGPT. Otto stelt de bot in als Expert met zijn instructies, skills en routines.",
+    "openAutogpt": "AutoGPT openen",
+    "dotsPromptHint": "Plak deze prompt in een chat met je dot in ChatGPT. Je dot neemt de instructies van de bot over, vraagt je de benodigde apps te koppelen en plant de routines als terugkerende taken.",
+    "openDots": "Dots openen",
+    "duetPromptHint": "Plak deze prompt in je Claude Duet-thread. Claude Duet neemt de instructies en routines van de bot over en gebruikt de skills en connectors van je Claude-account. Voeg ontbrekende toe in de instellingen van Claude.",
+    "openDuet": "Claude Duet openen",
+    "musePromptHint": "Plak deze prompt in een chat met Muse. De skills van Muse zijn ingebouwd: Muse neemt de instructies van de bot over, vraagt je de benodigde apps te koppelen en stelt de routines in als geplande taken.",
+    "openMuse": "Muse openen",
     "copyInstallPrompt": "Installatieprompt kopiëren",
     "machineReadable": "Machineleesbaar",
     "create": "Nieuwe bot",
@@ -999,7 +1075,15 @@
       "submit": "Bot maken",
       "save": "Bot opslaan",
       "created": "Bot gemaakt",
-      "updated": "Bot bijgewerkt"
+      "updated": "Bot bijgewerkt",
+      "pairingsHint": "Koppel bots die goed samenwerken met deze. Koppelingen verschijnen op de pagina's van beide bots.",
+      "pairingsSearch": "Zoek bots om te koppelen...",
+      "pairingsNoResults": "Geen bots gevonden",
+      "pairingNotePlaceholder": "Waarom passen ze goed samen? (optioneel)",
+      "pairingNoteLabel": "Waarom {bot} goed past",
+      "removePairing": "{bot} verwijderen",
+      "pairingsMax": "Je kunt maximaal {max} bots koppelen",
+      "pairingsInvalid": "Een van de gekoppelde bots bestaat niet meer. Verwijder hem en probeer het opnieuw."
     },
     "colors": {
       "slate": "Leisteen",
@@ -1055,7 +1139,129 @@
       "coffee": "Koffie"
     },
     "latestBots": "Nieuwste bots",
-    "viewAll": "Alles bekijken"
+    "featuredTeams": "Uitgelichte botteams",
+    "viewAll": "Alles bekijken",
+    "betterTogether": "Beter samen met",
+    "installAllTogether": "Alles samen installeren",
+    "installAllTitle": "{count, plural, one {# bot installeren} other {Alle # bots samen installeren}}",
+    "installAllDescription": "Stel {bot} en de bots die erbij passen in één keer in.",
+    "installAllUnavailable": "Er zijn nog geen installatieopties voor deze bots.",
+    "installAllLoadError": "De installatieopties konden niet worden geladen. Sluit het venster en probeer het opnieuw.",
+    "installAllPromptHint": "Plak deze prompt in {platform}. Hij stelt elke bot uit de set na elkaar in.",
+    "installAllAutogptPromptHint": "Plak deze prompt in een chat met Otto op AutoGPT. Otto stelt elke bot uit de set na elkaar in als Expert.",
+    "installAllDotsPromptHint": "Plak deze prompt in een chat met je dot in ChatGPT. Je dot stelt elke bot uit de set na elkaar in.",
+    "installAllDuetPromptHint": "Plak deze prompt in je Claude Duet-thread. Claude Duet stelt elke bot uit de set na elkaar in. Voeg ontbrekende skills en connectors toe in de instellingen van Claude.",
+    "installAllMusePromptHint": "Plak deze prompt in een chat met Muse. Muse stelt elke bot uit de set na elkaar in en vraagt je de benodigde apps te koppelen.",
+    "installAllCommandHint": "Installeer elke bot uit de set als skill:",
+    "installAllTemplatesHint": "Of open elke {platform}-sjabloon:",
+    "installAllSkipped": "Niet beschikbaar op {platform}: {bots}",
+    "copyCommands": "Opdrachten kopiëren",
+    "openTemplate": "{bot}-sjabloon openen",
+    "teams": {
+      "link": "Teams",
+      "create": "Team maken",
+      "description": "Teams zijn groepen bots die werk aan elkaar overdragen. Elk vak is een team en elke pijl laat zien wat de ene bot aan de volgende overdraagt: beweeg over een pijl om de overdracht te zien, of selecteer een team om de leden te zien.",
+      "count": "{count, plural, one {# team} other {# teams}}",
+      "searchPlaceholder": "Teams zoeken...",
+      "allTeams": "Alle teams",
+      "empty": "Nog geen teams. Maak het eerste.",
+      "noResults": "Geen teams gevonden voor je zoekopdracht.",
+      "featured": "Uitgelicht",
+      "graphLabel": "Botteams en hun overdrachten",
+      "selectTeam": "Details van {team} tonen",
+      "selectHint": "Selecteer een team om de leden en overdrachten te zien.",
+      "closePanel": "Sluiten",
+      "by": "door {author}",
+      "members": "Leden",
+      "handoffs": "Overdrachtsflow",
+      "handoffLabel": "{from} draagt over aan {to}",
+      "handsOffTo": "draagt over aan",
+      "noHandoffLabel": "Geen beschrijving van wat wordt overgedragen",
+      "noHandoffs": "Dit team heeft nog geen overdrachten.",
+      "noVisibleMembers": "Geen van de bots van dit team is voor jou zichtbaar.",
+      "openTeam": "Team openen",
+      "backToTeams": "Alle teams",
+      "install": "Team installeren",
+      "installTitle": "{count, plural, one {# bot installeren} other {Alle # bots van dit team installeren}}",
+      "installDescription": "Stel alle bots van {team} in één keer in, inclusief hun overdrachten.",
+      "installShort": "Installeren",
+      "memberOf": "Teams",
+      "memberCount": "{count, plural, one {# bot} other {# bots}}",
+      "edit": "Team bewerken",
+      "delete": "Team verwijderen",
+      "deleteConfirm": "Dit team verwijderen? De bots zelf blijven zoals ze zijn.",
+      "deleted": "Team verwijderd",
+      "form": {
+        "createTitle": "Een team maken",
+        "editTitle": "Team bewerken",
+        "intro": "Kies de bots, beschrijf wat elk in het team doet en bepaal wie wat aan wie overdraagt.",
+        "title": "Titel",
+        "titlePlaceholder": "bijv. Onderzoeken & publiceren",
+        "titleRequired": "Geef het team een titel.",
+        "description": "Beschrijving",
+        "descriptionPlaceholder": "Wat doet dit team samen, en hoe stroomt het werk erdoorheen?",
+        "bots": "Bots",
+        "botsHint": "Voeg {min} tot {max} bots toe.",
+        "botsSearch": "Bots zoeken om toe te voegen...",
+        "botsMax": "Een team kan maximaal {max} bots hebben",
+        "minBots": "Voeg minstens {min} bots toe.",
+        "noResults": "Geen bots gevonden",
+        "rolePlaceholder": "Rol (optioneel), bijv. Onderzoeker",
+        "roleLabel": "Rol van {bot}",
+        "removeBot": "{bot} verwijderen",
+        "handoffs": "Overdrachten",
+        "handoffsHint": "Elke overdracht geeft werk door van de ene bot aan de andere. Een bot kan aan meerdere bots overdragen en werk terugkrijgen.",
+        "from": "Van",
+        "to": "Naar",
+        "labelPlaceholder": "Wat wordt overgedragen, bijv. Onderzoeksbriefing",
+        "labelLabel": "Wat {from} aan {to} overdraagt",
+        "addHandoff": "Overdracht toevoegen",
+        "removeHandoff": "Overdracht verwijderen",
+        "needTwoBots": "Voeg minstens twee bots toe om overdrachten te bepalen.",
+        "handoffInvalid": "Elke overdracht moet twee verschillende bots van het team één keer verbinden.",
+        "submit": "Team maken",
+        "save": "Team opslaan",
+        "cancel": "Annuleren",
+        "created": "Team gemaakt",
+        "updated": "Team bijgewerkt",
+        "invalidBots": "Sommige bots kunnen niet meer worden toegevoegd. Verwijder ze en probeer het opnieuw.",
+        "rateLimit": "Te veel wijzigingen aan teams. Wacht een minuut en probeer het opnieuw.",
+        "descriptionHint": "Markdown wordt ondersteund: **vet**, lijsten, links.",
+        "memberDescriptionPlaceholder": "Wat deze bot in het team doet (optioneel)",
+        "memberDescriptionLabel": "Wat {bot} in het team doet",
+        "handoffDuplicate": "Deze overdracht staat al in de lijst.",
+        "handoffSelf": "Kies twee verschillende bots.",
+        "connectEveryone": "Bot met iedereen verbinden",
+        "connectEveryoneHint": "Voegt overdrachten toe van de gekozen bot naar alle andere bots en terug, zoals een stafchef.",
+        "invalidCategory": "Die categorie bestaat niet meer",
+        "invalidTags": "Sommige tags bestaan niet meer",
+        "computerHint": "Pictogrammen markeren bots die een cloudcomputer, je eigen computer of allebei nodig hebben."
+      },
+      "openBot": "Details van {bot} tonen",
+      "botHint": "Selecteer een bot om te zien wat hij doet en hem te installeren.",
+      "inTeam": "In {team}",
+      "installBot": "Installeren",
+      "viewBot": "Botpagina openen",
+      "botLoadError": "Deze bot kon niet worden geladen.",
+      "backToTeam": "Terug naar team",
+      "pagination": "Teampagina's",
+      "previousPage": "Vorige pagina",
+      "nextPage": "Volgende pagina",
+      "unlisted": "Niet vermeld",
+      "unlistedNotice": "Dit team is niet vermeld: het is verborgen in lijsten, zoekresultaten en profielen, en alleen de auteur en beheerders kunnen het openen.",
+      "unlist": "Uit lijsten halen",
+      "relist": "Weer vermelden",
+      "unlistedToast": "Team uit lijsten gehaald",
+      "relistedToast": "Team weer vermeld"
+    },
+    "computer": {
+      "cloud": "Heeft een cloudcomputer nodig",
+      "local": "Heeft je computer nodig",
+      "label": "Computer",
+      "hint": "Heeft de bot een computer nodig om op te draaien? Vink er één, beide of geen aan. Elk verschijnt als een klein pictogram bij de bot.",
+      "cloudHint": "Heeft een eigen externe computer, desktop of browser nodig.",
+      "localHint": "Heeft toegang nodig tot je eigen machine, bestanden of apps."
+    }
   },
   "collection": {
     "title": "Mijn collectie",
@@ -1070,6 +1276,8 @@
     "removed": "Verwijderd uit collectie"
   },
   "discovery": {
+    "trending": "Nu trending",
+    "seeAll": "Alles bekijken",
     "featuredPrompts": "Uitgelichte prompts",
     "todaysMostUpvoted": "Meest gestemd vandaag",
     "latestPrompts": "Nieuwste prompts",
@@ -1412,7 +1620,7 @@
     "interactiveBanner": {
       "badge": "Interactieve versie beschikbaar",
       "title": "Wil je een meer gedetailleerde & interactieve ervaring?",
-      "description": "Duik dieper met onze uitgebreide interactieve gids met 29 hoofdstukken, praktische oefeningen en echte voorbeelden om AI-prompting te beheersen.",
+      "description": "Duik dieper met onze uitgebreide interactieve gids met 30 hoofdstukken, praktische oefeningen en echte voorbeelden om AI-prompting te beheersen.",
       "cta": "Lees het interactieve boek"
     },
     "generalTips": {
@@ -1882,7 +2090,7 @@
     "donate": "Steun het project",
     "subtitle": "Een Interactieve Gids voor het Maken van Duidelijke en Effectieve Prompts",
     "metaTitle": "Gids voor prompt engineering: Het Interactieve Prompting Boek",
-    "metaDescription": "Beheers AI prompt engineering met deze gratis interactieve gids. Leer ChatGPT prompts, chain-of-thought redeneren, few-shot leren en geavanceerde technieken. 29+ hoofdstukken met echte voorbeelden.",
+    "metaDescription": "Beheers AI prompt engineering met deze gratis interactieve gids. Leer ChatGPT prompts, chain-of-thought redeneren, few-shot leren en geavanceerde technieken. 30+ hoofdstukken met echte voorbeelden.",
     "interactiveGuideBy": "Een Interactieve Gids door",
     "authorIntro": "Hallo, ik ben <author>Fatih Kadir Akın</author>, de curator van de populaire <repoLink>Awesome ChatGPT Prompts</repoLink> repository op GitHub en <siteName>prompts.chat</siteName>.",
     "bookDescription": "In deze uitgebreide, interactieve gids ontdek je expertstrategieën voor het maken van overtuigende AI-prompts die boeiende en effectieve gesprekken genereren. Van het begrijpen hoe AI-modellen werken tot het beheersen van geavanceerde technieken zoals prompt chaining en agentische systemen, dit boek geeft je de tools om je AI-interacties naar een hoger niveau te tillen.",
@@ -1904,7 +2112,7 @@
       "part4": "Deel 4: Best Practices",
       "part5": "Deel 5: Use Cases",
       "part6": "Deel 6: Conclusie",
-      "chapters": "29 Interactieve Hoofdstukken"
+      "chapters": "30 Interactieve Hoofdstukken"
     },
     "startReading": "Begin met Lezen",
     "skipToChapter1": "Ga naar Hoofdstuk 1",
@@ -1962,6 +2170,7 @@
       "13-multimodal-prompting": "Multimodale Prompting",
       "14-context-engineering": "Context Engineering",
       "14a-loop-engineering": "Loop Engineering",
+      "24a-from-prompt-to-team": "Van prompt tot team",
       "25-agents-and-skills": "Agents en Skills",
       "15-common-pitfalls": "Veelvoorkomende Valkuilen",
       "16-ethics-responsible-use": "Ethiek en Verantwoord Gebruik",
@@ -1996,6 +2205,7 @@
       "13-multimodal-prompting": "Werken met afbeeldingen, audio en video",
       "14-context-engineering": "RAG, embeddings, function calling en MCP",
       "14a-loop-engineering": "Feedbackloops ontwerpen die handelen, verifiëren, bijsturen en weten wanneer ze moeten stoppen",
+      "24a-from-prompt-to-team": "Prompts, skills, agents, bots en teams in gewone woorden, en waarin ze verschillen",
       "25-agents-and-skills": "AI-agents bouwen met herbruikbare skill-pakketten",
       "15-common-pitfalls": "Fouten om te vermijden",
       "16-ethics-responsible-use": "Ethische overwegingen in AI",
@@ -2457,7 +2667,7 @@
     },
     "bots": {
       "title": "Kant-en-klare AI-agentbots voor OpenClaw, Hermes en Grok",
-      "description": "Bekijk kant-en-klare AI-agentbots met instructies, geplande routines en skills en installeer ze met één klik op OpenClaw, Hermes Agent of Grok Bot.",
+      "description": "Bekijk kant-en-klare AI-agentbots met instructies, geplande routines en skills en installeer ze met één klik op OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent of Grok Bot.",
       "heading": "Bots"
     },
     "taste": {
@@ -2518,7 +2728,16 @@
       "SKILL": "Agentvaardigheid",
       "TASTE": "Codeerstijlprofiel",
       "model": "{model}-prompt"
+    },
+    "botTeams": {
+      "title": "AI-botteams: agents die werk aan elkaar overdragen",
+      "description": "Bekijk teams van AI-agentbots die werk aan elkaar overdragen, zie elke overdracht en installeer een heel team in één keer op OpenClaw, Hermes Agent, Grok Bot en meer.",
+      "heading": "Botteams"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "Alleen bots die een <code>CLOUD</code>-computer of de <code>LOCAL</code>-computer van de gebruiker nodig hebben (bots die beide nodig hebben komen bij elk overeen), of <code>NONE</code> voor bots die geen computer nodig hebben",
+    "computerRequirementsInput": "Een lijst met <code>CLOUD</code> (de bot heeft een eigen externe computer, desktop of browser nodig) en/of <code>LOCAL</code> (hij heeft de machine, bestanden of apps van de gebruiker nodig); een lege lijst betekent dat hij geen computer nodig heeft. Vervangt de opgeslagen lijst"
   },
   "actionButtons": {
     "deployWithSpacefast": "Implementeren met SpaceFast"

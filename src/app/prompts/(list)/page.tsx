@@ -208,12 +208,13 @@ export async function generateMetadata({ searchParams }: PromptsPageProps): Prom
     }
   }
 
-  // Search results and other filter combinations stay out of the index;
-  // sorting alone doesn't change the content, so it shares the main canonical
+  // Search results, trending and other filter views stay out of the index but
+  // point their canonical at /prompts; sorting alone doesn't change the content
   return buildPageMetadata({
     title: params.q ? t("prompts.searchTitle", { query: params.q }) : t("prompts.title"),
     description: t("prompts.description"),
     path: "/prompts",
+    canonical: "/prompts",
     noindex: filters.length > 0 || !!params.ai,
   });
 }

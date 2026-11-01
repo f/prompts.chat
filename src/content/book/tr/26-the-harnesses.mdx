@@ -134,6 +134,45 @@ Bir ayarı değiştirin, ardından çalışmayı adım adım ilerletin. Bağlam�
 
 Bunlar örnek sonuçlardır; her modelin ne yapacağını belirleyen kurallar değildir. Bir model, belirsiz bir prompt ile bile faydalı bir soru sorabilir. Açık talimatlar, beklentilerinizin izlenmesini ve kontrol edilmesini kolaylaştırır.
 
+## Döngüyü Model Yazınca
+
+Yukarıdaki döngünün belli bir ritmi var: model bir araç ister, harness onu çalıştırır, sonuç da modelin bağlamına eklenir. Birkaç adımlık işlerde bu ritim gayet iyi işler. Ama yüzlerce dosyaya dokunan bir görevde her adım baştan sona yeni bir model isteğine dönüşür ve bağlam, modelin yalnızca bir kez baktığı çıktılarla dolup taşar.
+
+Bazı harness'ler başka bir yol sunar: model araçları tek tek istemek yerine onları kendisi çağıran küçük bir program yazar. Program bir sandbox içinde çalışır. Dosyalar, loglar ve arama sonuçları gibi ham veriler programın değişkenlerinde kalır; modele yalnızca programın yazdırdığı çıktı döner. Buna **programlı araç çağırma** (programmatic tool calling) denir. Fikrin kökeninde [CodeAct](https://arxiv.org/abs/2402.01030) (Wang ve diğerleri, 2024) gibi araştırmalar var.
+
+<Compare
+  before={{ label: "Her seferinde tek araç çağrısı", content: "A dosyasını oku. İşte A. B dosyasını oku. İşte B. Her sonuçtan sonra model; talimatları, geçmişi ve o ana kadar gördüğü her şeyle birlikte yeniden çağrılır." }}
+  after={{ label: "Araçları çağıran bir program", content: "Projede ara, eşleşen her dosyayı oku, hâlâ eski API'yi kullananları ayır ve kısa bir liste yazdır. Harness programı çalıştırır ve geriye yalnızca listeyi döndürür." }}
+/>
+
+Bağlam daha temiz kalır, çünkü model ham çıktılar yerine bir özet üzerinden düşünür. Model isteği sayısı azalır, çünkü talimatlar ve geçmiş birkaç çağrıda bir yeniden gönderilmez. Döngüler ve kontroller de kodun içinde çalışır; böylece modelin ele almayı planladığı bir durum sessizce gözden kaçmaz.
+
+Factory, 29 Ekim 2026'da duyurduğu [Droid 1.0](https://factory.com/news/frontier-harness) ile bu yaklaşımı varsayılan hâle getirdi. Script adlı aracı JavaScript kodunu bir sandbox içinde çalıştırıyor ve tek bir model isteğinde yüzlerce araç çağrısı yapabiliyor. Birbirine bağlı olmayan çağrılar aynı anda çalışıyor; uzun süren bir script arka planda devam edip iş bitince modeli uyandırabiliyor. Factory fikrin kaynağı olarak CodeAct'i gösteriyor ve 2025'in sonlarında Cloudflare ile Anthropic'in bu fikri ürünlere taşıdığını, Codex'in ise kodlama ajanlarına getirdiğini belirtiyor. Factory'nin kendi örneğinde, başarısız bir testi düzeltirken aynı 15 araç çağrısı 10 yerine 5 model çağrısıyla tamamlanmış. Bunlar Factory'nin kendi harness'i için açıkladığı rakamlar.
+
+Bu yaklaşımın bedeli de var. Sandbox'ın kendine ait dosya, ağ ya da sistem erişimi yoktur; yalnızca harness'in sunduğu araçları kullanabilir. İzinler ve onaylar, programın çağırdığı her araç için yine geçerli olmalıdır. Yazdırılan çıktının bir üst sınırı vardır. Bir programı takip etmek de insan için tek tek adımlardan oluşan bir listeyi takip etmekten daha zordur.
+
+### İş Akışları: Aynı Fikir Bir Kat Yukarıda
+
+Aynı hamle bütün ajanlarla da yapılabilir. Anthropic'in [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/workflow-runs) (beta) ve [Claude Code](https://code.claude.com/docs/en/workflows) ürünlerinde bir ajan **iş akışı** (workflow) yazabilir: birçok ajanı aşamalar hâlinde çalıştıran, işi paralel kollara dağıtan, bir ajanın sonucunu diğerine aktaran, bir adımı inceleme olumlu sonuçlanana kadar tekrarlayan ve gelen sonuçları birleştiren bir program. İş akışı arka planda çalışır; ana sohbet bu sırada serbest kalır.
+
+Alt ajanlarda bir sonraki adıma her seferinde ajanın kendisi karar verir. İş akışında ise kararı program verir. Yine de bir iş akışını ne zaman başlatacağını ajan seçer; bu yüzden bu seçimi sistem promptunda ya da talimatlarda yönlendirirsiniz. Bütçeyi de hesaba katmak gerekir: bir çalıştırmadaki her ajan token harcar.
+
+### Program İçin Prompt Yazmak
+
+Model bir program planladığında, promptunuz o programın şartnamesine dönüşür. İşin tamamını anlatın: hangi öğelerin ele alınacağını, her biri için hangi kontrollerin sağlanması gerektiğini, biri başarısız olursa ne yapılacağını ve son raporda neler olması gerektiğini. Riskli işlemlerde, önce programın bir özetini görmek istediğinizi söyleyin.
+
+<TryIt compact prompt={`Bu işin tamamını adım adım ilerlemek yerine bir programla hallet.
+
+İş: \${job:veri değiştiren her API rotasının oturum açmış bir kullanıcı gerektirdiğini kontrol et}
+Öğeler: \${items:src/app/api altındaki tüm rota dosyaları}
+Her öğe için kontrol: \${checks:rota, bir şey okumadan ya da yazmadan önce oturumu doğruluyor}
+Bir öğe başarısız olursa: \${failure:dosya yolunu ve nedenini not et, sonra devam et}
+Son rapor: \${report:başarısız olan rotalar, kaç tanesinin geçtiği ve okuyamadığın dosyalar}
+
+Dosyaları değiştiren herhangi bir şeyi çalıştırmadan önce programı bana kısaca özetle ve onayımı bekle.`} />
+
+Her görev bir program gerektirmez. Her adım bir öncekinin sonucunu değerlendirmeye bağlıysa, tek tek çağrılar çoğu zaman daha anlaşılırdır. Program asıl gücünü iş büyük, tekrarlı ve kontrolü kolay olduğunda gösterir.
+
 ## Harness İçinde Promptlar Neden Önemlidir?
 
 Harness, modele işlem yapabileceği bir yol sağlar. Promptlarınız ise faydalı bir işlemin nasıl olması gerektiğini anlatır. Açık bir hedef olmadan ajan, ihtiyaç duymadığınız işler için birçok adım harcayabilir.
@@ -210,6 +249,55 @@ Aynı ayrım, araçlardan dönen bilgiler için de önemlidir. Bir web sayfası 
   correctIndex={2}
   explanation="Promptlar davranışa yön verir. Model izin verilmeyen bir işlem istese bile araç veya ortam erişim sınırını uygulamalıdır."
 />
+
+## Harness Nerede Yaşar?
+
+Her ajan bir harness'in içinde çalışır; ama o harness'i birinin kurması, barındırması ve ayakta tutması gerekir. Bu işi kimin üstlendiği, neyin sizin kontrolünüzde olacağını ve neyin bakımını sizin yapacağınızı belirler. Bugün bir harness karşınıza genellikle şu dört yoldan biriyle çıkar:
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Nereden gelir?</th>
+      <th scope="col">Döngüyü kim çalıştırır?</th>
+      <th scope="col">Siz ne sağlarsınız?</th>
+      <th scope="col">Kazanç ve bedel</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Kendi yazdığınız bir döngü</td>
+      <td>Siz</td>
+      <td>Her şey: bağlam, araç isteklerinin işlenmesi, izinler, sınırlar</td>
+      <td>Kontrol tamamen sizde, bakım yükü de</td>
+    </tr>
+    <tr>
+      <td>Bir SDK ya da framework</td>
+      <td>Siz; kendi bilgisayarınızda ya da seçtiğiniz bir sunucuda</td>
+      <td>Projenizdeki dosyalar olarak ajanın kendisi: promptlar, araçlar, testler</td>
+      <td>Değişiklikler alışılmış kod incelemesinden geçer; yayına almak ve güncel tutmak yine size düşer</td>
+    </tr>
+    <tr>
+      <td>Yönetilen bir hizmet</td>
+      <td>Sağlayıcı</td>
+      <td>Talimatlar, beceriler, araçlar ve model tercihi</td>
+      <td>Bakımını yapacağınız düzenek azdır; sınırları sağlayıcının yalıtılmış ortamı ve limitleri çizer</td>
+    </tr>
+    <tr>
+      <td>CI gibi bir otomasyon sisteminin parçası</td>
+      <td>Bir olay tetiklendiğinde otomasyon platformu</td>
+      <td>Bir görev tanımı ve üretmesine izin verilen çıktılar</td>
+      <td>Hâlihazırdaki iş akışlarınıza oturur; o çalışırken kimse bir sohbet ekranının başında beklemez</td>
+    </tr>
+  </tbody>
+</table>
+
+2026 Ekim'inin sonu, son üç yolun her birine açık birer örnek getirdi. Cursor'ın [Agent SDK](https://cursor.com/blog/agent-sdk) aracı 20 Ekim'den beri herkesin kullanımına açık ve bir ajanı küçük bir proje gibi ele alıyor: promptlar Markdown ile, araçlar TypeScript fonksiyonları olarak yazılıyor, değerlendirmeler (eval) de hemen yanlarında duruyor. Ajanı kendi bilgisayarınızda çalıştırabilir, Cursor'ın altyapısında yayına alabilir ya da tek bir Node süreci olarak kendi sunucularınızda çalıştırabilirsiniz. 28 Ekim'de Microsoft, [Foundry Agent Service'teki Copilot harness'ini](https://devblogs.microsoft.com/foundry/microsoft-copilot-harness-in-foundry/) genel önizleme olarak kullanıma sundu. Bu, GitHub Copilot'u uygulamasında, CLI'ında ve VS Code'da çalıştıran [harness'in ta kendisi](https://blogs.microsoft.com/blog/2026/10/28/introducing-the-microsoft-copilot-harness-unlocking-the-potential-of-truly-multi-model-agentic-work/). Ajan döngüsünü ve yalıtılmış ortamı Microsoft işletiyor; becerileri, MCP araçlarını ve sürüm kontrolünde saklayabileceğiniz ajan tanımlarını ise siz getiriyorsunuz. Aynı gün [GitHub Agentic Workflows](https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available/) da herkesin kullanımına açıldı. Burada yeni issue'ları ayıklamak gibi bir işi bir Markdown dosyasında anlatıyorsunuz; dosya, Copilot'u ya da başka bir kodlama ajanını çalıştıran sıradan bir GitHub Actions iş akışına derleniyor.
+
+Harness'in nerede yaşadığı, sınırlarının nerede zorla uygulandığını da belirler. Talimatlar yön gösterir; izinler ise uyulmasını sağlar. Kendi döngünüzde bu denetimi kendiniz kurarsınız. Yönetilen bir hizmette ya da bir otomasyon platformunda ise denetimi platform sağlar, siz de ayarlarını yaparsınız. Agentic Workflows bunun kaç katman anlamına gelebileceğini iyi gösteriyor: ajanlar varsayılan olarak yalnızca okuma iznine sahip ve bir güvenlik duvarının arkasındaki yalıtılmış bir konteynerde çalışıyor. Önerdikleri değişiklikler de bir şey uygulanmadan önce doğrulanmış "güvenli çıktılar" (safe outputs) adımından ve ayrı bir tehdit taramasından geçiyor. Ne yapılacağını yine prompt'unuz söyler. Bir hatanın ne kadar zarar verebileceğini ise platform sınırlar.
+
+Sizin yazdığınız parçalar, genellikle döngünün kendisinden daha kolay taşınır. Beceriler ve MCP açık standartlardır; Microsoft'un duyurusu da bunları desteklemeyi ciddi bir harness'in alameti farikası sayıyor. İyi yazılmış bir beceri ya da araç açıklaması çoğu zaman küçük ayarlamalarla başka bir harness'e geçebilir; belirli bir döngünün etrafında yazılmış kod ise nadiren. Daha önce harness'leri karşılaştırırken modeli sabit tutmanızı önermiştik. Çok modelli bir harness, tam tersini denemenize imkân verir: Foundry, orkestrasyonu yeniden yazmadan desteklenen bir modeli seçmenize izin veriyor; Agentic Workflows ise her iş akışının kendi model sağlayıcısını seçmesine. Modeli değiştirip geri kalan her şeyi olduğu gibi bırakabilirsiniz.
+
+Hangi yolu seçerseniz seçin, bazı şeyler hiçbir zaman sağlayıcıya geçmez: ulaşmak istediğiniz sonuç, onu anlatan talimatlar ve beceriler, verdiğiniz araçlar ve erişimler, işin bittiğini gösteren kontroller. Harness döngüyü sizin yerinize çalıştırabilir. Ama "bitti"nin ne anlama geldiğine o karar veremez.
 
 ## Bir Harness'i Faydalı Yapan Nedir?
 

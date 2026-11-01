@@ -36,6 +36,7 @@
   },
   "nav": {
     "bots": "בוטים",
+    "teams": "צוותים",
     "collection": "האוסף שלי",
     "feed": "פיד",
     "promptmasters": "מאסטרים",
@@ -186,6 +187,8 @@
     "relistRequestAlreadySent": "כבר שלחת בקשת רישום מחדש לפרומפט זה.",
     "relistRequestError": "שליחת בקשת הרישום מחדש נכשלה. אנא נסה שוב.",
     "relatedPrompts": "פרומפטים קשורים",
+    "relatedSkills": "כישורים קשורים",
+    "relatedBots": "בוטים קשורים",
     "deletePrompt": "מחק פרומפט",
     "deletePromptTitle": "למחוק את הפרומפט הזה?",
     "deletePromptDescription": "לא ניתן לבטל פעולה זו. הפרומפט יימחק לצמיתות.",
@@ -443,7 +446,46 @@
     "dismissed": "בקשת השינוי בוטלה",
     "dismissConfirmTitle": "לבטל בקשת שינוי?",
     "dismissConfirmDescription": "פעולה זו תמחק לצמיתות את בקשת השינוי שלך. לא ניתן לבטל פעולה זו.",
-    "backToBot": "חזרה לבוט"
+    "backToBot": "חזרה לבוט",
+    "backToTeam": "חזרה לצוות",
+    "proposeBotTitle": "הצעת שינויים לבוט זה",
+    "proposeBotIntro": "הציעו שיפורים לבוט זה. הבעלים יבדוק את ההצעה ויוכל לאשר או לדחות אותה.",
+    "proposeTeamTitle": "הצעת שינויים לצוות זה",
+    "proposeTeamIntro": "הציעו שיפורים לצוות זה. הבעלים יבדוק את ההצעה ויוכל לאשר או לדחות אותה.",
+    "viewVersion": "הצגת גרסה",
+    "viewVersionHint": "שינויים לעומת גרסה {previous}",
+    "viewFirstVersionHint": "גרסה ראשונה",
+    "memberRole": "תפקיד",
+    "memberDescription": "תיאור",
+    "membersReordered": "סדר החברים השתנה",
+    "noFieldChanges": "אין שינויים",
+    "reviewedBy": "נבדק על ידי {user}",
+    "teamApprovedSuccess": "בקשת השינוי אושרה והצוות עודכן",
+    "botFields": {
+      "title": "כותרת",
+      "description": "תיאור",
+      "platforms": "פלטפורמות",
+      "computers": "דרישות מחשב",
+      "appearance": "מראה",
+      "installUrl": "כתובת התקנה",
+      "instructions": "הוראות",
+      "routines": "שגרות",
+      "skills": "מיומנויות",
+      "connectors": "מחברים"
+    },
+    "teamFields": {
+      "title": "כותרת",
+      "description": "תיאור",
+      "category": "קטגוריה",
+      "tags": "תגיות",
+      "handoffs": "העברות",
+      "members": "חברים"
+    },
+    "member": {
+      "added": "נוסף",
+      "removed": "הוסר",
+      "changed": "שונה"
+    }
   },
   "categories": {
     "title": "קטגוריות",
@@ -509,6 +551,7 @@
       "webhooks": "Webhooks",
       "prompts": "פרומפטים",
       "bots": "בוטים",
+      "teams": "צוותים",
       "reports": "דיווחים"
     },
     "reports": {
@@ -784,6 +827,26 @@
       "deleted": "הבוט נמחק",
       "deleteConfirmTitle": "למחוק את הבוט?",
       "deleteConfirmDescription": "פעולה זו תמחק את \"{title}\" לצמיתות. לא ניתן לבטל אותה."
+    },
+    "teamsList": {
+      "title": "צוותים",
+      "description": "ניהול צוותי בוטים: הסרה מהרשימות, עריכה או מחיקה.",
+      "noTeams": "לא נמצאו צוותים",
+      "open": "פתיחה",
+      "edit": "עריכה",
+      "unlist": "הסרה מהרשימות",
+      "relist": "החזרה לרשימות",
+      "updated": "הצוות עודכן",
+      "deleted": "הצוות נמחק",
+      "deleteConfirmTitle": "למחוק את הצוות?",
+      "deleteConfirmDescription": "פעולה זו מוחקת לצמיתות את \"{title}\". הבוטים שלו נשארים כפי שהם.",
+      "members": "{count, plural, one {בוט אחד} other {# בוטים}}",
+      "filters": {
+        "all": "הכל",
+        "listed": "רשומים",
+        "unlisted": "לא רשומים",
+        "featured": "מומלצים"
+      }
     }
   },
   "search": {
@@ -840,7 +903,12 @@
     "noBots": "אין עדיין בוטים.",
     "noBotsOwner": "עדיין לא יצרת בוטים.",
     "createFirstBot": "צור את הבוט הראשון שלך",
-    "botsCount": "בוטים"
+    "botsCount": "בוטים",
+    "teams": "צוותים",
+    "teamsCount": "צוותים",
+    "noTeams": "אין עדיין צוותים.",
+    "noTeamsOwner": "עדיין לא יצרת צוותים.",
+    "createFirstTeam": "צור את הצוות הראשון שלך"
   },
   "subscription": {
     "subscribe": "הירשם",
@@ -929,7 +997,7 @@
     "browsePrompts": "עיין בפרומפטים"
   },
   "bots": {
-    "description": "בוטים מוכנים של סוכני בינה מלאכותית עם הנחיות, שגרות ומיומנויות. התקינו אותם ב-OpenClaw, ב-Hermes Agent או ב-Grok Bot.",
+    "description": "בוטים מוכנים של סוכני בינה מלאכותית עם הנחיות, שגרות ומיומנויות. התקינו אותם ב-OpenClaw, ב-AutoGPT, ב-OpenAI Dots, ב-Claude Duet, ב-Meta Muse, ב-Hermes Agent או ב-Grok Bot.",
     "count": "{count, plural, one {בוט אחד} other {# בוטים}}",
     "allPlatforms": "הכול",
     "searchPlaceholder": "חיפוש בוטים...",
@@ -954,6 +1022,14 @@
     "installPromptHint": "הדביקו את הפרומפט הזה בסוכן שלכם. הוא יטען את הגדרת הבוט ויגדיר את ההנחיות, השגרות והמיומנויות.",
     "installPromptFallbackHint": "או הדביקו את הפרומפט הזה ב-Grok Bot כדי ליצור את הבוט בעצמכם:",
     "installPromptPlatformFallbackHint": "או הדביקו את הפרומפט הזה ב-{platform} כדי ליצור את הבוט בעצמכם:",
+    "autogptPromptHint": "הדביקו את הפרומפט הזה בשיחה עם Otto ב-AutoGPT. Otto מגדיר את הבוט כ-Expert עם ההנחיות, המיומנויות והשגרות שלו.",
+    "openAutogpt": "פתיחת AutoGPT",
+    "dotsPromptHint": "הדביקו את הפרומפט הזה בשיחה עם ה-dot שלכם ב-ChatGPT. ה-dot יאמץ את ההנחיות של הבוט, יבקש מכם לחבר את האפליקציות שהוא צריך ויתזמן את השגרות שלו כמשימות חוזרות.",
+    "openDots": "פתיחת Dots",
+    "duetPromptHint": "הדביקו את הפרומפט הזה בשרשור ה-Claude Duet שלכם. Claude Duet יאמץ את ההנחיות והשגרות של הבוט וישתמש במיומנויות ובמחברים של חשבון ה-Claude שלכם, לכן הוסיפו את החסרים בהגדרות של Claude.",
+    "openDuet": "פתיחת Claude Duet",
+    "musePromptHint": "הדביקו את הפרומפט הזה בשיחה עם Muse. המיומנויות של Muse מובנות, לכן הוא יאמץ את ההנחיות של הבוט, יבקש מכם לחבר את האפליקציות שהוא צריך ויגדיר את השגרות שלו כמשימות מתוזמנות.",
+    "openMuse": "פתיחת Muse",
     "copyInstallPrompt": "העתקת פרומפט ההתקנה",
     "machineReadable": "קריא למכונה",
     "create": "בוט חדש",
@@ -999,7 +1075,15 @@
       "submit": "יצירת בוט",
       "save": "שמירת בוט",
       "created": "הבוט נוצר",
-      "updated": "הבוט עודכן"
+      "updated": "הבוט עודכן",
+      "pairingsHint": "קשרו בוטים שעובדים טוב עם הבוט הזה. הקישורים מוצגים בדפים של שני הבוטים.",
+      "pairingsSearch": "חיפוש בוטים לקישור...",
+      "pairingsNoResults": "לא נמצאו בוטים",
+      "pairingNotePlaceholder": "למה הם משתלבים היטב? (אופציונלי)",
+      "pairingNoteLabel": "למה {bot} משתלב היטב",
+      "removePairing": "הסרת {bot}",
+      "pairingsMax": "אפשר לקשר עד {max} בוטים",
+      "pairingsInvalid": "אחד הבוטים המקושרים כבר לא קיים. הסירו אותו ונסו שוב."
     },
     "colors": {
       "slate": "צפחה",
@@ -1055,7 +1139,129 @@
       "coffee": "קפה"
     },
     "latestBots": "הבוטים האחרונים",
-    "viewAll": "הצג הכול"
+    "featuredTeams": "צוותי בוטים מומלצים",
+    "viewAll": "הצג הכול",
+    "betterTogether": "טוב יותר יחד עם",
+    "installAllTogether": "התקנת כולם יחד",
+    "installAllTitle": "{count, plural, other {התקנת כל הבוטים יחד (#)}}",
+    "installAllDescription": "הגדירו את {bot} ואת הבוטים שמשתלבים איתו בבת אחת.",
+    "installAllUnavailable": "עדיין אין אפשרויות התקנה לבוטים האלה.",
+    "installAllLoadError": "לא ניתן היה לטעון את אפשרויות ההתקנה. סגרו את החלון ונסו שוב.",
+    "installAllPromptHint": "הדביקו את הפרומפט הזה ב-{platform}. הוא מגדיר כל בוט בסט, אחד אחרי השני.",
+    "installAllAutogptPromptHint": "הדביקו את הפרומפט הזה בשיחה עם Otto ב-AutoGPT. Otto מגדיר כל בוט בסט כ-Expert, אחד אחרי השני.",
+    "installAllDotsPromptHint": "הדביקו את הפרומפט הזה בשיחה עם ה-dot שלכם ב-ChatGPT. ה-dot יגדיר כל בוט בסט, אחד אחרי השני.",
+    "installAllDuetPromptHint": "הדביקו את הפרומפט הזה בשרשור ה-Claude Duet שלכם. Claude Duet יגדיר כל בוט בסט, אחד אחרי השני. הוסיפו מיומנויות ומחברים חסרים בהגדרות של Claude.",
+    "installAllMusePromptHint": "הדביקו את הפרומפט הזה בשיחה עם Muse. Muse יגדיר כל בוט בסט, אחד אחרי השני, ויבקש מכם לחבר את האפליקציות שהם צריכים.",
+    "installAllCommandHint": "התקינו כל בוט בסט כמיומנות:",
+    "installAllTemplatesHint": "או פתחו כל תבנית {platform}:",
+    "installAllSkipped": "לא זמין ב-{platform}: {bots}",
+    "copyCommands": "העתקת פקודות",
+    "openTemplate": "פתיחת התבנית של {bot}",
+    "teams": {
+      "link": "צוותים",
+      "create": "יצירת צוות",
+      "description": "צוותים הם קבוצות של בוטים שמעבירים עבודה זה לזה. כל תיבה היא צוות וכל חץ מראה מה בוט אחד מעביר לבא אחריו: רחף מעל חץ כדי לראות את ההעברה, או בחר צוות כדי לראות את חבריו.",
+      "count": "{count, plural, one {צוות אחד} other {# צוותים}}",
+      "searchPlaceholder": "חיפוש צוותים...",
+      "allTeams": "כל הצוותים",
+      "empty": "עדיין אין צוותים. צור את הראשון.",
+      "noResults": "אין צוותים שתואמים את החיפוש.",
+      "featured": "מומלץ",
+      "graphLabel": "צוותי בוטים וההעברות שלהם",
+      "selectTeam": "הצגת פרטי {team}",
+      "selectHint": "בחר צוות כדי לראות את חבריו ואת ההעברות.",
+      "closePanel": "סגירה",
+      "by": "מאת {author}",
+      "members": "חברים",
+      "handoffs": "זרימת העברות",
+      "handoffLabel": "{from} מעביר אל {to}",
+      "handsOffTo": "מעביר אל",
+      "noHandoffLabel": "אין תיאור של מה שמועבר",
+      "noHandoffs": "לצוות זה אין עדיין העברות.",
+      "noVisibleMembers": "אף אחד מהבוטים של הצוות הזה אינו גלוי לך.",
+      "openTeam": "פתיחת הצוות",
+      "backToTeams": "כל הצוותים",
+      "install": "התקנת הצוות",
+      "installTitle": "{count, plural, one {התקנת בוט אחד} other {התקנת כל # הבוטים של הצוות}}",
+      "installDescription": "הגדר את כל הבוטים של {team} וחבר את ההעברות שלהם בבת אחת.",
+      "installShort": "התקנה",
+      "memberOf": "צוותים",
+      "memberCount": "{count, plural, one {בוט אחד} other {# בוטים}}",
+      "edit": "עריכת הצוות",
+      "delete": "מחיקת הצוות",
+      "deleteConfirm": "למחוק את הצוות? הבוטים עצמם נשארים כפי שהם.",
+      "deleted": "הצוות נמחק",
+      "form": {
+        "createTitle": "יצירת צוות",
+        "editTitle": "עריכת הצוות",
+        "intro": "בחרו את הבוטים, כתבו מה כל אחד עושה בצוות, ואז הגדירו מי מעביר מה למי.",
+        "title": "כותרת",
+        "titlePlaceholder": "למשל: מחקר ופרסום",
+        "titleRequired": "תן לצוות כותרת.",
+        "description": "תיאור",
+        "descriptionPlaceholder": "מה הצוות הזה עושה יחד, ואיך העבודה זורמת בו?",
+        "bots": "בוטים",
+        "botsHint": "הוסף בין {min} ל-{max} בוטים.",
+        "botsSearch": "חפש בוטים להוספה...",
+        "botsMax": "בצוות יכולים להיות עד {max} בוטים",
+        "minBots": "הוסף לפחות {min} בוטים.",
+        "noResults": "לא נמצאו בוטים",
+        "rolePlaceholder": "תפקיד (אופציונלי), למשל: חוקר",
+        "roleLabel": "התפקיד של {bot}",
+        "removeBot": "הסרת {bot}",
+        "handoffs": "העברות",
+        "handoffsHint": "כל העברה מעבירה עבודה מבוט אחד לאחר. בוט יכול להעביר לכמה בוטים ולקבל עבודה בחזרה.",
+        "from": "מאת",
+        "to": "אל",
+        "labelPlaceholder": "מה מועבר, למשל: תקציר מחקר",
+        "labelLabel": "מה {from} מעביר אל {to}",
+        "addHandoff": "הוספת העברה",
+        "removeHandoff": "הסרת העברה",
+        "needTwoBots": "הוסף לפחות שני בוטים כדי להגדיר העברות.",
+        "handoffInvalid": "כל העברה חייבת לחבר פעם אחת שני בוטים שונים של הצוות.",
+        "submit": "יצירת הצוות",
+        "save": "שמירת הצוות",
+        "cancel": "ביטול",
+        "created": "הצוות נוצר",
+        "updated": "הצוות עודכן",
+        "invalidBots": "לא ניתן עוד להוסיף חלק מהבוטים. הסר אותם ונסה שוב.",
+        "rateLimit": "יותר מדי שינויים בצוותים. המתן דקה ונסה שוב.",
+        "descriptionHint": "יש תמיכה ב-Markdown: **מודגש**, רשימות, קישורים.",
+        "memberDescriptionPlaceholder": "מה הבוט הזה עושה בצוות (אופציונלי)",
+        "memberDescriptionLabel": "מה {bot} עושה בצוות",
+        "handoffDuplicate": "ההעברה הזו כבר ברשימה.",
+        "handoffSelf": "בחרו שני בוטים שונים.",
+        "connectEveryone": "חיבור בוט לכולם",
+        "connectEveryoneHint": "מוסיף העברות מהבוט שנבחר לכל שאר הבוטים ובחזרה, כמו ראש מטה.",
+        "invalidCategory": "הקטגוריה הזו כבר לא קיימת",
+        "invalidTags": "חלק מהתגיות כבר לא קיימות",
+        "computerHint": "סמלים מסמנים בוטים שצריכים מחשב בענן, את המחשב שלך או את שניהם."
+      },
+      "openBot": "הצגת פרטים של {bot}",
+      "botHint": "בחרו בוט כדי לראות מה הוא עושה ולהתקין אותו.",
+      "inTeam": "בצוות {team}",
+      "installBot": "התקנה",
+      "viewBot": "פתיחת דף הבוט",
+      "botLoadError": "לא ניתן היה לטעון את הבוט הזה.",
+      "backToTeam": "חזרה לצוות",
+      "pagination": "עמודי צוותים",
+      "previousPage": "העמוד הקודם",
+      "nextPage": "העמוד הבא",
+      "unlisted": "לא רשום",
+      "unlistedNotice": "צוות זה אינו רשום: הוא מוסתר מרשימות, מחיפוש ומפרופילים, ורק היוצר שלו ומנהלים יכולים לפתוח אותו.",
+      "unlist": "הסרה מהרשימות",
+      "relist": "החזרה לרשימות",
+      "unlistedToast": "הצוות הוסר מהרשימות",
+      "relistedToast": "הצוות הוחזר לרשימות"
+    },
+    "computer": {
+      "cloud": "דורש מחשב בענן",
+      "local": "דורש את המחשב שלך",
+      "label": "מחשב",
+      "hint": "האם הבוט צריך מחשב כדי לפעול? סמנו אחד, את שניהם או אף אחד. כל אחד מוצג כסמל קטן על הבוט.",
+      "cloudHint": "צריך מחשב מרוחק, שולחן עבודה או דפדפן משלו.",
+      "localHint": "צריך גישה למחשב, לקבצים או לאפליקציות שלך."
+    }
   },
   "collection": {
     "title": "האוסף שלי",
@@ -1070,6 +1276,8 @@
     "removed": "הוסר מהאוסף"
   },
   "discovery": {
+    "trending": "פופולרי עכשיו",
+    "seeAll": "הצג הכל",
     "featuredPrompts": "פרומפטים מודגשים",
     "todaysMostUpvoted": "המדורגים ביותר היום",
     "latestPrompts": "פרומפטים אחרונים",
@@ -1412,7 +1620,7 @@
     "interactiveBanner": {
       "badge": "גרסה אינטראקטיבית זמינה",
       "title": "רוצים חוויה מפורטת ואינטראקטיבית יותר?",
-      "description": "העמיקו עם המדריך האינטראקטיבי המקיף שלנו הכולל 29 פרקים, תרגילים מעשיים ודוגמאות מהעולם האמיתי לשליטה בפרומפטים ל-AI.",
+      "description": "העמיקו עם המדריך האינטראקטיבי המקיף שלנו הכולל 30 פרקים, תרגילים מעשיים ודוגמאות מהעולם האמיתי לשליטה בפרומפטים ל-AI.",
       "cta": "קראו את הספר האינטראקטיבי"
     },
     "generalTips": {
@@ -1882,7 +2090,7 @@
     "donate": "תמכו בפרויקט",
     "subtitle": "מדריך אינטראקטיבי ליצירת פרומפטים ברורים ויעילים",
     "metaTitle": "מדריך להנדסת פרומפטים: הספר האינטראקטיבי של Prompting",
-    "metaDescription": "שלטו בהנדסת פרומפטים של AI עם המדריך האינטראקטיבי החינמי הזה. למדו פרומפטים ל-ChatGPT, שרשרת חשיבה, למידת few-shot וטכניקות מתקדמות. יותר מ-29 פרקים עם דוגמאות מהעולם האמיתי.",
+    "metaDescription": "שלטו בהנדסת פרומפטים של AI עם המדריך האינטראקטיבי החינמי הזה. למדו פרומפטים ל-ChatGPT, שרשרת חשיבה, למידת few-shot וטכניקות מתקדמות. יותר מ-30 פרקים עם דוגמאות מהעולם האמיתי.",
     "interactiveGuideBy": "מדריך אינטראקטיבי מאת",
     "authorIntro": "שלום, אני <author>פאטיח קאדיר אקין</author>, אוצר המאגר הפופולרי <repoLink>Awesome ChatGPT Prompts</repoLink> ב-GitHub ו-<siteName>prompts.chat</siteName>.",
     "bookDescription": "במדריך המקיף והאינטראקטיבי הזה, תגלו אסטרטגיות מומחה ליצירת פרומפטים משכנעים ל-AI שמייצרים שיחות מעניינות ויעילות. מהבנת אופן הפעולה של מודלי AI ועד שליטה בטכניקות מתקדמות כמו שרשור פרומפטים ומערכות סוכנים, הספר הזה נותן לכם את הכלים לשדרג את האינטראקציות שלכם עם AI.",
@@ -1904,7 +2112,7 @@
       "part4": "חלק 4: שיטות עבודה מומלצות",
       "part5": "חלק 5: מקרי שימוש",
       "part6": "חלק 6: סיכום",
-      "chapters": "29 פרקים אינטראקטיביים"
+      "chapters": "30 פרקים אינטראקטיביים"
     },
     "startReading": "התחל לקרוא",
     "skipToChapter1": "דלג לפרק 1",
@@ -1962,6 +2170,7 @@
       "13-multimodal-prompting": "Prompting רב-מודאלי",
       "14-context-engineering": "הנדסת הקשר",
       "14a-loop-engineering": "הנדסת לולאות",
+      "24a-from-prompt-to-team": "מפרומפט לצוות",
       "25-agents-and-skills": "סוכנים ומיומנויות",
       "15-common-pitfalls": "מלכודות נפוצות",
       "16-ethics-responsible-use": "אתיקה ושימוש אחראי",
@@ -1996,6 +2205,7 @@
       "13-multimodal-prompting": "עבודה עם תמונות, אודיו ווידאו",
       "14-context-engineering": "RAG, embeddings, קריאות פונקציות ו-MCP",
       "14a-loop-engineering": "תכנון לולאות משוב שפועלות, מאמתות, מסתגלות ויודעות מתי לעצור",
+      "24a-from-prompt-to-team": "פרומפטים, מיומנויות, סוכנים, בוטים וצוותים במילים פשוטות, ומה ההבדל ביניהם",
       "25-agents-and-skills": "בניית סוכני AI עם חבילות מיומנות לשימוש חוזר",
       "15-common-pitfalls": "טעויות שיש להימנע מהן",
       "16-ethics-responsible-use": "שיקולים אתיים ב-AI",
@@ -2450,7 +2660,7 @@
     },
     "bots": {
       "title": "בוטים מוכנים של סוכני בינה מלאכותית ל-OpenClaw, Hermes ו-Grok",
-      "description": "עיינו בבוטים מוכנים של סוכני בינה מלאכותית עם הנחיות, שגרות מתוזמנות ומיומנויות, והתקינו אותם ב-OpenClaw, ב-Hermes Agent או ב-Grok Bot בלחיצה אחת.",
+      "description": "עיינו בבוטים מוכנים של סוכני בינה מלאכותית עם הנחיות, שגרות מתוזמנות ומיומנויות, והתקינו אותם ב-OpenClaw, ב-AutoGPT, ב-OpenAI Dots, ב-Claude Duet, ב-Meta Muse, ב-Hermes Agent או ב-Grok Bot בלחיצה אחת.",
       "heading": "בוטים"
     },
     "taste": {
@@ -2511,7 +2721,16 @@
       "SKILL": "מיומנות סוכן",
       "TASTE": "פרופיל סגנון קוד",
       "model": "פרומפט ל-{model}"
+    },
+    "botTeams": {
+      "title": "צוותי בוטים של AI: סוכנים שמעבירים עבודה זה לזה",
+      "description": "עיין בצוותים של בוטי סוכני AI שמעבירים עבודה זה לזה, צפה בכל העברה והתקן צוות שלם ב-OpenClaw, ‏Hermes Agent, ‏Grok Bot ועוד בבת אחת.",
+      "heading": "צוותי בוטים"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "רק בוטים שצריכים מחשב <code>CLOUD</code> או את המחשב <code>LOCAL</code> של המשתמש (בוטים שצריכים את שניהם תואמים לכל אחד מהם), או <code>NONE</code> לבוטים שלא צריכים מחשב",
+    "computerRequirementsInput": "רשימה עם <code>CLOUD</code> (הבוט צריך מחשב מרוחק, שולחן עבודה או דפדפן משלו) ו/או <code>LOCAL</code> (הוא צריך את המחשב, הקבצים או האפליקציות של המשתמש); רשימה ריקה פירושה שאינו צריך מחשב. מחליפה את הרשימה השמורה"
   },
   "actionButtons": {
     "deployWithSpacefast": "פריסה עם SpaceFast"

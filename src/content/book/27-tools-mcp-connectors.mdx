@@ -72,6 +72,38 @@ The name and schema do not execute anything by themselves. The implementation mu
 "I will create an issue" is a statement. A tool call requests the operation. A successful response with the new issue's ID is evidence that it happened. Keep those three things separate.
 </Callout>
 
+### A Tool Can Stand for a Whole Workflow
+
+So far, each tool has been a single operation: search, create, export. But the implementation behind a tool's name can be much larger. It can be a whole process, written down in advance and run by a workflow engine. The agent still decides **when** to start it and **what input** to pass. Everything after that runs exactly as the process defines it, in the same order, every time.
+
+Think of a refund. A support agent may be good at understanding a frustrated customer, but you probably do not want it improvising your refund policy. Wrapped as one tool, the refund workflow checks eligibility, asks a manager for approval, and issues the credit in that order, whichever conversation started it. Approvals, deployments, and other processes where the steps *are* the policy fit the same shape. Workflow engines usually keep a record of each run, so the agent can also look up past runs and tell you which ones failed overnight and at which step, instead of guessing.
+
+AWS offers one recent example. On October 29, 2026, it [announced](https://aws.amazon.com/about-aws/whats-new/2026/10/step-functions-workflows-ai-agent-tools/) that Step Functions workflows can be used as agent tools through Amazon Bedrock AgentCore Gateway, which connects agents to tools through MCP. The idea is not tied to one vendor: a CI pipeline, an approval flow in a ticketing system, or a script your team already trusts can be offered to an agent in the same way.
+
+The trade is between two strengths. The model is flexible: it can read an unusual situation and choose a sensible next move. The workflow is predictable: the same input leads through the same steps. Leaving the moment to the agent and the steps to the workflow puts each strength where it belongs. That changes the prompt too. Describe the goal and when to call the workflow, not the steps inside it. Repeating the steps creates a second copy of the policy, one that can drift from the real one and that the model might try to follow by hand.
+
+<Compare
+  before={{ label: "Re-describing the workflow", content: "To refund a customer, first check that the order is less than 30 days old, then ask a manager, then issue the credit, then email the customer." }}
+  after={{ label: "Describing the goal and the trigger", content: "Help customers resolve billing problems. When a customer asks for a refund and you have the order ID, call the refund workflow with that ID and the reason. Report the result it returns. Do not promise a refund before the workflow confirms it." }}
+/>
+
+### When There Is No API, the Screen Becomes the Tool
+
+Every tool so far has had a door built for software: an API, a connector, an MCP server. Many systems have no such door. An old internal portal, a supplier's booking site, a desktop program from another decade: people use them every day, but only through the screen. For these, some models can treat the screen itself as a tool. This is usually called **computer use**.
+
+The mechanism is the loop you already know, with pictures in place of data. The application running the model sends the task and a screenshot. The model looks at it and answers with a structured action instead of prose: click at this point, type this text, scroll down. Some tools also attach a short stated intent to each action, such as "Click the search box to type the destination," which makes a run easier to follow. The model still moves nothing by itself. The developer's own code performs the action, takes a new screenshot, and sends it back. Look, act, look again, until the task is done or someone stops the loop. Where that loop runs matters as much as how it works, and the [Bot's Computer](/book/28-persistent-bots) section of Always-On Bots looks at that question.
+
+Google made its Computer Use tool generally available in the Gemini API on October 30, 2026 ([release notes](https://ai.google.dev/gemini-api/docs/changelog)). Its [documentation](https://ai.google.dev/gemini-api/docs/computer-use) describes browser, mobile, and desktop environments, actions that carry an `intent` field, configurable safety policies that can block an action or ask for confirmation before steps such as a payment, and opt-in scanning of screenshots for hidden prompt injection. Google itself recommends close supervision for important tasks. The idea is not unique to one company: Anthropic offers a [computer use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool) for Claude, and OpenAI offers a [computer tool](https://platform.openai.com/docs/guides/tools-computer-use) in its Responses API, both built around the same exchange of screenshots and actions that your application carries out.
+
+The trade-offs deserve plain words. Reading a screen is slower than calling an API, every screenshot costs tokens, and a moved button or an unexpected pop-up can break a run that worked yesterday. So when a real API or connector exists, prefer it, and keep computer use for the systems that leave no other way in. The screen is also an input like any other: text on a page can carry prompt injection just as a document can, and seeing it in a picture makes it no more trustworthy. And because the model can click anything a person could, risky steps such as paying, deleting, or changing data should wait for a human to confirm them.
+
+Prompting follows the same rules as before, only with sharper edges, because a website cannot tell the model what you meant. Name the exact site and page, say where the task ends, and say what must be confirmed before anything is done.
+
+<Compare
+  before={{ label: "An open-ended errand", content: "Go online and book me a meeting room for Thursday." }}
+  after={{ label: "A page, a stopping point, a confirmation", content: "On our room booking page at rooms.example.com, find a room for six people on Thursday from 2:00 to 3:00 PM. Stop on the final confirmation screen and show me the room and time before you press Book. If no room is free, tell me and stop. Do not change or cancel any existing booking." }}
+/>
+
 ## What a Connector Adds
 
 A connector packages the integration with a particular system. It may handle signing in, selecting an account or workspace, finding data, and exposing supported actions as tools. Some connectors only search or read. Others also support writes.
@@ -111,6 +143,66 @@ MCP also defines **resources** and **prompts**. These words have specific meanin
 The [MCP server concepts guide](https://modelcontextprotocol.io/docs/learn/server-concepts) describes these as model-controlled tools, application-controlled resources, and user-controlled prompts. These describe the intended interaction patterns. They do not remove the application's permission checks.
 
 An MCP prompt template is not automatically a skill. A skill can package a longer procedure, references, and scripts. It may tell the agent how to use tools provided through MCP, a direct connector, or local functions.
+
+### Skills Can Travel With the Server
+
+Until recently, these two pieces usually arrived separately. A server could give an agent its tools, while the know-how for using them well lived somewhere else: in a skill installed on its own, a README, or the user's prompt. When the service changed, those instructions could quietly fall behind.
+
+MCP's official **Skills extension**, finalized in September 2026, closes much of that gap. A server can now offer not only its tools but also the skills that explain how to use them, written in the same `SKILL.md` format described in [Agents & Skills](/book/25-agents-and-skills). Tools tell an agent what it can do. Skills tell it how to do the job well. Now both can come from the same server, so the instructions live beside the service they describe and can be kept current by the people who maintain it.
+
+The mechanism builds on pieces you have already met. Each file in a skill is exposed as an MCP resource, conventionally with a `skill://` URI. A client can list a server's skills with `skills/list`, fetch one with `skills/get`, and read its supporting files with `resources/read`.
+
+<Compare
+  before={{ label: "A server with tools only", content: "The tracker server exposes search_issues and create_issue. The triage method (check for duplicates, follow the issue template) has to come from a separately installed skill or from your prompt, and it can drift when the service changes." }}
+  after={{ label: "A server that also ships a skill", content: "The same server also offers an issue-triage skill. The host sees only its name and description at first and loads the full instructions when a task calls for them. When the maintainers change the service, they can update the skill alongside it." }}
+/>
+
+The host still decides how a skill reaches the model. The model might choose one by its name and description, or the user might pick it directly. Either way, the full instructions enter the context only when they are needed, and reading a `SKILL.md` file does not activate the skill by itself.
+
+<Callout type="warning" title="A served skill is still instructions">
+A skill from a server is text entering the agent's context, and it can shape what the agent does next. It deserves the same scrutiny as the server itself. A careful host verifies the content and asks for any required approval before loading it. Like other official MCP extensions, such as MCP Apps and the Tasks extension described next, Skills is optional: it is used only when both client and server declare support. Client support is still early, so check whether your application actually loads skills from servers before relying on them.
+</Callout>
+
+### When a Tool Needs Time or an Answer
+
+Most tool calls are brief exchanges: the agent asks, the server answers, and the work moves on. Some jobs do not fit that rhythm. A deep research run, a large report export, or a build can take many minutes, and some jobs reach a point where only the user can decide what happens next. MCP offers two ideas for these moments: **Tasks**, for work that needs time, and **elicitation**, for work that needs a person.
+
+The official [Tasks extension](https://tasks.extensions.modelcontextprotocol.io/) (`io.modelcontextprotocol/tasks`) changes how a slow `tools/call` ends. Instead of holding the request open until the job is done, the server can reply right away with a durable task handle, a little like the ticket you get at a coat check. The client can look in on the task with `tasks/get`, send updates or answers with `tasks/update`, stop it with `tasks/cancel`, and collect the result when it is ready. Meanwhile, the agent is free to keep working and come back later, which matters most for [always-on bots](/book/28-persistent-bots) that run jobs while you are away. Tasks are opt-in on both sides: the client declares support with each request, and the server decides, request by request, whether to create a task. Existing tools do not gain this ability on their own; the server's author has to add it.
+
+<Compare
+  before={{ label: "A blocking tool call", content: "The agent calls export_report and waits. The request stays open for minutes. If the connection drops, no one knows whether the export finished, and the agent can do nothing else until it returns." }}
+  after={{ label: "A task handle", content: "The agent calls export_report and gets a task handle back at once. It moves on to other work, checks the task with tasks/get, and fetches the finished report when it is ready. If plans change, tasks/cancel stops it." }}
+/>
+
+[Elicitation](https://modelcontextprotocol.io/specification/latest/client/elicitation) lets a server pause and ask the user for structured input: "Deploy to staging?", "Confirm this refund?", or a missing detail the job cannot continue without. The host shows a small form, and the user can answer, decline, or cancel. Declining is a valid answer too, and the server decides what to do next. The two ideas meet naturally: a running task can pause in an `input_required` state and ask the user something mid-flight. Before a write, a question like this is a natural human-in-the-loop checkpoint, placed exactly where the decision matters.
+
+<Callout type="warning" title="A form from a server is still a request from a server">
+An elicitation comes from the server, not from your application, so it deserves the same scrutiny as any tool output. Read what it asks before you answer, and never type a password, API key, or other secret into such a form unless you trust the server. Support also differs between applications: VS Code [documents elicitation support](https://code.visualstudio.com/api/extension-guides/ai/mcp), Cursor supports elicitation, and Claude Code has added [MCP Tasks and elicitations](https://code.claude.com/docs/en/mcp) in public beta in its terminal app, though not yet everywhere it runs. The official [client support matrix](https://modelcontextprotocol.io/extensions/client-matrix) tracks which applications support which extensions, so check yours before relying on either feature.
+</Callout>
+
+### Finding a Server and Connecting Once
+
+Before an agent can use a remote server, someone has to find it, learn how to connect, and sign in. For a long time that meant copying a URL from a README, guessing which transport to use, and repeating the setup in every application. Two kinds of help are now arriving: information a client can read **before** it connects, and connections you set up **once** and reuse.
+
+On the discovery side, MCP's **Server Cards** extension ([SEP-2127](https://modelcontextprotocol.io/seps/2127-mcp-server-cards)) was finalized on October 6, 2026. It describes a small, static document about a remote server: its name, its endpoints and transports, and the protocol versions it supports. A website can list its cards in an AI catalog at `/.well-known/ai-catalog.json`, so a client pointed at a domain can learn where and how to connect without manual setup. The card deliberately leaves out the list of tools, because the tools a server offers can change with the signed-in user. Those still come from `tools/list` after connecting.
+
+On the connection side, GitHub began rolling out [GitHub-verified MCP servers](https://github.blog/changelog/2026-10-28-connect-your-tools-to-copilot-without-all-the-setup/), which it also calls connectors, in public preview on October 28, 2026. You sign in to a service such as Slack or Sentry once, and the connection works across the Copilot app, Copilot CLI, VS Code, Copilot in the cloud, and GitHub Mobile.
+
+Tools are not only web services, either. The same day, at Android Dev Summit, Google [announced](https://developer.android.com/blog/posts/build-it-your-way-a-next-era-of-android-development) that **AppFunctions**, which it calls Android's unified tool calling layer, is now in beta. Through Android MCP, an app on your phone can offer functions such as creating a note or sending a message to an on-device agent of its own or to system-level agents, without anyone opening the app.
+
+This brings us back to an earlier point: **connector** is a product term. A server card, a verified badge, and a single sign-in make setup easier and help you trust *who* you are connecting to. They do not decide *what* you grant. You still choose which account to connect, which permissions to allow, and which actions should wait for approval. Neither discovery metadata nor verification replaces reading what the tools can actually do once they are listed.
+
+<Quiz
+  question="A remote server publishes a Server Card and appears as a verified connector in your application. What is still your job?"
+  options={[
+    "Nothing. Verification means every tool on the server is safe to run",
+    "Choosing which account and permissions to grant, and reviewing what the listed tools can do",
+    "Copying the tool list from the Server Card into your prompt",
+    "Typing the server's endpoint address into every prompt"
+  ]}
+  correctIndex={1}
+  explanation="Discovery metadata and verification help with setup and with knowing who runs the server. They do not choose your account or scopes for you, and a Server Card does not even list the tools. Review the tools after connecting, and grant only the access the task needs."
+/>
 
 ## Try a Read and a Write
 

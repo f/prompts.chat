@@ -134,6 +134,45 @@ Mude uma configuração e avance pela execução passo a passo. Observe o que mu
 
 Esses são exemplos de resultados, não regras sobre o que todo modelo fará. Um modelo pode fazer uma pergunta útil mesmo com um prompt vago. Instruções claras tornam suas expectativas mais fáceis de seguir e verificar.
 
+## Quando o modelo escreve o loop
+
+O loop descrito acima tem um ritmo constante: o modelo pede uma ferramenta, o harness a executa e o resultado entra no contexto do modelo. Para poucos passos, isso funciona bem. Mas, numa tarefa que mexe em centenas de arquivos, cada passo vira mais uma solicitação completa ao modelo, e o contexto se enche de saídas de que o modelo só precisou uma vez.
+
+Alguns harnesses oferecem outro arranjo. O modelo escreve um pequeno programa que chama as ferramentas por conta própria. O programa roda em um sandbox; os dados brutos, como arquivos, logs e resultados de busca, ficam nas variáveis dele, e só o que o programa imprime volta para o modelo. Isso se chama **chamada programática de ferramentas** (programmatic tool calling). A ideia vem de pesquisas como o [CodeAct](https://arxiv.org/abs/2402.01030) (Wang et al., 2024).
+
+<Compare
+  before={{ label: "Uma chamada de cada vez", content: "Leia o arquivo A. Aqui está A. Leia o arquivo B. Aqui está B. Depois de cada resultado, o modelo é chamado de novo com suas instruções, seu histórico e tudo o que viu até agora." }}
+  after={{ label: "Um programa que chama as ferramentas", content: "Pesquise no projeto, leia cada correspondência, separe os arquivos que ainda usam a API antiga e imprima uma lista curta. O harness executa o programa e devolve só a lista." }}
+/>
+
+O contexto fica mais limpo, porque o modelo raciocina sobre um resumo. São necessárias menos solicitações ao modelo, porque instruções e histórico não são reenviados a cada poucas chamadas. E loops e verificações rodam no código, então um caso que o modelo pretendia tratar não some em silêncio.
+
+A Factory tornou isso o padrão no [Droid 1.0](https://factory.com/news/frontier-harness), anunciado em 29 de outubro de 2026. Sua ferramenta Script executa JavaScript em um sandbox e pode fazer centenas de chamadas de ferramentas numa única solicitação ao modelo. Chamadas independentes rodam ao mesmo tempo, e um script longo pode continuar em segundo plano e acordar o modelo quando terminar. A Factory credita o CodeAct e observa que a Cloudflare e a Anthropic levaram a ideia para produção no fim de 2025, e que o Codex a levou para os agentes de programação. No exemplo da própria Factory, a correção de um teste que falhava, as mesmas 15 chamadas de ferramentas levaram 5 chamadas ao modelo em vez de 10. São números que a Factory divulga sobre o próprio harness.
+
+Também há custos. O sandbox não tem acesso próprio a arquivos, rede ou sistema; só pode usar as ferramentas que o harness expõe. Permissões e aprovações continuam valendo para cada ferramenta que o programa chama. A saída impressa tem limite de tamanho. E, para uma pessoa, um programa é mais difícil de acompanhar do que uma lista de passos isolados.
+
+### Workflows: a mesma ideia, um nível acima
+
+O mesmo movimento funciona com agentes inteiros. No [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/workflow-runs) (em beta) e no [Claude Code](https://code.claude.com/docs/en/workflows), da Anthropic, um agente pode escrever um **workflow**: um programa que coloca muitos agentes para trabalhar em fases, distribui o trabalho em paralelo, passa resultados de um agente para outro, repete um passo até que uma revisão o aprove e junta tudo o que volta. Ele roda em segundo plano, e a conversa principal fica livre.
+
+Com subagentes, o próprio agente decide cada próximo passo. Num workflow, quem decide é o programa. Ainda assim, é o agente que escolhe quando iniciar um, por isso essa escolha é orientada no prompt de sistema ou nas instruções. O orçamento também pesa: cada agente de uma execução gasta tokens.
+
+### Escrevendo prompts para um programa
+
+Quando o modelo planeja um programa, seu prompt vira a especificação dele. Descreva o trabalho inteiro: quais itens cobrir, quais verificações precisam valer para cada um, o que fazer quando um falha e o que o relatório final deve conter. Para ações arriscadas, peça para ver antes um resumo do programa.
+
+<TryIt compact prompt={`Resolva todo este trabalho com um programa em vez de seguir passo a passo.
+
+Trabalho: \${job:verifique se cada rota de API que altera dados exige um usuário autenticado}
+Itens: \${items:todos os arquivos de rota em src/app/api}
+Verificação para cada item: \${checks:a rota valida a sessão antes de ler ou gravar qualquer coisa}
+Se um item falhar: \${failure:anote o caminho do arquivo e o motivo, depois continue}
+Relatório final: \${report:as rotas que falharam, quantas passaram e qualquer arquivo que você não conseguiu ler}
+
+Antes de executar algo que altere arquivos, me mostre um resumo do programa e espere minha aprovação.`} />
+
+Nem toda tarefa precisa de um programa. Quando cada passo depende de avaliar o resultado anterior, uma chamada de cada vez costuma ser mais clara. O programa brilha quando o trabalho é grande, repetitivo e fácil de verificar.
+
 ## Por que os prompts importam dentro de um harness
 
 Um harness dá ao modelo uma forma de agir. Seus prompts explicam quais ações são úteis. Sem um objetivo claro, um agente pode gastar muitas etapas fazendo um trabalho de que você não precisava.
@@ -210,6 +249,55 @@ A mesma distinção importa para as informações que voltam das ferramentas. Um
   correctIndex={2}
   explanation="Prompts orientam o comportamento. A ferramenta ou o ambiente precisa aplicar o limite de acesso mesmo que o modelo solicite uma ação não permitida."
 />
+
+## Onde o harness vive?
+
+Todo agente roda dentro de um harness, mas alguém precisa construir esse harness, hospedá-lo e mantê-lo funcionando. Quem faz isso define quanto você controla e quanto precisa manter. Hoje um harness costuma chegar até você por um destes quatro caminhos:
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">De onde vem</th>
+      <th scope="col">Quem roda o ciclo</th>
+      <th scope="col">O que você fornece</th>
+      <th scope="col">O que se ganha e o que se paga</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Um ciclo que você mesmo escreve</td>
+      <td>Você</td>
+      <td>Tudo: contexto, tratamento das ferramentas, permissões, limites</td>
+      <td>Controle total, e toda a manutenção também</td>
+    </tr>
+    <tr>
+      <td>Um SDK ou framework</td>
+      <td>Você, localmente ou no host que escolher</td>
+      <td>O agente como arquivos no seu projeto: prompts, ferramentas, testes</td>
+      <td>As mudanças passam pela revisão de código de sempre; implantar e atualizar continua com você</td>
+    </tr>
+    <tr>
+      <td>Um serviço gerenciado</td>
+      <td>O provedor</td>
+      <td>Instruções, skills, ferramentas e a escolha do modelo</td>
+      <td>Pouca engrenagem para manter; o sandbox e os limites do provedor definem as fronteiras</td>
+    </tr>
+    <tr>
+      <td>Parte de um sistema de automação, como a CI</td>
+      <td>A plataforma de automação, quando um evento dispara</td>
+      <td>Uma descrição da tarefa e as saídas que ela pode produzir</td>
+      <td>Encaixa nos pipelines que você já tem; ninguém fica olhando um chat enquanto ele roda</td>
+    </tr>
+  </tbody>
+</table>
+
+O fim de outubro de 2026 trouxe um exemplo claro de cada um dos três últimos. O [Agent SDK](https://cursor.com/blog/agent-sdk) do Cursor, disponível para todos desde 20 de outubro, trata um agente como um pequeno projeto: prompts em Markdown, ferramentas como funções TypeScript e avaliações (evals) ao lado. Você pode rodar o agente localmente, implantá-lo na infraestrutura do Cursor ou executá-lo nos seus próprios servidores como um único processo Node. Em 28 de outubro, a Microsoft lançou em prévia pública o [Copilot harness no Foundry Agent Service](https://devblogs.microsoft.com/foundry/microsoft-copilot-harness-in-foundry/). É o [mesmo harness](https://blogs.microsoft.com/blog/2026/10/28/introducing-the-microsoft-copilot-harness-unlocking-the-potential-of-truly-multi-model-agentic-work/) que move o GitHub Copilot no app, na CLI e no VS Code. A Microsoft roda o ciclo do agente e o sandbox; você traz skills, ferramentas MCP e definições de agente que pode manter no controle de versão. No mesmo dia, o [GitHub Agentic Workflows](https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available/) ficou disponível para todos. Você descreve um trabalho, como a triagem de issues novas, em um arquivo Markdown, e ele é compilado em um workflow comum do GitHub Actions que executa o Copilot ou outro agente de programação.
+
+O lugar onde o harness vive também decide onde seus limites são aplicados. Instruções orientam; permissões impõem. No seu próprio ciclo, é você quem constrói esses controles. Em um serviço gerenciado ou numa plataforma de automação, a plataforma fornece e você configura. O Agentic Workflows mostra quantas camadas isso pode significar: por padrão, os agentes têm permissão só de leitura e rodam em um contêiner isolado atrás de um firewall, e as mudanças que propõem passam por “saídas seguras” (safe outputs) validadas e por uma verificação de ameaças separada antes que qualquer coisa seja aplicada. Seu prompt continua dizendo o que fazer. A plataforma limita o estrago que um erro pode causar.
+
+As partes que você escreve costumam viajar melhor do que o ciclo. Skills e MCP são padrões abertos, e o anúncio da Microsoft trata o suporte a eles como sinal de um harness sério. Uma skill clara ou uma boa descrição de ferramenta muitas vezes passa para outro harness com pequenos ajustes; código escrito em torno de um ciclo específico, raramente. Antes sugerimos manter o mesmo modelo ao comparar harnesses. Um harness multimodelo permite o experimento inverso: o Foundry deixa você escolher um modelo compatível sem reescrever a orquestração, e o Agentic Workflows deixa cada workflow escolher seu provedor de modelos. Você pode trocar o modelo e manter todo o resto parado.
+
+Seja qual for o caminho, algumas coisas nunca passam para o provedor: o resultado que você quer, as instruções e skills que o descrevem, as ferramentas e acessos que você concede e as verificações que mostram que o trabalho está feito. Um harness pode rodar o ciclo por você. Ele não pode decidir o que “pronto” significa.
 
 ## O que torna um harness útil?
 

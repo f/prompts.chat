@@ -134,6 +134,45 @@ Verander één instelling en doorloop de uitvoering stap voor stap. Kijk wat er 
 
 Dit zijn voorbeelden van uitkomsten, geen regels voor wat elk model zal doen. Een model kan ook bij een vage prompt een nuttige vraag stellen. Duidelijke instructies maken je verwachtingen makkelijker te volgen en te controleren.
 
+## Als het model de lus schrijft
+
+De lus hierboven heeft een vast ritme: het model vraagt om één tool, de harness voert die uit en het resultaat komt in de context van het model. Voor een paar stappen werkt dat prima. Maar bij een taak die honderden bestanden raakt, wordt elke stap weer een volledige modelaanvraag, en de context loopt vol met uitvoer die het model maar één keer nodig had.
+
+Sommige harnesses bieden een andere aanpak. Het model schrijft een klein programma dat de tools zelf aanroept. Dat programma draait in een sandbox; ruwe gegevens zoals bestanden, logs en zoekresultaten blijven in de variabelen van het programma, en alleen wat het programma afdrukt, gaat terug naar het model. Dit heet **programmatisch tools aanroepen** (programmatic tool calling). Het idee komt voort uit onderzoek zoals [CodeAct](https://arxiv.org/abs/2402.01030) (Wang et al., 2024).
+
+<Compare
+  before={{ label: "Eén toolaanroep tegelijk", content: "Lees bestand A. Hier is A. Lees bestand B. Hier is B. Na elk resultaat wordt het model opnieuw aangeroepen, met zijn instructies, zijn geschiedenis en alles wat het tot nu toe heeft gezien." }}
+  after={{ label: "Een programma dat de tools aanroept", content: "Doorzoek het project, lees elke treffer, houd de bestanden over die nog de oude API gebruiken en druk een korte lijst af. De harness voert het programma uit en geeft alleen de lijst terug." }}
+/>
+
+De context blijft overzichtelijker, omdat het model over een samenvatting nadenkt. Er zijn minder modelaanvragen nodig, omdat instructies en geschiedenis niet om de paar aanroepen opnieuw worden meegestuurd. En lussen en controles draaien in code, zodat een geval dat het model van plan was te behandelen niet stilletjes wegvalt.
+
+Factory maakte dit de standaard in [Droid 1.0](https://factory.com/news/frontier-harness), aangekondigd op 29 oktober 2026. De Script-tool voert JavaScript uit in een sandbox en kan honderden toolaanroepen doen binnen één modelaanvraag. Onafhankelijke aanroepen lopen tegelijk, en een lang script kan op de achtergrond doorgaan en het model wekken zodra het klaar is. Factory noemt CodeAct als basis en merkt op dat Cloudflare en Anthropic het idee eind 2025 in productie brachten en dat Codex het naar codeeragents bracht. In Factory's eigen voorbeeld, het repareren van een falende test, kostten dezelfde 15 toolaanroepen 5 in plaats van 10 modelaanroepen. Het gaat om cijfers die Factory over zijn eigen harness rapporteert.
+
+Er hangt ook een prijskaartje aan. De sandbox heeft zelf geen toegang tot bestanden, netwerk of systeem; hij kan alleen de tools gebruiken die de harness aanbiedt. Rechten en goedkeuringen moeten nog steeds gelden voor elke tool die het programma aanroept. De afgedrukte uitvoer is begrensd. En een programma is voor een mens lastiger te volgen dan een lijst losse stappen.
+
+### Workflows: hetzelfde idee een niveau hoger
+
+Dezelfde zet werkt met complete agents. In Anthropics [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/workflow-runs) (bèta) en [Claude Code](https://code.claude.com/docs/en/workflows) kan een agent een **workflow** schrijven: een programma dat veel agents in fasen laat werken, werk parallel verdeelt, resultaten van de ene agent aan de andere doorgeeft, een stap herhaalt tot een beoordeling slaagt en alles wat terugkomt samenvoegt. Het draait op de achtergrond, terwijl het hoofdgesprek vrij blijft.
+
+Bij subagents beslist de agent zelf over elke volgende stap. In een workflow beslist het programma. Wanneer er een workflow start, kiest de agent wel zelf; die keuze stuur je dus bij in de systeemprompt of de instructies. Ook het budget telt: elke agent in een run verbruikt tokens.
+
+### Prompts voor een programma
+
+Als het model een programma plant, wordt je prompt de specificatie ervan. Beschrijf de hele klus: welke onderdelen aan bod komen, welke controles voor elk ervan moeten kloppen, wat er gebeurt als er een faalt en wat het eindrapport moet bevatten. Vraag bij riskante acties eerst om een samenvatting van het programma.
+
+<TryIt compact prompt={`Pak deze hele klus aan met een programma in plaats van stap voor stap.
+
+Klus: \${job:controleer dat elke API-route die gegevens wijzigt een ingelogde gebruiker vereist}
+Onderdelen: \${items:alle routebestanden onder src/app/api}
+Controle voor elk onderdeel: \${checks:de route controleert de sessie voordat er iets wordt gelezen of geschreven}
+Als een onderdeel faalt: \${failure:noteer het bestandspad en de reden en ga door}
+Eindrapport: \${report:de routes die faalden, hoeveel er slaagden en welke bestanden je niet kon lezen}
+
+Vat het programma voor me samen en wacht op mijn goedkeuring voordat je iets uitvoert dat bestanden wijzigt.`} />
+
+Niet elke taak heeft een programma nodig. Als elke stap afhangt van een oordeel over het vorige resultaat, is één aanroep tegelijk vaak duidelijker. Een programma komt tot zijn recht als de klus groot, herhalend en makkelijk te controleren is.
+
 ## Waarom prompts belangrijk zijn binnen een harness
 
 Een harness geeft het model een manier om te handelen. Je prompts leggen uit welke acties nuttig zijn. Zonder duidelijk doel kan een agent veel stappen besteden aan werk dat je niet nodig had.
@@ -210,6 +249,55 @@ Hetzelfde onderscheid geldt voor informatie die tools teruggeven. Een webpagina 
   correctIndex={2}
   explanation="Prompts sturen het gedrag. De tool of omgeving moet de toegangsgrens afdwingen, ook als het model een niet-toegestane actie aanvraagt."
 />
+
+## Waar woont de harness?
+
+Elke agent draait in een harness, maar iemand moet die harness bouwen, hosten en draaiende houden. Wie dat doet, bepaalt hoeveel jij in handen hebt en hoeveel je zelf moet onderhouden. Tegenwoordig komt een harness meestal langs een van deze vier wegen bij je terecht:
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Waar hij vandaan komt</th>
+      <th scope="col">Wie de lus draait</th>
+      <th scope="col">Wat jij aanlevert</th>
+      <th scope="col">De afweging</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Een lus die je zelf schrijft</td>
+      <td>Jij</td>
+      <td>Alles: context, afhandeling van tools, machtigingen, limieten</td>
+      <td>Volledige controle, en al het onderhoud erbij</td>
+    </tr>
+    <tr>
+      <td>Een SDK of framework</td>
+      <td>Jij, lokaal of bij een host naar keuze</td>
+      <td>De agent als bestanden in je project: prompts, tools, tests</td>
+      <td>Wijzigingen gaan door de gewone codereview; uitrollen en bijwerken blijft jouw werk</td>
+    </tr>
+    <tr>
+      <td>Een beheerde dienst</td>
+      <td>De aanbieder</td>
+      <td>Instructies, skills, tools en een modelkeuze</td>
+      <td>Weinig machinerie om te onderhouden; de sandbox en limieten van de aanbieder bepalen de grenzen</td>
+    </tr>
+    <tr>
+      <td>Onderdeel van een automatiseringssysteem, zoals CI</td>
+      <td>Het automatiseringsplatform, zodra er iets gebeurt</td>
+      <td>Een taakomschrijving en de uitvoer die ze mag opleveren</td>
+      <td>Past in pipelines die je al hebt; niemand kijkt naar een chat terwijl hij draait</td>
+    </tr>
+  </tbody>
+</table>
+
+Eind oktober 2026 kwam er van elk van de laatste drie een duidelijk voorbeeld. De [Agent SDK](https://cursor.com/blog/agent-sdk) van Cursor, sinds 20 oktober algemeen beschikbaar, behandelt een agent als een klein project: prompts in Markdown, tools als TypeScript-functies en evals ernaast. Je kunt zo'n agent lokaal draaien, uitrollen op de infrastructuur van Cursor of op je eigen servers draaien als één Node-proces. Op 28 oktober bracht Microsoft de [Copilot-harness in Foundry Agent Service](https://devblogs.microsoft.com/foundry/microsoft-copilot-harness-in-foundry/) uit als openbare preview. Het is [dezelfde harness](https://blogs.microsoft.com/blog/2026/10/28/introducing-the-microsoft-copilot-harness-unlocking-the-potential-of-truly-multi-model-agentic-work/) die GitHub Copilot aandrijft in de app, de CLI en VS Code. Microsoft draait de agentlus en de sandbox; jij levert skills, MCP-tools en agentdefinities die je in versiebeheer kunt bewaren. Dezelfde dag werd [GitHub Agentic Workflows](https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available/) algemeen beschikbaar. Je beschrijft een klus, zoals het sorteren van nieuwe issues, in een Markdown-bestand, en dat wordt gecompileerd tot een gewone GitHub Actions-workflow die Copilot of een andere codeeragent uitvoert.
+
+Waar de harness woont, bepaalt ook waar zijn grenzen worden afgedwongen. Instructies sturen; machtigingen dwingen af. In je eigen lus bouw je die handhaving zelf. Bij een beheerde dienst of een automatiseringsplatform levert het platform die, en stel jij die in. Agentic Workflows laat zien hoeveel lagen dat kan betekenen: agents krijgen standaard alleen leesrechten en draaien in een afgeschermde container achter een firewall, en hun voorgestelde wijzigingen gaan door gevalideerde 'safe outputs' en een aparte dreigingsscan voordat er iets wordt toegepast. Je prompt zegt nog steeds wat er moet gebeuren. Het platform beperkt wat een vergissing kan aanrichten.
+
+Wat je zelf schrijft, reist meestal beter dan de lus. Skills en MCP zijn open standaarden, en de aankondiging van Microsoft ziet ondersteuning ervoor als kenmerk van een serieuze harness. Een heldere skill of een goede toolbeschrijving gaat vaak met kleine aanpassingen mee naar een andere harness; code die rond één specifieke lus is geschreven zelden. Eerder raadden we aan het model gelijk te houden als je harnesses vergelijkt. Een harness met meerdere modellen maakt het omgekeerde experiment mogelijk: in Foundry kies je een ondersteund model zonder de orkestratie te herschrijven, en in Agentic Workflows kiest elke workflow zijn eigen modelaanbieder. Je kunt het model wisselen en al het andere laten staan.
+
+Welke weg je ook kiest, sommige dingen gaan nooit over naar de aanbieder: de uitkomst die je wilt, de instructies en skills die die beschrijven, de tools en toegang die je verleent, en de controles die laten zien dat het werk af is. Een harness kan de lus voor je draaien. Wat 'klaar' betekent, kan hij niet bepalen.
 
 ## Wat maakt een harness nuttig?
 

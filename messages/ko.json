@@ -36,6 +36,7 @@
   },
   "nav": {
     "bots": "봇",
+    "teams": "팀",
     "collection": "내 컬렉션",
     "feed": "피드",
     "promptmasters": "프롬프트마스터",
@@ -186,6 +187,8 @@
     "relistRequestAlreadySent": "이 프롬프트에 대한 재등재 요청을 이미 제출하셨습니다.",
     "relistRequestError": "재등재 요청 제출에 실패했습니다. 다시 시도해 주세요.",
     "relatedPrompts": "관련 프롬프트",
+    "relatedSkills": "관련 스킬",
+    "relatedBots": "관련 봇",
     "deletePrompt": "프롬프트 삭제",
     "deletePromptTitle": "이 프롬프트를 삭제하시겠습니까?",
     "deletePromptDescription": "이 작업은 취소할 수 없습니다. 프롬프트가 영구적으로 삭제됩니다.",
@@ -443,7 +446,46 @@
     "dismissed": "변경 요청이 철회되었습니다",
     "dismissConfirmTitle": "변경 요청을 철회하시겠습니까?",
     "dismissConfirmDescription": "변경 요청이 영구적으로 삭제됩니다. 이 작업은 취소할 수 없습니다.",
-    "backToBot": "봇으로 돌아가기"
+    "backToBot": "봇으로 돌아가기",
+    "backToTeam": "팀으로 돌아가기",
+    "proposeBotTitle": "이 봇에 변경 제안",
+    "proposeBotIntro": "이 봇의 개선 사항을 제안하세요. 소유자가 제안을 검토하고 승인하거나 거절할 수 있습니다.",
+    "proposeTeamTitle": "이 팀에 변경 제안",
+    "proposeTeamIntro": "이 팀의 개선 사항을 제안하세요. 소유자가 제안을 검토하고 승인하거나 거절할 수 있습니다.",
+    "viewVersion": "버전 보기",
+    "viewVersionHint": "버전 {previous} 대비 변경 사항",
+    "viewFirstVersionHint": "첫 번째 버전",
+    "memberRole": "역할",
+    "memberDescription": "설명",
+    "membersReordered": "멤버 순서가 변경됨",
+    "noFieldChanges": "변경 사항 없음",
+    "reviewedBy": "검토자: {user}",
+    "teamApprovedSuccess": "변경 요청이 승인되어 팀이 업데이트되었습니다",
+    "botFields": {
+      "title": "제목",
+      "description": "설명",
+      "platforms": "플랫폼",
+      "computers": "컴퓨터 요구 사항",
+      "appearance": "모양",
+      "installUrl": "설치 URL",
+      "instructions": "지침",
+      "routines": "루틴",
+      "skills": "스킬",
+      "connectors": "커넥터"
+    },
+    "teamFields": {
+      "title": "제목",
+      "description": "설명",
+      "category": "카테고리",
+      "tags": "태그",
+      "handoffs": "인계",
+      "members": "멤버"
+    },
+    "member": {
+      "added": "추가됨",
+      "removed": "제거됨",
+      "changed": "변경됨"
+    }
   },
   "categories": {
     "title": "카테고리",
@@ -509,6 +551,7 @@
       "webhooks": "웹훅",
       "prompts": "프롬프트",
       "bots": "봇",
+      "teams": "팀",
       "reports": "신고"
     },
     "reports": {
@@ -784,6 +827,26 @@
       "deleted": "봇이 삭제되었습니다",
       "deleteConfirmTitle": "봇을 삭제할까요?",
       "deleteConfirmDescription": "\"{title}\"이(가) 영구적으로 삭제됩니다. 되돌릴 수 없습니다."
+    },
+    "teamsList": {
+      "title": "팀",
+      "description": "봇 팀 관리: 목록에서 숨기기, 편집 또는 삭제.",
+      "noTeams": "팀을 찾을 수 없습니다",
+      "open": "열기",
+      "edit": "편집",
+      "unlist": "목록에서 숨기기",
+      "relist": "다시 표시",
+      "updated": "팀이 업데이트되었습니다",
+      "deleted": "팀이 삭제되었습니다",
+      "deleteConfirmTitle": "팀을 삭제할까요?",
+      "deleteConfirmDescription": "\"{title}\" 팀이 영구적으로 삭제됩니다. 봇은 그대로 유지됩니다.",
+      "members": "{count, plural, other {봇 #개}}",
+      "filters": {
+        "all": "전체",
+        "listed": "표시됨",
+        "unlisted": "목록 미표시",
+        "featured": "추천"
+      }
     }
   },
   "search": {
@@ -840,7 +903,12 @@
     "noBots": "아직 봇이 없습니다.",
     "noBotsOwner": "아직 만든 봇이 없습니다.",
     "createFirstBot": "첫 번째 봇 만들기",
-    "botsCount": "봇"
+    "botsCount": "봇",
+    "teams": "팀",
+    "teamsCount": "팀",
+    "noTeams": "아직 팀이 없습니다.",
+    "noTeamsOwner": "아직 만든 팀이 없습니다.",
+    "createFirstTeam": "첫 번째 팀 만들기"
   },
   "subscription": {
     "subscribe": "구독",
@@ -929,7 +997,7 @@
     "browsePrompts": "프롬프트 둘러보기"
   },
   "bots": {
-    "description": "지침, 루틴, 스킬을 갖춘 바로 쓸 수 있는 AI 에이전트 봇입니다. OpenClaw, Hermes Agent 또는 Grok Bot에 설치하세요.",
+    "description": "지침, 루틴, 스킬을 갖춘 바로 쓸 수 있는 AI 에이전트 봇입니다. OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent 또는 Grok Bot에 설치하세요.",
     "count": "{count, plural, other {봇 #개}}",
     "allPlatforms": "전체",
     "searchPlaceholder": "봇 검색...",
@@ -954,6 +1022,14 @@
     "installPromptHint": "이 프롬프트를 에이전트에 붙여 넣으세요. 봇 정의를 가져와 지침, 루틴, 스킬을 설정합니다.",
     "installPromptFallbackHint": "또는 이 프롬프트를 Grok Bot에 붙여 넣어 직접 봇을 만드세요:",
     "installPromptPlatformFallbackHint": "또는 이 프롬프트를 {platform}에 붙여넣어 직접 봇을 만드세요:",
+    "autogptPromptHint": "이 프롬프트를 AutoGPT의 Otto와의 채팅에 붙여넣으세요. Otto가 지침, 스킬, 루틴을 갖춘 Expert로 봇을 설정합니다.",
+    "openAutogpt": "AutoGPT 열기",
+    "dotsPromptHint": "이 프롬프트를 ChatGPT의 dot과의 채팅에 붙여넣으세요. dot이 봇의 지침을 따르고, 필요한 앱 연결을 요청하며, 루틴을 반복 작업으로 예약합니다.",
+    "openDots": "Dots 열기",
+    "duetPromptHint": "이 프롬프트를 Claude Duet 스레드에 붙여넣으세요. Claude Duet이 봇의 지침과 루틴을 따르고 Claude 계정의 스킬과 커넥터를 사용하므로, 없는 항목은 Claude 설정에서 추가하세요.",
+    "openDuet": "Claude Duet 열기",
+    "musePromptHint": "이 프롬프트를 Muse와의 채팅에 붙여넣으세요. Muse의 스킬은 기본 내장되어 있어, 봇의 지침을 따르고 필요한 앱 연결을 요청하며 루틴을 예약 작업으로 설정합니다.",
+    "openMuse": "Muse 열기",
     "copyInstallPrompt": "설치 프롬프트 복사",
     "machineReadable": "기계 판독용",
     "create": "새 봇",
@@ -999,7 +1075,15 @@
       "submit": "봇 만들기",
       "save": "봇 저장",
       "created": "봇이 생성되었습니다",
-      "updated": "봇이 업데이트되었습니다"
+      "updated": "봇이 업데이트되었습니다",
+      "pairingsHint": "이 봇과 잘 어울리는 봇을 연결하세요. 연결은 두 봇의 페이지에 모두 표시됩니다.",
+      "pairingsSearch": "연결할 봇 검색...",
+      "pairingsNoResults": "봇을 찾을 수 없습니다",
+      "pairingNotePlaceholder": "왜 잘 어울리나요? (선택 사항)",
+      "pairingNoteLabel": "{bot}이(가) 잘 어울리는 이유",
+      "removePairing": "{bot} 제거",
+      "pairingsMax": "최대 {max}개의 봇을 연결할 수 있습니다",
+      "pairingsInvalid": "연결된 봇 중 하나가 더 이상 존재하지 않습니다. 제거한 후 다시 시도하세요."
     },
     "colors": {
       "slate": "슬레이트",
@@ -1055,7 +1139,129 @@
       "coffee": "커피"
     },
     "latestBots": "최신 봇",
-    "viewAll": "모두 보기"
+    "featuredTeams": "추천 봇 팀",
+    "viewAll": "모두 보기",
+    "betterTogether": "함께 쓰면 더 좋은",
+    "installAllTogether": "모두 함께 설치",
+    "installAllTitle": "{count, plural, other {봇 #개 모두 함께 설치}}",
+    "installAllDescription": "{bot}와(과) 함께 쓰기 좋은 봇을 한 번에 설정하세요.",
+    "installAllUnavailable": "이 봇들에는 아직 설치 옵션이 없습니다.",
+    "installAllLoadError": "설치 옵션을 불러오지 못했습니다. 대화 상자를 닫고 다시 시도하세요.",
+    "installAllPromptHint": "이 프롬프트를 {platform}에 붙여넣으세요. 세트의 모든 봇을 차례대로 설정합니다.",
+    "installAllAutogptPromptHint": "이 프롬프트를 AutoGPT의 Otto와의 채팅에 붙여넣으세요. Otto가 세트의 모든 봇을 차례대로 Expert로 설정합니다.",
+    "installAllDotsPromptHint": "이 프롬프트를 ChatGPT의 dot과의 채팅에 붙여넣으세요. dot이 세트의 모든 봇을 차례대로 설정합니다.",
+    "installAllDuetPromptHint": "이 프롬프트를 Claude Duet 스레드에 붙여넣으세요. Claude Duet이 세트의 모든 봇을 차례대로 설정합니다. 없는 스킬과 커넥터는 Claude 설정에서 추가하세요.",
+    "installAllMusePromptHint": "이 프롬프트를 Muse와의 채팅에 붙여넣으세요. Muse가 세트의 모든 봇을 차례대로 설정하고 필요한 앱 연결을 요청합니다.",
+    "installAllCommandHint": "세트의 각 봇을 스킬로 설치:",
+    "installAllTemplatesHint": "또는 각 {platform} 템플릿 열기:",
+    "installAllSkipped": "{platform}에서 사용할 수 없음: {bots}",
+    "copyCommands": "명령어 복사",
+    "openTemplate": "{bot} 템플릿 열기",
+    "teams": {
+      "link": "팀",
+      "create": "팀 만들기",
+      "description": "팀은 서로 작업을 넘겨주는 봇 그룹입니다. 각 상자는 하나의 팀이고, 각 화살표는 한 봇이 다음 봇에게 무엇을 넘기는지 보여줍니다. 화살표에 마우스를 올리면 인계 내용을, 팀을 선택하면 멤버를 볼 수 있습니다.",
+      "count": "{count, plural, other {팀 #개}}",
+      "searchPlaceholder": "팀 검색...",
+      "allTeams": "모든 팀",
+      "empty": "아직 팀이 없습니다. 첫 번째 팀을 만들어 보세요.",
+      "noResults": "검색과 일치하는 팀이 없습니다.",
+      "featured": "추천",
+      "graphLabel": "봇 팀과 인계",
+      "selectTeam": "{team} 세부 정보 보기",
+      "selectHint": "팀을 선택하면 멤버와 인계를 볼 수 있습니다.",
+      "closePanel": "닫기",
+      "by": "작성자: {author}",
+      "members": "멤버",
+      "handoffs": "인계 흐름",
+      "handoffLabel": "{from}이(가) {to}에게 인계",
+      "handsOffTo": "인계 대상",
+      "noHandoffLabel": "무엇을 인계하는지에 대한 설명이 없습니다",
+      "noHandoffs": "이 팀에는 아직 인계가 없습니다.",
+      "noVisibleMembers": "이 팀의 봇 중 볼 수 있는 봇이 없습니다.",
+      "openTeam": "팀 열기",
+      "backToTeams": "모든 팀",
+      "install": "팀 설치",
+      "installTitle": "{count, plural, other {이 팀의 봇 #개 모두 설치}}",
+      "installDescription": "{team}의 모든 봇과 인계를 한 번에 설정합니다.",
+      "installShort": "설치",
+      "memberOf": "팀",
+      "memberCount": "{count, plural, other {봇 #개}}",
+      "edit": "팀 편집",
+      "delete": "팀 삭제",
+      "deleteConfirm": "이 팀을 삭제할까요? 봇 자체는 그대로 유지됩니다.",
+      "deleted": "팀이 삭제되었습니다",
+      "form": {
+        "createTitle": "팀 만들기",
+        "editTitle": "팀 편집",
+        "intro": "봇을 고르고 각 봇이 팀에서 하는 일을 적은 다음, 누가 누구에게 무엇을 넘기는지 정하세요.",
+        "title": "제목",
+        "titlePlaceholder": "예: 리서치 & 게시",
+        "titleRequired": "팀 제목을 입력하세요.",
+        "description": "설명",
+        "descriptionPlaceholder": "이 팀은 함께 무엇을 하며, 작업은 어떻게 흘러가나요?",
+        "bots": "봇",
+        "botsHint": "봇을 {min}~{max}개 추가하세요.",
+        "botsSearch": "추가할 봇 검색...",
+        "botsMax": "팀에는 최대 {max}개의 봇을 넣을 수 있습니다",
+        "minBots": "봇을 {min}개 이상 추가하세요.",
+        "noResults": "봇을 찾을 수 없습니다",
+        "rolePlaceholder": "역할(선택), 예: 리서처",
+        "roleLabel": "{bot}의 역할",
+        "removeBot": "{bot} 제거",
+        "handoffs": "인계",
+        "handoffsHint": "각 핸드오프는 한 봇에서 다른 봇으로 작업을 넘깁니다. 한 봇이 여러 봇에게 넘기고 작업을 돌려받을 수도 있습니다.",
+        "from": "보내는 봇",
+        "to": "받는 봇",
+        "labelPlaceholder": "인계 내용, 예: 리서치 요약",
+        "labelLabel": "{from}이(가) {to}에게 넘기는 내용",
+        "addHandoff": "인계 추가",
+        "removeHandoff": "인계 제거",
+        "needTwoBots": "인계를 정하려면 봇을 두 개 이상 추가하세요.",
+        "handoffInvalid": "각 인계는 팀의 서로 다른 두 봇을 한 번만 연결해야 합니다.",
+        "submit": "팀 만들기",
+        "save": "팀 저장",
+        "cancel": "취소",
+        "created": "팀이 생성되었습니다",
+        "updated": "팀이 업데이트되었습니다",
+        "invalidBots": "일부 봇은 더 이상 추가할 수 없습니다. 제거한 후 다시 시도하세요.",
+        "rateLimit": "팀 변경이 너무 많습니다. 1분 후 다시 시도하세요.",
+        "descriptionHint": "Markdown을 지원합니다: **굵게**, 목록, 링크.",
+        "memberDescriptionPlaceholder": "이 봇이 팀에서 하는 일 (선택)",
+        "memberDescriptionLabel": "{bot}이(가) 팀에서 하는 일",
+        "handoffDuplicate": "이 핸드오프는 이미 목록에 있습니다.",
+        "handoffSelf": "서로 다른 봇 두 개를 고르세요.",
+        "connectEveryone": "봇을 모두와 연결",
+        "connectEveryoneHint": "선택한 봇에서 다른 모든 봇으로, 그리고 그 반대로 핸드오프를 추가합니다. 비서실장 같은 구성입니다.",
+        "invalidCategory": "해당 카테고리가 더 이상 존재하지 않습니다",
+        "invalidTags": "일부 태그가 더 이상 존재하지 않습니다",
+        "computerHint": "아이콘은 클라우드 컴퓨터, 내 컴퓨터 또는 둘 다 필요한 봇을 표시합니다."
+      },
+      "openBot": "{bot} 세부 정보 보기",
+      "botHint": "봇을 선택하면 하는 일을 보고 설치할 수 있습니다.",
+      "inTeam": "{team}에서",
+      "installBot": "설치",
+      "viewBot": "봇 페이지 열기",
+      "botLoadError": "이 봇을 불러올 수 없습니다.",
+      "backToTeam": "팀으로 돌아가기",
+      "pagination": "팀 페이지",
+      "previousPage": "이전 페이지",
+      "nextPage": "다음 페이지",
+      "unlisted": "목록 미표시",
+      "unlistedNotice": "이 팀은 목록에 표시되지 않습니다. 목록, 검색, 프로필에서 숨겨지며 작성자와 관리자만 열 수 있습니다.",
+      "unlist": "목록에서 숨기기",
+      "relist": "다시 표시",
+      "unlistedToast": "팀을 목록에서 숨겼습니다",
+      "relistedToast": "팀을 다시 표시했습니다"
+    },
+    "computer": {
+      "cloud": "클라우드 컴퓨터 필요",
+      "local": "내 컴퓨터 필요",
+      "label": "컴퓨터",
+      "hint": "봇이 실행될 컴퓨터가 필요한가요? 하나, 둘 다 또는 아무것도 선택하지 않을 수 있습니다. 각각 봇에 작은 아이콘으로 표시됩니다.",
+      "cloudHint": "자체 원격 컴퓨터, 데스크톱 또는 브라우저가 필요합니다.",
+      "localHint": "내 기기, 파일 또는 앱에 대한 접근이 필요합니다."
+    }
   },
   "collection": {
     "title": "내 컬렉션",
@@ -1070,6 +1276,8 @@
     "removed": "컬렉션에서 제거됨"
   },
   "discovery": {
+    "trending": "지금 트렌딩",
+    "seeAll": "모두 보기",
     "featuredPrompts": "추천 프롬프트",
     "todaysMostUpvoted": "오늘의 인기",
     "latestPrompts": "최신 프롬프트",
@@ -1412,7 +1620,7 @@
     "interactiveBanner": {
       "badge": "인터랙티브 버전 제공",
       "title": "더 상세하고 인터랙티브한 경험을 원하시나요?",
-      "description": "29개 챕터, 실습 연습, 실제 예제가 포함된 종합 인터랙티브 가이드로 AI 프롬프트를 마스터하세요.",
+      "description": "30개 챕터, 실습 연습, 실제 예제가 포함된 종합 인터랙티브 가이드로 AI 프롬프트를 마스터하세요.",
       "cta": "인터랙티브 북 읽기"
     },
     "generalTips": {
@@ -1882,7 +2090,7 @@
     "donate": "프로젝트 후원하기",
     "subtitle": "명확하고 효과적인 프롬프트를 만들기 위한 인터랙티브 가이드",
     "metaTitle": "프롬프트 엔지니어링 가이드: 인터랙티브 프롬프팅 북",
-    "metaDescription": "이 무료 인터랙티브 가이드로 AI 프롬프트 엔지니어링을 마스터하세요. ChatGPT 프롬프트, 사고의 사슬 추론, Few-Shot 학습 및 고급 기술을 배우세요. 실제 예제가 포함된 29개 이상의 챕터.",
+    "metaDescription": "이 무료 인터랙티브 가이드로 AI 프롬프트 엔지니어링을 마스터하세요. ChatGPT 프롬프트, 사고의 사슬 추론, Few-Shot 학습 및 고급 기술을 배우세요. 실제 예제가 포함된 30개 이상의 챕터.",
     "interactiveGuideBy": "인터랙티브 가이드 by",
     "authorIntro": "안녕하세요, 저는 <author>Fatih Kadir Akın</author>입니다. GitHub의 인기 <repoLink>Awesome ChatGPT Prompts</repoLink> 저장소와 <siteName>prompts.chat</siteName>의 큐레이터입니다.",
     "bookDescription": "이 포괄적인 인터랙티브 가이드에서 매력적이고 효과적인 대화를 생성하는 설득력 있는 AI 프롬프트를 만들기 위한 전문 전략을 발견할 수 있습니다. AI 모델의 작동 방식 이해부터 프롬프트 체이닝 및 에이전트 시스템과 같은 고급 기술 습득까지, 이 책은 AI 상호작용을 다음 단계로 끌어올리는 데 필요한 도구를 제공합니다.",
@@ -1904,7 +2112,7 @@
       "part4": "파트 4: 모범 사례",
       "part5": "파트 5: 사용 사례",
       "part6": "파트 6: 결론",
-      "chapters": "29개 인터랙티브 챕터"
+      "chapters": "30개 인터랙티브 챕터"
     },
     "startReading": "읽기 시작",
     "skipToChapter1": "1장으로 이동",
@@ -1962,6 +2170,7 @@
       "13-multimodal-prompting": "멀티모달 프롬프팅",
       "14-context-engineering": "컨텍스트 엔지니어링",
       "14a-loop-engineering": "루프 엔지니어링",
+      "24a-from-prompt-to-team": "프롬프트에서 팀까지",
       "25-agents-and-skills": "에이전트와 스킬",
       "15-common-pitfalls": "흔한 실수",
       "16-ethics-responsible-use": "윤리와 책임있는 사용",
@@ -1996,6 +2205,7 @@
       "13-multimodal-prompting": "이미지, 오디오, 비디오 작업",
       "14-context-engineering": "RAG, 임베딩, 함수 호출 및 MCP",
       "14a-loop-engineering": "행동하고 검증하고 적응하며 언제 멈출지 아는 피드백 루프 설계",
+      "24a-from-prompt-to-team": "프롬프트, 스킬, 에이전트, 봇, 팀을 쉬운 말로 풀어 보고 서로 어떻게 다른지 알아보기",
       "25-agents-and-skills": "재사용 가능한 스킬 패키지로 AI 에이전트 구축",
       "15-common-pitfalls": "피해야 할 실수",
       "16-ethics-responsible-use": "AI의 윤리적 고려사항",
@@ -2454,7 +2664,7 @@
     },
     "bots": {
       "title": "OpenClaw, Hermes, Grok용 바로 쓰는 AI 에이전트 봇",
-      "description": "지침, 예약 루틴, 스킬을 갖춘 바로 쓸 수 있는 AI 에이전트 봇을 둘러보고 클릭 한 번으로 OpenClaw, Hermes Agent 또는 Grok Bot에 설치하세요.",
+      "description": "지침, 예약 루틴, 스킬을 갖춘 바로 쓸 수 있는 AI 에이전트 봇을 둘러보고 클릭 한 번으로 OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent 또는 Grok Bot에 설치하세요.",
       "heading": "봇"
     },
     "taste": {
@@ -2515,7 +2725,16 @@
       "SKILL": "에이전트 스킬",
       "TASTE": "코딩 취향 프로필",
       "model": "{model} 프롬프트"
+    },
+    "botTeams": {
+      "title": "AI 봇 팀: 작업을 서로 넘겨주는 에이전트",
+      "description": "서로 작업을 넘겨주는 AI 에이전트 봇 팀을 둘러보고, 각 인계를 확인하고, 팀 전체를 OpenClaw, Hermes Agent, Grok Bot 등에 한 번에 설치하세요.",
+      "heading": "봇 팀"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "<code>CLOUD</code> 컴퓨터 또는 사용자의 <code>LOCAL</code> 컴퓨터가 필요한 봇만(둘 다 필요한 봇은 어느 쪽에도 일치), 또는 컴퓨터가 필요 없는 봇은 <code>NONE</code>",
+    "computerRequirementsInput": "<code>CLOUD</code>(봇이 자체 원격 컴퓨터, 데스크톱 또는 브라우저가 필요함)와 <code>LOCAL</code>(사용자의 기기, 파일 또는 앱이 필요함) 중 하나 또는 둘 다를 담은 목록. 빈 목록은 컴퓨터가 필요 없다는 뜻입니다. 저장된 목록을 대체합니다"
   },
   "actionButtons": {
     "deployWithSpacefast": "SpaceFast로 배포"

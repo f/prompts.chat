@@ -72,6 +72,38 @@ Ad və sxem öz-özünə heç nə icra etmir. Alətin kodu girişləri yoxlamal�
 "Qeyd yaradacağam" bir ifadədir. Alət çağırışı əməliyyatı tələb edir. Yeni qeydin identifikatorunu ehtiva edən uğurlu cavab isə əməliyyatın baş verdiyinə sübutdur. Bu üç şeyi ayırın.
 </Callout>
 
+### Bir Alət Bütöv Bir İş Axınını Təmsil Edə Bilər
+
+İndiyə qədər hər alət tək bir əməliyyat idi: axtarmaq, yaratmaq, ixrac etmək. Amma alətin adının arxasındakı kod daha böyük ola bilər. O, əvvəlcədən yazılmış və iş axını mühərrikinin icra etdiyi bütöv bir proses də ola bilər. Prosesi **nə vaxt** başlatmağa və ona **hansı girişi** verməyə yenə agent qərar verir. Ondan sonrası isə prosesin müəyyən etdiyi kimi, hər dəfə eyni ardıcıllıqla gedir.
+
+Pulun geri qaytarılmasını düşünün. Dəstək agenti əsəbi müştərini başa düşməkdə yaxşı ola bilər, amma geri qaytarma siyasətinizi improvizə etməsini yəqin ki, istəməzsiniz. Tək alət kimi qablaşdırılan geri qaytarma iş axını, onu hansı söhbət başlatmasından asılı olmayaraq, əvvəlcə uyğunluğu yoxlayır, sonra menecerdən təsdiq istəyir, sonda da məbləği hesaba köçürür. Təsdiqlər, yerləşdirmələr və addımların özünün siyasət olduğu digər proseslər də bu qəlibə uyğun gəlir. İş axını mühərrikləri adətən hər icranın qeydini saxlayır, buna görə agent keçmiş icralara da baxa və təxmin etmək əvəzinə gecə hansı icraların hansı addımda uğursuz olduğunu deyə bilər.
+
+Son nümunələrdən birini AWS verir. AWS 29 oktyabr 2026-cı ildə Step Functions iş axınlarının agentləri MCP vasitəsilə alətlərə qoşan Amazon Bedrock AgentCore Gateway üzərindən agent alətləri kimi istifadə oluna biləcəyini [elan etdi](https://aws.amazon.com/about-aws/whats-new/2026/10/step-functions-workflows-ai-agent-tools/). Bu ideya bir provayderə bağlı deyil: CI konveyeri, sorğu sistemindəki təsdiq axını və ya komandanızın artıq etibar etdiyi skript də agentə eyni şəkildə təqdim edilə bilər.
+
+Burada iki güclü tərəf arasında seçim edirsiniz. Model çevikdir: qeyri-adi vəziyyəti oxuyub ağlabatan növbəti addımı seçə bilər. İş axını isə proqnozlaşdırılandır: eyni giriş hər dəfə eyni addımlardan keçir. Nə vaxt başlamağı agentə, necə irəliləməyi iş axınına buraxmaq hər gücü öz yerinə qoyur. Bu, promptu da dəyişir. İş axınının daxilindəki addımları yox, məqsədi və iş axınının nə vaxt çağırılacağını təsvir edin. Addımları promptda təkrarlamaq siyasətin ikinci nüsxəsini yaradır. Bu nüsxə zamanla əslindən uzaqlaşa bilər, model də addımları özü icra etməyə çalışa bilər.
+
+<Compare
+  before={{ label: "İş axınını yenidən təsvir edən prompt", content: "Müştəriyə pulu qaytarmaq üçün əvvəlcə sifarişin 30 gündən köhnə olmadığını yoxla, sonra menecerdən soruş, sonra məbləği hesaba köçür, sonda müştəriyə e-poçt göndər." }}
+  after={{ label: "Məqsədi və çağırış anını təsvir edən prompt", content: "Müştərilərə ödəniş problemlərini həll etməkdə kömək et. Müştəri pulun qaytarılmasını istəsə və sifariş nömrəsi səndə varsa, geri qaytarma iş axınını həmin nömrə və səbəblə çağır. İş axınının qaytardığı nəticəni bildir. İş axını təsdiqləməmiş pulun qaytarılacağını vəd etmə." }}
+/>
+
+### API Olmayanda Ekran Alətə Çevrilir
+
+İndiyə qədər gördüyümüz hər alətin proqram təminatı üçün açılmış bir qapısı vardı: API, bağlayıcı, MCP serveri. Bir çox sistemlərin isə belə qapısı yoxdur. Köhnə daxili portal, təchizatçının bron saytı, başqa bir onillikdən qalmış masaüstü proqram: insanlar onlardan hər gün istifadə edir, amma yalnız ekran vasitəsilə. Belə sistemlər üçün bəzi modellər ekranın özünü alət kimi işlədə bilir. Buna adətən **kompüterdən istifadə** (computer use) deyilir.
+
+Mexanizm artıq tanıdığınız həmin dövrədir, sadəcə məlumatın yerini şəkillər tutur. Modeli işlədən tətbiq tapşırığı və ekran görüntüsünü göndərir. Model ona baxır və adi mətnlə yox, strukturlaşdırılmış əməliyyatla cavab verir: bu nöqtəyə klik et, bu mətni yaz, aşağı sürüşdür. Bəzi alətlər hər əməliyyata qısa niyyət izahı da əlavə edir, məsələn, “Təyinat yerini yazmaq üçün axtarış xanasına klik et.” kimi, bu da icranı izləməyi asanlaşdırır. Model yenə də özbaşına heç nəyi tərpətmir. Əməliyyatı tərtibatçının öz kodu yerinə yetirir, yeni ekran görüntüsü çəkir və onu geri göndərir. Bax, et, yenə bax: tapşırıq bitənə və ya kimsə dövrəni dayandırana qədər. Bu dövrənin harada işləməsi onun necə işləməsi qədər vacibdir. Bu suala Daim İşləyən Botlar bölməsinin [Botun Kompüteri](/book/28-persistent-bots) hissəsi baxır.
+
+Google 30 oktyabr 2026-cı ildə Computer Use alətini Gemini API-də hamı üçün əlçatan etdi ([buraxılış qeydləri](https://ai.google.dev/gemini-api/docs/changelog)). Alətin [sənədləri](https://ai.google.dev/gemini-api/docs/computer-use) brauzer, mobil və masaüstü mühitlərini, `intent` sahəsi daşıyan əməliyyatları, əməliyyatı bloklaya və ya ödəniş kimi addımlardan əvvəl təsdiq istəyə bilən tənzimlənən təhlükəsizlik siyasətlərini və ekran görüntülərində gizlənmiş prompt injection-ı axtaran, istəyə görə qoşulan yoxlamanı təsvir edir. Google özü də vacib tapşırıqlarda yaxından nəzarəti tövsiyə edir. Bu ideya tək bir şirkətə məxsus deyil: Anthropic Claude üçün [kompüterdən istifadə aləti](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool), OpenAI isə Responses API-də [kompüter aləti](https://platform.openai.com/docs/guides/tools-computer-use) təklif edir. Hər ikisi eyni mübadilə üzərində qurulub: ekran görüntüləri gəlir, əməliyyatlar gedir və həmin əməliyyatları sizin tətbiqiniz icra edir.
+
+Bu yolun güzəştlərini açıq sözlərlə demək lazımdır. Ekranı oxumaq API çağırmaqdan yavaşdır, hər ekran görüntüsü token xərcləyir, yeri dəyişmiş düymə və ya gözlənilməz açılan pəncərə dünən işləyən icranı poza bilər. Ona görə də əsl API və ya bağlayıcı varsa, ona üstünlük verin, kompüterdən istifadəni isə başqa giriş yolu qoymayan sistemlər üçün saxlayın. Ekran da başqa hər şey kimi bir girişdir: səhifədəki mətn də sənəd kimi prompt injection daşıya bilər və onu şəklin içində görmək ona daha çox etibar etməyə əsas vermir. Model insanın klikləyə biləcəyi hər şeyə klikləyə bildiyi üçün ödəniş etmək, nəyisə silmək və ya məlumatı dəyişmək kimi riskli addımlar insanın təsdiqini gözləməlidir.
+
+Prompt yazmaq da əvvəlki qaydalarla gedir, sadəcə kənarlar daha itidir, çünki veb sayt modelə nə demək istədiyinizi deyə bilməz. Dəqiq saytı və səhifəni göstərin, tapşırığın harada bitdiyini deyin və nəsə edilməzdən əvvəl nəyin təsdiqlənməli olduğunu yazın.
+
+<Compare
+  before={{ label: "Ucu açıq bir tapşırıq", content: "İnternetə gir və mənim üçün cümə axşamına iclas otağı bron et." }}
+  after={{ label: "Səhifə, dayanma nöqtəsi, təsdiq", content: "rooms.example.com ünvanındakı otaq bron səhifəmizdə cümə axşamı saat 14:00-dan 15:00-dək altı nəfərlik otaq tap. Son təsdiq ekranında dayan və Bron et düyməsini basmazdan əvvəl mənə otağı və vaxtı göstər. Boş otaq yoxdursa, bunu de və dayan. Mövcud bronların heç birini dəyişmə və ya ləğv etmə." }}
+/>
+
 ## Bağlayıcı Nə Əlavə Edir?
 
 Bağlayıcı müəyyən sistemlə inteqrasiyanı birləşdirir. Daxil olmağı, hesab və ya iş sahəsi seçməyi, məlumat tapmağı və dəstəklənən əməliyyatları alət kimi təqdim etməyi idarə edə bilər. Bəzi bağlayıcılar yalnız axtarır və ya oxuyur. Digərləri yazmanı da dəstəkləyir.
@@ -111,6 +143,66 @@ MCP **resursları** və **promptları** da müəyyən edir. Bu sözlərin protok
 [MCP server anlayışları bələdçisi](https://modelcontextprotocol.io/docs/learn/server-concepts) bunları modelin idarə etdiyi alətlər, tətbiqin idarə etdiyi resurslar və istifadəçinin idarə etdiyi promptlar kimi təsvir edir. Bunlar nəzərdə tutulan qarşılıqlı əlaqə formalarını göstərir. Tətbiqin icazə yoxlamalarını aradan qaldırmırlar.
 
 MCP prompt şablonu avtomatik olaraq bacarıq sayılmır. Bacarıq daha uzun proseduru, istinadları və skriptləri birləşdirə bilər. Agentə MCP, birbaşa bağlayıcı və ya yerli funksiyalar vasitəsilə verilən alətlərdən necə istifadə edəcəyini deyə bilər.
+
+### Bacarıqlar da Serverlə Birlikdə Gələ Bilər
+
+Bu yaxınlara qədər bu iki hissə adətən ayrı-ayrılıqda gəlirdi. Server agentə alətlərini verə bilirdi, lakin onlardan yaxşı istifadə etməyin incəlikləri başqa yerdə qalırdı: ayrıca quraşdırılan bir bacarıqda, README faylında və ya istifadəçinin öz promptunda. Xidmət dəyişəndə bu təlimatlar heç kimin xəbəri olmadan geridə qala bilirdi.
+
+MCP-nin 2026-cı ilin sentyabrında yekunlaşan rəsmi **Skills genişlənməsi** bu boşluğun böyük hissəsini aradan qaldırır. İndi server təkcə alətlərini deyil, onlardan necə istifadə ediləcəyini izah edən bacarıqları da təqdim edə bilər. Bu bacarıqlar [Agentlər və Bacarıqlar](/book/25-agents-and-skills) fəslində təsvir olunan eyni `SKILL.md` formatında yazılır. Alətlər agentə nə edə biləcəyini deyir, bacarıqlar isə işi necə yaxşı görəcəyini. İndi hər ikisi eyni serverdən gələ bilər; beləcə təlimatlar təsvir etdikləri xidmətin yanında yaşayır və həmin xidməti dəstəkləyən insanlar onları aktual saxlaya bilir.
+
+Mexanizm artıq tanış olduğunuz hissələrə əsaslanır. Bacarıqdakı hər fayl MCP resursu kimi təqdim olunur və adətən `skill://` ilə başlayan URI daşıyır. Müştəri serverin bacarıqlarını `skills/list` ilə siyahıya ala, birini `skills/get` ilə əldə edə və köməkçi fayllarını `resources/read` ilə oxuya bilər.
+
+<Compare
+  before={{ label: "Yalnız alət təqdim edən server", content: "Qeyd izləmə serveri search_issues və create_issue alətlərini təqdim edir. Qeydləri qiymətləndirmə üsulu (təkrar qeydləri yoxlamaq, qeyd şablonunu izləmək) ayrıca quraşdırılmış bacarıqdan və ya sizin promptunuzdan gəlməlidir və xidmət dəyişdikcə köhnələ bilər." }}
+  after={{ label: "Bacarığı da birlikdə təqdim edən server", content: "Eyni server qeydləri qiymətləndirmə bacarığı da təqdim edir. Əsas tətbiq əvvəlcə yalnız onun adını və təsvirini görür, tam təlimatları isə yalnız tapşırıq tələb etdikdə yükləyir. Xidməti dəstəkləyənlər onu dəyişəndə bacarığı da onunla birlikdə yeniləyə bilərlər." }}
+/>
+
+Bacarığın modelə necə çatacağına yenə də əsas tətbiq qərar verir. Model onu adına və təsvirinə görə seçə bilər, ya da istifadəçi birbaşa seçə bilər. Hər iki halda tam təlimatlar yalnız lazım olduqda kontekstə daxil olur və `SKILL.md` faylını oxumaq bacarığı öz-özlüyündə aktivləşdirmir.
+
+<Callout type="warning" title="Serverdən gələn bacarıq da təlimatdır">
+Serverdən gələn bacarıq agentin kontekstinə daxil olan mətndir və agentin sonrakı addımlarını formalaşdıra bilər. Ona görə də serverin özü qədər diqqətlə yoxlanmalıdır. Diqqətli əsas tətbiq məzmunu yükləməzdən əvvəl yoxlayır və lazım olan təsdiqi istəyir. MCP Apps və birazdan danışacağımız Tasks genişlənməsi kimi digər rəsmi MCP genişlənmələri kimi, Skills də məcburi deyil: yalnız həm müştəri, həm də server onu dəstəklədiyini bildirdikdə istifadə olunur. Müştəri dəstəyi hələ ilkin mərhələdədir, buna görə də ona güvənməzdən əvvəl tətbiqinizin serverlərdən bacarıqları həqiqətən yüklədiyini yoxlayın.
+</Callout>
+
+### Alətə Vaxt və ya Cavab Lazım Olanda
+
+Alət çağırışlarının çoxu qısa mübadilədir: agent soruşur, server cavab verir və iş davam edir. Amma bəzi işlər bu ritmə sığmır. Dərin araşdırma, böyük hesabatın ixracı və ya layihənin yığılması (build) xeyli dəqiqə çəkə bilər, bəzi işlər isə elə bir nöqtəyə çatır ki, sonra nə olacağına yalnız istifadəçi qərar verə bilər. MCP belə anlar üçün iki ideya təklif edir: vaxt tələb edən işlər üçün **Tasks**, insana ehtiyac duyan işlər üçün isə **elicitation**, yəni istifadəçidən məlumat istəmə.
+
+Rəsmi [Tasks genişlənməsi](https://tasks.extensions.modelcontextprotocol.io/) (`io.modelcontextprotocol/tasks`) yavaş `tools/call` çağırışının necə başa çatdığını dəyişir. Server iş bitənə qədər sorğunu açıq saxlamaq əvəzinə, dərhal davamlı tapşırıq identifikatoru (task handle) ilə cavab verə bilər; bu, qarderobda paltonuzu verəndə aldığınız nömrəyə bənzəyir. Müştəri tapşırığın vəziyyətinə `tasks/get` ilə baxa, `tasks/update` ilə yeniləmə və ya cavab göndərə, `tasks/cancel` ilə onu dayandıra və nəticə hazır olanda onu götürə bilər. Bu arada agent başqa işlərlə məşğul olub sonra geri qayıda bilər. Bu, xüsusən siz yoxkən iş görən [daim işləyən botlar](/book/28-persistent-bots) üçün vacibdir. Tasks hər iki tərəf üçün könüllüdür: müştəri dəstəyini hər sorğuda bildirir, server isə hər sorğu üçün ayrıca tapşırıq yaradıb-yaratmayacağına qərar verir. Mövcud alətlər bu imkanı öz-özünə qazanmır; onu serverin müəllifi əlavə etməlidir.
+
+<Compare
+  before={{ label: "Gözlədən alət çağırışı", content: "Agent export_report alətini çağırır və gözləyir. Sorğu dəqiqələrlə açıq qalır. Bağlantı qırılsa, ixracın bitib-bitmədiyini heç kim bilmir, agent isə cavab gələnə qədər başqa heç nə edə bilmir." }}
+  after={{ label: "Tapşırıq identifikatoru", content: "Agent export_report alətini çağırır və dərhal tapşırıq identifikatoru alır. Başqa işə keçir, tapşırığı tasks/get ilə yoxlayır və hesabat hazır olanda onu götürür. Planlar dəyişsə, tasks/cancel tapşırığı dayandırır." }}
+/>
+
+[Elicitation](https://modelcontextprotocol.io/specification/latest/client/elicitation) serverə dayanıb istifadəçidən strukturlaşdırılmış məlumat istəmək imkanı verir: “Staging mühitinə yerləşdirilsin?”, “Bu geri ödəniş təsdiqlənsin?” və ya iş onsuz davam edə bilməyən çatışmayan bir detal. Əsas tətbiq kiçik bir forma göstərir, istifadəçi isə cavab verə, imtina edə və ya ləğv edə bilər. İmtina da etibarlı cavabdır və bundan sonra nə ediləcəyinə server qərar verir. Bu iki ideya təbii şəkildə birləşir: icra olunan tapşırıq `input_required` vəziyyətində dayanıb işin ortasında istifadəçidən nəsə soruşa bilər. Yazma əməliyyatından əvvəl belə bir sual qərarın məhz vacib olduğu yerdə insanın işə qoşulduğu təbii yoxlama nöqtəsidir.
+
+<Callout type="warning" title="Serverdən gələn forma da serverdən gələn sorğudur">
+Elicitation sorğusu tətbiqinizdən deyil, serverdən gəlir, ona görə də istənilən alət çıxışı qədər diqqətlə yoxlanmalıdır. Cavab verməzdən əvvəl nə soruşulduğunu oxuyun və serverə etibar etmirsinizsə, belə formaya heç vaxt parol, API açarı və ya başqa gizli məlumat yazmayın. Dəstək də tətbiqdən tətbiqə dəyişir: VS Code [elicitation dəstəyini sənədləşdirib](https://code.visualstudio.com/api/extension-guides/ai/mcp), Cursor elicitation-ı dəstəkləyir, Claude Code isə terminal tətbiqinə [MCP Tasks və elicitation](https://code.claude.com/docs/en/mcp) dəstəyini açıq beta kimi əlavə edib, amma hələ işlədiyi hər mühitdə yox. Rəsmi [müştəri dəstəyi cədvəli](https://modelcontextprotocol.io/extensions/client-matrix) hansı tətbiqin hansı genişlənmələri dəstəklədiyini izləyir, ona görə də bu iki imkandan hər hansına güvənməzdən əvvəl öz tətbiqinizi yoxlayın.
+</Callout>
+
+### Serveri Tapmaq və Bir Dəfə Qoşulmaq
+
+Agent uzaq serverdən istifadə etməzdən əvvəl kimsə həmin serveri tapmalı, necə qoşulacağını öyrənməli və daxil olmalıdır. Uzun müddət bu, README faylından ünvan köçürmək, hansı nəqliyyat üsulunun (transport) lazım olduğunu təxmin etmək və eyni quraşdırmanı hər tətbiqdə təkrarlamaq demək idi. İndi iki növ kömək gəlir: müştərinin **qoşulmazdan əvvəl** oxuya biləcəyi məlumatlar və **bir dəfə** qurub təkrar istifadə etdiyiniz bağlantılar.
+
+Kəşf tərəfində MCP-nin **Server Cards** genişlənməsi ([SEP-2127](https://modelcontextprotocol.io/seps/2127-mcp-server-cards)) 6 oktyabr 2026-cı ildə yekunlaşdı. O, uzaq server haqqında kiçik, statik sənəd təsvir edir: serverin adı, son nöqtələri və nəqliyyat üsulları, dəstəklədiyi protokol versiyaları. Veb sayt kartlarını `/.well-known/ai-catalog.json` ünvanındakı süni intellekt kataloqunda sadalaya bilər. Beləliklə, domenə yönləndirilən müştəri əl ilə quraşdırma etmədən hara və necə qoşulacağını öyrənir. Kart alətlərin siyahısını qəsdən daxil etmir, çünki serverin təqdim etdiyi alətlər daxil olmuş istifadəçidən asılı olaraq dəyişə bilər. Alətlər yenə qoşulduqdan sonra `tools/list` ilə öyrənilir.
+
+Bağlantı tərəfində GitHub özünün bağlayıcı da adlandırdığı [GitHub tərəfindən təsdiqlənmiş MCP serverlərini](https://github.blog/changelog/2026-10-28-connect-your-tools-to-copilot-without-all-the-setup/) 28 oktyabr 2026-cı ildə ictimai önizləmə kimi təqdim etməyə başladı. Slack və ya Sentry kimi xidmətə bir dəfə daxil olursunuz və bağlantı Copilot tətbiqində, Copilot CLI-da, VS Code-da, buluddakı Copilot-da və GitHub Mobile-da işləyir.
+
+Alətlər təkcə veb xidmətlərdən ibarət də deyil. Elə həmin gün Android Dev Summit-də Google Android-in vahid alət çağırışı qatı adlandırdığı **AppFunctions**-un beta mərhələsinə keçdiyini [elan etdi](https://developer.android.com/blog/posts/build-it-your-way-a-next-era-of-android-development). Android MCP sayəsində telefonunuzdakı tətbiq qeyd yaratmaq və ya mesaj göndərmək kimi funksiyalarını öz cihazdaxili agentinə və ya sistem səviyyəli agentlərə təqdim edə bilir, özü də heç kimin tətbiqi açmasına ehtiyac olmadan.
+
+Bu, bizi əvvəlki bir fikrə qaytarır: **bağlayıcı** məhsul terminidir. Server kartı, təsdiq nişanı və birdəfəlik giriş quraşdırmanı asanlaşdırır və *kimə* qoşulduğunuza etibar etməyə kömək edir. Amma *nəyə* icazə verəcəyinizi sizin yerinizə həll etmir. Hansı hesabı qoşacağınızı, hansı icazələri verəcəyinizi və hansı əməliyyatların təsdiq gözləyəcəyini yenə siz seçirsiniz. Nə kəşf məlumatları, nə də təsdiq alətlər siyahıya alındıqdan sonra onların əslində nə edə bildiyini yoxlamağı əvəz etmir.
+
+<Quiz
+  question="Uzaq server Server Card dərc edir və tətbiqinizdə təsdiqlənmiş bağlayıcı kimi görünür. Hələ də sizin üzərinizə düşən nədir?"
+  options={[
+    "Heç nə. Təsdiq serverdəki hər alətin təhlükəsiz işlədilə biləcəyi deməkdir",
+    "Hansı hesabı və icazələri verəcəyinizi seçmək, siyahıdakı alətlərin nə edə bildiyini yoxlamaq",
+    "Server Card-dakı alət siyahısını prompta köçürmək",
+    "Serverin son nöqtə ünvanını hər prompta yazmaq"
+  ]}
+  correctIndex={1}
+  explanation="Kəşf məlumatları və təsdiq quraşdırmaya və serveri kimin idarə etdiyini bilməyə kömək edir. Onlar hesabınızı və ya icazə əhatənizi sizin yerinizə seçmir, Server Card isə alətləri heç sadalamır. Qoşulduqdan sonra alətləri yoxlayın və yalnız tapşırığın tələb etdiyi girişi verin."
+/>
 
 ## Oxuma və Yazmanı Sınayın
 

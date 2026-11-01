@@ -36,6 +36,7 @@
   },
   "nav": {
     "bots": "机器人",
+    "teams": "团队",
     "collection": "我的收藏",
     "feed": "动态",
     "promptmasters": "Promptmasters",
@@ -183,6 +184,8 @@
     "relistRequestAlreadySent": "您已经为此提示词提交了重新上架请求。",
     "relistRequestError": "提交重新上架请求失败。请重试。",
     "relatedPrompts": "相关提示词",
+    "relatedSkills": "相关技能",
+    "relatedBots": "相关机器人",
     "deletePrompt": "删除提示词",
     "deletePromptTitle": "删除此提示词？",
     "deletePromptDescription": "此操作无法撤销。提示词将被永久删除。",
@@ -443,7 +446,46 @@
     "dismissed": "变更请求已撤回",
     "dismissConfirmTitle": "撤回变更请求？",
     "dismissConfirmDescription": "这将永久删除您的变更请求。此操作无法撤销。",
-    "backToBot": "返回机器人"
+    "backToBot": "返回机器人",
+    "backToTeam": "返回团队",
+    "proposeBotTitle": "为此机器人提议更改",
+    "proposeBotIntro": "为此机器人提出改进建议。所有者会审核你的提议，并可以批准或拒绝。",
+    "proposeTeamTitle": "为此团队提议更改",
+    "proposeTeamIntro": "为此团队提出改进建议。所有者会审核你的提议，并可以批准或拒绝。",
+    "viewVersion": "查看版本",
+    "viewVersionHint": "与版本 {previous} 相比的更改",
+    "viewFirstVersionHint": "第一个版本",
+    "memberRole": "角色",
+    "memberDescription": "描述",
+    "membersReordered": "成员顺序已更改",
+    "noFieldChanges": "无更改",
+    "reviewedBy": "审核人：{user}",
+    "teamApprovedSuccess": "更改请求已批准，团队已更新",
+    "botFields": {
+      "title": "标题",
+      "description": "描述",
+      "platforms": "平台",
+      "computers": "计算机要求",
+      "appearance": "外观",
+      "installUrl": "安装 URL",
+      "instructions": "指令",
+      "routines": "例程",
+      "skills": "技能",
+      "connectors": "连接器"
+    },
+    "teamFields": {
+      "title": "标题",
+      "description": "描述",
+      "category": "分类",
+      "tags": "标签",
+      "handoffs": "交接",
+      "members": "成员"
+    },
+    "member": {
+      "added": "已添加",
+      "removed": "已移除",
+      "changed": "已更改"
+    }
   },
   "categories": {
     "title": "分类",
@@ -509,6 +551,7 @@
       "webhooks": "Webhooks",
       "prompts": "提示词",
       "bots": "机器人",
+      "teams": "团队",
       "reports": "举报"
     },
     "reports": {
@@ -784,6 +827,26 @@
       "deleted": "机器人已删除",
       "deleteConfirmTitle": "删除机器人？",
       "deleteConfirmDescription": "这将永久删除“{title}”，且无法撤销。"
+    },
+    "teamsList": {
+      "title": "团队",
+      "description": "管理机器人团队：取消列出、编辑或删除。",
+      "noTeams": "未找到团队",
+      "open": "打开",
+      "edit": "编辑",
+      "unlist": "取消列出",
+      "relist": "重新列出",
+      "updated": "团队已更新",
+      "deleted": "团队已删除",
+      "deleteConfirmTitle": "删除团队？",
+      "deleteConfirmDescription": "这将永久删除“{title}”。其中的机器人保持不变。",
+      "members": "{count, plural, other {# 个机器人}}",
+      "filters": {
+        "all": "全部",
+        "listed": "已列出",
+        "unlisted": "未列出",
+        "featured": "精选"
+      }
     }
   },
   "search": {
@@ -840,7 +903,12 @@
     "noBots": "暂无机器人。",
     "noBotsOwner": "你还没有创建任何机器人。",
     "createFirstBot": "创建你的第一个机器人",
-    "botsCount": "个机器人"
+    "botsCount": "个机器人",
+    "teams": "团队",
+    "teamsCount": "个团队",
+    "noTeams": "暂无团队。",
+    "noTeamsOwner": "你还没有创建任何团队。",
+    "createFirstTeam": "创建你的第一个团队"
   },
   "subscription": {
     "subscribe": "订阅",
@@ -929,7 +997,7 @@
     "browsePrompts": "浏览提示词"
   },
   "bots": {
-    "description": "现成的 AI 智能体机器人，包含指令、例行任务和技能。可安装到 OpenClaw、Hermes Agent 或 Grok Bot。",
+    "description": "现成的 AI 智能体机器人，包含指令、例行任务和技能。可安装到 OpenClaw、AutoGPT、OpenAI Dots、Claude Duet、Meta Muse、Hermes Agent 或 Grok Bot。",
     "count": "{count, plural, other {# 个机器人}}",
     "allPlatforms": "全部",
     "searchPlaceholder": "搜索机器人...",
@@ -954,6 +1022,14 @@
     "installPromptHint": "将此提示粘贴到你的智能体中。它会获取机器人定义并设置指令、例行任务和技能。",
     "installPromptFallbackHint": "或者将此提示粘贴到 Grok Bot 中自行创建机器人：",
     "installPromptPlatformFallbackHint": "或者将此提示词粘贴到 {platform} 中自行创建机器人：",
+    "autogptPromptHint": "将此提示词粘贴到 AutoGPT 上与 Otto 的对话中。Otto 会将机器人设置为一个 Expert，并配置其指令、技能和例行任务。",
+    "openAutogpt": "打开 AutoGPT",
+    "dotsPromptHint": "将此提示词粘贴到 ChatGPT 中与你的 dot 的对话里。你的 dot 会采用机器人的指令，请你连接所需的应用，并将其例行任务安排为定期任务。",
+    "openDots": "打开 Dots",
+    "duetPromptHint": "将此提示词粘贴到你的 Claude Duet 对话中。Claude Duet 会采用机器人的指令和例行任务，并使用你 Claude 账户中的技能和连接器，缺少的请在 Claude 设置中添加。",
+    "openDuet": "打开 Claude Duet",
+    "musePromptHint": "将此提示词粘贴到与 Muse 的对话中。Muse 的技能是内置的，它会采用机器人的指令，请你连接所需的应用，并将其例行任务设置为计划任务。",
+    "openMuse": "打开 Muse",
     "copyInstallPrompt": "复制安装提示",
     "machineReadable": "机器可读",
     "create": "新建机器人",
@@ -999,7 +1075,15 @@
       "submit": "创建机器人",
       "save": "保存机器人",
       "created": "机器人已创建",
-      "updated": "机器人已更新"
+      "updated": "机器人已更新",
+      "pairingsHint": "关联与此机器人配合良好的机器人。关联会显示在两个机器人的页面上。",
+      "pairingsSearch": "搜索要搭配的机器人...",
+      "pairingsNoResults": "未找到机器人",
+      "pairingNotePlaceholder": "为什么它们搭配良好?(可选)",
+      "pairingNoteLabel": "{bot} 为什么搭配良好",
+      "removePairing": "移除 {bot}",
+      "pairingsMax": "最多可关联 {max} 个机器人",
+      "pairingsInvalid": "某个已关联的机器人已不存在。请将其移除后重试。"
     },
     "colors": {
       "slate": "石板灰",
@@ -1055,7 +1139,129 @@
       "coffee": "咖啡"
     },
     "latestBots": "最新机器人",
-    "viewAll": "查看全部"
+    "featuredTeams": "精选机器人团队",
+    "viewAll": "查看全部",
+    "betterTogether": "搭配使用更佳",
+    "installAllTogether": "全部一起安装",
+    "installAllTitle": "{count, plural, other {一起安装全部 # 个机器人}}",
+    "installAllDescription": "一次性设置 {bot} 及其搭配的机器人。",
+    "installAllUnavailable": "这些机器人暂时没有可用的安装选项。",
+    "installAllLoadError": "无法加载安装选项。请关闭对话框后重试。",
+    "installAllPromptHint": "将此提示粘贴到 {platform}。它会依次设置组合中的每个机器人。",
+    "installAllAutogptPromptHint": "将此提示粘贴到 AutoGPT 上与 Otto 的对话中。Otto 会依次将组合中的每个机器人设置为 Expert。",
+    "installAllDotsPromptHint": "将此提示词粘贴到 ChatGPT 中与你的 dot 的对话里。你的 dot 会依次设置组合中的每个机器人。",
+    "installAllDuetPromptHint": "将此提示词粘贴到你的 Claude Duet 对话中。Claude Duet 会依次设置组合中的每个机器人。缺少的技能和连接器请在 Claude 设置中添加。",
+    "installAllMusePromptHint": "将此提示词粘贴到与 Muse 的对话中。Muse 会依次设置组合中的每个机器人，并请你连接所需的应用。",
+    "installAllCommandHint": "将组合中的每个机器人安装为技能:",
+    "installAllTemplatesHint": "或打开每个 {platform} 模板:",
+    "installAllSkipped": "{platform} 不可用:{bots}",
+    "copyCommands": "复制命令",
+    "openTemplate": "打开 {bot} 模板",
+    "teams": {
+      "link": "团队",
+      "create": "创建团队",
+      "description": "团队是一组相互交接工作的机器人。每个方框是一个团队,每个箭头表示一个机器人交给下一个机器人的内容:将鼠标悬停在箭头上可查看交接内容,选择团队可查看其成员。",
+      "count": "{count, plural, other {# 个团队}}",
+      "searchPlaceholder": "搜索团队...",
+      "allTeams": "所有团队",
+      "empty": "还没有团队。创建第一个吧。",
+      "noResults": "没有与搜索匹配的团队。",
+      "featured": "精选",
+      "graphLabel": "机器人团队及其交接",
+      "selectTeam": "显示 {team} 的详细信息",
+      "selectHint": "选择一个团队以查看其成员和交接。",
+      "closePanel": "关闭",
+      "by": "作者:{author}",
+      "members": "成员",
+      "handoffs": "交接流程",
+      "handoffLabel": "{from} 交接给 {to}",
+      "handsOffTo": "交接给",
+      "noHandoffLabel": "没有说明交接的内容",
+      "noHandoffs": "该团队还没有交接。",
+      "noVisibleMembers": "你无法查看该团队的任何机器人。",
+      "openTeam": "打开团队",
+      "backToTeams": "所有团队",
+      "install": "安装团队",
+      "installTitle": "{count, plural, other {安装该团队的全部 # 个机器人}}",
+      "installDescription": "一次性设置 {team} 的所有机器人并连接它们的交接。",
+      "installShort": "安装",
+      "memberOf": "团队",
+      "memberCount": "{count, plural, other {# 个机器人}}",
+      "edit": "编辑团队",
+      "delete": "删除团队",
+      "deleteConfirm": "删除此团队?机器人本身保持不变。",
+      "deleted": "团队已删除",
+      "form": {
+        "createTitle": "创建团队",
+        "editTitle": "编辑团队",
+        "intro": "选择机器人，写下每个机器人在团队中做什么，然后定义谁把什么交给谁。",
+        "title": "标题",
+        "titlePlaceholder": "例如:调研与发布",
+        "titleRequired": "请为团队添加标题。",
+        "description": "描述",
+        "descriptionPlaceholder": "这个团队一起做什么？工作如何在其中流转？",
+        "bots": "机器人",
+        "botsHint": "添加 {min} 到 {max} 个机器人。",
+        "botsSearch": "搜索要添加的机器人...",
+        "botsMax": "一个团队最多可以有 {max} 个机器人",
+        "minBots": "请至少添加 {min} 个机器人。",
+        "noResults": "未找到机器人",
+        "rolePlaceholder": "角色(可选),例如:研究员",
+        "roleLabel": "{bot} 的角色",
+        "removeBot": "移除 {bot}",
+        "handoffs": "交接",
+        "handoffsHint": "每次交接都会把工作从一个机器人交给另一个。一个机器人可以交接给多个机器人，并收回工作。",
+        "from": "从",
+        "to": "到",
+        "labelPlaceholder": "交接的内容,例如:调研摘要",
+        "labelLabel": "{from} 交给 {to} 的内容",
+        "addHandoff": "添加交接",
+        "removeHandoff": "移除交接",
+        "needTwoBots": "至少添加两个机器人才能定义交接。",
+        "handoffInvalid": "每个交接必须只连接一次团队中两个不同的机器人。",
+        "submit": "创建团队",
+        "save": "保存团队",
+        "cancel": "取消",
+        "created": "团队已创建",
+        "updated": "团队已更新",
+        "invalidBots": "部分机器人已无法添加。请移除后重试。",
+        "rateLimit": "团队更改过于频繁。请等待一分钟后重试。",
+        "descriptionHint": "支持 Markdown：**粗体**、列表、链接。",
+        "memberDescriptionPlaceholder": "这个机器人在团队中做什么（可选）",
+        "memberDescriptionLabel": "{bot} 在团队中做什么",
+        "handoffDuplicate": "此交接已在列表中。",
+        "handoffSelf": "请选择两个不同的机器人。",
+        "connectEveryone": "将一个机器人与所有人连接",
+        "connectEveryoneHint": "添加从所选机器人到其他所有机器人以及反向的交接，就像幕僚长一样。",
+        "invalidCategory": "该分类已不存在",
+        "invalidTags": "部分标签已不存在",
+        "computerHint": "图标标记需要云端电脑、你自己的电脑或两者都需要的机器人。"
+      },
+      "openBot": "查看 {bot} 的详情",
+      "botHint": "选择一个机器人，查看它做什么并安装它。",
+      "inTeam": "在 {team} 中",
+      "installBot": "安装",
+      "viewBot": "打开机器人页面",
+      "botLoadError": "无法加载此机器人。",
+      "backToTeam": "返回团队",
+      "pagination": "团队分页",
+      "previousPage": "上一页",
+      "nextPage": "下一页",
+      "unlisted": "未列出",
+      "unlistedNotice": "此团队未列出：它不会出现在列表、搜索和个人主页中，只有作者和管理员可以打开。",
+      "unlist": "取消列出",
+      "relist": "重新列出",
+      "unlistedToast": "团队已取消列出",
+      "relistedToast": "团队已重新列出"
+    },
+    "computer": {
+      "cloud": "需要云端电脑",
+      "local": "需要你的电脑",
+      "label": "电脑",
+      "hint": "这个机器人需要在电脑上运行吗？可以勾选一个、两个或都不选。每一项都会在机器人上显示为一个小图标。",
+      "cloudHint": "需要自己的远程电脑、桌面或浏览器。",
+      "localHint": "需要访问你自己的电脑、文件或应用。"
+    }
   },
   "collection": {
     "title": "我的收藏",
@@ -1070,6 +1276,8 @@
     "removed": "已从收藏中移除"
   },
   "discovery": {
+    "trending": "当前热门",
+    "seeAll": "查看全部",
     "featuredPrompts": "精选提示词",
     "todaysMostUpvoted": "今日最热",
     "latestPrompts": "最新提示词",
@@ -1412,7 +1620,7 @@
     "interactiveBanner": {
       "badge": "互动版本已上线",
       "title": "想要更详细的互动体验？",
-      "description": "通过我们包含29章内容、实践练习和真实案例的综合互动指南，深入掌握AI提示词技巧。",
+      "description": "通过我们包含30章内容、实践练习和真实案例的综合互动指南，深入掌握AI提示词技巧。",
       "cta": "阅读互动电子书"
     },
     "generalTips": {
@@ -1882,7 +2090,7 @@
     "donate": "支持项目",
     "subtitle": "创建清晰有效提示词的互动指南",
     "metaTitle": "提示词工程指南：互动提示词工程之书",
-    "metaDescription": "通过这本免费互动指南掌握AI提示词工程。学习ChatGPT提示词、思维链推理、少样本学习和高级技术。29+章节配有真实示例。",
+    "metaDescription": "通过这本免费互动指南掌握AI提示词工程。学习ChatGPT提示词、思维链推理、少样本学习和高级技术。30+章节配有真实示例。",
     "interactiveGuideBy": "互动指南 by",
     "authorIntro": "你好，我是<author>Fatih Kadir Akın</author>，GitHub上热门<repoLink>Awesome ChatGPT Prompts</repoLink>仓库和<siteName>prompts.chat</siteName>的策展人。",
     "bookDescription": "在这本全面的互动指南中，你将发现创建引人入胜的AI提示词的专家策略，这些提示词能够产生有效的对话。从理解AI模型的工作原理到掌握提示词链和代理系统等高级技术，这本书为你提供了将AI交互提升到新水平所需的工具。",
@@ -1904,7 +2112,7 @@
       "part4": "第4部分：最佳实践",
       "part5": "第5部分：用例",
       "part6": "第6部分：结论",
-      "chapters": "29个互动章节"
+      "chapters": "30个互动章节"
     },
     "startReading": "开始阅读",
     "skipToChapter1": "跳至第1章",
@@ -1962,6 +2170,7 @@
       "13-multimodal-prompting": "多模态提示词",
       "14-context-engineering": "上下文工程",
       "14a-loop-engineering": "循环工程",
+      "24a-from-prompt-to-team": "从提示词到团队",
       "25-agents-and-skills": "代理和技能",
       "15-common-pitfalls": "常见陷阱",
       "16-ethics-responsible-use": "伦理和负责任使用",
@@ -1996,6 +2205,7 @@
       "13-multimodal-prompting": "处理图像、音频和视频",
       "14-context-engineering": "RAG、嵌入、函数调用和MCP",
       "14a-loop-engineering": "设计能够行动、验证、调整并知道何时停止的反馈循环",
+      "24a-from-prompt-to-team": "用浅显的语言讲清提示词、技能、智能体、机器人和团队，以及它们之间的区别",
       "25-agents-and-skills": "使用可重用技能包构建AI代理",
       "15-common-pitfalls": "要避免的错误",
       "16-ethics-responsible-use": "AI中的伦理考虑",
@@ -2454,7 +2664,7 @@
     },
     "bots": {
       "title": "适用于 OpenClaw、Hermes 和 Grok 的现成 AI 智能体机器人",
-      "description": "浏览包含指令、定时任务和技能的现成 AI 智能体机器人，一键安装到 OpenClaw、Hermes Agent 或 Grok Bot。",
+      "description": "浏览包含指令、定时任务和技能的现成 AI 智能体机器人，一键安装到 OpenClaw、AutoGPT、OpenAI Dots、Claude Duet、Meta Muse、Hermes Agent 或 Grok Bot。",
       "heading": "机器人"
     },
     "taste": {
@@ -2515,7 +2725,16 @@
       "SKILL": "智能体技能",
       "TASTE": "编码风格档案",
       "model": "{model}提示词"
+    },
+    "botTeams": {
+      "title": "AI 机器人团队:相互交接工作的智能体",
+      "description": "浏览相互交接工作的 AI 智能体机器人团队,查看每一次交接,并将整个团队一次性安装到 OpenClaw、Hermes Agent、Grok Bot 等平台。",
+      "heading": "机器人团队"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "仅限需要 <code>CLOUD</code> 云端电脑或用户 <code>LOCAL</code> 本地电脑的机器人（两者都需要的机器人匹配任一项），或用 <code>NONE</code> 筛选不需要电脑的机器人",
+    "computerRequirementsInput": "包含 <code>CLOUD</code>（机器人需要自己的远程电脑、桌面或浏览器）和/或 <code>LOCAL</code>（需要用户自己的机器、文件或应用）的列表；空列表表示不需要电脑。会替换已保存的列表"
   },
   "actionButtons": {
     "deployWithSpacefast": "使用 SpaceFast 部署"

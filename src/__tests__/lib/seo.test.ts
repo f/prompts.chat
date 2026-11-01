@@ -162,7 +162,7 @@ describe("buildPageMetadata", () => {
     expect(metadata.openGraph).toMatchObject({ title: "prompts.chat - Free AI Prompts" });
   });
 
-  it("should emit noindex without a canonical", () => {
+  it("should keep the canonical on noindex pages", () => {
     const metadata = buildPageMetadata({
       title: "Search",
       description: "Search results",
@@ -171,7 +171,21 @@ describe("buildPageMetadata", () => {
     });
 
     expect(metadata.robots).toMatchObject({ index: false, follow: true });
-    expect(metadata.alternates).toBeUndefined();
+    expect(metadata.alternates?.canonical).toBe("/prompts");
+  });
+
+  it("should point the canonical and social URL at a preferred URL", () => {
+    const metadata = buildPageMetadata({
+      title: "Trending",
+      description: "Trending prompts",
+      path: "/prompts?trending=1",
+      canonical: "/prompts",
+      noindex: true,
+    });
+
+    expect(metadata.alternates?.canonical).toBe("/prompts");
+    expect(metadata.openGraph).toMatchObject({ url: "/prompts" });
+    expect(metadata.robots).toMatchObject({ index: false, follow: true });
   });
 
   it("should leave images to the route when requested", () => {

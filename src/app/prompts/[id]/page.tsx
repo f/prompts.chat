@@ -32,6 +32,8 @@ import { RestorePromptButton } from "@/components/prompts/restore-prompt-button"
 import { CommentSection } from "@/components/comments";
 import { PromptFlowSection } from "@/components/prompts/prompt-flow-section";
 import { RelatedPrompts } from "@/components/prompts/related-prompts";
+import { RelatedBots } from "@/components/bots/related-bots";
+import { getRelatedSkillsAndBots } from "@/lib/related-content";
 import { ChangeRequestList } from "@/components/prompts/change-request-list";
 import { AddToCollectionButton } from "@/components/prompts/add-to-collection-button";
 import { getConfig } from "@/lib/config";
@@ -43,6 +45,12 @@ import { buildPageMetadata, NOINDEX_ROBOTS, toMetaDescription } from "@/lib/seo"
 interface PromptPageProps {
   params: Promise<{ id: string }>;
 }
+
+// Flagged comments are shadow-banned: only admins and their authors see them
+const PUBLIC_COMMENT_WHERE = { deletedAt: null, flagged: false };
+
+// Most comments included in structured data; the full thread is on the page
+const MAX_SCHEMA_COMMENTS = 50;
 
 /**
  * Extracts the prompt ID from a URL parameter that may contain a slug
@@ -183,7 +191,7 @@ export default async function PromptPage({ params }: PromptPageProps) {
       _count: {
         select: {
           votes: true,
-          comments: { where: { deletedAt: null } },
+          comments: { where: PUBLIC_COMMENT_WHERE },
         },
       },
       contributors: {
@@ -279,6 +287,10 @@ export default async function PromptPage({ params }: PromptPageProps) {
     .map((conn) => conn.target)
     .filter((p) => !p.isPrivate && !p.isUnlisted && !p.deletedAt);
 
+  const { skills: relatedSkills, bots: relatedBots } = await getRelatedSkillsAndBots(id, {
+    excludeIds: relatedPrompts.map((p) => p.id),
+  });
+
   // Check if prompt has flow connections (previous/next, not "related")
   const flowConnectionCount = await db.promptConnection.count({
     where: {
@@ -289,6 +301,23 @@ export default async function PromptPage({ params }: PromptPageProps) {
     },
   });
   const hasFlowConnections = flowConnectionCount > 0;
+
+  // Comments everyone can see (flagged ones are shadow-banned) for structured data
+  const showComments = config.features.comments !== false && !prompt.isPrivate;
+  const schemaComments = showComments
+    ? await db.comment.findMany({
+        where: { promptId: id, ...PUBLIC_COMMENT_WHERE },
+        orderBy: { createdAt: "asc" },
+        take: MAX_SCHEMA_COMMENTS,
+        select: {
+          id: true,
+          content: true,
+          createdAt: true,
+          parentId: true,
+          author: { select: { name: true, username: true } },
+        },
+      })
+    : [];
 
   // Unlisted prompts are accessible via direct link (like YouTube unlisted videos)
   // They just don't appear in public listings, search results, or feeds
@@ -360,7 +389,14 @@ export default async function PromptPage({ params }: PromptPageProps) {
               category: prompt.category?.name,
               tags: prompt.tags.map(({ tag }) => tag.name),
               voteCount,
-              commentCount: prompt._count.comments,
+              comments: schemaComments.map((comment) => ({
+                id: comment.id,
+                parentId: comment.parentId,
+                text: comment.content,
+                createdAt: comment.createdAt,
+                author: { name: comment.author.name || comment.author.username, username: comment.author.username },
+              })),
+              commentCount: showComments ? prompt._count.comments : 0,
             }),
             breadcrumbSchema([
               { name: "Home", path: "/" },
@@ -760,6 +796,9 @@ export default async function PromptPage({ params }: PromptPageProps) {
           {relatedPrompts.length > 0 && (
             <RelatedPrompts prompts={relatedPrompts} />
           )}
+
+          <RelatedPrompts prompts={relatedSkills} title={t("relatedSkills")} />
+          <RelatedBots bots={relatedBots} />
 
           {/* Comments Section */}
           {config.features.comments !== false && !prompt.isPrivate && (

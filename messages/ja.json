@@ -36,6 +36,7 @@
   },
   "nav": {
     "bots": "ボット",
+    "teams": "チーム",
     "collection": "マイコレクション",
     "feed": "フィード",
     "promptmasters": "Promptmasters",
@@ -183,6 +184,8 @@
     "relistRequestAlreadySent": "このプロンプトの再公開依頼は既に送信されています。",
     "relistRequestError": "再公開依頼の送信に失敗しました。もう一度お試しください。",
     "relatedPrompts": "関連プロンプト",
+    "relatedSkills": "関連スキル",
+    "relatedBots": "関連ボット",
     "deletePrompt": "プロンプトを削除",
     "deletePromptTitle": "このプロンプトを削除しますか？",
     "deletePromptDescription": "この操作は取り消せません。プロンプトは完全に削除されます。",
@@ -443,7 +446,46 @@
     "dismissed": "変更リクエストを取り下げました",
     "dismissConfirmTitle": "変更リクエストを取り下げますか？",
     "dismissConfirmDescription": "変更リクエストは完全に削除されます。この操作は取り消せません。",
-    "backToBot": "ボットに戻る"
+    "backToBot": "ボットに戻る",
+    "backToTeam": "チームに戻る",
+    "proposeBotTitle": "このボットへの変更を提案",
+    "proposeBotIntro": "このボットの改善を提案してください。オーナーが提案を確認し、承認または却下できます。",
+    "proposeTeamTitle": "このチームへの変更を提案",
+    "proposeTeamIntro": "このチームの改善を提案してください。オーナーが提案を確認し、承認または却下できます。",
+    "viewVersion": "バージョンを表示",
+    "viewVersionHint": "バージョン {previous} からの変更",
+    "viewFirstVersionHint": "最初のバージョン",
+    "memberRole": "役割",
+    "memberDescription": "説明",
+    "membersReordered": "メンバーの順序が変更されました",
+    "noFieldChanges": "変更なし",
+    "reviewedBy": "レビュー担当: {user}",
+    "teamApprovedSuccess": "変更リクエストが承認され、チームが更新されました",
+    "botFields": {
+      "title": "タイトル",
+      "description": "説明",
+      "platforms": "プラットフォーム",
+      "computers": "コンピューター要件",
+      "appearance": "外観",
+      "installUrl": "インストールURL",
+      "instructions": "指示",
+      "routines": "ルーチン",
+      "skills": "スキル",
+      "connectors": "コネクター"
+    },
+    "teamFields": {
+      "title": "タイトル",
+      "description": "説明",
+      "category": "カテゴリー",
+      "tags": "タグ",
+      "handoffs": "引き継ぎ",
+      "members": "メンバー"
+    },
+    "member": {
+      "added": "追加",
+      "removed": "削除",
+      "changed": "変更"
+    }
   },
   "categories": {
     "title": "カテゴリー",
@@ -509,6 +551,7 @@
       "webhooks": "Webhook",
       "prompts": "プロンプト",
       "bots": "ボット",
+      "teams": "チーム",
       "reports": "報告"
     },
     "reports": {
@@ -784,6 +827,26 @@
       "deleted": "ボットを削除しました",
       "deleteConfirmTitle": "ボットを削除しますか？",
       "deleteConfirmDescription": "「{title}」を完全に削除します。元に戻せません。"
+    },
+    "teamsList": {
+      "title": "チーム",
+      "description": "ボットチームを管理: 限定公開、編集、削除。",
+      "noTeams": "チームが見つかりません",
+      "open": "開く",
+      "edit": "編集",
+      "unlist": "限定公開にする",
+      "relist": "再公開",
+      "updated": "チームを更新しました",
+      "deleted": "チームを削除しました",
+      "deleteConfirmTitle": "チームを削除しますか？",
+      "deleteConfirmDescription": "「{title}」を完全に削除します。ボット自体はそのまま残ります。",
+      "members": "{count, plural, other {# 個のボット}}",
+      "filters": {
+        "all": "すべて",
+        "listed": "公開",
+        "unlisted": "限定公開",
+        "featured": "注目"
+      }
     }
   },
   "search": {
@@ -840,7 +903,12 @@
     "noBots": "まだボットはありません。",
     "noBotsOwner": "まだボットを作成していません。",
     "createFirstBot": "最初のボットを作成",
-    "botsCount": "ボット"
+    "botsCount": "ボット",
+    "teams": "チーム",
+    "teamsCount": "チーム",
+    "noTeams": "まだチームはありません。",
+    "noTeamsOwner": "まだチームを作成していません。",
+    "createFirstTeam": "最初のチームを作成"
   },
   "subscription": {
     "subscribe": "購読",
@@ -929,7 +997,7 @@
     "browsePrompts": "プロンプトを見る"
   },
   "bots": {
-    "description": "指示・ルーティン・スキルを備えたすぐに使える AI エージェントボット。OpenClaw、Hermes Agent、Grok Bot にインストールできます。",
+    "description": "指示・ルーティン・スキルを備えたすぐに使える AI エージェントボット。OpenClaw、AutoGPT、OpenAI Dots、Claude Duet、Meta Muse、Hermes Agent、Grok Bot にインストールできます。",
     "count": "{count, plural, other {# 件のボット}}",
     "allPlatforms": "すべて",
     "searchPlaceholder": "ボットを検索...",
@@ -954,6 +1022,14 @@
     "installPromptHint": "このプロンプトをエージェントに貼り付けてください。ボットの定義を取得し、指示・ルーティン・スキルを設定します。",
     "installPromptFallbackHint": "または、このプロンプトを Grok Bot に貼り付けて自分でボットを作成します:",
     "installPromptPlatformFallbackHint": "または、このプロンプトを {platform} に貼り付けて自分でボットを作成します:",
+    "autogptPromptHint": "このプロンプトを AutoGPT の Otto とのチャットに貼り付けてください。Otto が指示・スキル・ルーティンを備えた Expert としてボットをセットアップします。",
+    "openAutogpt": "AutoGPT を開く",
+    "dotsPromptHint": "このプロンプトを ChatGPT の dot とのチャットに貼り付けてください。dot がボットの指示を引き継ぎ、必要なアプリの接続を依頼し、ルーティンを定期タスクとしてスケジュールします。",
+    "openDots": "Dots を開く",
+    "duetPromptHint": "このプロンプトを Claude Duet のスレッドに貼り付けてください。Claude Duet はボットの指示とルーティンを引き継ぎ、Claude アカウントのスキルとコネクタを使います。足りないものは Claude の設定で追加してください。",
+    "openDuet": "Claude Duet を開く",
+    "musePromptHint": "このプロンプトを Muse とのチャットに貼り付けてください。Muse のスキルは組み込み済みなので、ボットの指示を引き継ぎ、必要なアプリの接続を依頼し、ルーティンを予定タスクとして設定します。",
+    "openMuse": "Muse を開く",
     "copyInstallPrompt": "インストールプロンプトをコピー",
     "machineReadable": "機械可読",
     "create": "新しいボット",
@@ -999,7 +1075,15 @@
       "submit": "ボットを作成",
       "save": "ボットを保存",
       "created": "ボットを作成しました",
-      "updated": "ボットを更新しました"
+      "updated": "ボットを更新しました",
+      "pairingsHint": "このボットと相性の良いボットをリンクします。リンクは両方のボットのページに表示されます。",
+      "pairingsSearch": "組み合わせるボットを検索...",
+      "pairingsNoResults": "ボットが見つかりません",
+      "pairingNotePlaceholder": "相性が良い理由(任意)",
+      "pairingNoteLabel": "{bot} と相性が良い理由",
+      "removePairing": "{bot} を削除",
+      "pairingsMax": "リンクできるボットは最大 {max} 個です",
+      "pairingsInvalid": "リンクしたボットの一つが存在しません。削除してからもう一度お試しください。"
     },
     "colors": {
       "slate": "スレート",
@@ -1055,7 +1139,129 @@
       "coffee": "コーヒー"
     },
     "latestBots": "最新のボット",
-    "viewAll": "すべて表示"
+    "featuredTeams": "注目のボットチーム",
+    "viewAll": "すべて表示",
+    "betterTogether": "一緒に使うとさらに便利",
+    "installAllTogether": "まとめてインストール",
+    "installAllTitle": "{count, plural, other {# 個のボットをまとめてインストール}}",
+    "installAllDescription": "{bot} と相性の良いボットを一度にセットアップします。",
+    "installAllUnavailable": "これらのボットにはまだインストール方法がありません。",
+    "installAllLoadError": "インストール方法を読み込めませんでした。ダイアログを閉じて再度お試しください。",
+    "installAllPromptHint": "このプロンプトを {platform} に貼り付けてください。セット内のボットを順番にセットアップします。",
+    "installAllAutogptPromptHint": "このプロンプトを AutoGPT の Otto とのチャットに貼り付けてください。Otto がセット内の各ボットを順番に Expert としてセットアップします。",
+    "installAllDotsPromptHint": "このプロンプトを ChatGPT の dot とのチャットに貼り付けてください。dot がセット内の各ボットを順番にセットアップします。",
+    "installAllDuetPromptHint": "このプロンプトを Claude Duet のスレッドに貼り付けてください。Claude Duet がセット内の各ボットを順番にセットアップします。足りないスキルとコネクタは Claude の設定で追加してください。",
+    "installAllMusePromptHint": "このプロンプトを Muse とのチャットに貼り付けてください。Muse がセット内の各ボットを順番にセットアップし、必要なアプリの接続を依頼します。",
+    "installAllCommandHint": "セット内の各ボットをスキルとしてインストール:",
+    "installAllTemplatesHint": "または各 {platform} テンプレートを開く:",
+    "installAllSkipped": "{platform} では利用できません: {bots}",
+    "copyCommands": "コマンドをコピー",
+    "openTemplate": "{bot} のテンプレートを開く",
+    "teams": {
+      "link": "チーム",
+      "create": "チームを作成",
+      "description": "チームは、互いに作業を引き継ぐボットのグループです。各ボックスがチームで、各矢印はボットが次のボットに何を引き継ぐかを示します。矢印にカーソルを合わせると引き継ぎ内容が、チームを選択するとメンバーが表示されます。",
+      "count": "{count, plural, other {# 件のチーム}}",
+      "searchPlaceholder": "チームを検索...",
+      "allTeams": "すべてのチーム",
+      "empty": "まだチームがありません。最初のチームを作成しましょう。",
+      "noResults": "検索に一致するチームはありません。",
+      "featured": "注目",
+      "graphLabel": "ボットチームと引き継ぎ",
+      "selectTeam": "{team} の詳細を表示",
+      "selectHint": "チームを選択すると、メンバーと引き継ぎが表示されます。",
+      "closePanel": "閉じる",
+      "by": "作成者: {author}",
+      "members": "メンバー",
+      "handoffs": "引き継ぎフロー",
+      "handoffLabel": "{from} が {to} に引き継ぐ",
+      "handsOffTo": "が引き継ぐ相手",
+      "noHandoffLabel": "引き継ぐ内容の説明はありません",
+      "noHandoffs": "このチームにはまだ引き継ぎがありません。",
+      "noVisibleMembers": "このチームのボットはどれも表示できません。",
+      "openTeam": "チームを開く",
+      "backToTeams": "すべてのチーム",
+      "install": "チームをインストール",
+      "installTitle": "{count, plural, other {このチームの # 個のボットをすべてインストール}}",
+      "installDescription": "{team} のすべてのボットと引き継ぎを一度に設定します。",
+      "installShort": "インストール",
+      "memberOf": "チーム",
+      "memberCount": "{count, plural, other {# 個のボット}}",
+      "edit": "チームを編集",
+      "delete": "チームを削除",
+      "deleteConfirm": "このチームを削除しますか?ボット自体はそのまま残ります。",
+      "deleted": "チームを削除しました",
+      "form": {
+        "createTitle": "チームを作成",
+        "editTitle": "チームを編集",
+        "intro": "ボットを選び、チームでのそれぞれの役割を書き、誰が誰に何を引き継ぐかを決めます。",
+        "title": "タイトル",
+        "titlePlaceholder": "例: リサーチ & 公開",
+        "titleRequired": "チームにタイトルを付けてください。",
+        "description": "説明",
+        "descriptionPlaceholder": "このチームは一緒に何をしますか？作業はどのように流れますか？",
+        "bots": "ボット",
+        "botsHint": "{min}〜{max} 個のボットを追加してください。",
+        "botsSearch": "追加するボットを検索...",
+        "botsMax": "チームには最大 {max} 個のボットを追加できます",
+        "minBots": "少なくとも {min} 個のボットを追加してください。",
+        "noResults": "ボットが見つかりません",
+        "rolePlaceholder": "役割(任意)例: リサーチャー",
+        "roleLabel": "{bot} の役割",
+        "removeBot": "{bot} を削除",
+        "handoffs": "引き継ぎ",
+        "handoffsHint": "各引き継ぎは、あるボットから別のボットへ作業を渡します。1つのボットが複数のボットに引き継ぎ、作業を受け取ることもできます。",
+        "from": "引き継ぎ元",
+        "to": "引き継ぎ先",
+        "labelPlaceholder": "引き継ぐ内容 例: リサーチの要約",
+        "labelLabel": "{from} が {to} に引き継ぐ内容",
+        "addHandoff": "引き継ぎを追加",
+        "removeHandoff": "引き継ぎを削除",
+        "needTwoBots": "引き継ぎを定義するには、少なくとも 2 つのボットを追加してください。",
+        "handoffInvalid": "各引き継ぎは、チーム内の異なる 2 つのボットを 1 回だけつなぐ必要があります。",
+        "submit": "チームを作成",
+        "save": "チームを保存",
+        "cancel": "キャンセル",
+        "created": "チームを作成しました",
+        "updated": "チームを更新しました",
+        "invalidBots": "一部のボットは追加できなくなりました。削除してからもう一度お試しください。",
+        "rateLimit": "チームの変更が多すぎます。1 分待ってからもう一度お試しください。",
+        "descriptionHint": "Markdown に対応しています：**太字**、リスト、リンク。",
+        "memberDescriptionPlaceholder": "チームでのこのボットの役割（任意）",
+        "memberDescriptionLabel": "チームでの {bot} の役割",
+        "handoffDuplicate": "この引き継ぎはすでにあります。",
+        "handoffSelf": "異なる2つのボットを選んでください。",
+        "connectEveryone": "ボットを全員とつなぐ",
+        "connectEveryoneHint": "選んだボットから他のすべてのボットへの引き継ぎと、その逆を追加します。チーフ・オブ・スタッフのような構成です。",
+        "invalidCategory": "このカテゴリは存在しません",
+        "invalidTags": "一部のタグは存在しません",
+        "computerHint": "アイコンはクラウドコンピューター、ご自身のコンピューター、またはその両方が必要なボットを示します。"
+      },
+      "openBot": "{bot} の詳細を表示",
+      "botHint": "ボットを選ぶと、その役割を確認してインストールできます。",
+      "inTeam": "{team} での役割",
+      "installBot": "インストール",
+      "viewBot": "ボットのページを開く",
+      "botLoadError": "このボットを読み込めませんでした。",
+      "backToTeam": "チームに戻る",
+      "pagination": "チームのページ",
+      "previousPage": "前のページ",
+      "nextPage": "次のページ",
+      "unlisted": "限定公開",
+      "unlistedNotice": "このチームは限定公開です。一覧、検索、プロフィールには表示されず、作成者と管理者のみが開けます。",
+      "unlist": "限定公開にする",
+      "relist": "再公開",
+      "unlistedToast": "チームを限定公開にしました",
+      "relistedToast": "チームを再公開しました"
+    },
+    "computer": {
+      "cloud": "クラウドコンピューターが必要",
+      "local": "あなたのコンピューターが必要",
+      "label": "コンピューター",
+      "hint": "ボットの実行にコンピューターが必要ですか？1つ、両方、またはどちらも選ばないことができます。それぞれボットに小さなアイコンで表示されます。",
+      "cloudHint": "専用のリモートコンピューター、デスクトップ、ブラウザが必要です。",
+      "localHint": "あなた自身のマシン、ファイル、アプリへのアクセスが必要です。"
+    }
   },
   "collection": {
     "title": "マイコレクション",
@@ -1070,6 +1276,8 @@
     "removed": "コレクションから削除しました"
   },
   "discovery": {
+    "trending": "今トレンド中",
+    "seeAll": "すべて見る",
     "featuredPrompts": "注目のプロンプト",
     "todaysMostUpvoted": "今日最も投票された",
     "latestPrompts": "最新のプロンプト",
@@ -1412,7 +1620,7 @@
     "interactiveBanner": {
       "badge": "インタラクティブ版が利用可能",
       "title": "より詳細でインタラクティブな体験をお求めですか？",
-      "description": "29章、実践的な演習、実例を含む包括的なインタラクティブガイドで、AIプロンプトをマスターしましょう。",
+      "description": "30章、実践的な演習、実例を含む包括的なインタラクティブガイドで、AIプロンプトをマスターしましょう。",
       "cta": "インタラクティブブックを読む"
     },
     "generalTips": {
@@ -1882,7 +2090,7 @@
     "donate": "プロジェクトを支援",
     "subtitle": "明確で効果的なプロンプトを作成するためのインタラクティブガイド",
     "metaTitle": "プロンプトエンジニアリングガイド：インタラクティブ・プロンプティングブック",
-    "metaDescription": "この無料インタラクティブガイドでAIプロンプトエンジニアリングをマスターしましょう。ChatGPTプロンプト、Chain-of-Thought推論、Few-Shot学習、高度なテクニックを学べます。実例付き29以上のチャプター。",
+    "metaDescription": "この無料インタラクティブガイドでAIプロンプトエンジニアリングをマスターしましょう。ChatGPTプロンプト、Chain-of-Thought推論、Few-Shot学習、高度なテクニックを学べます。実例付き30以上のチャプター。",
     "interactiveGuideBy": "インタラクティブガイド by",
     "authorIntro": "こんにちは、<author>Fatih Kadir Akın</author>です。GitHubで人気の<repoLink>Awesome ChatGPT Prompts</repoLink>リポジトリと<siteName>prompts.chat</siteName>のキュレーターです。",
     "bookDescription": "この包括的でインタラクティブなガイドでは、魅力的で効果的な会話を生み出す説得力のあるAIプロンプトを作成するための専門家の戦略を発見できます。AIモデルの仕組みの理解から、プロンプトチェーニングやエージェントシステムなどの高度なテクニックの習得まで、この本はAIインタラクションを次のレベルに引き上げるために必要なツールを提供します。",
@@ -1904,7 +2112,7 @@
       "part4": "パート4：ベストプラクティス",
       "part5": "パート5：ユースケース",
       "part6": "パート6：結論",
-      "chapters": "29のインタラクティブチャプター"
+      "chapters": "30のインタラクティブチャプター"
     },
     "startReading": "読み始める",
     "skipToChapter1": "第1章へ",
@@ -1962,6 +2170,7 @@
       "13-multimodal-prompting": "マルチモーダルプロンプティング",
       "14-context-engineering": "コンテキストエンジニアリング",
       "14a-loop-engineering": "ループエンジニアリング",
+      "24a-from-prompt-to-team": "プロンプトからチームへ",
       "25-agents-and-skills": "エージェントとスキル",
       "15-common-pitfalls": "よくある落とし穴",
       "16-ethics-responsible-use": "倫理と責任ある使用",
@@ -1996,6 +2205,7 @@
       "13-multimodal-prompting": "画像、音声、動画を扱う",
       "14-context-engineering": "RAG、エンベディング、関数呼び出し、MCP",
       "14a-loop-engineering": "行動し、検証し、適応し、停止すべき時を判断するフィードバックループの設計",
+      "24a-from-prompt-to-team": "プロンプト、スキル、エージェント、ボット、チームをやさしい言葉で解説し、その違いを整理する",
       "25-agents-and-skills": "再利用可能なスキルパッケージでAIエージェントを構築する",
       "15-common-pitfalls": "避けるべき間違い",
       "16-ethics-responsible-use": "AIにおける倫理的考慮",
@@ -2454,7 +2664,7 @@
     },
     "bots": {
       "title": "OpenClaw・Hermes・Grok 向けのすぐに使える AI エージェントボット",
-      "description": "指示、定期ルーティン、スキルを備えたすぐに使える AI エージェントボットを探して、OpenClaw、Hermes Agent、Grok Bot にワンクリックでインストールできます。",
+      "description": "指示、定期ルーティン、スキルを備えたすぐに使える AI エージェントボットを探して、OpenClaw、AutoGPT、OpenAI Dots、Claude Duet、Meta Muse、Hermes Agent、Grok Bot にワンクリックでインストールできます。",
       "heading": "ボット"
     },
     "taste": {
@@ -2515,7 +2725,16 @@
       "SKILL": "エージェントスキル",
       "TASTE": "コーディングテイスト",
       "model": "{model}プロンプト"
+    },
+    "botTeams": {
+      "title": "AI ボットチーム:作業を引き継ぎ合うエージェント",
+      "description": "互いに作業を引き継ぐ AI エージェントボットのチームを閲覧し、各引き継ぎを確認して、チーム全体を OpenClaw、Hermes Agent、Grok Bot などに一度にインストールできます。",
+      "heading": "ボットチーム"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "<code>CLOUD</code> コンピューターまたはユーザーの <code>LOCAL</code> コンピューターを必要とするボットのみ（両方を必要とするボットはどちらにも一致）、またはコンピューター不要のボットは <code>NONE</code>",
+    "computerRequirementsInput": "<code>CLOUD</code>（ボットが専用のリモートコンピューター、デスクトップ、ブラウザーを必要とする）と <code>LOCAL</code>（ユーザー自身のマシン、ファイル、アプリを必要とする）のいずれかまたは両方を含むリスト。空のリストはコンピューター不要を意味します。保存済みのリストを置き換えます"
   },
   "actionButtons": {
     "deployWithSpacefast": "SpaceFast でデプロイ"

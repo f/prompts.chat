@@ -91,3 +91,6 @@ export const mcpWriteToolLimiter = new RateLimiter({ max: 5, windowSeconds: 60 }
 
 /** AI-powered tools (improve_prompt) – 2 req / min per identifier */
 export const mcpAiToolLimiter = new RateLimiter({ max: 2, windowSeconds: 60 });
+
+/** Creating, editing and deleting bot teams on the website – 5 req / min per user */
+export const botTeamWriteLimiter = new RateLimiter({ max: 5, windowSeconds: 60 });

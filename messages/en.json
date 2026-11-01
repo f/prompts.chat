@@ -36,6 +36,7 @@
   },
   "nav": {
     "bots": "Bots",
+    "teams": "Teams",
     "collection": "My Collection",
     "feed": "Feed",
     "promptmasters": "Promptmasters",
@@ -186,6 +187,8 @@
     "relistRequestAlreadySent": "You have already submitted a relist request for this prompt.",
     "relistRequestError": "Failed to submit relist request. Please try again.",
     "relatedPrompts": "Related Prompts",
+    "relatedSkills": "Related Skills",
+    "relatedBots": "Related Bots",
     "deletePrompt": "Delete Prompt",
     "deletePromptTitle": "Delete this prompt?",
     "deletePromptDescription": "This action cannot be undone. The prompt will be permanently removed.",
@@ -443,7 +446,46 @@
     "dismissed": "Change request dismissed",
     "dismissConfirmTitle": "Dismiss Change Request?",
     "dismissConfirmDescription": "This will permanently delete your change request. This action cannot be undone.",
-    "backToBot": "Back to bot"
+    "backToBot": "Back to bot",
+    "backToTeam": "Back to team",
+    "proposeBotTitle": "Propose changes to this bot",
+    "proposeBotIntro": "Suggest improvements to this bot. The owner reviews your proposal and can approve or reject it.",
+    "proposeTeamTitle": "Propose changes to this team",
+    "proposeTeamIntro": "Suggest improvements to this team. The owner reviews your proposal and can approve or reject it.",
+    "viewVersion": "View version",
+    "viewVersionHint": "Changes compared to version {previous}",
+    "viewFirstVersionHint": "First version",
+    "memberRole": "Role",
+    "memberDescription": "Description",
+    "membersReordered": "Member order changed",
+    "noFieldChanges": "No changes",
+    "reviewedBy": "Reviewed by {user}",
+    "teamApprovedSuccess": "Change request approved and team updated",
+    "botFields": {
+      "title": "Title",
+      "description": "Description",
+      "platforms": "Platforms",
+      "computers": "Computer requirements",
+      "appearance": "Appearance",
+      "installUrl": "Install URL",
+      "instructions": "Instructions",
+      "routines": "Routines",
+      "skills": "Skills",
+      "connectors": "Connectors"
+    },
+    "teamFields": {
+      "title": "Title",
+      "description": "Description",
+      "category": "Category",
+      "tags": "Tags",
+      "handoffs": "Handoffs",
+      "members": "Members"
+    },
+    "member": {
+      "added": "Added",
+      "removed": "Removed",
+      "changed": "Changed"
+    }
   },
   "categories": {
     "title": "Categories",
@@ -509,6 +551,7 @@
       "webhooks": "Webhooks",
       "prompts": "Prompts",
       "bots": "Bots",
+      "teams": "Teams",
       "reports": "Reports"
     },
     "reports": {
@@ -784,6 +827,26 @@
       "deleted": "Bot deleted",
       "deleteConfirmTitle": "Delete bot?",
       "deleteConfirmDescription": "This permanently deletes \"{title}\". This cannot be undone."
+    },
+    "teamsList": {
+      "title": "Teams",
+      "description": "Manage bot teams: unlist, edit or delete them.",
+      "noTeams": "No teams found",
+      "open": "Open",
+      "edit": "Edit",
+      "unlist": "Unlist",
+      "relist": "Relist",
+      "updated": "Team updated",
+      "deleted": "Team deleted",
+      "deleteConfirmTitle": "Delete team?",
+      "deleteConfirmDescription": "This permanently deletes \"{title}\". Its bots stay as they are.",
+      "members": "{count, plural, one {# bot} other {# bots}}",
+      "filters": {
+        "all": "All",
+        "listed": "Listed",
+        "unlisted": "Unlisted",
+        "featured": "Featured"
+      }
     }
   },
   "search": {
@@ -840,7 +903,12 @@
     "noBots": "No bots yet.",
     "noBotsOwner": "You haven't created any bots yet.",
     "createFirstBot": "Create your first bot",
-    "botsCount": "bots"
+    "botsCount": "bots",
+    "teams": "Teams",
+    "teamsCount": "teams",
+    "noTeams": "No teams yet.",
+    "noTeamsOwner": "You haven't created any teams yet.",
+    "createFirstTeam": "Create your first team"
   },
   "subscription": {
     "subscribe": "Subscribe",
@@ -929,7 +997,7 @@
     "browsePrompts": "Browse Prompts"
   },
   "bots": {
-    "description": "Ready-made AI agent bots with instructions, routines and skills. Install them on OpenClaw, Hermes Agent or Grok Bot.",
+    "description": "Ready-made AI agent bots with instructions, routines and skills. Install them on OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent or Grok Bot.",
     "count": "{count, plural, one {# bot} other {# bots}}",
     "allPlatforms": "All",
     "searchPlaceholder": "Search bots...",
@@ -954,6 +1022,14 @@
     "installPromptHint": "Paste this prompt into your agent. It fetches the bot definition and sets up the instructions, routines and skills.",
     "installPromptFallbackHint": "Or paste this prompt into Grok Bot to create the bot yourself:",
     "installPromptPlatformFallbackHint": "Or paste this prompt into {platform} to create the bot yourself:",
+    "autogptPromptHint": "Paste this prompt into a chat with Otto on AutoGPT. Otto sets the bot up as an Expert with its instructions, skills and routines.",
+    "openAutogpt": "Open AutoGPT",
+    "dotsPromptHint": "Paste this prompt into a chat with your dot in ChatGPT. Your dot adopts the bot's instructions, asks you to connect the apps it needs and schedules its routines as recurring tasks.",
+    "openDots": "Open Dots",
+    "duetPromptHint": "Paste this prompt into your Claude Duet thread. Claude Duet adopts the bot's instructions and routines and uses the skills and connectors of your Claude account, so add any missing ones in Claude's settings.",
+    "openDuet": "Open Claude Duet",
+    "musePromptHint": "Paste this prompt into a chat with Muse. Muse's skills are built in, so it adopts the bot's instructions, asks you to connect the apps it needs and sets up its routines as scheduled tasks.",
+    "openMuse": "Open Muse",
     "copyInstallPrompt": "Copy install prompt",
     "machineReadable": "Machine-readable",
     "create": "New bot",
@@ -999,7 +1075,15 @@
       "submit": "Create bot",
       "save": "Save bot",
       "created": "Bot created",
-      "updated": "Bot updated"
+      "updated": "Bot updated",
+      "pairingsHint": "Link bots that work well with this one. Links show on both bots' pages.",
+      "pairingsSearch": "Search bots to pair with...",
+      "pairingsNoResults": "No bots found",
+      "pairingNotePlaceholder": "Why do they pair well? (optional)",
+      "pairingNoteLabel": "Why {bot} pairs well",
+      "removePairing": "Remove {bot}",
+      "pairingsMax": "You can link up to {max} bots",
+      "pairingsInvalid": "One of the paired bots no longer exists. Remove it and try again."
     },
     "colors": {
       "slate": "Slate",
@@ -1055,7 +1139,129 @@
       "coffee": "Coffee"
     },
     "latestBots": "Latest Bots",
-    "viewAll": "View all"
+    "featuredTeams": "Featured Bot Teams",
+    "viewAll": "View all",
+    "betterTogether": "Better together with",
+    "installAllTogether": "Install all together",
+    "installAllTitle": "{count, plural, one {Install # bot} other {Install all # bots together}}",
+    "installAllDescription": "Set up {bot} and the bots it pairs with in one go.",
+    "installAllUnavailable": "No install options are available for these bots yet.",
+    "installAllLoadError": "Install options could not be loaded. Close the dialog and try again.",
+    "installAllPromptHint": "Paste this prompt into {platform}. It sets up every bot in the set, one after another.",
+    "installAllAutogptPromptHint": "Paste this prompt into a chat with Otto on AutoGPT. Otto sets up every bot in the set as an Expert, one after another.",
+    "installAllDotsPromptHint": "Paste this prompt into a chat with your dot in ChatGPT. Your dot sets up every bot in the set, one after another.",
+    "installAllDuetPromptHint": "Paste this prompt into your Claude Duet thread. Claude Duet sets up every bot in the set, one after another. Add any missing skills and connectors in Claude's settings.",
+    "installAllMusePromptHint": "Paste this prompt into a chat with Muse. Muse sets up every bot in the set, one after another, and asks you to connect the apps they need.",
+    "installAllCommandHint": "Install every bot in the set as a skill:",
+    "installAllTemplatesHint": "Or open each {platform} template:",
+    "installAllSkipped": "Not available on {platform}: {bots}",
+    "copyCommands": "Copy commands",
+    "openTemplate": "Open {bot} template",
+    "teams": {
+      "link": "Teams",
+      "create": "Create team",
+      "description": "Teams are groups of bots that hand work off to each other. Each box is a team and each arrow shows what one bot hands to the next: hover an arrow to see the handoff, or select a team to see its members.",
+      "count": "{count, plural, one {# team} other {# teams}}",
+      "searchPlaceholder": "Search teams...",
+      "allTeams": "All teams",
+      "empty": "No teams yet. Create the first one.",
+      "noResults": "No teams match your search.",
+      "featured": "Featured",
+      "graphLabel": "Bot teams and their handoffs",
+      "selectTeam": "Show details of {team}",
+      "selectHint": "Select a team to see its members and handoffs.",
+      "closePanel": "Close",
+      "by": "by {author}",
+      "members": "Members",
+      "handoffs": "Handoff flow",
+      "handoffLabel": "{from} hands off to {to}",
+      "handsOffTo": "hands off to",
+      "noHandoffLabel": "No description of what is handed off",
+      "noHandoffs": "This team has no handoffs yet.",
+      "noVisibleMembers": "None of this team's bots are visible to you.",
+      "openTeam": "Open team",
+      "backToTeams": "All teams",
+      "install": "Install team",
+      "installTitle": "{count, plural, one {Install # bot} other {Install all # bots of this team}}",
+      "installDescription": "Set up every bot of {team} and wire up their handoffs in one go.",
+      "installShort": "Install",
+      "memberOf": "Teams",
+      "memberCount": "{count, plural, one {# bot} other {# bots}}",
+      "edit": "Edit team",
+      "delete": "Delete team",
+      "deleteConfirm": "Delete this team? The bots themselves stay as they are.",
+      "deleted": "Team deleted",
+      "form": {
+        "createTitle": "Create a team",
+        "editTitle": "Edit team",
+        "intro": "Pick the bots, say what each does in the team, then define who hands what to whom.",
+        "title": "Title",
+        "titlePlaceholder": "e.g. Research & Publish",
+        "titleRequired": "Give the team a title.",
+        "description": "Description",
+        "descriptionPlaceholder": "What does this team do together, and how does work flow through it?",
+        "bots": "Bots",
+        "botsHint": "Add {min} to {max} bots.",
+        "botsSearch": "Search bots to add...",
+        "botsMax": "A team can have up to {max} bots",
+        "minBots": "Add at least {min} bots.",
+        "noResults": "No bots found",
+        "rolePlaceholder": "Role (optional), e.g. Researcher",
+        "roleLabel": "Role of {bot}",
+        "removeBot": "Remove {bot}",
+        "handoffs": "Handoffs",
+        "handoffsHint": "Each handoff passes work from one bot to another. A bot can hand off to several bots, and get work back.",
+        "from": "From",
+        "to": "To",
+        "labelPlaceholder": "What is handed off, e.g. Research brief",
+        "labelLabel": "What {from} hands to {to}",
+        "addHandoff": "Add handoff",
+        "removeHandoff": "Remove handoff",
+        "needTwoBots": "Add at least two bots to define handoffs.",
+        "handoffInvalid": "Each handoff must connect two different bots of the team, once.",
+        "submit": "Create team",
+        "save": "Save team",
+        "cancel": "Cancel",
+        "created": "Team created",
+        "updated": "Team updated",
+        "invalidBots": "Some bots can no longer be added. Remove them and try again.",
+        "rateLimit": "Too many team changes. Please wait a minute and try again.",
+        "descriptionHint": "Markdown is supported: **bold**, lists, links.",
+        "memberDescriptionPlaceholder": "What this bot does in the team (optional)",
+        "memberDescriptionLabel": "What {bot} does in the team",
+        "handoffDuplicate": "This handoff is already listed.",
+        "handoffSelf": "Pick two different bots.",
+        "connectEveryone": "Connect a bot to everyone",
+        "connectEveryoneHint": "Adds handoffs from the chosen bot to every other bot and back, like a chief of staff.",
+        "invalidCategory": "That category no longer exists",
+        "invalidTags": "Some tags no longer exist",
+        "computerHint": "Icons mark bots that need a cloud computer, your own computer, or both."
+      },
+      "openBot": "Show details of {bot}",
+      "botHint": "Select a bot to see what it does and install it.",
+      "inTeam": "In {team}",
+      "installBot": "Install",
+      "viewBot": "Open bot page",
+      "botLoadError": "This bot could not be loaded.",
+      "backToTeam": "Back to team",
+      "pagination": "Team pages",
+      "previousPage": "Previous page",
+      "nextPage": "Next page",
+      "unlisted": "Unlisted",
+      "unlistedNotice": "This team is unlisted: it is hidden from listings, search and profiles, and only its author and admins can open it.",
+      "unlist": "Unlist",
+      "relist": "Relist",
+      "unlistedToast": "Team unlisted",
+      "relistedToast": "Team relisted"
+    },
+    "computer": {
+      "cloud": "Needs a cloud computer",
+      "local": "Needs your computer",
+      "label": "Computer",
+      "hint": "Does the bot need a computer to run on? Tick one, both or neither. Each shows as a small icon on the bot.",
+      "cloudHint": "Needs its own remote computer, desktop or browser.",
+      "localHint": "Needs access to your own machine, files or apps."
+    }
   },
   "collection": {
     "title": "My Collection",
@@ -1070,6 +1276,8 @@
     "removed": "Removed from collection"
   },
   "discovery": {
+    "trending": "Trending Now",
+    "seeAll": "See all",
     "featuredPrompts": "Featured Prompts",
     "todaysMostUpvoted": "Today's Most Upvoted",
     "latestPrompts": "Latest Prompts",
@@ -1412,7 +1620,7 @@
     "interactiveBanner": {
       "badge": "Interactive Version Available",
       "title": "Want a More Detailed & Interactive Experience?",
-      "description": "Dive deeper with our comprehensive interactive guide featuring 29 chapters, hands-on exercises, and real-world examples to master AI prompting.",
+      "description": "Dive deeper with our comprehensive interactive guide featuring 30 chapters, hands-on exercises, and real-world examples to master AI prompting.",
       "cta": "Read the Interactive Book"
     },
     "generalTips": {
@@ -1882,7 +2090,7 @@
     "donate": "Support the project",
     "subtitle": "An Interactive Guide to Crafting Clear and Effective Prompts",
     "metaTitle": "Prompt Engineering Guide: The Interactive Book of Prompting",
-    "metaDescription": "Master AI prompt engineering with this free, interactive guide. Learn ChatGPT prompts, chain-of-thought reasoning, few-shot learning, and advanced techniques. 29+ chapters with real examples.",
+    "metaDescription": "Master AI prompt engineering with this free, interactive guide. Learn ChatGPT prompts, chain-of-thought reasoning, few-shot learning, and advanced techniques. 30+ chapters with real examples.",
     "interactiveGuideBy": "An Interactive Guide by",
     "authorIntro": "Hi, I'm <author>Fatih Kadir Akın</author>, the curator of the popular <repoLink>Awesome ChatGPT Prompts</repoLink> repository on GitHub and <siteName>prompts.chat</siteName>.",
     "bookDescription": "In this comprehensive and interactive guide, you'll discover expert strategies for crafting compelling AI prompts that drive engaging and effective conversations. From understanding how AI models work to mastering advanced techniques like prompt chaining and agentic systems, this book provides you with the tools you need to take your AI interactions to the next level.",
@@ -1904,7 +2112,7 @@
       "part4": "Part 4: Best Practices",
       "part5": "Part 5: Use Cases",
       "part6": "Part 6: Conclusion",
-      "chapters": "29 Interactive Chapters"
+      "chapters": "30 Interactive Chapters"
     },
     "startReading": "Start Reading",
     "skipToChapter1": "Skip to Chapter 1",
@@ -1962,6 +2170,7 @@
       "13-multimodal-prompting": "Multimodal Prompting",
       "14-context-engineering": "Context Engineering",
       "14a-loop-engineering": "Loop Engineering",
+      "24a-from-prompt-to-team": "From Prompt to Team",
       "25-agents-and-skills": "Agents & Skills",
       "15-common-pitfalls": "Common Pitfalls",
       "16-ethics-responsible-use": "Ethics & Responsible Use",
@@ -1996,6 +2205,7 @@
       "13-multimodal-prompting": "Working with images, audio, and video",
       "14-context-engineering": "RAG, embeddings, function calling, and MCP",
       "14a-loop-engineering": "Designing feedback cycles that act, verify, adapt, and know when to stop",
+      "24a-from-prompt-to-team": "Prompts, skills, agents, bots, and teams in plain words, and how they differ",
       "25-agents-and-skills": "Building AI agents with reusable skill packages",
       "15-common-pitfalls": "Mistakes to avoid",
       "16-ethics-responsible-use": "Ethical considerations in AI",
@@ -2470,7 +2680,7 @@
     },
     "bots": {
       "title": "Ready-Made AI Agent Bots for OpenClaw, Hermes & Grok",
-      "description": "Browse ready-made AI agent bots with instructions, scheduled routines and skills, and install them on OpenClaw, Hermes Agent or Grok Bot in one click.",
+      "description": "Browse ready-made AI agent bots with instructions, scheduled routines and skills, and install them on OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent or Grok Bot in one click.",
       "heading": "Bots"
     },
     "taste": {
@@ -2531,7 +2741,16 @@
       "SKILL": "Agent Skill",
       "TASTE": "Coding Taste Profile",
       "model": "{model} Prompt"
+    },
+    "botTeams": {
+      "title": "AI Bot Teams: Agents That Hand Off Work",
+      "description": "Browse teams of AI agent bots that hand work off to each other, see every handoff, and install a whole team on OpenClaw, Hermes Agent, Grok Bot and more in one go.",
+      "heading": "Bot Teams"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "Only bots that need a <code>CLOUD</code> computer or the user's <code>LOCAL</code> computer (bots that need both match either), or <code>NONE</code> for bots that need no computer",
+    "computerRequirementsInput": "A list with any of <code>CLOUD</code> (the bot needs its own remote computer, desktop or browser) and <code>LOCAL</code> (it needs the user's own machine, files or apps); an empty list means it needs no computer. Replaces the stored list"
   },
   "actionButtons": {
     "deployWithSpacefast": "Deploy with SpaceFast"

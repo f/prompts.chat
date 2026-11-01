@@ -68,7 +68,7 @@ The plugin provides these tools via the prompts.chat MCP server:
 | Tool | Description |
 |------|-------------|
 | `search_prompts` | Search prompts by keyword, category, tag, or type |
-| `get_prompt` | Retrieve a prompt with variable substitution |
+| `get_prompt` | Retrieve a prompt; pass `variables` to fill its `${name}` placeholders |
 | `save_prompt` | Save a new prompt (requires API key) |
 | `improve_prompt` | Enhance prompts using AI |
 
@@ -82,6 +82,27 @@ The plugin provides these tools via the prompts.chat MCP server:
 | `add_file_to_skill` | Add a file to an existing skill |
 | `update_skill_file` | Update a file in a skill |
 | `remove_file_from_skill` | Remove a file from a skill |
+
+### Bot Tools
+
+| Tool | Description |
+|------|-------------|
+| `search_bots` | Search the public bots directory by keyword, platform, category and tags (semantic ranking when AI search is enabled) |
+| `get_bot` | Get a public bot by id or slug, with install options per platform |
+| `save_bot` | Create or update one of your bots (idempotent upsert by id, slug or name; requires API key) |
+| `list_my_bots` | List your own bots, including private ones (requires API key) |
+| `get_my_bot` | Get the full definition of one of your bots (requires API key) |
+
+Tools return `structuredContent` matching their `outputSchema`, plus resource links. Paged tools return `nextCursor`; pass it back as `cursor`.
+
+### Resources
+
+| URI | Contents |
+|-----|----------|
+| `prompts-chat://prompts/{id}` | A prompt as Markdown |
+| `prompts-chat://skills/{id}` | Every file of a skill |
+| `prompts-chat://skills/{id}/files/{path}` | One skill file |
+| `prompts-chat://bots/{id}` | A bot's definition and setup steps as Markdown |
 
 ## Agents
 

@@ -104,11 +104,20 @@ interface PageMetadataOptions {
   /** Page title. The "| prompts.chat" suffix is added by the root title template. */
   title: string;
   description: string;
-  /** Canonical path relative to the site root, e.g. "/categories/coding" */
+  /** Path of the page relative to the site root, e.g. "/categories/coding" */
   path: string;
+  /**
+   * Preferred URL when it differs from `path`, e.g. the unfiltered listing a
+   * filter view belongs to. Defaults to `path`.
+   */
+  canonical?: string;
   /** Use the title as-is instead of applying the root title template */
   absoluteTitle?: boolean;
-  /** Keep the page out of search results. No canonical link is emitted then. */
+  /**
+   * Keep the page out of search results. The canonical link is still emitted
+   * so filter and alternate URLs consolidate onto the preferred URL. Dead
+   * ends (auth, not-found) should use NOINDEX_ROBOTS without this helper.
+   */
   noindex?: boolean;
   openGraphType?: "website" | "article" | "profile";
   /**
@@ -126,6 +135,7 @@ export function buildPageMetadata({
   title,
   description,
   path,
+  canonical = path,
   absoluteTitle = false,
   noindex = false,
   openGraphType = "website",
@@ -137,13 +147,12 @@ export function buildPageMetadata({
   return {
     title: absoluteTitle ? { absolute: title } : title,
     description,
-    // A canonical pointing elsewhere would contradict noindex
-    ...(!noindex && { alternates: { canonical: path } }),
+    alternates: { canonical },
     openGraph: {
       type: openGraphType,
       siteName: SITE_NAME,
       locale: "en_US",
-      url: path,
+      url: canonical,
       title: socialTitle,
       description,
       ...(images && { images }),

@@ -36,6 +36,7 @@
   },
   "nav": {
     "bots": "Bots",
+    "teams": "Equipos",
     "collection": "Mi Colección",
     "feed": "Feed",
     "promptmasters": "Promptmasters",
@@ -183,6 +184,8 @@
     "relistRequestAlreadySent": "Ya has enviado una solicitud de re-listado para este prompt.",
     "relistRequestError": "Error al enviar la solicitud de re-listado. Por favor, inténtalo de nuevo.",
     "relatedPrompts": "Prompts Relacionados",
+    "relatedSkills": "Skills Relacionados",
+    "relatedBots": "Bots Relacionados",
     "deletePrompt": "Eliminar Prompt",
     "deletePromptTitle": "¿Eliminar este prompt?",
     "deletePromptDescription": "Esta acción no se puede deshacer. El prompt será eliminado permanentemente.",
@@ -443,7 +446,46 @@
     "dismissed": "Solicitud de cambio retirada",
     "dismissConfirmTitle": "¿Retirar Solicitud de Cambio?",
     "dismissConfirmDescription": "Esto eliminará permanentemente tu solicitud de cambio. Esta acción no se puede deshacer.",
-    "backToBot": "Volver al bot"
+    "backToBot": "Volver al bot",
+    "backToTeam": "Volver al equipo",
+    "proposeBotTitle": "Proponer cambios a este bot",
+    "proposeBotIntro": "Sugiere mejoras para este bot. El propietario revisará tu propuesta y podrá aprobarla o rechazarla.",
+    "proposeTeamTitle": "Proponer cambios a este equipo",
+    "proposeTeamIntro": "Sugiere mejoras para este equipo. El propietario revisará tu propuesta y podrá aprobarla o rechazarla.",
+    "viewVersion": "Ver versión",
+    "viewVersionHint": "Cambios respecto a la versión {previous}",
+    "viewFirstVersionHint": "Primera versión",
+    "memberRole": "Rol",
+    "memberDescription": "Descripción",
+    "membersReordered": "Se cambió el orden de los miembros",
+    "noFieldChanges": "Sin cambios",
+    "reviewedBy": "Revisado por {user}",
+    "teamApprovedSuccess": "Solicitud de cambio aprobada y equipo actualizado",
+    "botFields": {
+      "title": "Título",
+      "description": "Descripción",
+      "platforms": "Plataformas",
+      "computers": "Requisitos de equipo",
+      "appearance": "Apariencia",
+      "installUrl": "URL de instalación",
+      "instructions": "Instrucciones",
+      "routines": "Rutinas",
+      "skills": "Habilidades",
+      "connectors": "Conectores"
+    },
+    "teamFields": {
+      "title": "Título",
+      "description": "Descripción",
+      "category": "Categoría",
+      "tags": "Etiquetas",
+      "handoffs": "Traspasos",
+      "members": "Miembros"
+    },
+    "member": {
+      "added": "Añadido",
+      "removed": "Eliminado",
+      "changed": "Modificado"
+    }
   },
   "categories": {
     "title": "Categorías",
@@ -509,6 +551,7 @@
       "webhooks": "Webhooks",
       "prompts": "Prompts",
       "bots": "Bots",
+      "teams": "Equipos",
       "reports": "Reportes"
     },
     "reports": {
@@ -784,6 +827,26 @@
       "deleted": "Bot eliminado",
       "deleteConfirmTitle": "¿Eliminar bot?",
       "deleteConfirmDescription": "Esto elimina \"{title}\" de forma permanente. No se puede deshacer."
+    },
+    "teamsList": {
+      "title": "Equipos",
+      "description": "Gestiona los equipos de bots: ocúltalos del listado, edítalos o elimínalos.",
+      "noTeams": "No se encontraron equipos",
+      "open": "Abrir",
+      "edit": "Editar",
+      "unlist": "Ocultar del listado",
+      "relist": "Volver a listar",
+      "updated": "Equipo actualizado",
+      "deleted": "Equipo eliminado",
+      "deleteConfirmTitle": "¿Eliminar equipo?",
+      "deleteConfirmDescription": "Esto elimina \"{title}\" de forma permanente. Sus bots se mantienen como están.",
+      "members": "{count, plural, one {# bot} other {# bots}}",
+      "filters": {
+        "all": "Todos",
+        "listed": "Listados",
+        "unlisted": "No listados",
+        "featured": "Destacados"
+      }
     }
   },
   "search": {
@@ -840,7 +903,12 @@
     "noBots": "Aún no hay bots.",
     "noBotsOwner": "Aún no has creado ningún bot.",
     "createFirstBot": "Crea tu primer bot",
-    "botsCount": "bots"
+    "botsCount": "bots",
+    "teams": "Equipos",
+    "teamsCount": "equipos",
+    "noTeams": "Aún no hay equipos.",
+    "noTeamsOwner": "Aún no has creado ningún equipo.",
+    "createFirstTeam": "Crea tu primer equipo"
   },
   "subscription": {
     "subscribe": "Suscribirse",
@@ -929,7 +997,7 @@
     "browsePrompts": "Explorar Prompts"
   },
   "bots": {
-    "description": "Bots de agentes de IA listos para usar, con instrucciones, rutinas y habilidades. Instálalos en OpenClaw, Hermes Agent o Grok Bot.",
+    "description": "Bots de agentes de IA listos para usar, con instrucciones, rutinas y habilidades. Instálalos en OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent o Grok Bot.",
     "count": "{count, plural, one {# bot} other {# bots}}",
     "allPlatforms": "Todos",
     "searchPlaceholder": "Buscar bots...",
@@ -954,6 +1022,14 @@
     "installPromptHint": "Pega este prompt en tu agente. Obtiene la definición del bot y configura las instrucciones, rutinas y habilidades.",
     "installPromptFallbackHint": "O pega este prompt en Grok Bot para crear el bot tú mismo:",
     "installPromptPlatformFallbackHint": "O pega este prompt en {platform} para crear el bot tú mismo:",
+    "autogptPromptHint": "Pega este prompt en un chat con Otto en AutoGPT. Otto configura el bot como un Expert con sus instrucciones, habilidades y rutinas.",
+    "openAutogpt": "Abrir AutoGPT",
+    "dotsPromptHint": "Pega este prompt en un chat con tu dot en ChatGPT. Tu dot adopta las instrucciones del bot, te pide conectar las apps que necesita y programa sus rutinas como tareas recurrentes.",
+    "openDots": "Abrir Dots",
+    "duetPromptHint": "Pega este prompt en tu hilo de Claude Duet. Claude Duet adopta las instrucciones y rutinas del bot y usa las habilidades y conectores de tu cuenta de Claude, así que añade los que falten en la configuración de Claude.",
+    "openDuet": "Abrir Claude Duet",
+    "musePromptHint": "Pega este prompt en un chat con Muse. Las habilidades de Muse vienen integradas, así que adopta las instrucciones del bot, te pide conectar las apps que necesita y configura sus rutinas como tareas programadas.",
+    "openMuse": "Abrir Muse",
     "copyInstallPrompt": "Copiar prompt de instalación",
     "machineReadable": "Legible por máquinas",
     "create": "Nuevo bot",
@@ -999,7 +1075,15 @@
       "submit": "Crear bot",
       "save": "Guardar bot",
       "created": "Bot creado",
-      "updated": "Bot actualizado"
+      "updated": "Bot actualizado",
+      "pairingsHint": "Vincula bots que funcionan bien con este. Los vínculos se muestran en las páginas de ambos bots.",
+      "pairingsSearch": "Buscar bots para combinar...",
+      "pairingsNoResults": "No se encontraron bots",
+      "pairingNotePlaceholder": "¿Por qué combinan bien? (opcional)",
+      "pairingNoteLabel": "Por qué {bot} combina bien",
+      "removePairing": "Quitar {bot}",
+      "pairingsMax": "Puedes vincular hasta {max} bots",
+      "pairingsInvalid": "Uno de los bots vinculados ya no existe. Quítalo e inténtalo de nuevo."
     },
     "colors": {
       "slate": "Pizarra",
@@ -1055,7 +1139,129 @@
       "coffee": "Café"
     },
     "latestBots": "Bots más recientes",
-    "viewAll": "Ver todos"
+    "featuredTeams": "Equipos de bots destacados",
+    "viewAll": "Ver todos",
+    "betterTogether": "Mejor junto con",
+    "installAllTogether": "Instalar todos juntos",
+    "installAllTitle": "{count, plural, one {Instalar # bot} other {Instalar los # bots juntos}}",
+    "installAllDescription": "Configura {bot} y los bots con los que combina de una sola vez.",
+    "installAllUnavailable": "Aún no hay opciones de instalación para estos bots.",
+    "installAllLoadError": "No se pudieron cargar las opciones de instalación. Cierra el diálogo e inténtalo de nuevo.",
+    "installAllPromptHint": "Pega este prompt en {platform}. Configura cada bot del conjunto, uno tras otro.",
+    "installAllAutogptPromptHint": "Pega este prompt en un chat con Otto en AutoGPT. Otto configura cada bot del conjunto como un Expert, uno tras otro.",
+    "installAllDotsPromptHint": "Pega este prompt en un chat con tu dot en ChatGPT. Tu dot configura cada bot del conjunto, uno tras otro.",
+    "installAllDuetPromptHint": "Pega este prompt en tu hilo de Claude Duet. Claude Duet configura cada bot del conjunto, uno tras otro. Añade las habilidades y conectores que falten en la configuración de Claude.",
+    "installAllMusePromptHint": "Pega este prompt en un chat con Muse. Muse configura cada bot del conjunto, uno tras otro, y te pide conectar las apps que necesitan.",
+    "installAllCommandHint": "Instala cada bot del conjunto como skill:",
+    "installAllTemplatesHint": "O abre cada plantilla de {platform}:",
+    "installAllSkipped": "No disponible en {platform}: {bots}",
+    "copyCommands": "Copiar comandos",
+    "openTemplate": "Abrir plantilla de {bot}",
+    "teams": {
+      "link": "Equipos",
+      "create": "Crear equipo",
+      "description": "Los equipos son grupos de bots que se pasan el trabajo entre sí. Cada caja es un equipo y cada flecha muestra lo que un bot entrega al siguiente: pasa el cursor sobre una flecha para ver la entrega o selecciona un equipo para ver sus miembros.",
+      "count": "{count, plural, one {# equipo} other {# equipos}}",
+      "searchPlaceholder": "Buscar equipos...",
+      "allTeams": "Todos los equipos",
+      "empty": "Aún no hay equipos. Crea el primero.",
+      "noResults": "Ningún equipo coincide con tu búsqueda.",
+      "featured": "Destacado",
+      "graphLabel": "Equipos de bots y sus entregas",
+      "selectTeam": "Mostrar detalles de {team}",
+      "selectHint": "Selecciona un equipo para ver sus miembros y entregas.",
+      "closePanel": "Cerrar",
+      "by": "por {author}",
+      "members": "Miembros",
+      "handoffs": "Flujo de entregas",
+      "handoffLabel": "{from} entrega a {to}",
+      "handsOffTo": "entrega a",
+      "noHandoffLabel": "Sin descripción de lo que se entrega",
+      "noHandoffs": "Este equipo aún no tiene entregas.",
+      "noVisibleMembers": "Ninguno de los bots de este equipo es visible para ti.",
+      "openTeam": "Abrir equipo",
+      "backToTeams": "Todos los equipos",
+      "install": "Instalar equipo",
+      "installTitle": "{count, plural, one {Instalar # bot} other {Instalar los # bots de este equipo}}",
+      "installDescription": "Configura todos los bots de {team} y conecta sus entregas de una vez.",
+      "installShort": "Instalar",
+      "memberOf": "Equipos",
+      "memberCount": "{count, plural, one {# bot} other {# bots}}",
+      "edit": "Editar equipo",
+      "delete": "Eliminar equipo",
+      "deleteConfirm": "¿Eliminar este equipo? Los bots se mantienen tal como están.",
+      "deleted": "Equipo eliminado",
+      "form": {
+        "createTitle": "Crear un equipo",
+        "editTitle": "Editar equipo",
+        "intro": "Elige los bots, indica qué hace cada uno en el equipo y define quién pasa qué a quién.",
+        "title": "Título",
+        "titlePlaceholder": "p. ej., Investigar y publicar",
+        "titleRequired": "Ponle un título al equipo.",
+        "description": "Descripción",
+        "descriptionPlaceholder": "¿Qué hace este equipo en conjunto y cómo fluye el trabajo en él?",
+        "bots": "Bots",
+        "botsHint": "Añade de {min} a {max} bots.",
+        "botsSearch": "Buscar bots para añadir...",
+        "botsMax": "Un equipo puede tener hasta {max} bots",
+        "minBots": "Añade al menos {min} bots.",
+        "noResults": "No se encontraron bots",
+        "rolePlaceholder": "Rol (opcional), p. ej., Investigador",
+        "roleLabel": "Rol de {bot}",
+        "removeBot": "Quitar {bot}",
+        "handoffs": "Entregas",
+        "handoffsHint": "Cada traspaso pasa trabajo de un bot a otro. Un bot puede traspasar a varios bots y recibir trabajo de vuelta.",
+        "from": "De",
+        "to": "A",
+        "labelPlaceholder": "Qué se entrega, p. ej., Informe de investigación",
+        "labelLabel": "Qué entrega {from} a {to}",
+        "addHandoff": "Añadir entrega",
+        "removeHandoff": "Quitar entrega",
+        "needTwoBots": "Añade al menos dos bots para definir entregas.",
+        "handoffInvalid": "Cada entrega debe conectar una sola vez dos bots distintos del equipo.",
+        "submit": "Crear equipo",
+        "save": "Guardar equipo",
+        "cancel": "Cancelar",
+        "created": "Equipo creado",
+        "updated": "Equipo actualizado",
+        "invalidBots": "Algunos bots ya no se pueden añadir. Quítalos e inténtalo de nuevo.",
+        "rateLimit": "Demasiados cambios en equipos. Espera un minuto e inténtalo de nuevo.",
+        "descriptionHint": "Se admite Markdown: **negrita**, listas, enlaces.",
+        "memberDescriptionPlaceholder": "Qué hace este bot en el equipo (opcional)",
+        "memberDescriptionLabel": "Qué hace {bot} en el equipo",
+        "handoffDuplicate": "Este traspaso ya está en la lista.",
+        "handoffSelf": "Elige dos bots distintos.",
+        "connectEveryone": "Conectar un bot con todos",
+        "connectEveryoneHint": "Añade traspasos del bot elegido a todos los demás bots y de vuelta, como un jefe de gabinete.",
+        "invalidCategory": "Esa categoría ya no existe",
+        "invalidTags": "Algunas etiquetas ya no existen",
+        "computerHint": "Los iconos marcan los bots que necesitan un ordenador en la nube, tu propio ordenador o ambos."
+      },
+      "openBot": "Ver detalles de {bot}",
+      "botHint": "Selecciona un bot para ver qué hace e instalarlo.",
+      "inTeam": "En {team}",
+      "installBot": "Instalar",
+      "viewBot": "Abrir página del bot",
+      "botLoadError": "No se pudo cargar este bot.",
+      "backToTeam": "Volver al equipo",
+      "pagination": "Páginas de equipos",
+      "previousPage": "Página anterior",
+      "nextPage": "Página siguiente",
+      "unlisted": "No listado",
+      "unlistedNotice": "Este equipo no está listado: está oculto de los listados, la búsqueda y los perfiles, y solo su autor y los administradores pueden abrirlo.",
+      "unlist": "Ocultar del listado",
+      "relist": "Volver a listar",
+      "unlistedToast": "Equipo ocultado del listado",
+      "relistedToast": "Equipo listado de nuevo"
+    },
+    "computer": {
+      "cloud": "Necesita un ordenador en la nube",
+      "local": "Necesita tu ordenador",
+      "label": "Ordenador",
+      "hint": "¿El bot necesita un ordenador para funcionar? Marca uno, ambos o ninguno. Cada uno se muestra como un icono pequeño en el bot.",
+      "cloudHint": "Necesita su propio ordenador remoto, escritorio o navegador.",
+      "localHint": "Necesita acceso a tu propio equipo, archivos o aplicaciones."
+    }
   },
   "collection": {
     "title": "Mi Colección",
@@ -1070,6 +1276,8 @@
     "removed": "Eliminado de la colección"
   },
   "discovery": {
+    "trending": "En tendencia ahora",
+    "seeAll": "Ver todo",
     "featuredPrompts": "Prompts Destacados",
     "todaysMostUpvoted": "Más Votados Hoy",
     "latestPrompts": "Últimos Prompts",
@@ -1412,7 +1620,7 @@
     "interactiveBanner": {
       "badge": "Versión Interactiva Disponible",
       "title": "¿Quieres una Experiencia Más Detallada e Interactiva?",
-      "description": "Profundiza con nuestra guía interactiva completa con 29 capítulos, ejercicios prácticos y ejemplos del mundo real para dominar los prompts de IA.",
+      "description": "Profundiza con nuestra guía interactiva completa con 30 capítulos, ejercicios prácticos y ejemplos del mundo real para dominar los prompts de IA.",
       "cta": "Leer el Libro Interactivo"
     },
     "generalTips": {
@@ -1882,7 +2090,7 @@
     "donate": "Apoya el proyecto",
     "subtitle": "Una Guía Interactiva para Crear Prompts Claros y Efectivos",
     "metaTitle": "Guía de ingeniería de prompts: El Libro Interactivo del Prompting",
-    "metaDescription": "Domina la ingeniería de prompts IA con esta guía interactiva gratuita. Aprende prompts de ChatGPT, razonamiento chain-of-thought, few-shot learning y técnicas avanzadas. 29+ capítulos con ejemplos reales.",
+    "metaDescription": "Domina la ingeniería de prompts IA con esta guía interactiva gratuita. Aprende prompts de ChatGPT, razonamiento chain-of-thought, few-shot learning y técnicas avanzadas. 30+ capítulos con ejemplos reales.",
     "interactiveGuideBy": "Una Guía Interactiva de",
     "authorIntro": "Hola, soy <author>Fatih Kadir Akın</author>, el curador del popular repositorio <repoLink>Awesome ChatGPT Prompts</repoLink> en GitHub y de <siteName>prompts.chat</siteName>.",
     "bookDescription": "En esta guía completa e interactiva, descubrirás estrategias expertas para crear prompts de IA convincentes que generan conversaciones atractivas y efectivas. Desde entender cómo funcionan los modelos de IA hasta dominar técnicas avanzadas como prompt chaining y sistemas agénticos, este libro te proporciona las herramientas que necesitas para llevar tus interacciones con IA al siguiente nivel.",
@@ -1904,7 +2112,7 @@
       "part4": "Parte 4: Mejores Prácticas",
       "part5": "Parte 5: Casos de Uso",
       "part6": "Parte 6: Conclusión",
-      "chapters": "29 Capítulos Interactivos"
+      "chapters": "30 Capítulos Interactivos"
     },
     "startReading": "Comenzar a Leer",
     "skipToChapter1": "Ir al Capítulo 1",
@@ -1962,6 +2170,7 @@
       "13-multimodal-prompting": "Prompting Multimodal",
       "14-context-engineering": "Ingeniería de Contexto",
       "14a-loop-engineering": "Ingeniería de Bucles",
+      "24a-from-prompt-to-team": "Del prompt al equipo",
       "25-agents-and-skills": "Agentes y Habilidades",
       "15-common-pitfalls": "Errores Comunes",
       "16-ethics-responsible-use": "Ética y Uso Responsable",
@@ -1996,6 +2205,7 @@
       "13-multimodal-prompting": "Trabajar con imágenes, audio y video",
       "14-context-engineering": "RAG, embeddings, llamadas a funciones y MCP",
       "14a-loop-engineering": "Diseñar ciclos de retroalimentación que actúan, verifican, se adaptan y saben cuándo detenerse",
+      "24a-from-prompt-to-team": "Prompts, habilidades, agentes, bots y equipos en palabras sencillas, y en qué se diferencian",
       "25-agents-and-skills": "Construir agentes de IA con paquetes de habilidades reutilizables",
       "15-common-pitfalls": "Errores a evitar",
       "16-ethics-responsible-use": "Consideraciones éticas en IA",
@@ -2469,7 +2679,7 @@
     },
     "bots": {
       "title": "Bots de agentes de IA listos para OpenClaw, Hermes y Grok",
-      "description": "Explora bots de agentes de IA listos para usar, con instrucciones, rutinas programadas y habilidades, e instálalos en OpenClaw, Hermes Agent o Grok Bot con un clic.",
+      "description": "Explora bots de agentes de IA listos para usar, con instrucciones, rutinas programadas y habilidades, e instálalos en OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent o Grok Bot con un clic.",
       "heading": "Bots"
     },
     "taste": {
@@ -2530,7 +2740,16 @@
       "SKILL": "Habilidad de agente",
       "TASTE": "Perfil de estilo de código",
       "model": "Prompt para {model}"
+    },
+    "botTeams": {
+      "title": "Equipos de bots de IA: agentes que se pasan el trabajo",
+      "description": "Explora equipos de bots de agentes de IA que se pasan el trabajo entre sí, consulta cada entrega e instala un equipo completo en OpenClaw, Hermes Agent, Grok Bot y más en un solo paso.",
+      "heading": "Equipos de bots"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "Solo bots que necesitan un ordenador <code>CLOUD</code> o el ordenador <code>LOCAL</code> del usuario (los que necesitan ambos coinciden con cualquiera), o <code>NONE</code> para bots que no necesitan ordenador",
+    "computerRequirementsInput": "Una lista con <code>CLOUD</code> (el bot necesita su propio ordenador remoto, escritorio o navegador) y/o <code>LOCAL</code> (necesita la máquina, los archivos o las apps del usuario); una lista vacía significa que no necesita ordenador. Reemplaza la lista guardada"
   },
   "actionButtons": {
     "deployWithSpacefast": "Desplegar con SpaceFast"

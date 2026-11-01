@@ -48,6 +48,11 @@ model User {
   notificationsActed         Notification[]         @relation("NotificationActor")
   collections                Collection[]
   userPromptExamples         UserPromptExample[]
+  botTeams                   BotTeam[]
+  botTeamVotes               BotTeamVote[]
+  botTeamVersions            BotTeamVersion[]
+  botTeamChangeRequests      BotTeamChangeRequest[] @relation("BotTeamChangeRequestAuthor")
+  reviewedTeamChangeRequests BotTeamChangeRequest[] @relation("BotTeamChangeRequestReviewer")
 
   @@map("users")
 }
@@ -91,28 +96,28 @@ model VerificationToken {
 }
 
 model Prompt {
-  id                  String              @id @default(cuid())
+  id                  String                 @id @default(cuid())
   title               String
   slug                String?
   description         String?
   content             String
-  type                PromptType          @default(TEXT)
-  isPrivate           Boolean             @default(false)
+  type                PromptType             @default(TEXT)
+  isPrivate           Boolean                @default(false)
   mediaUrl            String?
-  viewCount           Int                 @default(0)
-  createdAt           DateTime            @default(now())
-  updatedAt           DateTime            @updatedAt
+  viewCount           Int                    @default(0)
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
   authorId            String
   categoryId          String?
   embedding           Json?
   requiredMediaCount  Int?
   requiredMediaType   RequiredMediaType?
-  requiresMediaUpload Boolean             @default(false)
+  requiresMediaUpload Boolean                @default(false)
   structuredFormat    StructuredFormat?
   featuredAt          DateTime?
-  isFeatured          Boolean             @default(false)
+  isFeatured          Boolean                @default(false)
   trendingUntil       DateTime? // Shown as trending while this is in the future
-  isUnlisted          Boolean             @default(false)
+  isUnlisted          Boolean                @default(false)
   unlistedAt          DateTime?
   delistReason        DelistReason?
   deletedAt           DateTime?
@@ -123,21 +128,25 @@ model Prompt {
   versions            PromptVersion[]
   votes               PromptVote[]
   comments            Comment[]
-  author              User                @relation("PromptAuthor", fields: [authorId], references: [id], onDelete: Cascade)
-  category            Category?           @relation(fields: [categoryId], references: [id])
-  contributors        User[]              @relation("PromptContributors")
-  outgoingConnections PromptConnection[]  @relation("ConnectionSource")
-  incomingConnections PromptConnection[]  @relation("ConnectionTarget")
+  author              User                   @relation("PromptAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  category            Category?              @relation(fields: [categoryId], references: [id])
+  contributors        User[]                 @relation("PromptContributors")
+  outgoingConnections PromptConnection[]     @relation("ConnectionSource")
+  incomingConnections PromptConnection[]     @relation("ConnectionTarget")
+  botPairingsFrom     BotPairing[]           @relation("BotPairingFrom")
+  botPairingsTo       BotPairing[]           @relation("BotPairingTo")
+  botTeamMemberships  BotTeamMember[]
   collectedBy         Collection[]
   userExamples        UserPromptExample[]
   bestWithModels      String[] // Model slugs this prompt works best with (max 3), e.g. ["gpt-4o", "claude-3-5-sonnet"]
   bestWithMCP         Json? // MCP configs array, e.g. [{command: "npx -y @mcp/server", tools: ["tool1"]}]
   workflowLink        String? // URL to test/demo the workflow when prompt has previous/next connections
   botPlatform         BotPlatform? // Deprecated: superseded by botPlatforms, kept in sync with botPlatforms[0] until it is dropped
-  botPlatforms        BotPlatform[]       @default([]) // BOT prompts only: agent platforms the bot supports
+  botPlatforms        BotPlatform[]          @default([]) // BOT prompts only: agent platforms the bot supports
   botIcon             String? // BOT prompts only: a curated lucide icon name or an emoji, see src/lib/bots/schema.ts
   botColor            String? // BOT prompts only: a curated palette color name, see src/lib/bots/schema.ts
   installUrl          String? // BOT prompts only: one-click install link (e.g. Grok Bot template share URL)
+  computerRequirements BotComputerRequirement[] @default([]) // BOT prompts only: CLOUD and/or LOCAL, empty when the bot needs no computer
   botConfig           Json? // BOT prompts only: { routines, skills, connectors }, see src/lib/bots/schema.ts
 
   @@index([authorId])
@@ -162,6 +171,8 @@ model PromptVersion {
   createdAt  DateTime @default(now())
   promptId   String
   createdBy  String
+  /// BOT prompts only: title and bot fields at this version, see src/lib/bots/change-snapshot.ts; null on older versions
+  botSnapshot Json?
   author     User     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   prompt     Prompt   @relation(fields: [promptId], references: [id], onDelete: Cascade)
 
@@ -183,6 +194,9 @@ model ChangeRequest {
   authorId        String
   originalContent String
   originalTitle   String
+  /// BOT prompts only: bot fields when the request was made and as proposed, see src/lib/bots/change-snapshot.ts
+  originalBot     Json?
+  proposedBot     Json?
   author          User                @relation(fields: [authorId], references: [id], onDelete: Cascade)
   prompt          Prompt              @relation(fields: [promptId], references: [id], onDelete: Cascade)
 
@@ -205,6 +219,7 @@ model Category {
   children    Category[]             @relation("CategoryHierarchy")
   subscribers CategorySubscription[]
   prompts     Prompt[]
+  botTeams    BotTeam[]
 
   @@index([parentId])
   @@index([pinned])
@@ -212,11 +227,12 @@ model Category {
 }
 
 model Tag {
-  id      String      @id @default(cuid())
-  name    String      @unique
-  slug    String      @unique
-  color   String      @default("#6366f1")
-  prompts PromptTag[]
+  id       String       @id @default(cuid())
+  name     String       @unique
+  slug     String       @unique
+  color    String       @default("#6366f1")
+  prompts  PromptTag[]
+  botTeams BotTeamTag[]
 
   @@map("tags")
 }
@@ -404,6 +420,157 @@ model PromptConnection {
   @@map("prompt_connections")
 }
 
+/// "Better together with" link between two BOT prompts, shown on both bots' pages.
+/// Each pair is stored once with fromId < toId (enforced by a CHECK constraint in the
+/// migration), which rules out self-links and reversed duplicates. See src/lib/bots/pairings.ts
+model BotPairing {
+  fromId    String
+  toId      String
+  note      String?  @db.VarChar(200)
+  createdAt DateTime @default(now())
+  from      Prompt   @relation("BotPairingFrom", fields: [fromId], references: [id], onDelete: Cascade)
+  to        Prompt   @relation("BotPairingTo", fields: [toId], references: [id], onDelete: Cascade)
+
+  @@id([fromId, toId])
+  @@index([toId])
+  @@map("bot_pairings")
+}
+
+/// A titled group of BOT prompts that hand work off to each other. See src/lib/bots/teams.ts
+model BotTeam {
+  id          String          @id @default(cuid())
+  slug        String          @unique
+  title       String          @db.VarChar(120)
+  /// Markdown
+  description String?         @db.VarChar(4000)
+  authorId    String
+  categoryId  String?
+  isFeatured  Boolean         @default(false)
+  /// Hidden from listings, search and profiles; the page is visible only to the author and admins
+  isUnlisted  Boolean         @default(false)
+  unlistedAt  DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  author      User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  category    Category?       @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  members     BotTeamMember[]
+  links       BotTeamLink[]
+  tags        BotTeamTag[]
+  votes       BotTeamVote[]
+  versions       BotTeamVersion[]
+  changeRequests BotTeamChangeRequest[]
+
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([isFeatured, createdAt(sort: Desc)])
+  @@index([isUnlisted, createdAt(sort: Desc)])
+  @@map("bot_teams")
+}
+
+/// A team as it was after a create, an update or an approved change request. See src/lib/bots/team-snapshot.ts
+model BotTeamVersion {
+  id          String   @id @default(cuid())
+  teamId      String
+  version     Int
+  /// { title, description, category, tags, members, links }
+  snapshot    Json
+  changeNote  String?
+  createdAt   DateTime @default(now())
+  createdById String?
+  team        BotTeam  @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  createdBy   User?    @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@unique([teamId, version])
+  @@map("bot_team_versions")
+}
+
+/// A proposed change to someone else's team; PENDING is open. See src/lib/bots/team-changes.ts
+model BotTeamChangeRequest {
+  id               String              @id @default(cuid())
+  teamId           String
+  authorId         String
+  status           ChangeRequestStatus @default(PENDING)
+  reason           String?
+  reviewNote       String?
+  reviewerId       String?
+  reviewedAt       DateTime?
+  /// The team when the request was made, and the whole team as proposed
+  originalSnapshot Json
+  proposedSnapshot Json
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  team             BotTeam             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  author           User                @relation("BotTeamChangeRequestAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  reviewer         User?               @relation("BotTeamChangeRequestReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+
+  @@index([teamId, status])
+  @@index([authorId])
+  @@map("bot_team_change_requests")
+}
+
+model BotTeamVote {
+  userId    String
+  teamId    String
+  createdAt DateTime @default(now())
+  team      BotTeam  @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, teamId])
+  @@index([teamId])
+  @@map("bot_team_votes")
+}
+
+model BotTeamTag {
+  teamId String
+  tagId  String
+  team   BotTeam @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  tag    Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([teamId, tagId])
+  @@index([tagId])
+  @@map("bot_team_tags")
+}
+
+model BotTeamMember {
+  id          String        @id @default(cuid())
+  teamId      String
+  botId       String
+  /// What the bot does in this team, e.g. "Researcher"
+  role        String?       @db.VarChar(80)
+  /// What this bot does in the team, in a sentence or two
+  description String?       @db.VarChar(500)
+  order       Int           @default(0)
+  team        BotTeam       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  bot         Prompt        @relation(fields: [botId], references: [id], onDelete: Cascade)
+  linksFrom   BotTeamLink[] @relation("BotTeamLinkFrom")
+  linksTo     BotTeamLink[] @relation("BotTeamLinkTo")
+
+  @@unique([teamId, botId])
+  @@index([botId])
+  @@map("bot_team_members")
+}
+
+/// A directed handoff between two members of the same team. Both ends reference the
+/// team's member rows, so removing a member also removes its handoffs; the migration
+/// adds a CHECK constraint that rules out self-handoffs.
+model BotTeamLink {
+  id        String        @id @default(cuid())
+  teamId    String
+  fromBotId String
+  toBotId   String
+  /// What is handed off, e.g. "Research brief"
+  label     String        @default("") @db.VarChar(200)
+  order     Int           @default(0)
+  createdAt DateTime      @default(now())
+  team      BotTeam       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  from      BotTeamMember @relation("BotTeamLinkFrom", fields: [teamId, fromBotId], references: [teamId, botId], onDelete: Cascade)
+  to        BotTeamMember @relation("BotTeamLinkTo", fields: [teamId, toBotId], references: [teamId, botId], onDelete: Cascade)
+
+  @@unique([teamId, fromBotId, toBotId])
+  @@index([teamId, toBotId])
+  @@map("bot_team_links")
+}
+
 enum NotificationType {
   COMMENT
   REPLY
@@ -429,6 +596,20 @@ enum BotPlatform {
   GROK_BOT
   OPENCLAW
   HERMES
+  AUTOGPT
+  DOTS
+  DUET
+  MUSE
+}
+
+/// A computer a bot needs to run besides chat; a bot stores a list of them in computerRequirements
+enum BotComputerRequirement {
+  /// Unused: an empty computerRequirements list means no computer. Kept because Postgres cannot drop an enum value in place.
+  NONE
+  /// Its own remote computer, desktop or browser
+  CLOUD
+  /// Access to the user's own machine, files and apps
+  LOCAL
 }
 
 enum StructuredFormat {

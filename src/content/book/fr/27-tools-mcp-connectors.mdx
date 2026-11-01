@@ -72,6 +72,38 @@ Le nom et le schéma n'exécutent rien par eux-mêmes. L'implémentation doit va
 « Je vais créer un ticket » est une déclaration. Un appel d'outil demande l'opération. Une réponse réussie avec l'identifiant du nouveau ticket prouve qu'elle a eu lieu. Gardez ces trois choses distinctes.
 </Callout>
 
+### Un outil peut représenter tout un workflow
+
+Jusqu'ici, chaque outil était une seule opération : chercher, créer, exporter. Mais ce qui se cache derrière le nom d'un outil peut être bien plus vaste. Ce peut être un processus entier, écrit à l'avance et exécuté par un moteur de workflows. L'agent décide toujours **quand** le lancer et **quelles données** lui transmettre. Tout le reste se déroule exactement comme le processus le prévoit, dans le même ordre, à chaque fois.
+
+Prenez un remboursement. Un agent de support peut très bien comprendre un client mécontent, mais vous ne voulez sans doute pas qu'il improvise votre politique de remboursement. Emballé dans un seul outil, le workflow de remboursement vérifie d'abord l'éligibilité, demande ensuite l'accord d'un responsable, puis crédite le montant, quelle que soit la conversation qui l'a déclenché. Les validations, les déploiements et les autres processus dont les étapes *sont* la politique entrent dans le même moule. Les moteurs de workflows gardent en général une trace de chaque exécution : l'agent peut donc aussi consulter les exécutions passées et vous dire lesquelles ont échoué pendant la nuit, et à quelle étape, au lieu de deviner.
+
+AWS en donne un exemple récent. Le 29 octobre 2026, AWS a [annoncé](https://aws.amazon.com/about-aws/whats-new/2026/10/step-functions-workflows-ai-agent-tools/) que les workflows Step Functions peuvent servir d'outils aux agents via Amazon Bedrock AgentCore Gateway, qui relie les agents à des outils grâce à MCP. L'idée n'appartient à aucun fournisseur en particulier : un pipeline de CI, un circuit de validation dans un outil de tickets ou un script auquel votre équipe fait déjà confiance peuvent être proposés à un agent de la même façon.
+
+Il s'agit de répartir deux qualités. Le modèle est souple : il sait lire une situation inhabituelle et choisir une suite raisonnable. Le workflow est prévisible : la même entrée passe par les mêmes étapes. Laisser le moment à l'agent et les étapes au workflow place chaque qualité là où elle sert le mieux. Cela change aussi le prompt. Décrivez l'objectif et le moment d'appeler le workflow, pas les étapes qu'il contient. Répéter les étapes crée une seconde copie de la politique, qui peut s'écarter de l'originale et que le modèle risque de vouloir suivre lui-même, à la main.
+
+<Compare
+  before={{ label: "Redécrire le workflow", content: "Pour rembourser un client, vérifie d'abord que la commande date de moins de 30 jours, puis demande à un responsable, crédite ensuite le montant et envoie enfin un e-mail au client." }}
+  after={{ label: "Décrire l'objectif et le déclencheur", content: "Aide les clients à résoudre leurs problèmes de facturation. Quand un client demande un remboursement et que tu as le numéro de commande, appelle le workflow de remboursement avec ce numéro et le motif. Rends compte du résultat qu'il renvoie. Ne promets aucun remboursement avant que le workflow l'ait confirmé." }}
+/>
+
+### Quand il n'y a pas d'API, l'écran devient l'outil
+
+Jusqu'ici, chaque outil avait une porte pensée pour les logiciels : une API, un connecteur, un serveur MCP. Bien des systèmes n'en ont aucune. Un vieux portail interne, le site de réservation d'un fournisseur, un logiciel de bureau venu d'une autre décennie : on s'en sert tous les jours, mais uniquement à travers l'écran. Pour ceux-là, certains modèles savent traiter l'écran lui-même comme un outil. On parle généralement de **computer use**, c'est-à-dire d'utilisation de l'ordinateur.
+
+Le mécanisme est la boucle que vous connaissez déjà, avec des images à la place des données. L'application qui fait tourner le modèle envoie la tâche et une capture d'écran. Le modèle l'examine et répond, non par de la prose, mais par une action structurée : clique à cet endroit, tape ce texte, fais défiler vers le bas. Certains outils joignent aussi à chaque action une courte intention déclarée, comme « Cliquer dans le champ de recherche pour saisir la destination », ce qui rend une exécution plus facile à suivre. Le modèle, lui, ne bouge toujours rien par lui-même. C'est le code du développeur qui effectue l'action, prend une nouvelle capture et la renvoie. Regarder, agir, regarder de nouveau, jusqu'à ce que la tâche soit terminée ou que quelqu'un arrête la boucle. L'endroit où tourne cette boucle compte autant que la façon dont elle fonctionne, et la section [L'ordinateur du bot](/book/28-persistent-bots) du chapitre Bots toujours actifs se penche sur cette question.
+
+Google a rendu son outil Computer Use disponible pour tous dans la Gemini API le 30 octobre 2026 ([notes de version](https://ai.google.dev/gemini-api/docs/changelog)). Sa [documentation](https://ai.google.dev/gemini-api/docs/computer-use) décrit des environnements de navigateur, de mobile et de bureau, des actions qui portent un champ `intent`, des politiques de sécurité configurables capables de bloquer une action ou de demander une confirmation avant certaines étapes comme un paiement, et une analyse facultative des captures d'écran, à activer soi-même, pour y repérer une injection de prompt dissimulée. Google recommande lui-même une supervision étroite pour les tâches importantes. L'idée n'appartient pas à une seule entreprise : Anthropic propose un [outil de computer use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool) pour Claude, et OpenAI un [outil computer](https://platform.openai.com/docs/guides/tools-computer-use) dans sa Responses API, tous deux construits autour du même échange de captures d'écran et d'actions que votre application exécute.
+
+Les contreparties méritent d'être dites simplement. Lire un écran est plus lent qu'appeler une API, chaque capture d'écran coûte des tokens, et un bouton déplacé ou une fenêtre surgie à l'improviste peut faire échouer une exécution qui marchait la veille. Quand une vraie API ou un connecteur existe, préférez-le donc, et réservez le computer use aux systèmes qui ne laissent aucune autre entrée. L'écran est aussi une entrée comme une autre : le texte d'une page peut porter une injection de prompt tout comme un document, et le voir dans une image ne le rend pas plus digne de confiance. Enfin, puisque le modèle peut cliquer sur tout ce sur quoi une personne pourrait cliquer, les étapes risquées, comme payer, supprimer ou modifier des données, devraient attendre qu'un humain les confirme.
+
+Le prompt obéit aux mêmes règles qu'avant, simplement avec des arêtes plus vives, car un site web ne peut pas dire au modèle ce que vous vouliez dire. Nommez précisément le site et la page, dites où s'arrête la tâche, et précisez ce qui doit être confirmé avant toute action.
+
+<Compare
+  before={{ label: "Une course sans contours", content: "Va sur Internet et réserve-moi une salle de réunion pour jeudi." }}
+  after={{ label: "Une page, un point d'arrêt, une confirmation", content: "Sur notre page de réservation de salles, à l'adresse rooms.example.com, trouve une salle pour six personnes jeudi de 14 h à 15 h. Arrête-toi sur l'écran de confirmation finale et montre-moi la salle et l'horaire avant d'appuyer sur Réserver. Si aucune salle n'est libre, dis-le-moi et arrête-toi. Ne modifie ni n'annule aucune réservation existante." }}
+/>
+
 ## Ce qu'ajoute un connecteur
 
 Un connecteur regroupe l'intégration avec un système particulier. Il peut gérer la connexion, le choix d'un compte ou d'un espace de travail, la recherche de données et la présentation des actions disponibles sous forme d'outils. Certains connecteurs permettent seulement de chercher ou de lire. D'autres permettent aussi d'écrire.
@@ -111,6 +143,66 @@ MCP définit aussi des **ressources** et des **prompts**. Ces mots ont un sens p
 Le [guide des concepts de serveur MCP](https://modelcontextprotocol.io/docs/learn/server-concepts) les décrit comme des outils contrôlés par le modèle, des ressources contrôlées par l'application et des prompts contrôlés par l'utilisateur. Ces termes décrivent les modes d'interaction prévus. Ils ne suppriment pas les contrôles de permissions de l'application.
 
 Un modèle de prompt MCP n'est pas automatiquement un skill. Un skill peut regrouper une procédure plus longue, des références et des scripts. Il peut expliquer à l'agent comment utiliser des outils fournis via MCP, un connecteur direct ou des fonctions locales.
+
+### Les skills peuvent aussi venir avec le serveur
+
+Jusqu'à récemment, ces deux pièces arrivaient le plus souvent séparément. Un serveur pouvait donner ses outils à un agent, mais le savoir-faire pour bien s'en servir se trouvait ailleurs : dans un skill installé à part, dans un README ou dans le prompt de l'utilisateur. Quand le service changeait, ces instructions pouvaient prendre du retard sans que personne ne s'en aperçoive.
+
+L'**extension Skills** officielle de MCP, finalisée en septembre 2026, comble une bonne partie de cet écart. Un serveur peut désormais proposer non seulement ses outils, mais aussi les skills qui expliquent comment les utiliser, rédigés dans le même format `SKILL.md` que celui décrit dans [Agents et Compétences](/book/25-agents-and-skills). Les outils disent à l'agent ce qu'il peut faire. Les skills lui disent comment bien faire le travail. Désormais, les deux peuvent venir du même serveur : les instructions vivent à côté du service qu'elles décrivent, et ceux qui le maintiennent peuvent les tenir à jour.
+
+Le mécanisme repose sur des éléments que vous connaissez déjà. Chaque fichier d'un skill est exposé comme une ressource MCP, généralement avec une URI `skill://`. Un client peut lister les skills d'un serveur avec `skills/list`, en récupérer un avec `skills/get` et lire ses fichiers annexes avec `resources/read`.
+
+<Compare
+  before={{ label: "Un serveur qui n'offre que des outils", content: "Le serveur du gestionnaire de tickets expose search_issues et create_issue. La méthode de tri (chercher les doublons, suivre le modèle de ticket) doit venir d'un skill installé à part ou de votre prompt, et elle peut se périmer quand le service évolue." }}
+  after={{ label: "Un serveur qui fournit aussi un skill", content: "Le même serveur propose aussi un skill de tri des tickets. L'hôte ne voit d'abord que son nom et sa description, et ne charge les instructions complètes que lorsqu'une tâche en a besoin. Quand les mainteneurs font évoluer le service, ils peuvent mettre le skill à jour en même temps." }}
+/>
+
+C'est toujours l'hôte qui décide comment un skill parvient au modèle. Le modèle peut le choisir d'après son nom et sa description, ou l'utilisateur peut le sélectionner directement. Dans les deux cas, les instructions complètes n'entrent dans le contexte qu'au moment où elles sont utiles, et la simple lecture d'un fichier `SKILL.md` n'active pas le skill.
+
+<Callout type="warning" title="Un skill fourni par un serveur reste une instruction">
+Un skill venu d'un serveur est du texte qui entre dans le contexte de l'agent et peut orienter ce qu'il fera ensuite. Il mérite donc le même examen que le serveur lui-même. Un hôte prudent vérifie le contenu et demande toute approbation nécessaire avant de le charger. Comme d'autres extensions officielles de MCP, par exemple MCP Apps et l'extension Tasks présentée juste après, Skills est facultative : elle n'est utilisée que si le client et le serveur déclarent tous deux la prendre en charge. La prise en charge côté client n'en est qu'à ses débuts ; vérifiez donc que votre application charge réellement des skills depuis les serveurs avant de compter dessus.
+</Callout>
+
+### Quand un outil a besoin de temps ou d'une réponse
+
+La plupart des appels d'outils sont de brefs échanges : l'agent demande, le serveur répond, et le travail continue. Certaines tâches ne suivent pas ce rythme. Une recherche approfondie, l'export d'un gros rapport ou une compilation peuvent prendre de longues minutes, et certains travaux arrivent à un point où seul l'utilisateur peut décider de la suite. MCP propose deux idées pour ces moments-là : **Tasks**, pour le travail qui demande du temps, et l'**élicitation** (*elicitation*), pour le travail qui demande une personne.
+
+L'[extension officielle Tasks](https://tasks.extensions.modelcontextprotocol.io/) (`io.modelcontextprotocol/tasks`) change la façon dont se termine un `tools/call` lent. Au lieu de garder la requête ouverte jusqu'à la fin du travail, le serveur peut répondre aussitôt avec un identifiant de tâche durable, un peu comme le ticket qu'on vous remet au vestiaire. Le client peut consulter la tâche avec `tasks/get`, envoyer des mises à jour ou des réponses avec `tasks/update`, l'arrêter avec `tasks/cancel`, et récupérer le résultat quand il est prêt. Entre-temps, l'agent reste libre de poursuivre son travail et de revenir plus tard, ce qui compte surtout pour les [bots toujours actifs](/book/28-persistent-bots) qui travaillent pendant votre absence. Tasks est facultatif des deux côtés : le client déclare sa prise en charge à chaque requête, et le serveur décide, requête par requête, s'il crée une tâche. Les outils existants n'acquièrent pas cette capacité d'eux-mêmes ; c'est à l'auteur du serveur de l'ajouter.
+
+<Compare
+  before={{ label: "Un appel d'outil bloquant", content: "L'agent appelle export_report et attend. La requête reste ouverte pendant des minutes. Si la connexion tombe, personne ne sait si l'export est terminé, et l'agent ne peut rien faire d'autre avant la réponse." }}
+  after={{ label: "Un identifiant de tâche", content: "L'agent appelle export_report et reçoit aussitôt un identifiant de tâche. Il passe à autre chose, consulte la tâche avec tasks/get et récupère le rapport une fois prêt. Si les plans changent, tasks/cancel l'arrête." }}
+/>
+
+L'[élicitation](https://modelcontextprotocol.io/specification/latest/client/elicitation) permet à un serveur de marquer une pause pour demander à l'utilisateur des informations structurées : « Déployer en staging ? », « Confirmer ce remboursement ? », ou un détail manquant sans lequel le travail ne peut pas continuer. L'hôte affiche un petit formulaire, et l'utilisateur peut répondre, refuser ou annuler. Refuser est aussi une réponse valable, et c'est le serveur qui décide de la suite. Les deux idées se rejoignent naturellement : une tâche en cours peut se mettre en pause dans l'état `input_required` et poser une question à l'utilisateur en plein travail. Avant une écriture, une telle question est un point de contrôle naturel où l'humain garde la main, placé exactement là où la décision compte.
+
+<Callout type="warning" title="Un formulaire venu d'un serveur reste une demande du serveur">
+Une élicitation vient du serveur, pas de votre application ; elle mérite donc le même examen que n'importe quelle sortie d'outil. Lisez ce qui vous est demandé avant de répondre, et ne saisissez jamais un mot de passe, une clé d'API ou tout autre secret dans un tel formulaire si vous ne faites pas confiance au serveur. La prise en charge varie aussi d'une application à l'autre : VS Code [documente sa prise en charge de l'élicitation](https://code.visualstudio.com/api/extension-guides/ai/mcp), Cursor prend en charge l'élicitation, et Claude Code a ajouté [MCP Tasks et les élicitations](https://code.claude.com/docs/en/mcp) en bêta publique dans son application de terminal, mais pas encore partout où il fonctionne. La [matrice officielle de prise en charge des clients](https://modelcontextprotocol.io/extensions/client-matrix) indique quelles applications prennent en charge quelles extensions ; vérifiez donc la vôtre avant de compter sur l'une ou l'autre de ces fonctionnalités.
+</Callout>
+
+### Trouver un serveur et ne se connecter qu'une fois
+
+Avant qu'un agent puisse utiliser un serveur distant, quelqu'un doit le trouver, comprendre comment s'y connecter et s'identifier. Longtemps, cela voulait dire copier une URL depuis un README, deviner quel transport utiliser et refaire la configuration dans chaque application. Deux sortes d'aide arrivent désormais : des informations qu'un client peut lire **avant** de se connecter, et des connexions que l'on configure **une fois** pour les réutiliser.
+
+Côté découverte, l'extension **Server Cards** de MCP ([SEP-2127](https://modelcontextprotocol.io/seps/2127-mcp-server-cards)) a été finalisée le 6 octobre 2026. Elle décrit un petit document statique consacré à un serveur distant : son nom, ses points de terminaison et ses transports, ainsi que les versions du protocole qu'il prend en charge. Un site peut répertorier ses cartes dans un catalogue d'IA à l'adresse `/.well-known/ai-catalog.json`, si bien qu'un client à qui l'on indique un domaine peut apprendre où et comment se connecter sans configuration manuelle. La carte laisse volontairement de côté la liste des outils, car les outils d'un serveur peuvent varier selon l'utilisateur connecté. Ceux-ci s'obtiennent toujours avec `tools/list` une fois la connexion établie.
+
+Côté connexion, GitHub a commencé le 28 octobre 2026 à déployer en préversion publique les [serveurs MCP vérifiés par GitHub](https://github.blog/changelog/2026-10-28-connect-your-tools-to-copilot-without-all-the-setup/), qu'il appelle aussi connecteurs. Vous vous connectez une seule fois à un service comme Slack ou Sentry, et la connexion fonctionne dans l'application Copilot, dans Copilot CLI, dans VS Code, dans Copilot dans le cloud et dans GitHub Mobile.
+
+Les outils ne sont d'ailleurs pas seulement des services web. Le même jour, lors de l'Android Dev Summit, Google a [annoncé](https://developer.android.com/blog/posts/build-it-your-way-a-next-era-of-android-development) qu'**AppFunctions**, qu'il présente comme la couche unifiée d'appel d'outils d'Android, est désormais en bêta. Grâce à Android MCP, une application de votre téléphone peut proposer des fonctions, comme créer une note ou envoyer un message, à son propre agent sur l'appareil ou à des agents du système, sans que personne ait besoin d'ouvrir l'application.
+
+Cela nous ramène à une idée vue plus haut : **connecteur** est un terme de produit. Une carte de serveur, un badge de vérification et une connexion unique simplifient la mise en place et vous aident à savoir *à qui* vous vous connectez. Ils ne décident pas de *ce que* vous accordez. C'est toujours vous qui choisissez quel compte connecter, quelles permissions autoriser et quelles actions doivent attendre votre accord. Ni les métadonnées de découverte ni la vérification ne remplacent l'examen de ce que les outils peuvent réellement faire une fois qu'ils sont listés.
+
+<Quiz
+  question="Un serveur distant publie une Server Card et apparaît comme connecteur vérifié dans votre application. Que vous reste-t-il à faire ?"
+  options={[
+    "Rien. La vérification signifie que chaque outil du serveur peut être exécuté sans risque",
+    "Choisir quel compte et quelles permissions accorder, et examiner ce que peuvent faire les outils listés",
+    "Copier dans votre prompt la liste d'outils de la Server Card",
+    "Écrire l'adresse du point de terminaison du serveur dans chaque prompt"
+  ]}
+  correctIndex={1}
+  explanation="Les métadonnées de découverte et la vérification facilitent la configuration et indiquent qui exploite le serveur. Elles ne choisissent ni votre compte ni vos périmètres d'accès à votre place, et une Server Card ne liste même pas les outils. Examinez les outils après la connexion et n'accordez que l'accès dont la tâche a besoin."
+/>
 
 ## Essayez une lecture et une écriture
 

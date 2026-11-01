@@ -72,6 +72,38 @@ El nombre y el esquema no ejecutan nada por sí solos. La implementación debe v
 «Voy a crear una incidencia» es una afirmación. Una llamada a una herramienta solicita la operación. Una respuesta correcta con el identificador de la nueva incidencia es evidencia de que ocurrió. Mantén estas tres cosas separadas.
 </Callout>
 
+### Una herramienta puede representar todo un flujo de trabajo
+
+Hasta ahora, cada herramienta era una sola operación: buscar, crear, exportar. Pero lo que hay detrás del nombre de una herramienta puede ser mucho más grande. Puede ser un proceso completo, escrito de antemano y ejecutado por un motor de flujos de trabajo. El agente sigue decidiendo **cuándo** iniciarlo y **qué datos** pasarle. Todo lo demás ocurre exactamente como el proceso lo define, en el mismo orden, cada vez.
+
+Piensa en un reembolso. Un agente de soporte puede entender muy bien a un cliente molesto, pero seguramente no quieres que improvise tu política de reembolsos. Empaquetado como una sola herramienta, el flujo de reembolso comprueba primero si el pedido cumple los requisitos, luego pide la aprobación de un responsable y por último abona el importe, sea cual sea la conversación que lo puso en marcha. Las aprobaciones, los despliegues y otros procesos en los que los pasos *son* la política encajan en el mismo molde. Los motores de flujos de trabajo suelen guardar un registro de cada ejecución, así que el agente también puede consultar ejecuciones anteriores y decirte cuáles fallaron durante la noche y en qué paso, en lugar de adivinarlo.
+
+AWS ofrece un ejemplo reciente. El 29 de octubre de 2026 [anunció](https://aws.amazon.com/about-aws/whats-new/2026/10/step-functions-workflows-ai-agent-tools/) que los flujos de trabajo de Step Functions pueden usarse como herramientas de agentes a través de Amazon Bedrock AgentCore Gateway, que conecta agentes con herramientas mediante MCP. La idea no depende de un único proveedor: un pipeline de CI, un flujo de aprobación en un sistema de tickets o un script en el que tu equipo ya confía pueden ofrecerse a un agente de la misma manera.
+
+Se trata de repartir dos virtudes. El modelo es flexible: puede leer una situación poco habitual y elegir un siguiente paso sensato. El flujo de trabajo es predecible: la misma entrada recorre los mismos pasos. Dejar el momento en manos del agente y los pasos en manos del flujo coloca cada virtud donde corresponde. Eso también cambia el prompt. Describe el objetivo y cuándo llamar al flujo, no los pasos que contiene. Repetir los pasos crea una segunda copia de la política, que puede alejarse de la real y que el modelo podría intentar seguir por su cuenta.
+
+<Compare
+  before={{ label: "Volver a describir el flujo", content: "Para reembolsar a un cliente, comprueba primero que el pedido tiene menos de 30 días, luego pregunta a un responsable, después abona el importe y por último envía un correo al cliente." }}
+  after={{ label: "Describir el objetivo y el momento", content: "Ayuda a los clientes a resolver problemas de facturación. Cuando un cliente pida un reembolso y tengas el número de pedido, llama al flujo de reembolso con ese número y el motivo. Informa del resultado que devuelva. No prometas un reembolso antes de que el flujo lo confirme." }}
+/>
+
+### Cuando no hay API, la pantalla se convierte en la herramienta
+
+Todas las herramientas que hemos visto hasta ahora tenían una puerta hecha para el software: una API, un conector, un servidor MCP. Muchos sistemas no tienen esa puerta. Un viejo portal interno, la web de reservas de un proveedor, un programa de escritorio de otra década: la gente los usa a diario, pero solo a través de la pantalla. Para estos casos, algunos modelos pueden tratar la propia pantalla como una herramienta. Es lo que suele llamarse **uso del ordenador** (*computer use*).
+
+El mecanismo es el bucle que ya conoces, con imágenes en lugar de datos. La aplicación que ejecuta el modelo le envía la tarea y una captura de pantalla. El modelo la mira y, en lugar de responder con prosa, responde con una acción estructurada: haz clic en este punto, escribe este texto, desplázate hacia abajo. Algunas herramientas añaden además a cada acción una breve intención declarada, como «Haz clic en el cuadro de búsqueda para escribir el destino», y así resulta más fácil seguir una ejecución. El modelo sigue sin mover nada por sí mismo. Es el código del propio desarrollador el que realiza la acción, toma una captura nueva y la devuelve. Mirar, actuar, volver a mirar, hasta que la tarea termina o alguien detiene el bucle. Dónde se ejecuta ese bucle importa tanto como su funcionamiento, y la sección [El ordenador del bot](/book/28-persistent-bots) de Bots siempre activos se ocupa de esa pregunta.
+
+Google puso su herramienta Computer Use a disposición general en la Gemini API el 30 de octubre de 2026 ([notas de la versión](https://ai.google.dev/gemini-api/docs/changelog)). Su [documentación](https://ai.google.dev/gemini-api/docs/computer-use) describe entornos de navegador, móvil y escritorio, acciones que llevan un campo `intent`, políticas de seguridad configurables que pueden bloquear una acción o pedir confirmación antes de pasos como un pago, y un análisis opcional de las capturas en busca de inyección de prompts oculta. La propia Google recomienda una supervisión estrecha para las tareas importantes. La idea no es exclusiva de una empresa: Anthropic ofrece una [herramienta de uso del ordenador](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool) para Claude, y OpenAI ofrece una [herramienta de ordenador](https://platform.openai.com/docs/guides/tools-computer-use) en su Responses API, ambas construidas en torno al mismo intercambio de capturas y acciones que lleva a cabo tu aplicación.
+
+Los inconvenientes merecen decirse sin rodeos. Leer una pantalla es más lento que llamar a una API, cada captura cuesta tokens, y un botón que cambia de sitio o una ventana emergente inesperada pueden romper una ejecución que ayer funcionaba. Por eso, cuando existe una API o un conector de verdad, es mejor usarlos y reservar el uso del ordenador para los sistemas que no dejan otra entrada. La pantalla es, además, una entrada como cualquier otra: el texto de una página puede esconder una inyección de prompts igual que un documento, y verlo en una imagen no lo vuelve más fiable. Y como el modelo puede hacer clic en cualquier cosa que pulsaría una persona, los pasos arriesgados, como pagar, borrar o cambiar datos, deberían esperar a que un humano los confirme.
+
+El prompt sigue las mismas reglas de siempre, solo que con aristas más afiladas, porque una web no puede explicarle al modelo lo que querías decir. Nombra el sitio y la página exactos, di dónde termina la tarea y deja claro qué hay que confirmar antes de hacer nada.
+
+<Compare
+  before={{ label: "Un recado sin límites", content: "Entra en internet y resérvame una sala de reuniones para el jueves." }}
+  after={{ label: "Una página, un punto de parada, una confirmación", content: "En nuestra página de reserva de salas, rooms.example.com, busca una sala para seis personas el jueves de 14:00 a 15:00. Detente en la pantalla de confirmación final y muéstrame la sala y la hora antes de pulsar Reservar. Si no hay ninguna sala libre, dímelo y detente. No cambies ni canceles ninguna reserva existente." }}
+/>
+
 ## Qué añade un conector
 
 Un conector reúne la integración con un sistema concreto. Puede gestionar el inicio de sesión, la selección de una cuenta o espacio de trabajo, la búsqueda de datos y la presentación de acciones disponibles como herramientas. Algunos conectores solo buscan o leen. Otros también permiten escribir.
@@ -111,6 +143,66 @@ MCP también define **recursos** y **prompts**. Estas palabras tienen significad
 La [guía de conceptos del servidor MCP](https://modelcontextprotocol.io/docs/learn/server-concepts) los describe como herramientas controladas por el modelo, recursos controlados por la aplicación y prompts controlados por el usuario. Estos términos describen los patrones de interacción previstos. No eliminan las comprobaciones de permisos de la aplicación.
 
 Una plantilla de prompt MCP no es automáticamente una habilidad. Una habilidad puede agrupar un procedimiento más largo, referencias y scripts. Puede indicar al agente cómo usar herramientas proporcionadas mediante MCP, un conector directo o funciones locales.
+
+### Las habilidades también pueden llegar con el servidor
+
+Hasta hace poco, estas dos piezas solían llegar por separado. Un servidor podía darle al agente sus herramientas, pero el saber hacer para usarlas bien vivía en otra parte: en una habilidad instalada aparte, en un README o en el propio prompt del usuario. Cuando el servicio cambiaba, esas instrucciones podían quedarse atrás sin que nadie lo notara.
+
+La **extensión Skills** oficial de MCP, que alcanzó su versión final en septiembre de 2026, cierra buena parte de esa brecha. Ahora un servidor puede ofrecer no solo sus herramientas, sino también las habilidades que explican cómo usarlas, escritas en el mismo formato `SKILL.md` que se describe en [Agentes y Habilidades](/book/25-agents-and-skills). Las herramientas le dicen al agente qué puede hacer. Las habilidades le dicen cómo hacer bien el trabajo. Ahora ambas pueden llegar del mismo servidor, así que las instrucciones viven junto al servicio que describen y quienes lo mantienen pueden tenerlas al día.
+
+El mecanismo se apoya en piezas que ya conoces. Cada archivo de una habilidad se expone como un recurso MCP, normalmente con una URI `skill://`. Un cliente puede listar las habilidades de un servidor con `skills/list`, obtener una con `skills/get` y leer sus archivos de apoyo con `resources/read`.
+
+<Compare
+  before={{ label: "Un servidor solo con herramientas", content: "El servidor del gestor de incidencias ofrece search_issues y create_issue. El método de clasificación (buscar duplicados, seguir la plantilla de incidencias) tiene que venir de una habilidad instalada aparte o de tu prompt, y puede quedarse desfasado cuando cambia el servicio." }}
+  after={{ label: "Un servidor que también incluye una habilidad", content: "El mismo servidor ofrece además una habilidad para clasificar incidencias. Al principio, el host solo ve su nombre y su descripción, y carga las instrucciones completas cuando una tarea las necesita. Cuando los responsables cambian el servicio, pueden actualizar la habilidad al mismo tiempo." }}
+/>
+
+El host sigue decidiendo cómo llega una habilidad al modelo. El modelo puede elegirla por su nombre y su descripción, o el usuario puede seleccionarla directamente. En cualquier caso, las instrucciones completas solo entran en el contexto cuando hacen falta, y leer un archivo `SKILL.md` no activa la habilidad por sí solo.
+
+<Callout type="warning" title="Una habilidad servida sigue siendo una instrucción">
+Una habilidad que llega de un servidor es texto que entra en el contexto del agente y puede influir en lo que hará después. Por eso merece el mismo escrutinio que el propio servidor. Un host cuidadoso verifica el contenido y pide cualquier aprobación necesaria antes de cargarlo. Como otras extensiones oficiales de MCP, por ejemplo MCP Apps y la extensión Tasks que veremos a continuación, Skills es opcional: solo se usa cuando tanto el cliente como el servidor declaran que la admiten. El soporte en los clientes todavía es incipiente, así que comprueba si tu aplicación realmente carga habilidades desde servidores antes de depender de ellas.
+</Callout>
+
+### Cuando una herramienta necesita tiempo o una respuesta
+
+La mayoría de las llamadas a herramientas son intercambios breves: el agente pide, el servidor responde y el trabajo sigue adelante. Algunas tareas no encajan en ese ritmo. Una investigación a fondo, la exportación de un informe grande o una compilación pueden tardar muchos minutos, y algunos trabajos llegan a un punto en el que solo el usuario puede decidir cómo seguir. MCP ofrece dos ideas para esos momentos: **Tasks**, para el trabajo que necesita tiempo, y la **elicitación** (*elicitation*), para el trabajo que necesita a una persona.
+
+La [extensión oficial Tasks](https://tasks.extensions.modelcontextprotocol.io/) (`io.modelcontextprotocol/tasks`) cambia la forma en que termina un `tools/call` lento. En lugar de mantener la solicitud abierta hasta que el trabajo acabe, el servidor puede responder enseguida con un identificador de tarea duradero, algo parecido al resguardo que te dan en el guardarropa. El cliente puede consultar la tarea con `tasks/get`, enviar actualizaciones o respuestas con `tasks/update`, detenerla con `tasks/cancel` y recoger el resultado cuando esté listo. Mientras tanto, el agente puede seguir trabajando y volver más tarde, algo que importa sobre todo en los [bots siempre activos](/book/28-persistent-bots), que ejecutan trabajos mientras no estás. Tasks es opcional para ambas partes: el cliente declara su compatibilidad en cada solicitud y el servidor decide, solicitud por solicitud, si crea una tarea. Las herramientas existentes no adquieren esta capacidad por sí solas; quien desarrolla el servidor tiene que añadirla.
+
+<Compare
+  before={{ label: "Una llamada que bloquea", content: "El agente llama a export_report y espera. La solicitud queda abierta durante minutos. Si se corta la conexión, nadie sabe si la exportación terminó, y el agente no puede hacer nada más hasta recibir respuesta." }}
+  after={{ label: "Un identificador de tarea", content: "El agente llama a export_report y recibe al instante un identificador de tarea. Pasa a otro trabajo, consulta la tarea con tasks/get y recoge el informe cuando está listo. Si los planes cambian, tasks/cancel la detiene." }}
+/>
+
+La [elicitación](https://modelcontextprotocol.io/specification/latest/client/elicitation) permite que un servidor se detenga y pida al usuario datos estructurados: «¿Desplegar en staging?», «¿Confirmar este reembolso?» o un detalle que falta y sin el cual el trabajo no puede continuar. El host muestra un pequeño formulario, y el usuario puede responder, rechazar o cancelar. Rechazar también es una respuesta válida, y el servidor decide qué hacer a continuación. Las dos ideas se encuentran con naturalidad: una tarea en marcha puede pausarse en el estado `input_required` y preguntar algo al usuario a mitad de camino. Antes de una escritura, una pregunta así es un punto de control natural en el que decide una persona, justo donde la decisión importa.
+
+<Callout type="warning" title="Un formulario de un servidor sigue siendo una petición de un servidor">
+Una elicitación viene del servidor, no de tu aplicación, así que merece el mismo escrutinio que cualquier resultado de una herramienta. Lee lo que te pide antes de responder y nunca escribas una contraseña, una clave de API ni otro secreto en un formulario así, a menos que confíes en el servidor. Además, el soporte varía entre aplicaciones: VS Code [documenta su soporte de elicitación](https://code.visualstudio.com/api/extension-guides/ai/mcp), Cursor admite la elicitación y Claude Code ha incorporado [MCP Tasks y las elicitaciones](https://code.claude.com/docs/en/mcp) en beta pública en su aplicación de terminal, aunque todavía no en todos los entornos donde funciona. La [matriz oficial de compatibilidad de clientes](https://modelcontextprotocol.io/extensions/client-matrix) indica qué aplicaciones admiten qué extensiones, así que comprueba la tuya antes de depender de cualquiera de las dos funciones.
+</Callout>
+
+### Encontrar un servidor y conectarse una sola vez
+
+Antes de que un agente pueda usar un servidor remoto, alguien tiene que encontrarlo, averiguar cómo conectarse e iniciar sesión. Durante mucho tiempo eso significó copiar una URL de un README, adivinar qué transporte usar y repetir la configuración en cada aplicación. Ahora llegan dos tipos de ayuda: información que un cliente puede leer **antes** de conectarse y conexiones que configuras **una vez** y reutilizas.
+
+En el lado del descubrimiento, la extensión **Server Cards** de MCP ([SEP-2127](https://modelcontextprotocol.io/seps/2127-mcp-server-cards)) alcanzó su versión final el 6 de octubre de 2026. Describe un documento pequeño y estático sobre un servidor remoto: su nombre, sus endpoints y transportes, y las versiones del protocolo que admite. Un sitio web puede listar sus tarjetas en un catálogo de IA en `/.well-known/ai-catalog.json`, de modo que un cliente al que se le indica un dominio puede saber dónde y cómo conectarse sin configuración manual. La tarjeta deja fuera a propósito la lista de herramientas, porque las herramientas que ofrece un servidor pueden cambiar según el usuario que haya iniciado sesión. Esas se siguen obteniendo con `tools/list` después de conectarse.
+
+En el lado de la conexión, GitHub empezó a desplegar el 28 de octubre de 2026, en vista previa pública, los [servidores MCP verificados por GitHub](https://github.blog/changelog/2026-10-28-connect-your-tools-to-copilot-without-all-the-setup/), a los que también llama conectores. Inicias sesión una vez en un servicio como Slack o Sentry, y la conexión funciona en la aplicación de Copilot, en Copilot CLI, en VS Code, en Copilot en la nube y en GitHub Mobile.
+
+Además, las herramientas no son solo servicios web. Ese mismo día, en el Android Dev Summit, Google [anunció](https://developer.android.com/blog/posts/build-it-your-way-a-next-era-of-android-development) que **AppFunctions**, a la que describe como la capa unificada de llamadas a herramientas de Android, ya está en beta. A través de Android MCP, una aplicación de tu teléfono puede ofrecer funciones como crear una nota o enviar un mensaje a un agente propio en el dispositivo o a agentes del sistema, sin que nadie tenga que abrir la aplicación.
+
+Esto nos devuelve a una idea anterior: **conector** es un término de producto. Una tarjeta de servidor, una insignia de verificación y un único inicio de sesión facilitan la configuración y te ayudan a confiar en *con quién* te conectas. No deciden *qué* concedes. Sigues eligiendo tú qué cuenta conectar, qué permisos permitir y qué acciones deben esperar tu aprobación. Ni los metadatos de descubrimiento ni la verificación sustituyen a revisar lo que las herramientas pueden hacer realmente una vez que aparecen en la lista.
+
+<Quiz
+  question="Un servidor remoto publica una Server Card y aparece como conector verificado en tu aplicación. ¿Qué sigue siendo tarea tuya?"
+  options={[
+    "Nada. La verificación significa que todas las herramientas del servidor se pueden ejecutar sin riesgo",
+    "Elegir qué cuenta y qué permisos conceder, y revisar lo que pueden hacer las herramientas de la lista",
+    "Copiar en tu prompt la lista de herramientas de la Server Card",
+    "Escribir la dirección del endpoint del servidor en cada prompt"
+  ]}
+  correctIndex={1}
+  explanation="Los metadatos de descubrimiento y la verificación ayudan con la configuración y a saber quién gestiona el servidor. No eligen por ti la cuenta ni los ámbitos de acceso, y una Server Card ni siquiera enumera las herramientas. Revisa las herramientas después de conectarte y concede solo el acceso que la tarea necesita."
+/>
 
 ## Prueba una lectura y una escritura
 

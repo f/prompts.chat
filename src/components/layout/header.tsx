@@ -79,7 +79,7 @@ import { NotificationBell } from "@/components/layout/notification-bell";
 import { setLocale } from "@/lib/i18n/client";
 import { useBranding } from "@/components/providers/branding-provider";
 import { analyticsAuth, analyticsSettings, analyticsExternal } from "@/lib/analytics";
-import { isChromeBrowser, isFirefoxBrowser } from "@/lib/utils";
+import { cn, isChromeBrowser, isFirefoxBrowser } from "@/lib/utils";
 
 const FIREFOX_ADDON_URL = "https://addons.mozilla.org/firefox/downloads/file/4675190/prompts_chat-1.4.1.xpi";
 
@@ -116,6 +116,24 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
   const branding = useBranding();
   const router = useRouter();
   const pathname = usePathname();
+
+  const isNavActive = (href: string) => {
+    if (href === "/bots" && (pathname === "/bots/teams" || pathname.startsWith("/bots/teams/"))) {
+      return false;
+    }
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
+  const mobileNavClass = (href: string) =>
+    cn(
+      "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium hover:text-foreground hover:bg-accent transition-colors",
+      isNavActive(href) ? "text-foreground bg-accent" : "text-muted-foreground"
+    );
+  const desktopNavClass = (href: string, className?: string) =>
+    cn(
+      "px-3 py-1.5 rounded-md transition-colors hover:text-foreground hover:bg-accent",
+      isNavActive(href) ? "text-foreground bg-accent" : "text-muted-foreground",
+      className
+    );
 
   const user = session?.user;
   const isAdmin = user?.role === "ADMIN";
@@ -186,72 +204,79 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
                       <Link 
                         href="/collection" 
                         onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                        className={mobileNavClass("/collection")}
                       >
                         {t("nav.collection")}
                       </Link>
                       <Link 
                         href="/feed" 
                         onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                        className={mobileNavClass("/feed")}
                       >
                         {t("nav.feed")}
                       </Link>
                     </>
                   )}
                   <Link 
+                    href="/bots/teams" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={mobileNavClass("/bots/teams")}
+                  >
+                    {t("nav.teams")}
+                  </Link>
+                  <Link 
                     href="/bots" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    className={mobileNavClass("/bots")}
                   >
                     {t("nav.bots")}
                   </Link>
                   <Link 
-                    href="/prompts" 
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                  >
-                    {t("nav.prompts")}
-                  </Link>
-                  <Link 
                     href="/skills" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    className={mobileNavClass("/skills")}
                   >
                     {t("nav.skills")}
                   </Link>
                   <Link 
+                    href="/prompts" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={mobileNavClass("/prompts")}
+                  >
+                    {t("nav.prompts")}
+                  </Link>
+                  <Link 
                     href="/workflows" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    className={mobileNavClass("/workflows")}
                   >
                     {t("nav.workflows")}
                   </Link>
                   <Link 
                     href="/categories" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    className={mobileNavClass("/categories")}
                   >
                     {t("nav.categories")}
                   </Link>
                   <Link 
                     href="/tags" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    className={mobileNavClass("/tags")}
                   >
                     {t("nav.tags")}
                   </Link>
                   <Link 
                     href="/discover" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    className={mobileNavClass("/discover")}
                   >
                     {t("feed.discover")}
                   </Link>
                   <Link 
                     href="/promptmasters" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    className={mobileNavClass("/promptmasters")}
                   >
                     {t("nav.promptmasters")}
                   </Link>
@@ -280,7 +305,7 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
                   <Link 
                     href="/taste" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    className={mobileNavClass("/taste")}
                   >
                     {t("nav.taste")}
                   </Link>
@@ -364,64 +389,70 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
             <>
               <Link
                 href="/collection"
-                className="px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
+                className={desktopNavClass("/collection")}
               >
                 {t("nav.collection")}
               </Link>
               <Link
                 href="/feed"
-                className="px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
+                className={desktopNavClass("/feed")}
               >
                 {t("nav.feed")}
               </Link>
             </>
           )}
           <Link
+            href="/bots/teams"
+            className={desktopNavClass("/bots/teams")}
+          >
+            {t("nav.teams")}
+          </Link>
+          <Link
             href="/bots"
-            className="px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
+            className={desktopNavClass("/bots")}
           >
             {t("nav.bots")}
           </Link>
           <Link
-            href="/prompts"
-            className="px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
-          >
-            {t("nav.prompts")}
-          </Link>
-          <Link
             href="/skills"
-            className="hidden xl:block px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
+            className={desktopNavClass("/skills", "hidden xl:block")}
           >
             {t("nav.skills")}
           </Link>
           <Link
+            href="/prompts"
+            className={desktopNavClass("/prompts")}
+          >
+            {t("nav.prompts")}
+          </Link>
+          <Link
             href="/workflows"
-            className="hidden xl:block px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
+            className={desktopNavClass("/workflows", "hidden xl:block")}
           >
             {t("nav.workflows")}
           </Link>
           {/* Categories, Tags, Promptmasters, Taste - visible on 2xl+ screens */}
           <Link
             href="/categories"
-            className="hidden 2xl:block px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
+            className={desktopNavClass("/categories", "hidden 2xl:block")}
           >
             {t("nav.categories")}
           </Link>
           <Link
             href="/tags"
-            className="hidden 2xl:block px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
+            className={desktopNavClass("/tags", "hidden 2xl:block")}
           >
             {t("nav.tags")}
           </Link>
           <Link
             href="/promptmasters"
-            className="hidden 2xl:block px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
+            className={desktopNavClass("/promptmasters", "hidden 2xl:block")}
           >
             {t("nav.promptmasters")}
           </Link>
           <Link
             href="/taste"
-            className="hidden 2xl:block px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
+            className={desktopNavClass("/taste", "hidden 2xl:block")}
           >
             {t("nav.taste")}
           </Link>

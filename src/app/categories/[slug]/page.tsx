@@ -15,14 +15,18 @@ import { CategoryFilters } from "@/components/categories/category-filters";
 import { McpServerPopup } from "@/components/mcp/mcp-server-popup";
 import { JsonLd, breadcrumbSchema, collectionPageSchema } from "@/components/seo/structured-data";
 import { buildPageMetadata, NOINDEX_ROBOTS, paginatedPath, toMetaDescription } from "@/lib/seo";
+import {
+  CATEGORY_PROMPTS_PER_PAGE,
+  categoryPromptsWhere,
+  isPageOutOfRange,
+  parsePageParam,
+} from "@/lib/listing-pagination";
 import { getPromptUrl } from "@/lib/urls";
 
 interface CategoryPageProps {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ page?: string; sort?: string; q?: string }>;
 }
-
-const PROMPTS_PER_PAGE = 30;
 
 const visiblePromptFilter = {
   isPrivate: false,
@@ -34,7 +38,7 @@ const visiblePromptFilter = {
 export async function generateMetadata({ params, searchParams }: CategoryPageProps): Promise<Metadata> {
   const { slug } = await params;
   const { page, q } = await searchParams;
-  const currentPage = Math.max(1, parseInt(page || "1", 10) || 1);
+  const currentPage = parsePageParam(page);
   const category = await db.category.findUnique({
     where: { slug },
     select: {
@@ -44,10 +48,10 @@ export async function generateMetadata({ params, searchParams }: CategoryPagePro
     },
   });
 
-  const count = category?._count.prompts ?? 0;
-  if (!category || currentPage > Math.max(1, Math.ceil(count / PROMPTS_PER_PAGE))) {
+  if (!category) {
     return { title: "Category Not Found", robots: NOINDEX_ROBOTS };
   }
+  const count = category._count.prompts;
 
   const t = await getTranslations("seo");
   const description = category.description
@@ -67,7 +71,7 @@ export async function generateMetadata({ params, searchParams }: CategoryPagePro
 export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
   const { slug } = await params;
   const { page, sort, q } = await searchParams;
-  const currentPage = Math.max(1, parseInt(page || "1", 10) || 1);
+  const currentPage = parsePageParam(page);
   const sortOption = sort || "newest";
   const session = await auth();
   const t = await getTranslations();
@@ -102,20 +106,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
       })
     : null;
 
-  // Build where clause with optional search
-  const whereClause = {
-    categoryId: category.id,
-    isPrivate: false,
-    isUnlisted: false,
-    deletedAt: null,
-    ...NON_BOT_PROMPTS,
-    ...(q && {
-      OR: [
-        { title: { contains: q, mode: "insensitive" as const } },
-        { content: { contains: q, mode: "insensitive" as const } },
-      ],
-    }),
-  };
+  const whereClause = categoryPromptsWhere(category.id, q);
 
   // Build orderBy based on sort option
   const getOrderBy = () => {
@@ -136,10 +127,11 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     db.prompt.count({ where: whereClause }),
     countBots({ categorySlug: category.slug }),
   ]);
-  const totalPages = Math.ceil(totalPrompts / PROMPTS_PER_PAGE);
+  const totalPages = Math.ceil(totalPrompts / CATEGORY_PROMPTS_PER_PAGE);
 
-  // Pages past the end would be empty duplicates of the listing
-  if (currentPage > 1 && currentPage > totalPages) {
+  // Pages past the end would be empty duplicates of the listing. The layout
+  // already rejects them on full page loads; this covers client navigation.
+  if (isPageOutOfRange(currentPage, totalPrompts, CATEGORY_PROMPTS_PER_PAGE)) {
     notFound();
   }
 
@@ -147,8 +139,8 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   const promptsRaw = await db.prompt.findMany({
     where: whereClause,
     orderBy: getOrderBy(),
-    skip: (currentPage - 1) * PROMPTS_PER_PAGE,
-    take: PROMPTS_PER_PAGE,
+    skip: (currentPage - 1) * CATEGORY_PROMPTS_PER_PAGE,
+    take: CATEGORY_PROMPTS_PER_PAGE,
     include: {
       author: {
         select: {

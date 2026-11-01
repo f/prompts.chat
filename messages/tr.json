@@ -36,6 +36,7 @@
   },
   "nav": {
     "bots": "Botlar",
+    "teams": "Ekipler",
     "collection": "Koleksiyonum",
     "feed": "Akış",
     "promptmasters": "Promptmasters",
@@ -186,6 +187,8 @@
     "relistRequestAlreadySent": "Bu prompt için zaten bir yeniden listeleme talebi gönderdiniz.",
     "relistRequestError": "Yeniden listeleme talebi gönderilemedi. Lütfen tekrar deneyin.",
     "relatedPrompts": "İlgili Promptlar",
+    "relatedSkills": "İlgili Beceriler",
+    "relatedBots": "İlgili Botlar",
     "deletePrompt": "Promptu Sil",
     "deletePromptTitle": "Bu promptu silmek istiyor musunuz?",
     "deletePromptDescription": "Bu işlem geri alınamaz. Prompt kalıcı olarak silinecektir.",
@@ -443,7 +446,46 @@
     "dismissed": "Değişiklik talebi geri çekildi",
     "dismissConfirmTitle": "Değişiklik Talebini Geri Çek?",
     "dismissConfirmDescription": "Bu işlem değişiklik talebinizi kalıcı olarak silecektir. Bu işlem geri alınamaz.",
-    "backToBot": "Bota dön"
+    "backToBot": "Bota dön",
+    "backToTeam": "Takıma dön",
+    "proposeBotTitle": "Bu bota değişiklik öner",
+    "proposeBotIntro": "Bu bot için iyileştirmeler önerin. Sahibi önerinizi inceler ve onaylayabilir veya reddedebilir.",
+    "proposeTeamTitle": "Bu takıma değişiklik öner",
+    "proposeTeamIntro": "Bu takım için iyileştirmeler önerin. Sahibi önerinizi inceler ve onaylayabilir veya reddedebilir.",
+    "viewVersion": "Sürümü görüntüle",
+    "viewVersionHint": "{previous}. sürüme göre değişiklikler",
+    "viewFirstVersionHint": "İlk sürüm",
+    "memberRole": "Rol",
+    "memberDescription": "Açıklama",
+    "membersReordered": "Üye sırası değişti",
+    "noFieldChanges": "Değişiklik yok",
+    "reviewedBy": "İnceleyen: {user}",
+    "teamApprovedSuccess": "Değişiklik isteği onaylandı ve takım güncellendi",
+    "botFields": {
+      "title": "Başlık",
+      "description": "Açıklama",
+      "platforms": "Platformlar",
+      "computers": "Bilgisayar gereksinimleri",
+      "appearance": "Görünüm",
+      "installUrl": "Kurulum URL'si",
+      "instructions": "Talimatlar",
+      "routines": "Rutinler",
+      "skills": "Yetenekler",
+      "connectors": "Bağlayıcılar"
+    },
+    "teamFields": {
+      "title": "Başlık",
+      "description": "Açıklama",
+      "category": "Kategori",
+      "tags": "Etiketler",
+      "handoffs": "Devirler",
+      "members": "Üyeler"
+    },
+    "member": {
+      "added": "Eklendi",
+      "removed": "Kaldırıldı",
+      "changed": "Değişti"
+    }
   },
   "categories": {
     "title": "Kategoriler",
@@ -509,6 +551,7 @@
       "webhooks": "Webhooklar",
       "prompts": "Promptlar",
       "bots": "Botlar",
+      "teams": "Ekipler",
       "reports": "Şikayetler"
     },
     "reports": {
@@ -784,6 +827,26 @@
       "deleted": "Bot silindi",
       "deleteConfirmTitle": "Bot silinsin mi?",
       "deleteConfirmDescription": "\"{title}\" kalıcı olarak silinecek. Bu işlem geri alınamaz."
+    },
+    "teamsList": {
+      "title": "Ekipler",
+      "description": "Bot ekiplerini yönetin: listeden kaldırın, düzenleyin veya silin.",
+      "noTeams": "Ekip bulunamadı",
+      "open": "Aç",
+      "edit": "Düzenle",
+      "unlist": "Listeden kaldır",
+      "relist": "Yeniden listele",
+      "updated": "Ekip güncellendi",
+      "deleted": "Ekip silindi",
+      "deleteConfirmTitle": "Ekip silinsin mi?",
+      "deleteConfirmDescription": "Bu işlem \"{title}\" ekibini kalıcı olarak siler. Botları olduğu gibi kalır.",
+      "members": "{count, plural, one {# bot} other {# bot}}",
+      "filters": {
+        "all": "Tümü",
+        "listed": "Listelenen",
+        "unlisted": "Listelenmemiş",
+        "featured": "Öne Çıkan"
+      }
     }
   },
   "search": {
@@ -840,7 +903,12 @@
     "noBots": "Henüz bot yok.",
     "noBotsOwner": "Henüz hiç bot oluşturmadınız.",
     "createFirstBot": "İlk botunuzu oluşturun",
-    "botsCount": "bot"
+    "botsCount": "bot",
+    "teams": "Ekipler",
+    "teamsCount": "ekip",
+    "noTeams": "Henüz ekip yok.",
+    "noTeamsOwner": "Henüz hiç ekip oluşturmadınız.",
+    "createFirstTeam": "İlk ekibinizi oluşturun"
   },
   "subscription": {
     "subscribe": "Abone Ol",
@@ -929,7 +997,7 @@
     "browsePrompts": "Promptlara Göz At"
   },
   "bots": {
-    "description": "Talimatları, rutinleri ve becerileriyle hazır yapay zekâ ajan botları. OpenClaw, Hermes Agent veya Grok Bot'a kurun.",
+    "description": "Talimatları, rutinleri ve becerileriyle hazır yapay zekâ ajan botları. OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent veya Grok Bot'a kurun.",
     "count": "{count, plural, one {# bot} other {# bot}}",
     "allPlatforms": "Tümü",
     "searchPlaceholder": "Bot ara...",
@@ -954,6 +1022,14 @@
     "installPromptHint": "Bu istemi ajanınıza yapıştırın. Bot tanımını alır ve talimatları, rutinleri ve becerileri kurar.",
     "installPromptFallbackHint": "Ya da botu kendiniz oluşturmak için bu istemi Grok Bot'a yapıştırın:",
     "installPromptPlatformFallbackHint": "Ya da botu kendiniz oluşturmak için bu istemi {platform} içine yapıştırın:",
+    "autogptPromptHint": "Bu istemi AutoGPT'de Otto ile bir sohbete yapıştırın. Otto botu talimatları, becerileri ve rutinleriyle bir Expert olarak kurar.",
+    "openAutogpt": "AutoGPT'yi aç",
+    "dotsPromptHint": "Bu istemi ChatGPT'de dot'unuzla bir sohbete yapıştırın. Dot'unuz botun talimatlarını benimser, ihtiyaç duyduğu uygulamaları bağlamanızı ister ve rutinlerini yinelenen görevler olarak zamanlar.",
+    "openDots": "Dots'u aç",
+    "duetPromptHint": "Bu istemi Claude Duet sohbetinize yapıştırın. Claude Duet botun talimatlarını ve rutinlerini benimser; Claude hesabınızdaki becerileri ve bağlayıcıları kullanır, bu yüzden eksik olanları Claude ayarlarından ekleyin.",
+    "openDuet": "Claude Duet'i aç",
+    "musePromptHint": "Bu istemi Muse ile bir sohbete yapıştırın. Muse'un becerileri yerleşiktir; botun talimatlarını benimser, ihtiyaç duyduğu uygulamaları bağlamanızı ister ve rutinlerini zamanlanmış görevler olarak kurar.",
+    "openMuse": "Muse'u aç",
     "copyInstallPrompt": "Kurulum istemini kopyala",
     "machineReadable": "Makine tarafından okunabilir",
     "create": "Yeni bot",
@@ -999,7 +1075,15 @@
       "submit": "Bot oluştur",
       "save": "Botu kaydet",
       "created": "Bot oluşturuldu",
-      "updated": "Bot güncellendi"
+      "updated": "Bot güncellendi",
+      "pairingsHint": "Bununla iyi çalışan botları bağlayın. Bağlantılar her iki botun sayfasında görünür.",
+      "pairingsSearch": "Eşleştirilecek bot ara...",
+      "pairingsNoResults": "Bot bulunamadı",
+      "pairingNotePlaceholder": "Neden iyi eşleşiyorlar? (isteğe bağlı)",
+      "pairingNoteLabel": "{bot} neden iyi eşleşiyor",
+      "removePairing": "{bot} kaldır",
+      "pairingsMax": "En fazla {max} bot bağlayabilirsiniz",
+      "pairingsInvalid": "Eşleştirilen botlardan biri artık mevcut değil. Kaldırıp tekrar deneyin."
     },
     "colors": {
       "slate": "Arduvaz",
@@ -1055,7 +1139,129 @@
       "coffee": "Kahve"
     },
     "latestBots": "Son Botlar",
-    "viewAll": "Tümünü gör"
+    "featuredTeams": "Öne Çıkan Bot Ekipleri",
+    "viewAll": "Tümünü gör",
+    "betterTogether": "Birlikte daha iyi",
+    "installAllTogether": "Hepsini birlikte yükle",
+    "installAllTitle": "{count, plural, other {# botun hepsini birlikte yükle}}",
+    "installAllDescription": "{bot} botunu ve onunla uyumlu botları tek seferde kurun.",
+    "installAllUnavailable": "Bu botlar için henüz kurulum seçeneği yok.",
+    "installAllLoadError": "Kurulum seçenekleri yüklenemedi. Pencereyi kapatıp tekrar deneyin.",
+    "installAllPromptHint": "Bu istemi {platform} içine yapıştırın. Setteki her botu sırayla kurar.",
+    "installAllAutogptPromptHint": "Bu istemi AutoGPT'de Otto ile bir sohbete yapıştırın. Otto setteki her botu sırayla bir Expert olarak kurar.",
+    "installAllDotsPromptHint": "Bu istemi ChatGPT'de dot'unuzla bir sohbete yapıştırın. Dot'unuz setteki her botu sırayla kurar.",
+    "installAllDuetPromptHint": "Bu istemi Claude Duet sohbetinize yapıştırın. Claude Duet setteki her botu sırayla kurar. Eksik becerileri ve bağlayıcıları Claude ayarlarından ekleyin.",
+    "installAllMusePromptHint": "Bu istemi Muse ile bir sohbete yapıştırın. Muse setteki her botu sırayla kurar ve ihtiyaç duydukları uygulamaları bağlamanızı ister.",
+    "installAllCommandHint": "Setteki her botu bir beceri olarak yükleyin:",
+    "installAllTemplatesHint": "Ya da her {platform} şablonunu açın:",
+    "installAllSkipped": "{platform} için mevcut değil: {bots}",
+    "copyCommands": "Komutları kopyala",
+    "openTemplate": "{bot} şablonunu aç",
+    "teams": {
+      "link": "Ekipler",
+      "create": "Ekip oluştur",
+      "description": "Ekipler, işi birbirine devreden bot gruplarıdır. Her kutu bir ekiptir ve her ok bir botun bir sonrakine neyi devrettiğini gösterir: devri görmek için bir okun üzerine gel veya üyelerini görmek için bir ekip seç.",
+      "count": "{count, plural, one {# ekip} other {# ekip}}",
+      "searchPlaceholder": "Ekip ara...",
+      "allTeams": "Tüm ekipler",
+      "empty": "Henüz ekip yok. İlkini oluştur.",
+      "noResults": "Aramanla eşleşen ekip yok.",
+      "featured": "Öne çıkan",
+      "graphLabel": "Bot ekipleri ve devirleri",
+      "selectTeam": "{team} ayrıntılarını göster",
+      "selectHint": "Üyelerini ve devirlerini görmek için bir ekip seç.",
+      "closePanel": "Kapat",
+      "by": "{author} tarafından",
+      "members": "Üyeler",
+      "handoffs": "Devir akışı",
+      "handoffLabel": "{from}, {to} botuna devreder",
+      "handsOffTo": "devreder",
+      "noHandoffLabel": "Neyin devredildiğine dair açıklama yok",
+      "noHandoffs": "Bu ekibin henüz devri yok.",
+      "noVisibleMembers": "Bu ekibin botlarından hiçbiri sana görünür değil.",
+      "openTeam": "Ekibi aç",
+      "backToTeams": "Tüm ekipler",
+      "install": "Ekibi kur",
+      "installTitle": "{count, plural, one {# botu kur} other {Bu ekibin # botunun tümünü kur}}",
+      "installDescription": "{team} ekibinin tüm botlarını devirleriyle birlikte tek seferde kur.",
+      "installShort": "Kur",
+      "memberOf": "Takımlar",
+      "memberCount": "{count, plural, one {# bot} other {# bot}}",
+      "edit": "Ekibi düzenle",
+      "delete": "Ekibi sil",
+      "deleteConfirm": "Bu ekip silinsin mi? Botların kendisi olduğu gibi kalır.",
+      "deleted": "Ekip silindi",
+      "form": {
+        "createTitle": "Ekip oluştur",
+        "editTitle": "Ekibi düzenle",
+        "intro": "Botları seç, her birinin ekipte ne yaptığını yaz, sonra kimin kime neyi devrettiğini belirle.",
+        "title": "Başlık",
+        "titlePlaceholder": "ör. Araştır ve Yayınla",
+        "titleRequired": "Ekibe bir başlık ver.",
+        "description": "Açıklama",
+        "descriptionPlaceholder": "Bu ekip birlikte ne yapıyor ve iş ekip içinde nasıl akıyor?",
+        "bots": "Botlar",
+        "botsHint": "{min} ile {max} arasında bot ekle.",
+        "botsSearch": "Eklenecek bot ara...",
+        "botsMax": "Bir ekipte en fazla {max} bot olabilir",
+        "minBots": "En az {min} bot ekle.",
+        "noResults": "Bot bulunamadı",
+        "rolePlaceholder": "Rol (isteğe bağlı), ör. Araştırmacı",
+        "roleLabel": "{bot} rolü",
+        "removeBot": "{bot} kaldır",
+        "handoffs": "Devirler",
+        "handoffsHint": "Her devir, işi bir bottan diğerine aktarır. Bir bot birden fazla bota devredebilir ve işi geri alabilir.",
+        "from": "Kimden",
+        "to": "Kime",
+        "labelPlaceholder": "Ne devrediliyor, ör. Araştırma özeti",
+        "labelLabel": "{from} botunun {to} botuna devrettiği",
+        "addHandoff": "Devir ekle",
+        "removeHandoff": "Devri kaldır",
+        "needTwoBots": "Devir tanımlamak için en az iki bot ekle.",
+        "handoffInvalid": "Her devir, ekibin iki farklı botunu yalnızca bir kez bağlamalıdır.",
+        "submit": "Ekip oluştur",
+        "save": "Ekibi kaydet",
+        "cancel": "İptal",
+        "created": "Ekip oluşturuldu",
+        "updated": "Ekip güncellendi",
+        "invalidBots": "Bazı botlar artık eklenemiyor. Onları kaldırıp tekrar dene.",
+        "rateLimit": "Çok fazla ekip değişikliği. Lütfen bir dakika bekleyip tekrar dene.",
+        "descriptionHint": "Markdown desteklenir: **kalın**, listeler, bağlantılar.",
+        "memberDescriptionPlaceholder": "Bu botun ekipteki görevi (isteğe bağlı)",
+        "memberDescriptionLabel": "{bot} ekipte ne yapıyor",
+        "handoffDuplicate": "Bu devir zaten listede.",
+        "handoffSelf": "İki farklı bot seç.",
+        "connectEveryone": "Bir botu herkese bağla",
+        "connectEveryoneHint": "Seçilen bottan diğer tüm botlara ve geri devirler ekler; bir genel koordinatör gibi.",
+        "invalidCategory": "Bu kategori artık mevcut değil",
+        "invalidTags": "Bazı etiketler artık mevcut değil",
+        "computerHint": "Simgeler, bulut bilgisayar, kendi bilgisayarınızı veya her ikisini gerektiren botları gösterir."
+      },
+      "openBot": "{bot} ayrıntılarını göster",
+      "botHint": "Ne yaptığını görmek ve kurmak için bir bot seçin.",
+      "inTeam": "{team} içinde",
+      "installBot": "Kur",
+      "viewBot": "Bot sayfasını aç",
+      "botLoadError": "Bu bot yüklenemedi.",
+      "backToTeam": "Takıma dön",
+      "pagination": "Ekip sayfaları",
+      "previousPage": "Önceki sayfa",
+      "nextPage": "Sonraki sayfa",
+      "unlisted": "Listelenmemiş",
+      "unlistedNotice": "Bu ekip listelenmemiş: listelerde, aramada ve profillerde gizlidir ve yalnızca yazarı ile yöneticiler açabilir.",
+      "unlist": "Listeden kaldır",
+      "relist": "Yeniden listele",
+      "unlistedToast": "Ekip listeden kaldırıldı",
+      "relistedToast": "Ekip yeniden listelendi"
+    },
+    "computer": {
+      "cloud": "Bulut bilgisayarı gerektirir",
+      "local": "Bilgisayarınızı gerektirir",
+      "label": "Bilgisayar",
+      "hint": "Botun çalışmak için bir bilgisayara ihtiyacı var mı? Birini, ikisini birden veya hiçbirini işaretleyin. Her biri botta küçük bir simge olarak gösterilir.",
+      "cloudHint": "Kendi uzak bilgisayarına, masaüstüne veya tarayıcısına ihtiyaç duyar.",
+      "localHint": "Kendi makinenize, dosyalarınıza veya uygulamalarınıza erişim gerektirir."
+    }
   },
   "collection": {
     "title": "Koleksiyonum",
@@ -1070,6 +1276,8 @@
     "removed": "Koleksiyondan kaldırıldı"
   },
   "discovery": {
+    "trending": "Şu an trend",
+    "seeAll": "Tümünü gör",
     "featuredPrompts": "Öne Çıkan Promptlar",
     "todaysMostUpvoted": "Bugün En Çok Oy Alanlar",
     "latestPrompts": "En Son Promptlar",
@@ -1412,7 +1620,7 @@
     "interactiveBanner": {
       "badge": "İnteraktif Versiyon Mevcut",
       "title": "Daha Detaylı ve İnteraktif Bir Deneyim mi İstiyorsunuz?",
-      "description": "29 bölüm, uygulamalı alıştırmalar ve gerçek dünya örnekleri içeren kapsamlı interaktif rehberimizle AI prompt yazımında ustalaşın.",
+      "description": "30 bölüm, uygulamalı alıştırmalar ve gerçek dünya örnekleri içeren kapsamlı interaktif rehberimizle AI prompt yazımında ustalaşın.",
       "cta": "İnteraktif Kitabı Oku"
     },
     "generalTips": {
@@ -1882,7 +2090,7 @@
     "donate": "Projeyi destekle",
     "subtitle": "Net ve Etkili Promptlar Hazırlamak için İnteraktif Bir Rehber",
     "metaTitle": "Prompt Mühendisliği Rehberi: İnteraktif Prompt Yazma Kitabı",
-    "metaDescription": "Bu ücretsiz, interaktif rehber ile AI prompt mühendisliğinde ustalaşın. ChatGPT promptları, düşünce zinciri muhakemesi, az örnekli öğrenme ve gelişmiş teknikleri öğrenin. Gerçek örneklerle 29+ bölüm.",
+    "metaDescription": "Bu ücretsiz, interaktif rehber ile AI prompt mühendisliğinde ustalaşın. ChatGPT promptları, düşünce zinciri muhakemesi, az örnekli öğrenme ve gelişmiş teknikleri öğrenin. Gerçek örneklerle 30+ bölüm.",
     "interactiveGuideBy": "İnteraktif Rehber - Yazar:",
     "authorIntro": "Merhaba, ben <author>Fatih Kadir Akın</author>. GitHub'daki popüler <repoLink>Awesome ChatGPT Prompts</repoLink> deposunun ve <siteName>prompts.chat</siteName>'in küratörüyüm.",
     "bookDescription": "Bu kapsamlı ve interaktif rehberde, ilgi çekici ve etkili sohbetler sağlayan çarpıcı AI promptları oluşturmak için uzman stratejilerini keşfedeceksiniz. AI modellerinin nasıl çalıştığını anlamaktan prompt zincirleme ve ajantik sistemler gibi gelişmiş tekniklerde ustalaşmaya kadar, bu kitap AI etkileşimlerinizi bir üst seviyeye taşımak için ihtiyacınız olan araçları sağlar.",
@@ -1904,7 +2112,7 @@
       "part4": "Bölüm 4: En İyi Uygulamalar",
       "part5": "Bölüm 5: Kullanım Senaryoları",
       "part6": "Bölüm 6: Sonuç",
-      "chapters": "29 İnteraktif Bölüm"
+      "chapters": "30 İnteraktif Bölüm"
     },
     "startReading": "Okumaya Başla",
     "skipToChapter1": "1. Bölüme Atla",
@@ -1962,6 +2170,7 @@
       "13-multimodal-prompting": "Çok Modlu Prompting",
       "14-context-engineering": "Bağlam Mühendisliği",
       "14a-loop-engineering": "Döngü Mühendisliği",
+      "24a-from-prompt-to-team": "Prompttan Ekibe",
       "25-agents-and-skills": "Ajanlar ve Yetenekler",
       "15-common-pitfalls": "Yaygın Tuzaklar",
       "16-ethics-responsible-use": "Etik ve Sorumlu Kullanım",
@@ -1996,6 +2205,7 @@
       "13-multimodal-prompting": "Görüntü, ses ve video ile çalışma",
       "14-context-engineering": "RAG, embedding'ler, fonksiyon çağırma ve MCP",
       "14a-loop-engineering": "Harekete geçen, doğrulayan, uyum sağlayan ve ne zaman duracağını bilen geri bildirim döngüleri tasarlama",
+      "24a-from-prompt-to-team": "Prompt, beceri, ajan, bot ve ekip nedir, aralarındaki farklar nelerdir: sade bir dille",
       "25-agents-and-skills": "Yeniden kullanılabilir yetenek paketleriyle AI ajanları oluşturma",
       "15-common-pitfalls": "Kaçınılması gereken hatalar",
       "16-ethics-responsible-use": "AI'da etik değerlendirmeler",
@@ -2465,7 +2675,7 @@
     },
     "bots": {
       "title": "OpenClaw, Hermes ve Grok için Hazır Yapay Zekâ Ajan Botları",
-      "description": "Talimatları, zamanlanmış rutinleri ve becerileri olan hazır yapay zekâ ajan botlarına göz atın ve onları tek tıkla OpenClaw, Hermes Agent veya Grok Bot'a kurun.",
+      "description": "Talimatları, zamanlanmış rutinleri ve becerileri olan hazır yapay zekâ ajan botlarına göz atın ve onları tek tıkla OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent veya Grok Bot'a kurun.",
       "heading": "Botlar"
     },
     "taste": {
@@ -2526,7 +2736,16 @@
       "SKILL": "Ajan Yeteneği",
       "TASTE": "Kod Tarzı Profili",
       "model": "{model} Promptu"
+    },
+    "botTeams": {
+      "title": "Yapay Zekâ Bot Ekipleri: İşi Birbirine Devreden Ajanlar",
+      "description": "İşi birbirine devreden yapay zekâ ajan botlarından oluşan ekiplere göz at, her devri gör ve tüm ekibi OpenClaw, Hermes Agent, Grok Bot ve daha fazlasına tek seferde kur.",
+      "heading": "Bot Ekipleri"
     }
+  },
+  "apiDocs": {
+    "computerRequirementFilter": "Yalnızca bir <code>CLOUD</code> bilgisayar veya kullanıcının <code>LOCAL</code> bilgisayarını gerektiren botlar (ikisini de gerektirenler her ikisiyle de eşleşir) ya da bilgisayar gerektirmeyen botlar için <code>NONE</code>",
+    "computerRequirementsInput": "<code>CLOUD</code> (bot kendi uzak bilgisayarına, masaüstüne veya tarayıcısına ihtiyaç duyar) ve <code>LOCAL</code> (kullanıcının kendi makinesine, dosyalarına veya uygulamalarına ihtiyaç duyar) değerlerinden herhangi birini içeren bir liste; boş liste botun bilgisayara ihtiyacı olmadığı anlamına gelir. Kayıtlı listenin yerini alır"
   },
   "actionButtons": {
     "deployWithSpacefast": "SpaceFast ile Yayınla"

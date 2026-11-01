@@ -23,7 +23,7 @@ AI가 어떻게 작동하는지 이해하는 것은 전문가만을 위한 것�
 **Tokens**: AI는 글자 하나씩 읽지 않습니다. 텍스트를 "token"이라는 덩어리로 나눕니다. token은 "hello"처럼 전체 단어일 수도 있고, "ing"처럼 단어의 일부일 수도 있습니다. token을 이해하면 AI가 때때로 철자 실수를 하거나 특정 단어에서 어려움을 겪는 이유를 설명하는 데 도움이 됩니다.
 
 <Callout type="info" title="Token이란 무엇인가요?">
-Token은 AI 모델이 처리하는 텍스트의 가장 작은 단위입니다. 항상 완전한 단어는 아닙니다—단어 조각, 구두점, 또는 공백일 수 있습니다. 예를 들어, "unbelievable"은 3개의 token으로 나뉠 수 있습니다: "un" + "believ" + "able". 평균적으로 **1 token ≈ 4자** 또는 **100 tokens ≈ 75단어**입니다. API 비용과 컨텍스트 제한은 token 단위로 측정됩니다.
+Token은 AI 모델이 처리하는 텍스트의 가장 작은 단위입니다. 항상 완전한 단어는 아닙니다—단어 조각, 구두점, 또는 공백일 수 있습니다. 예를 들어, "unbelievable"은 3개의 token으로 나뉠 수 있습니다: "un" + "believ" + "able". 영어 텍스트의 경우 일반적인 경험칙은 **1 token ≈ 4자** 또는 **100 tokens ≈ 75단어**이지만, 정확한 비율은 모델의 tokenizer와 언어에 따라 달라집니다. API 비용과 컨텍스트 제한은 token 단위로 측정됩니다.
 </Callout>
 
 <TokenizerDemo />
@@ -32,23 +32,23 @@ Token은 AI 모델이 처리하는 텍스트의 가장 작은 단위입니다. �
 
 <ContextWindowDemo />
 
-Context window는 모델마다 다르며 빠르게 확장되고 있습니다:
+Context window는 모델마다 다르며, 초기 ChatGPT의 수천 token에서 오늘날 많은 모델의 100만 token 이상까지 빠르게 커졌습니다:
 
 <div className="my-4 grid gap-2">
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">GPT-4o</span>
-    <span className="text-muted-foreground">128K tokens</span>
-  </div>
-  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">GPT-5</span>
-    <span className="text-muted-foreground">400K tokens</span>
-  </div>
-  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">Claude Sonnet 4</span>
+    <span className="font-semibold min-w-32">GPT-6</span>
     <span className="text-muted-foreground">1M tokens</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">Gemini 2.5</span>
+    <span className="font-semibold min-w-32">Claude Opus 5.5</span>
+    <span className="text-muted-foreground">1M tokens</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">Gemini 4</span>
+    <span className="text-muted-foreground">1M tokens</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">DeepSeek V4</span>
     <span className="text-muted-foreground">1M tokens</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
@@ -56,24 +56,26 @@ Context window는 모델마다 다르며 빠르게 확장되고 있습니다:
     <span className="text-muted-foreground">1M-10M tokens</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">DeepSeek R1</span>
-    <span className="text-muted-foreground">128K tokens</span>
+    <span className="font-semibold min-w-32">Mistral Small 4</span>
+    <span className="text-muted-foreground">256K tokens</span>
   </div>
 </div>
 
-**Temperature**: 이것은 AI가 얼마나 창의적이거나 예측 가능한지를 조절합니다. 낮은 temperature(0.0-0.3)는 집중적이고 일관된 답변을 제공합니다. 높은 temperature(0.7-1.0)는 더 창의적이고 의외의 응답을 제공합니다.
+Context window가 크다고 해서 AI가 그 모든 부분을 똑같이 잘 활용하는 것은 아닙니다. 컨텍스트가 채워질수록 모델이 세부 사항을 놓칠 수 있으므로, 이것저것 채워 넣은 컨텍스트보다 핵심에 집중한 컨텍스트가 여전히 더 낫습니다.
+
+**Temperature**: 이것은 AI가 얼마나 창의적이거나 예측 가능한지를 조절합니다. 낮은 temperature(0.0-0.3)는 집중적이고 일관된 답변을 제공합니다. 높은 temperature(0.7-1.0)는 더 창의적이고 의외의 응답을 제공합니다. 일부 최신 추론 모델은 이 설정을 스스로 관리하며 사용자가 지정한 값을 무시합니다.
 
 <TemperatureDemo />
 
-**System Prompt**: 전체 대화 동안 AI가 어떻게 행동해야 하는지 알려주는 특별한 지침입니다. 예를 들어, "당신은 친절한 선생님으로 간단하게 설명합니다." 모든 AI 도구가 이것을 설정할 수 있는 것은 아니지만, 사용할 수 있을 때 매우 강력합니다.
+**System Prompt**: 전체 대화 동안 AI가 어떻게 행동해야 하는지 알려주는 특별한 지침입니다. 예를 들어, "당신은 무엇이든 쉽게 설명해 주는 친절한 선생님입니다." 모든 AI 도구가 이것을 설정할 수 있는 것은 아니지만, 사용할 수 있을 때 매우 강력합니다.
 
 ## AI 모델의 종류
 
 ### 텍스트 모델 (LLM)
-가장 일반적인 유형으로, 텍스트 입력에 대해 텍스트 응답을 생성합니다. 챗봇, 글쓰기 도우미, 코드 생성기를 구동합니다. 예시: GPT-4, Claude, Llama, Mistral.
+가장 일반적인 유형으로, 텍스트 입력에 대해 텍스트 응답을 생성합니다. 챗봇, 글쓰기 도우미, 코드 생성기를 구동합니다. 예시: GPT, Claude, Gemini, Llama, DeepSeek, Mistral.
 
 ### 멀티모달 모델
-텍스트 이상의 것을 이해할 수 있습니다. 이미지를 보고, 오디오를 듣고, 비디오를 볼 수 있습니다. 예시: GPT-4V, Gemini, Claude 3.
+텍스트 이상의 것을 이해할 수 있습니다. 이미지를 볼 수 있고, 일부는 오디오를 듣고 비디오를 볼 수도 있습니다. GPT, Gemini, Claude를 비롯한 오늘날의 주요 모델 대부분이 멀티모달입니다.
 
 ### 텍스트-이미지 모델
 
@@ -81,31 +83,31 @@ Context window는 모델마다 다르며 빠르게 확장되고 있습니다:
 이 책은 주로 대규모 언어 모델(텍스트 기반 AI)을 위한 프롬프팅에 초점을 맞추고 있지만, 명확하고 구체적인 프롬프팅의 원칙은 이미지 생성에도 적용됩니다. 이러한 모델을 위한 프롬프트를 마스터하는 것은 훌륭한 결과를 얻는 데 똑같이 중요합니다.
 </Callout>
 
-DALL-E, Midjourney, Nano Banana, Stable Diffusion과 같은 텍스트-이미지 모델은 텍스트 설명으로 이미지를 생성합니다. 텍스트 모델과는 다르게 작동합니다:
+GPT Image, Midjourney, Nano Banana, Stable Diffusion과 같은 텍스트-이미지 모델은 텍스트 설명으로 이미지를 생성합니다. 텍스트 모델과는 다르게 작동합니다:
 
 **작동 방식:**
 1. **훈련**: 모델은 수백만 개의 이미지-텍스트 쌍에서 학습하여 어떤 단어가 어떤 시각적 개념에 해당하는지 이해합니다
-2. **Diffusion 과정**: 무작위 노이즈에서 시작하여, 모델은 텍스트 프롬프트의 안내를 받아 이미지를 점진적으로 다듬습니다
-3. **CLIP 가이던스**: 별도의 모델(CLIP)이 단어를 시각적 개념과 연결하여 이미지가 설명과 일치하도록 돕습니다
+2. **Diffusion 과정**: 많은 모델에서 생성은 무작위 노이즈에서 시작되며, 모델은 텍스트 프롬프트의 안내를 받아 이미지를 점진적으로 다듬습니다
+3. **텍스트 가이던스**: 텍스트 인코더(CLIP, 또는 최신 시스템에서는 완전한 언어 모델)가 단어를 시각적 개념과 연결하여 이미지가 설명과 일치하도록 돕습니다
 
 <TextToImageDemo />
 
 **이미지 프롬프팅은 다릅니다:**
-문장으로 작성하는 텍스트 프롬프트와 달리, 이미지 프롬프트는 쉼표로 구분된 설명적인 구문으로 작성하는 것이 더 효과적인 경우가 많습니다:
+요청을 작성하는 텍스트 프롬프트와 달리, 이미지 프롬프트는 그림이 어떻게 보여야 하는지를 묘사합니다. 많은 이미지 모델, 특히 Stable Diffusion 같은 Diffusion 모델은 쉼표로 구분된 설명적인 구문에 잘 반응합니다. 언어 이해력이 뛰어난 최신 모델은 완전한 묘사 문장도 잘 따릅니다. 어느 쪽이든 중요한 것은 디테일입니다: 피사체, 배경, 조명, 스타일.
 
 <Compare 
-  before={{ label: "텍스트 스타일 프롬프트", content: "빗속 창가에 앉아 밖을 바라보는 고양이 이미지를 만들어주세요" }}
+  before={{ label: "텍스트 스타일 프롬프트", content: "창가에 앉아 밖에 내리는 비를 바라보는 고양이 이미지를 만들어주세요" }}
   after={{ label: "이미지 스타일 프롬프트", content: "orange tabby cat, sitting on windowsill, watching rain, cozy interior, soft natural lighting, photorealistic, shallow depth of field, 4K" }}
 />
 
 ### 텍스트-비디오 모델
 
-텍스트-비디오는 가장 새로운 영역입니다. Sora 2, Runway, Veo와 같은 모델은 텍스트 설명으로 움직이는 이미지를 생성합니다. 이미지 모델처럼, 프롬프트의 품질이 출력물의 품질을 직접 결정합니다—여기서도 프롬프트 엔지니어링이 매우 중요합니다.
+텍스트-비디오는 가장 새로운 영역입니다. Veo, Runway, Kling과 같은 모델은 텍스트 설명으로 움직이는 이미지를 생성합니다. 이미지 모델처럼, 프롬프트의 품질이 출력물의 품질을 직접 결정합니다—여기서도 프롬프트 엔지니어링이 매우 중요합니다.
 
 **작동 방식:**
 1. **시간적 이해**: 단일 이미지를 넘어, 이러한 모델은 사물이 시간에 따라 어떻게 움직이고 변하는지 이해합니다
 2. **물리 시뮬레이션**: 기본적인 물리학을 학습합니다—물체가 떨어지는 방식, 물이 흐르는 방식, 사람이 걷는 방식
-3. **프레임 일관성**: 많은 프레임에 걸쳐 일관된 주제와 장면을 유지합니다
+3. **프레임 일관성**: 많은 프레임에 걸쳐 일관된 피사체와 장면을 유지합니다
 4. **시간에 걸친 Diffusion**: 이미지 모델과 유사하지만, 단일 프레임 대신 일관된 시퀀스를 생성합니다
 
 <TextToVideoDemo />
@@ -116,11 +118,11 @@ DALL-E, Midjourney, Nano Banana, Stable Diffusion과 같은 텍스트-이미지 
 
 <Compare 
   before={{ label: "정적인 (약함)", content: "나뭇가지 위의 새" }}
-  after={{ label: "움직임 포함 (강함)", content: "새가 나뭇가지에서 날아오르며, 날개를 활짝 펴고, 나뭇잎이 흔들리며 떠오른다" }}
+  after={{ label: "움직임 포함 (강함)", content: "새가 날개를 활짝 펴며 나뭇가지에서 날아오르고, 새가 떠오르는 순간 나뭇잎이 바스락거린다" }}
 />
 
 ### 전문화된 모델
-코드 생성(Codex, CodeLlama), 음악 생성(Suno, Udio), 또는 의료 진단이나 법률 문서 분석과 같은 도메인별 애플리케이션과 같은 특정 작업에 맞게 파인튜닝된 모델입니다.
+코드 생성(Codestral, OpenAI의 Codex 모델), 음악 생성(Suno, Udio), 또는 의료 진단이나 법률 문서 분석과 같은 도메인별 애플리케이션과 같은 특정 작업에 맞게 파인튜닝된 모델입니다.
 
 ## 모델 기능과 한계
 
@@ -138,7 +140,7 @@ AI가 왜 지어낼까요?
 
 1. 항상 사실인 텍스트가 아니라 그럴듯하게 들리는 텍스트를 쓰려고 합니다
 2. AI가 학습한 인터넷에도 실수가 있습니다
-3. 무언가가 실제인지 확인할 수 없습니다
+3. 스스로는 무언가가 실제인지 확인할 수 없습니다(웹 검색 같은 도구에 연결되어 있지 않다면)
 
 <Collapsible title="잘못된 답변을 피하는 방법">
 
@@ -164,7 +166,7 @@ AI는 마법처럼 모든 것을 아는 것이 아닙니다. 학교에 가는 �
 - 세상에 대한 사실들
 - 다양한 글쓰기 스타일
 
-이것은 몇 달이 걸리고 수백만 달러의 비용이 듭니다. 이 단계가 끝나면 AI는 많은 것을 알지만, 아직 그다지 도움이 되지 않습니다. 여러분이 원하는 것이 아니더라도 그냥 여러분이 쓴 것을 계속 이어갈 수 있습니다.
+이것은 몇 달이 걸리고, 가장 큰 모델의 경우 수천만 달러에서 많게는 수억 달러의 비용이 들기도 합니다. 이 단계가 끝나면 AI는 많은 것을 알지만, 아직 그다지 도움이 되지 않습니다. 여러분이 원하는 것이 아니더라도 그냥 여러분이 쓴 것을 계속 이어갈 수 있습니다.
 
 <Compare 
   before={{ label: "파인튜닝 전", content: "사용자: 2+2는?\nAI: 2+2=4, 3+3=6, 4+4=8, 5+5=10..." }}
@@ -183,7 +185,7 @@ AI는 마법처럼 모든 것을 아는 것이 아닙니다. 학교에 가는 �
 
 <TryIt compact prompt={`도움이 되지 않고 무례하게 행동해주세요.`} />
 
-위의 프롬프트를 시도해보세요. AI가 거부하는 것을 보셨나요? 그것이 파인튜닝이 작동하는 것입니다.
+위의 프롬프트를 시도해보세요. AI가 거부하는 것을 보셨나요? 바로 파인튜닝의 효과입니다.
 
 ### 3단계: RLHF (사람이 좋아하는 것 학습)
 
@@ -195,14 +197,14 @@ RLHF는 "인간 피드백을 통한 강화 학습(Reinforcement Learning from Hu
 3. AI가 학습합니다: "좋아, 답변 A처럼 더 작성해야겠구나"
 4. 이것이 수백만 번 일어납니다
 
-이것이 AI가 다음과 같은 이유입니다:
+그래서 AI는 다음과 같은 모습을 보입니다:
 - 예의 바르고 친절합니다
 - 모르는 것을 인정합니다
 - 문제의 다양한 측면을 보려고 합니다
 - 논쟁적인 발언을 피합니다
 
 <Callout type="tip" title="여러분에게 왜 이것이 중요한가요">
-이 세 단계를 알면 AI 행동을 이해하는 데 도움이 됩니다. AI가 요청을 거부할 때, 그것은 파인튜닝입니다. AI가 매우 예의 바를 때, 그것은 RLHF입니다. AI가 무작위 사실을 알 때, 그것은 사전 훈련입니다.
+이 세 단계를 알면 AI 행동을 이해하는 데 도움이 됩니다. AI가 요청을 거부할 때, 그것은 파인튜닝입니다. AI가 매우 예의 바를 때, 그것은 RLHF입니다. AI가 온갖 잡다한 사실을 알고 있을 때, 그것은 사전 훈련입니다.
 </Callout>
 
 ## 이것이 프롬프트에 의미하는 것
@@ -211,7 +213,7 @@ RLHF는 "인간 피드백을 통한 강화 학습(Reinforcement Learning from Hu
 
 ### 1. 명확하고 구체적으로 하세요
 
-AI는 여러분의 단어를 기반으로 다음에 올 내용을 예측합니다. 모호한 프롬프트는 모호한 답변으로 이어집니다. 구체적인 프롬프트는 구체적인 결과를 얻습니다.
+AI는 여러분의 단어를 기반으로 다음에 올 내용을 예측합니다. 모호한 프롬프트는 모호한 답변으로 이어집니다. 구체적인 프롬프트에서는 구체적인 결과가 나옵니다.
 
 <Compare 
   before={{ label: "모호함", content: "강아지에 대해 알려주세요" }}
@@ -222,7 +224,7 @@ AI는 여러분의 단어를 기반으로 다음에 올 내용을 예측합니�
 
 ### 2. 맥락을 제공하세요
 
-AI는 여러분이 말하지 않으면 여러분에 대해 아무것도 모릅니다. 각 대화는 새롭게 시작됩니다. AI가 필요로 하는 배경 정보를 포함하세요.
+AI는 여러분이 말하지 않으면 여러분에 대해 아무것도 모릅니다. 요즘은 대화가 바뀌어도 몇 가지 정보를 이어서 기억하는 메모리 기능을 갖춘 앱도 있지만, 여러분이 한 말의 일부만 기억할 뿐입니다. 지금 하려는 작업에 AI가 필요로 하는 배경 정보를 포함하세요.
 
 <Compare 
   before={{ label: "맥락 없음", content: "이게 좋은 가격인가요?" }}
@@ -242,13 +244,13 @@ AI는 여러분이 말하지 않으면 여러분에 대해 아무것도 모릅�
 
 ### 4. 중요한 것은 항상 다시 확인하세요
 
-AI는 틀릴 때도 자신 있게 들립니다. 중요한 것은 직접 정보를 확인하세요.
+AI는 틀릴 때도 자신 있게 말합니다. 중요한 것은 직접 정보를 확인하세요.
 
-<TryIt compact prompt={`도쿄의 인구는 얼마인가요? 또한, 당신의 지식은 어느 날짜까지 최신인가요?`} />
+<TryIt compact prompt={`도쿄의 인구는 얼마인가요? 또한, 당신의 지식은 언제 시점까지의 정보인가요?`} />
 
 ### 5. 중요한 것을 먼저 배치하세요
 
-프롬프트가 매우 길다면, 가장 중요한 지시사항을 처음에 두세요. AI는 처음에 오는 것에 더 많은 주의를 기울입니다.
+프롬프트가 매우 길다면, 가장 중요한 지시사항을 처음에 두고, 마지막에 한 번 더 반복하는 것도 고려하세요. AI는 긴 입력의 처음과 끝에 가장 많은 주의를 기울이는 경향이 있어서, 중간에 묻힌 세부 사항을 놓칠 수 있습니다.
 
 ## 적합한 AI 선택하기
 
@@ -257,11 +259,11 @@ AI는 틀릴 때도 자신 있게 들립니다. 중요한 것은 직접 정보�
 <div className="my-4 grid gap-2">
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">빠른 질문</span>
-    <span className="text-muted-foreground">GPT-4o나 Claude 3.5 Sonnet 같은 빠른 모델</span>
+    <span className="text-muted-foreground">GPT-6 Luna, Claude Haiku 5.5, Gemini Flash 같은 빠른 모델</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">어려운 문제</span>
-    <span className="text-muted-foreground">GPT-5.2나 Claude 4.5 Opus 같은 더 똑똑한 모델</span>
+    <span className="text-muted-foreground">GPT-6 Astra, Claude Fable 5.1, Gemini 4 Argon 같은 더 똑똑한 모델</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">코드 작성</span>
@@ -269,17 +271,17 @@ AI는 틀릴 때도 자신 있게 들립니다. 중요한 것은 직접 정보�
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">긴 문서</span>
-    <span className="text-muted-foreground">큰 context window를 가진 모델 (Claude, Gemini)</span>
+    <span className="text-muted-foreground">큰 context window를 가진 모델 (이제 많은 모델이 100만 token을 처리)</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-36">현재 사건</span>
+    <span className="font-semibold min-w-36">최신 뉴스</span>
     <span className="text-muted-foreground">인터넷 접근이 가능한 모델</span>
   </div>
 </div>
 
 ## 요약
 
-AI 언어 모델은 텍스트로 훈련된 예측 기계입니다. 많은 것에서 놀랍지만, 실제 한계가 있습니다. AI를 사용하는 가장 좋은 방법은 작동 방식을 이해하고 강점을 활용하는 프롬프트를 작성하는 것입니다.
+AI 언어 모델은 텍스트로 훈련된 예측 기계입니다. 많은 일을 놀라울 만큼 잘하지만, 분명한 한계도 있습니다. AI를 사용하는 가장 좋은 방법은 작동 방식을 이해하고 강점을 활용하는 프롬프트를 작성하는 것입니다.
 
 <Quiz 
   question="AI가 왜 때때로 잘못된 정보를 지어낼까요?"
@@ -290,7 +292,7 @@ AI 언어 모델은 텍스트로 훈련된 예측 기계입니다. 많은 것에
     "사람들이 나쁜 프롬프트를 쓰기 때문에"
   ]}
   correctIndex={1}
-  explanation="AI는 옳게 들리는 것을 예측하도록 훈련되었지, 사실을 확인하도록 훈련되지 않았습니다. 무언가를 찾아보거나 사실인지 확인할 수 없어서, 때때로 자신 있게 틀린 것을 작성합니다."
+  explanation="AI는 옳게 들리는 것을 예측하도록 훈련되었지, 사실을 확인하도록 훈련되지 않았습니다. 웹 검색 같은 도구에 연결되어 있지 않으면 무언가를 찾아보거나 사실인지 확인할 수 없어서, 때때로 자신 있게 틀린 것을 작성합니다."
 />
 
 <TryIt 
