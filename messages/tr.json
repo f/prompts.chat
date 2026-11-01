@@ -130,7 +130,12 @@
       "selectExample": "Bir örnek seçin...",
       "aiGenerate": "AI Oluştur",
       "aiPlaceholder": "İhtiyacınız olan SQL sorgusunu tanımlayın...",
-      "generateSql": "SQL Oluştur"
+      "generateSql": "SQL Oluştur",
+      "listingQuery": {
+        "skills": "🧩 Agent Skills",
+        "bots": "🤖 Botlar ve asistanlar",
+        "teams": "👥 Çoklu ajan takımları"
+      }
     },
     "edit": "Prompt Düzenle",
     "delete": "Prompt Sil",
@@ -1488,7 +1493,23 @@
     "categoryPlaceholder": "Kategori slug ekle...",
     "tags": "Etiketler",
     "tagPlaceholder": "Etiket slug ekle...",
-    "generateApiKey": "MCP ile prompt kaydetmek için API anahtarı oluşturun"
+    "generateApiKey": "MCP ile prompt kaydetmek için API anahtarı oluşturun",
+    "clientNotes": {
+      "claudeDesktopRemote": "Claude Desktop'ta Ayarlar → Bağlayıcılar → Özel bağlayıcı ekle'yi açın ve bu URL'yi yapıştırın.",
+      "claudeDesktopLocal": "claude_desktop_config.json dosyasına ekleyin (Ayarlar → Geliştirici → Yapılandırmayı Düzenle), ardından Claude Desktop'ı yeniden başlatın.",
+      "codex": "~/.codex/config.toml dosyasına ekleyin. Codex CLI ve IDE eklentisi bu dosyayı paylaşır.",
+      "grokBotRemote": "Bu URL'yi bir Grok Bot sohbetine yapıştırın ve MCP sunucusunu bağlamasını isteyin.",
+      "grokBotLocal": "Grok Bot'tan sohbette bunu çalıştıran bir komut MCP sunucusu eklemesini isteyin. Bot'un bulut bilgisayarında çalışır.",
+      "openclaw": "openclaw.json dosyasına ekleyin, ardından openclaw mcp doctor prompts-chat --probe ile kontrol edin.",
+      "devinRemote": "Devin CLI için (~/.config/devin/mcp_config.json). Devin web uygulamasında Customize → MCPs → Add custom MCP'ye gidin, HTTP'yi seçin ve sunucu URL'sini yapıştırın.",
+      "devinLocal": "Devin CLI için (~/.config/devin/mcp_config.json). Devin web uygulamasında STDIO aktarımıyla ve bu komutla özel bir MCP ekleyin.",
+      "urlOnlyApiKey": "Bu istemci yalnızca URL kabul eder, bu yüzden API anahtarınız eklenmez. Arama ve okuma araçları anahtarsız çalışır."
+    },
+    "resourceHint": {
+      "skills": "Beceriler aynı sunucuyu kullanır: search_skills Agent Skills bulur, get_skill tüm dosyalarını döndürür.",
+      "bots": "Botlar aynı sunucuyu kullanır: search_bots botları bulur, get_bot talimatlarını ve kurulum seçeneklerini döndürür.",
+      "teams": "Takımlar aynı sunucuyu kullanır: list_teams bot takımlarını bulur, get_team üyelerini ve devirlerini döndürür."
+    }
   },
   "footer": {
     "howTo": "Nasıl Yapılır",

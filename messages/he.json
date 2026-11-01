@@ -130,7 +130,12 @@
       "selectExample": "בחר דוגמה...",
       "aiGenerate": "יצירה עם AI",
       "aiPlaceholder": "תאר את שאילתת ה-SQL שאתה צריך...",
-      "generateSql": "צור SQL"
+      "generateSql": "צור SQL",
+      "listingQuery": {
+        "skills": "🧩 Agent Skills",
+        "bots": "🤖 בוטים ועוזרים",
+        "teams": "👥 צוותים מרובי סוכנים"
+      }
     },
     "edit": "ערוך פרומפט",
     "delete": "מחק פרומפט",
@@ -1488,7 +1493,23 @@
     "categoryPlaceholder": "הוסף slug קטגוריה...",
     "tags": "תגיות",
     "tagPlaceholder": "הוסף slug תגית...",
-    "generateApiKey": "צור מפתח API לשמירת פרומפטים דרך MCP"
+    "generateApiKey": "צור מפתח API לשמירת פרומפטים דרך MCP",
+    "clientNotes": {
+      "claudeDesktopRemote": "ב-Claude Desktop, פתחו הגדרות ← מחברים ← הוספת מחבר מותאם אישית והדביקו את כתובת ה-URL הזו.",
+      "claudeDesktopLocal": "הוסיפו ל-claude_desktop_config.json (הגדרות ← מפתחים ← עריכת תצורה), ואז הפעילו מחדש את Claude Desktop.",
+      "codex": "הוסיפו ל-~/.codex/config.toml. ה-CLI של Codex ותוסף ה-IDE חולקים אותו.",
+      "grokBotRemote": "הדביקו את כתובת ה-URL הזו בצ'אט של Grok Bot ובקשו ממנו לחבר את שרת ה-MCP.",
+      "grokBotLocal": "בקשו מ-Grok Bot בצ'אט להוסיף שרת MCP מסוג פקודה שמריץ את זה. הוא רץ על מחשב הענן של הבוט.",
+      "openclaw": "הוסיפו ל-openclaw.json, ואז בדקו עם openclaw mcp doctor prompts-chat --probe.",
+      "devinRemote": "עבור Devin CLI (~/.config/devin/mcp_config.json). באפליקציית הווב של Devin, עברו אל Customize → MCPs → Add custom MCP, בחרו HTTP והדביקו את כתובת השרת.",
+      "devinLocal": "עבור Devin CLI (~/.config/devin/mcp_config.json). באפליקציית הווב של Devin, הוסיפו MCP מותאם אישית עם תעבורת STDIO והפקודה הזו.",
+      "urlOnlyApiKey": "לקוח זה מקבל רק כתובת URL, ולכן מפתח ה-API שלכם לא נכלל. כלי החיפוש והקריאה עובדים גם בלעדיו."
+    },
+    "resourceHint": {
+      "skills": "כישורים משתמשים באותו שרת: search_skills מוצא Agent Skills ו-get_skill מחזיר את כל הקבצים שלהם.",
+      "bots": "בוטים משתמשים באותו שרת: search_bots מוצא בוטים ו-get_bot מחזיר את ההוראות ואפשרויות ההתקנה שלהם.",
+      "teams": "צוותים משתמשים באותו שרת: list_teams מוצא צוותי בוטים ו-get_team מחזיר את חבריהם ואת ההעברות ביניהם."
+    }
   },
   "footer": {
     "howTo": "איך להשתמש",

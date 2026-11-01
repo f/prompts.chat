@@ -130,7 +130,12 @@
       "selectExample": "Выберите пример...",
       "aiGenerate": "AI генерация",
       "aiPlaceholder": "Опишите нужный SQL запрос...",
-      "generateSql": "Сгенерировать SQL"
+      "generateSql": "Сгенерировать SQL",
+      "listingQuery": {
+        "skills": "🧩 Agent Skills",
+        "bots": "🤖 Боты и ассистенты",
+        "teams": "👥 Мультиагентные команды"
+      }
     },
     "edit": "Редактировать промпт",
     "delete": "Удалить промпт",
@@ -1488,7 +1493,23 @@
     "categoryPlaceholder": "Добавить slug категории...",
     "tags": "Теги",
     "tagPlaceholder": "Добавить slug тега...",
-    "generateApiKey": "Сгенерируйте API-ключ для сохранения промптов через MCP"
+    "generateApiKey": "Сгенерируйте API-ключ для сохранения промптов через MCP",
+    "clientNotes": {
+      "claudeDesktopRemote": "В Claude Desktop откройте Настройки → Коннекторы → Добавить свой коннектор и вставьте этот URL.",
+      "claudeDesktopLocal": "Добавьте в claude_desktop_config.json (Настройки → Разработчик → Изменить конфигурацию), затем перезапустите Claude Desktop.",
+      "codex": "Добавьте в ~/.codex/config.toml. Codex CLI и расширение для IDE используют его совместно.",
+      "grokBotRemote": "Вставьте этот URL в чат Grok Bot и попросите подключить MCP-сервер.",
+      "grokBotLocal": "Попросите Grok Bot в чате добавить командный MCP-сервер, запускающий это. Он работает на облачном компьютере бота.",
+      "openclaw": "Добавьте в openclaw.json, затем проверьте командой openclaw mcp doctor prompts-chat --probe.",
+      "devinRemote": "Для Devin CLI (~/.config/devin/mcp_config.json). В веб-приложении Devin откройте Customize → MCPs → Add custom MCP, выберите HTTP и вставьте URL сервера.",
+      "devinLocal": "Для Devin CLI (~/.config/devin/mcp_config.json). В веб-приложении Devin добавьте свой MCP с транспортом STDIO и этой командой.",
+      "urlOnlyApiKey": "Этот клиент принимает только URL, поэтому ваш API-ключ не передаётся. Инструменты поиска и чтения работают и без него."
+    },
+    "resourceHint": {
+      "skills": "Навыки используют тот же сервер: search_skills находит Agent Skills, а get_skill возвращает все их файлы.",
+      "bots": "Боты используют тот же сервер: search_bots находит ботов, а get_bot возвращает их инструкции и варианты установки.",
+      "teams": "Команды используют тот же сервер: list_teams находит команды ботов, а get_team возвращает их участников и передачи."
+    }
   },
   "footer": {
     "howTo": "Как...",

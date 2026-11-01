@@ -130,7 +130,12 @@
       "selectExample": "Selecciona un ejemplo...",
       "aiGenerate": "Generar con IA",
       "aiPlaceholder": "Describe la consulta SQL que necesitas...",
-      "generateSql": "Generar SQL"
+      "generateSql": "Generar SQL",
+      "listingQuery": {
+        "skills": "🧩 Agent Skills",
+        "bots": "🤖 Bots y asistentes",
+        "teams": "👥 Equipos multiagente"
+      }
     },
     "edit": "Editar Prompt",
     "delete": "Eliminar Prompt",
@@ -1488,7 +1493,23 @@
     "categoryPlaceholder": "Añadir slug de categoría...",
     "tags": "Etiquetas",
     "tagPlaceholder": "Añadir slug de etiqueta...",
-    "generateApiKey": "Genera una clave API para guardar prompts vía MCP"
+    "generateApiKey": "Genera una clave API para guardar prompts vía MCP",
+    "clientNotes": {
+      "claudeDesktopRemote": "En Claude Desktop, abre Ajustes → Conectores → Añadir conector personalizado y pega esta URL.",
+      "claudeDesktopLocal": "Añádelo a claude_desktop_config.json (Ajustes → Desarrollador → Editar configuración) y reinicia Claude Desktop.",
+      "codex": "Añádelo a ~/.codex/config.toml. La CLI de Codex y la extensión del IDE lo comparten.",
+      "grokBotRemote": "Pega esta URL en un chat de Grok Bot y pídele que conecte el servidor MCP.",
+      "grokBotLocal": "Pide a Grok Bot en el chat que añada un servidor MCP de comando que ejecute esto. Se ejecuta en el ordenador en la nube del Bot.",
+      "openclaw": "Añádelo a openclaw.json y compruébalo con openclaw mcp doctor prompts-chat --probe.",
+      "devinRemote": "Para la CLI de Devin (~/.config/devin/mcp_config.json). En la app web de Devin, ve a Customize → MCPs → Add custom MCP, elige HTTP y pega la URL del servidor.",
+      "devinLocal": "Para la CLI de Devin (~/.config/devin/mcp_config.json). En la app web de Devin, añade un MCP personalizado con el transporte STDIO y este comando.",
+      "urlOnlyApiKey": "Este cliente solo acepta una URL, así que tu clave de API no se incluye. Las herramientas de búsqueda y lectura funcionan sin ella."
+    },
+    "resourceHint": {
+      "skills": "Las skills usan el mismo servidor: search_skills busca Agent Skills y get_skill devuelve todos sus archivos.",
+      "bots": "Los bots usan el mismo servidor: search_bots busca bots y get_bot devuelve sus instrucciones y opciones de instalación.",
+      "teams": "Los equipos usan el mismo servidor: list_teams busca equipos de bots y get_team devuelve sus miembros y traspasos."
+    }
   },
   "footer": {
     "howTo": "Cómo hacerlo",

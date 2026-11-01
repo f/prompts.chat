@@ -130,7 +130,12 @@
       "selectExample": "Select an example...",
       "aiGenerate": "AI Generate",
       "aiPlaceholder": "Describe the SQL query you need...",
-      "generateSql": "Generate SQL"
+      "generateSql": "Generate SQL",
+      "listingQuery": {
+        "skills": "🧩 Agent Skills",
+        "bots": "🤖 Bots & assistants",
+        "teams": "👥 Multi-agent teams"
+      }
     },
     "edit": "Edit Prompt",
     "delete": "Delete Prompt",
@@ -1488,7 +1493,23 @@
     "categoryPlaceholder": "Add category slug...",
     "tags": "Tags",
     "tagPlaceholder": "Add tag slug...",
-    "generateApiKey": "Generate API key to save prompts via MCP"
+    "generateApiKey": "Generate API key to save prompts via MCP",
+    "clientNotes": {
+      "claudeDesktopRemote": "In Claude Desktop, open Settings → Connectors → Add custom connector and paste this URL.",
+      "claudeDesktopLocal": "Add to claude_desktop_config.json (Settings → Developer → Edit Config), then restart Claude Desktop.",
+      "codex": "Add to ~/.codex/config.toml. The Codex CLI and IDE extension share it.",
+      "grokBotRemote": "Paste this URL into a Grok Bot chat and ask it to connect the MCP server.",
+      "grokBotLocal": "Ask Grok Bot in chat to add a command MCP server that runs this. It runs on the Bot's cloud computer.",
+      "openclaw": "Add to openclaw.json, then check it with openclaw mcp doctor prompts-chat --probe.",
+      "devinRemote": "For the Devin CLI (~/.config/devin/mcp_config.json). In the Devin web app, go to Customize → MCPs → Add custom MCP, choose HTTP and paste the server URL.",
+      "devinLocal": "For the Devin CLI (~/.config/devin/mcp_config.json). In the Devin web app, add a custom MCP with the STDIO transport and this command.",
+      "urlOnlyApiKey": "This client only takes a URL, so your API key isn't included. Search and read tools work without it."
+    },
+    "resourceHint": {
+      "skills": "Skills use the same server: search_skills finds Agent Skills and get_skill returns all their files.",
+      "bots": "Bots use the same server: search_bots finds bots and get_bot returns their instructions and install options.",
+      "teams": "Teams use the same server: list_teams finds bot teams and get_team returns their members and handoffs."
+    }
   },
   "footer": {
     "howTo": "How to...",

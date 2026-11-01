@@ -46,7 +46,14 @@ interface McpServerPopupProps {
   baseUrl?: string;
   /** Show official prompts.chat branding (VS Code buttons, registry mention) */
   showOfficialBranding?: boolean;
+  /**
+   * The listing the popup is opened from. The server serves every resource from one URL, and
+   * its users/categories/tags filters only narrow prompts, so other listings hide them.
+   */
+  resource?: McpResource;
 }
+
+export type McpResource = "prompts" | "skills" | "bots" | "teams";
 
 export function McpServerPopup({
   initialUsers = [],
@@ -54,6 +61,7 @@ export function McpServerPopup({
   initialTags = [],
   baseUrl,
   showOfficialBranding = false,
+  resource = "prompts",
 }: McpServerPopupProps) {
   const t = useTranslations("mcp");
   const { data: session } = useSession();
@@ -193,107 +201,115 @@ export function McpServerPopup({
             </Link>
           )}
 
+          {resource !== "prompts" && (
+            <p className="border-t pt-2 text-[11px] text-muted-foreground">
+              {t(`resourceHint.${resource}`)}
+            </p>
+          )}
+
           {/* Collapsible Filters */}
-          <div className="border-t pt-2">
-            <button
-              onClick={() => setFiltersOpen(!filtersOpen)}
-              className="flex items-center justify-between w-full text-[11px] text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <span>{t("customizeFilters")}</span>
-              <ChevronDown className={cn("h-3 w-3 transition-transform", filtersOpen && "rotate-180")} />
-            </button>
-            
-            {filtersOpen && (
-              <div className="space-y-2 mt-2">
-                {/* Users */}
-                <div className="space-y-1">
-                  <label className="text-[11px] font-medium">{t("users")}</label>
-                  <div className="flex gap-1">
-                    <Input
-                      value={userInput}
-                      onChange={(e) => setUserInput(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && addUser()}
-                      placeholder={t("userPlaceholder")}
-                      className="h-6 text-[11px] flex-1"
-                    />
-                    <Button size="sm" variant="outline" className="h-6 px-1.5" onClick={addUser}>
-                      <Plus className="h-3 w-3" />
-                    </Button>
-                  </div>
-                  {users.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {users.map((user) => (
-                        <Badge key={user} variant="secondary" className="text-[10px] gap-0.5 pr-0.5 h-5">
-                          @{user}
-                          <button onClick={() => removeUser(user)} className="hover:text-destructive">
-                            <X className="h-2.5 w-2.5" />
-                          </button>
-                        </Badge>
-                      ))}
+          {resource === "prompts" && (
+            <div className="border-t pt-2">
+              <button
+                onClick={() => setFiltersOpen(!filtersOpen)}
+                className="flex items-center justify-between w-full text-[11px] text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <span>{t("customizeFilters")}</span>
+                <ChevronDown className={cn("h-3 w-3 transition-transform", filtersOpen && "rotate-180")} />
+              </button>
+              
+              {filtersOpen && (
+                <div className="space-y-2 mt-2">
+                  {/* Users */}
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-medium">{t("users")}</label>
+                    <div className="flex gap-1">
+                      <Input
+                        value={userInput}
+                        onChange={(e) => setUserInput(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && addUser()}
+                        placeholder={t("userPlaceholder")}
+                        className="h-6 text-[11px] flex-1"
+                      />
+                      <Button size="sm" variant="outline" className="h-6 px-1.5" onClick={addUser}>
+                        <Plus className="h-3 w-3" />
+                      </Button>
                     </div>
-                  )}
-                </div>
+                    {users.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {users.map((user) => (
+                          <Badge key={user} variant="secondary" className="text-[10px] gap-0.5 pr-0.5 h-5">
+                            @{user}
+                            <button onClick={() => removeUser(user)} className="hover:text-destructive">
+                              <X className="h-2.5 w-2.5" />
+                            </button>
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </div>
 
-                {/* Categories */}
-                <div className="space-y-1">
-                  <label className="text-[11px] font-medium">{t("categories")}</label>
-                  <div className="flex gap-1">
-                    <Input
-                      value={categoryInput}
-                      onChange={(e) => setCategoryInput(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && addCategory()}
-                      placeholder={t("categoryPlaceholder")}
-                      className="h-6 text-[11px] flex-1"
-                    />
-                    <Button size="sm" variant="outline" className="h-6 px-1.5" onClick={addCategory}>
-                      <Plus className="h-3 w-3" />
-                    </Button>
-                  </div>
-                  {categories.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {categories.map((cat) => (
-                        <Badge key={cat} variant="secondary" className="text-[10px] gap-0.5 pr-0.5 h-5">
-                          {cat}
-                          <button onClick={() => removeCategory(cat)} className="hover:text-destructive">
-                            <X className="h-2.5 w-2.5" />
-                          </button>
-                        </Badge>
-                      ))}
+                  {/* Categories */}
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-medium">{t("categories")}</label>
+                    <div className="flex gap-1">
+                      <Input
+                        value={categoryInput}
+                        onChange={(e) => setCategoryInput(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && addCategory()}
+                        placeholder={t("categoryPlaceholder")}
+                        className="h-6 text-[11px] flex-1"
+                      />
+                      <Button size="sm" variant="outline" className="h-6 px-1.5" onClick={addCategory}>
+                        <Plus className="h-3 w-3" />
+                      </Button>
                     </div>
-                  )}
-                </div>
+                    {categories.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {categories.map((cat) => (
+                          <Badge key={cat} variant="secondary" className="text-[10px] gap-0.5 pr-0.5 h-5">
+                            {cat}
+                            <button onClick={() => removeCategory(cat)} className="hover:text-destructive">
+                              <X className="h-2.5 w-2.5" />
+                            </button>
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </div>
 
-                {/* Tags */}
-                <div className="space-y-1">
-                  <label className="text-[11px] font-medium">{t("tags")}</label>
-                  <div className="flex gap-1">
-                    <Input
-                      value={tagInput}
-                      onChange={(e) => setTagInput(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && addTag()}
-                      placeholder={t("tagPlaceholder")}
-                      className="h-6 text-[11px] flex-1"
-                    />
-                    <Button size="sm" variant="outline" className="h-6 px-1.5" onClick={addTag}>
-                      <Plus className="h-3 w-3" />
-                    </Button>
-                  </div>
-                  {tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {tags.map((tag) => (
-                        <Badge key={tag} variant="secondary" className="text-[10px] gap-0.5 pr-0.5 h-5">
-                          {tag}
-                          <button onClick={() => removeTag(tag)} className="hover:text-destructive">
-                            <X className="h-2.5 w-2.5" />
-                          </button>
-                        </Badge>
-                      ))}
+                  {/* Tags */}
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-medium">{t("tags")}</label>
+                    <div className="flex gap-1">
+                      <Input
+                        value={tagInput}
+                        onChange={(e) => setTagInput(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && addTag()}
+                        placeholder={t("tagPlaceholder")}
+                        className="h-6 text-[11px] flex-1"
+                      />
+                      <Button size="sm" variant="outline" className="h-6 px-1.5" onClick={addTag}>
+                        <Plus className="h-3 w-3" />
+                      </Button>
                     </div>
-                  )}
+                    {tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {tags.map((tag) => (
+                          <Badge key={tag} variant="secondary" className="text-[10px] gap-0.5 pr-0.5 h-5">
+                            {tag}
+                            <button onClick={() => removeTag(tag)} className="hover:text-destructive">
+                              <X className="h-2.5 w-2.5" />
+                            </button>
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
       </PopoverContent>
     </Popover>

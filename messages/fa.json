@@ -130,7 +130,12 @@
       "selectExample": "یک نمونه انتخاب کنید...",
       "aiGenerate": "تولید با AI",
       "aiPlaceholder": "کوئری SQL مورد نیاز را توصیف کنید...",
-      "generateSql": "تولید SQL"
+      "generateSql": "تولید SQL",
+      "listingQuery": {
+        "skills": "🧩 Agent Skills",
+        "bots": "🤖 ربات‌ها و دستیارها",
+        "teams": "👥 تیم‌های چندعاملی"
+      }
     },
     "edit": "ویرایش پرامپت",
     "delete": "حذف پرامپت",
@@ -1488,7 +1493,23 @@
     "categoryPlaceholder": "اسلاگ دسته‌بندی اضافه کنید...",
     "tags": "برچسب‌ها",
     "tagPlaceholder": "اسلاگ برچسب اضافه کنید...",
-    "generateApiKey": "کلید API برای ذخیره پرامپت‌ها از طریق MCP تولید کنید"
+    "generateApiKey": "کلید API برای ذخیره پرامپت‌ها از طریق MCP تولید کنید",
+    "clientNotes": {
+      "claudeDesktopRemote": "در Claude Desktop، تنظیمات ← اتصال‌دهنده‌ها ← افزودن اتصال‌دهنده سفارشی را باز کنید و این URL را جای‌گذاری کنید.",
+      "claudeDesktopLocal": "به claude_desktop_config.json اضافه کنید (تنظیمات ← توسعه‌دهنده ← ویرایش پیکربندی)، سپس Claude Desktop را دوباره راه‌اندازی کنید.",
+      "codex": "به ~/.codex/config.toml اضافه کنید. Codex CLI و افزونه IDE از آن مشترکاً استفاده می‌کنند.",
+      "grokBotRemote": "این URL را در یک گفتگوی Grok Bot جای‌گذاری کنید و از آن بخواهید سرور MCP را متصل کند.",
+      "grokBotLocal": "در گفتگو از Grok Bot بخواهید یک سرور MCP دستوری اضافه کند که این را اجرا کند. روی رایانه ابری Bot اجرا می‌شود.",
+      "openclaw": "به openclaw.json اضافه کنید، سپس با openclaw mcp doctor prompts-chat --probe بررسی کنید.",
+      "devinRemote": "برای Devin CLI (~/.config/devin/mcp_config.json). در برنامه وب Devin به Customize → MCPs → Add custom MCP بروید، HTTP را انتخاب کنید و URL سرور را جای‌گذاری کنید.",
+      "devinLocal": "برای Devin CLI (~/.config/devin/mcp_config.json). در برنامه وب Devin یک MCP سفارشی با انتقال STDIO و این دستور اضافه کنید.",
+      "urlOnlyApiKey": "این کلاینت فقط URL می‌پذیرد، بنابراین کلید API شما گنجانده نمی‌شود. ابزارهای جستجو و خواندن بدون آن کار می‌کنند."
+    },
+    "resourceHint": {
+      "skills": "مهارت‌ها از همین سرور استفاده می‌کنند: search_skills مهارت‌های Agent Skills را پیدا می‌کند و get_skill همه فایل‌هایشان را برمی‌گرداند.",
+      "bots": "ربات‌ها از همین سرور استفاده می‌کنند: search_bots ربات‌ها را پیدا می‌کند و get_bot دستورالعمل‌ها و گزینه‌های نصبشان را برمی‌گرداند.",
+      "teams": "تیم‌ها از همین سرور استفاده می‌کنند: list_teams تیم‌های ربات را پیدا می‌کند و get_team اعضا و واگذاری‌هایشان را برمی‌گرداند."
+    }
   },
   "footer": {
     "howTo": "چگونه...",
