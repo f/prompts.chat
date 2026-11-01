@@ -215593,3 +215593,16 @@ A backlit layered papercut lightbox (cut-paper shadow box) of a haunted Victoria
 
 </details>
 
+<details>
+<summary><strong>Isometric Cutaway of a Cozy Potion Shop with a Sleeping Black Cat</strong></summary>
+
+## Isometric Cutaway of a Cozy Potion Shop with a Sleeping Black Cat
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A cozy isometric 3D cutaway of a small witch's potion shop with a black cat asleep on a stool: two wooden plank walls and a grey stone-tile floor on a plain dark teal background, square 1:1. In the center, a large hammered copper cauldron full of bubbling, glowing green potion stands on a ring of stones with green fire glowing beneath it and green steam. Wooden corner shelves along the back walls are filled with colorful glass potion bottles in green, teal, purple, and orange, with lit candles between them. Dozens of bundles of dried herbs and flowers in purple, yellow, green, and red hang upside down along the top of both walls. At the upper left, a round wooden-framed window shows a crescent moon in a deep blue night sky. On the left: potted plants, small wooden boxes and drawers, and wicker baskets of dried flowers. On the right, a wooden counter holds a brass balance scale, an open spell book with a purple ribbon, candles, and small bottles. In the front right, a black cat sleeps curled up on a round wooden stool. Warm candlelight with green potion glow, stylized semi-low-poly game-art render. No people, no text, no logos.
+```
+
+</details>
+
