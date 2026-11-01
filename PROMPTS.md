@@ -215671,3 +215671,16 @@ A red wooden covered bridge over a calm, misty river in peak autumn foliage at s
 
 </details>
 
+<details>
+<summary><strong>Red Covered Bridge in Autumn Mist (Image-to-Video Animation)</strong></summary>
+
+## Red Covered Bridge in Autumn Mist (Image-to-Video Animation)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Start from the step 2 image "Red Covered Bridge Over a Misty River in Peak Autumn Foliage" as the exact first frame, and animate it into a calm ${duration:6}-second cinematic shot. Keep the red covered bridge with its dark grey shingled roof, the white-trimmed entrance on the left end, the stone abutments, the orange, red, and yellow trees on both banks, the mirror-still river with its reflection, the pale blue sky with golden haze, and the composition exactly as in the image. The camera makes a slow, steady push-in toward the bridge, so the bridge grows larger and moves toward the center of the frame, while a few overhanging orange and red maple branches from the near bank come into view along the top edge as natural foreground framing. Low mist keeps drifting slowly over the water and under the bridge. Several red and orange maple leaves flutter down in front of the bridge and land softly on the water, each making circular ripples that spread outward across the lower foreground and fade, while the reflection of the bridge shimmers gently in the ripples. The shot ends calm in soft golden sunrise light. Natural, realistic motion, no cuts, no people, no animals, no boats, no text. Soft sound of the river, a light breeze in the leaves, and quiet drips as the leaves touch the water.
+```
+
+</details>
+
