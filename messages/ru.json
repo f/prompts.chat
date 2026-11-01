@@ -446,7 +446,46 @@
     "dismissed": "Запрос на изменение отклонен",
     "dismissConfirmTitle": "Отклонить запрос на изменение?",
     "dismissConfirmDescription": "Это навсегда удалит ваш запрос на изменение. Это действие нельзя отменить.",
-    "backToBot": "Назад к боту"
+    "backToBot": "Назад к боту",
+    "backToTeam": "Назад к команде",
+    "proposeBotTitle": "Предложить изменения для этого бота",
+    "proposeBotIntro": "Предложите улучшения для этого бота. Владелец рассмотрит ваше предложение и сможет принять или отклонить его.",
+    "proposeTeamTitle": "Предложить изменения для этой команды",
+    "proposeTeamIntro": "Предложите улучшения для этой команды. Владелец рассмотрит ваше предложение и сможет принять или отклонить его.",
+    "viewVersion": "Просмотреть версию",
+    "viewVersionHint": "Изменения по сравнению с версией {previous}",
+    "viewFirstVersionHint": "Первая версия",
+    "memberRole": "Роль",
+    "memberDescription": "Описание",
+    "membersReordered": "Порядок участников изменён",
+    "noFieldChanges": "Нет изменений",
+    "reviewedBy": "Проверил {user}",
+    "teamApprovedSuccess": "Запрос на изменение одобрен, команда обновлена",
+    "botFields": {
+      "title": "Название",
+      "description": "Описание",
+      "platforms": "Платформы",
+      "computers": "Требования к компьютеру",
+      "appearance": "Внешний вид",
+      "installUrl": "URL установки",
+      "instructions": "Инструкции",
+      "routines": "Процедуры",
+      "skills": "Навыки",
+      "connectors": "Коннекторы"
+    },
+    "teamFields": {
+      "title": "Название",
+      "description": "Описание",
+      "category": "Категория",
+      "tags": "Теги",
+      "handoffs": "Передачи",
+      "members": "Участники"
+    },
+    "member": {
+      "added": "Добавлен",
+      "removed": "Удалён",
+      "changed": "Изменён"
+    }
   },
   "categories": {
     "title": "Категории",

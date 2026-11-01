@@ -446,7 +446,46 @@
     "dismissed": "Değişiklik talebi geri çekildi",
     "dismissConfirmTitle": "Değişiklik Talebini Geri Çek?",
     "dismissConfirmDescription": "Bu işlem değişiklik talebinizi kalıcı olarak silecektir. Bu işlem geri alınamaz.",
-    "backToBot": "Bota dön"
+    "backToBot": "Bota dön",
+    "backToTeam": "Takıma dön",
+    "proposeBotTitle": "Bu bota değişiklik öner",
+    "proposeBotIntro": "Bu bot için iyileştirmeler önerin. Sahibi önerinizi inceler ve onaylayabilir veya reddedebilir.",
+    "proposeTeamTitle": "Bu takıma değişiklik öner",
+    "proposeTeamIntro": "Bu takım için iyileştirmeler önerin. Sahibi önerinizi inceler ve onaylayabilir veya reddedebilir.",
+    "viewVersion": "Sürümü görüntüle",
+    "viewVersionHint": "{previous}. sürüme göre değişiklikler",
+    "viewFirstVersionHint": "İlk sürüm",
+    "memberRole": "Rol",
+    "memberDescription": "Açıklama",
+    "membersReordered": "Üye sırası değişti",
+    "noFieldChanges": "Değişiklik yok",
+    "reviewedBy": "İnceleyen: {user}",
+    "teamApprovedSuccess": "Değişiklik isteği onaylandı ve takım güncellendi",
+    "botFields": {
+      "title": "Başlık",
+      "description": "Açıklama",
+      "platforms": "Platformlar",
+      "computers": "Bilgisayar gereksinimleri",
+      "appearance": "Görünüm",
+      "installUrl": "Kurulum URL'si",
+      "instructions": "Talimatlar",
+      "routines": "Rutinler",
+      "skills": "Yetenekler",
+      "connectors": "Bağlayıcılar"
+    },
+    "teamFields": {
+      "title": "Başlık",
+      "description": "Açıklama",
+      "category": "Kategori",
+      "tags": "Etiketler",
+      "handoffs": "Devirler",
+      "members": "Üyeler"
+    },
+    "member": {
+      "added": "Eklendi",
+      "removed": "Kaldırıldı",
+      "changed": "Değişti"
+    }
   },
   "categories": {
     "title": "Kategoriler",

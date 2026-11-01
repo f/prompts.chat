@@ -446,7 +446,46 @@
     "dismissed": "Demande de modification retirée",
     "dismissConfirmTitle": "Retirer la Demande de Modification ?",
     "dismissConfirmDescription": "Cela supprimera définitivement votre demande de modification. Cette action ne peut pas être annulée.",
-    "backToBot": "Retour au bot"
+    "backToBot": "Retour au bot",
+    "backToTeam": "Retour à l'équipe",
+    "proposeBotTitle": "Proposer des modifications à ce bot",
+    "proposeBotIntro": "Suggérez des améliorations pour ce bot. Le propriétaire examinera votre proposition et pourra l'approuver ou la rejeter.",
+    "proposeTeamTitle": "Proposer des modifications à cette équipe",
+    "proposeTeamIntro": "Suggérez des améliorations pour cette équipe. Le propriétaire examinera votre proposition et pourra l'approuver ou la rejeter.",
+    "viewVersion": "Voir la version",
+    "viewVersionHint": "Modifications par rapport à la version {previous}",
+    "viewFirstVersionHint": "Première version",
+    "memberRole": "Rôle",
+    "memberDescription": "Description",
+    "membersReordered": "L'ordre des membres a changé",
+    "noFieldChanges": "Aucune modification",
+    "reviewedBy": "Examiné par {user}",
+    "teamApprovedSuccess": "Demande de modification approuvée et équipe mise à jour",
+    "botFields": {
+      "title": "Titre",
+      "description": "Description",
+      "platforms": "Plateformes",
+      "computers": "Configuration requise",
+      "appearance": "Apparence",
+      "installUrl": "URL d'installation",
+      "instructions": "Instructions",
+      "routines": "Routines",
+      "skills": "Compétences",
+      "connectors": "Connecteurs"
+    },
+    "teamFields": {
+      "title": "Titre",
+      "description": "Description",
+      "category": "Catégorie",
+      "tags": "Tags",
+      "handoffs": "Transferts",
+      "members": "Membres"
+    },
+    "member": {
+      "added": "Ajouté",
+      "removed": "Retiré",
+      "changed": "Modifié"
+    }
   },
   "categories": {
     "title": "Catégories",

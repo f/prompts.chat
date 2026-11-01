@@ -446,7 +446,46 @@
     "dismissed": "Solicitação de alteração retirada",
     "dismissConfirmTitle": "Retirar Solicitação de Alteração?",
     "dismissConfirmDescription": "Isso excluirá permanentemente sua solicitação de alteração. Esta ação não pode ser desfeita.",
-    "backToBot": "Voltar ao bot"
+    "backToBot": "Voltar ao bot",
+    "backToTeam": "Voltar para a equipe",
+    "proposeBotTitle": "Propor alterações a este bot",
+    "proposeBotIntro": "Sugira melhorias para este bot. O proprietário analisará sua proposta e poderá aprová-la ou rejeitá-la.",
+    "proposeTeamTitle": "Propor alterações a esta equipe",
+    "proposeTeamIntro": "Sugira melhorias para esta equipe. O proprietário analisará sua proposta e poderá aprová-la ou rejeitá-la.",
+    "viewVersion": "Ver versão",
+    "viewVersionHint": "Alterações em relação à versão {previous}",
+    "viewFirstVersionHint": "Primeira versão",
+    "memberRole": "Função",
+    "memberDescription": "Descrição",
+    "membersReordered": "A ordem dos membros foi alterada",
+    "noFieldChanges": "Sem alterações",
+    "reviewedBy": "Revisado por {user}",
+    "teamApprovedSuccess": "Solicitação de alteração aprovada e equipe atualizada",
+    "botFields": {
+      "title": "Título",
+      "description": "Descrição",
+      "platforms": "Plataformas",
+      "computers": "Requisitos de computador",
+      "appearance": "Aparência",
+      "installUrl": "URL de instalação",
+      "instructions": "Instruções",
+      "routines": "Rotinas",
+      "skills": "Habilidades",
+      "connectors": "Conectores"
+    },
+    "teamFields": {
+      "title": "Título",
+      "description": "Descrição",
+      "category": "Categoria",
+      "tags": "Tags",
+      "handoffs": "Repasses",
+      "members": "Membros"
+    },
+    "member": {
+      "added": "Adicionado",
+      "removed": "Removido",
+      "changed": "Alterado"
+    }
   },
   "categories": {
     "title": "Categorias",

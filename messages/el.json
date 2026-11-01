@@ -446,7 +446,46 @@
     "dismissed": "Η αίτηση αλλαγής απορρίφθηκε",
     "dismissConfirmTitle": "Απόρριψη αίτησης αλλαγής;",
     "dismissConfirmDescription": "Αυτό θα διαγράψει μόνιμα την αίτηση αλλαγής σας. Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.",
-    "backToBot": "Πίσω στο bot"
+    "backToBot": "Πίσω στο bot",
+    "backToTeam": "Επιστροφή στην ομάδα",
+    "proposeBotTitle": "Πρόταση αλλαγών σε αυτό το bot",
+    "proposeBotIntro": "Προτείνετε βελτιώσεις για αυτό το bot. Ο ιδιοκτήτης θα εξετάσει την πρότασή σας και μπορεί να την εγκρίνει ή να την απορρίψει.",
+    "proposeTeamTitle": "Πρόταση αλλαγών σε αυτή την ομάδα",
+    "proposeTeamIntro": "Προτείνετε βελτιώσεις για αυτή την ομάδα. Ο ιδιοκτήτης θα εξετάσει την πρότασή σας και μπορεί να την εγκρίνει ή να την απορρίψει.",
+    "viewVersion": "Προβολή έκδοσης",
+    "viewVersionHint": "Αλλαγές σε σχέση με την έκδοση {previous}",
+    "viewFirstVersionHint": "Πρώτη έκδοση",
+    "memberRole": "Ρόλος",
+    "memberDescription": "Περιγραφή",
+    "membersReordered": "Η σειρά των μελών άλλαξε",
+    "noFieldChanges": "Καμία αλλαγή",
+    "reviewedBy": "Ελέγχθηκε από {user}",
+    "teamApprovedSuccess": "Το αίτημα αλλαγής εγκρίθηκε και η ομάδα ενημερώθηκε",
+    "botFields": {
+      "title": "Τίτλος",
+      "description": "Περιγραφή",
+      "platforms": "Πλατφόρμες",
+      "computers": "Απαιτήσεις υπολογιστή",
+      "appearance": "Εμφάνιση",
+      "installUrl": "URL εγκατάστασης",
+      "instructions": "Οδηγίες",
+      "routines": "Ρουτίνες",
+      "skills": "Δεξιότητες",
+      "connectors": "Σύνδεσμοι"
+    },
+    "teamFields": {
+      "title": "Τίτλος",
+      "description": "Περιγραφή",
+      "category": "Κατηγορία",
+      "tags": "Ετικέτες",
+      "handoffs": "Παραδόσεις",
+      "members": "Μέλη"
+    },
+    "member": {
+      "added": "Προστέθηκε",
+      "removed": "Αφαιρέθηκε",
+      "changed": "Άλλαξε"
+    }
   },
   "categories": {
     "title": "Κατηγορίες",

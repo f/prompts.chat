@@ -446,7 +446,46 @@
     "dismissed": "Change request dismissed",
     "dismissConfirmTitle": "Dismiss Change Request?",
     "dismissConfirmDescription": "This will permanently delete your change request. This action cannot be undone.",
-    "backToBot": "Back to bot"
+    "backToBot": "Back to bot",
+    "backToTeam": "Back to team",
+    "proposeBotTitle": "Propose changes to this bot",
+    "proposeBotIntro": "Suggest improvements to this bot. The owner reviews your proposal and can approve or reject it.",
+    "proposeTeamTitle": "Propose changes to this team",
+    "proposeTeamIntro": "Suggest improvements to this team. The owner reviews your proposal and can approve or reject it.",
+    "viewVersion": "View version",
+    "viewVersionHint": "Changes compared to version {previous}",
+    "viewFirstVersionHint": "First version",
+    "memberRole": "Role",
+    "memberDescription": "Description",
+    "membersReordered": "Member order changed",
+    "noFieldChanges": "No changes",
+    "reviewedBy": "Reviewed by {user}",
+    "teamApprovedSuccess": "Change request approved and team updated",
+    "botFields": {
+      "title": "Title",
+      "description": "Description",
+      "platforms": "Platforms",
+      "computers": "Computer requirements",
+      "appearance": "Appearance",
+      "installUrl": "Install URL",
+      "instructions": "Instructions",
+      "routines": "Routines",
+      "skills": "Skills",
+      "connectors": "Connectors"
+    },
+    "teamFields": {
+      "title": "Title",
+      "description": "Description",
+      "category": "Category",
+      "tags": "Tags",
+      "handoffs": "Handoffs",
+      "members": "Members"
+    },
+    "member": {
+      "added": "Added",
+      "removed": "Removed",
+      "changed": "Changed"
+    }
   },
   "categories": {
     "title": "Categories",

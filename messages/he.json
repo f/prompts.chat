@@ -446,7 +446,46 @@
     "dismissed": "בקשת השינוי בוטלה",
     "dismissConfirmTitle": "לבטל בקשת שינוי?",
     "dismissConfirmDescription": "פעולה זו תמחק לצמיתות את בקשת השינוי שלך. לא ניתן לבטל פעולה זו.",
-    "backToBot": "חזרה לבוט"
+    "backToBot": "חזרה לבוט",
+    "backToTeam": "חזרה לצוות",
+    "proposeBotTitle": "הצעת שינויים לבוט זה",
+    "proposeBotIntro": "הציעו שיפורים לבוט זה. הבעלים יבדוק את ההצעה ויוכל לאשר או לדחות אותה.",
+    "proposeTeamTitle": "הצעת שינויים לצוות זה",
+    "proposeTeamIntro": "הציעו שיפורים לצוות זה. הבעלים יבדוק את ההצעה ויוכל לאשר או לדחות אותה.",
+    "viewVersion": "הצגת גרסה",
+    "viewVersionHint": "שינויים לעומת גרסה {previous}",
+    "viewFirstVersionHint": "גרסה ראשונה",
+    "memberRole": "תפקיד",
+    "memberDescription": "תיאור",
+    "membersReordered": "סדר החברים השתנה",
+    "noFieldChanges": "אין שינויים",
+    "reviewedBy": "נבדק על ידי {user}",
+    "teamApprovedSuccess": "בקשת השינוי אושרה והצוות עודכן",
+    "botFields": {
+      "title": "כותרת",
+      "description": "תיאור",
+      "platforms": "פלטפורמות",
+      "computers": "דרישות מחשב",
+      "appearance": "מראה",
+      "installUrl": "כתובת התקנה",
+      "instructions": "הוראות",
+      "routines": "שגרות",
+      "skills": "מיומנויות",
+      "connectors": "מחברים"
+    },
+    "teamFields": {
+      "title": "כותרת",
+      "description": "תיאור",
+      "category": "קטגוריה",
+      "tags": "תגיות",
+      "handoffs": "העברות",
+      "members": "חברים"
+    },
+    "member": {
+      "added": "נוסף",
+      "removed": "הוסר",
+      "changed": "שונה"
+    }
   },
   "categories": {
     "title": "קטגוריות",
