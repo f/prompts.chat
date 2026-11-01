@@ -218748,3 +218748,66 @@ Based on everything you know about me, carve this pumpkin.
 
 </details>
 
+<details>
+<summary><strong>Never Open the Door for the Quiet Ones: Halloween Ghost Trick-or-Treater Horror Short (15s Video)</strong></summary>
+
+## Never Open the Door for the Quiet Ones: Halloween Ghost Trick-or-Treater Horror Short (15s Video)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Create a native 15-second, vertical 9:16 cinematic horror short. No reference image. No text, no captions, no logos. Clear simple story, every shot readable without sound.
+
+CORE RULES
+One adult woman, one ghost figure in a white sheet, one house: the front porch and the front hallway. Nobody else appears. The ghost never shows a face, hands or feet. Calm, slow, building dread, then a final scare.
+
+CHARACTER
+Lena, 27 years old, clearly adult, long dark wavy hair, pale skin, dark red lipstick, natural beautiful face, fitted black long-sleeve top, black high-waist jeans, black ankle boots. She holds a round black ceramic candy bowl full of orange and black wrapped candy.
+
+FACE
+Natural skin texture, real expressions: warm smile, then polite confusion, then slow fear, then pure terror. Mouth opens only moderately, only upper teeth show. Eyes stay sharp and alive. Head turns under 45 degrees.
+
+GHOST
+An adult-height figure fully covered by a plain old white bedsheet with two small black eye holes. It holds a small black trick-or-treat bowl through the sheet, the hands are never visible. It stands completely still and silent. The bottom hem of the sheet floats about 3 cm above the porch boards, with only darkness under it.
+
+VOICE
+Lena: soft, friendly, natural American English, then a shaky whisper.
+
+CAMERA
+Real cinema camera, slow controlled moves, shallow depth of field, gentle slow push-ins. Shots are clean and steady.
+
+LOOK
+Dark moody cinematic Halloween night: deep teal and blue night tones outside, warm orange light from the porch lamp and a carved pumpkin, warm yellow wall sconce inside. Soft film grain, rich contrast, deep but readable shadows. Faces always clearly lit.
+
+SETTING
+A classic American suburban house on Halloween night. Front porch: white wooden railing, old wooden boards with fallen leaves, a glowing carved jack-o-lantern by the door, a warm porch lamp. Behind: a quiet foggy street, bare trees, a full moon, distant houses with lit windows. Inside: a narrow front hallway with dark wood floor, a staircase on the left, a brass wall sconce, a small side table.
+
+MOTION
+Natural human weight and timing. The ghost is completely motionless except where stated. The sheet only moves when the wind moves it.
+
+DEFECT PREVENTION
+Hands: Lena holds the candy bowl with both hands, LEFT hand under it, RIGHT hand free only to drop the candy and to slam the door. Five fingers per hand.
+Face: her face, hair and lipstick stay identical in every shot.
+Ghost: never shows hands, feet, face or legs. Same sheet, same eye holes in every shot.
+Objects: one candy bowl (hers), one small black bowl (ghost), one candy, one pumpkin, one door. Nothing duplicates or vanishes except the ghost disappearing as stated.
+Continuity: same outfit, same night, same porch, same hallway in every shot.
+Physics: candy falls with real gravity. The empty sheet collapses softly like real fabric.
+
+STORYBOARD
+00:00.0-00:02.0 Shot 1, wide from inside the hallway toward the front door. The doorbell rings. Lena walks to the door with the candy bowl and opens it, smiling. Through the open door, the ghost stands on the porch under the orange porch lamp, motionless, bowl held out.
+00:02.0-00:05.0 Shot 2, over Lena's shoulder onto the ghost. She smiles: "Aww, cute costume!" She drops one orange candy into the ghost's bowl. The ghost does not move or say anything.
+00:05.0-00:07.5 Shot 3, close-up on Lena. Her smile slowly fades. She tilts her head: "Where are your parents?" Silence. Only wind.
+00:07.5-00:09.5 Shot 4, slow tilt down the sheet to the porch boards: the hem floats above the floor, nothing underneath, no feet, no shadow. Leaves blow under it.
+00:09.5-00:11.0 Shot 5, wide on the porch. A gust of wind. The sheet collapses flat onto the porch boards, completely empty. The black bowl drops and the candy rolls out.
+00:11.0-00:13.0 Shot 6, inside. Lena steps back and slams the door shut with her RIGHT hand, then leans her back against it, breathing fast, eyes closed, clutching the candy bowl.
+00:13.0-00:15.0 Shot 7, wide down the hallway from behind Lena. She opens her eyes, still facing the camera. Far behind her, at the end of the dark hallway under the brass sconce, the same white sheet ghost stands perfectly still, facing her. She does not see it. The sconce flickers once.
+
+SOUND
+Doorbell, creaking door, wind and dry leaves, candy clinking into the bowl, a long silence, soft fabric falling, the door slamming, her fast breathing, one low deep hum and a light flicker buzz at the end.
+
+FINAL FEEL
+A clean, clear, beautifully shot Halloween horror short with a chilling final reveal. Not polished influencer content.
+```
+
+</details>
+
