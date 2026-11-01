@@ -1014,6 +1014,7 @@
     "trigger": "טריגר",
     "skills": "מיומנויות",
     "connectors": "מחברים נדרשים",
+    "connectorRegistryLink": "{name} במאגר MCP (נפתח בכרטיסייה חדשה)",
     "install": "התקנה",
     "installOn": "התקנה ב-{platform}",
     "installLinkComingSoon": "קישור התקנה יגיע בקרוב",
@@ -2733,7 +2734,7 @@
     "computerRequirementsInput": "רשימה עם <code>CLOUD</code> (הבוט צריך מחשב מרוחק, שולחן עבודה או דפדפן משלו) ו/או <code>LOCAL</code> (הוא צריך את המחשב, הקבצים או האפליקציות של המשתמש); רשימה ריקה פירושה שאינו צריך מחשב. מחליפה את הרשימה השמורה"
   },
   "actionButtons": {
-    "deployWithSpacefast": "פריסה עם SpaceFast"
+    "deployWithSpacefast": "פריסה עם Spacefast"
   },
   "widgets": {
     "sponsored": "ממומן",

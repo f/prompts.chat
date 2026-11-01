@@ -1014,6 +1014,7 @@
     "trigger": "Έναυσμα",
     "skills": "Δεξιότητες",
     "connectors": "Απαιτούμενοι σύνδεσμοι",
+    "connectorRegistryLink": "{name} στο MCP Registry (ανοίγει σε νέα καρτέλα)",
     "install": "Εγκατάσταση",
     "installOn": "Εγκατάσταση στο {platform}",
     "installLinkComingSoon": "Ο σύνδεσμος εγκατάστασης έρχεται σύντομα",
@@ -2740,7 +2741,7 @@
     "computerRequirementsInput": "Μια λίστα με <code>CLOUD</code> (το bot χρειάζεται δικό του απομακρυσμένο υπολογιστή, επιφάνεια εργασίας ή πρόγραμμα περιήγησης) και/ή <code>LOCAL</code> (χρειάζεται τη συσκευή, τα αρχεία ή τις εφαρμογές του χρήστη)· μια κενή λίστα σημαίνει ότι δεν χρειάζεται υπολογιστή. Αντικαθιστά την αποθηκευμένη λίστα"
   },
   "actionButtons": {
-    "deployWithSpacefast": "Ανάπτυξη με SpaceFast"
+    "deployWithSpacefast": "Ανάπτυξη με Spacefast"
   },
   "widgets": {
     "sponsored": "Χορηγούμενο",

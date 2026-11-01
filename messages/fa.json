@@ -1014,6 +1014,7 @@
     "trigger": "محرک",
     "skills": "مهارت‌ها",
     "connectors": "اتصال‌دهنده‌های لازم",
+    "connectorRegistryLink": "{name} در رجیستری MCP (در زبانه جدید باز می‌شود)",
     "install": "نصب",
     "installOn": "نصب روی {platform}",
     "installLinkComingSoon": "لینک نصب به‌زودی",
@@ -2733,7 +2734,7 @@
     "computerRequirementsInput": "فهرستی شامل <code>CLOUD</code> (ربات به رایانه، دسکتاپ یا مرورگر راه‌دور خودش نیاز دارد) و/یا <code>LOCAL</code> (به دستگاه، فایل‌ها یا برنامه‌های خود کاربر نیاز دارد)؛ فهرست خالی یعنی به رایانه نیاز ندارد. جایگزین فهرست ذخیره‌شده می‌شود"
   },
   "actionButtons": {
-    "deployWithSpacefast": "استقرار با SpaceFast"
+    "deployWithSpacefast": "استقرار با Spacefast"
   },
   "widgets": {
     "sponsored": "حمایت‌شده",

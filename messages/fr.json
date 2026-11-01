@@ -1014,6 +1014,7 @@
     "trigger": "Déclencheur",
     "skills": "Compétences",
     "connectors": "Connecteurs requis",
+    "connectorRegistryLink": "{name} sur le MCP Registry (s'ouvre dans un nouvel onglet)",
     "install": "Installer",
     "installOn": "Installer sur {platform}",
     "installLinkComingSoon": "Lien d'installation bientôt disponible",
@@ -2752,7 +2753,7 @@
     "computerRequirementsInput": "Une liste contenant <code>CLOUD</code> (le bot a besoin de son propre ordinateur distant, bureau ou navigateur) et/ou <code>LOCAL</code> (il a besoin de la machine, des fichiers ou des apps de l'utilisateur) ; une liste vide signifie qu'il n'a besoin d'aucun ordinateur. Remplace la liste enregistrée"
   },
   "actionButtons": {
-    "deployWithSpacefast": "Déployer avec SpaceFast"
+    "deployWithSpacefast": "Déployer avec Spacefast"
   },
   "widgets": {
     "sponsored": "Sponsorisé",

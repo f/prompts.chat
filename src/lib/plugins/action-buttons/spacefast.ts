@@ -6,7 +6,7 @@ export const spacefastActionButtons: ActionButtonPlugin = {
   buttons: [
     {
       id: "spacefast-deploy",
-      label: "Deploy with SpaceFast",
+      label: "Deploy with Spacefast",
       labelKey: "deployWithSpacefast",
       icon: "/sponsors/spacefast.svg",
       categories: ["vibe", "coding"],

@@ -1014,6 +1014,7 @@
     "trigger": "المشغّل",
     "skills": "المهارات",
     "connectors": "الموصلات المطلوبة",
+    "connectorRegistryLink": "{name} في سجل MCP (يفتح في علامة تبويب جديدة)",
     "install": "تثبيت",
     "installOn": "التثبيت على {platform}",
     "installLinkComingSoon": "رابط التثبيت قريبًا",
@@ -2735,7 +2736,7 @@
     "computerRequirementsInput": "قائمة تضم <code>CLOUD</code> (يحتاج البوت إلى حاسوب بعيد أو سطح مكتب أو متصفح خاص به) و/أو <code>LOCAL</code> (يحتاج إلى جهاز المستخدم أو ملفاته أو تطبيقاته)؛ القائمة الفارغة تعني أنه لا يحتاج حاسوبًا. تستبدل القائمة المحفوظة"
   },
   "actionButtons": {
-    "deployWithSpacefast": "انشر باستخدام SpaceFast"
+    "deployWithSpacefast": "انشر باستخدام Spacefast"
   },
   "widgets": {
     "sponsored": "برعاية",

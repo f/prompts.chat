@@ -1014,6 +1014,7 @@
     "trigger": "トリガー",
     "skills": "スキル",
     "connectors": "必要なコネクタ",
+    "connectorRegistryLink": "MCP Registry の {name}(新しいタブで開きます)",
     "install": "インストール",
     "installOn": "{platform} にインストール",
     "installLinkComingSoon": "インストールリンクは近日公開",
@@ -2737,7 +2738,7 @@
     "computerRequirementsInput": "<code>CLOUD</code>（ボットが専用のリモートコンピューター、デスクトップ、ブラウザーを必要とする）と <code>LOCAL</code>（ユーザー自身のマシン、ファイル、アプリを必要とする）のいずれかまたは両方を含むリスト。空のリストはコンピューター不要を意味します。保存済みのリストを置き換えます"
   },
   "actionButtons": {
-    "deployWithSpacefast": "SpaceFast でデプロイ"
+    "deployWithSpacefast": "Spacefast でデプロイ"
   },
   "widgets": {
     "sponsored": "スポンサー",

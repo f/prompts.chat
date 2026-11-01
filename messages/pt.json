@@ -1014,6 +1014,7 @@
     "trigger": "Gatilho",
     "skills": "Habilidades",
     "connectors": "Conectores necessários",
+    "connectorRegistryLink": "{name} no MCP Registry (abre em uma nova aba)",
     "install": "Instalar",
     "installOn": "Instalar no {platform}",
     "installLinkComingSoon": "Link de instalação em breve",
@@ -2751,7 +2752,7 @@
     "computerRequirementsInput": "Uma lista com <code>CLOUD</code> (o bot precisa do próprio computador remoto, desktop ou navegador) e/ou <code>LOCAL</code> (precisa da máquina, dos arquivos ou dos apps do usuário); uma lista vazia significa que não precisa de computador. Substitui a lista salva"
   },
   "actionButtons": {
-    "deployWithSpacefast": "Implantar com SpaceFast"
+    "deployWithSpacefast": "Implantar com Spacefast"
   },
   "widgets": {
     "sponsored": "Patrocinado",

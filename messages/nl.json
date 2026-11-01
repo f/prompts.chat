@@ -1014,6 +1014,7 @@
     "trigger": "Trigger",
     "skills": "Skills",
     "connectors": "Vereiste connectors",
+    "connectorRegistryLink": "{name} in het MCP Registry (opent in een nieuw tabblad)",
     "install": "Installeren",
     "installOn": "Installeren op {platform}",
     "installLinkComingSoon": "Installatielink volgt binnenkort",
@@ -2740,7 +2741,7 @@
     "computerRequirementsInput": "Een lijst met <code>CLOUD</code> (de bot heeft een eigen externe computer, desktop of browser nodig) en/of <code>LOCAL</code> (hij heeft de machine, bestanden of apps van de gebruiker nodig); een lege lijst betekent dat hij geen computer nodig heeft. Vervangt de opgeslagen lijst"
   },
   "actionButtons": {
-    "deployWithSpacefast": "Implementeren met SpaceFast"
+    "deployWithSpacefast": "Implementeren met Spacefast"
   },
   "widgets": {
     "sponsored": "Gesponsord",

@@ -19,7 +19,7 @@ function TextreamWidget() {
       
       <div className="flex flex-col items-center">
         {/* Notch - flush to top */}
-        <Link href="https://textream.fka.dev" className="block w-full">
+        <Link href="https://textream.net" className="block w-full">
           <div className="flex justify-center pt-0">
             <div 
               className="relative bg-black rounded-b-[22px] px-6 py-3 min-w-[200px] hover:pb-4 transition-all duration-300 shadow-lg"
@@ -87,7 +87,7 @@ function TextreamWidget() {
           </div>
           
           <Button asChild size="sm" className="w-full bg-violet-600 hover:bg-violet-700">
-            <Link href="https://textream.fka.dev">
+            <Link href="https://textream.net">
               Download Free
               <ArrowRight className="ml-2 h-3.5 w-3.5" />
             </Link>
@@ -111,7 +111,7 @@ export const textreamWidget: WidgetPlugin = {
       type: "TEXT",
       tags: ["Productivity", "macOS", "Streaming", "Open Source"],
       category: "Productivity",
-      actionUrl: "https://textream.fka.dev",
+      actionUrl: "https://textream.net",
       actionLabel: "Download Free",
       positioning: {
         position: 6,

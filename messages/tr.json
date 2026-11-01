@@ -1014,6 +1014,7 @@
     "trigger": "Tetikleyici",
     "skills": "Beceriler",
     "connectors": "Gerekli bağlayıcılar",
+    "connectorRegistryLink": "MCP Registry'de {name} (yeni sekmede açılır)",
     "install": "Kur",
     "installOn": "{platform} üzerinde kur",
     "installLinkComingSoon": "Kurulum bağlantısı yakında",
@@ -2748,7 +2749,7 @@
     "computerRequirementsInput": "<code>CLOUD</code> (bot kendi uzak bilgisayarına, masaüstüne veya tarayıcısına ihtiyaç duyar) ve <code>LOCAL</code> (kullanıcının kendi makinesine, dosyalarına veya uygulamalarına ihtiyaç duyar) değerlerinden herhangi birini içeren bir liste; boş liste botun bilgisayara ihtiyacı olmadığı anlamına gelir. Kayıtlı listenin yerini alır"
   },
   "actionButtons": {
-    "deployWithSpacefast": "SpaceFast ile Yayınla"
+    "deployWithSpacefast": "Spacefast ile Yayınla"
   },
   "widgets": {
     "sponsored": "Sponsorlu",

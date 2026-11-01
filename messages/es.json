@@ -1014,6 +1014,7 @@
     "trigger": "Disparador",
     "skills": "Habilidades",
     "connectors": "Conectores necesarios",
+    "connectorRegistryLink": "{name} en el MCP Registry (se abre en una pestaña nueva)",
     "install": "Instalar",
     "installOn": "Instalar en {platform}",
     "installLinkComingSoon": "Enlace de instalación próximamente",
@@ -2752,7 +2753,7 @@
     "computerRequirementsInput": "Una lista con <code>CLOUD</code> (el bot necesita su propio ordenador remoto, escritorio o navegador) y/o <code>LOCAL</code> (necesita la máquina, los archivos o las apps del usuario); una lista vacía significa que no necesita ordenador. Reemplaza la lista guardada"
   },
   "actionButtons": {
-    "deployWithSpacefast": "Desplegar con SpaceFast"
+    "deployWithSpacefast": "Desplegar con Spacefast"
   },
   "widgets": {
     "sponsored": "Patrocinado",

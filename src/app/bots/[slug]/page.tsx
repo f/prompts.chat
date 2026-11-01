@@ -18,6 +18,7 @@ import { BotBundleInstall } from "@/components/bots/bot-bundle-install";
 import { BotCard } from "@/components/bots/bot-card";
 import { BotVersionHistory } from "@/components/bots/bot-version-history";
 import { BotComputerBadges } from "@/components/bots/bot-computer-badge";
+import { ConnectorBadge } from "@/components/bots/connector-badge";
 import { BotInstall } from "@/components/bots/bot-install";
 import { BotPlatformBadge } from "@/components/bots/bot-platform-badge";
 import { TEAM_TITLE_LINK_CLASS } from "@/components/bots/teams/team-title-link";
@@ -315,7 +316,7 @@ export default async function BotPage({ params }: BotPageProps) {
                   </h2>
                   <div className="flex flex-wrap gap-1">
                     {connectors.map((connector) => (
-                      <Badge key={connector} variant="outline" className="max-w-full whitespace-normal wrap-anywhere">{connector}</Badge>
+                      <ConnectorBadge key={connector} connector={connector} />
                     ))}
                   </div>
                 </div>

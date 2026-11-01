@@ -1014,6 +1014,7 @@
     "trigger": "Триггер",
     "skills": "Навыки",
     "connectors": "Необходимые коннекторы",
+    "connectorRegistryLink": "{name} в реестре MCP (откроется в новой вкладке)",
     "install": "Установка",
     "installOn": "Установить в {platform}",
     "installLinkComingSoon": "Ссылка для установки скоро появится",
@@ -2734,7 +2735,7 @@
     "computerRequirementsInput": "Список из <code>CLOUD</code> (боту нужен собственный удалённый компьютер, рабочий стол или браузер) и/или <code>LOCAL</code> (ему нужны компьютер, файлы или приложения пользователя); пустой список означает, что компьютер не нужен. Заменяет сохранённый список"
   },
   "actionButtons": {
-    "deployWithSpacefast": "Развернуть в SpaceFast"
+    "deployWithSpacefast": "Развернуть в Spacefast"
   },
   "widgets": {
     "sponsored": "Спонсор",
