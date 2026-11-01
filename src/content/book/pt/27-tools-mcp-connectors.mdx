@@ -87,6 +87,23 @@ A AWS oferece um exemplo recente. Em 29 de outubro de 2026, ela [anunciou](https
   after={{ label: "Descrever o objetivo e o gatilho", content: "Ajude os clientes a resolver problemas de cobrança. Quando um cliente pedir reembolso e você tiver o número do pedido, chame o fluxo de reembolso com esse número e o motivo. Informe o resultado que ele devolver. Não prometa um reembolso antes que o fluxo o confirme." }}
 />
 
+### Quando não há API, a tela vira a ferramenta
+
+Todas as ferramentas que vimos até aqui tinham uma porta feita para software: uma API, um conector, um servidor MCP. Muitos sistemas não têm essa porta. Um portal interno antigo, o site de reservas de um fornecedor, um programa de desktop de outra década: as pessoas usam essas coisas todos os dias, mas só pela tela. Nesses casos, alguns modelos conseguem tratar a própria tela como uma ferramenta. É o que costuma se chamar **uso do computador** (*computer use*).
+
+O mecanismo é o ciclo que você já conhece, com imagens no lugar de dados. A aplicação que executa o modelo envia a tarefa e uma captura de tela. O modelo olha para ela e, em vez de responder em prosa, responde com uma ação estruturada: clique neste ponto, digite este texto, role para baixo. Algumas ferramentas também anexam a cada ação uma breve intenção declarada, como “Clique na caixa de busca para digitar o destino”, o que torna uma execução mais fácil de acompanhar. O modelo continua sem mexer em nada sozinho. É o código do próprio desenvolvedor que realiza a ação, tira uma nova captura e a envia de volta. Olhar, agir, olhar de novo, até a tarefa terminar ou alguém interromper o ciclo. Onde esse ciclo roda importa tanto quanto o jeito como ele funciona, e a seção [O computador do bot](/book/28-persistent-bots) de Bots sempre ativos trata dessa questão.
+
+O Google liberou para todos a sua ferramenta Computer Use na Gemini API em 30 de outubro de 2026 ([notas da versão](https://ai.google.dev/gemini-api/docs/changelog)). A [documentação](https://ai.google.dev/gemini-api/docs/computer-use) descreve ambientes de navegador, celular e desktop, ações que trazem um campo `intent`, políticas de segurança configuráveis que podem bloquear uma ação ou pedir confirmação antes de passos como um pagamento, e uma verificação opcional das capturas em busca de injeção de prompt escondida. O próprio Google recomenda supervisão de perto para tarefas importantes. A ideia não é exclusiva de uma empresa: a Anthropic oferece uma [ferramenta de uso do computador](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool) para o Claude, e a OpenAI oferece uma [ferramenta de computador](https://platform.openai.com/docs/guides/tools-computer-use) na sua Responses API, ambas construídas em torno da mesma troca de capturas e ações que a sua aplicação executa.
+
+Os prós e contras merecem palavras francas. Ler uma tela é mais lento do que chamar uma API, cada captura custa tokens, e um botão que mudou de lugar ou um pop-up inesperado podem quebrar uma execução que ontem funcionava. Por isso, quando existe uma API ou um conector de verdade, prefira usá-los e deixe o uso do computador para os sistemas que não oferecem outra entrada. A tela também é uma entrada como qualquer outra: o texto de uma página pode carregar injeção de prompt tanto quanto um documento, e vê-lo numa imagem não o torna mais confiável. E, como o modelo pode clicar em qualquer coisa em que uma pessoa clicaria, passos arriscados, como pagar, excluir ou alterar dados, devem esperar a confirmação de um ser humano.
+
+O prompt segue as mesmas regras de antes, só que com arestas mais afiadas, porque um site não tem como explicar ao modelo o que você quis dizer. Diga exatamente qual é o site e a página, diga onde a tarefa termina e diga o que precisa ser confirmado antes de qualquer coisa ser feita.
+
+<Compare
+  before={{ label: "Uma tarefa sem contornos", content: "Entre na internet e reserve uma sala de reunião para mim na quinta-feira." }}
+  after={{ label: "Uma página, um ponto de parada, uma confirmação", content: "Na nossa página de reserva de salas, em rooms.example.com, encontre uma sala para seis pessoas na quinta-feira, das 14h às 15h. Pare na tela final de confirmação e me mostre a sala e o horário antes de clicar em Reservar. Se nenhuma sala estiver livre, me avise e pare. Não altere nem cancele nenhuma reserva existente." }}
+/>
+
 ## O que um conector acrescenta
 
 Um conector reúne a integração com um sistema específico. Ele pode cuidar do login, da seleção de uma conta ou espaço de trabalho, da busca de dados e da disponibilização das ações suportadas como ferramentas. Alguns conectores apenas pesquisam ou leem. Outros também permitem gravar dados.
