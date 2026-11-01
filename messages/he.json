@@ -2734,6 +2734,6 @@
     "computerRequirementsInput": "רשימה עם <code>CLOUD</code> (הבוט צריך מחשב מרוחק, שולחן עבודה או דפדפן משלו) ו/או <code>LOCAL</code> (הוא צריך את המחשב, הקבצים או האפליקציות של המשתמש); רשימה ריקה פירושה שאינו צריך מחשב. מחליפה את הרשימה השמורה"
   },
   "actionButtons": {
-    "deployWithSpacefast": "פריסה עם SpaceFast"
+    "deployWithSpacefast": "פריסה עם Spacefast"
   }
 }

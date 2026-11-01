@@ -2754,6 +2754,6 @@
     "computerRequirementsInput": "A list with any of <code>CLOUD</code> (the bot needs its own remote computer, desktop or browser) and <code>LOCAL</code> (it needs the user's own machine, files or apps); an empty list means it needs no computer. Replaces the stored list"
   },
   "actionButtons": {
-    "deployWithSpacefast": "Deploy with SpaceFast"
+    "deployWithSpacefast": "Deploy with Spacefast"
   }
 }

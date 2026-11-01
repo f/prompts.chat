@@ -2738,6 +2738,6 @@
     "computerRequirementsInput": "包含 <code>CLOUD</code>（机器人需要自己的远程电脑、桌面或浏览器）和/或 <code>LOCAL</code>（需要用户自己的机器、文件或应用）的列表；空列表表示不需要电脑。会替换已保存的列表"
   },
   "actionButtons": {
-    "deployWithSpacefast": "使用 SpaceFast 部署"
+    "deployWithSpacefast": "使用 Spacefast 部署"
   }
 }
