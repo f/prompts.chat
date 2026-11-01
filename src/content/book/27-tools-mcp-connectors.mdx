@@ -87,6 +87,23 @@ The trade is between two strengths. The model is flexible: it can read an unusua
   after={{ label: "Describing the goal and the trigger", content: "Help customers resolve billing problems. When a customer asks for a refund and you have the order ID, call the refund workflow with that ID and the reason. Report the result it returns. Do not promise a refund before the workflow confirms it." }}
 />
 
+### When There Is No API, the Screen Becomes the Tool
+
+Every tool so far has had a door built for software: an API, a connector, an MCP server. Many systems have no such door. An old internal portal, a supplier's booking site, a desktop program from another decade: people use them every day, but only through the screen. For these, some models can treat the screen itself as a tool. This is usually called **computer use**.
+
+The mechanism is the loop you already know, with pictures in place of data. The application running the model sends the task and a screenshot. The model looks at it and answers with a structured action instead of prose: click at this point, type this text, scroll down. Some tools also attach a short stated intent to each action, such as "Click the search box to type the destination," which makes a run easier to follow. The model still moves nothing by itself. The developer's own code performs the action, takes a new screenshot, and sends it back. Look, act, look again, until the task is done or someone stops the loop. Where that loop runs matters as much as how it works, and the [Bot's Computer](/book/28-persistent-bots) section of Always-On Bots looks at that question.
+
+Google made its Computer Use tool generally available in the Gemini API on October 30, 2026 ([release notes](https://ai.google.dev/gemini-api/docs/changelog)). Its [documentation](https://ai.google.dev/gemini-api/docs/computer-use) describes browser, mobile, and desktop environments, actions that carry an `intent` field, configurable safety policies that can block an action or ask for confirmation before steps such as a payment, and opt-in scanning of screenshots for hidden prompt injection. Google itself recommends close supervision for important tasks. The idea is not unique to one company: Anthropic offers a [computer use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool) for Claude, and OpenAI offers a [computer tool](https://platform.openai.com/docs/guides/tools-computer-use) in its Responses API, both built around the same exchange of screenshots and actions that your application carries out.
+
+The trade-offs deserve plain words. Reading a screen is slower than calling an API, every screenshot costs tokens, and a moved button or an unexpected pop-up can break a run that worked yesterday. So when a real API or connector exists, prefer it, and keep computer use for the systems that leave no other way in. The screen is also an input like any other: text on a page can carry prompt injection just as a document can, and seeing it in a picture makes it no more trustworthy. And because the model can click anything a person could, risky steps such as paying, deleting, or changing data should wait for a human to confirm them.
+
+Prompting follows the same rules as before, only with sharper edges, because a website cannot tell the model what you meant. Name the exact site and page, say where the task ends, and say what must be confirmed before anything is done.
+
+<Compare
+  before={{ label: "An open-ended errand", content: "Go online and book me a meeting room for Thursday." }}
+  after={{ label: "A page, a stopping point, a confirmation", content: "On our room booking page at rooms.example.com, find a room for six people on Thursday from 2:00 to 3:00 PM. Stop on the final confirmation screen and show me the room and time before you press Book. If no room is free, tell me and stop. Do not change or cancel any existing booking." }}
+/>
+
 ## What a Connector Adds
 
 A connector packages the integration with a particular system. It may handle signing in, selecting an account or workspace, finding data, and exposing supported actions as tools. Some connectors only search or read. Others also support writes.
