@@ -4,6 +4,7 @@ import { improvePrompt } from "@/lib/ai/improve-prompt";
 import { db } from "@/lib/db";
 import { isValidApiKeyFormat } from "@/lib/api-key";
 import { auth } from "@/lib/auth";
+import { getConfig } from "@/lib/config";
 
 const requestSchema = z.object({
   prompt: z.string().min(1, "Prompt is required").max(10000, "Prompt too long"),
@@ -36,6 +37,11 @@ async function authenticateRequest(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const config = await getConfig();
+  if (config.features.promptEnhancer === false) {
+    return NextResponse.json({ error: "Prompt enhancer is not enabled" }, { status: 404 });
+  }
+
   try {
     // Authenticate request (session or API key)
     const user = await authenticateRequest(request);

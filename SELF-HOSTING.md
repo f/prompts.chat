@@ -181,6 +181,7 @@ export default defineConfig({
     categories: true,
     tags: true,
     aiSearch: false,  // Requires OPENAI_API_KEY
+    promptEnhancer: false,  // Prompt Enhancer on /developers + /api/improve-prompt (requires OPENAI_API_KEY)
   },
 
   // Homepage
