@@ -20,6 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { TEAM_TITLE_LINK_CLASS } from "@/components/bots/teams/team-title-link";
 import { getBotTeamUrl } from "@/lib/urls";
 
 interface AdminTeam {
@@ -162,7 +163,11 @@ export function TeamsManagement() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h4 className="font-medium truncate">{team.title}</h4>
+                      <h4 className="font-medium truncate">
+                        <Link href={teamUrl} prefetch={false} className={TEAM_TITLE_LINK_CLASS}>
+                          {team.title}
+                        </Link>
+                      </h4>
                       {team.isFeatured && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />}
                       {team.isUnlisted && (
                         <Badge variant="outline" className="text-xs">

@@ -25,6 +25,7 @@ import { normalizeComputerRequirements, type BotColor } from "@/lib/bots/schema"
 import { TeamMarkdown } from "@/components/bots/teams/team-markdown";
 import { BotTeamMemberDialog } from "@/components/bots/teams/bot-team-member-dialog";
 import { TeamInstall } from "@/components/bots/teams/team-install";
+import { TEAM_TITLE_LINK_CLASS } from "@/components/bots/teams/team-title-link";
 import { PromptAuthor } from "@/components/prompts/prompt-author";
 import { UpvoteButton } from "@/components/prompts/upvote-button";
 import {
@@ -35,6 +36,7 @@ import {
   NODE_TITLE_MAX,
   NODE_TITLE_OFFSET,
   TEAM_BOX_FOOTER,
+  TEAM_BOX_HEADER,
   TEAM_NODE_RADIUS,
   cellCenter,
   clampToCell,
@@ -423,9 +425,11 @@ export function BotTeamsGraph({ teams, variant = "overview", isLoggedIn = false 
                     isOverview && !isSelected && "group-hover:stroke-foreground/30 group-focus-visible:stroke-foreground/50"
                   )}
                 />
-                <text x={cell.x + 16} y={cell.y + 28} className="fill-foreground text-sm font-semibold">
-                  {truncateLabel(team.title, Math.floor((cell.width - 56) / 7.5))}
-                </text>
+                {!isOverview && (
+                  <text x={cell.x + 16} y={cell.y + 28} className="fill-foreground text-sm font-semibold">
+                    {truncateLabel(team.title, Math.floor((cell.width - 56) / 7.5))}
+                  </text>
+                )}
                 {team.isFeatured && (
                   <Star x={cell.x + cell.width - 30} y={cell.y + 13} width={16} height={16} className="fill-yellow-500 text-yellow-500" aria-hidden="true" />
                 )}
@@ -479,6 +483,24 @@ export function BotTeamsGraph({ teams, variant = "overview", isLoggedIn = false 
           })}
         </svg>
       )}
+
+      {isOverview &&
+        width > 0 &&
+        teams.map((team, teamIndex) => {
+          const cell = layout.cells[teamIndex];
+          if (!cell) return null;
+          return (
+            <div
+              key={`${team.slug}-title`}
+              className="pointer-events-none absolute flex items-center"
+              style={{ left: cell.x + 16, top: cell.y + 12, width: cell.width - 56, height: TEAM_BOX_HEADER - 20 }}
+            >
+              <Link href={getBotTeamUrl(team.slug)} className={cn("pointer-events-auto max-w-full truncate text-sm font-semibold", TEAM_TITLE_LINK_CLASS)}>
+                {team.title}
+              </Link>
+            </div>
+          );
+        })}
 
       {isOverview &&
         width > 0 &&
