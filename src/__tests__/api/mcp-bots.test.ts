@@ -70,7 +70,7 @@ function botRecord(overrides: Record<string, unknown> = {}) {
 let client: Client;
 
 async function connect(authenticatedUser: typeof alice | null) {
-  const server = createMcpServer({ user: authenticatedUser, filters: {}, baseUrl: "https://prompts.chat" });
+  const server = createMcpServer({ user: authenticatedUser, filters: {}, baseUrl: "https://prompts.chat", promptEnhancer: true });
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
   client = new Client({ name: "test-bot", version: "1.0.0" });
   await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);

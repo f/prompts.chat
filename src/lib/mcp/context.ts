@@ -17,4 +17,6 @@ export interface McpContext {
   };
   /** Absolute site URL used for web links */
   baseUrl: string;
+  /** features.promptEnhancer; when false the improve_prompt tool is not registered */
+  promptEnhancer: boolean;
 }

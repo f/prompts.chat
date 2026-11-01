@@ -450,56 +450,57 @@ curl -X POST ${baseUrl}/api/mcp \\
           </div>
 
           {/* improve_prompt Tool */}
-          <div className="space-y-4">
-            <h3 className="font-medium flex items-center gap-2">
-              <Sparkles className="h-4 w-4" />
-              improve_prompt
-              <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">Requires Auth</span>
-            </h3>
-            <p className="text-muted-foreground">
-              Transform a basic prompt into a well-structured, comprehensive prompt using AI.
-              Searches for similar prompts for inspiration and generates improved versions.
-            </p>
+          {promptEnhancerEnabled && (
+            <div className="space-y-4">
+              <h3 className="font-medium flex items-center gap-2">
+                <Sparkles className="h-4 w-4" />
+                improve_prompt
+                <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">Requires Auth</span>
+              </h3>
+              <p className="text-muted-foreground">
+                Transform a basic prompt into a well-structured, comprehensive prompt using AI.
+                Searches for similar prompts for inspiration and generates improved versions.
+              </p>
 
-            <div className="border rounded-lg overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[140px]">Parameter</TableHead>
-                    <TableHead className="w-[100px]">Type</TableHead>
-                    <TableHead className="w-[80px]">Required</TableHead>
-                    <TableHead>Description</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell className="font-mono text-xs">prompt</TableCell>
-                    <TableCell className="text-muted-foreground text-xs">string</TableCell>
-                    <TableCell className="text-xs">Yes</TableCell>
-                    <TableCell className="text-muted-foreground text-sm">The prompt to improve (max 10,000 chars)</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-mono text-xs">outputType</TableCell>
-                    <TableCell className="text-muted-foreground text-xs">string</TableCell>
-                    <TableCell className="text-xs">No</TableCell>
-                    <TableCell className="text-muted-foreground text-sm">
-                      Content type: <code className="text-xs">text</code> (default), <code className="text-xs">image</code>, <code className="text-xs">video</code>, <code className="text-xs">sound</code>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-mono text-xs">outputFormat</TableCell>
-                    <TableCell className="text-muted-foreground text-xs">string</TableCell>
-                    <TableCell className="text-xs">No</TableCell>
-                    <TableCell className="text-muted-foreground text-sm">
-                      Response format: <code className="text-xs">text</code> (default), <code className="text-xs">structured_json</code>, <code className="text-xs">structured_yaml</code>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </div>
+              <div className="border rounded-lg overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[140px]">Parameter</TableHead>
+                      <TableHead className="w-[100px]">Type</TableHead>
+                      <TableHead className="w-[80px]">Required</TableHead>
+                      <TableHead>Description</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell className="font-mono text-xs">prompt</TableCell>
+                      <TableCell className="text-muted-foreground text-xs">string</TableCell>
+                      <TableCell className="text-xs">Yes</TableCell>
+                      <TableCell className="text-muted-foreground text-sm">The prompt to improve (max 10,000 chars)</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-mono text-xs">outputType</TableCell>
+                      <TableCell className="text-muted-foreground text-xs">string</TableCell>
+                      <TableCell className="text-xs">No</TableCell>
+                      <TableCell className="text-muted-foreground text-sm">
+                        Content type: <code className="text-xs">text</code> (default), <code className="text-xs">image</code>, <code className="text-xs">video</code>, <code className="text-xs">sound</code>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-mono text-xs">outputFormat</TableCell>
+                      <TableCell className="text-muted-foreground text-xs">string</TableCell>
+                      <TableCell className="text-xs">No</TableCell>
+                      <TableCell className="text-muted-foreground text-sm">
+                        Response format: <code className="text-xs">text</code> (default), <code className="text-xs">structured_json</code>, <code className="text-xs">structured_yaml</code>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
 
-            <div className="bg-muted rounded-lg p-4 font-mono text-sm overflow-x-auto">
-              <pre>{`# Improve a prompt via MCP
+              <div className="bg-muted rounded-lg p-4 font-mono text-sm overflow-x-auto">
+                <pre>{`# Improve a prompt via MCP
 curl -X POST ${baseUrl}/api/mcp \\
   -H "Content-Type: application/json" \\
   -H "PROMPTS_API_KEY: pchat_your_api_key_here" \\
@@ -516,8 +517,9 @@ curl -X POST ${baseUrl}/api/mcp \\
       }
     }
   }'`}</pre>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* save_skill Tool */}
           <div className="space-y-4">

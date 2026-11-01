@@ -287,34 +287,36 @@ export function registerPromptTools(server: McpServer, ctx: McpContext) {
     }
   );
 
-  defineTool(
-    server,
-    ctx,
-    {
-      name: "improve_prompt",
-      title: "Improve Prompt",
-      description:
-        "Transform a basic prompt into a well-structured, comprehensive prompt using AI. Optionally searches for similar prompts for inspiration. Supports different output types (text, image, video, sound) and formats (text, JSON, YAML). Requires API key authentication.",
-      kind: "ai",
-      requiresAuth: true,
-      inputSchema: {
-        prompt: z.string().min(1).max(10000).describe("The prompt to improve"),
-        outputType: z.enum(["text", "image", "video", "sound"]).default("text").describe("Content type: text, image, video, or sound"),
-        outputFormat: z
-          .enum(["text", "structured_json", "structured_yaml"])
-          .default("text")
-          .describe("Response format: text, structured_json, or structured_yaml"),
+  if (ctx.promptEnhancer) {
+    defineTool(
+      server,
+      ctx,
+      {
+        name: "improve_prompt",
+        title: "Improve Prompt",
+        description:
+          "Transform a basic prompt into a well-structured, comprehensive prompt using AI. Optionally searches for similar prompts for inspiration. Supports different output types (text, image, video, sound) and formats (text, JSON, YAML). Requires API key authentication.",
+        kind: "ai",
+        requiresAuth: true,
+        inputSchema: {
+          prompt: z.string().min(1).max(10000).describe("The prompt to improve"),
+          outputType: z.enum(["text", "image", "video", "sound"]).default("text").describe("Content type: text, image, video, or sound"),
+          outputFormat: z
+            .enum(["text", "structured_json", "structured_yaml"])
+            .default("text")
+            .describe("Response format: text, structured_json, or structured_yaml"),
+        },
+        failureMessage: "Failed to improve prompt",
       },
-      failureMessage: "Failed to improve prompt",
-    },
-    async ({ prompt, outputType, outputFormat }) => {
-      const { improvePrompt } = await import("@/lib/ai/improve-prompt");
-      try {
-        const result = await improvePrompt({ prompt, outputType, outputFormat });
-        return toolResult(result as unknown as Record<string, unknown>);
-      } catch (error) {
-        throw new ToolError("improve_failed", error instanceof Error ? error.message : "Failed to improve prompt");
+      async ({ prompt, outputType, outputFormat }) => {
+        const { improvePrompt } = await import("@/lib/ai/improve-prompt");
+        try {
+          const result = await improvePrompt({ prompt, outputType, outputFormat });
+          return toolResult(result as unknown as Record<string, unknown>);
+        } catch (error) {
+          throw new ToolError("improve_failed", error instanceof Error ? error.message : "Failed to improve prompt");
+        }
       }
-    }
-  );
+    );
+  }
 }

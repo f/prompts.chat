@@ -1,6 +1,7 @@
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import appConfig from "@/../prompts.config";
 import { mcpAiToolLimiter, mcpGeneralLimiter, mcpToolCallLimiter, mcpWriteToolLimiter } from "@/lib/rate-limit";
+import { getConfig } from "@/lib/config";
 import { getBaseUrl } from "@/lib/seo";
 import { authenticateApiKey, getMcpApiKey } from "./auth";
 import type { McpContext } from "./context";
@@ -122,6 +123,7 @@ export async function handleMcpRequest(request: Request): Promise<Response> {
     user: await authenticateApiKey(apiKey),
     filters: { categories: listParam(url, "categories"), tags: listParam(url, "tags"), users: listParam(url, "users") },
     baseUrl: getBaseUrl(),
+    promptEnhancer: (await getConfig()).features.promptEnhancer !== false,
   };
 
   const server = createMcpServer(ctx);

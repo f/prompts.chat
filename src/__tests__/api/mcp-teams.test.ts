@@ -88,7 +88,7 @@ function teamRecord(overrides: Record<string, unknown> = {}) {
 let client: Client;
 
 async function connect(user: typeof alice | null) {
-  const server = createMcpServer({ user, filters: {}, baseUrl: "https://prompts.chat" });
+  const server = createMcpServer({ user, filters: {}, baseUrl: "https://prompts.chat", promptEnhancer: true });
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
   client = new Client({ name: "test-team", version: "1.0.0" });
   await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);

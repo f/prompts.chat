@@ -7,13 +7,18 @@ import { registerPromptTools } from "./tools/prompts";
 import { registerSkillTools } from "./tools/skills";
 import { registerTeamTools } from "./tools/teams";
 
-const INSTRUCTIONS = `prompts.chat is a community library of AI prompts, Agent Skills and bots.
+function instructions(ctx: McpContext): string {
+  const authTools = ctx.promptEnhancer
+    ? "Saving (save_prompt, save_skill, save_bot, save_team, skill file tools) and improve_prompt need"
+    : "Saving (save_prompt, save_skill, save_bot, save_team, skill file tools) needs";
+  return `prompts.chat is a community library of AI prompts, Agent Skills and bots.
 - Discover: search_prompts, search_skills and search_bots, then get_prompt, get_skill or get_bot for the full item. Results also link to prompts-chat:// resources you can read.
 - Bot teams are bots that hand work off to each other: list_teams, then get_team for the handoffs and an install prompt.
 - Prompts with \${variable} placeholders: pass values in get_prompt's \`variables\`; ask the user for any listed in missingVariables.
-- Saving (save_prompt, save_skill, save_bot, save_team, skill file tools) and improve_prompt need an API key from prompts.chat/settings.
+- ${authTools} an API key from prompts.chat/settings.
 - An agent can back itself up with save_bot (an idempotent upsert of your own bot) and restore with get_my_bot.
 - Paged results return nextCursor; pass it back as cursor for the next page.`;
+}
 
 /** A server for one request: stateless, so every request builds its own with that request's user */
 export function createMcpServer(ctx: McpContext): McpServer {
@@ -32,7 +37,7 @@ export function createMcpServer(ctx: McpContext): McpServer {
         prompts: { listChanged: false },
         resources: { listChanged: false },
       },
-      instructions: INSTRUCTIONS,
+      instructions: instructions(ctx),
     }
   );
 
