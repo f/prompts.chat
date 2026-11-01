@@ -2,9 +2,13 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { ArrowLeft, ArrowRight, Shield, Star, Users, Workflow } from "lucide-react";
+import { ArrowLeft, ArrowRight, GitPullRequest, History, Shield, Star, Users, Workflow } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ChangeRequestList } from "@/components/prompts/change-request-list";
+import { TeamVersionHistory } from "@/components/bots/teams/team-version-history";
+import { listTeamChangeRequests, listTeamVersions } from "@/lib/bots/team-changes";
 import { BotCard } from "@/components/bots/bot-card";
 import { BotAvatar } from "@/components/bots/bot-avatar";
 import { BotTeamsGraph } from "@/components/bots/teams/bot-teams-graph";
@@ -51,7 +55,16 @@ export default async function BotTeamPage({ params }: BotTeamPageProps) {
   const baseUrl = getBaseUrl();
   const path = getBotTeamUrl(team.slug);
   const titles = new Map(team.members.map(({ bot }) => [bot.id, bot]));
-  const voted = (await getVotedTeamIds(viewer?.id, [team.id])).has(team.id);
+  const tChanges = await getTranslations("changeRequests");
+  const canProposeChange = !!viewer && viewer.id !== team.authorId;
+  const [votedIds, changeRequests, versions] = await Promise.all([
+    getVotedTeamIds(viewer?.id, [team.id]),
+    listTeamChangeRequests(team.id),
+    listTeamVersions(team.id, viewer),
+  ]);
+  const voted = votedIds.has(team.id);
+  const pendingCount = changeRequests.filter((request) => request.status === "PENDING").length;
+  const versionHistory = versions.map(({ author, ...version }) => ({ ...version, authorUsername: author?.username ?? null }));
 
   return (
     <div className="container max-w-5xl min-w-0 py-6">
@@ -68,9 +81,19 @@ export default async function BotTeamPage({ params }: BotTeamPageProps) {
           <ArrowLeft className="h-4 w-4" />
           {t("backToTeams")}
         </Link>
-        {canEditTeam(team, viewer) && (
-          <BotTeamActions team={{ slug: team.slug }} />
-        )}
+        <div className="flex flex-wrap items-center gap-2">
+          {canProposeChange && (
+            <Button size="sm" className="h-8 text-xs" asChild>
+              <Link href={`${path}/changes/new`}>
+                <GitPullRequest className="h-3.5 w-3.5 mr-1" />
+                {tPrompts("createChangeRequest")}
+              </Link>
+            </Button>
+          )}
+          {canEditTeam(team, viewer) && (
+            <BotTeamActions team={{ slug: team.slug }} />
+          )}
+        </div>
       </div>
 
       <header className="mb-6 space-y-3">
@@ -192,6 +215,29 @@ export default async function BotTeamPage({ params }: BotTeamPageProps) {
           )}
         </section>
       </div>
+
+      {changeRequests.length > 0 && (
+        <section aria-labelledby="team-change-requests" className="mt-8 space-y-2">
+          <h2 id="team-change-requests" className="flex items-center gap-2 text-base font-semibold">
+            <GitPullRequest className="h-4 w-4" />
+            {tChanges("title")}
+            {pendingCount > 0 && (
+              <Badge variant="destructive" className="h-5 min-w-5 px-1 text-xs">{pendingCount}</Badge>
+            )}
+          </h2>
+          <ChangeRequestList changeRequests={changeRequests} basePath={path} />
+        </section>
+      )}
+
+      {versionHistory.length > 0 && (
+        <section aria-labelledby="team-history" className="mt-8 space-y-2">
+          <h2 id="team-history" className="flex items-center gap-2 text-base font-semibold">
+            <History className="h-4 w-4" />
+            {tPrompts("versionHistory")}
+          </h2>
+          <TeamVersionHistory versions={versionHistory} current={versionHistory[0].snapshot} />
+        </section>
+      )}
 
       {viewer?.role === "ADMIN" && (
         <div className="mt-8 p-4 rounded-lg border border-red-500/30 bg-red-500/5">

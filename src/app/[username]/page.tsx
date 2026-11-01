@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getTranslations, getLocale } from "next-intl/server";
 import { formatDistanceToNow } from "@/lib/date";
-import { getBotUrl, getPromptUrl } from "@/lib/urls";
+import { getBotTeamUrl, getBotUrl, getPromptUrl } from "@/lib/urls";
 import { Calendar, ArrowBigUp, Bot, UsersRound, ChevronLeft, ChevronRight, FileText, Settings, GitPullRequest, Clock, Check, X, Pin, BadgeCheck, Users, ShieldCheck, Heart, ImageIcon } from "lucide-react";
 import { BotCard } from "@/components/bots/bot-card";
 import { listBotsByAuthor, publicBotWhere } from "@/lib/bots";
@@ -403,7 +403,14 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
   // 1. Change requests the user submitted (all statuses for owner, approved only for others)
   // 2. Change requests received on user's prompts (approved ones)
   // Limited to 100 each to prevent memory issues
-  const [submittedChangeRequests, receivedChangeRequests] = await Promise.all([
+  const teamChangeRequestSelect = {
+    id: true,
+    status: true,
+    createdAt: true,
+    author: { select: { name: true, username: true } },
+    team: { select: { slug: true, title: true, author: { select: { name: true, username: true } } } },
+  } as const;
+  const [submittedChangeRequests, receivedChangeRequests, submittedTeamChangeRequests, receivedTeamChangeRequests] = await Promise.all([
     // CRs user submitted
     db.changeRequest.findMany({
       where: {
@@ -476,16 +483,57 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
         },
       },
     }),
+    db.botTeamChangeRequest.findMany({
+      where: {
+        authorId: user.id,
+        ...(isOwner ? {} : { status: "APPROVED", team: { isUnlisted: false } }),
+      },
+      orderBy: { createdAt: "desc" },
+      take: 100,
+      select: teamChangeRequestSelect,
+    }),
+    db.botTeamChangeRequest.findMany({
+      where: {
+        team: { authorId: user.id, ...(isOwner ? {} : { isUnlisted: false }) },
+        ...(isOwner ? {} : { status: "APPROVED" }),
+        authorId: { not: user.id },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 100,
+      select: teamChangeRequestSelect,
+    }),
   ]);
+
+  const promptChangeItem = (cr: (typeof submittedChangeRequests)[number], type: "submitted" | "received") => ({
+    id: cr.id,
+    type,
+    status: cr.status,
+    createdAt: cr.createdAt,
+    title: cr.prompt.title,
+    href: `${cr.prompt.type === "BOT" ? getBotUrl(cr.prompt.id, cr.prompt.slug) : getPromptUrl(cr.prompt.id, cr.prompt.slug)}/changes/${cr.id}`,
+    ownerName: cr.prompt.author?.name || cr.prompt.author?.username,
+    authorName: cr.author.name || cr.author.username,
+  });
+  const teamChangeItem = (cr: (typeof submittedTeamChangeRequests)[number], type: "submitted" | "received") => ({
+    id: cr.id,
+    type,
+    status: cr.status,
+    createdAt: cr.createdAt,
+    title: cr.team.title,
+    href: `${getBotTeamUrl(cr.team.slug)}/changes/${cr.id}`,
+    ownerName: cr.team.author.name || cr.team.author.username,
+    authorName: cr.author.name || cr.author.username,
+  });
 
   // Combine and sort by date, marking the type
   const allChangeRequests = [
-    ...submittedChangeRequests.map((cr) => ({ ...cr, type: "submitted" as const })),
-    ...receivedChangeRequests.map((cr) => ({ ...cr, type: "received" as const })),
+    ...submittedChangeRequests.map((cr) => promptChangeItem(cr, "submitted")),
+    ...receivedChangeRequests.map((cr) => promptChangeItem(cr, "received")),
+    ...submittedTeamChangeRequests.map((cr) => teamChangeItem(cr, "submitted")),
+    ...receivedTeamChangeRequests.map((cr) => teamChangeItem(cr, "received")),
   ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-  const pendingCount = submittedChangeRequests.filter((cr) => cr.status === "PENDING").length +
-    receivedChangeRequests.filter((cr) => cr.status === "PENDING").length;
+  const pendingCount = allChangeRequests.filter((cr) => cr.status === "PENDING").length;
   const defaultTab = tab === "changes" ? "changes" : tab === "bots" ? "bots" : tab === "teams" ? "teams" : tab === "contributions" ? "contributions" : tab === "likes" ? "likes" : tab === "examples" ? "examples" : "prompts";
 
   const statusColors = {
@@ -915,15 +963,15 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
                 return (
                   <Link 
                     key={cr.id} 
-                    href={`${cr.prompt.type === "BOT" ? getBotUrl(cr.prompt.id, cr.prompt.slug) : getPromptUrl(cr.prompt.id, cr.prompt.slug)}/changes/${cr.id}`}
+                    href={cr.href}
                     className="flex items-center justify-between px-3 py-2 hover:bg-accent/50 transition-colors"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium truncate">{cr.prompt.title}</p>
+                      <p className="text-sm font-medium truncate">{cr.title}</p>
                       <p className="text-xs text-muted-foreground">
                         {cr.type === "submitted" 
-                          ? tChanges("submittedTo", { author: cr.prompt.author?.name || cr.prompt.author?.username })
-                          : tChanges("receivedFrom", { author: cr.author.name || cr.author.username })
+                          ? tChanges("submittedTo", { author: cr.ownerName })
+                          : tChanges("receivedFrom", { author: cr.authorName })
                         }
                         {" · "}
                         {formatDistanceToNow(cr.createdAt, locale)}

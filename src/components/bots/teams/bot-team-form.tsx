@@ -354,13 +354,17 @@ function TeamHandoffEditor({
 interface BotTeamFormProps {
   /** Edit this team; omitted to create a new one */
   team?: TeamEditorValue & { slug: string };
+  /** Submit the edits as a change request to the team's owner instead of saving them */
+  propose?: boolean;
   categories: CategoryOption[];
   tags: TagOption[];
 }
 
 /** Create or edit a team: title, description, category, tags, member bots with roles, and handoffs */
-export function BotTeamForm({ team, categories, tags }: BotTeamFormProps) {
+export function BotTeamForm({ team, categories, tags, propose = false }: BotTeamFormProps) {
   const t = useTranslations("bots.teams");
+  const tChanges = useTranslations("changeRequests");
+  const [reason, setReason] = useState("");
   const tPrompts = useTranslations("prompts");
   const tCommon = useTranslations("common");
   const router = useRouter();
@@ -388,8 +392,9 @@ export function BotTeamForm({ team, categories, tags }: BotTeamFormProps) {
 
     setSaving(true);
     try {
-      const response = await fetch(isEdit ? `/api/bots/teams/${team.slug}` : "/api/bots/teams", {
-        method: isEdit ? "PUT" : "POST",
+      const url = propose && team ? `/api/bots/teams/${team.slug}/changes` : isEdit ? `/api/bots/teams/${team.slug}` : "/api/bots/teams";
+      const response = await fetch(url, {
+        method: isEdit && !propose ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: value.title,
@@ -402,6 +407,7 @@ export function BotTeamForm({ team, categories, tags }: BotTeamFormProps) {
             description: member.description || null,
           })),
           links: value.links,
+          ...(propose && { reason: reason.trim() || null }),
         }),
       });
       const result = await response.json();
@@ -410,7 +416,14 @@ export function BotTeamForm({ team, categories, tags }: BotTeamFormProps) {
         if (result.error === "invalid_bots") return void toast.error(t("form.invalidBots"));
         if (result.error === "invalid_category") return void toast.error(t("form.invalidCategory"));
         if (result.error === "invalid_tags") return void toast.error(t("form.invalidTags"));
+        if (result.error === "no_change") return void toast.error(tChanges("mustMakeChanges"));
         return void toast.error(result.message || tCommon("somethingWentWrong"));
+      }
+      if (propose && team) {
+        toast.success(tChanges("created"));
+        router.push(`${getBotTeamUrl(team.slug)}/changes/${result.id}`);
+        router.refresh();
+        return;
       }
       toast.success(isEdit ? t("form.updated") : t("form.created"));
       router.push(getBotTeamUrl(result.slug));
@@ -426,8 +439,8 @@ export function BotTeamForm({ team, categories, tags }: BotTeamFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(submit)} className="space-y-6">
         <div className="space-y-1">
-          <h1 className="text-lg font-semibold">{isEdit ? t("form.editTitle") : t("form.createTitle")}</h1>
-          <p className="text-sm text-muted-foreground">{t("form.intro")}</p>
+          <h1 className="text-lg font-semibold">{propose ? tChanges("proposeTeamTitle") : isEdit ? t("form.editTitle") : t("form.createTitle")}</h1>
+          <p className="text-sm text-muted-foreground">{propose ? tChanges("proposeTeamIntro") : t("form.intro")}</p>
         </div>
 
         <div className="space-y-4 pb-6 border-b">
@@ -522,13 +535,27 @@ export function BotTeamForm({ team, categories, tags }: BotTeamFormProps) {
           />
         </section>
 
+        {propose && (
+          <div className="space-y-2">
+            <label htmlFor="team-change-reason" className="text-sm font-medium leading-none">{tChanges("reason")}</label>
+            <Textarea
+              id="team-change-reason"
+              value={reason}
+              maxLength={2000}
+              rows={3}
+              placeholder={tChanges("reasonPlaceholder")}
+              onChange={(event) => setReason(event.target.value)}
+            />
+          </div>
+        )}
+
         <div className="flex justify-end gap-2 pt-4 border-t">
           <Button type="button" variant="outline" onClick={() => router.back()} disabled={saving}>
             {t("form.cancel")}
           </Button>
           <Button type="submit" disabled={saving}>
             {saving && <Loader2 className="h-4 w-4 animate-spin" />}
-            {isEdit ? t("form.save") : t("form.submit")}
+            {propose ? tChanges("submit") : isEdit ? t("form.save") : t("form.submit")}
           </Button>
         </div>
       </form>
