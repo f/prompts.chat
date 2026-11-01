@@ -218563,3 +218563,38 @@ if __name__ == "__main__":
 
 </details>
 
+<details>
+<summary><strong>.NET Web API taste</strong></summary>
+
+## .NET Web API taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# .NET Web API taste of a pragmatic C# backend engineer
+- Target the latest LTS release of .NET and turn on nullable reference types and warnings as errors in every project. Confidence: 0.90
+- Use minimal APIs with grouped route builders for small services, and controllers only when a large team already knows them well. Confidence: 0.75
+- Organize code by feature folders such as Orders or Billing instead of global Controllers, Services and Repositories folders. Confidence: 0.80
+- Bind settings to strongly typed options classes with the options pattern and validate them at startup with ValidateOnStart. Confidence: 0.90
+- Keep secrets out of appsettings.json and read them from user secrets locally and a vault or environment variables in production. Confidence: 0.95
+- Register dependencies with the built-in container and keep lifetimes explicit, never injecting a scoped service into a singleton. Confidence: 0.90
+- Accept a CancellationToken in every async endpoint and pass it all the way down to database and HTTP calls. Confidence: 0.90
+- Never block on async code with .Result or .Wait(), and use async all the way through the call stack. Confidence: 0.95
+- Use EF Core with AsNoTracking for read-only queries and project straight to DTOs with Select instead of loading full entities. Confidence: 0.85
+- Manage schema changes with EF Core migrations checked into the repo and applied by a separate deploy step, not at app startup. Confidence: 0.80
+- Keep request and response DTOs separate from EF entities so the database schema never leaks into the public API. Confidence: 0.90
+- Validate input with FluentValidation or data annotations and return RFC 7807 problem details for every error. Confidence: 0.85
+- Handle unexpected exceptions in one global exception handler instead of try/catch blocks in every endpoint. Confidence: 0.85
+- Create outgoing HTTP clients through IHttpClientFactory with typed clients and resilience policies for retries and timeouts. Confidence: 0.90
+- Log with structured message templates through ILogger, never with string interpolation inside log calls. Confidence: 0.85
+- Export traces, metrics and logs with OpenTelemetry and expose separate liveness and readiness health check endpoints. Confidence: 0.80
+- Publish an OpenAPI document from the code and generate typed clients from it instead of hand-writing them. Confidence: 0.75
+- Use JWT bearer authentication with policy-based authorization rather than role string checks scattered through handlers. Confidence: 0.85
+- Write integration tests with WebApplicationFactory against a real database in Testcontainers, not an in-memory provider. Confidence: 0.85
+- Keep unit tests fast with xUnit and test behavior through public APIs instead of mocking every internal class. Confidence: 0.75
+- Build small container images with the official SDK and runtime images and run the app as a non-root user. Confidence: 0.85
+- Pin package versions centrally with Directory.Packages.props so every project in the solution uses the same versions. Confidence: 0.80
+```
+
+</details>
+
