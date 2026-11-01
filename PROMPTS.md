@@ -215580,3 +215580,16 @@ A photorealistic Halloween night photograph of five glowing carved jack-o'-lante
 
 </details>
 
+<details>
+<summary><strong>Layered Papercut Lightbox of a Haunted Victorian Mansion Under a Harvest Moon</strong></summary>
+
+## Layered Papercut Lightbox of a Haunted Victorian Mansion Under a Harvest Moon
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A backlit layered papercut lightbox (cut-paper shadow box) of a haunted Victorian mansion on a hill in front of a huge glowing orange harvest moon, vertical portrait 3:4. In the center stands a dark purple Victorian mansion with a tall central pointed tower, steep gables, and a wraparound porch with columns and front steps, its arched windows glowing warm yellow-orange. Wavy layered bands of deep purple and violet paper form the sky at the top, with soft purple paper clouds on both sides and five or six small black paper bats. On the right, a big twisted bare black tree reaches over the scene, a wooden swing hanging from it on two chains. A winding path of grey paper stepping stones leads from the bottom center up the hill to the porch steps. Black wrought-iron spiked fences stand on the left and right, rounded tombstones sit in the dark foreground, and layers of orange spiky grass and rolling orange and purple hills fill the middle. Visible paper texture, cut edges, and soft shadows between the layers. Spooky but charming mood. No people, no text, no logos.
+```
+
+</details>
+
