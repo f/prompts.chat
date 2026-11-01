@@ -238,7 +238,7 @@ export function teamSortFromParam(param: string | undefined): TeamSort {
 }
 
 const TEAM_ORDER: Record<TeamSort, Prisma.BotTeamOrderByWithRelationInput[]> = {
-  newest: [{ isFeatured: "desc" }, { createdAt: "desc" }, { id: "desc" }],
+  newest: [{ createdAt: "desc" }, { id: "desc" }],
   oldest: [{ createdAt: "asc" }, { id: "asc" }],
   upvotes: [{ votes: { _count: "desc" } }, { createdAt: "desc" }, { id: "desc" }],
 };
@@ -264,24 +264,19 @@ function teamListWhere({ q, authorId, categorySlug, tagSlugs = [], platform, inc
   };
 }
 
-/**
- * Newest first, with featured teams ahead of the rest unless `featuredFirst` is false (strictly by
- * creation date, e.g. for moderation scans), or sorted otherwise
- */
+/** Newest first by default, or sorted oldest first or by upvotes */
 export async function listTeams({
   skip = 0,
   take = 24,
   viewer = null,
   sort = "newest",
-  featuredFirst = true,
   ...filters
-}: TeamListFilters & { skip?: number; take?: number; viewer?: TeamViewer | null; sort?: TeamSort; featuredFirst?: boolean } = {}) {
+}: TeamListFilters & { skip?: number; take?: number; viewer?: TeamViewer | null; sort?: TeamSort } = {}) {
   const where = teamListWhere(filters);
-  const orderBy = sort === "newest" && !featuredFirst ? TEAM_ORDER.newest.slice(1) : TEAM_ORDER[sort];
   const [records, total] = await Promise.all([
     db.botTeam.findMany({
       where,
-      orderBy,
+      orderBy: TEAM_ORDER[sort],
       skip,
       take,
       select: teamSummarySelect,

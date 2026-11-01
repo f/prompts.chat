@@ -317,7 +317,6 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
     listTeams({
       authorId: user.id,
       includeUnlisted: canSeeUnlisted,
-      featuredFirst: false,
       skip: (teamsPage - 1) * perPage,
       take: perPage,
       viewer,

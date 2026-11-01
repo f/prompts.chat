@@ -304,7 +304,7 @@ describe("bot teams API", () => {
   });
 
   describe("team sorting", () => {
-    it("orders by upvotes, oldest, or newest with featured teams first", async () => {
+    it("orders by upvotes, oldest, or strictly newest by default", async () => {
       vi.mocked(db.botTeam.count).mockResolvedValue(0);
       await listTeams({ sort: "upvotes" });
       await listTeams({ sort: "oldest" });
@@ -312,7 +312,7 @@ describe("bot teams API", () => {
       const orders = vi.mocked(db.botTeam.findMany).mock.calls.map((call) => call[0]!.orderBy);
       expect(orders[0]).toEqual([{ votes: { _count: "desc" } }, { createdAt: "desc" }, { id: "desc" }]);
       expect(orders[1]).toEqual([{ createdAt: "asc" }, { id: "asc" }]);
-      expect(orders[2]).toEqual([{ isFeatured: "desc" }, { createdAt: "desc" }, { id: "desc" }]);
+      expect(orders[2]).toEqual([{ createdAt: "desc" }, { id: "desc" }]);
     });
   });
 
@@ -325,6 +325,12 @@ describe("bot teams API", () => {
       const args = vi.mocked(db.botTeam.findMany).mock.calls[0][0]!;
       expect(args).toMatchObject({ skip: 20, take: 10, orderBy: [{ createdAt: "desc" }, { id: "desc" }] });
       expect(args.where).toMatchObject({ isUnlisted: false });
+    });
+
+    it("orders strictly newest first when no sort is given", async () => {
+      vi.mocked(db.botTeam.count).mockResolvedValue(0);
+      await LIST(new Request("http://localhost/api/bots/teams"));
+      expect(vi.mocked(db.botTeam.findMany).mock.calls[0][0]!.orderBy).toEqual([{ createdAt: "desc" }, { id: "desc" }]);
     });
 
     it("is also served at /api/teams", async () => {
