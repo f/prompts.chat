@@ -1580,7 +1580,7 @@
     "interactiveBanner": {
       "badge": "İnteraktif Versiyon Mevcut",
       "title": "Daha Detaylı ve İnteraktif Bir Deneyim mi İstiyorsunuz?",
-      "description": "29 bölüm, uygulamalı alıştırmalar ve gerçek dünya örnekleri içeren kapsamlı interaktif rehberimizle AI prompt yazımında ustalaşın.",
+      "description": "30 bölüm, uygulamalı alıştırmalar ve gerçek dünya örnekleri içeren kapsamlı interaktif rehberimizle AI prompt yazımında ustalaşın.",
       "cta": "İnteraktif Kitabı Oku"
     },
     "generalTips": {
@@ -2050,7 +2050,7 @@
     "donate": "Projeyi destekle",
     "subtitle": "Net ve Etkili Promptlar Hazırlamak için İnteraktif Bir Rehber",
     "metaTitle": "Prompt Mühendisliği Rehberi: İnteraktif Prompt Yazma Kitabı",
-    "metaDescription": "Bu ücretsiz, interaktif rehber ile AI prompt mühendisliğinde ustalaşın. ChatGPT promptları, düşünce zinciri muhakemesi, az örnekli öğrenme ve gelişmiş teknikleri öğrenin. Gerçek örneklerle 29+ bölüm.",
+    "metaDescription": "Bu ücretsiz, interaktif rehber ile AI prompt mühendisliğinde ustalaşın. ChatGPT promptları, düşünce zinciri muhakemesi, az örnekli öğrenme ve gelişmiş teknikleri öğrenin. Gerçek örneklerle 30+ bölüm.",
     "interactiveGuideBy": "İnteraktif Rehber - Yazar:",
     "authorIntro": "Merhaba, ben <author>Fatih Kadir Akın</author>. GitHub'daki popüler <repoLink>Awesome ChatGPT Prompts</repoLink> deposunun ve <siteName>prompts.chat</siteName>'in küratörüyüm.",
     "bookDescription": "Bu kapsamlı ve interaktif rehberde, ilgi çekici ve etkili sohbetler sağlayan çarpıcı AI promptları oluşturmak için uzman stratejilerini keşfedeceksiniz. AI modellerinin nasıl çalıştığını anlamaktan prompt zincirleme ve ajantik sistemler gibi gelişmiş tekniklerde ustalaşmaya kadar, bu kitap AI etkileşimlerinizi bir üst seviyeye taşımak için ihtiyacınız olan araçları sağlar.",
@@ -2072,7 +2072,7 @@
       "part4": "Bölüm 4: En İyi Uygulamalar",
       "part5": "Bölüm 5: Kullanım Senaryoları",
       "part6": "Bölüm 6: Sonuç",
-      "chapters": "29 İnteraktif Bölüm"
+      "chapters": "30 İnteraktif Bölüm"
     },
     "startReading": "Okumaya Başla",
     "skipToChapter1": "1. Bölüme Atla",
@@ -2130,6 +2130,7 @@
       "13-multimodal-prompting": "Çok Modlu Prompting",
       "14-context-engineering": "Bağlam Mühendisliği",
       "14a-loop-engineering": "Döngü Mühendisliği",
+      "24a-from-prompt-to-team": "Prompttan Ekibe",
       "25-agents-and-skills": "Ajanlar ve Yetenekler",
       "15-common-pitfalls": "Yaygın Tuzaklar",
       "16-ethics-responsible-use": "Etik ve Sorumlu Kullanım",
@@ -2164,6 +2165,7 @@
       "13-multimodal-prompting": "Görüntü, ses ve video ile çalışma",
       "14-context-engineering": "RAG, embedding'ler, fonksiyon çağırma ve MCP",
       "14a-loop-engineering": "Harekete geçen, doğrulayan, uyum sağlayan ve ne zaman duracağını bilen geri bildirim döngüleri tasarlama",
+      "24a-from-prompt-to-team": "Prompt, beceri, ajan, bot ve ekip nedir, aralarındaki farklar nelerdir: sade bir dille",
       "25-agents-and-skills": "Yeniden kullanılabilir yetenek paketleriyle AI ajanları oluşturma",
       "15-common-pitfalls": "Kaçınılması gereken hatalar",
       "16-ethics-responsible-use": "AI'da etik değerlendirmeler",

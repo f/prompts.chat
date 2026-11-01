@@ -107,7 +107,7 @@ const jsonLd = {
     name: "Prompt Engineering",
   },
   isAccessibleForFree: true,
-  numberOfPages: 29,
+  numberOfPages: 30,
   bookFormat: "https://schema.org/EBook",
   license: "https://creativecommons.org/publicdomain/zero/1.0/",
 };

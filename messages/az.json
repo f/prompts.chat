@@ -1580,7 +1580,7 @@
     "interactiveBanner": {
       "badge": "İnteraktiv Versiya Mövcuddur",
       "title": "Daha Ətraflı və İnteraktiv Təcrübə İstəyirsiniz?",
-      "description": "29 fəsil, praktiki təmrinlər və real dünya nümunələri ilə hərtarafəli interaktiv rəhbərimizlə AI prompt yazmağı mənimsaəyin.",
+      "description": "30 fəsil, praktiki təmrinlər və real dünya nümunələri ilə hərtarafəli interaktiv rəhbərimizlə AI prompt yazmağı mənimsaəyin.",
       "cta": "İnteraktiv Kitabı Oxuyun"
     },
     "generalTips": {
@@ -2050,7 +2050,7 @@
     "donate": "Layihəni dəstəkləyin",
     "subtitle": "Aydın və Effektiv Promptlar Yaratmaq üçün İnteraktiv Bələdçi",
     "metaTitle": "Prompt Mühəndisliyi Bələdçisi: İnteraktiv Prompting Kitabı",
-    "metaDescription": "Bu pulsuz, interaktiv bələdçi ilə AI prompt mühəndisliyini mənimsəyin. ChatGPT promptları, düşüncə zənciri, az nümunə ilə öyrənmə və qabaqcıl texnikaları öyrənin. Real nümunələrlə 29+ fəsil.",
+    "metaDescription": "Bu pulsuz, interaktiv bələdçi ilə AI prompt mühəndisliyini mənimsəyin. ChatGPT promptları, düşüncə zənciri, az nümunə ilə öyrənmə və qabaqcıl texnikaları öyrənin. Real nümunələrlə 30+ fəsil.",
     "interactiveGuideBy": "İnteraktiv Bələdçi",
     "authorIntro": "Salam, mən <author>Fatih Kadir Akın</author>-am, GitHub-da populyar <repoLink>Awesome ChatGPT Prompts</repoLink> deposunun və <siteName>prompts.chat</siteName> saytının yaradıcısıyam.",
     "bookDescription": "Bu hərtərəfli və interaktiv bələdçidə, cəlbedici və effektiv söhbətlər aparan AI promptları yaratmaq üçün ekspert strategiyaları kəşf edəcəksiniz. AI modellərinin necə işlədiyini anlamaqdan prompt zəncirləmə və agent sistemləri kimi qabaqcıl texnikalara qədər, bu kitab AI qarşılıqlı əlaqələrinizi növbəti səviyyəyə çatdırmaq üçün lazım olan alətləri təqdim edir.",
@@ -2072,7 +2072,7 @@
       "part4": "Hissə 4: Ən Yaxşı Təcrübələr",
       "part5": "Hissə 5: İstifadə Halları",
       "part6": "Hissə 6: Nəticə",
-      "chapters": "29 İnteraktiv Fəsil"
+      "chapters": "30 İnteraktiv Fəsil"
     },
     "startReading": "Oxumağa Başla",
     "skipToChapter1": "1-ci Fəsilə Keç",
@@ -2130,6 +2130,7 @@
       "13-multimodal-prompting": "Multimodal Prompting",
       "14-context-engineering": "Kontekst Mühəndisliyi",
       "14a-loop-engineering": "Dövrə Mühəndisliyi",
+      "24a-from-prompt-to-team": "Promptdan Komandaya",
       "25-agents-and-skills": "Agentlər və Bacarıqlar",
       "15-common-pitfalls": "Ümumi Səhvlər",
       "16-ethics-responsible-use": "Etika və Məsuliyyətli İstifadə",
@@ -2164,6 +2165,7 @@
       "13-multimodal-prompting": "Şəkillər, audio və video ilə işləmək",
       "14-context-engineering": "RAG, embeddinglər, funksiya çağırışı və MCP",
       "14a-loop-engineering": "Hərəkət edən, yoxlayan, uyğunlaşan və nə vaxt dayanacağını bilən əks əlaqə dövrələri hazırlamaq",
+      "24a-from-prompt-to-team": "Prompt, bacarıq, agent, bot və komanda sadə dillə: nədir və bir-birindən nə ilə fərqlənir",
       "25-agents-and-skills": "Təkrar istifadə edilə bilən bacarıq paketləri ilə AI agentləri qurmaq",
       "15-common-pitfalls": "Qarşısı alınmalı səhvlər",
       "16-ethics-responsible-use": "AI-da etik mülahizələr",

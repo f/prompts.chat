@@ -48,7 +48,7 @@ export function Checklist({ title, items }: ChecklistProps) {
             key={index}
             onClick={() => toggleItem(index)}
             className={cn(
-              "w-full flex items-center gap-3 px-4 py-3 text-left transition-colors",
+              "w-full flex items-center gap-3 px-4 py-3 text-start transition-colors",
               checked[index] ? "bg-green-50/50 dark:bg-green-950/20" : "hover:bg-muted/30"
             )}
           >
@@ -158,11 +158,11 @@ export function InfoGrid({ items, columns = 1 }: InfoGridProps) {
         return (
           <div
             key={index}
-            className="group relative pl-4 py-2"
+            className="group relative ps-4 py-2"
           >
             {/* Color accent bar */}
             <div className={cn(
-              "absolute left-0 top-0 bottom-0 w-1 rounded-full",
+              "absolute start-0 top-0 bottom-0 w-1 rounded-full",
               colors.text.replace("text-", "bg-")
             )} />
             

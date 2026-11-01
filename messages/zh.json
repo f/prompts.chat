@@ -1580,7 +1580,7 @@
     "interactiveBanner": {
       "badge": "互动版本已上线",
       "title": "想要更详细的互动体验？",
-      "description": "通过我们包含29章内容、实践练习和真实案例的综合互动指南，深入掌握AI提示词技巧。",
+      "description": "通过我们包含30章内容、实践练习和真实案例的综合互动指南，深入掌握AI提示词技巧。",
       "cta": "阅读互动电子书"
     },
     "generalTips": {
@@ -2050,7 +2050,7 @@
     "donate": "支持项目",
     "subtitle": "创建清晰有效提示词的互动指南",
     "metaTitle": "提示词工程指南：互动提示词工程之书",
-    "metaDescription": "通过这本免费互动指南掌握AI提示词工程。学习ChatGPT提示词、思维链推理、少样本学习和高级技术。29+章节配有真实示例。",
+    "metaDescription": "通过这本免费互动指南掌握AI提示词工程。学习ChatGPT提示词、思维链推理、少样本学习和高级技术。30+章节配有真实示例。",
     "interactiveGuideBy": "互动指南 by",
     "authorIntro": "你好，我是<author>Fatih Kadir Akın</author>，GitHub上热门<repoLink>Awesome ChatGPT Prompts</repoLink>仓库和<siteName>prompts.chat</siteName>的策展人。",
     "bookDescription": "在这本全面的互动指南中，你将发现创建引人入胜的AI提示词的专家策略，这些提示词能够产生有效的对话。从理解AI模型的工作原理到掌握提示词链和代理系统等高级技术，这本书为你提供了将AI交互提升到新水平所需的工具。",
@@ -2072,7 +2072,7 @@
       "part4": "第4部分：最佳实践",
       "part5": "第5部分：用例",
       "part6": "第6部分：结论",
-      "chapters": "29个互动章节"
+      "chapters": "30个互动章节"
     },
     "startReading": "开始阅读",
     "skipToChapter1": "跳至第1章",
@@ -2130,6 +2130,7 @@
       "13-multimodal-prompting": "多模态提示词",
       "14-context-engineering": "上下文工程",
       "14a-loop-engineering": "循环工程",
+      "24a-from-prompt-to-team": "从提示词到团队",
       "25-agents-and-skills": "代理和技能",
       "15-common-pitfalls": "常见陷阱",
       "16-ethics-responsible-use": "伦理和负责任使用",
@@ -2164,6 +2165,7 @@
       "13-multimodal-prompting": "处理图像、音频和视频",
       "14-context-engineering": "RAG、嵌入、函数调用和MCP",
       "14a-loop-engineering": "设计能够行动、验证、调整并知道何时停止的反馈循环",
+      "24a-from-prompt-to-team": "用浅显的语言讲清提示词、技能、智能体、机器人和团队，以及它们之间的区别",
       "25-agents-and-skills": "使用可重用技能包构建AI代理",
       "15-common-pitfalls": "要避免的错误",
       "16-ethics-responsible-use": "AI中的伦理考虑",

@@ -1580,7 +1580,7 @@
     "interactiveBanner": {
       "badge": "インタラクティブ版が利用可能",
       "title": "より詳細でインタラクティブな体験をお求めですか？",
-      "description": "29章、実践的な演習、実例を含む包括的なインタラクティブガイドで、AIプロンプトをマスターしましょう。",
+      "description": "30章、実践的な演習、実例を含む包括的なインタラクティブガイドで、AIプロンプトをマスターしましょう。",
       "cta": "インタラクティブブックを読む"
     },
     "generalTips": {
@@ -2050,7 +2050,7 @@
     "donate": "プロジェクトを支援",
     "subtitle": "明確で効果的なプロンプトを作成するためのインタラクティブガイド",
     "metaTitle": "プロンプトエンジニアリングガイド：インタラクティブ・プロンプティングブック",
-    "metaDescription": "この無料インタラクティブガイドでAIプロンプトエンジニアリングをマスターしましょう。ChatGPTプロンプト、Chain-of-Thought推論、Few-Shot学習、高度なテクニックを学べます。実例付き29以上のチャプター。",
+    "metaDescription": "この無料インタラクティブガイドでAIプロンプトエンジニアリングをマスターしましょう。ChatGPTプロンプト、Chain-of-Thought推論、Few-Shot学習、高度なテクニックを学べます。実例付き30以上のチャプター。",
     "interactiveGuideBy": "インタラクティブガイド by",
     "authorIntro": "こんにちは、<author>Fatih Kadir Akın</author>です。GitHubで人気の<repoLink>Awesome ChatGPT Prompts</repoLink>リポジトリと<siteName>prompts.chat</siteName>のキュレーターです。",
     "bookDescription": "この包括的でインタラクティブなガイドでは、魅力的で効果的な会話を生み出す説得力のあるAIプロンプトを作成するための専門家の戦略を発見できます。AIモデルの仕組みの理解から、プロンプトチェーニングやエージェントシステムなどの高度なテクニックの習得まで、この本はAIインタラクションを次のレベルに引き上げるために必要なツールを提供します。",
@@ -2072,7 +2072,7 @@
       "part4": "パート4：ベストプラクティス",
       "part5": "パート5：ユースケース",
       "part6": "パート6：結論",
-      "chapters": "29のインタラクティブチャプター"
+      "chapters": "30のインタラクティブチャプター"
     },
     "startReading": "読み始める",
     "skipToChapter1": "第1章へ",
@@ -2130,6 +2130,7 @@
       "13-multimodal-prompting": "マルチモーダルプロンプティング",
       "14-context-engineering": "コンテキストエンジニアリング",
       "14a-loop-engineering": "ループエンジニアリング",
+      "24a-from-prompt-to-team": "プロンプトからチームへ",
       "25-agents-and-skills": "エージェントとスキル",
       "15-common-pitfalls": "よくある落とし穴",
       "16-ethics-responsible-use": "倫理と責任ある使用",
@@ -2164,6 +2165,7 @@
       "13-multimodal-prompting": "画像、音声、動画を扱う",
       "14-context-engineering": "RAG、エンベディング、関数呼び出し、MCP",
       "14a-loop-engineering": "行動し、検証し、適応し、停止すべき時を判断するフィードバックループの設計",
+      "24a-from-prompt-to-team": "プロンプト、スキル、エージェント、ボット、チームをやさしい言葉で解説し、その違いを整理する",
       "25-agents-and-skills": "再利用可能なスキルパッケージでAIエージェントを構築する",
       "15-common-pitfalls": "避けるべき間違い",
       "16-ethics-responsible-use": "AIにおける倫理的考慮",

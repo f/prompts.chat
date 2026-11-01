@@ -1580,7 +1580,7 @@
     "interactiveBanner": {
       "badge": "Interactive Version Available",
       "title": "Want a More Detailed & Interactive Experience?",
-      "description": "Dive deeper with our comprehensive interactive guide featuring 29 chapters, hands-on exercises, and real-world examples to master AI prompting.",
+      "description": "Dive deeper with our comprehensive interactive guide featuring 30 chapters, hands-on exercises, and real-world examples to master AI prompting.",
       "cta": "Read the Interactive Book"
     },
     "generalTips": {
@@ -2050,7 +2050,7 @@
     "donate": "Support the project",
     "subtitle": "An Interactive Guide to Crafting Clear and Effective Prompts",
     "metaTitle": "Prompt Engineering Guide: The Interactive Book of Prompting",
-    "metaDescription": "Master AI prompt engineering with this free, interactive guide. Learn ChatGPT prompts, chain-of-thought reasoning, few-shot learning, and advanced techniques. 29+ chapters with real examples.",
+    "metaDescription": "Master AI prompt engineering with this free, interactive guide. Learn ChatGPT prompts, chain-of-thought reasoning, few-shot learning, and advanced techniques. 30+ chapters with real examples.",
     "interactiveGuideBy": "An Interactive Guide by",
     "authorIntro": "Hi, I'm <author>Fatih Kadir Akın</author>, the curator of the popular <repoLink>Awesome ChatGPT Prompts</repoLink> repository on GitHub and <siteName>prompts.chat</siteName>.",
     "bookDescription": "In this comprehensive and interactive guide, you'll discover expert strategies for crafting compelling AI prompts that drive engaging and effective conversations. From understanding how AI models work to mastering advanced techniques like prompt chaining and agentic systems, this book provides you with the tools you need to take your AI interactions to the next level.",
@@ -2072,7 +2072,7 @@
       "part4": "Part 4: Best Practices",
       "part5": "Part 5: Use Cases",
       "part6": "Part 6: Conclusion",
-      "chapters": "29 Interactive Chapters"
+      "chapters": "30 Interactive Chapters"
     },
     "startReading": "Start Reading",
     "skipToChapter1": "Skip to Chapter 1",
@@ -2130,6 +2130,7 @@
       "13-multimodal-prompting": "Multimodal Prompting",
       "14-context-engineering": "Context Engineering",
       "14a-loop-engineering": "Loop Engineering",
+      "24a-from-prompt-to-team": "From Prompt to Team",
       "25-agents-and-skills": "Agents & Skills",
       "15-common-pitfalls": "Common Pitfalls",
       "16-ethics-responsible-use": "Ethics & Responsible Use",
@@ -2164,6 +2165,7 @@
       "13-multimodal-prompting": "Working with images, audio, and video",
       "14-context-engineering": "RAG, embeddings, function calling, and MCP",
       "14a-loop-engineering": "Designing feedback cycles that act, verify, adapt, and know when to stop",
+      "24a-from-prompt-to-team": "Prompts, skills, agents, bots, and teams in plain words, and how they differ",
       "25-agents-and-skills": "Building AI agents with reusable skill packages",
       "15-common-pitfalls": "Mistakes to avoid",
       "16-ethics-responsible-use": "Ethical considerations in AI",

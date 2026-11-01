@@ -1580,7 +1580,7 @@
     "interactiveBanner": {
       "badge": "인터랙티브 버전 제공",
       "title": "더 상세하고 인터랙티브한 경험을 원하시나요?",
-      "description": "29개 챕터, 실습 연습, 실제 예제가 포함된 종합 인터랙티브 가이드로 AI 프롬프트를 마스터하세요.",
+      "description": "30개 챕터, 실습 연습, 실제 예제가 포함된 종합 인터랙티브 가이드로 AI 프롬프트를 마스터하세요.",
       "cta": "인터랙티브 북 읽기"
     },
     "generalTips": {
@@ -2050,7 +2050,7 @@
     "donate": "프로젝트 후원하기",
     "subtitle": "명확하고 효과적인 프롬프트를 만들기 위한 인터랙티브 가이드",
     "metaTitle": "프롬프트 엔지니어링 가이드: 인터랙티브 프롬프팅 북",
-    "metaDescription": "이 무료 인터랙티브 가이드로 AI 프롬프트 엔지니어링을 마스터하세요. ChatGPT 프롬프트, 사고의 사슬 추론, Few-Shot 학습 및 고급 기술을 배우세요. 실제 예제가 포함된 29개 이상의 챕터.",
+    "metaDescription": "이 무료 인터랙티브 가이드로 AI 프롬프트 엔지니어링을 마스터하세요. ChatGPT 프롬프트, 사고의 사슬 추론, Few-Shot 학습 및 고급 기술을 배우세요. 실제 예제가 포함된 30개 이상의 챕터.",
     "interactiveGuideBy": "인터랙티브 가이드 by",
     "authorIntro": "안녕하세요, 저는 <author>Fatih Kadir Akın</author>입니다. GitHub의 인기 <repoLink>Awesome ChatGPT Prompts</repoLink> 저장소와 <siteName>prompts.chat</siteName>의 큐레이터입니다.",
     "bookDescription": "이 포괄적인 인터랙티브 가이드에서 매력적이고 효과적인 대화를 생성하는 설득력 있는 AI 프롬프트를 만들기 위한 전문 전략을 발견할 수 있습니다. AI 모델의 작동 방식 이해부터 프롬프트 체이닝 및 에이전트 시스템과 같은 고급 기술 습득까지, 이 책은 AI 상호작용을 다음 단계로 끌어올리는 데 필요한 도구를 제공합니다.",
@@ -2072,7 +2072,7 @@
       "part4": "파트 4: 모범 사례",
       "part5": "파트 5: 사용 사례",
       "part6": "파트 6: 결론",
-      "chapters": "29개 인터랙티브 챕터"
+      "chapters": "30개 인터랙티브 챕터"
     },
     "startReading": "읽기 시작",
     "skipToChapter1": "1장으로 이동",
@@ -2130,6 +2130,7 @@
       "13-multimodal-prompting": "멀티모달 프롬프팅",
       "14-context-engineering": "컨텍스트 엔지니어링",
       "14a-loop-engineering": "루프 엔지니어링",
+      "24a-from-prompt-to-team": "프롬프트에서 팀까지",
       "25-agents-and-skills": "에이전트와 스킬",
       "15-common-pitfalls": "흔한 실수",
       "16-ethics-responsible-use": "윤리와 책임있는 사용",
@@ -2164,6 +2165,7 @@
       "13-multimodal-prompting": "이미지, 오디오, 비디오 작업",
       "14-context-engineering": "RAG, 임베딩, 함수 호출 및 MCP",
       "14a-loop-engineering": "행동하고 검증하고 적응하며 언제 멈출지 아는 피드백 루프 설계",
+      "24a-from-prompt-to-team": "프롬프트, 스킬, 에이전트, 봇, 팀을 쉬운 말로 풀어 보고 서로 어떻게 다른지 알아보기",
       "25-agents-and-skills": "재사용 가능한 스킬 패키지로 AI 에이전트 구축",
       "15-common-pitfalls": "피해야 할 실수",
       "16-ethics-responsible-use": "AI의 윤리적 고려사항",
