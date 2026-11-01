@@ -696,7 +696,15 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
             <div className="flex items-center gap-2 mb-4 p-3 bg-primary/10 border border-primary/20 rounded-lg">
               <Calendar className="h-4 w-4 text-primary" />
               <span className="text-sm">
-                {t("filteringByDate", { date: validFilterDateStart.toLocaleDateString(locale, { weekday: "long", year: "numeric", month: "long", day: "numeric" }) })}
+                {t("filteringByDate", {
+                  date: validFilterDateStart.toLocaleDateString(locale, {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    timeZone: "UTC",
+                  }),
+                })}
               </span>
               <Link 
                 href={`/@${user.username}`} 
