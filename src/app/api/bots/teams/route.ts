@@ -13,8 +13,7 @@ function positiveInt(value: string | null): number | null {
 
 /**
  * Lists teams. `perPage` (or the older `limit`) and `page` paginate; `sort` is newest, oldest or
- * upvotes. An explicit `sort=newest` orders strictly by creation date, without featured teams first,
- * so moderation routines can scan new teams. Admins (by session or API key) can pass
+ * upvotes (newest by default). Admins (by session or API key) can pass
  * `includeUnlisted=true` to also get unlisted teams and teams without public members.
  */
 export async function GET(request: Request) {
@@ -31,7 +30,6 @@ export async function GET(request: Request) {
     categorySlug: searchParams.get("category") || undefined,
     tagSlugs: (searchParams.get("tag") ?? "").split(",").map((tag) => tag.trim()).filter(Boolean),
     sort,
-    featuredFirst: !sort,
     includeUnlisted,
     skip: (page - 1) * perPage,
     take: perPage,

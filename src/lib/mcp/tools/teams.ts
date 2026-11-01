@@ -85,7 +85,7 @@ export function registerTeamTools(server: McpServer, ctx: McpContext) {
       name: "list_teams",
       title: "List Bot Teams",
       description:
-        "List bot teams on prompts.chat (/bots/teams): groups of bots that hand work off to each other, featured first, then newest. " +
+        "List bot teams on prompts.chat (/bots/teams): groups of bots that hand work off to each other, newest first. " +
         "Optionally filter by keywords matched against the team title, description and member bot names, by category and by tags. " +
         "Returns small summaries (a plain-text excerpt of the description, members with roles, handoff count); call get_team for the full markdown description, what each member does, the handoff flow and the install prompt.",
       kind: "read",
