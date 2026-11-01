@@ -6,6 +6,8 @@ export type HFListingType = "skills" | "bots" | "teams";
  * Default queries for the skills, bots and teams listings. The dataset (columns act, prompt,
  * for_devs, type, contributor) is the /prompts.csv export: its type column is only TEXT,
  * STRUCTURED or IMAGE, bots are left out and teams aren't prompts, so each query matches content.
+ * The dataset viewer mangles backslashes, *, || and -- inside strings in a ?sql= query, so the
+ * queries avoid them.
  */
 export const HF_LISTING_QUERIES: Record<HFListingType, string> = {
   skills: `-- Agent Skills: a SKILL.md with name and description front matter,
@@ -16,9 +18,10 @@ SELECT
 FROM
     train
 WHERE
-    (regexp_matches(prompt, '^\\s*---\\s*\\n(?:[^\\n]*\\n)*?name:\\s*\\S')
-        AND regexp_matches(prompt, '\\ndescription:'))
-    OR contains(prompt, chr(31) || 'FILE:')
+    (starts_with(ltrim(prompt), repeat('-', 3))
+        AND contains(split_part(ltrim(prompt), repeat('-', 3), 2), 'name:')
+        AND contains(split_part(ltrim(prompt), repeat('-', 3), 2), 'description:'))
+    OR contains(prompt, concat(chr(31), 'FILE:'))
 LIMIT 50;`,
   bots: `-- Bots aren't in this dataset; this finds bot, agent
 -- and assistant personas among the prompts
@@ -28,7 +31,7 @@ SELECT
 FROM
     train
 WHERE
-    regexp_matches(LOWER(act), '\\b(bot|chatbot|agent|assistant|companion|persona)\\b')
+    regexp_matches(LOWER(act), '(^|[^a-z])(bot|chatbot|agent|assistant|companion|persona)([^a-z]|$)')
 LIMIT 50;`,
   teams: `-- Bot teams aren't in this dataset; this finds prompts
 -- for agents that work together or hand work off
@@ -38,8 +41,8 @@ SELECT
 FROM
     train
 WHERE
-    regexp_matches(LOWER(act || ' ' || prompt),
-        'multi[- ]agent|sub-?agents?|hand ?offs?\\b|orchestrat|agent team|team of (ai )?agents')
+    regexp_matches(LOWER(concat(act, ' ', prompt)),
+        'multi[- ]agent|sub-?agents?|hand ?offs?([^a-z]|$)|orchestrat|agent team|team of (ai )?agents')
 LIMIT 50;`,
 };
 

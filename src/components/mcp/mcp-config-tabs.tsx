@@ -73,7 +73,7 @@ export function McpConfigTabs({ baseUrl, queryParams, className, mode, onModeCha
   return (
     <div className={cn("space-y-2", className)}>
       {/* Client Tabs */}
-      <div className="flex gap-0.5 overflow-x-auto" role="tablist">
+      <div className="flex flex-wrap gap-0.5" role="tablist">
         {MCP_CLIENTS.map((client) => (
           <button
             key={client}
