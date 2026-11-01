@@ -8,6 +8,7 @@ import { createMcpServer } from "@/lib/mcp/server";
 import type { McpContext } from "@/lib/mcp/context";
 import { encodeCursor } from "@/lib/mcp/schemas";
 import { extractVariables, fillVariables, missingVariables } from "@/lib/mcp/variables";
+import { improvePrompt } from "@/lib/ai/improve-prompt";
 
 vi.mock("@/lib/db", () => ({
   db: {
@@ -24,12 +25,14 @@ vi.mock("@/lib/prompt-write", () => ({ createPrompt: vi.fn(), updatePrompt: vi.f
 
 vi.mock("@/lib/ai/embeddings", () => ({ isAISearchEnabled: vi.fn(), semanticSearch: vi.fn() }));
 
+vi.mock("@/lib/ai/improve-prompt", () => ({ improvePrompt: vi.fn() }));
+
 const alice = { id: "user-1", username: "alice", role: "USER", mcpPromptsPublicByDefault: false };
 
 let client: Client;
 
-async function connect(user: McpContext["user"], filters: McpContext["filters"] = {}) {
-  const server = createMcpServer({ user, filters, baseUrl: "https://prompts.chat" });
+async function connect(user: McpContext["user"], filters: McpContext["filters"] = {}, promptEnhancer = true) {
+  const server = createMcpServer({ user, filters, baseUrl: "https://prompts.chat", promptEnhancer });
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
   client = new Client({ name: "test", version: "1.0.0" });
   await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
@@ -73,6 +76,41 @@ describe("MCP server", () => {
       const result = await client.callTool({ name: "search_prompts", arguments: { query: "x", cursor: "!!" } });
       expect(result.isError).toBe(true);
       expect(JSON.parse((result.content as { text: string }[])[0].text)).toMatchObject({ code: "invalid_cursor" });
+    });
+  });
+
+  describe("improve_prompt", () => {
+    const improved = {
+      original: "write a poem",
+      improved: "You are a poet...",
+      outputType: "text",
+      outputFormat: "text",
+      inspirations: [],
+      model: "gpt-4o",
+    };
+
+    it("improves the prompt when the prompt enhancer is enabled", async () => {
+      vi.mocked(improvePrompt).mockResolvedValue(improved as never);
+      await connect(alice);
+
+      const result = await client.callTool({ name: "improve_prompt", arguments: { prompt: "write a poem" } });
+
+      expect(result.isError).toBeUndefined();
+      expect(improvePrompt).toHaveBeenCalledWith({ prompt: "write a poem", outputType: "text", outputFormat: "text" });
+      expect(client.getInstructions()).toMatch(/improve_prompt/);
+    });
+
+    it("is not listed, mentioned or callable when the prompt enhancer is disabled", async () => {
+      await connect(alice, {}, false);
+
+      const { tools } = await client.listTools();
+      expect(tools.map((tool) => tool.name)).not.toContain("improve_prompt");
+      expect(tools.map((tool) => tool.name)).toContain("search_prompts");
+      expect(client.getInstructions()).not.toMatch(/improve_prompt/);
+
+      const result = await client.callTool({ name: "improve_prompt", arguments: { prompt: "write a poem" } });
+      expect(result.isError).toBe(true);
+      expect(improvePrompt).not.toHaveBeenCalled();
     });
   });
 

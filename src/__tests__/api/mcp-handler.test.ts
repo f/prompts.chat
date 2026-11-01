@@ -19,8 +19,9 @@ vi.mock("@/lib/rate-limit", () => ({
   mcpAiToolLimiter: { check: vi.fn() },
 }));
 
-const config = vi.hoisted(() => ({ features: { mcp: true } }));
+const config = vi.hoisted(() => ({ features: { mcp: true, promptEnhancer: true } }));
 vi.mock("@/../prompts.config", () => ({ default: config }));
+vi.mock("@/lib/config", () => ({ getConfig: async () => config }));
 
 vi.mock("@/lib/seo", () => ({ getBaseUrl: () => "https://prompts.chat" }));
 
@@ -58,6 +59,7 @@ describe("MCP route", () => {
     vi.clearAllMocks();
     clearAuthCache();
     config.features.mcp = true;
+    config.features.promptEnhancer = true;
     for (const limiter of [mcpGeneralLimiter, mcpToolCallLimiter, mcpWriteToolLimiter, mcpAiToolLimiter]) {
       vi.mocked(limiter.check).mockReturnValue({ allowed: true, remaining: 1 });
     }
@@ -115,6 +117,16 @@ describe("MCP route", () => {
       });
       expect(result.capabilities).toMatchObject({ tools: {}, prompts: {}, resources: {} });
       expect(result.instructions).toMatch(/save_bot/);
+    });
+
+    it("leaves improve_prompt out of tools/list when the prompt enhancer is disabled", async () => {
+      config.features.promptEnhancer = false;
+      const { POST } = await loadRoute();
+      const res = await POST(rpc({ jsonrpc: "2.0", id: 2, method: "tools/list" }));
+
+      const names = (await res.json()).result.tools.map((t: { name: string }) => t.name);
+      expect(names).not.toContain("improve_prompt");
+      expect(names).toContain("search_prompts");
     });
 
     it("serves sequential requests without a session", async () => {

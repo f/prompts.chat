@@ -570,6 +570,11 @@ export default async function SelfHostingPage() {
                     <TableCell className="text-muted-foreground text-xs">false</TableCell>
                     <TableCell className="text-muted-foreground text-sm">AI-powered generation features (requires OPENAI_API_KEY)</TableCell>
                   </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">promptEnhancer</TableCell>
+                    <TableCell className="text-muted-foreground text-xs">true</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">Prompt Enhancer on /developers and the /api/improve-prompt endpoint (requires OPENAI_API_KEY)</TableCell>
+                  </TableRow>
                 </TableBody>
               </Table>
             </div>
