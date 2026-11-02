@@ -219471,3 +219471,16 @@ A risograph print poster of hot air balloons drifting over the fairy chimneys of
 
 </details>
 
+<details>
+<summary><strong>16-Bit Pixel Art Cozy Bookshop on a Rainy Autumn Night</strong></summary>
+
+## 16-Bit Pixel Art Cozy Bookshop on a Rainy Autumn Night
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A 16-bit pixel art scene of a cozy little bookshop on a rainy autumn night, square 1:1, crisp retro game art with a limited, moody palette. The shop fills the right two thirds of the frame: a small dark-green wooden storefront with a dark tiled roof scattered with orange leaves and a green-and-cream striped scalloped awning, water drops dripping from its edge. A big multi-pane front window glows warm yellow, showing wooden shelves and stacks of books inside, green ivy hanging down behind the glass, a small potted fern, and a ginger cat curled up asleep on the inside window sill. On the right, a green door with a small four-pane glass window and a brass knob sits above two stone steps, with climbing ivy on the brick corner of the building. Outside the window stand a blank chalkboard A-frame sign, potted plants in terracotta pots, and a big pile of orange autumn leaves. On the left, an ornate black street lamp with a glowing lantern lights the scene. Wet dark cobblestones shine with golden reflections and scattered leaves, diagonal rain streaks fall across a dark blue cloudy sky and dark trees. Warm light against cool night blues, calm and inviting mood. No people, no text, no logos.
+```
+
+</details>
+
