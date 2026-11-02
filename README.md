@@ -339,19 +339,23 @@ The default ignored output folder is `out/prompt-library/`, containing:
 - `prompt-selector.html`: a self-contained, offline search/category/preview/copy
   selector. Open it locally. Clipboard permissions vary for local files; if copying
   fails, select the preview text and copy it manually.
-- `prompt-directory.json`: a compact JSON array containing the normalized directory
-  and full prompt content, suitable for an AI chat interface to read/render.
+- `prompt-directory.json`: the complete normalized prompt records and content.
+- `prompt-directory.compact.json`: a smaller chat-friendly directory with IDs, titles,
+  categories, variables, and short previews. Resolve a chosen ID against the full
+  JSON export to retrieve its unchanged prompt. Load directory pages or search
+  results into a chat UI instead of putting the entire collection in one message.
 - `prompt-directory.csv`: a round-trip CSV export.
 
 The running application also provides downloads at `/my-library/export?format=json`,
-`?format=csv`, and `?format=html` (the **Offline selector** button). These exports
+`?format=csv`, `?format=compact`, and `?format=html` (the **Offline selector** button). These exports
 contain repository data; browser-local imports are included only in the dashboard's
 JSON/CSV exports. The portable selector uses safe text rendering, does not fetch
 remote resources, and bounds its rendered results to 60 at a time. It deliberately
 keeps a smaller feature set than the dashboard. Refresh it by rerunning the script
 or downloading it again after `prompts.csv` changes. No live GitHub synchronization
 is implied. Standalone HTML cannot execute inside every ChatGPT conversation;
-attach the compact JSON directory to a compatible chat interface instead.
+use the compact directory with a compatible chat interface, retaining the full
+export for prompt lookup.
 
 ### Validation
 

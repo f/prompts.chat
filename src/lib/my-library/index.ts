@@ -159,3 +159,15 @@ export function mergeLibrary(existing: LibraryPrompt[], incoming: LibraryPrompt[
   if (merged.size > MAX_PROMPTS) throw new Error("Too many prompts");
   return [...merged.values()];
 }
+
+/** A lightweight directory for chat UIs; resolve selected IDs against the full export. */
+export function compactDirectory(prompts: LibraryPrompt[]) {
+  return prompts.map(p => ({
+    id: p.id,
+    title: p.title,
+    category: p.category,
+    subcategory: p.subcategory,
+    preview: (p.description || p.prompt).slice(0, 120),
+    variables: p.variables,
+  }));
+}

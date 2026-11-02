@@ -6,7 +6,7 @@ import { createRequire } from "node:module";
 const { JSDOM } = createRequire(import.meta.url)("jsdom") as {
   JSDOM: new (html: string, options: { runScripts: string; url: string }) => { window: Window & typeof globalThis };
 };
-import { customize, exportCsv, importLibrary, MAX_IMPORT_BYTES, mergeLibrary, normalizeRows, parseCsv, searchLibrary } from "./index";
+import { compactDirectory, customize, exportCsv, importLibrary, MAX_IMPORT_BYTES, mergeLibrary, normalizeRows, parseCsv, searchLibrary } from "./index";
 import { exportPortable } from "./export";
 
 const sample = normalizeRows([
@@ -48,6 +48,14 @@ describe("prompt library index", () => {
   it("enforces byte and collection limits", () => {
     expect(() => importLibrary(" ".repeat(MAX_IMPORT_BYTES + 1), "json")).toThrow();
     expect(() => normalizeRows(Array(10001).fill({ title: "x", prompt: "y" }))).toThrow();
+  });
+  it("exports a smaller chat directory with stable lookup IDs", () => {
+    const full = normalizeRows([{ title: "Long prompt", prompt: "x".repeat(10000) }]);
+    const directory = compactDirectory(full);
+    expect(directory[0].id).toBe(full[0].id);
+    expect(directory[0].preview).toHaveLength(120);
+    expect(directory[0]).not.toHaveProperty("prompt");
+    expect(JSON.stringify(directory).length).toBeLessThan(JSON.stringify(full).length / 10);
   });
   it("handles a large collection", () => {
     const data = normalizeRows(Array.from({ length: 10000 }, (_, i) => ({ title: `Prompt ${i}`, prompt: `Unique text ${i}`, category: i % 2 ? "Odd" : "Even" })));

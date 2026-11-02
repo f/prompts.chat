@@ -15,7 +15,7 @@ export function portableHtml(prompts: LibraryPrompt[], labels: PortableLabels): 
   // All prompt content and labels are assigned through textContent/value, never innerHTML.
   return `<!doctype html>
 <html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Prompt Library</title>
+<title></title>
 <style>
 :root{color-scheme:light dark;font:16px system-ui,sans-serif;background:light-dark(#f6f7fb,#11121a);color:light-dark(#20212c,#ececf5)}*{box-sizing:border-box}body{max-width:1400px;margin:auto;padding:24px}h1{letter-spacing:-.04em}p{line-height:1.6}input,select,textarea,button{font:inherit;padding:12px;border:1px solid #8888;border-radius:8px;background:light-dark(white,#20212c);color:inherit}button{cursor:pointer;text-align:start}button:hover,button[aria-pressed=true]{border-color:#818cf8;background:light-dark(#eef0ff,#303453)}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #818cf8;outline-offset:2px}.filters{display:flex;flex-wrap:wrap;gap:12px}.filters label{flex:1;display:flex;flex-direction:column;gap:6px}main{display:grid;grid-template-columns:1fr 1.2fr;gap:24px;margin-top:24px}#list{display:flex;flex-direction:column;gap:10px}#preview{min-width:0}textarea{width:100%;min-height:380px;line-height:1.6;resize:vertical;white-space:pre-wrap}#more{margin-top:12px}#status{min-height:24px}a{color:light-dark(#4338ca,#a5b4fc)}@media(max-width:700px){body{padding:16px}main{grid-template-columns:1fr}}
 </style>
