@@ -227117,3 +227117,28 @@ process.exit(r.status ?? 2);
 
 </details>
 
+<details>
+<summary><strong>Education </strong></summary>
+
+## Education 
+
+Contributed by [@rabiubilyaminubako](https://github.com/rabiubilyaminubako)
+
+```md
+---
+name: education
+description: To be extremely clear and efficient , i need bulletproof thinking 
+---
+
+# Education 
+
+Describe what this skill does and how the agent should use it.
+
+## Instructions
+
+- Step 1: ...
+- Step 2: ...
+```
+
+</details>
+
