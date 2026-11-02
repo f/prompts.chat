@@ -219549,3 +219549,16 @@ Long wooden boats piled with tropical fruit gliding along a calm, misty canal at
 
 </details>
 
+<details>
+<summary><strong>Floating Market at Sunrise (Image-to-Video Animation)</strong></summary>
+
+## Floating Market at Sunrise (Image-to-Video Animation)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Start from the step 2 image "Floating Market Boats Laden with Tropical Fruit on a Misty Canal at Sunrise" as the exact first frame, and animate it into a calm ${duration:6}-second cinematic shot. Keep the weathered stilt house with its rusty tin roof and potted plants on the left bank, the coconut palms and tropical greenery on both banks, the brown-green canal, the wooden boats with their vendors in conical straw hats, the bananas, pineapples, limes, mangoes, and dragon fruit on each boat, the golden backlight from the top right, and the composition exactly as in the image. The vendors paddle steadily with wooden paddles, and the boats glide slowly forward toward the camera, keeping roughly their formation. Gentle ripples and wakes spread across the water around each boat, and the reflections shimmer. As the scene settles, a few more small boats become visible further back in the misty canal. Golden morning mist drifts slowly between the palms, while the camera makes a very slight, steady push-in. The shot ends calm in warm sunrise light. Natural, realistic motion, no cuts, no text, no signs. Soft sound of paddles dipping into the water, quiet lapping of small waves, and distant birdsong.
+```
+
+</details>
+
