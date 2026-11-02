@@ -137,6 +137,7 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
 
   const user = session?.user;
   const moreNavItems = [
+    { href: "/my-library", label: t("myLibrary.title") },
     ...(user ? [{ href: "/feed", label: t("nav.feed") }] : []),
     { href: "/workflows", label: t("nav.workflows") },
     { href: "/categories", label: t("nav.categories") },

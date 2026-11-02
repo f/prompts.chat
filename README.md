@@ -281,3 +281,90 @@ This project is dual-licensed:
 - **Prompt content and data** (prompts.csv, PROMPTS.md, user-submitted prompts) is dedicated to the public domain under [CC0 1.0 Universal](LICENSE-CC0).
 
 See [LICENSE](LICENSE) for details.
+
+## Personal Prompt Library
+
+Visit **`/my-library`** (also in the header's More menu). Search, select a prompt,
+fill any inputs, and copy the completed text. The directory and filters use the
+available categories and source types. The layout supports keyboard navigation,
+mobile screens, and the application's light/dark theme.
+
+This read-only view uses the checked-in **`prompts.csv`**, not a second database.
+`PROMPTS.md` is another presentation of the same repository dataset; importing
+both would duplicate entries. The existing social platform's authentication,
+account collections, editing, change requests, and database versions remain
+available through their existing routes. Library favorites and imports are a
+separate, **browser-local workspace**; they do not sync with account collections.
+Nothing in this feature writes to a database or changes original prompt text.
+
+### Customize, import, and back up
+
+- Inputs recognize `[TOPIC]`, `[TARGET MARKET]`, and the repository's native
+  `${name}` / `${name:default}` syntax. Empty inputs retain placeholders or native
+  defaults. Repeated variables share an input. Original content remains visible.
+- Import a JSON array of prompt objects, or CSV with `title` (or `act`) and
+  `prompt` columns. Optional fields: `description`, `category`, `subcategory`,
+  `tags`, `source`, and `updatedAt` (ISO timestamp). CSV `tags` cells contain a JSON
+  array, quoted according to CSV rules. Source links must use HTTPS.
+- Imports are validated as a whole: maximum 25 MB, 10,000 total records, 200,000
+  characters per prompt, 500 per title, and 100 tags. Invalid imports leave stored
+  data unchanged. Browser storage quotas may impose a smaller practical limit.
+- Use **Export JSON** or **Export CSV** to back up repository and imported entries
+  together. Favorites are saved locally and are not part of those exports. Do not
+  clear site storage without backing up imports you want to keep.
+- Entries have deterministic IDs and content revision fingerprints. Exact
+  duplicates are ignored; changed prompt text creates a distinct entry rather
+  than overwriting the original. Content fingerprints are revision identifiers,
+  not cryptographic integrity signatures. IDs supplied by imports are recomputed.
+- The index includes `id`, `title`, `description`, `category`, `subcategory`, `tags`,
+  `prompt`, `variables`, `source`, `version`, and `updatedAt`. Missing timestamps
+  remain `null`; missing descriptions/tags stay empty. Categories are inferred
+  from titles when absent (`for_devs` maps to Coding); subcategories fall back to
+  the source's `type`. These are organizational hints, not curated metadata.
+- New interface messages use the `myLibrary` translation namespace. All configured
+  locale files currently include English fallback copy for this new namespace.
+
+### Portable selector and chat directory
+
+From the repository root, after `npm ci` with Node 24:
+
+```bash
+npx tsx scripts/export-prompt-library.ts
+# Or choose an output folder:
+npx tsx scripts/export-prompt-library.ts /tmp/my-prompt-library
+```
+
+The default ignored output folder is `out/prompt-library/`, containing:
+
+- `prompt-selector.html`: a self-contained, offline search/category/preview/copy
+  selector. Open it locally. Clipboard permissions vary for local files; if copying
+  fails, select the preview text and copy it manually.
+- `prompt-directory.json`: a compact JSON array containing the normalized directory
+  and full prompt content, suitable for an AI chat interface to read/render.
+- `prompt-directory.csv`: a round-trip CSV export.
+
+The running application also provides downloads at `/my-library/export?format=json`,
+`?format=csv`, and `?format=html` (the **Offline selector** button). These exports
+contain repository data; browser-local imports are included only in the dashboard's
+JSON/CSV exports. The portable selector uses safe text rendering, does not fetch
+remote resources, and bounds its rendered results to 60 at a time. It deliberately
+keeps a smaller feature set than the dashboard. Refresh it by rerunning the script
+or downloading it again after `prompts.csv` changes. No live GitHub synchronization
+is implied. Standalone HTML cannot execute inside every ChatGPT conversation;
+attach the compact JSON directory to a compatible chat interface instead.
+
+### Validation
+
+```bash
+npm test -- src/lib/my-library/index.test.ts src/components/my-library/prompt-library.test.tsx
+npm run lint
+npx tsc --noEmit
+npm run build
+npm run dev
+```
+
+`/my-library` and its exports do not require database access. Other existing routes
+still require the documented PostgreSQL/authentication configuration. The root
+layout also uses Google-hosted fonts during compilation, so a build needs access
+to those font destinations. For a production standalone deployment, retain
+`prompts.csv` beside the server (the explicit filesystem trace includes it).

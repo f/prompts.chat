@@ -25,6 +25,10 @@ const nextConfig: NextConfig = {
   },
   // Enable standalone output for Docker
   output: "standalone",
+  outputFileTracingIncludes: {
+    "/my-library": ["./prompts.csv"],
+    "/my-library/export": ["./prompts.csv"],
+  },
   // Experimental features
   experimental: {
     // Enable server actions
