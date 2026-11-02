@@ -187774,3 +187774,25 @@ Phoenix App taste,"# Phoenix App taste of a pragmatic Elixir engineer
 - Emit metrics through Telemetry and watch them in LiveDashboard and an external metrics backend in production. Confidence: 0.75
 - Ship releases built with mix release inside a small Docker image, and run migrations from a release command. Confidence: 0.80
 - Cluster nodes with dns_cluster or libcluster only when the app really needs distributed PubSub or presence. Confidence: 0.70",TRUE,TEXT,f
+Astro Content Site taste,"# Astro Content Site taste of a performance-minded web developer
+- Use Astro for content-heavy sites like docs, blogs and marketing pages, and pick a full app framework only when most pages are interactive. Confidence: 0.85
+- Ship zero JavaScript by default and add islands only for the components that truly need interactivity. Confidence: 0.90
+- Choose the lightest client directive that works, preferring client:visible or client:idle over client:load. Confidence: 0.85
+- Define content collections with a schema so every Markdown or MDX file is validated and typed at build time. Confidence: 0.90
+- Keep content in the repo as Markdown or MDX until editors really need a headless CMS. Confidence: 0.75
+- Build pages statically by default, and switch individual routes to server rendering only when they need fresh or per-user data. Confidence: 0.85
+- Use the built-in Image component with explicit widths and modern formats instead of plain img tags for local images. Confidence: 0.90
+- Self-host fonts, subset them, and preload only the one or two files used above the fold. Confidence: 0.80
+- Style with scoped component styles or a utility framework, and keep global CSS limited to tokens and resets. Confidence: 0.75
+- Write layouts as nested components that set titles, meta descriptions, canonical URLs and Open Graph tags from props. Confidence: 0.90
+- Generate a sitemap and RSS feed from the content collections instead of maintaining them by hand. Confidence: 0.85
+- Keep URLs stable and add redirects in config whenever a slug changes, so old links never return 404. Confidence: 0.90
+- Use semantic HTML with one h1 per page, real headings in order, and alt text required by the content schema for images. Confidence: 0.90
+- Use View Transitions sparingly for page navigation and respect prefers-reduced-motion. Confidence: 0.70
+- Load third-party scripts like analytics and chat widgets late, or move them off the main thread with Partytown. Confidence: 0.75
+- Keep framework islands in one UI library per site rather than mixing React, Vue and Svelte without a reason. Confidence: 0.80
+- Run astro check and TypeScript in strict mode in CI so broken frontmatter and props fail the build. Confidence: 0.85
+- Check every pull request with link checking and Lighthouse budgets for performance, accessibility and SEO. Confidence: 0.80
+- Deploy previews for each pull request so writers and reviewers can read changes before they merge. Confidence: 0.85
+- Add search with a static index like Pagefind before reaching for a hosted search service. Confidence: 0.75
+- Read secrets only in server code through typed environment variables, and never expose them with a public prefix. Confidence: 0.95",TRUE,TEXT,f
