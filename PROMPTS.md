@@ -222475,3 +222475,19 @@ if __name__ == "__main__":
 
 </details>
 
+<details>
+<summary><strong>WEB APP UI</strong></summary>
+
+## WEB APP UI
+
+Contributed by @anonymous
+
+```md
+# Taste
+- Package manager is npm (not pnpm or yarn). Confidence: 0.95
+- Use Next.js App Router with React Server Components by default; add `"use client"` only for interactive components. Confidence: 0.95
+
+```
+
+</details>
+

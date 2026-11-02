@@ -187723,3 +187723,7 @@ def main(argv=None):
 
 if __name__ == ""__main__"":
     sys.exit(main())",FALSE,TEXT,f
+WEB APP UI,"# Taste
+- Package manager is npm (not pnpm or yarn). Confidence: 0.95
+- Use Next.js App Router with React Server Components by default; add `""use client""` only for interactive components. Confidence: 0.95
+",FALSE,TEXT,fwriter71@gmail.com
