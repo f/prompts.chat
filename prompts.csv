@@ -187751,3 +187751,26 @@ gRPC Service taste,"# gRPC Service taste of a pragmatic distributed systems engi
 - Expose a REST or JSON gateway generated from the same protos for browsers and partners instead of maintaining a second API by hand. Confidence: 0.70
 - Test handlers with an in-process server and real generated clients rather than mocking the generated stubs. Confidence: 0.80
 - Document each service, method and field with comments in the proto file, since that is where readers look first. Confidence: 0.85",TRUE,TEXT,f
+Phoenix App taste,"# Phoenix App taste of a pragmatic Elixir engineer
+- Start new projects on the latest stable Elixir and Phoenix releases, and pin Erlang/OTP and Elixir versions in .tool-versions. Confidence: 0.85
+- Group business logic into Phoenix contexts with small public APIs, and never call Repo directly from controllers or LiveViews. Confidence: 0.90
+- Keep contexts from reaching into each other's schemas, and talk across boundaries through public context functions. Confidence: 0.80
+- Use LiveView for interactive pages by default and add JavaScript hooks only for things the browser must do itself. Confidence: 0.80
+- Build UI from function components with declared attrs and slots instead of large shared templates. Confidence: 0.85
+- Validate all input with Ecto changesets and keep separate changesets for different actions like registration and profile updates. Confidence: 0.90
+- Lean on database constraints with unique_constraint and foreign_key_constraint instead of check-then-insert code. Confidence: 0.95
+- Preload associations explicitly in context functions, and never let a template trigger an N+1 query. Confidence: 0.85
+- Use Ecto.Multi or Repo.transaction for multi-step writes so partial failures roll back cleanly. Confidence: 0.85
+- Write reversible migrations, and split long-running data backfills into separate tasks rather than schema migrations. Confidence: 0.85
+- Read runtime settings and secrets in config/runtime.exs from environment variables, never in compile-time config. Confidence: 0.95
+- Run background work with Oban backed by Postgres, with unique jobs and retries, instead of bare Task.start calls. Confidence: 0.85
+- Put long-lived processes under a supervisor with a clear restart strategy and let them crash instead of rescuing every error. Confidence: 0.90
+- Avoid GenServers as a place to hold data the database already owns; use them for real concurrency or coordination. Confidence: 0.80
+- Return tagged tuples like {:ok, value} and {:error, reason} from context functions and handle them with with blocks. Confidence: 0.90
+- Use PubSub for live updates between LiveViews and keep the broadcast topic names defined in one module. Confidence: 0.75
+- Generate auth with phx.gen.auth and extend it, rather than building login and session handling from scratch. Confidence: 0.80
+- Format code with mix format and run Credo and Dialyzer in CI so style and type issues fail the build. Confidence: 0.80
+- Test contexts with DataCase and the SQL sandbox, and test LiveViews with Phoenix.LiveViewTest instead of a browser. Confidence: 0.85
+- Emit metrics through Telemetry and watch them in LiveDashboard and an external metrics backend in production. Confidence: 0.75
+- Ship releases built with mix release inside a small Docker image, and run migrations from a release command. Confidence: 0.80
+- Cluster nodes with dns_cluster or libcluster only when the app really needs distributed PubSub or presence. Confidence: 0.70",TRUE,TEXT,f
