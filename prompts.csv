@@ -187816,3 +187816,20 @@ No person, animal, object, water, foliage, cloud, flame, or any other painted el
 The camera performs continuous cinematic 3D travel through this frozen scene: it slowly pushes forward, gently orbits, and drifts past the main subjects and spatial layers, revealing depth, parallax, and volumetric form while never altering or animating any content inside the painting.
 Only ambient spatial presence accompanies the movement; there is no dialogue, narration, music, or sound effects from any element within the painting.
 ",FALSE,TEXT,f
+Devops projects,"i need to work on the following projects using pluralsight sandboxes
+ and ministack.org for the next 30 days
+
+
+Create a docker container using cursor
+
+Connect a github repo with AWS
+
+continous integration with codebuild
+
+build a CI/CD pipeline with AWS
+
+create s3 buckets with terraform
+
+launch a kubernetes cluster
+
+",FALSE,TEXT,TunB3ru

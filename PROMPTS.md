@@ -222640,3 +222640,32 @@ Only ambient spatial presence accompanies the movement; there is no dialogue, na
 
 </details>
 
+<details>
+<summary><strong>Devops projects</strong></summary>
+
+## Devops projects
+
+Contributed by [@TunB3ru](https://github.com/TunB3ru)
+
+```md
+i need to work on the following projects using pluralsight sandboxes
+ and ministack.org for the next 30 days
+
+
+Create a docker container using cursor
+
+Connect a github repo with AWS
+
+continous integration with codebuild
+
+build a CI/CD pipeline with AWS
+
+create s3 buckets with terraform
+
+launch a kubernetes cluster
+
+
+```
+
+</details>
+
