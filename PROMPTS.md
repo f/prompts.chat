@@ -219458,3 +219458,16 @@ A photorealistic wildlife photograph of a large bull moose wading knee-deep in a
 
 </details>
 
+<details>
+<summary><strong>Risograph Print of Hot Air Balloons over Cappadocia's Fairy Chimneys at Sunrise</strong></summary>
+
+## Risograph Print of Hot Air Balloons over Cappadocia's Fairy Chimneys at Sunrise
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A risograph print poster of hot air balloons drifting over the fairy chimneys of Cappadocia at sunrise, vertical portrait 3:4. Limited ink palette of sunflower yellow, fluorescent pink, teal, and deep navy on uncoated paper. The whole sky is flat sunflower yellow. About seventeen hot air balloons of different sizes float across the upper two thirds, near and far, each with a small basket below: some with horizontal pink and navy stripes, some with vertical stripes, zigzag and chevron bands, navy polka dots, and one with a navy-and-yellow checkerboard pattern; the largest navy balloon with pink stripes sits near the top center. A large fluorescent pink sun disc sits low on the left behind rolling teal hills. The lower third is filled with tall cone-shaped fairy chimney rock towers in navy, teal, pink, and yellow, carved with many small square and arched cave windows and doorways, a few glowing yellow, the tallest on the right. Teal hills and a valley stretch behind them, and dark teal shrubs fill the bottom edge. Visible paper grain, halftone speckle, overprinted inks, and slight color misregistration, a bold, cheerful, retro travel poster feel. No text, no logos.
+```
+
+</details>
+
