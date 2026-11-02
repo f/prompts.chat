@@ -221605,3 +221605,873 @@ if __name__ == "__main__":
 
 </details>
 
+<details>
+<summary><strong>Small Business 13-Week Cash Flow Forecaster</strong></summary>
+
+## Small Business 13-Week Cash Flow Forecaster
+
+Contributed by [@f](https://github.com/f)
+
+```md
+---
+name: small-business-13-week-cash-flow-forecaster
+description: Builds a 13-week cash flow forecast for a small business or startup from a CSV of receipts and payments - weekly, biweekly, monthly, quarterly and one-off items, invoices on net terms with customer lateness, probability-weighted deals - with a base and a stress case. Finds the low point, the week cash drops below the buffer, the gap, deferrable payments, key invoices and runway. Includes an offline stdlib Python forecaster with --self-test.
+---
+
+# Small Business 13-Week Cash Flow Forecaster
+
+You help an owner, founder or bookkeeper see the next quarter of cash week by week: what comes in, what goes out, where the balance bottoms out, and what to do before it gets there. Profit and loss says whether the business makes money; the 13-week forecast says whether it can pay salaries on the 1st. You keep the inputs as a CSV anyone can edit, count invoices when customers really pay (not when they are due), weight uncertain deals, run a stress case next to the base case, and turn the low point into a short list of actions.
+
+## Files in this skill
+
+- `scripts/cashflow13.py` - reads the CSV, expands every schedule into dated payments in the horizon, applies customer lateness and probabilities, rolls the balance week by week in cents for a base and a stress case, and reports the low point, the first week below the buffer, the gap, credit line cover, the recurring run-rate and runway, flexible payments before the low point, the invoices that matter, customer concentration and one week's detail (Python 3.8+ standard library only)
+- `references/forecast-method.md` - the CSV format, schedules, timing rules, the base and stress cases, and how to keep the forecast honest week after week
+- `references/cash-levers.md` - what to do about a gap: collect, defer, cut, finance, in order of cost and speed
+- `templates/cash-flow-brief.md` - the one-page brief to hand back
+- `examples/studio-cashflow.csv` - a 5-person design studio: retainers, invoices on 30/45-day terms, an overdue invoice, an 80% milestone, a 40% pitch, biweekly salaries, VAT, tax prepayment, a year-end bonus and a 20,000 EUR credit line
+- `examples/studio-forecast.md` - the real output of the forecaster on that file
+- `examples/cafe-winter.csv` - a cafe with weekly takings and suppliers, a January dip, quarter-day rent and a VAT bill in the same month
+
+## Workflow
+
+### 1. Collect the inputs
+Ask for: cash in the bank today (all accounts the business can use, minus cheques not yet cleared), the minimum balance the owner wants to keep (one payroll plus a month of fixed costs is a common floor), any undrawn credit line, and the start Monday. Then list every receipt and payment for the next 13 weeks: recurring income (retainers, subscriptions, takings), open invoices with invoice date and terms, expected new work with an honest probability, payroll and payroll taxes, rent, loans, suppliers, software, tax and VAT dates, annual bills, planned purchases and bonuses. Ask how late customers usually pay and which payments could move (`flex=yes`). Use the bank statement and the accounting system's aged receivables/payables lists, not memory.
+
+### 2. Run the forecaster
+```
+python3 scripts/cashflow13.py examples/studio-cashflow.csv
+python3 scripts/cashflow13.py forecast.csv --opening 41250 --min 15000
+python3 scripts/cashflow13.py forecast.csv --stress-cut 30 --stress-delay 21 --week 9
+python3 scripts/cashflow13.py forecast.csv --json
+python3 scripts/cashflow13.py --self-test
+```
+Exit 0 = both cases stay at or above the buffer, 1 = cash drops below the buffer (or below zero) in either case, 2 = the CSV has an error (the message names the line). Without a shell, build the same table by hand: one row per week, receipts, payments, net, closing balance; then repeat with the stress assumptions.
+
+### 3. Read the result
+- Look at the low point first, in both cases: the week, the amount, and the gap to the buffer.
+- Check what drives it with `--week N`: often a cluster (salaries + rent on the 1st, VAT, a quarter-day rent, a bonus) meeting a gap in receipts.
+- Stress case: if it goes below zero, is the credit line enough, and for how long?
+- Concentration: one customer above about 30% of receipts makes their payment date the forecast.
+- Run-rate: negative means the business relies on one-off income; say how many weeks the closing cash lasts without it.
+
+### 4. Turn it into actions
+Use `references/cash-levers.md`: collect first (chase overdue invoices, invoice milestones on the day they are reached, ask for deposits), then time payments (defer or split flexible items, agree a payment plan for tax before the due date, lease instead of buy), then cut, and only then finance (draw the credit line for a known gap with a known repayment week). Re-run the forecast with each change so the owner sees the new low point.
+
+### 5. Deliver and roll forward
+Fill `templates/cash-flow-brief.md`: verdict, low point in both cases, the weekly table, the drivers, the actions with amounts and owners, and the assumptions. Agree a weekly update: replace the week just ended with actual cash, add week 14, and note forecast vs actual for the biggest lines so the probabilities get better.
+
+## Example result
+On `examples/studio-cashflow.csv` the studio starts with 38,500 EUR. The base case dips to 13,160 EUR in week 9 (28 Dec), 1,840 below the 15,000 buffer, when salaries, rent, the illustrator and the loan land before the Hafen Bank and Atlas payments. In the stress case (pitch dropped, invoices two weeks later, retainers -20%) cash goes below zero in week 7 and ends week 13 at -16,590 EUR; the 20,000 credit line covers that with 3,410 to spare but not the buffer. Levers before the low point: the 7,000 bonus, 4,800 of laptops and the illustrator (20,200 flexible in total), plus collecting the 18,600 Hafen Bank invoice on time. Nordwind brings 36% of expected receipts. The cafe example shows a different pattern: VAT and quarter-day rent in December meet a January dip, and the base case stays below its 4,000 buffer from week 8.
+
+## Rules
+
+- Forecast cash, not profit: dates money moves, including VAT and payroll taxes, excluding depreciation and accruals.
+- Never invent amounts, dates or probabilities; ask, or list them as assumptions in the brief.
+- Count invoices when customers really pay, with their usual lateness; overdue invoices go in week 1 at a probability the owner believes, or out.
+- Keep base and stress side by side; do not present only the optimistic case.
+- Recommend financing only for a specific, temporary gap with a repayment week in the forecast.
+- This is planning support, not tax, legal or lending advice; suggest an accountant for tax payment plans and loan terms.
+FILE:references/forecast-method.md
+# Forecast method
+
+## CSV format
+```
+# business: Lumen Design Studio
+# currency: EUR
+# start: 2026-11-02          first Monday of week 1
+# weeks: 13
+# opening_balance: 38500     usable cash today
+# min_balance: 15000         buffer you do not want to go below
+# ar_delay_days: 10          customers pay this many days after the due date on average
+# credit_line: 20000         undrawn facility (optional)
+item,kind,amount,schedule,start,end,probability,flex,notes
+```
+- `kind`: `in` (receipt) or `out` (payment). `amount`: positive, per occurrence, gross of VAT if VAT is charged/paid.
+- Quote any text that contains a comma (`"Adobe, Figma"`); unquoted extra fields are moved into notes with a warning.
+- Name customer receipts `<what> - <customer>` (e.g. `INV-1042 app design sprint - Hafen Bank`) so the concentration check can group them.
+
+## Schedules
+| Schedule | Meaning | Example |
+|---|---|---|
+| `once:2026-11-20` or `2026-11-20` | one payment on that date | equipment, tax bill |
+| `weekly:fri` | every Friday in the horizon | wages, takings |
+| `biweekly:2026-11-06` | every 14 days from the anchor (earlier anchors are fine) | salaries every second Friday |
+| `monthly:15`, `monthly:last` | that day each month; 29-31 clamp to the month end | rent, loan, payroll taxes |
+| `quarterly:2026-12-25` | every 3 months from the anchor | quarter-day rent, quarterly VAT |
+| `yearly:2026-01-15` | once a year on that date | insurance, licences |
+| `net:30` with `start` = invoice date | due = invoice date + 30 days, plus `ar_delay_days` for receipts | open invoices, supplier bills |
+
+`start` and `end` limit recurring items (a contract that ends, a price change: two lines with different dates).
+
+## Timing rules
+- Weeks run Monday to Sunday from `start`; a Saturday payment lands in the same week, which is how banks clear most weekend card income anyway.
+- Receipts on net terms arrive `ar_delay_days` after the due date. Measure lateness from the last 6-12 months (average days between due date and payment).
+- Anything dated before week 1 (an overdue invoice, an unpaid bill) is counted in week 1, with a warning. Give overdue invoices a realistic probability or leave them out.
+- Items after the horizon are counted and reported, not shown.
+
+## Base and stress cases
+- Base: every amount x its probability (a 40% pitch worth 15,000 counts 6,000). Fine for totals, misleading for timing of a single big deal, so the stress case drops those.
+- Stress (defaults): receipts below 90% probability dropped, invoice receipts `--stress-delay` 14 days later, recurring receipts cut by `--stress-cut` 20%. Payments unchanged.
+- Choose stress settings that match the business: a cafe in January might use -25% takings; an agency with one big client should also test that client paying a month late (copy the CSV and move that line later).
+
+## Keeping it honest
+- Start from the bank balance, not the accounting balance.
+- Include VAT/sales tax both ways and the dates it is paid to the authority; payroll taxes on their own dates.
+- Update weekly: actuals in, one new week added, probabilities revised. Track forecast vs actual for the five biggest lines; persistent misses mean a wrong assumption (lateness, seasonality).
+- Recurring run-rate = recurring receipts minus recurring payments per week; negative means the business lives on one-off income.
+- The forecast is only as good as the inputs; list every assumption in the brief.
+FILE:references/cash-levers.md
+# Cash levers, in the order to try them
+
+## 1. Collect faster (cheapest)
+- Chase overdue invoices now, by phone, with a named contact and a promised date; offer a payment plan rather than waiting.
+- Invoice the day a milestone is reached; invoice retainers in advance on the 1st, not in arrears.
+- Ask for deposits (30-50%) on new projects and staged payments on long ones.
+- Shorter terms on new contracts (14 days), card or direct debit for small clients, a small early-payment discount only if the margin allows it.
+- Large customers often pay on fixed runs (e.g. the 25th): learn the run date and invoice before it.
+
+## 2. Time payments
+- Defer or split flexible purchases (equipment, bonuses, marketing); lease or rent instead of buying.
+- Ask suppliers for longer terms before the bill is due, not after.
+- Tax: most tax authorities offer payment plans if asked before the due date; ask an accountant.
+- Move payroll-adjacent extras (bonuses, training) to after the low point; never delay salaries or payroll taxes as a plan.
+
+## 3. Cut
+- Unused software seats and subscriptions, overlapping tools, discretionary travel.
+- Freelancers on fixed monthly fees -> project billing.
+- Renegotiate rent or service contracts at renewal.
+
+## 4. Finance (for a known, temporary gap)
+- Draw the credit line/overdraft for the gap weeks only, with the repayment week visible in the forecast.
+- Invoice financing/factoring for large slow customers (costs 1-3% per month; check the contract).
+- Owner loan or equity for a structural gap (negative recurring run-rate): financing only buys time; fix the run-rate.
+
+## How to present levers
+| Lever | Amount | Week it helps | Effort / cost | Owner |
+|---|---|---|---|---|
+| Collect INV-1038 Kastell Foods | 6,200 | week 1-2 | call + payment plan | <name> |
+| Move year-end bonus to January 29 | 7,000 | week 7 -> 13 | talk to the team early | <name> |
+| Lease 2 laptops | 4,800 -> ~180/month | week 3 | small | <name> |
+
+Re-run the forecast with the levers applied and show the new low point in both cases.
+FILE:templates/cash-flow-brief.md
+# Cash flow brief: <business>, weeks of <start> to <end>
+
+**Opening cash:** <38,500 EUR>   **Buffer:** <15,000>   **Credit line:** <20,000 undrawn>
+**Verdict:** <covered / below buffer / cash runs out (stress)>
+
+## Low point
+| Case | Lowest cash | Week | Below buffer from | Gap to buffer |
+|---|---|---|---|---|
+| Base | <13,160> | <9 (28 Dec)> | <week 9> | <1,840> |
+| Stress | <-16,590> | <13 (25 Jan)> | <week 3> | <31,590> |
+
+## What drives it
+- <Week 9: salaries 11,600 + rent 3,200 + illustrator 2,800 + loan 1,150, no receipts until Atlas pays in week 10>
+- <Stress: pitch deposit dropped, Hafen Bank and Atlas 2 weeks later, retainers -20%>
+- <Recurring run-rate -3,475/week: the studio depends on project invoices>
+- <Concentration: Nordwind 36% of receipts>
+
+## Weekly table
+<paste the forecaster table or a 13-row summary: week, receipts, payments, closing base, closing stress>
+
+## Actions
+| # | Action | Amount | Helps week | Owner | By |
+|---|---|---|---|---|---|
+| 1 | <Collect INV-1038 (overdue since 10 Oct)> | <6,200> | <1-2> | <...> | <date> |
+| 2 | <Move year-end bonus to 29 Jan or split> | <7,000> | <7> | <...> | <date> |
+| 3 | <Lease laptops instead of buying> | <4,800> | <3> | <...> | <date> |
+| 4 | <Confirm Atlas milestone sign-off date, invoice same day> | <22,000> | <10> | <...> | <date> |
+
+**After actions:** base low <...> in week <...>; stress low <...>; credit line needed <...> for weeks <...>.
+
+## Assumptions
+- <Customers pay 10 days after due; Kastell Foods 70%; Atlas 80%; Riverside pitch 40%>
+- <VAT and tax dates; bonus date; no new hires>
+
+## Next update
+<every Monday: actuals in, week 14 added, probabilities revised>
+FILE:examples/studio-cashflow.csv
+# business: Lumen Design Studio (5 people)
+# currency: EUR
+# start: 2026-11-02
+# weeks: 13
+# opening_balance: 38500
+# min_balance: 15000
+# ar_delay_days: 10
+# credit_line: 20000
+item,kind,amount,schedule,start,end,probability,flex,notes
+Retainer - Nordwind,in,12000,monthly:10,,,,,"invoiced on the 1st, paid around the 10th"
+Retainer - Hafen Bank,in,8500,monthly:15,,,,,
+Web care plans,in,4200,monthly:20,,,,,14 small clients
+INV-1041 brand guidelines - Nordwind,in,12400,net:30,2026-10-03,,,,
+INV-1042 app design sprint - Hafen Bank,in,18600,net:45,2026-10-15,,,,
+INV-1038 packaging - Kastell Foods,in,6200,net:30,2026-09-10,,70,,overdue - two reminders sent
+Project Atlas milestone 2 - Atlas Mobility,in,22000,net:30,2026-12-01,,80,,milestone sign-off expected 1 Dec
+Riverside rebrand deposit - Riverside Hotels,in,15000,once:2027-01-08,,,40,,pitch in progress
+Net salaries,out,11600,biweekly:2026-11-06,,,,,
+Payroll taxes and social security,out,5200,monthly:15,,,,,
+Office rent,out,3200,monthly:1,,,,,
+Software subscriptions,out,640,monthly:5,,,,,"Adobe, Figma, Google Workspace"
+Freelance illustrator,out,2800,monthly:last,,,,yes,can move to project billing
+Bank loan repayment,out,1150,monthly:28,,,,,
+VAT Q3,out,9800,once:2026-11-10,,,,,
+Corporate tax prepayment,out,4500,once:2026-12-15,,,,,
+New laptops (2),out,4800,once:2026-11-20,,,,yes,could lease instead
+Year-end bonus,out,7000,once:2026-12-18,,,,yes,
+Annual liability insurance,out,2300,yearly:2026-01-15,,,,,
+FILE:examples/studio-forecast.md
+# 13-week cash flow forecast: Lumen Design Studio (5 people)
+
+Weeks: 13 (2026-11-02 to 2027-01-31)   Currency: EUR   Opening cash: 38,500   Minimum buffer: 15,000   Undrawn credit line: 20,000
+Invoices are paid 10 day(s) after the due date on average. Stress case: receipts under 90% likely dropped, invoices +14 days later, recurring receipts -20%.
+
+**Verdict: cash runs out in the stress case** - base case drops below the buffer in week 9 (2026-12-28) and bottoms at 13,160 in week 9; stress case drops below the buffer in week 3 (2026-11-16) and bottoms at -16,590 in week 13.
+
+## Weekly forecast (EUR)
+
+| Wk | Week of | Receipts | Payments | Net | Closing (base) | Closing (stress) | Flag |
+|---|---|---|---|---|---|---|---|
+| 1 | 02 Nov | 4,340 | 12,240 | -7,900 | 30,600 | 26,260 |  |
+| 2 | 09 Nov | 32,900 | 15,000 | 17,900 | 48,500 | 27,660 |  |
+| 3 | 16 Nov | 4,200 | 16,400 | -12,200 | 36,300 | 14,620 | stress below buffer |
+| 4 | 23 Nov | 0 | 1,150 | -1,150 | 35,150 | 25,870 |  |
+| 5 | 30 Nov | 0 | 18,240 | -18,240 | 16,910 | 7,630 | stress below buffer |
+| 6 | 07 Dec | 30,600 | 0 | 30,600 | 47,510 | 17,230 |  |
+| 7 | 14 Dec | 12,700 | 28,300 | -15,600 | 31,910 | -910 | stress negative |
+| 8 | 21 Dec | 0 | 0 | 0 | 31,910 | 17,690 |  |
+| 9 | 28 Dec | 0 | 18,750 | -18,750 | 13,160 | -1,060 | below buffer, stress negative, LOW |
+| 10 | 04 Jan | 35,600 | 640 | 34,960 | 48,120 | 7,900 | stress below buffer |
+| 11 | 11 Jan | 8,500 | 19,100 | -10,600 | 37,520 | -4,400 | stress negative |
+| 12 | 18 Jan | 4,200 | 0 | 4,200 | 41,720 | -1,040 | stress negative |
+| 13 | 25 Jan | 0 | 15,550 | -15,550 | 26,170 | -16,590 | stress negative |
+| | **Total** | **133,040** | **145,370** | **-12,330** | | | |
+
+## Key numbers
+
+- Lowest cash: base **13,160.00 EUR** (week 9, 2026-12-28), stress **-16,590.00 EUR** (week 13, 2027-01-25).
+- Missing to keep the 15,000 buffer: base 1,840.00 EUR, stress 31,590.00 EUR. The 20,000 credit line does NOT cover the stress gap.
+- Below zero in the stress case: 16,590.00 EUR at the worst point; the credit line covers that, leaving 3,410.00 EUR of it unused.
+- Recurring run-rate: -3,474.62 EUR per week; the week-13 closing cash lasts about 7.5 more weeks at that rate without new one-off income.
+- Concentration: Nordwind brings 36% of expected receipts; a late payment there moves the whole forecast.
+
+## Levers before the stress low point (week 13)
+
+Flexible payments due before then (defer, split or cancel):
+- week 7, 2026-12-18: Year-end bonus 7,000.00 EUR (cumulative 7,000.00 EUR)
+- week 3, 2026-11-20: New laptops (2) 4,800.00 EUR (cumulative 11,800.00 EUR)
+- week 5, 2026-11-30: Freelance illustrator 2,800.00 EUR (cumulative 14,600.00 EUR)
+- week 9, 2026-12-31: Freelance illustrator 2,800.00 EUR (cumulative 17,400.00 EUR)
+- week 13, 2027-01-31: Freelance illustrator 2,800.00 EUR (cumulative 20,200.00 EUR)
+
+Invoices to collect on time (largest first, expected date in the base case):
+- INV-1042 app design sprint - Hafen Bank: 18,600.00 EUR, week 6 (2026-12-09)
+- Project Atlas milestone 2 - Atlas Mobility: 17,600.00 EUR, week 10 (2027-01-10), 80% likely
+- INV-1041 brand guidelines - Nordwind: 12,400.00 EUR, week 2 (2026-11-12)
+- INV-1038 packaging - Kastell Foods: 4,340.00 EUR, week 1 (2026-11-02), 70% likely, overdue since 2026-10-20
+
+## Warnings
+
+- INV-1038 packaging - Kastell Foods is overdue (due 2026-10-10): counted in week 1 at 70% - chase it or lower the probability
+
+## Week 9 detail (base case)
+
+| Date | Item | In | Out | Note |
+|---|---|---|---|---|
+| 2026-12-28 | Bank loan repayment |  | 1,150.00 |  |
+| 2026-12-31 | Freelance illustrator |  | 2,800.00 | flex |
+| 2027-01-01 | Net salaries |  | 11,600.00 |  |
+| 2027-01-01 | Office rent |  | 3,200.00 |  |
+FILE:examples/cafe-winter.csv
+# business: Corner Cup Cafe
+# currency: GBP
+# start: 2026-11-02
+# weeks: 13
+# opening_balance: 9200
+# min_balance: 4000
+# ar_delay_days: 0
+item,kind,amount,schedule,start,end,probability,flex,notes
+Card and cash takings,in,6400,weekly:sun,,2026-12-20,,,weekly average Nov-Dec
+Card and cash takings (January dip),in,5600,weekly:sun,2026-12-21,,,,"quieter after Christmas, closed 25-26 Dec"
+Christmas catering orders,in,1800,once:2026-12-18,,,75,,three office parties booked
+Coffee and milk suppliers,out,1350,weekly:mon,,,,,
+Bakery and food suppliers,out,1100,weekly:tue,,,,,
+Staff wages,out,2900,weekly:fri,,,,,
+Rent (quarter day),out,7800,quarterly:2026-12-25,,,,,paid quarterly in advance
+Business rates,out,410,monthly:1,,,,,
+Energy,out,620,monthly:12,,,,,
+Card terminal fees,out,180,monthly:3,,,,,
+VAT quarter to Oct,out,5200,once:2026-12-07,,,,,
+Espresso machine service,out,450,once:2026-11-24,,,,yes,
+New menu boards,out,900,once:2026-11-16,,,,yes,
+FILE:scripts/cashflow13.py
+#!/usr/bin/env python3
+"""13-week cash flow forecaster for a small business (Python 3.8+ standard library only).
+
+Turns a CSV of expected receipts and payments into a week-by-week cash forecast (default 13
+weeks), in cents, with a base case and a stress case, and answers: when is cash lowest, when
+does it drop below the minimum buffer, how much is missing, which payments could be deferred,
+which receivables matter most, and how long the run-rate lasts after the horizon.
+
+CSV columns (header row required, extra columns ignored):
+  item,kind,amount,schedule,start,end,probability,flex,notes
+
+  kind         in | out
+  amount       positive amount in the business currency (per occurrence)
+  schedule     once:2026-11-20 (or just a date) | weekly:fri | biweekly:2026-11-06 (anchor date)
+               monthly:15 | monthly:last | quarterly:2026-12-15 (anchor) | yearly:2027-01-15
+               net:30  (invoice terms: start = invoice date, due = start + 30 days; customers'
+                        average lateness '# ar_delay_days' is added to kind=in)
+  start, end   optional bounds for recurring items (YYYY-MM-DD); invoice date for net:<days>
+  probability  % chance the receipt/payment happens (default 100); base case = amount x probability
+  flex         yes = payment can be deferred or cut if cash is short
+  notes        free text
+
+Comment lines at the top set the frame (or use the CLI flags):
+  # business: Lumen Design Studio
+  # currency: EUR
+  # start: 2026-11-02            (Monday that starts week 1)
+  # weeks: 13
+  # opening_balance: 38500
+  # min_balance: 15000           (cash buffer you do not want to go below)
+  # ar_delay_days: 10            (customers pay this many days after the due date on average)
+  # credit_line: 20000           (undrawn overdraft / credit facility, optional)
+
+Stress case: receipts with probability < 90% are dropped, invoice receipts arrive
+--stress-delay days later (default 14) and recurring receipts are cut by --stress-cut %
+(default 20). Payments are unchanged.
+
+Usage:
+  python3 cashflow13.py forecast.csv [--opening 38500] [--min 15000] [--weeks 13] [--start 2026-11-02]
+                        [--stress-cut 20] [--stress-delay 14] [--week 9] [--json]
+  python3 cashflow13.py --self-test
+
+Exit codes: 0 = base and stress stay at or above the minimum balance, 1 = cash drops below the
+minimum (or below zero) in either case, 2 = bad input.
+"""
+import argparse
+import calendar
+import csv
+import datetime as dt
+import io
+import json
+import re
+import sys
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
+
+DAYS = {"mon": 0, "tue": 1, "wed": 2, "thu": 3, "fri": 4, "sat": 5, "sun": 6}
+
+
+class InputError(ValueError):
+    pass
+
+
+def money(s, what):
+    try:
+        v = Decimal(str(s).replace(",", "").replace("_", "").strip())
+    except (InvalidOperation, AttributeError):
+        raise InputError("%s: %r is not a number" % (what, s))
+    return int((v * 100).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+
+
+def fmt(c, cur=""):
+    sign = "-" if c < 0 else ""
+    c = abs(int(c))
+    s = "%s%d" % (sign, c // 100)
+    s = re.sub(r"(\d)(?=(\d{3})+$)", r"\1,", s)
+    return (s + " " + cur).strip()  # whole currency units in tables
+
+
+def fmtc(c, cur=""):
+    sign = "-" if c < 0 else ""
+    c = abs(int(c))
+    s = re.sub(r"(\d)(?=(\d{3})+$)", r"\1,", str(c // 100)) + ".%02d" % (c % 100)
+    return (sign + s + " " + cur).strip()
+
+
+def date(s, what):
+    try:
+        return dt.date.fromisoformat(str(s).strip())
+    except ValueError:
+        raise InputError("%s: %r is not a date (YYYY-MM-DD)" % (what, s))
+
+
+def add_months(d, n, day=None):
+    m = d.month - 1 + n
+    y, m = d.year + m // 12, m % 12 + 1
+    last = calendar.monthrange(y, m)[1]
+    return dt.date(y, m, min(day or d.day, last))
+
+
+class Forecast:
+    def __init__(self, text, opening=None, min_balance=None, weeks=None, start=None,
+                 stress_cut=20, stress_delay=14, today=None):
+        self.warnings = []
+        self.meta = {"business": "", "currency": "", "ar_delay_days": 0, "credit_line": 0}
+        body = []
+        for raw in text.splitlines():
+            m = re.match(r"\s*#\s*([a-z_ ]+?)\s*:\s*(.*?)\s*$", raw, re.I)
+            if m and not body:
+                self.meta[m.group(1).strip().lower().replace(" ", "_")] = m.group(2)
+            elif raw.strip().startswith("#"):
+                continue
+            elif raw.strip():
+                body.append(raw)
+        md = self.meta
+        self.currency = md.get("currency") or ""
+        self.business = md.get("business") or ""
+        self.opening = money(opening if opening is not None else md.get("opening_balance", "0"), "opening_balance")
+        self.min_balance = money(min_balance if min_balance is not None else md.get("min_balance", "0"), "min_balance")
+        self.credit_line = money(md.get("credit_line") or 0, "credit_line")
+        self.weeks = int(weeks if weeks is not None else md.get("weeks", 13))
+        if not 1 <= self.weeks <= 104:
+            raise InputError("weeks must be 1-104")
+        st = start if start is not None else md.get("start")
+        if not st:
+            t = today or dt.date.today()
+            st = (t + dt.timedelta(days=(7 - t.weekday()) % 7)).isoformat()
+        self.start = date(st, "start")
+        if self.start.weekday() != 0:
+            self.warnings.append("start %s is a %s, not a Monday; weeks run %s-%s" % (
+                self.start, self.start.strftime("%A"), self.start.strftime("%a"),
+                (self.start + dt.timedelta(days=6)).strftime("%a")))
+        self.end = self.start + dt.timedelta(days=7 * self.weeks - 1)
+        self.ar_delay = int(Decimal(str(md.get("ar_delay_days") or 0)))
+        self.stress_cut = Decimal(str(stress_cut))
+        self.stress_delay = int(stress_delay)
+        rows = list(csv.DictReader(io.StringIO("\n".join(body))))
+        if not rows:
+            raise InputError("no rows (need a header: item,kind,amount,schedule,...)")
+        need = {"item", "kind", "amount", "schedule"}
+        cols = {c.strip().lower() for c in (rows[0].keys() if rows else []) if c}
+        if not need <= cols:
+            raise InputError("missing column(s): %s" % ", ".join(sorted(need - cols)))
+        self.items = []
+        self.events = {"base": [], "stress": []}
+        self.beyond = 0
+        seen = set()
+        for n, r in enumerate(rows, 1):
+            extra = r.pop(None, None)
+            if extra:
+                self.warnings.append("line %d has %d more field(s) than the header - quote text that contains "
+                                     "commas; extra fields were added to notes" % (n, len(extra)))
+                r["notes"] = ",".join([r.get("notes") or ""] + extra)
+            r = {(k or "").strip().lower(): (v or "").strip() for k, v in r.items()}
+            key = (r["item"].lower(), r["kind"], r["amount"], r["schedule"], r.get("start", ""))
+            if key in seen:
+                self.warnings.append("line %d (%s) repeats an earlier line - duplicate?" % (n, r["item"]))
+            seen.add(key)
+            self._item(n, r)
+        self._run()
+
+    # ---------- items ----------
+    def _item(self, n, r):
+        where = "line %d (%s)" % (n, r.get("item") or "?")
+        kind = r["kind"].lower()
+        if kind not in ("in", "out"):
+            raise InputError("%s: kind must be in or out" % where)
+        amt = money(r["amount"], where + " amount")
+        if amt < 0:
+            raise InputError("%s: amount must be positive (use kind=in/out for the direction)" % where)
+        prob = Decimal(r.get("probability") or "100")
+        if not 0 <= prob <= 100:
+            raise InputError("%s: probability must be 0-100" % where)
+        flex = (r.get("flex") or "").lower() in ("yes", "y", "true", "1")
+        start = date(r["start"], where + " start") if r.get("start") else None
+        end = date(r["end"], where + " end") if r.get("end") else None
+        sched = r["schedule"].lower().replace(" ", "")
+        if re.match(r"^\d{4}-\d\d-\d\d$", sched):
+            sched = "once:" + sched
+        typ, _, arg = sched.partition(":")
+        dates, recurring, invoice = self._dates(where, typ, arg, start, end)
+        it = {"line": n, "item": r["item"], "kind": kind, "amount": amt, "prob": prob, "flex": flex,
+              "schedule": r["schedule"], "recurring": recurring, "invoice": invoice, "dates": dates,
+              "notes": r.get("notes", "")}
+        self.items.append(it)
+
+    def _dates(self, where, typ, arg, start, end):
+        lo = self.start - dt.timedelta(days=400)
+        hi = self.end + dt.timedelta(days=400)
+        if typ == "once":
+            return [date(arg, where + " schedule")], False, False
+        if typ == "net":
+            if not start:
+                raise InputError("%s: net:<days> needs the invoice date in 'start'" % where)
+            try:
+                days = int(arg)
+            except ValueError:
+                raise InputError("%s: net:<days> needs a number of days" % where)
+            return [start + dt.timedelta(days=days)], False, True
+        out = []
+        if typ == "weekly":
+            if arg not in DAYS:
+                raise InputError("%s: weekly:<mon..sun>" % where)
+            d = self.start + dt.timedelta(days=(DAYS[arg] - self.start.weekday()) % 7)
+            while d <= self.end:
+                out.append(d)
+                d += dt.timedelta(days=7)
+        elif typ == "biweekly":
+            anchor = date(arg, where + " schedule")
+            d = anchor
+            while d > self.start:
+                d -= dt.timedelta(days=14)
+            while d <= self.end:
+                out.append(d)
+                d += dt.timedelta(days=14)
+        elif typ == "monthly":
+            if arg == "last":
+                day = 31
+            else:
+                try:
+                    day = int(arg)
+                except ValueError:
+                    raise InputError("%s: monthly:<1-31|last>" % where)
+                if not 1 <= day <= 31:
+                    raise InputError("%s: monthly day must be 1-31" % where)
+            m = dt.date(self.start.year, self.start.month, 1)
+            while m <= self.end:
+                out.append(add_months(m, 0, day))
+                m = add_months(m, 1, 1)
+        elif typ in ("quarterly", "yearly"):
+            anchor = date(arg, where + " schedule")
+            step = 3 if typ == "quarterly" else 12
+            d, k = anchor, 0
+            while d > lo:
+                k -= 1
+                d = add_months(anchor, step * k)
+            while d <= hi:
+                out.append(d)
+                k += 1
+                d = add_months(anchor, step * k)
+        else:
+            raise InputError("%s: unknown schedule %r (once, weekly, biweekly, monthly, quarterly, yearly, net)"
+                             % (where, typ))
+        out = [d for d in out if (not start or d >= start) and (not end or d <= end)
+               and self.start <= d <= self.end]
+        return out, True, False
+
+    # ---------- forecast ----------
+    def week_of(self, d):
+        return (d - self.start).days // 7
+
+    def _run(self):
+        W = self.weeks
+        for case in ("base", "stress"):
+            for it in self.items:
+                for d0 in it["dates"]:
+                    d = d0
+                    amt = it["amount"]
+                    prob = it["prob"]
+                    note = ""
+                    if it["kind"] == "in":
+                        if it["invoice"]:
+                            d = d + dt.timedelta(days=self.ar_delay)
+                            if case == "stress":
+                                d = d + dt.timedelta(days=self.stress_delay)
+                        if case == "stress":
+                            if prob < 90:
+                                continue
+                            if it["recurring"]:
+                                amt = int((Decimal(amt) * (100 - self.stress_cut) / 100).quantize(Decimal("1"), ROUND_HALF_UP))
+                            prob = Decimal(100)
+                    exp = int((Decimal(amt) * prob / 100).quantize(Decimal("1"), ROUND_HALF_UP))
+                    if d < self.start:
+                        note = "overdue since %s" % d.isoformat()
+                        d = self.start
+                    if d > self.end:
+                        if case == "base":
+                            self.beyond += 1
+                        continue
+                    self.events[case].append({"week": self.week_of(d), "date": d, "item": it["item"], "kind": it["kind"],
+                                              "cents": exp, "flex": it["flex"], "prob": prob, "note": note,
+                                              "invoice": it["invoice"], "recurring": it["recurring"], "line": it["line"]})
+        self.table = {}
+        for case in ("base", "stress"):
+            bal = self.opening
+            rows = []
+            for w in range(W):
+                ins = sum(e["cents"] for e in self.events[case] if e["week"] == w and e["kind"] == "in")
+                outs = sum(e["cents"] for e in self.events[case] if e["week"] == w and e["kind"] == "out")
+                opening = bal
+                bal = bal + ins - outs
+                rows.append({"week": w + 1, "start": self.start + dt.timedelta(days=7 * w), "opening": opening,
+                             "in": ins, "out": outs, "net": ins - outs, "closing": bal})
+            self.table[case] = rows
+        for it in self.items:
+            if it["kind"] == "in" and it["invoice"] and it["dates"][0] + dt.timedelta(days=self.ar_delay) < self.start:
+                self.warnings.append("%s is overdue (due %s): counted in week 1 at %s%% - chase it or lower the "
+                                     "probability" % (it["item"], it["dates"][0], it["prob"]))
+            if it["kind"] == "out" and not it["recurring"] and it["dates"][0] < self.start:
+                self.warnings.append("%s was due %s and is still unpaid: counted in week 1" % (it["item"], it["dates"][0]))
+
+    # ---------- analysis ----------
+    def low(self, case):
+        rows = self.table[case]
+        r = min(rows, key=lambda x: (x["closing"], x["week"]))
+        return r
+
+    def first_below(self, case, level):
+        for r in self.table[case]:
+            if r["closing"] < level:
+                return r
+        return None
+
+    def run_rate(self):
+        """Weekly net of recurring items only (base case, expected values)."""
+        tot = sum((e["cents"] if e["kind"] == "in" else -e["cents"]) for e in self.events["base"] if e["recurring"])
+        return int(round(tot / float(self.weeks)))
+
+    def runway(self):
+        rr = self.run_rate()
+        end = self.table["base"][-1]["closing"]
+        if rr >= 0:
+            return None, rr
+        weeks = end / float(-rr) if end > 0 else 0.0
+        return weeks, rr
+
+    def levers(self, case="stress"):
+        lowr = self.low(case)
+        flex = [e for e in self.events[case] if e["kind"] == "out" and e["flex"] and e["week"] <= lowr["week"] - 1]
+        flex.sort(key=lambda e: -e["cents"])
+        recv = [e for e in self.events["base"] if e["kind"] == "in" and e["invoice"]]
+        recv.sort(key=lambda e: -e["cents"])
+        return lowr, flex, recv
+
+    def concentration(self):
+        tot = {}
+        for e in self.events["base"]:
+            if e["kind"] == "in" and " - " in e["item"]:  # "<what> - <customer>" names a customer
+                name = e["item"].rsplit(" - ", 1)[-1].strip()
+                tot[name] = tot.get(name, 0) + e["cents"]
+        allin = sum(e["cents"] for e in self.events["base"] if e["kind"] == "in")
+        if not allin:
+            return []
+        return sorted(((k, v, v / float(allin)) for k, v in tot.items()), key=lambda x: -x[1])
+
+    def worst_flag(self):
+        b = self.low("base")["closing"]
+        s = self.low("stress")["closing"]
+        return b < self.min_balance or s < self.min_balance
+
+
+def render(fc, week_detail=None):
+    cur = fc.currency
+    o = ["# 13-week cash flow forecast" + (": " + fc.business if fc.business else ""), ""]
+    o.append("Weeks: %d (%s to %s)   Currency: %s   Opening cash: %s   Minimum buffer: %s%s" % (
+        fc.weeks, fc.start, fc.end, cur or "-", fmt(fc.opening), fmt(fc.min_balance),
+        ("   Undrawn credit line: %s" % fmt(fc.credit_line)) if fc.credit_line else ""))
+    has_inv = any(it["invoice"] and it["kind"] == "in" for it in fc.items)
+    o.append("%sStress case: receipts under 90%% likely dropped, %srecurring receipts -%s%%." % (
+        ("Invoices are paid %d day(s) after the due date on average. " % fc.ar_delay) if has_inv else "",
+        ("invoices +%d days later, " % fc.stress_delay) if has_inv else "", fc.stress_cut))
+    o.append("")
+    lb, ls = fc.low("base"), fc.low("stress")
+    fb, fs = fc.first_below("base", fc.min_balance), fc.first_below("stress", fc.min_balance)
+    if not fc.worst_flag():
+        o.append("**Verdict: covered** - cash stays above the %s buffer in both cases (lowest %s in week %d, stress %s in week %d)."
+                 % (fmt(fc.min_balance), fmt(lb["closing"]), lb["week"], fmt(ls["closing"]), ls["week"]))
+    else:
+        bits = []
+        for name, f, lw in (("base", fb, lb), ("stress", fs, ls)):
+            if f:
+                bits.append("%s case drops below the buffer in week %d (%s) and bottoms at %s in week %d" % (
+                    name, f["week"], f["start"], fmt(lw["closing"]), lw["week"]))
+        verdict = "cash runs out" if lb["closing"] < 0 else (
+            "cash runs out in the stress case" if ls["closing"] < 0 else "below buffer")
+        o.append("**Verdict: %s** - %s." % (verdict, "; ".join(bits)))
+    o += ["", "## Weekly forecast (%s)" % (cur or "currency units"), "",
+          "| Wk | Week of | Receipts | Payments | Net | Closing (base) | Closing (stress) | Flag |",
+          "|---|---|---|---|---|---|---|---|"]
+    for b, s in zip(fc.table["base"], fc.table["stress"]):
+        flag = []
+        if b["closing"] < 0:
+            flag.append("NEGATIVE")
+        elif b["closing"] < fc.min_balance:
+            flag.append("below buffer")
+        if s["closing"] < 0 and b["closing"] >= 0:
+            flag.append("stress negative")
+        elif s["closing"] < fc.min_balance and b["closing"] >= fc.min_balance:
+            flag.append("stress below buffer")
+        if b is lb:
+            flag.append("LOW")
+        o.append("| %d | %s | %s | %s | %s | %s | %s | %s |" % (
+            b["week"], b["start"].strftime("%d %b"), fmt(b["in"]), fmt(b["out"]), fmt(b["net"]),
+            fmt(b["closing"]), fmt(s["closing"]), ", ".join(flag)))
+    tin = sum(r["in"] for r in fc.table["base"])
+    tout = sum(r["out"] for r in fc.table["base"])
+    o.append("| | **Total** | **%s** | **%s** | **%s** | | | |" % (fmt(tin), fmt(tout), fmt(tin - tout)))
+    o += ["", "## Key numbers", ""]
+    o.append("- Lowest cash: base **%s** (week %d, %s), stress **%s** (week %d, %s)." % (
+        fmtc(lb["closing"], cur), lb["week"], lb["start"], fmtc(ls["closing"], cur), ls["week"], ls["start"]))
+    gap_b = max(0, fc.min_balance - lb["closing"])
+    gap_s = max(0, fc.min_balance - ls["closing"])
+    o.append("- Missing to keep the %s buffer: base %s, stress %s.%s" % (
+        fmt(fc.min_balance), fmtc(gap_b, cur), fmtc(gap_s, cur),
+        (" The %s credit line %s the stress gap." % (fmt(fc.credit_line), "covers" if fc.credit_line >= gap_s else "does NOT cover"))
+        if fc.credit_line and gap_s else ""))
+    if fc.credit_line and ls["closing"] < 0:
+        o.append("- Below zero in the stress case: %s at the worst point; the credit line %s that, leaving %s of it unused."
+                 % (fmtc(-ls["closing"], cur), "covers" if fc.credit_line >= -ls["closing"] else "does NOT cover",
+                    fmtc(max(0, fc.credit_line + ls["closing"]), cur)))
+    rw, rr = fc.runway()
+    if rw is None:
+        o.append("- Recurring run-rate: +%s per week (recurring receipts cover recurring payments)." % fmtc(rr, cur))
+    elif fc.table["base"][-1]["closing"] <= 0:
+        o.append("- Recurring run-rate: %s per week, and cash is already below zero at the end of week %d."
+                 % (fmtc(rr, cur), fc.weeks))
+    else:
+        o.append("- Recurring run-rate: %s per week; the week-%d closing cash lasts about %.1f more weeks at that rate "
+                 "without new one-off income." % (fmtc(rr, cur), fc.weeks, rw))
+    conc = fc.concentration()
+    if conc and conc[0][2] > 0.3:
+        o.append("- Concentration: %s brings %.0f%% of expected receipts; a late payment there moves the whole "
+                 "forecast." % (conc[0][0], 100 * conc[0][2]))
+    if fc.beyond:
+        o.append("- %d dated item(s) fall after week %d and are not in the table." % (fc.beyond, fc.weeks))
+    lowr, flex, recv = fc.levers()
+    o += ["", "## Levers before the stress low point (week %d)" % lowr["week"], ""]
+    if flex:
+        o.append("Flexible payments due before then (defer, split or cancel):")
+        acc = 0
+        for e in flex:
+            acc += e["cents"]
+            o.append("- week %d, %s: %s %s (cumulative %s)" % (e["week"] + 1, e["date"], e["item"], fmtc(e["cents"], cur), fmtc(acc, cur)))
+    else:
+        o.append("No payments marked flex=yes before the low point.")
+    if recv:
+        o.append("")
+        o.append("Invoices to collect on time (largest first, expected date in the base case):")
+        for e in recv[:6]:
+            o.append("- %s: %s, week %d (%s)%s%s" % (e["item"], fmtc(e["cents"], cur), e["week"] + 1, e["date"],
+                                                     (", %s%% likely" % e["prob"]) if e["prob"] < 100 else "",
+                                                     (", " + e["note"]) if e["note"] else ""))
+    if fc.warnings:
+        o += ["", "## Warnings", ""] + ["- " + w for w in fc.warnings]
+    wk = week_detail if week_detail else lb["week"]
+    if 1 <= wk <= fc.weeks:
+        o += ["", "## Week %d detail (base case)" % wk, "", "| Date | Item | In | Out | Note |", "|---|---|---|---|---|"]
+        for e in sorted((e for e in fc.events["base"] if e["week"] == wk - 1), key=lambda e: (e["date"], e["kind"])):
+            o.append("| %s | %s | %s | %s | %s |" % (
+                e["date"], e["item"], fmtc(e["cents"]) if e["kind"] == "in" else "", fmtc(e["cents"]) if e["kind"] == "out" else "",
+                "; ".join(x for x in (("%s%% likely" % e["prob"]) if e["prob"] < 100 else "", "flex" if e["flex"] else "", e["note"]) if x)))
+    return "\n".join(o) + "\n"
+
+
+def as_json(fc):
+    def row(r):
+        return {k: (v.isoformat() if isinstance(v, dt.date) else v) for k, v in r.items()}
+    lb, ls = fc.low("base"), fc.low("stress")
+    rw, rr = fc.runway()
+    return {"business": fc.business, "currency": fc.currency, "start": fc.start.isoformat(), "weeks": fc.weeks,
+            "opening_cents": fc.opening, "min_balance_cents": fc.min_balance,
+            "base": [row(r) for r in fc.table["base"]], "stress": [row(r) for r in fc.table["stress"]],
+            "low_base": row(lb), "low_stress": row(ls), "run_rate_cents_per_week": rr, "runway_weeks_after_horizon": rw,
+            "below_min": fc.worst_flag(), "warnings": fc.warnings}
+
+
+def self_test():
+    cases = []
+
+    def case(name, fn):
+        try:
+            ok, err = bool(fn()), ""
+        except Exception as e:  # noqa
+            ok, err = False, repr(e)
+        cases.append((name, ok, err))
+
+    HEAD = "# start: 2026-11-02\n# weeks: 13\n# opening_balance: 10000\n# min_balance: 2000\nitem,kind,amount,schedule,start,end,probability,flex,notes\n"
+
+    def F(rows, **kw):
+        return Forecast(HEAD + rows, **kw)
+
+    def raises(fn):
+        try:
+            fn()
+        except InputError:
+            return True
+        return False
+
+    def dates(rows):
+        return [e["date"].isoformat() for e in F(rows).events["base"]]
+
+    case("once lands in its week", lambda: F("Tax,out,500,once:2026-11-11,,,,,\n").table["base"][1]["out"] == 50000)
+    case("bare date means once", lambda: dates("Tax,out,500,2026-11-11,,,,,\n") == ["2026-11-11"])
+    case("weekly friday x13", lambda: len(dates("Sales,in,100,weekly:fri,,,,,\n")) == 13 and dates("Sales,in,100,weekly:fri,,,,,\n")[0] == "2026-11-06")
+    case("biweekly from anchor", lambda: dates("Pay,out,100,biweekly:2026-11-06,,,,,\n")[:3] == ["2026-11-06", "2026-11-20", "2026-12-04"])
+    case("biweekly anchor before start", lambda: dates("Pay,out,100,biweekly:2026-10-09,,,,,\n")[0] == "2026-11-06")
+    case("monthly 15th", lambda: dates("Rent,out,100,monthly:15,,,,,\n") == ["2026-11-15", "2026-12-15", "2027-01-15"])
+    case("monthly last clamps", lambda: dates("Fee,out,100,monthly:last,,,,,\n") == ["2026-11-30", "2026-12-31", "2027-01-31"])
+    case("monthly 31 clamps to 30 Nov", lambda: dates("Fee,out,100,monthly:31,,,,,\n")[0] == "2026-11-30")
+    case("quarterly from anchor", lambda: dates("VAT,out,100,quarterly:2026-08-10,,,,,\n") == ["2026-11-10"])
+    case("yearly in horizon", lambda: dates("Ins,out,100,yearly:2026-01-15,,,,,\n") == ["2027-01-15"])
+    case("start/end bounds", lambda: dates("Rent,out,100,monthly:1,2026-12-01,2026-12-31,,,\n") == ["2026-12-01"])
+    case("net terms + ar delay", lambda: Forecast("# start: 2026-11-02\n# ar_delay_days: 10\n# opening_balance: 0\nitem,kind,amount,schedule,start\nINV,in,100,net:30,2026-10-20\n").events["base"][0]["date"].isoformat() == "2026-11-29")
+    case("overdue receivable in week 1", lambda: (lambda f: f.events["base"][0]["week"] == 0 and "overdue" in f.events["base"][0]["note"])(F("INV,in,100,net:30,2026-08-01,,,,\n")))
+    case("probability weighting", lambda: F("Deal,in,1000,once:2026-11-05,,,40,,\n").table["base"][0]["in"] == 40000)
+    case("stress drops unlikely receipts", lambda: F("Deal,in,1000,once:2026-11-05,,,40,,\n").table["stress"][0]["in"] == 0)
+    case("stress cuts recurring receipts", lambda: F("Sales,in,100,weekly:fri,,,,,\n").table["stress"][0]["in"] == 8000)
+    case("stress delays invoices", lambda: (lambda f: f.events["stress"][0]["date"] - f.events["base"][0]["date"] == dt.timedelta(days=14))(F("INV,in,100,net:30,2026-10-20,,,,\n")))
+    case("balances roll forward", lambda: (lambda t: t[0]["closing"] == 1000000 + 10000 and t[1]["opening"] == t[0]["closing"])(F("Sales,in,100,weekly:fri,,,,,\n").table["base"]))
+    case("low point and first below", lambda: (lambda f: f.low("base")["week"] == 3 and f.first_below("base", f.min_balance)["week"] == 3)(F("Big,out,9000,once:2026-11-18,,,,,\nBack,in,9000,once:2026-11-25,,,,,\n")))
+    case("verdict flags below min", lambda: F("Big,out,9000,once:2026-11-18,,,,,\n").worst_flag())
+    case("covered when fine", lambda: not F("Small,out,100,once:2026-11-18,,,,,\n").worst_flag())
+    case("run-rate recurring only", lambda: F("Sales,in,100,weekly:fri,,,,,\nOne,out,5000,once:2026-11-20,,,,,\n").run_rate() == 10000)
+    case("runway weeks when burning", lambda: (lambda f: f.runway()[0] is not None and f.runway()[1] < 0)(F("Rent,out,1000,monthly:1,,,,,\n")))
+    case("flex levers before low point", lambda: (lambda f: [e["item"] for e in f.levers()[1]] == ["Laptop"])(F("Laptop,out,2000,once:2026-11-04,,,,yes,\nBig,out,9000,once:2026-11-18,,,,,\n")))
+    case("unquoted commas go to notes with a warning", lambda: (lambda f: any("more field" in w for w in f.warnings) and f.items[0]["notes"] == "a,b")(F("X,out,1,once:2026-11-05,,,,,a,b\n")))
+    case("money parsing with commas", lambda: money("12,400.50", "x") == 1240050)
+    case("bad kind rejected", lambda: raises(lambda: F("X,maybe,10,once:2026-11-05,,,,,\n")))
+    case("negative amount rejected", lambda: raises(lambda: F("X,out,-10,once:2026-11-05,,,,,\n")))
+    case("unknown schedule rejected", lambda: raises(lambda: F("X,out,10,fortnightly:2026-11-05,,,,,\n")))
+    case("net without invoice date rejected", lambda: raises(lambda: F("X,in,10,net:30,,,,,\n")))
+    case("bad probability rejected", lambda: raises(lambda: F("X,in,10,once:2026-11-05,,,120,,\n")))
+    case("missing columns rejected", lambda: raises(lambda: Forecast("# start: 2026-11-02\nname,value\na,1\n")))
+    case("non-Monday start warns", lambda: any("not a Monday" in w for w in F("X,out,1,once:2026-11-05,,,,,\n", start="2026-11-04").warnings))
+    case("duplicate warning", lambda: any("duplicate" in w for w in F("X,out,1,once:2026-11-05,,,,,\nX,out,1,once:2026-11-05,,,,,\n").warnings))
+    case("items after horizon counted", lambda: F("Later,out,10,once:2027-06-01,,,,,\n").beyond == 1)
+    case("CLI overrides opening", lambda: F("X,out,1,once:2026-11-05,,,,,\n", opening="500").opening == 50000)
+    case("render sections", lambda: all(s in render(F("Rent,out,1000,monthly:1,,,,yes,\n")) for s in ("## Weekly forecast", "## Key numbers", "## Levers")))
+    case("json output", lambda: json.dumps(as_json(F("Rent,out,1000,monthly:1,,,,,\n"))) and as_json(F("Rent,out,1000,monthly:1,,,,,\n"))["low_base"]["closing"] == 1000000 - 200000)
+    case("format", lambda: fmt(123456789) == "1,234,567" and fmtc(-123456, "EUR") == "-1,234.56 EUR")
+
+    passed = sum(1 for _, ok, _ in cases if ok)
+    for name, ok, err in cases:
+        print(("PASS " if ok else "FAIL ") + name + ((" " + err) if err else ""))
+    print("%d/%d passed" % (passed, len(cases)))
+    return 0 if passed == len(cases) else 1
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description="13-week cash flow forecast with base and stress cases.")
+    ap.add_argument("file", nargs="?", help="CSV of receipts and payments ('-' = stdin)")
+    ap.add_argument("--opening", default=None, help="opening cash (overrides '# opening_balance:')")
+    ap.add_argument("--min", dest="min_balance", default=None, help="minimum cash buffer")
+    ap.add_argument("--weeks", type=int, default=None)
+    ap.add_argument("--start", default=None, help="first Monday (YYYY-MM-DD; default: '# start:' or next Monday)")
+    ap.add_argument("--stress-cut", type=float, default=20, help="%% cut to recurring receipts in the stress case")
+    ap.add_argument("--stress-delay", type=int, default=14, help="extra days late for invoices in the stress case")
+    ap.add_argument("--week", type=int, default=None, help="show the item list for this week (default: base low week)")
+    ap.add_argument("--json", action="store_true")
+    ap.add_argument("--self-test", action="store_true")
+    a = ap.parse_args(argv)
+    if a.self_test:
+        return self_test()
+    if not a.file:
+        ap.error("give a CSV file or --self-test")
+    try:
+        text = sys.stdin.read() if a.file == "-" else open(a.file, encoding="utf-8-sig").read()
+        fc = Forecast(text, a.opening, a.min_balance, a.weeks, a.start, a.stress_cut, a.stress_delay)
+        out = json.dumps(as_json(fc), indent=2) + "\n" if a.json else render(fc, a.week)
+    except (OSError, ValueError) as e:
+        print("error: %s" % e, file=sys.stderr)
+        return 2
+    sys.stdout.write(out)
+    return 1 if fc.worst_flag() else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+</details>
+
