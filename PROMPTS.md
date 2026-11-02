@@ -222621,3 +222621,22 @@ Balance the contrast to a natural photographic level: if image 1 looks too harsh
 
 </details>
 
+<details>
+<summary><strong>Step Inside a Painting: Frozen 3D Camera Fly-Through (Image-to-Video)</strong></summary>
+
+## Step Inside a Painting: Frozen 3D Camera Fly-Through (Image-to-Video)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+The video begins from the frame defined by the attached painting and preserves its exact composition, subjects, colors, lighting, and arrangement as a still three-dimensional space.
+
+No person, animal, object, water, foliage, cloud, flame, or any other painted element moves, animates, or changes state. The entire scene remains completely frozen, as if the painting has simply become a solid, motionless diorama.
+
+The camera performs continuous cinematic 3D travel through this frozen scene: it slowly pushes forward, gently orbits, and drifts past the main subjects and spatial layers, revealing depth, parallax, and volumetric form while never altering or animating any content inside the painting.
+Only ambient spatial presence accompanies the movement; there is no dialogue, narration, music, or sound effects from any element within the painting.
+
+```
+
+</details>
+
