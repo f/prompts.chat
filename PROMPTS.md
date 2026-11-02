@@ -219484,3 +219484,55 @@ A 16-bit pixel art scene of a cozy little bookshop on a rainy autumn night, squa
 
 </details>
 
+<details>
+<summary><strong>Floating Market at Sunrise Scene Concept Brief Builder</strong></summary>
+
+## Floating Market at Sunrise Scene Concept Brief Builder
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Act as a cinematic travel scene designer who writes image-ready and motion-ready scene briefs. Help me design one hero shot of a floating market at sunrise: long wooden boats piled with tropical fruit gliding along a calm, misty canal lined with palms and a wooden stilt house. The shot will first be generated as a still image and then animated into a short video that uses that image as its first frame. Your brief must make the still image rich in elements that can move naturally (vendors paddling, boats gliding slowly, soft wakes and ripples, golden mist drifting between the palms, light shimmering on the water) while keeping the composition calm, balanced, readable, and easy to animate.
+
+My starting idea: ${idea:a quiet floating market at sunrise, with women vendors in conical straw hats paddling wooden boats full of fruit along a misty tropical canal}
+
+My starting choices:
+- Boats: ${boats:five long, narrow wooden boats, each with one vendor, three in the foreground and two smaller ones further back, plus one tiny boat far away in the mist}
+- Cargo: ${cargo:bananas, pineapples, green mangoes, limes, pomelos, coconuts, and pink dragon fruit piled high}
+- Vendors: ${vendors:women in conical straw hats and long-sleeve patterned shirts, holding wooden paddles}
+- Canal: ${canal:a calm brown-green canal running straight away from the camera into the distance}
+- Left bank: ${left_bank:a weathered wooden stilt house with a rusty corrugated tin roof and a balcony full of potted plants}
+- Banks and trees: ${trees:tall coconut palms and dense tropical greenery on both banks, fading into the mist}
+- Time and light: ${time:just after sunrise, soft golden backlight from the top right, warm haze}
+- Visual style: ${style:photoreal travel and documentary photography, natural colors}
+- Mood words: ${mood:peaceful, warm, lively but unhurried, timeless}
+
+First ask me, in one short message, for anything missing: the camera height (water level, eye level from a boat, or a little above), how many boats and vendors I want and how close the nearest ones are, which fruits must be visible, how thick the mist should be, whether the boats should glide toward the camera or across the frame in the video, whether more boats may appear in the distance as the shot settles, and anything to avoid (signs, text, logos, motors, modern clothing, brand packaging, recognizable faces, or copying a specific real market, photograph, or named landmark).
+
+Then produce the brief with these sections:
+
+1. **Scene Overview**: two or three sentences on the place, the moment, the light, and the feeling. Describe an imagined floating market in the spirit of a tropical river delta, not a copy of a specific real market or a famous photograph.
+
+2. **The Boats and Vendors**: how many boats, their shape and wood, their positions in the frame, how they are spaced, each vendor's hat, clothing, and pose, and the paddles.
+
+3. **The Fruit Cargo**: what each boat carries, how it is piled, the colors that should stand out (yellow bananas, pink dragon fruit, green limes and mangoes, golden pineapples), and how the light catches it.
+
+4. **The Canal and Reflections**: the water color, how calm it is, the soft wakes and reflections around the boats, and where the water catches the golden light.
+
+5. **Banks, Stilt House, and Palms**: the stilt house on the left bank with its tin roof, balcony, and potted plants, the palms and greenery on both banks, and how they fade into the distance.
+
+6. **Mist and Light**: how thick the morning mist is, where it lies (between the palms, over the far canal, softening the background), the direction and warmth of the backlight, and how it should read as soft morning haze rather than smoke.
+
+7. **Fixed Visual Details**: a numbered list of 8 to 10 details that must stay identical in the still image and in the video (camera position, canal line, stilt house on the left bank, palm lines, boat count and order, vendors and hats, fruit on each boat, light direction, framing, mist zone).
+
+8. **Motion Map**: a table of every element that can move in the video, with columns: element, type of motion, direction, speed (very slow, slow, medium), and how strongly it should move. Include the paddles and the vendors' arms, the boats gliding forward, the wakes and ripples, the shimmering reflections, the mist, palm fronds swaying slightly, any small boats appearing far back, and the camera move. Keep total motion subtle and physically plausible.
+
+9. **Prompt Seed A - Hero Still Image**: a ready-to-paste image prompt under 170 words for a wide landscape 16:9 frame, with the fruit-laden wooden boats, the vendors in conical hats, and the misty canal at sunrise in the first sentence, ending with: no text, no signs, no logos.
+
+10. **Prompt Seed B - Image-to-Video Animation**: a ready-to-paste video prompt under 120 words that starts from the hero still as the first frame, describes the vendors paddling and the boats gliding slowly toward the camera for about 6 seconds, gentle wakes and ripples spreading, reflections shimmering, golden mist drifting between the palms, a very slight camera push-in, and says to keep the stilt house, banks, palms, boats, fruit, and framing exactly as in the image with no new close-up objects.
+
+Rules: no text, signs, or logos; no motorboats, phones, or modern brand packaging; no fast camera moves or cuts; and no motion that breaks physics (boats move only in the direction they are paddled and keep their shape and cargo, paddles enter and leave the water with small splashes, wakes spread outward and fade, the stilt house and banks never move, mist drifts slowly and does not swirl violently, the light does not flicker or jump). Use short paragraphs and lists.
+```
+
+</details>
+
