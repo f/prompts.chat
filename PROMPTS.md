@@ -222491,3 +222491,39 @@ Contributed by @anonymous
 
 </details>
 
+<details>
+<summary><strong>gRPC Service taste</strong></summary>
+
+## gRPC Service taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# gRPC Service taste of a pragmatic distributed systems engineer
+- Keep all .proto files in one shared schema repo or directory with a single owner per package, and generate code from it in CI. Confidence: 0.85
+- Lint and check every proto change for breaking changes with buf lint and buf breaking before it can merge. Confidence: 0.90
+- Version packages in the name, such as billing.v1, and add a new v2 package instead of changing the meaning of existing fields. Confidence: 0.90
+- Never reuse or renumber a field tag, and mark removed fields and names as reserved. Confidence: 0.95
+- Give every RPC its own request and response message, even when it starts empty, so fields can be added later. Confidence: 0.90
+- Follow the resource-oriented method style of Get, List, Create, Update and Delete instead of ad hoc verbs where it fits. Confidence: 0.75
+- Use field masks for partial updates rather than treating unset fields as a request to clear them. Confidence: 0.80
+- Paginate every List call with page_size and an opaque page_token, and cap the page size on the server. Confidence: 0.90
+- Use well-known types like google.protobuf.Timestamp and Duration instead of raw integers for time values. Confidence: 0.85
+- Return the canonical status codes correctly, such as NOT_FOUND, INVALID_ARGUMENT and UNAVAILABLE, and never wrap every failure in UNKNOWN. Confidence: 0.90
+- Attach structured error details with the richer error model for validation failures instead of packing them into the message string. Confidence: 0.75
+- Require a deadline on every client call and propagate the remaining deadline to downstream calls. Confidence: 0.95
+- Retry only idempotent methods, with backoff and a retry budget configured in the service config, not in hand-written loops. Confidence: 0.85
+- Pass request IDs, auth tokens and tracing context in metadata, and keep business data in the message body. Confidence: 0.85
+- Put logging, auth, metrics and tracing in interceptors instead of repeating them inside each handler. Confidence: 0.90
+- Use mutual TLS between internal services and verify per-call credentials on the server for anything sensitive. Confidence: 0.85
+- Implement the standard gRPC health checking service and enable server reflection only outside production. Confidence: 0.80
+- Prefer unary calls, and use streaming only when the data is truly incremental or long-lived. Confidence: 0.80
+- Apply flow control and backpressure on streams, and send keepalive pings within limits the load balancer allows. Confidence: 0.70
+- Balance load per request with an L7 proxy or client-side balancing, because HTTP/2 connections pin traffic to one backend. Confidence: 0.85
+- Expose a REST or JSON gateway generated from the same protos for browsers and partners instead of maintaining a second API by hand. Confidence: 0.70
+- Test handlers with an in-process server and real generated clients rather than mocking the generated stubs. Confidence: 0.80
+- Document each service, method and field with comments in the proto file, since that is where readers look first. Confidence: 0.85
+```
+
+</details>
+
