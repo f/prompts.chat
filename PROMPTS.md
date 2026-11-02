@@ -219536,3 +219536,16 @@ Rules: no text, signs, or logos; no motorboats, phones, or modern brand packagin
 
 </details>
 
+<details>
+<summary><strong>Floating Market Boats Laden with Tropical Fruit on a Misty Canal at Sunrise</strong></summary>
+
+## Floating Market Boats Laden with Tropical Fruit on a Misty Canal at Sunrise
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Long wooden boats piled with tropical fruit gliding along a calm, misty canal at a floating market at sunrise, seen from eye level on the water looking straight down the canal, in a wide landscape 16:9 frame. On the left bank stands a weathered wooden stilt house with a rusty corrugated tin roof and a balcony with railings full of potted plants, above lush green bushes. Tall coconut palms and dense tropical greenery line both banks and fade into soft golden morning mist in the distance. Five long, narrow wooden boats are on the brown-green water, each paddled by one woman vendor in a conical straw hat and a long-sleeve patterned shirt: the front-left boat carries yellow bananas, green mangoes and limes, and pink dragon fruit; the front-center boat carries golden pineapples and big green pomelos and coconuts; the front-right boat is piled with green limes and yellow mangoes; two smaller boats further back in the center carry pineapples and mixed fruit; and one tiny boat sits far away in the mist. Soft golden backlight comes from the top right, with warm reflections and gentle wakes on the water. Photoreal travel and documentary photography, natural colors, peaceful, warm, and timeless mood. No text, no signs, no logos.
+```
+
+</details>
+
