@@ -208,6 +208,18 @@ Esto nos devuelve a una idea anterior: **conector** es un término de producto. 
   explanation="Los metadatos de descubrimiento y la verificación ayudan con la configuración y a saber quién gestiona el servidor. No eligen por ti la cuenta ni los ámbitos de acceso, y una Server Card ni siquiera enumera las herramientas. Revisa las herramientas después de conectarte y concede solo el acceso que la tarea necesita."
 />
 
+### Cuando nadie busca el servidor
+
+Todo lo anterior da por hecho que alguien se toma la molestia de buscar el servidor, ya sea una persona que consulta un directorio o un cliente que lee una tarjeta de servidor. Muchas veces nadie lo hace. Le dices a un agente de programación «configura un MCP de GitHub», y el agente tiene que elegir el paquete por su cuenta. Si echa mano de un nombre que recuerda en lugar de uno que ha comprobado, la elección sale de los datos de entrenamiento del modelo, y esos datos son una fotografía de un momento que ya pasó. Desde entonces, el dueño del servicio puede haber sustituido el servidor o haberlo archivado, y el modelo no tiene forma de saberlo.
+
+Investigadores de Glow Labs (Glow Security) [describieron justo esto](https://www.helpnetsecurity.com/2026/11/03/mcphantom-deprecated-mcp-servers/) en noviembre de 2026, tras revisar transcripciones reales de sesiones de programación, y bautizaron el patrón como MCPhantom. En las sesiones en las que un agente instaló o sugirió un servidor MCP obsoleto, el agente parece haber completado el nombre del paquete a partir de sus datos de entrenamiento el 98 % de las veces; en el 2 % restante, fue el usuario quien pidió el paquete antiguo por su nombre. En su ejemplo de GitHub, el agente pasó por alto el servidor que mantiene la propia GitHub y prefirió un servidor de referencia archivado que recordaba. No era culpa de un solo producto: el patrón apareció en varios harnesses, entre ellos Claude Code, Cursor y Codex CLI, y con modelos de distintos proveedores. Los investigadores encontraron además cuatro fallos de gravedad alta en esos servidores archivados; el más serio, una vulnerabilidad de ejecución remota de código en el servidor de Puppeteer a la que se podía llegar mediante una inyección de prompt. Como los repositorios están archivados, no habrá parches, aunque el informe señala que no se había observado ninguna explotación.
+
+Dos detalles hacen que el problema pase desapercibido con facilidad. Consultar el paquete no siempre basta: en una sesión, el agente vio «This package is deprecated» en npm, lo instaló de todos modos y nunca se lo dijo al usuario. Y como estos servidores suelen ejecutarse con `npx`, nunca aparecen en un archivo de dependencias, así que nada en el proyecto deja constancia de que están ahí. En palabras de uno de los investigadores: «La memoria del modelo es ahora un gestor de paquetes que nunca se entera de lo que ha quedado obsoleto».
+
+<Callout type="warning" title="Instalar también es una acción">
+Antes de que un agente añada un servidor, pregúntale qué paquete ha elegido y de dónde viene. Prefiere el servidor oficial del dueño del servicio cuando exista, comprueba que sigue mantenido y que no está obsoleto ni archivado, y quédate con un solo servidor por servicio. Trata la instalación como algo que tú apruebas, igual que cualquier otra acción del agente. Y lo más sencillo de todo: nombra en el propio prompt el servidor que quieres, para que el agente no tenga nada que rellenar de memoria.
+</Callout>
+
 ## Prueba una lectura y una escritura
 
 Este ejemplo usa el mismo gestor ficticio por dos rutas. Cambia la ruta, la operación o el nivel de acceso y después ejecuta la solicitud. Para una escritura, prueba tanto aprobarla como rechazarla.

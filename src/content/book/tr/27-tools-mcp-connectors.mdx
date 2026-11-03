@@ -208,6 +208,18 @@ Bu da bizi daha önceki bir noktaya geri getiriyor: **bağlayıcı** bir ürün 
   explanation="Keşif bilgileri ve doğrulama, kurulumu kolaylaştırır ve sunucuyu kimin işlettiğini bilmenize yardım eder. Hesabınızı ya da yetki kapsamlarınızı sizin yerinize seçmezler; üstelik bir Server Card araçları listelemez bile. Bağlandıktan sonra araçları inceleyin ve yalnızca görevin gerektirdiği erişimi verin."
 />
 
+### Sunucuyu Kimse Aramadığında
+
+Buraya kadar anlattıklarımızın hepsi, birinin sunucuyu gerçekten aradığını varsayıyordu; bu, bir dizinde gezinen bir insan da olabilir, sunucu kartını okuyan bir istemci de. Oysa çoğu zaman kimse aramaz. Bir kodlama ajanına “bir GitHub MCP'si kur” dersiniz ve hangi paketi kuracağına ajan kendi başına karar verir. Kontrol ettiği bir adı değil de aklında kalan bir adı seçerse, bu tercih modelin eğitim verisinden gelir. O veri ise çoktan geride kalmış bir anın fotoğrafıdır. Aradan geçen sürede hizmetin sahibi sunucuyu yenisiyle değiştirmiş ya da arşive kaldırmış olabilir; modelin bundan haberdar olmasının hiçbir yolu yoktur.
+
+Glow Labs (Glow Security) araştırmacıları, gerçek kodlama oturumlarının kayıtlarını inceledikten sonra Kasım 2026'da [tam olarak bunu anlattı](https://www.helpnetsecurity.com/2026/11/03/mcphantom-deprecated-mcp-servers/) ve bu örüntüye MCPhantom adını verdi. Ajanın kullanımdan kaldırılmış bir MCP sunucusunu kurduğu ya da önerdiği oturumların %98'inde paket adını eğitim verisinden kendisi tamamlamış görünüyor; kalan %2'de ise eski paketi adıyla isteyen kullanıcının kendisiydi. Araştırmacıların GitHub örneğinde ajan, GitHub'ın bizzat bakımını üstlendiği sunucuyu es geçmiş, hafızasında kalan ve artık arşivlenmiş bir referans sunucuyu seçmişti. Sorun tek bir ürüne özgü değildi: Aynı örüntü Claude Code, Cursor ve Codex CLI dahil birçok harness'ta ve farklı sağlayıcıların modellerinde görüldü. Araştırmacılar bu arşivlenmiş sunucularda yüksek önem derecesine sahip dört açık da buldu. En ciddisi, Puppeteer sunucusunda bir prompt injection ile tetiklenebilen uzaktan kod çalıştırma açığıydı. Depolar arşivlendiği için bu açıklara yama da gelmeyecek; yine de rapora göre şimdiye kadar istismar edildiklerine dair bir işaret görülmemiş.
+
+Sorunu gözden kaçırmayı kolaylaştıran iki ayrıntı var. Paketi önceden araştırmak her zaman yetmiyor: Bir oturumda ajan npm'de “This package is deprecated” uyarısını görmüş, paketi yine de kurmuş ve kullanıcıya tek kelime etmemişti. Üstelik bu sunucular genellikle `npx` ile çalıştırıldığı için hiçbir bağımlılık dosyasında yer almıyor; yani projede orada olduklarını gösteren bir kayıt bulunmuyor. Araştırmacılardan birinin deyişiyle: “Modelin hafızası artık, hangi paketin terk edildiğinden hiç haberi olmayan bir paket yöneticisi.”
+
+<Callout type="warning" title="Kurulum da bir eylemdir">
+Ajan bir sunucu eklemeden önce hangi paketi seçtiğini ve paketin nereden geldiğini sorun. Varsa hizmetin sahibinin yayımladığı resmî sunucuyu tercih edin, sunucunun kullanımdan kaldırılmamış ya da arşivlenmemiş, hâlâ bakımı yapılan bir proje olduğunu kontrol edin ve her hizmet için tek bir sunucuda karar kılın. Kurulumu, ajanın attığı her adım gibi sizin onayınızı bekleyen bir iş olarak görün. En kolayı da istediğiniz sunucuyu doğrudan prompt'ta belirtmektir; böylece ajanın hafızadan tamamlayacağı bir boşluk kalmaz.
+</Callout>
+
 ## Okuma ve Yazmayı Deneyin
 
 Bu örnek, aynı hayali takip sistemine iki yoldan ulaşır. Yolu, işlemi veya erişim düzeyini değiştirin, sonra isteği çalıştırın. Yazma işleminde hem onaylamayı hem de reddetmeyi deneyin.

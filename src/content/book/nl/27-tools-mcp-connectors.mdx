@@ -208,6 +208,18 @@ Dat brengt ons terug bij een eerder punt: **connector** is een productterm. Een 
   explanation="Vindbaarheidsgegevens en verificatie helpen bij de installatie en laten zien wie de server beheert. Ze kiezen je account of toegangsbereik niet voor je, en een Server Card somt de tools niet eens op. Loop de tools na het verbinden na en geef alleen de toegang die de taak nodig heeft."
 />
 
+### Als niemand de server opzoekt
+
+Alles hierboven gaat ervan uit dat iemand de server echt opzoekt, of dat nu een mens is die een overzicht doorbladert of een client die een server card leest. Vaak doet niemand dat. Je zegt tegen een codeeragent "zet een GitHub-MCP op", en de agent moet zelf een pakket kiezen. Grijpt hij naar een naam die hij zich herinnert in plaats van een naam die hij heeft gecontroleerd, dan komt die keuze uit de trainingsdata van het model. Die data zijn een momentopname van een moment dat al voorbij is. Intussen kan de eigenaar van een dienst de server hebben vervangen of gearchiveerd, en het model kan dat op geen enkele manier weten.
+
+Onderzoekers van Glow Labs (Glow Security) [beschreven precies dit](https://www.helpnetsecurity.com/2026/11/03/mcphantom-deprecated-mcp-servers/) in november 2026, nadat ze transcripten van echte codeersessies hadden bekeken. Ze noemden het patroon MCPhantom. In de sessies waarin een agent een verouderde MCP-server installeerde of voorstelde, lijkt de agent de pakketnaam in 98% van de gevallen uit zijn trainingsdata te hebben ingevuld; in de overige 2% had de gebruiker zelf om het oude pakket gevraagd. In hun GitHub-voorbeeld liet de agent de server die GitHub zelf onderhoudt links liggen en koos hij een gearchiveerde referentieserver die hij zich herinnerde. Het lag niet aan één product: het patroon dook op in meerdere harnesses, waaronder Claude Code, Cursor en Codex CLI, en bij modellen van meerdere aanbieders. De onderzoekers vonden in die gearchiveerde servers ook vier ernstige kwetsbaarheden. De ernstigste is een lek in de Puppeteer-server waarmee via een prompt injection op afstand code kan worden uitgevoerd. Omdat de repositories gearchiveerd zijn, komen er geen patches, al vermeldt het rapport dat er geen misbruik was waargenomen.
+
+Twee details maken het probleem makkelijk over het hoofd te zien. Het pakket opzoeken is niet altijd genoeg: in één sessie zag de agent op npm "This package is deprecated", installeerde het pakket toch en zei er niets over tegen de gebruiker. En omdat zulke servers meestal via `npx` draaien, verschijnen ze nooit in een afhankelijkhedenbestand; niets in het project legt vast dat ze er zijn. Zoals een van de onderzoekers het zei: "Het geheugen van het model is nu een pakketbeheerder die nooit hoort wat er verouderd is."
+
+<Callout type="warning" title="Een installatie is ook een actie">
+Vraag een agent, voordat hij een server toevoegt, welk pakket hij heeft gekozen en waar het vandaan komt. Geef de voorkeur aan de officiële server van de eigenaar van de dienst als die bestaat, controleer of hij nog wordt onderhouden en niet verouderd of gearchiveerd is, en kies één server per dienst. Behandel de installatie als iets wat jij goedkeurt, net als elke andere actie van de agent. Het eenvoudigst is om de server die je wilt meteen in de prompt te noemen. Dan hoeft de agent niets uit zijn geheugen in te vullen.
+</Callout>
+
 ## Probeer lezen en schrijven
 
 Dit voorbeeld gebruikt dezelfde fictieve tracker via twee routes. Verander de route, bewerking of het toegangsniveau en voer daarna het verzoek uit. Probeer een schrijfactie zowel goed te keuren als af te wijzen.
