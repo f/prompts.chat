@@ -208,6 +208,18 @@ Bu, bizi əvvəlki bir fikrə qaytarır: **bağlayıcı** məhsul terminidir. Se
   explanation="Kəşf məlumatları və təsdiq quraşdırmaya və serveri kimin idarə etdiyini bilməyə kömək edir. Onlar hesabınızı və ya icazə əhatənizi sizin yerinizə seçmir, Server Card isə alətləri heç sadalamır. Qoşulduqdan sonra alətləri yoxlayın və yalnız tapşırığın tələb etdiyi girişi verin."
 />
 
+### Serveri Heç Kim Axtarmayanda
+
+İndiyədək dediklərimizin hamısı kiminsə serveri doğrudan da axtardığını fərz edirdi: bu, kataloqa baxan bir insan da ola bilər, server kartını oxuyan bir müştəri proqramı da. Amma çox vaxt heç kim axtarmır. Kodlaşdırma agentinə “GitHub MCP-ni qur” deyirsiniz və hansı paketi seçəcəyinə agent özü qərar verir. Əgər o, yoxladığı bir adı deyil, yadında qalan adı götürürsə, bu seçim modelin təlim məlumatlarından gəlir. Həmin məlumatlar isə artıq keçmişdə qalmış bir anın şəklidir. O vaxtdan bəri xidmətin sahibi serveri yenisi ilə əvəz etmiş və ya arxivə göndərmiş ola bilər, model isə bundan xəbər tutmağın heç bir yolunu bilmir.
+
+Glow Labs (Glow Security) tədqiqatçıları real kodlaşdırma sessiyalarının qeydlərini nəzərdən keçirdikdən sonra 2026-cı ilin noyabrında [məhz bunu təsvir etdilər](https://www.helpnetsecurity.com/2026/11/03/mcphantom-deprecated-mcp-servers/) və bu nümunəyə MCPhantom adını verdilər. Agentin köhnəlmiş MCP serverini quraşdırdığı və ya təklif etdiyi sessiyaların 98%-də paket adını, görünür, təlim məlumatlarından özü tamamlamışdı; qalan 2%-də isə köhnə paketi adı ilə istəyən istifadəçinin özü idi. Tədqiqatçıların GitHub nümunəsində agent GitHub-ın özünün dəstəklədiyi serveri bir kənara qoyub yadında qalan, artıq arxivləşdirilmiş bir istinad serverini seçmişdi. Problem tək bir məhsula aid deyildi: eyni nümunə Claude Code, Cursor və Codex CLI daxil olmaqla bir neçə harness-də və müxtəlif provayderlərin modellərində müşahidə olundu. Tədqiqatçılar həmin arxivləşdirilmiş serverlərdə yüksək dərəcəli dörd zəiflik də tapdılar. Ən ciddisi Puppeteer serverində prompt injection vasitəsilə işə salına bilən uzaqdan kod icrası zəifliyi idi. Repozitoriyalar arxivləşdirildiyi üçün yamaq da gəlməyəcək, baxmayaraq ki, hesabata görə bu zəifliklərin istismarı hələ müşahidə olunmayıb.
+
+Problemi gözdən qaçırmağı asanlaşdıran iki xırda məqam var. Paketi əvvəlcədən yoxlamaq həmişə kifayət etmir: bir sessiyada agent npm-də “This package is deprecated” xəbərdarlığını görmüş, paketi yenə də quraşdırmış və istifadəçiyə bu barədə heç nə deməmişdi. Üstəlik bu serverlər adətən `npx` ilə işə salındığı üçün heç bir asılılıq faylında görünmür, yəni layihədə onların mövcudluğunu göstərən bir qeyd qalmır. Tədqiqatçılardan birinin sözləri ilə: “Modelin yaddaşı indi hansı paketin köhnəldiyindən heç xəbəri olmayan bir paket menecerinə çevrilib.”
+
+<Callout type="warning" title="Quraşdırma da bir əməliyyatdır">
+Agent server əlavə etməzdən əvvəl hansı paketi seçdiyini və onun haradan gəldiyini soruşun. Varsa, xidmətin sahibinin dərc etdiyi rəsmi serverə üstünlük verin, onun köhnəlmiş və ya arxivləşdirilmiş deyil, hələ də dəstəklənən bir layihə olduğunu yoxlayın və hər xidmət üçün bir serverdə qərar verin. Quraşdırmaya da agentin hər hansı digər addımı kimi sizin təsdiqinizi gözləyən bir iş kimi baxın. Ən sadəsi isə istədiyiniz serveri elə promptun özündə göstərməkdir; onda agentin yaddaşdan dolduracağı boşluq qalmır.
+</Callout>
+
 ## Oxuma və Yazmanı Sınayın
 
 Bu nümunə eyni uydurma izləmə sistemindən iki yol vasitəsilə istifadə edir. Yolu, əməliyyatı və ya giriş səviyyəsini dəyişin, sonra sorğunu işlədin. Yazma üçün həm təsdiqi, həm də rəddi sınayın.

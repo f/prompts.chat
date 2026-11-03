@@ -208,6 +208,18 @@ Questo ci riporta a un punto visto prima: **connettore** è un termine di prodot
   explanation="I metadati di scoperta e la verifica aiutano nella configurazione e a sapere chi gestisce il server. Non scelgono al posto tuo l'account o gli ambiti di accesso, e una Server Card non elenca nemmeno gli strumenti. Controlla gli strumenti dopo il collegamento e concedi solo l'accesso di cui il compito ha bisogno."
 />
 
+### Quando nessuno va a cercare il server
+
+Tutto ciò che abbiamo visto finora presuppone che qualcuno vada davvero a cercare il server, che sia una persona che consulta un elenco o un client che legge una scheda del server. Spesso, però, nessuno lo fa. Dici a un agente di programmazione «configura un MCP per GitHub», e tocca all'agente scegliere il pacchetto. Se si affida a un nome che ricorda invece che a uno che ha verificato, la scelta nasce dai dati di addestramento del modello, e quei dati sono la fotografia di un momento ormai passato. Nel frattempo il proprietario del servizio può aver sostituito il server o averlo archiviato, e il modello non ha alcun modo di saperlo.
+
+I ricercatori di Glow Labs (Glow Security) hanno [descritto proprio questo](https://www.helpnetsecurity.com/2026/11/03/mcphantom-deprecated-mcp-servers/) nel novembre 2026, dopo aver esaminato trascrizioni reali di sessioni di programmazione, e hanno chiamato il fenomeno MCPhantom. Nelle sessioni in cui un agente aveva installato o suggerito un server MCP deprecato, l'agente sembra aver completato il nome del pacchetto a partire dai dati di addestramento nel 98% dei casi; nel restante 2% era stato l'utente a chiedere il vecchio pacchetto per nome. Nel loro esempio con GitHub, l'agente ha scartato il server mantenuto dalla stessa GitHub per un server di riferimento archiviato che ricordava. Non era colpa di un singolo prodotto: lo schema si è presentato in diversi harness, tra cui Claude Code, Cursor e Codex CLI, e con modelli di più fornitori. I ricercatori hanno trovato anche quattro vulnerabilità di gravità elevata in quei server archiviati; la più seria è un difetto di esecuzione di codice remoto nel server Puppeteer, raggiungibile tramite una prompt injection. Dato che i repository sono archiviati, nessuna patch arriverà, anche se il rapporto precisa che non era stato osservato alcuno sfruttamento.
+
+Due dettagli rendono il problema facile da non notare. Controllare il pacchetto non sempre basta: in una sessione l'agente ha visto «This package is deprecated» su npm, lo ha installato comunque e non ne ha fatto parola con l'utente. E poiché questi server di solito vengono avviati con `npx`, non compaiono mai in un file delle dipendenze: nel progetto non resta traccia della loro presenza. Come ha detto uno dei ricercatori: «La memoria del modello è ormai un gestore di pacchetti che non viene mai a sapere che cosa è stato deprecato».
+
+<Callout type="warning" title="Anche un'installazione è un'azione">
+Prima che un agente aggiunga un server, chiedigli quale pacchetto ha scelto e da dove proviene. Preferisci il server ufficiale del proprietario del servizio, quando esiste, verifica che sia ancora mantenuto e non deprecato o archiviato, e scegli un solo server per ogni servizio. Tratta l'installazione come qualcosa da approvare, al pari di qualunque altra azione dell'agente. La cosa più semplice, però, è indicare il server che vuoi direttamente nel prompt, così l'agente non ha nulla da completare a memoria.
+</Callout>
+
 ## Prova una lettura e una scrittura
 
 Questo esempio usa lo stesso gestore immaginario attraverso due percorsi. Cambia il percorso, l'operazione o il livello di accesso, poi esegui la richiesta. Per una scrittura, prova sia ad approvarla sia a rifiutarla.

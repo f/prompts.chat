@@ -208,6 +208,18 @@ This brings us back to an earlier point: **connector** is a product term. A serv
   explanation="Discovery metadata and verification help with setup and with knowing who runs the server. They do not choose your account or scopes for you, and a Server Card does not even list the tools. Review the tools after connecting, and grant only the access the task needs."
 />
 
+### When Nobody Looks the Server Up
+
+Everything above assumes that someone actually goes looking for the server, whether a person browsing a directory or a client reading a Server Card. Often nobody does. You tell a coding agent "set up a GitHub MCP," and the agent has to choose a package on its own. If it reaches for a name it remembers rather than one it has checked, the choice comes from the model's training data, and that data is a snapshot of a moment that has already passed. Since then, a service's owner may have replaced the server or archived it, and the model has no way of knowing.
+
+Researchers at Glow Labs (Glow Security) [described exactly this](https://www.helpnetsecurity.com/2026/11/03/mcphantom-deprecated-mcp-servers/) in November 2026 after reviewing real coding session transcripts, and they named the pattern MCPhantom. In the sessions where an agent installed or suggested a deprecated MCP server, the agent appears to have filled in the package name from training data 98% of the time; in the remaining 2%, the user had asked for the old package by name. In their GitHub example, the agent passed over the server GitHub maintains itself in favor of an archived reference server it remembered. No single product was to blame: the pattern appeared across several harnesses, including Claude Code, Cursor and Codex CLI, and with models from several providers. The researchers also found four high-severity flaws in those archived servers, the most serious a remote code execution bug in the Puppeteer server that a prompt injection could reach. Because the repositories are archived, no patches are coming, although the report notes that no exploitation had been observed.
+
+Two details make the problem easy to miss. Looking the package up is not always enough: in one session the agent saw "This package is deprecated" on npm, installed it anyway, and never told the user. And because these servers usually run through `npx`, they never show up in a dependency file, so nothing in the project records that they are there. In the words of one of the researchers, "The model's memory is now a package manager with no deprecation feed."
+
+<Callout type="warning" title="An install is an action too">
+Before an agent adds a server, ask which package it chose and where it comes from. Prefer the official server from the service's owner when one exists, check that it is still maintained rather than deprecated or archived, and settle on one server per service. Treat the install as something you approve, like any other action the agent takes. Simplest of all, name the server you want in the prompt itself, so the agent has nothing to fill in from memory.
+</Callout>
+
 ## Try a Read and a Write
 
 This example uses the same fictional tracker through two routes. Change the route, operation, or access level, then run the request. For a write, try both approving and declining it.
