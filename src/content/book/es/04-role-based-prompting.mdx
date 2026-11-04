@@ -28,7 +28,9 @@ Los LLMs funcionan prediciendo el próximo token más probable basándose en el 
 Piénsalo así: si preguntas "¿Qué debería hacer con esta tos?" el modelo podría responder como un médico, un amigo, un farmacéutico o un padre preocupado. Cada uno daría consejos diferentes. Al especificar el rol de antemano, le estás diciendo al modelo qué "voz" usar de sus datos de entrenamiento.
 
 <Callout type="info" title="Por Qué Esto Importa">
-El modelo no está pretendiendo o haciendo juego de roles en un sentido teatral. Está sesgando estadísticamente sus salidas hacia patrones que aprendió de expertos, profesionales y especialistas reales durante el entrenamiento. Un rol de "médico" activa vías de conocimiento médico; un rol de "poeta" activa patrones literarios.
+El modelo no está fingiendo ni haciendo juego de roles en un sentido teatral. Está sesgando estadísticamente sus salidas hacia patrones que aprendió de expertos, profesionales y especialistas reales durante el entrenamiento. Un rol de "médico" activa vías de conocimiento médico; un rol de "poeta" activa patrones literarios.
+
+Los roles moldean sobre todo el tono, el vocabulario y el enfoque. No pueden añadir conocimiento que el modelo nunca aprendió, y la investigación ha encontrado que una persona, por sí sola, rara vez hace más precisas las respuestas a preguntas factuales. Combina los roles con un buen contexto y verifica todo lo que sea importante.
 </Callout>
 
 ## Patrones Básicos de Roles
@@ -132,7 +134,7 @@ Escribe microtexto para: \${element}`} />
 
 ### Roles Analíticos
 
-**Analista de Negocios**: Conecta la brecha entre stakeholders técnicos y no técnicos. Útil para recopilación de requisitos, escritura de especificaciones e identificación de brechas en planes de proyecto.
+**Analista de Negocios**: Tiende un puente entre stakeholders técnicos y no técnicos. Útil para recopilación de requisitos, escritura de especificaciones e identificación de brechas en planes de proyecto.
 
 <TryIt compact prompt={`Eres un analista de negocios que traduce entre equipos técnicos y stakeholders. Clarificas requisitos e identificas casos límite.
 
@@ -170,7 +172,7 @@ Para tareas complejas, combina múltiples aspectos de rol en una sola identidad 
 
 Este ejemplo superpone tres elementos: experiencia de dominio (documentación de API), audiencia (desarrolladores junior) y guía de estilo (convenciones de Google). Cada capa restringe la salida aún más.
 
-<TryIt compact prompt={`Eres un escritor técnico con experiencia en documentación de API. Escribes para desarrolladores que son nuevos en APIs REST. Sigue la guía de estilo de documentación para desarrolladores de Google: usa segunda persona ("tú"), voz activa, tiempo presente y mantén las oraciones bajo 26 palabras.
+<TryIt compact prompt={`Eres un escritor técnico con experiencia en documentación de API. Escribes para desarrolladores que son nuevos en APIs REST. Sigue la guía de estilo de documentación para desarrolladores de Google: usa segunda persona ("tú"), voz activa, tiempo presente y mantén las oraciones por debajo de 26 palabras.
 
 Documenta: \${apiEndpoint}`} />
 
@@ -291,7 +293,7 @@ Combina un rol con un ejemplo para mostrar exactamente cómo debería responder 
 
 Ejemplo de respuesta a cliente enojado:
 Cliente: "¡Esto es ridículo! ¡He estado esperando 2 semanas!"
-Tú: "Entiendo completamente tu frustración, y me disculpo por la demora. Déjame investigar esto ahora mismo y averiguar exactamente dónde está tu pedido. ¿Puedo tener tu número de pedido?"
+Tú: "Entiendo completamente tu frustración, y me disculpo por la demora. Déjame investigar esto ahora mismo y averiguar exactamente dónde está tu pedido. ¿Me podrías dar tu número de pedido?"
 
 Ahora responde a:
 Cliente: "\${customerMessage}"`} />
@@ -300,7 +302,7 @@ Cliente: "\${customerMessage}"`} />
 
 El rol de detective naturalmente fomenta el razonamiento paso a paso. Combinar roles con cadena de pensamiento produce resolución de problemas más transparente y verificable.
 
-<TryIt compact prompt={`Eres un detective resolviendo un rompecabezas de lógica. Piensa a través de cada pista metódicamente, declarando tu razonamiento en cada paso.
+<TryIt compact prompt={`Eres un detective resolviendo un rompecabezas de lógica. Analiza cada pista metódicamente, declarando tu razonamiento en cada paso.
 
 Pistas:
 \${clues}
