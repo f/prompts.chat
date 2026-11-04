@@ -1,4 +1,4 @@
-Todo grande prompt compartilha elementos estruturais comuns. Entender esses componentes permite que você construa prompts sistematicamente em vez de por tentativa e erro.
+Todo prompt excelente compartilha elementos estruturais comuns. Entender esses componentes permite que você construa prompts sistematicamente em vez de por tentativa e erro.
 
 <Callout type="tip" title="Os Blocos de Construção">
 Pense nesses componentes como peças de LEGO. Você não precisa de todos eles para cada prompt, mas saber o que está disponível ajuda você a construir exatamente o que precisa.
@@ -11,7 +11,7 @@ Um prompt eficaz tipicamente inclui alguns ou todos esses elementos:
 <PromptBreakdown parts={[
   { label: "Papel", text: "Você é um engenheiro de software sênior" },
   { label: "Contexto", text: "trabalhando em uma aplicação React." },
-  { label: "Tarefa", text: "Revise este código para bugs" },
+  { label: "Tarefa", text: "Revise este código em busca de bugs" },
   { label: "Restrições", text: "e foque apenas em problemas de segurança." },
   { label: "Formato", text: "Retorne descobertas como lista numerada." },
   { label: "Exemplo", text: "Tipo: 1. Risco de SQL injection na linha 42" }
@@ -68,7 +68,7 @@ A tarefa é o coração do seu prompt—o que você quer que o modelo faça. Sej
   { level: "Vago", text: "Me ajude com essa redação" },
   { level: "Melhor", text: "Edite essa redação" },
   { level: "Bom", text: "Edite essa redação para gramática e clareza" },
-  { level: "Melhor", text: "Edite essa redação para gramática e clareza, mantendo o tom original mas reduzindo palavras desnecessárias em 20%" }
+  { level: "Ideal", text: "Edite essa redação para gramática e clareza, mantendo o tom original mas reduzindo palavras desnecessárias em 20%" }
 ]} />
 
 ### Verbos de Ação Que Funcionam Bem
@@ -119,7 +119,7 @@ Restrições delimitam a saída do modelo. Elas previnem problemas comuns e gara
 **Restrições de estilo:**
 ```
 "Use um tom formal e acadêmico"
-"Escreva como se falando com uma criança de 10 anos"
+"Escreva como se estivesse falando com uma criança de 10 anos"
 "Seja direto e evite linguagem evasiva"
 ```
 
@@ -230,6 +230,10 @@ Estruture a documentação como:
 3. Resposta (exemplos de sucesso e erro)
 4. Exemplo de Código (em JavaScript/Node.js)
 
+# Exemplo
+Siga o tom desta descrição de erro da nossa documentação atual:
+"card_declined: O banco do cliente recusou a cobrança. Peça que ele tente outro meio de pagamento."
+
 # Detalhes do Endpoint
 POST /v1/payments/intents
 Body: { "amount": 1000, "currency": "brl", "description": "Pedido #1234" }`}
@@ -293,7 +297,7 @@ Formato: Para cada funcionalidade, forneça:
 1. Nome da funcionalidade
 2. Descrição de uma frase
 3. Por que importa para equipes remotas`}
-  description="Este prompt usa todos os seis componentes. Experimente e veja como a abordagem estruturada produz resultados focados e acionáveis."
+  description="Este prompt usa cinco dos seis componentes (todos, exceto exemplos). Experimente e veja como a abordagem estruturada produz resultados focados e acionáveis."
 />
 
 ## Construa Seu Próprio Prompt

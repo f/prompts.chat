@@ -170,6 +170,10 @@ Retorne o resultado como bloco de código JSON:
 ```
 ````
 
+<Callout type="info" title="Saídas Estruturadas Nativas">
+Se você chama um modelo por meio de uma API, não precisa depender apenas da forma como escreve o pedido. OpenAI, Anthropic e Google oferecem modos de saída estruturada que recebem um JSON Schema e obrigam a resposta a segui-lo, de modo que campos obrigatórios e valores permitidos são impostos em vez de apenas solicitados. As opções mais antigas de "modo JSON" garantem apenas um JSON sintaticamente válido, não o seu schema. Mesmo com um schema imposto, os próprios valores ainda podem estar errados, então continue validando o que importa.
+</Callout>
+
 ## Saída YAML
 
 YAML é mais legível por humanos que JSON, usando indentação em vez de colchetes. É o padrão para arquivos de configuração (Docker, Kubernetes, GitHub Actions) e funciona bem quando a saída será lida por humanos ou usada em contextos DevOps. YAML é sensível a indentação, então seja específico sobre requisitos de formatação.
@@ -181,8 +185,8 @@ YAML é mais legível por humanos que JSON, usando indentação em vez de colche
 
 Retorne como YAML válido:
 - Inclua: estágios de install, lint, test, build
-- Use Node.js 18
-- Cache de dependências npm
+- Use a versão LTS atual do Node.js
+- Faça cache das dependências npm
 - Execute em push para main e pull requests`}
 />
 
@@ -280,7 +284,7 @@ Texto: "Tim Cook anunciou que a Apple investirá $1 bilhão em uma nova instala�
 
 ## Respostas Estruturadas Multi-Partes
 
-Quando você precisa de saída abrangente cobrindo múltiplos aspectos, defina partes distintas com limites claros. Especifique exatamente o que vai em cada parte—formato, tamanho e tipo de conteúdo. Isso previne o modelo de misturar seções ou omitir partes.
+Quando você precisa de saída abrangente cobrindo múltiplos aspectos, defina partes distintas com limites claros. Especifique exatamente o que vai em cada parte: formato, tamanho e tipo de conteúdo. Isso impede que o modelo misture seções ou omita partes.
 
 ```
 Pesquise este tópico e forneça:
@@ -324,7 +328,7 @@ Se MÉDIO (único usuário afetado, workaround existe):
 Se BAIXO (perguntas, solicitações de recursos):
   Retorne: 🟢 BAIXO | [Categoria] | [Ação Sugerida]
 
-Ticket: "Não consigo fazer login na minha conta. Tentei resetar minha senha duas vezes mas ainda recebo erro. Isso está bloqueando toda minha equipe de acessar o dashboard."`}
+Ticket: "Não consigo fazer login na minha conta. Tentei resetar minha senha duas vezes mas ainda recebo erro. Isso está impedindo toda a minha equipe de acessar o dashboard."`}
 />
 
 ## Arrays e Listas em JSON
@@ -353,7 +357,7 @@ Transcrição: "[transcrição da reunião]"
 
 ## Instruções de Validação
 
-Auto-validação instrui o modelo a verificar sua própria saída antes de responder. Isso captura problemas comuns como seções faltando, texto placeholder ou violações de restrições. O modelo vai iterar internamente para corrigir problemas, melhorando qualidade da saída sem chamadas de API adicionais.
+Auto-validação instrui o modelo a verificar sua própria saída antes de responder. Isso captura problemas comuns como seções faltando, texto placeholder ou violações de restrições. Isso costuma melhorar a qualidade sem uma chamada extra de API, mas não é uma garantia: um modelo pode afirmar que uma verificação passou quando não passou, então continue verificando saídas críticas no seu próprio código.
 
 ```
 Gere o relatório, então:
@@ -363,7 +367,7 @@ CHECKLIST DE VALIDAÇÃO:
 □ Nenhum texto placeholder restante
 □ Todas estatísticas incluem fontes
 □ Contagem de palavras entre 500-700
-□ Conclusão conecta de volta à introdução
+□ Conclusão retoma a introdução
 
 Se qualquer verificação falhar, corrija antes de responder.
 ```
