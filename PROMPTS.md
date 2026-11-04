@@ -224320,3 +224320,16 @@ A photorealistic wildlife photograph of a humpback whale breaching out of the se
 
 </details>
 
+<details>
+<summary><strong>Embroidery Hoop Art of a Thatched English Cottage Garden with a Beehive</strong></summary>
+
+## Embroidery Hoop Art of a Thatched English Cottage Garden with a Beehive
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Hand-embroidered hoop art of a thatched English cottage garden with a straw beehive, square 1:1. A round wooden embroidery hoop holds cream evenweave linen, shown flat on a plain cream wall. In the center stitched in raised thread: a small cottage with a thick golden thatched roof, a brick chimney with a chimney pot on the top right, cream stone walls, four small multi-pane windows, and a red front door above two grey stone steps. Tall hollyhocks in pink, cream, and deep crimson rise on the right, with a large bed of purple lavender in the lower right and clusters of pink and white flowers and green shrubs around the house. In the lower left sits a golden straw beehive skep with a dark entrance, with three little stitched bees flying nearby. A winding cobbled stone path leads from the door down to the bottom of the design. A circular border of a stitched green vine with small pink and purple flowers and leaves runs just inside the hoop. Satin stitch, long-and-short stitch, and French knots with visible thread texture, warm muted colors, soft even daylight, charming handmade feel. No text, no lettering, no logos.
+```
+
+</details>
+
