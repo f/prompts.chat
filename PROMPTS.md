@@ -230571,3 +230571,38 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Ansible Playbook taste</strong></summary>
+
+## Ansible Playbook taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Ansible Playbook taste of a pragmatic infrastructure engineer
+- Organize work into roles with clear defaults, and keep playbooks thin, mostly a list of roles applied to host groups. Confidence: 0.90
+- Use fully qualified collection names like ansible.builtin.copy in every task so modules are never ambiguous. Confidence: 0.85
+- Pin collection and role versions in a requirements.yml file and install them in CI from that file only. Confidence: 0.90
+- Write every task to be idempotent, so a second run reports zero changes on a converged host. Confidence: 0.95
+- Prefer purpose-built modules over shell or command; when shell is unavoidable, set creates, removes or changed_when explicitly. Confidence: 0.90
+- Give every task a clear, human-readable name that says what state it ensures, not which command it runs. Confidence: 0.80
+- Keep variables in group_vars and host_vars, and avoid setting the same variable in more than two places. Confidence: 0.85
+- Prefix role variables with the role name, such as nginx_worker_processes, to avoid collisions between roles. Confidence: 0.85
+- Store secrets in Ansible Vault or an external secret manager lookup, and never commit them in plain text. Confidence: 0.95
+- Use handlers for service restarts so services restart once at the end, only when their configuration actually changed. Confidence: 0.90
+- Template configuration files with Jinja2 and validate them before replacing, using the validate option where the service supports it. Confidence: 0.85
+- Run ansible-lint and yamllint in CI on every pull request. Confidence: 0.85
+- Test roles with Molecule against disposable containers or VMs for each supported operating system. Confidence: 0.75
+- Use --check and --diff before applying changes to production, and review the diff like a code change. Confidence: 0.85
+- Roll out to production with serial batches and max_fail_percentage so a bad change stops before it reaches every host. Confidence: 0.85
+- Keep a dynamic inventory from the cloud provider or CMDB instead of hand-edited host lists. Confidence: 0.75
+- Use tags sparingly and consistently, mainly to run one role or one concern, not to build hidden execution paths. Confidence: 0.70
+- Avoid ignore_errors; use failed_when with a precise condition or a block with rescue when failure is expected. Confidence: 0.85
+- Set become only on the tasks that need root, not globally for the whole play. Confidence: 0.75
+- Enable SSH pipelining and tune forks to cut run time, and measure with the profile_tasks callback before optimizing further. Confidence: 0.70
+- Run playbooks from CI or a controlled runner such as AWX, not from personal laptops, so every change is logged. Confidence: 0.80
+
+```
+
+</details>
+
