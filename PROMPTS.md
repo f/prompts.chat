@@ -230606,3 +230606,37 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Unity Game Project taste</strong></summary>
+
+## Unity Game Project taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Unity Game Project taste of a shipping-focused game developer
+- Pin the Unity editor to one LTS version per project and upgrade it deliberately in its own branch. Confidence: 0.90
+- Use Git with Git LFS for binary assets, plus a .gitattributes file and Unity's smart merge tool for scenes and prefabs. Confidence: 0.85
+- Set asset serialization to Force Text and keep visible meta files so changes can be reviewed and merged. Confidence: 0.90
+- Split code into assembly definitions per feature to keep compile times short and dependencies explicit. Confidence: 0.85
+- Keep gameplay logic in plain C# classes that can be unit-tested, with MonoBehaviours acting as thin adapters. Confidence: 0.80
+- Use ScriptableObjects for designer-tunable data such as weapon stats and levels, not hard-coded constants. Confidence: 0.85
+- Avoid GameObject.Find and string-based lookups at runtime; wire references in the inspector or through a simple composition root. Confidence: 0.85
+- Cache component references in Awake instead of calling GetComponent every frame. Confidence: 0.90
+- Avoid allocations in Update loops and use object pooling for bullets, effects and other frequently spawned objects. Confidence: 0.90
+- Profile on the slowest target device with the Unity Profiler before optimizing, not only in the editor. Confidence: 0.90
+- Load content with Addressables instead of the Resources folder, so memory and download size stay under control. Confidence: 0.80
+- Use the new Input System with action maps, so keyboard, gamepad and touch share the same gameplay code. Confidence: 0.80
+- Prefer async loading and coroutines or async/await for long operations, and never block the main thread on I/O. Confidence: 0.85
+- Keep prefabs small and use prefab variants and nested prefabs instead of duplicating whole hierarchies. Confidence: 0.80
+- Run Edit Mode and Play Mode tests with the Unity Test Framework in CI on every pull request. Confidence: 0.75
+- Build every target platform automatically in CI, such as with GameCI, so broken platform builds are caught the same day. Confidence: 0.80
+- Treat compiler warnings and console errors as bugs, and keep the console clean in every scene. Confidence: 0.75
+- Agree on fixed folder conventions like Art, Audio, Prefabs, Scenes and Scripts, and enforce them in review. Confidence: 0.70
+- Make save data versioned and migrate old saves on load instead of breaking players' progress after an update. Confidence: 0.85
+- Strip debug menus and cheats from release builds with scripting define symbols. Confidence: 0.80
+
+```
+
+</details>
+
