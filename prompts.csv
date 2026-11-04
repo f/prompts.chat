@@ -191313,3 +191313,838 @@ def main(argv=None):
 
 if __name__ == ""__main__"":
     sys.exit(main())",FALSE,TEXT,f
+Team Leave and Holiday Coverage Planner,"---
+name: team-leave-and-holiday-coverage-planner
+description: Plans team leave around minimum staffing, especially over the holidays - checks every workday against role coverage rules (one person fills one slot), decides which requests can be approved in a fair priority order, offers gap-free alternative dates, respects blackout periods, part-time days and half days, and tracks allowances, carry-over and peak days off. Includes an offline stdlib Python planner with --self-test.
+---
+
+# Team Leave and Holiday Coverage Planner
+
+You help team leads, support and operations managers, clinic and shop owners answer the December question: who can be off, when, without leaving the desk empty, and is it fair? Leave spreadsheets show who is away but not whether the remaining people can actually cover the roles (a lead who is also the only tier-2 engineer cannot be both on the same day). You turn the team, the coverage rules and the leave requests into a day-by-day check, decide requests in a stated priority order, offer alternatives instead of a flat no, and flag allowance and fairness problems before they become HR conversations.
+
+## Files in this skill
+
+- `scripts/leave_cover.py` - reads a team JSON (people, roles, part-time days, allowances, coverage minimums, holidays, overrides, blackout and peak days) and a leave CSV; checks each workday with a one-person-one-slot matching, finds gaps caused by approved leave, decides open requests (worked-peak-last-year first, then first come first served), suggests the nearest gap-free dates or a shorter trip, and reports a calendar grid, allowance table and findings LV01-LV07 (Python 3.8+ standard library only)
+- `references/coverage-rules.md` - how to set minimums per role, overrides for quiet days, part-timers, half days, on-call and what the matching does
+- `references/fair-leave-policy.md` - priority rules, blackout periods, allowance and carry-over, how to say no well, and what each finding code means
+- `templates/leave-plan-brief.md` - the plan to send to the team
+- `examples/support-team.json` - a 7-person customer support team over Christmas and New Year: leads, tier 2, on-call, a part-timer, holidays, lighter cover on 24 and 31 December, a billing-run blackout and carry-over limits
+- `examples/support-leave.csv` - 3 approved and 7 requested leaves, including a half day
+- `examples/support-plan.md` - the real planner output on those files
+
+## Workflow
+
+### 1. Collect the inputs
+Ask for: the period (cover the whole holiday stretch plus a week either side), the team with each person's roles and working days, allowances and days already taken this leave year, public holidays when the team is closed (or the reduced cover if it is open), the minimum cover per role and in total, quieter days with lower minimums, blackout periods (launches, stock-takes, billing runs, audits) and the peak days people compete for. Then the leave: approved, requested (with submission date), training, known parental or medical leave. Ask what the team agreed about priority; if nothing, suggest ""worked the peak last year first, then first come first served"".
+
+### 2. Run the planner
+```
+python3 scripts/leave_cover.py examples/support-team.json examples/support-leave.csv
+python3 scripts/leave_cover.py team.json leave.csv --json
+python3 scripts/leave_cover.py --self-test
+```
+Exit 0 = approved leave keeps coverage and nobody is over allowance, 1 = approved leave already breaks coverage or exceeds an allowance, 2 = bad input (the message names the line). Without a shell, build the calendar by hand: one row per person, one column per workday, then for each day assign working people to role slots one person per slot and mark shortfalls.
+
+### 3. Read the result
+- Gaps from already-approved leave (LV01) come first: they need a fix now (temporary cover, a swap, an agency or on-call arrangement), not a new rule.
+- Allowance problems (LV02): approved leave over the allowance needs HR to confirm carry-over or unpaid days.
+- Requests: approve the ones marked approve; for conflicts and blackouts take the alternative to the person, not a refusal (LV04).
+- Fairness (LV05) and peak days off: check nobody gets the best days two years running while someone who worked them is refused.
+- Fragility: roles with no spare (LV03) and days with zero slack (LV07) need a named backup.
+- Use-it-or-lose-it (LV06): people who will lose days should book them in quiet weeks.
+
+### 4. Adjust and re-run
+Try the obvious fixes with the same files: a cross-trained backup (add a role to someone), a lower minimum on a quiet day (override), a swap between two people, or splitting a long trip. Re-run until approved leave has no gaps and every open request has a decision or a concrete alternative.
+
+### 5. Deliver
+Fill `templates/leave-plan-brief.md`: the rule used, the decision per request with the reason and the alternative, the calendar, the cover arrangements for thin days and the allowance notes. Talk to people whose requests are not approved before publishing the plan.
+
+## Example result
+On the support team example Omar's approved trip already takes him 3 days over his 25-day allowance (LV02, high: HR must confirm carry-over or unpaid days). Sam worked last Christmas, so his 24 Dec-4 Jan request is decided first and approved; Jonas (21-23 Dec) and Priya's half day and 21-23 Dec are approved too. Ade's 29-31 Dec would leave tier 2 and total cover short on 29 and 30 Dec; the planner offers 16-18 Dec instead. Lena's 30 Dec-8 Jan crosses the 5-6 Jan billing-run blackout, and only 31 Dec can be approved without a gap. Jonas's second trip needs 5 days with 4 left. Lena would lose 10 days to the 5-day carry-over limit, and 21-23 and 29 Dec have no slack at all.
+
+## Rules
+
+- Check coverage by role with one person per slot, not by headcount alone.
+- Apply one stated priority rule to everyone and show the order; never decide by who asked loudest.
+- Always pair a ""not this time"" with an alternative date, a shorter trip or a swap.
+- Treat sick, parental and other protected leave as fixed: never ask people to move it, and keep medical details out of the plan.
+- Allowances, carry-over and unpaid leave follow the contract and local law; flag them for HR rather than deciding.
+- Share the plan only with the team and managers who need it.
+FILE:references/coverage-rules.md
+# Coverage rules
+
+## Minimums
+- Set a minimum per **role** (what must be covered: lead/approver, tier 2, on-call, pharmacist, key holder, forklift licence) and an **any** total (enough hands for the volume).
+- Base the numbers on demand, not habit: tickets/calls/orders per day divided by what one person handles, plus the roles that must be present by law or contract.
+- Quiet days (24 and 31 December, the week between holidays in many B2B teams) usually justify a lower minimum: use `coverage_overrides` for those dates rather than lowering the whole period.
+- Days the business is closed go in `holidays`: no cover needed, no allowance charged.
+
+## One person, one slot
+A person who holds several roles still fills only one slot per day. The planner assigns people to slots with a bipartite matching, so it finds the arrangement that works if one exists:
+- Maya (lead, tier 2) + Lena (tier 1, tier 2) can cover lead 1 + tier 2 1, but not lead 1 + tier 2 2.
+- Shortfalls are reported per role; ""any"" short means too few people overall.
+
+## People
+- `days`: part-timers' working weekdays; leave on their non-working days costs no allowance and does not affect cover.
+- Half days (`half_day=yes`) cost 0.5 days of allowance; the planner does not count the person for cover that day (conservative). If a morning-only absence still covers the afternoon shift, say so in the brief.
+- Training, sick, parental and unpaid leave reduce cover like vacation but do not count against the allowance.
+
+## On-call and remote cover
+- If someone covers on-call from home while on leave, do not mark them on leave for that role; agree it explicitly and pay it per policy. The planner treats leave as fully off.
+- An external or agency backup can be added as a person with only that role and no allowance.
+
+## Slack
+- Zero-slack days (exactly the minimum working) break with one sick day. Name a backup for each such day before the period starts.
+- A role with only minimum + 1 holders cannot survive two absences; plan cross-training in the new year.
+FILE:references/fair-leave-policy.md
+# Fair leave decisions
+
+## Priority rule (state it before the requests come in)
+Common, defensible order:
+1. Already approved leave stands (unless the person agrees to change it).
+2. Protected leave (parental, medical, statutory) is fixed.
+3. For peak days: people who worked the peak last year go first.
+4. Then first come, first served by submission date.
+5. Ties: rotate (whoever lost the last tie wins this one).
+Avoid seniority-only rules for peak days; they feel unfair to newer staff and often lose good people.
+
+## Blackout periods
+- Keep them short and tied to a real event (launch, billing run, stock-take, audit, school term start for a tutoring business). Announce them early.
+- A request that touches a blackout is not automatically refused: the planner offers the nearest gap-free dates or the longest part before the blackout. Exceptions need a named approver.
+
+## Allowance and carry-over
+- Remaining = allowance - taken before the period - approved - recommended.
+- Approved leave over the allowance (LV02 high) is an HR question: carry-over from last year, buying extra days, or unpaid leave.
+- Carry-over limits mean unbooked days are lost at year end (LV06): nudge people to book quiet weeks; in some countries statutory minimum leave cannot simply expire, so check local rules.
+
+## Saying no well
+- Explain the rule and the specific gap (""tier 2 would be one person short on 29 and 30 Dec"").
+- Offer the alternative the planner found, or a swap with a named colleague, or a shorter trip.
+- Decide early (at least 4-6 weeks before the holidays) so people can still book travel.
+- Record the decision and the reason; next year's priority depends on it.
+
+## Finding codes (leave_cover.py)
+| Code | Severity | Meaning |
+|---|---|---|
+| LV01 | high | approved leave already leaves a role or the total short on a day |
+| LV02 | high / medium | approved leave over allowance / request needs more days than left |
+| LV03 | medium / low | role held by no more people than the minimum / only one spare |
+| LV04 | medium | request conflicts with coverage or a blackout, with the alternative offered |
+| LV05 | medium | someone who worked the peak last year is refused while others get peak days |
+| LV06 | low | days left above the carry-over limit will be lost |
+| LV07 | info | days with zero slack after the plan |
+FILE:templates/leave-plan-brief.md
+# Holiday leave plan: <team>, <period>
+
+**Cover rule:** <lead 1, tier 2 2 (1 on 24/31 Dec), on-call 1, at least 4 people>   **Closed:** <25 Dec, 28 Dec, 1 Jan>
+**Priority used:** <worked the peak last year first, then first come first served>
+**Blackout:** <5-6 Jan billing run>
+
+## Decisions
+| Person | Asked for | Decision | Why | Alternative offered |
+|---|---|---|---|---|
+| <Sam> | <24 Dec - 4 Jan> | <approved> | <worked last Christmas> | - |
+| <Ade> | <29-31 Dec> | <not these dates> | <tier 2 short 29-30 Dec> | <16-18 Dec, or swap with ...> |
+
+## Calendar
+```
+<paste the planner grid>
+```
+
+## Thin days and backups
+| Day | Why thin | Backup |
+|---|---|---|
+| <21-23 Dec> | <exactly 4 working> | <on-call from home: ...> |
+
+## Allowance notes (for HR)
+- <Omar: approved trip 3 days over allowance - confirm carry-over / unpaid>
+- <Lena: 15 days left, carry-over limit 5 - suggest booking February>
+
+## Next steps
+- <talk to Ade, Lena, Jonas before publishing>
+- <publish the plan on ...; changes by swap request to ...>
+- <cross-train a second lead backup in Q1>
+FILE:examples/support-team.json
+{
+  ""team"": ""Northwind Customer Support"",
+  ""period"": ""2026-12-14..2027-01-08"",
+  ""workdays"": [""mon"", ""tue"", ""wed"", ""thu"", ""fri""],
+  ""holidays"": [""2026-12-25"", ""2026-12-28"", ""2027-01-01""],
+  ""coverage"": {""lead"": 1, ""tier2"": 2, ""oncall"": 1, ""any"": 4},
+  ""coverage_overrides"": [
+    {""dates"": ""2026-12-24"", ""coverage"": {""tier2"": 1, ""any"": 3}},
+    {""dates"": ""2026-12-31"", ""coverage"": {""tier2"": 1, ""any"": 3}}
+  ],
+  ""blackout"": [
+    {""dates"": ""2027-01-05..2027-01-06"", ""reason"": ""January billing run, all hands""}
+  ],
+  ""peak_days"": ""2026-12-21..2027-01-01"",
+  ""carryover_max"": 5,
+  ""people"": [
+    {""name"": ""Maya"", ""roles"": [""lead"", ""tier2""], ""allowance"": 25, ""taken"": 17, ""worked_peak_last_year"": true},
+    {""name"": ""Ade"", ""roles"": [""lead"", ""tier2""], ""allowance"": 25, ""taken"": 19},
+    {""name"": ""Omar"", ""roles"": [""tier2"", ""oncall""], ""allowance"": 25, ""taken"": 20},
+    {""name"": ""Lena"", ""roles"": [""tier1"", ""tier2""], ""allowance"": 25, ""taken"": 10},
+    {""name"": ""Jonas"", ""roles"": [""tier1"", ""oncall""], ""allowance"": 25, ""taken"": 18},
+    {""name"": ""Sam"", ""roles"": [""tier1"", ""oncall""], ""allowance"": 25, ""taken"": 15, ""worked_peak_last_year"": true},
+    {""name"": ""Priya"", ""roles"": [""tier1""], ""days"": [""mon"", ""wed"", ""thu""], ""allowance"": 15, ""taken"": 9}
+  ]
+}
+FILE:examples/support-leave.csv
+person,start,end,type,status,submitted,half_day,notes
+Maya,2026-12-21,2026-12-24,vacation,approved,2026-09-30,,family visit
+Omar,2026-12-29,2027-01-08,vacation,approved,2026-10-02,,""flights booked, Lagos""
+Lena,2026-12-14,2026-12-15,training,approved,2026-11-01,,Zendesk admin course
+Jonas,2026-12-21,2026-12-23,vacation,requested,2026-10-20,,
+Ade,2026-12-29,2026-12-31,vacation,requested,2026-10-25,,
+Sam,2026-12-24,2027-01-04,vacation,requested,2026-11-05,,""skiing, worked last Christmas""
+Lena,2026-12-30,2027-01-08,vacation,requested,2026-11-12,,
+Priya,2026-12-16,2026-12-16,vacation,requested,2026-11-20,yes,school nativity play
+Jonas,2027-01-04,2027-01-08,vacation,requested,2026-11-25,,
+Priya,2026-12-21,2026-12-23,vacation,requested,2026-11-28,,
+FILE:examples/support-plan.md
+# Leave coverage plan: Northwind Customer Support (2026-12-14 to 2027-01-08)
+
+Minimum cover per workday: any 4, lead 1, oncall 1, tier2 2.  Holidays (closed): 25 Dec, 28 Dec, 01 Jan.
+
+**Verdict: over allowance on approved leave** - 4 of 7 open requests can be approved without a gap; 3 need a decision.
+
+## Requests (in decision order: worked peak last year first, then first come first served)
+
+| # | Person | Dates | Workdays | Type | Submitted | Decision | Why | Alternative |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Sam | Thu 24 Dec - Mon 04 Jan | 5 | vacation | 2026-11-05 | approve | - | - |
+| 2 | Jonas | Mon 21 Dec - Wed 23 Dec | 3 | vacation | 2026-10-20 | approve | - | - |
+| 3 | Ade | Tue 29 Dec - Thu 31 Dec | 3 | vacation | 2026-10-25 | conflict | any/tier2 short on 29 Dec, 30 Dec | Wed 16 Dec to Fri 18 Dec |
+| 4 | Lena | Wed 30 Dec - Fri 08 Jan | 7 | vacation | 2026-11-12 | blackout | January billing run, all hands (05 Jan, 06 Jan) | shorten to Thu 31 Dec - Thu 31 Dec (1 workday(s), back before the blackout) |
+| 5 | Priya | Wed 16 Dec - Wed 16 Dec (half) | 0.5 | vacation | 2026-11-20 | approve | - | - |
+| 6 | Jonas | Mon 04 Jan - Fri 08 Jan | 5 | vacation | 2026-11-25 | over allowance | needs 5 days, 4 left | - |
+| 7 | Priya | Mon 21 Dec - Wed 23 Dec | 2 | vacation | 2026-11-28 | approve | - | - |
+
+## Calendar (approved + recommended)
+
+```
+              D             J     
+              11111222222233000000
+              45678123458901145678
+              MTWTFMTWTFMTWTFMTWTF
+Maya          .....VVVVHH...H.....
+Ade           .........HHxxxH.....
+Omar          .........HHVVVHVVVVV
+Lena          TT.......HH.xxHxxxxx
+Jonas         .....vvv.HH...Hxxxxx
+Sam           ........vHHvvvHv....
+Priya         .-h.-v-v.HH-..H.-..-
+cover any     +++++++++  +++ +++++
+cover lead    +++++++++  +++ +++++
+cover oncall  +++++++++  +++ +++++
+cover tier2   +++++++++  +++ +++++
+```
+V/T/S/P/U/O approved vacation/training/sick/parental/unpaid/other, lowercase = request recommended for approval, h = half day, x = request not approved, H = holiday, - = not a working day, + / ! = role covered / short.
+
+## Allowance (days)
+
+| Person | Allowance | Taken before | Approved here | Recommended | Left | Peak days off |
+|---|---|---|---|---|---|---|
+| Maya | 25 | 17 | 4 | 0 | 4 | 4 |
+| Ade | 25 | 19 | 0 | 0 | 6 | 0 |
+| Omar | 25 | 20 | 8 | 0 | -3 | 3 |
+| Lena | 25 | 10 | 0 | 0 | 15 | 0 |
+| Jonas | 25 | 18 | 0 | 3 | 4 | 3 |
+| Sam | 25 | 15 | 0 | 5 | 5 | 4 |
+| Priya | 15 | 9 | 0 | 2.5 | 3.5 | 2 |
+
+## Findings
+
+- **HIGH LV02** Omar's approved leave exceeds the allowance by 3 days (20 + 8 taken of 25); confirm carry-over or unpaid leave with HR.
+- **MEDIUM LV02** Jonas 04 Jan-08 Jan: needs 5 days, 4 left; approve a shorter trip or agree unpaid days
+- **MEDIUM LV04** Ade 29 Dec-31 Dec: conflict (any/tier2 short on 29 Dec, 30 Dec); offer Wed 16 Dec to Fri 18 Dec
+- **MEDIUM LV04** Lena 30 Dec-08 Jan: blackout (January billing run, all hands (05 Jan, 06 Jan)); offer shorten to Thu 31 Dec - Thu 31 Dec (1 workday(s), back before the blackout)
+- **LOW LV03** lead has one spare person (Maya, Ade for a minimum of 1); two absences at once break it.
+- **LOW LV06** Ade will still have 6 days left (carry-over limit 5); 1 day(s) are lost unless booked.
+- **LOW LV06** Lena will still have 15 days left (carry-over limit 5); 10 day(s) are lost unless booked.
+- **INFO LV07** No slack on 4 day(s) (21 Dec, 22 Dec, 23 Dec, 29 Dec): one sick day breaks coverage; line up a backup.
+FILE:scripts/leave_cover.py
+#!/usr/bin/env python3
+""""""Team leave and holiday coverage planner (Python 3.8+ standard library only).
+
+Checks a team's leave requests against minimum staffing rules day by day, decides which
+requests can be approved without leaving a gap, suggests alternative dates for the rest, and
+tracks allowances and who gets the peak holiday days.
+
+Team JSON:
+{
+  ""team"": ""Support Desk"", ""period"": ""2026-12-14..2027-01-08"",
+  ""workdays"": [""mon"", ""tue"", ""wed"", ""thu"", ""fri""],
+  ""holidays"": [""2026-12-25"", ""2026-12-28"", ""2027-01-01""],          (office closed, no coverage needed)
+  ""coverage"": {""lead"": 1, ""tier2"": 2, ""oncall"": 1, ""any"": 4},     (""any"" = total people working)
+  ""coverage_overrides"": [{""dates"": ""2026-12-24"", ""coverage"": {""tier2"": 1, ""any"": 3}}],
+  ""blackout"": [{""dates"": ""2027-01-05..2027-01-06"", ""reason"": ""billing run""}],
+  ""peak_days"": ""2026-12-21..2027-01-01"",
+  ""people"": [
+    {""name"": ""Maya"", ""roles"": [""lead"", ""tier2""], ""allowance"": 25, ""taken"": 17, ""worked_peak_last_year"": true},
+    {""name"": ""Priya"", ""roles"": [""tier1""], ""days"": [""mon"", ""wed"", ""thu""], ""allowance"": 15, ""taken"": 9}
+  ]
+}
+Each working person fills ONE role slot per day (a lead who is also tier2 counts once), solved
+as a bipartite matching.
+
+Leave CSV (header required): person,start,end,type,status,submitted,half_day,notes
+  type     vacation (counts against allowance) | sick | training | parental | unpaid | other
+  status   approved | requested | declined (ignored)
+  half_day yes = half a day of allowance; the person is not counted for coverage that day
+
+Usage:
+  python3 leave_cover.py team.json leave.csv [--json]
+  python3 leave_cover.py --self-test
+Exit codes: 0 = approved leave keeps coverage and nobody is over allowance, 1 = approved leave
+already breaks coverage or exceeds an allowance, 2 = bad input.
+""""""
+import argparse
+import csv
+import datetime as dt
+import json
+import sys
+from collections import OrderedDict, defaultdict
+
+DAYS = [""mon"", ""tue"", ""wed"", ""thu"", ""fri"", ""sat"", ""sun""]
+TYPE_CODE = {""vacation"": ""V"", ""sick"": ""S"", ""training"": ""T"", ""parental"": ""P"", ""unpaid"": ""U"", ""other"": ""O""}
+
+
+class InputError(ValueError):
+    pass
+
+
+def d(s, what=""date""):
+    try:
+        return dt.date.fromisoformat(str(s).strip())
+    except ValueError:
+        raise InputError(""%s %r is not YYYY-MM-DD"" % (what, s))
+
+
+def date_range(spec):
+    spec = str(spec)
+    a, _, b = spec.partition("".."")
+    a, b = d(a), d(b or a)
+    if b < a:
+        raise InputError(""range %r ends before it starts"" % spec)
+    return [a + dt.timedelta(days=i) for i in range((b - a).days + 1)]
+
+
+# ----------------------------------------------------------------------------- inputs
+def load_team(cfg):
+    if ""period"" not in cfg or not cfg.get(""people""):
+        raise InputError(""team JSON needs 'period' and 'people'"")
+    t = dict(cfg)
+    t[""days""] = date_range(cfg[""period""])
+    t[""workdays""] = [w.lower()[:3] for w in cfg.get(""workdays"", DAYS[:5])]
+    t[""holidays""] = {d(h, ""holiday"") for h in cfg.get(""holidays"", [])}
+    t[""coverage""] = {k: int(v) for k, v in (cfg.get(""coverage"") or {}).items()}
+    over = {}
+    for o in cfg.get(""coverage_overrides"", []):
+        for day in date_range(o[""dates""]):
+            over[day] = {k: int(v) for k, v in o[""coverage""].items()}
+    t[""overrides""] = over
+    t[""blackout""] = [(set(date_range(b[""dates""])), b.get(""reason"", ""blackout"")) for b in cfg.get(""blackout"", [])]
+    t[""peak""] = set(date_range(cfg[""peak_days""])) if cfg.get(""peak_days"") else set()
+    people = OrderedDict()
+    for p in cfg[""people""]:
+        if ""name"" not in p:
+            raise InputError(""every person needs a name"")
+        q = dict(p)
+        q[""roles""] = list(p.get(""roles"", []))
+        q[""days""] = [w.lower()[:3] for w in p.get(""days"", t[""workdays""])]
+        q[""allowance""] = float(p.get(""allowance"", 0))
+        q[""taken""] = float(p.get(""taken"", 0))
+        q[""carryover_max""] = p.get(""carryover_max"", cfg.get(""carryover_max""))
+        people[p[""name""]] = q
+    t[""people""] = people
+    roles = {r for p in people.values() for r in p[""roles""]}
+    for r in list(t[""coverage""]) + [r for o in over.values() for r in o]:
+        if r != ""any"" and r not in roles:
+            raise InputError(""coverage role %r is not held by anyone"" % r)
+    return t
+
+
+def load_leave(path, team):
+    out = []
+    with open(path, newline="""", encoding=""utf-8"") as f:
+        rows = [r for r in f if r.strip() and not r.lstrip().startswith(""#"")]
+    for n, row in enumerate(csv.DictReader(rows), 2):
+        name = (row.get(""person"") or """").strip()
+        if name not in team[""people""]:
+            raise InputError(""leave line %d: unknown person %r"" % (n, name))
+        typ = (row.get(""type"") or ""vacation"").strip().lower()
+        if typ not in TYPE_CODE:
+            raise InputError(""leave line %d: type must be one of %s"" % (n, "", "".join(TYPE_CODE)))
+        status = (row.get(""status"") or ""requested"").strip().lower()
+        if status not in (""approved"", ""requested"", ""declined""):
+            raise InputError(""leave line %d: status must be approved, requested or declined"" % n)
+        start, end = d(row.get(""start""), ""start""), d(row.get(""end"") or row.get(""start""), ""end"")
+        if end < start:
+            raise InputError(""leave line %d: end before start"" % n)
+        out.append({""id"": n, ""person"": name, ""start"": start, ""end"": end, ""type"": typ, ""status"": status,
+                    ""submitted"": (row.get(""submitted"") or """").strip() or ""9999-12-31"",
+                    ""half"": (row.get(""half_day"") or """").strip().lower() in (""yes"", ""y"", ""true"", ""1""),
+                    ""notes"": (row.get(""notes"") or """").strip()})
+    return out
+
+
+# ----------------------------------------------------------------------------- core
+def is_workday(team, day):
+    return DAYS[day.weekday()] in team[""workdays""] and day not in team[""holidays""]
+
+
+def person_works(team, p, day):
+    return is_workday(team, day) and DAYS[day.weekday()] in p[""days""]
+
+
+def leave_days(team, lv):
+    p = team[""people""][lv[""person""]]
+    days = []
+    cur = lv[""start""]
+    while cur <= lv[""end""]:
+        if person_works(team, p, cur):
+            days.append(cur)
+        cur += dt.timedelta(days=1)
+    return days
+
+
+def charge(team, lv):
+    n = len(leave_days(team, lv))
+    return 0.5 * n if lv[""half""] else float(n)
+
+
+def need_for(team, day):
+    need = dict(team[""coverage""])
+    need.update(team[""overrides""].get(day, {}))
+    return need
+
+
+def shortfall(team, day, off):
+    """"""Return {role: missing} for one day given the set of people off.""""""
+    if not is_workday(team, day):
+        return {}
+    avail = [p for n, p in team[""people""].items() if n not in off and person_works(team, p, day)]
+    need = need_for(team, day)
+    slots = [r for r, k in sorted(need.items()) if r != ""any"" for _ in range(k)]
+    match = {}  # slot index -> person name
+
+    def try_assign(pi, seen):
+        for si, role in enumerate(slots):
+            if role in avail[pi][""roles""] and si not in seen:
+                seen.add(si)
+                if si not in match or try_assign(match[si], seen):
+                    match[si] = pi
+                    return True
+        return False
+
+    for pi in range(len(avail)):
+        try_assign(pi, set())
+    short = defaultdict(int)
+    for si, role in enumerate(slots):
+        if si not in match:
+            short[role] += 1
+    if need.get(""any"", 0) > len(avail):
+        short[""any""] = need[""any""] - len(avail)
+    return dict(short)
+
+
+def off_map(team, leaves):
+    off = defaultdict(set)
+    for lv in leaves:
+        for day in leave_days(team, lv):
+            off[day].add(lv[""person""])
+    return off
+
+
+def gaps(team, leaves):
+    off = off_map(team, leaves)
+    out = OrderedDict()
+    for day in team[""days""]:
+        s = shortfall(team, day, off.get(day, set()))
+        if s:
+            out[day] = s
+    return out
+
+
+def total(g):
+    return sum(sum(v.values()) for v in g.values())
+
+
+def new_gaps(before, after):
+    out = OrderedDict()
+    for day, s in after.items():
+        b = before.get(day, {})
+        worse = {r: k - b.get(r, 0) for r, k in s.items() if k > b.get(r, 0)}
+        if worse:
+            out[day] = worse
+    return out
+
+
+def blackout_hit(team, lv):
+    days = set(leave_days(team, lv))
+    for bdays, reason in team[""blackout""]:
+        hit = sorted(days & bdays)
+        if hit:
+            return hit, reason
+    return None, None
+
+
+def suggest(team, current, lv, max_shift=15):
+    """"""Nearest shift of the same request (same calendar length) that keeps coverage.""""""
+    length = (lv[""end""] - lv[""start""]).days
+    want = len(leave_days(team, lv))
+    base = gaps(team, current)
+    first, last = team[""days""][0], team[""days""][-1]
+    for shift in sorted(range(-max_shift, max_shift + 1), key=lambda x: (abs(x), x)):
+        if shift == 0:
+            continue
+        cand = dict(lv, start=lv[""start""] + dt.timedelta(days=shift), end=lv[""start""] + dt.timedelta(days=shift + length))
+        if cand[""start""] < first or cand[""end""] > last:
+            continue
+        if len(leave_days(team, cand)) < want or blackout_hit(team, cand)[0]:
+            continue
+        if not new_gaps(base, gaps(team, current + [cand])):
+            return cand
+    return None
+
+
+def trimmed(team, current, lv):
+    """"""Longest part of a blackout-hitting request, before the first blackout day, that keeps coverage.""""""
+    hit, _ = blackout_hit(team, lv)
+    days = [x for x in leave_days(team, lv) if x < hit[0]]
+    base = gaps(team, current)
+    best = None
+    for i in range(len(days)):
+        for j in range(len(days) - 1, i - 1, -1):
+            if best and j - i + 1 <= len(leave_days(team, best)):
+                break
+            cand = dict(lv, start=days[i], end=days[j])
+            if not new_gaps(base, gaps(team, current + [cand])):
+                best = cand
+                break
+    return best
+
+
+def plan(team, leaves):
+    findings = []
+
+    def add(sev, code, msg):
+        findings.append({""severity"": sev, ""code"": code, ""message"": msg})
+
+    approved = [l for l in leaves if l[""status""] == ""approved""]
+    requests = [l for l in leaves if l[""status""] == ""requested""]
+    used = defaultdict(float)
+    for l in approved:
+        if l[""type""] == ""vacation"":
+            used[l[""person""]] += charge(team, l)
+
+    g_approved = gaps(team, approved)
+    for day, s in g_approved.items():
+        add(""high"", ""LV01"", ""%s %s: approved leave already leaves %s short"" % (
+            day.isoformat(), DAYS[day.weekday()].title(), "", "".join(""%s by %d"" % (r, k) for r, k in sorted(s.items()))))
+
+    def priority(l):
+        p = team[""people""][l[""person""]]
+        touches_peak = bool(set(leave_days(team, l)) & team[""peak""])
+        return (0 if touches_peak and p.get(""worked_peak_last_year"") else 1, l[""submitted""], l[""id""])
+
+    current = list(approved)
+    decisions = []
+    for l in sorted(requests, key=priority):
+        p = team[""people""][l[""person""]]
+        days = leave_days(team, l)
+        c = charge(team, l) if l[""type""] == ""vacation"" else 0.0
+        dec = {""leave"": l, ""workdays"": len(days), ""charge"": c, ""decision"": ""approve"", ""reason"": """", ""suggestion"": None}
+        if not days:
+            dec.update(decision=""no workdays"", reason=""falls on holidays / non-working days only"")
+        elif l[""type""] == ""vacation"" and p[""allowance""] and p[""taken""] + used[l[""person""]] + c > p[""allowance""] + 1e-9:
+            left = p[""allowance""] - p[""taken""] - used[l[""person""]]
+            dec.update(decision=""over allowance"", reason=""needs %g days, %g left"" % (c, max(left, 0)))
+        else:
+            hit, reason = blackout_hit(team, l)
+            if hit:
+                dec.update(decision=""blackout"", reason=""%s (%s)"" % (reason, "", "".join(x.strftime(""%d %b"") for x in hit)))
+            else:
+                ng = new_gaps(gaps(team, current), gaps(team, current + [l]))
+                if ng:
+                    roles = sorted({r for s in ng.values() for r in s})
+                    dec.update(decision=""conflict"", reason=""%s short on %s"" % (
+                        ""/"".join(roles), "", "".join(x.strftime(""%d %b"") for x in ng)))
+        if dec[""decision""] == ""approve"":
+            current.append(l)
+            used[l[""person""]] += c
+        elif dec[""decision""] in (""conflict"", ""blackout""):
+            s = suggest(team, current, l)
+            if s:
+                dec[""suggestion""] = ""%s to %s"" % (s[""start""].strftime(""%a %d %b""), s[""end""].strftime(""%a %d %b""))
+            elif dec[""decision""] == ""blackout"":
+                t = trimmed(team, current, l)
+                if t:
+                    dec[""suggestion""] = ""shorten to %s - %s (%d workday(s), back before the blackout)"" % (
+                        t[""start""].strftime(""%a %d %b""), t[""end""].strftime(""%a %d %b""), len(leave_days(team, t)))
+        decisions.append(dec)
+
+    approved_peak = defaultdict(int)
+    for l in current:
+        approved_peak[l[""person""]] += len(set(leave_days(team, l)) & team[""peak""])
+    for dec in decisions:
+        l = dec[""leave""]
+        p = team[""people""][l[""person""]]
+        if dec[""decision""] != ""approve"" and p.get(""worked_peak_last_year"") and set(leave_days(team, l)) & team[""peak""]:
+            lucky = [n for n, k in approved_peak.items() if k and not team[""people""][n].get(""worked_peak_last_year"")]
+            add(""medium"", ""LV05"", ""%s worked the peak last year but this request is %s while %s get peak days off; ""
+                ""consider swapping."" % (l[""person""], dec[""decision""], "", "".join(sorted(lucky)) or ""nobody""))
+
+    g_final = gaps(team, current)
+    allowance = []
+    for n, p in team[""people""].items():
+        planned_req = sum(dec[""charge""] for dec in decisions if dec[""leave""][""person""] == n and dec[""decision""] == ""approve"")
+        appr = used[n] - planned_req
+        left = p[""allowance""] - p[""taken""] - used[n] if p[""allowance""] else None
+        allowance.append({""person"": n, ""allowance"": p[""allowance""], ""taken_before"": p[""taken""], ""approved"": appr,
+                          ""recommended"": planned_req, ""left"": left, ""peak_days_off"": approved_peak.get(n, 0)})
+        if p[""allowance""] and p[""taken""] + appr > p[""allowance""] + 1e-9:
+            add(""high"", ""LV02"", ""%s's approved leave exceeds the allowance by %g days (%g + %g taken of %g); ""
+                ""confirm carry-over or unpaid leave with HR."" % (n, p[""taken""] + appr - p[""allowance""], p[""taken""],
+                                                               appr, p[""allowance""]))
+        cm = p.get(""carryover_max"")
+        if left is not None and cm is not None and left > float(cm):
+            add(""low"", ""LV06"", ""%s will still have %g days left (carry-over limit %g); %g day(s) are lost unless booked.""
+                % (n, left, float(cm), left - float(cm)))
+
+    for role, k in sorted(team[""coverage""].items()):
+        if role == ""any"":
+            continue
+        holders = [n for n, p in team[""people""].items() if role in p[""roles""]]
+        if len(holders) <= k:
+            add(""medium"", ""LV03"", ""Only %d people can cover %s (minimum %d): any absence by %s breaks coverage; ""
+                ""cross-train a backup."" % (len(holders), role, k, "", "".join(holders)))
+        elif len(holders) == k + 1:
+            add(""low"", ""LV03"", ""%s has one spare person (%s for a minimum of %d); two absences at once break it.""
+                % (role, "", "".join(holders), k))
+    for day, s in g_final.items():
+        if day not in g_approved:
+            add(""high"", ""LV01"", ""%s still short after decisions: %s"" % (day, s))
+    for dec in decisions:
+        if dec[""decision""] in (""conflict"", ""blackout""):
+            l = dec[""leave""]
+            add(""medium"", ""LV04"", ""%s %s-%s: %s (%s)%s"" % (
+                l[""person""], l[""start""].strftime(""%d %b""), l[""end""].strftime(""%d %b""), dec[""decision""], dec[""reason""],
+                (""; offer "" + dec[""suggestion""]) if dec[""suggestion""] else ""; no gap-free alternative within 15 days""))
+        elif dec[""decision""] == ""over allowance"":
+            l = dec[""leave""]
+            add(""medium"", ""LV02"", ""%s %s-%s: %s; approve a shorter trip or agree unpaid days"" % (
+                l[""person""], l[""start""].strftime(""%d %b""), l[""end""].strftime(""%d %b""), dec[""reason""]))
+    thin = []
+    off = off_map(team, current)
+    for day in team[""days""]:
+        if not is_workday(team, day):
+            continue
+        working = [n for n, p in team[""people""].items() if n not in off.get(day, set()) and person_works(team, p, day)]
+        if len(working) == need_for(team, day).get(""any"", 0):
+            thin.append(day)
+    if thin:
+        add(""info"", ""LV07"", ""No slack on %d day(s) (%s): one sick day breaks coverage; line up a backup."" % (
+            len(thin), "", "".join(x.strftime(""%d %b"") for x in thin)))
+    order = {""high"": 0, ""medium"": 1, ""low"": 2, ""info"": 3}
+    findings.sort(key=lambda f: (order[f[""severity""]], f[""code""]))
+    return {""team"": team.get(""team"", ""Team""), ""period"": team[""period""], ""gaps_approved"": g_approved,
+            ""gaps_final"": g_final, ""decisions"": decisions, ""allowance"": allowance, ""findings"": findings,
+            ""current"": current, ""thin"": thin}
+
+
+# ----------------------------------------------------------------------------- report
+def grid(team, leaves_final, all_leaves):
+    days = [x for x in team[""days""] if x.weekday() < 5 or DAYS[x.weekday()] in team[""workdays""]]
+    final_ids = {l[""id""] for l in leaves_final}
+    cell = defaultdict(dict)
+    for l in all_leaves:
+        if l[""status""] == ""declined"":
+            continue
+        for day in leave_days(team, l):
+            if l[""id""] in final_ids:
+                c = TYPE_CODE[l[""type""]] if l[""status""] == ""approved"" else TYPE_CODE[l[""type""]].lower()
+            else:
+                c = ""x""
+            if l[""half""]:
+                c = ""h"" if c != ""x"" else ""x""
+            cell[l[""person""]][day] = c
+    width = max([len(n) for n in team[""people""]] + [len(""cover "" + r) for r in team[""coverage""]]) + 2
+    months = "" "" * width + """".join(x.strftime(""%b"")[0] if i == 0 or x.month != days[i - 1].month
+                                   else "" "" for i, x in enumerate(days))
+    L = [months, "" "" * width + """".join(str(x.day // 10) for x in days),
+         "" "" * width + """".join(str(x.day % 10) for x in days),
+         "" "" * width + """".join(DAYS[x.weekday()][0].upper() for x in days)]
+    for n, p in team[""people""].items():
+        row = []
+        for x in days:
+            if x in team[""holidays""]:
+                row.append(""H"")
+            elif not person_works(team, p, x):
+                row.append(""-"")
+            else:
+                row.append(cell[n].get(x, "".""))
+        L.append(n.ljust(width) + """".join(row))
+    off = off_map(team, leaves_final)
+    for role in sorted(team[""coverage""]):
+        row = []
+        for x in days:
+            if not is_workday(team, x):
+                row.append("" "")
+                continue
+            s = shortfall(team, x, off.get(x, set()))
+            row.append(""!"" if role in s else ""+"")
+        L.append((""cover "" + role).ljust(width) + """".join(row))
+    return L
+
+
+def report(team, leaves, r):
+    L = [""# Leave coverage plan: %s (%s)"" % (r[""team""], r[""period""].replace("".."", "" to "")), """"]
+    need = "", "".join(""%s %d"" % (k, v) for k, v in sorted(team[""coverage""].items()))
+    L.append(""Minimum cover per workday: %s.  Holidays (closed): %s."" % (
+        need, "", "".join(x.strftime(""%d %b"") for x in sorted(team[""holidays""])) or ""none""))
+    n_appr = sum(1 for dec in r[""decisions""] if dec[""decision""] == ""approve"")
+    verdict = (""approved leave already breaks coverage"" if r[""gaps_approved""] else
+               ""over allowance on approved leave"" if any(f[""code""] == ""LV02"" and f[""severity""] == ""high"" for f in r[""findings""])
+               else ""covered"")
+    L += ["""", ""**Verdict: %s** - %d of %d open requests can be approved without a gap; %d need a decision."" % (
+        verdict, n_appr, len(r[""decisions""]), len(r[""decisions""]) - n_appr), """"]
+    L += [""## Requests (in decision order: worked peak last year first, then first come first served)"", """",
+          ""| # | Person | Dates | Workdays | Type | Submitted | Decision | Why | Alternative |"",
+          ""|---|---|---|---|---|---|---|---|---|""]
+    for i, dec in enumerate(r[""decisions""], 1):
+        l = dec[""leave""]
+        L.append(""| %d | %s | %s - %s%s | %s | %s | %s | %s | %s | %s |"" % (
+            i, l[""person""], l[""start""].strftime(""%a %d %b""), l[""end""].strftime(""%a %d %b""), "" (half)"" if l[""half""] else """",
+            (""%g"" % (0.5 * dec[""workdays""])) if l[""half""] else dec[""workdays""], l[""type""], l[""submitted""][:10],
+            dec[""decision""], dec[""reason""] or ""-"", dec[""suggestion""] or ""-""))
+    L += ["""", ""## Calendar (approved + recommended)"", """", ""```""] + grid(team, r[""current""], leaves) + [
+        ""```"", ""V/T/S/P/U/O approved vacation/training/sick/parental/unpaid/other, lowercase = request recommended ""
+        ""for approval, h = half day, x = request not approved, H = holiday, - = not a working day, ""
+        ""+ / ! = role covered / short."", """"]
+    L += [""## Allowance (days)"", """", ""| Person | Allowance | Taken before | Approved here | Recommended | Left | Peak days off |"",
+          ""|---|---|---|---|---|---|---|""]
+    for a in r[""allowance""]:
+        L.append(""| %s | %g | %g | %g | %g | %s | %d |"" % (a[""person""], a[""allowance""], a[""taken_before""], a[""approved""],
+                                                          a[""recommended""], ""-"" if a[""left""] is None else ""%g"" % a[""left""],
+                                                          a[""peak_days_off""]))
+    L += ["""", ""## Findings"", """"]
+    if not r[""findings""]:
+        L.append(""- none"")
+    for f in r[""findings""]:
+        L.append(""- **%s %s** %s"" % (f[""severity""].upper(), f[""code""], f[""message""]))
+    return ""\n"".join(L) + ""\n""
+
+
+# ----------------------------------------------------------------------------- self-test
+def self_test():
+    import os
+    import tempfile
+    cases = []
+
+    def ok(name, cond, detail=""""):
+        cases.append((name, bool(cond), detail))
+
+    base = {""team"": ""T"", ""period"": ""2026-12-14..2026-12-25"", ""holidays"": [""2026-12-25""], ""peak_days"": ""2026-12-21..2026-12-24"",
+            ""coverage"": {""lead"": 1, ""dev"": 1, ""any"": 2},
+            ""people"": [{""name"": ""A"", ""roles"": [""lead"", ""dev""], ""allowance"": 10, ""taken"": 0},
+                       {""name"": ""B"", ""roles"": [""dev""], ""allowance"": 10, ""taken"": 9},
+                       {""name"": ""C"", ""roles"": [""lead""], ""allowance"": 10, ""taken"": 0, ""worked_peak_last_year"": True},
+                       {""name"": ""D"", ""roles"": [""dev""], ""days"": [""mon"", ""tue""], ""allowance"": 5, ""taken"": 0}]}
+    t = load_team(base)
+    ok(""weekends and holidays are not workdays"", not is_workday(t, d(""2026-12-19"")) and not is_workday(t, d(""2026-12-25"")))
+    sf = shortfall(t, d(""2026-12-16""), {""B"", ""C"", ""D""})
+    ok(""one person fills one slot (A cannot be lead and dev)"", sf.get(""any"") == 1 and sf.get(""lead"", 0) + sf.get(""dev"", 0) == 1, sf)
+    ok(""matching finds A=dev, C=lead"", shortfall(t, d(""2026-12-16""), {""B"", ""D""}) == {})
+    ok(""part-timer only counts on own days"", shortfall(t, d(""2026-12-17""), {""A"", ""B""}) == {""dev"": 1, ""any"": 1}, shortfall(t, d(""2026-12-17""), {""A"", ""B""}))
+    lv = {""id"": 1, ""person"": ""D"", ""start"": d(""2026-12-14""), ""end"": d(""2026-12-20""), ""type"": ""vacation"",
+          ""status"": ""requested"", ""submitted"": ""2026-11-01"", ""half"": False, ""notes"": """"}
+    ok(""leave days skip non-working days"", len(leave_days(t, lv)) == 2)
+    ok(""half day charges 0.5"", charge(t, dict(lv, half=True)) == 1.0)
+
+    d0 = tempfile.mkdtemp()
+    csvp = os.path.join(d0, ""l.csv"")
+    with open(csvp, ""w"") as f:
+        f.write(""person,start,end,type,status,submitted,half_day,notes\n""
+                ""A,2026-12-21,2026-12-22,vacation,approved,2026-10-01,,\n""
+                ""C,2026-12-21,2026-12-21,vacation,requested,2026-11-10,,\n""
+                ""B,2026-12-14,2026-12-16,vacation,requested,2026-10-05,,\n""
+                ""D,2026-12-15,2026-12-15,training,requested,2026-11-01,,\n"")
+    leaves = load_leave(csvp, t)
+    r = plan(t, leaves)
+    by = {(dec[""leave""][""person""]): dec for dec in r[""decisions""]}
+    ok(""C conflicts with A's approved leave (no lead)"", by[""C""][""decision""] == ""conflict"", by[""C""])
+    ok(""conflict gets an alternative date"", by[""C""][""suggestion""] is not None, by[""C""])
+    ok(""B over allowance (3 days, 1 left)"", by[""B""][""decision""] == ""over allowance"", by[""B""])
+    ok(""D training approved"", by[""D""][""decision""] == ""approve"", by[""D""])
+    ok(""worked-peak person decided first"", r[""decisions""][0][""leave""][""person""] == ""C"", [x[""leave""][""person""] for x in r[""decisions""]])
+    codes = {f[""code""] for f in r[""findings""]}
+    ok(""LV03 single point of failure for lead"", ""LV03"" in codes, codes)
+    ok(""LV05 fairness flag for C"", ""LV05"" in codes, codes)
+    ok(""no gaps from approved leave"", not r[""gaps_approved""])
+    with open(csvp, ""a"") as f:
+        f.write(""C,2026-12-21,2026-12-21,sick,approved,2026-12-01,,\n"")
+    r2 = plan(t, load_leave(csvp, t))
+    ok(""LV01 gap in approved leave"", any(f[""code""] == ""LV01"" and f[""severity""] == ""high"" for f in r2[""findings""]))
+    t2 = load_team(dict(base, blackout=[{""dates"": ""2026-12-16"", ""reason"": ""release""}]))
+    r3 = plan(t2, load_leave(csvp, t2))
+    ok(""blackout precedes coverage"", any(x[""decision""] == ""blackout"" for x in r3[""decisions""]) or
+       all(x[""leave""][""person""] != ""B"" or x[""decision""] == ""over allowance"" for x in r3[""decisions""]))
+    lvb = dict(lv, person=""A"", start=d(""2026-12-16""), end=d(""2026-12-16""))
+    ok(""blackout_hit detects overlap"", blackout_hit(t2, lvb)[0] == [d(""2026-12-16"")])
+    try:
+        load_team(dict(base, coverage={""qa"": 1}))
+        ok(""unknown coverage role rejected"", False)
+    except InputError:
+        ok(""unknown coverage role rejected"", True)
+    rep = report(t, leaves, r)
+    ok(""report has grid and verdict"", ""Verdict"" in rep and ""cover lead"" in rep)
+
+    for name, good, detail in cases:
+        print(""%s  %s%s"" % (""PASS"" if good else ""FAIL"", name, """" if good else ""  -> %r"" % (detail,)))
+    passed = sum(1 for _, g, _ in cases if g)
+    print(""%d/%d passed"" % (passed, len(cases)))
+    return 0 if passed == len(cases) else 1
+
+
+def to_json(r):
+    def conv(o):
+        if isinstance(o, dt.date):
+            return o.isoformat()
+        if isinstance(o, dict):
+            return {(k.isoformat() if isinstance(k, dt.date) else k): conv(v) for k, v in o.items()}
+        if isinstance(o, (list, tuple)):
+            return [conv(x) for x in o]
+        return o
+    return json.dumps(conv(r), indent=2)
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=""Plan team leave against minimum coverage."")
+    ap.add_argument(""team"", nargs=""?"")
+    ap.add_argument(""leave"", nargs=""?"")
+    ap.add_argument(""--json"", action=""store_true"")
+    ap.add_argument(""--self-test"", action=""store_true"")
+    a = ap.parse_args(argv)
+    if a.self_test:
+        return self_test()
+    if not (a.team and a.leave):
+        ap.print_usage(sys.stderr)
+        return 2
+    try:
+        with open(a.team, encoding=""utf-8"") as f:
+            team = load_team(json.load(f))
+        leaves = load_leave(a.leave, team)
+        r = plan(team, leaves)
+    except (InputError, OSError, json.JSONDecodeError, KeyError) as e:
+        print(""error: %s"" % e, file=sys.stderr)
+        return 2
+    print(to_json(r) if a.json else report(team, leaves, r), end=""\n"" if a.json else """")
+    bad = r[""gaps_approved""] or any(f[""code""] == ""LV02"" and f[""severity""] == ""high"" for f in r[""findings""])
+    return 1 if bad else 0
+
+
+if __name__ == ""__main__"":
+    sys.exit(main())",FALSE,TEXT,f
