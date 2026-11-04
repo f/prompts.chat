@@ -207,7 +207,7 @@
 
 <TryIt 
   title="דוגמת פרומפט מלא"
-  description="פרומפט זה מדגים את כל ששת הרכיבים עובדים יחד. נסו אותו כדי לראות איך פרומפטים מובנים מייצרים תוצאות מקצועיות."
+  description="פרומפט זה מדגים כיצד כל ששת הרכיבים פועלים יחד. נסו אותו כדי לראות איך פרומפטים מובנים מייצרים תוצאות מקצועיות."
   prompt={`# Role
 You are a senior technical writer with 10 years of experience creating developer documentation.
 
@@ -229,6 +229,10 @@ Structure the documentation as:
 2. Request (method, URL, headers, body with example)
 3. Response (success and error examples)
 4. Code Example (in JavaScript/Node.js)
+
+# Example
+Match the tone of this error description from our existing docs:
+"card_declined: The customer's bank declined the charge. Ask them to try a different payment method."
 
 # Endpoint Details
 POST /v1/payments/intents
@@ -275,7 +279,7 @@ Body: { "amount": 1000, "currency": "usd", "description": "Order #1234" }`}
     "אורך הפרומפט"
   ]}
   correctIndex={2}
-  explanation="משימות שונות נהנות מרכיבים שונים. תרגום פשוט צריך מבנה מינימלי, בעוד שניתוח מורכב נהנה מפירוט תפקיד, הקשר ומפרטי פורמט."
+  explanation="משימות שונות נהנות מרכיבים שונים. תרגום פשוט צריך מבנה מינימלי, בעוד שניתוח מורכב נהנה מתפקיד, הקשר ופורמט מפורטים."
 />
 
 <TryIt 
@@ -293,7 +297,7 @@ Format: For each feature, provide:
 1. Feature name
 2. One-sentence description  
 3. Why it matters for remote teams`}
-  description="פרומפט זה משתמש בכל ששת הרכיבים. נסו אותו וראו איך הגישה המובנית מייצרת תוצאות ממוקדות ומעשיות."
+  description="פרומפט זה משתמש בחמישה מתוך ששת הרכיבים (הכל חוץ מדוגמאות). נסו אותו וראו איך הגישה המובנית מייצרת תוצאות ממוקדות ומעשיות."
 />
 
 ## בנו פרומפט משלכם
