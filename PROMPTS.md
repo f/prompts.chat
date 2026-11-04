@@ -227837,3 +227837,16 @@ A hand-painted Delft blue tile panel showing a three-masted sailing ship on chop
 
 </details>
 
+<details>
+<summary><strong>Photoreal Sunbeam Falling into a Sandstone Slot Canyon</strong></summary>
+
+## Photoreal Sunbeam Falling into a Sandstone Slot Canyon
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A photorealistic photograph of a single beam of sunlight falling into a narrow sandstone slot canyon, tall portrait 3:4. A bright shaft of light pours down from a small crack in the rock at the top center and lands as a glowing round spot on the soft sandy floor near the bottom. Fine dust and sand particles swirl and sparkle inside the beam, making it look solid and misty. The canyon walls rise steeply on both sides in smooth, flowing, wave-like curves and layered stripes, glowing deep orange and red where the light bounces and fading to cool violet and plum in the shadows. The narrow passage curves away behind the beam into darkness. Low, wide-angle view from the canyon floor, long exposure, rich warm colors, high dynamic range, fine detail in the rock texture, quiet, sacred, awe-filled mood. No people, no text, no logos.
+```
+
+</details>
+
