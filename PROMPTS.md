@@ -227402,3 +227402,16 @@ OUTPUT: 3:4 portrait, minimum 2048 × 2731 resolution, premium vintage editorial
 
 </details>
 
+<details>
+<summary><strong>Business plan </strong></summary>
+
+## Business plan 
+
+Contributed by @anonymous
+
+```md
+Write a professional and humanised  business plan requesting for funding to be submitted to bank of industry in Nigeria. Used Nigerian naira for all the analysis.business name will be Lekki 360 Grill & Lounge in Lekki Lagos as the proposed location 
+```
+
+</details>
+
