@@ -224398,3 +224398,16 @@ Rules: no people, faces, text, signs with words, or logos; no vehicles, smoke, o
 
 </details>
 
+<details>
+<summary><strong>Glass Igloos Glowing Under a Green and Violet Aurora in Snowy Lapland</strong></summary>
+
+## Glass Igloos Glowing Under a Green and Violet Aurora in Snowy Lapland
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Glass-domed igloo cabins glowing with warm golden light in deep fresh snow among heavily snow-laden spruce trees under a swirling green and violet aurora in Lapland at night, wide landscape 16:9, seen from eye level. The largest glass igloo stands on the right-center with a metal-framed dome, a lit glass door, and a cozy bed and armchairs visible inside, resting on a snowy base. Two smaller glowing glass igloos sit further back, one on the far left and one in the center, half-hidden between the trees. A trail of footprints runs through the deep snow from the bottom center of the frame toward the big igloo. A wooden signpost with three blank arrow boards stands in the snow on the right, just in front of the big igloo. Tall spruces thick with snow frame both sides, with a dark forest line behind. The upper half of the sky is filled with a vivid green and violet aurora swirling in a wide arc, over a deep blue sky full of stars. Cold blue snow against warm amber cabin light, photoreal long-exposure night travel photography, magical, peaceful, and cozy mood. No people, no text, no logos.
+```
+
+</details>
+
