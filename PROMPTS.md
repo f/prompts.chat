@@ -227916,3 +227916,16 @@ Rules: no people, faces, text, signs with words, or logos; no cars, crowds, or m
 
 </details>
 
+<details>
+<summary><strong>Whitewashed Aegean Cliffside Village with a Blue-Domed Chapel at Sunset</strong></summary>
+
+## Whitewashed Aegean Cliffside Village with a Blue-Domed Chapel at Sunset
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A whitewashed Aegean cliffside village at sunset, with white cube houses and blue doors cascading down a steep volcanic cliff, a blue-domed chapel, a winding stone stairway with magenta bougainvillea, and a calm deep blue sea with a small white ferry, wide landscape 16:9. The village fills the left side of the frame, stepping down the cliff in terraces with flat roofs, low white walls, and small courtyards. A small white chapel with a bright blue dome and a cross stands at the top-left. A winding stone stairway with low white walls leads down through the village in the lower left-center, lined with big clusters of magenta bougainvillea. A few windows, doorways, and wall lamps glow warm. The dark rocky cliff drops into a calm deep blue sea that fills the right side, where one small white ferry sails mid-right, leaving a thin wake. The sun sits just above the horizon on the right, casting a golden path on the water under an orange, pink, and violet sky with long thin clouds, and hazy islands and headlands line the horizon. Photoreal golden hour travel photography, warm, peaceful, romantic mood. No people, no text, no logos.
+```
+
+</details>
+
