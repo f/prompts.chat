@@ -224307,3 +224307,16 @@ output_format:
 
 </details>
 
+<details>
+<summary><strong>Photoreal Humpback Whale Breaching off a Rocky Coast at Golden Hour</strong></summary>
+
+## Photoreal Humpback Whale Breaching off a Rocky Coast at Golden Hour
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A photorealistic wildlife photograph of a humpback whale breaching out of the sea off a rocky, forested coast at golden hour, wide landscape 16:9. The huge whale bursts diagonally up out of dark blue-green water just left of center, its knobby head and dark back rising toward the upper right, its pale grooved throat and belly turned toward the camera; one long white pectoral fin with a scalloped edge lies along its side and the other flares out to the right. Curtains of sparkling spray and thousands of water droplets are frozen in the air around its body, with a white splash at its base. Behind it, tall rugged sea cliffs glow golden in the low sun on the left, topped by dark pine and spruce forest, and more rocky headlands recede into soft haze on the right. A few seagulls fly in the upper right under a pale, clear sky. Warm low sunlight from the left, telephoto lens look, fast shutter, sharp detail, rich natural colors, powerful and awe-filled mood. No boats, no people, no text, no logos.
+```
+
+</details>
+
