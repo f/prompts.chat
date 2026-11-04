@@ -60,7 +60,7 @@ Kontext liefert die Informationen, die das Modell braucht, um deine Situation zu
 
 ## 3. Aufgabe / Anweisung
 
-Die Aufgabe ist das Herzstück deines Prompts – was du willst, dass das Modell tut. Sei spezifisch und eindeutig.
+Die Aufgabe ist das Herzstück deines Prompts – also das, was das Modell tun soll. Sei spezifisch und eindeutig.
 
 ### Das Spezifitätsspektrum
 
@@ -230,6 +230,10 @@ Strukturiere die Dokumentation als:
 3. Antwort (Erfolgs- und Fehlerbeispiele)
 4. Code-Beispiel (in JavaScript/Node.js)
 
+# Beispiel
+Triff den Ton dieser Fehlerbeschreibung aus unserer bestehenden Dokumentation:
+"card_declined: Die Bank des Kunden hat die Zahlung abgelehnt. Bitte ihn, eine andere Zahlungsmethode zu verwenden."
+
 # Endpunkt-Details
 POST /v1/payments/intents
 Body: { "amount": 1000, "currency": "eur", "description": "Bestellung #1234" }`}
@@ -289,11 +293,11 @@ Einschränkungen:
 - Features müssen von einem Team von 2 Entwicklern in 4 Wochen implementierbar sein
 - Konzentriere dich auf das, was uns von Trello und Asana unterscheidet
 
-Format: Für jedes Feature, liefere:
+Format: Liefere für jedes Feature:
 1. Feature-Name
 2. Ein-Satz-Beschreibung
 3. Warum es für Remote-Teams wichtig ist`}
-  description="Dieser Prompt verwendet alle sechs Komponenten. Probiere ihn aus und sieh, wie der strukturierte Ansatz fokussierte, umsetzbare Ergebnisse liefert."
+  description="Dieser Prompt verwendet fünf der sechs Komponenten (alle außer Beispielen). Probiere ihn aus und sieh, wie der strukturierte Ansatz fokussierte, umsetzbare Ergebnisse liefert."
 />
 
 ## Baue deinen eigenen Prompt

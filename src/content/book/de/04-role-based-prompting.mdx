@@ -1,7 +1,7 @@
 Rollenbasiertes Prompting ist eine der mächtigsten und am weitesten verbreiteten Techniken im Prompt Engineering. Indem du der KI eine spezifische Rolle oder Persona zuweist, kannst du die Qualität, den Stil und die Relevanz der Antworten dramatisch beeinflussen.
 
 <Callout type="tip" title="Die Macht der Personas">
-Denke an Rollen als Filter für das umfangreiche Wissen der KI. Die richtige Rolle fokussiert Antworten wie eine Linse Licht fokussiert.
+Denke an Rollen als Filter für das umfangreiche Wissen der KI. Die richtige Rolle fokussiert Antworten, so wie eine Linse das Licht bündelt.
 </Callout>
 
 ## Warum Rollen funktionieren
@@ -19,7 +19,7 @@ LLMs funktionieren, indem sie das wahrscheinlichste nächste Token basierend auf
 
 **Aktivierung relevanten Wissens**: Die Rolle aktiviert spezifische Bereiche der gelernten Assoziationen des Modells. „Du bist ein Arzt" zu sagen aktiviert medizinische Terminologie, diagnostische Denkmuster und klinische Kommunikationsstile aus den Trainingsdaten.
 
-**Statistische Konditionierung**: LLMs haben aus Millionen von Dokumenten gelernt, die von echten Experten geschrieben wurden. Wenn du eine Rolle zuweist, konditioniert das Modell seine Wahrscheinlichkeitsverteilungen, um Muster zu entsprechen, die es von diesem Autorentyp gesehen hat.
+**Statistische Konditionierung**: LLMs haben aus Millionen von Dokumenten gelernt, die von echten Experten geschrieben wurden. Wenn du eine Rolle zuweist, konditioniert das Modell seine Wahrscheinlichkeitsverteilungen, um Mustern zu entsprechen, die es von diesem Autorentyp gesehen hat.
 
 **Reduzierung von Mehrdeutigkeit**: Ohne eine Rolle mittelt das Modell über alle möglichen Antwortenden. Mit einer Rolle verengt es sich auf eine spezifische Teilmenge, was Antworten fokussierter und konsistenter macht.
 
@@ -29,6 +29,8 @@ Stell es dir so vor: Wenn du fragst „Was soll ich wegen diesem Husten tun?", k
 
 <Callout type="info" title="Warum das wichtig ist">
 Das Modell spielt nicht Theater oder tut so. Es verzerrt seine Ausgaben statistisch in Richtung Muster, die es während des Trainings von echten Experten, Fachleuten und Spezialisten gelernt hat. Eine „Arzt"-Rolle aktiviert medizinische Wissenspfade; eine „Dichter"-Rolle aktiviert literarische Muster.
+
+Rollen prägen vor allem Ton, Wortwahl und Fokus. Sie können kein Wissen hinzufügen, das das Modell nie gelernt hat, und Studien haben gezeigt, dass eine Persona allein Antworten auf Faktenfragen nur selten genauer macht. Kombiniere Rollen deshalb mit gutem Kontext und überprüfe alles, worauf es ankommt.
 </Callout>
 
 ## Grundlegende Rollenmuster
@@ -293,7 +295,7 @@ Beispielantwort auf wütenden Kunden:
 Kunde: „Das ist lächerlich! Ich warte schon 2 Wochen!"
 Du: „Ich verstehe Ihre Frustration vollkommen und entschuldige mich für die Verzögerung. Lassen Sie mich das sofort nachschauen und herausfinden, wo genau Ihre Bestellung ist. Können Sie mir Ihre Bestellnummer geben?"
 
-Jetzt antworte auf:
+Antworte jetzt auf:
 Kunde: "\${customerMessage}"`} />
 
 ### Rolle + Chain of Thought
