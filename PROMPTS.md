@@ -228924,3 +228924,860 @@ if __name__ == "__main__":
 
 </details>
 
+<details>
+<summary><strong>Invoice Line Item and VAT Total Checker</strong></summary>
+
+## Invoice Line Item and VAT Total Checker
+
+Contributed by [@f](https://github.com/f)
+
+```md
+---
+name: invoice-line-item-and-vat-total-checker
+description: Checks invoices before you pay or send them - recomputes every line (quantity x unit price minus discount) and the VAT or sales tax per line, the tax breakdown and the totals from a JSON or CSV export. Reports arithmetic errors, rates outside your list, per-line vs per-invoice rounding, discounts, duplicate lines and invoices, missing required fields and date problems. Includes an offline stdlib Python checker. Not tax advice.
+---
+
+# Invoice Line Item and VAT Total Checker
+
+You help small businesses, freelancers and finance assistants catch invoice mistakes before money moves: a line total that does not equal quantity x price, a tax amount worked out on the wrong base, a rate that is not one you use, a delivery line taxed at a rate from another country, the same invoice entered twice, a credit note with no VAT ID. You recompute everything from the lines, compare with what the invoice says, and hand back a discrepancy report someone can act on.
+
+You check arithmetic and consistency against the rules the user gives you. You do not decide which tax rate legally applies, whether tax is due or which fields the law requires; say so in every report and point to an accountant or the tax authority for those questions.
+
+## Files in this skill
+
+- `scripts/invoice_check.py` - loads an invoices JSON (header, lines, stated totals, optional tax breakdown) or a flat line-items CSV (one row per line, grouped by invoice number and seller); recomputes line net, tax and gross with Decimal arithmetic, per-line or per-invoice tax rounding, half-up or half-even, tax-exclusive or tax-inclusive prices, line and invoice discounts; reports findings IV01-IV13 and a per-invoice line table (Python 3.8+ standard library only)
+- `references/checks-and-codes.md` - every finding code, its severity and what to do about it
+- `references/tax-math-and-rounding.md` - the formulas, rounding methods, discounts, credit notes and tolerance
+- `templates/discrepancy-report.md` - the report to send to the supplier, client or bookkeeper
+- `examples/invoices.json` - five purchase invoices of a design studio: one clean, one with a wrong line, a non-listed rate, a duplicated line and a category rate mismatch, a cloud bill with fractional quantities and a due date before the invoice date, a duplicate entry and a credit note without a VAT ID
+- `examples/vat-rules.json` - example rules: allowed rates 20/10/0, a category -> rate list, per-line rounding, required fields (replace the rates with yours)
+- `examples/invoice-lines.csv` - two of the studio's own sales invoices as a line-items export, one with a tax error, a line left out of the totals, a missing buyer and a currency that changes mid-invoice
+- `examples/invoice-report.md` - the real checker output on invoices.json
+
+## Workflow
+
+### 1. Collect the invoices and the rules
+Ask for the invoices as an export (accounting tool CSV, e-invoice JSON) or paste the lines; one file can hold a whole batch. Then ask for the rules: the tax rates the business actually uses, any item categories with their own rate (from their accountant, not from you), whether prices are tax-exclusive or tax-inclusive, how the tool rounds tax (per line or per invoice), the currency decimals and which header fields their invoices must carry. Write them into a rules JSON like `examples/vat-rules.json`.
+
+### 2. Run the checker
+```
+python3 scripts/invoice_check.py examples/invoices.json --rules examples/vat-rules.json --today 2026-11-03
+python3 scripts/invoice_check.py examples/invoice-lines.csv --rules examples/vat-rules.json
+python3 scripts/invoice_check.py batch.json --rules rules.json --json
+python3 scripts/invoice_check.py --self-test
+```
+Exit 0 = no high findings, 1 = high findings, 2 = bad input. Without a shell, recompute by hand with `references/tax-math-and-rounding.md`: each line net = round(qty x unit price x (1 - discount)), tax = round(net x rate), then sum per rate and compare with the stated totals.
+
+### 3. Read the result
+- High first: IV02/IV03 (a line is wrong), IV05 (totals do not add up), IV04 (a rate not in your list), IV07 (same invoice number twice), IV01 (no number, date, quantity or price). Do not pay or send these.
+- Medium: category rate mismatches, duplicate lines, negative lines on a normal invoice, due dates before the invoice date, missing VAT IDs or buyer names, a header that changes between CSV rows.
+- Low/info: rounding-method differences (IV06) and extra decimals (IV12) - usually explainable, note them.
+- A wrong total often comes from one wrong line: fix the line, then re-run before reporting the total.
+
+### 4. Decide and write it up
+For each invoice: OK to pay/send, ask for a corrected invoice or credit note, or check internally (duplicate entry, wrong rule). Fill `templates/discrepancy-report.md` with the line, the stated and recomputed amounts and the exact correction you need. Keep the tone factual: "line 1: 250 x 0.38 = 95.00, invoiced 98.00".
+
+### 5. Deliver
+Return the per-invoice verdicts, the discrepancy report(s), a list of questions for the accountant (rates, required fields) and any rule changes for next time (e.g. switch to per-invoice rounding if that is what the supplier's system does).
+
+## Example result
+On `examples/invoices.json` 2 of 5 invoices must not be paid as they are. Brightline Print 2026/0877 bills 250 business cards at 0.38 as 98.00 instead of 95.00 (IV02), taxes delivery at 18%, which is not in the studio's rates (IV04), repeats the flyer line (IV07) and taxes catering at 20% where the studio's list says 10% (IV04, medium); its totals are 3.00 net / 0.60 tax too high (IV05). Northwind's INV-2026-1041 was entered twice (IV07, high). CloudNest's tax of 7.38 is per-invoice rounding instead of 7.39 per line (IV06 info, within tolerance) but its due date is before the invoice date; the Brightline credit note has no seller VAT ID. The clean Northwind invoice passes.
+
+## Rules
+
+- Recompute from the lines; never trust a stated total, and report the first wrong line before the totals it breaks.
+- Use only the rates and categories the user gives you. If asked which rate applies, say that is a tax question for their accountant or tax authority.
+- Use exact decimal arithmetic and the user's rounding method; a 0.01 rounding difference is not an error unless their rules say so.
+- Treat duplicates as "possible": show both invoices and let the user confirm.
+- Never change an invoice yourself; ask the issuer for a corrected invoice or a credit note.
+- Keep invoice data private: do not paste it into public tools or share it beyond the people who need it.
+FILE:references/checks-and-codes.md
+# Checks and finding codes
+
+| Code | Severity | Check | Typical fix |
+|---|---|---|---|
+| IV01 | high: number, date, qty, price, no lines, no totals; medium: other fields | required invoice and line fields present and parseable (fields come from `required_invoice_fields` / `required_line_fields`) | ask for a corrected invoice with the missing field |
+| IV02 | high | line net = round(qty x unit price x (1 - discount%)); line gross = net + tax | corrected invoice for that line |
+| IV03 | high | line tax = round(line net x rate); a tax that is consistent with an already wrong net is not reported twice | corrected invoice |
+| IV04 | high: rate not in `allowed_vat_rates`; medium: rate differs from your `category_rates`; low: rate written as a fraction (0.2) | rate sanity against YOUR list | check the rate with your accountant, then ask the issuer |
+| IV05 | high (medium if within tolerance x lines) | stated net, tax and grand total vs the recomputed sums; grand total = net + tax | corrected invoice; often follows from IV02/IV03 |
+| IV06 | low (info if within tolerance) | tax total matches the other rounding method (per invoice vs per line) | accept, or set `vat_rounding` to what the issuer uses |
+| IV07 | high: same seller + invoice number twice; medium: same seller, date and total under another number, or a repeated line | duplicates | confirm with the issuer before paying twice |
+| IV08 | high: discount outside 0-100%; info: invoice-level discount applied | discounts reduce the taxable base before tax | corrected invoice |
+| IV09 | medium: negative qty/price on a normal invoice; low: zero qty/price | returns belong on a credit note (`"type": "credit_note"`) | ask for a credit note |
+| IV10 | high: invalid invoice date; medium: invalid or earlier due date, invoice date in the future | dates | corrected invoice / check the entry |
+| IV11 | medium | stated tax breakdown per rate vs the lines | corrected invoice |
+| IV12 | low | stated amounts with more decimals than `currency_decimals` (unit prices may have more) | usually cosmetic |
+| IV13 | medium | CSV export: header values (currency, buyer, date...) differ between rows of one invoice | fix the export or the source record |
+
+## Verdicts
+- **FIX**: at least one high finding. Do not pay or send.
+- **CHECK**: medium findings only. Usually a question for the issuer or an internal check.
+- **OK**: nothing, or only low/info.
+
+## Input fields
+JSON invoice: `number, date, due_date, type (invoice|credit_note), seller{name, vat_id}, buyer{name, vat_id}, currency, invoice_discount_pct, lines[], totals{net, vat, gross}, vat_breakdown[{rate, net, vat}]`.
+JSON line: `sku, description, category, qty, unit_price, discount_pct, vat_rate, net, vat, gross` (stated amounts are optional - lines without them are only recomputed).
+CSV columns: `invoice_number, invoice_date, due_date, type, seller_name, seller_vat_id, buyer_name, buyer_vat_id, currency, invoice_discount_pct, sku, description, category, qty, unit_price, discount_pct, vat_rate, line_net, vat_amount, line_gross, total_net, total_vat, total_gross` (totals on any row of the invoice). Decimal commas (12,50 and 1.234,56) are accepted.
+FILE:references/tax-math-and-rounding.md
+# Tax math and rounding
+
+This is arithmetic, not tax law. Rates, exemptions, reverse charge and required invoice fields depend on the country and the transaction: take them from the user's accountant or tax authority.
+
+## Tax-exclusive prices (default)
+```
+line net   = round(qty x unit_price x (1 - discount_pct / 100))
+line tax   = round(line net x rate / 100)              per-line rounding
+line gross = line net + line tax
+net total  = sum(line net)  (x (1 - invoice_discount_pct / 100) per rate, rounded)
+tax total  = sum(line tax)                             per-line rounding
+           = sum over rates of round(net of that rate x rate / 100)   per-invoice rounding
+grand total = net total + tax total
+```
+
+## Tax-inclusive prices (`prices_include_vat: true`)
+```
+line gross = round(qty x unit_price x (1 - discount_pct / 100))
+line tax   = round(line gross x rate / (100 + rate))
+line net   = line gross - line tax
+```
+Example: gross 12.00 at 20% -> tax 2.00, net 10.00.
+
+## Rounding
+- `half_up` (default): 0.005 -> 0.01. Most invoicing tools and many tax authorities use it.
+- `half_even` (banker's rounding): 0.005 -> 0.00, 0.015 -> 0.02. Some ERP and spreadsheet functions use it.
+- Per-line vs per-invoice rounding can differ by up to 0.005 x number of lines. Ten lines of 0.05 at 10%: per line 10 x 0.01 = 0.10, per invoice round(0.50 x 10%) = 0.05. Both can be legitimate; check which method the issuer uses and set `vat_rounding`.
+- `tolerance` (default 0.01) is the difference accepted per amount; differences at or below it are not errors (IV06 info shows when they come from the rounding method).
+
+## Discounts
+- Line discounts reduce the line net before tax.
+- An invoice-level discount (`invoice_discount_pct`) reduces the taxable base of every rate proportionally before tax; the checker applies it per rate.
+- Early-payment (settlement) discounts that are only taken later are not modelled; check them separately.
+
+## Credit notes and negative lines
+- A credit note (`"type": "credit_note"`) has negative quantities or prices and negative totals; tax is negative too.
+- A negative line on a normal invoice (a return netted off) is flagged (IV09) because many systems and auditors expect a separate credit note.
+
+## Multi-currency
+- All amounts of one invoice must be in one currency; a currency that changes between CSV rows is flagged (IV13).
+- Conversion to your book currency is out of scope: convert after the check with the rate your bookkeeping uses.
+FILE:templates/discrepancy-report.md
+# Invoice discrepancy report
+
+**To:** <supplier / client / bookkeeper>   **From:** <name>   **Date:** <YYYY-MM-DD>
+**Invoice:** <number> dated <date>, total <stated total> <currency>
+
+We checked this invoice line by line before <paying / sending> it and found the following. Please send a corrected invoice or a credit note for the difference.
+
+| # | Line / field | Invoiced | Should be | Difference | Note |
+|---|---|---|---|---|---|
+| 1 | <line 1: 250 x 0.38> | <98.00> | <95.00> | <3.00> | <quantity x unit price> |
+| 2 | <tax rate on delivery> | <18%> | <rate we expect, confirmed by our accountant> | <...> | <...> |
+
+**Totals**
+| | Invoiced | Recomputed |
+|---|---|---|
+| Net | <...> | <...> |
+| Tax | <...> | <...> |
+| Total | <...> | <...> |
+
+**Other points**
+- <duplicate line / missing VAT ID / due date before invoice date>
+
+**What we need:** <corrected invoice | credit note for X | confirmation that invoice Y is a duplicate>
+
+*Recomputed from the invoice lines with <rounding> rounding, tolerance <0.01>. This is an arithmetic check, not tax advice.*
+FILE:examples/invoices.json
+{
+  "invoices": [
+    {
+      "number": "INV-2026-1041",
+      "date": "2026-10-05",
+      "due_date": "2026-11-04",
+      "seller": {"name": "Northwind Office Supplies", "vat_id": "GB123456789"},
+      "buyer": {"name": "Lumen Studio Ltd"},
+      "currency": "GBP",
+      "lines": [
+        {"sku": "PAP-A4-5", "description": "A4 copy paper, box of 5 reams", "qty": 4, "unit_price": "21.50", "vat_rate": 20, "net": "86.00", "vat": "17.20", "gross": "103.20"},
+        {"sku": "TON-HP-26X", "description": "Toner cartridge 26X", "qty": 2, "unit_price": "89.99", "discount_pct": 5, "vat_rate": 20, "net": "170.98", "vat": "34.20", "gross": "205.18"},
+        {"sku": "BK-TYPO", "description": "Book: Thinking with Type", "category": "books", "qty": 1, "unit_price": "24.00", "vat_rate": 0, "net": "24.00", "vat": "0.00", "gross": "24.00"}
+      ],
+      "totals": {"net": "280.98", "vat": "51.40", "gross": "332.38"},
+      "vat_breakdown": [{"rate": 20, "net": "256.98", "vat": "51.40"}, {"rate": 0, "net": "24.00", "vat": "0.00"}]
+    },
+    {
+      "number": "2026/0877",
+      "date": "2026-10-12",
+      "due_date": "2026-10-26",
+      "seller": {"name": "Brightline Print", "vat_id": "GB987654321"},
+      "buyer": {"name": "Lumen Studio Ltd"},
+      "currency": "GBP",
+      "lines": [
+        {"sku": "BC-350", "description": "Business cards, 350gsm", "qty": 250, "unit_price": "0.38", "vat_rate": 20, "net": "98.00", "vat": "19.60", "gross": "117.60"},
+        {"sku": "FLY-A5", "description": "A5 flyers, double-sided", "qty": 1000, "unit_price": "0.12", "discount_pct": 10, "vat_rate": 20, "net": "108.00", "vat": "21.60", "gross": "129.60"},
+        {"sku": "FLY-A5", "description": "A5 flyers, double-sided", "qty": 1000, "unit_price": "0.12", "discount_pct": 10, "vat_rate": 20, "net": "108.00", "vat": "21.60", "gross": "129.60"},
+        {"sku": "DEL-STD", "description": "Delivery", "qty": 1, "unit_price": "12.50", "vat_rate": 18, "net": "12.50", "vat": "2.25", "gross": "14.75"},
+        {"sku": "CAT-01", "description": "Catering for launch event", "category": "catering", "qty": 1, "unit_price": "150.00", "vat_rate": 20, "net": "150.00", "vat": "30.00", "gross": "180.00"}
+      ],
+      "totals": {"net": "476.50", "vat": "95.05", "gross": "571.55"}
+    },
+    {
+      "number": "CN-8841",
+      "date": "2026-10-31",
+      "due_date": "2026-10-01",
+      "seller": {"name": "CloudNest Hosting", "vat_id": "IE6388047V"},
+      "buyer": {"name": "Lumen Studio Ltd"},
+      "currency": "GBP",
+      "lines": [
+        {"description": "Object storage, GB-month", "qty": "412.5", "unit_price": "0.0185", "vat_rate": 20},
+        {"description": "Egress, GB", "qty": "96.3", "unit_price": "0.0725", "vat_rate": 20},
+        {"description": "Load balancer hours", "qty": 744, "unit_price": "0.0225", "vat_rate": 20},
+        {"description": "Snapshot storage, GB-month", "qty": "38.4", "unit_price": "0.0420", "vat_rate": 20},
+        {"description": "DNS queries, per million", "qty": "1.7", "unit_price": "0.35", "vat_rate": 20},
+        {"description": "Static IP hours", "qty": 744, "unit_price": "0.0045", "vat_rate": 20}
+      ],
+      "totals": {"net": "36.91", "vat": "7.38", "gross": "44.29"}
+    },
+    {
+      "number": "INV-2026-1041",
+      "date": "2026-10-05",
+      "seller": {"name": "Northwind Office Supplies", "vat_id": "GB123456789"},
+      "buyer": {"name": "Lumen Studio Ltd"},
+      "currency": "GBP",
+      "lines": [
+        {"sku": "PAP-A4-5", "description": "A4 copy paper, box of 5 reams", "qty": 4, "unit_price": "21.50", "vat_rate": 20},
+        {"sku": "TON-HP-26X", "description": "Toner cartridge 26X", "qty": 2, "unit_price": "89.99", "discount_pct": 5, "vat_rate": 20},
+        {"sku": "BK-TYPO", "description": "Book: Thinking with Type", "category": "books", "qty": 1, "unit_price": "24.00", "vat_rate": 0}
+      ],
+      "totals": {"net": "280.98", "vat": "51.40", "gross": "332.38"}
+    },
+    {
+      "number": "CR-0012",
+      "type": "credit_note",
+      "date": "2026-10-20",
+      "seller": {"name": "Brightline Print"},
+      "buyer": {"name": "Lumen Studio Ltd"},
+      "currency": "GBP",
+      "lines": [
+        {"sku": "BC-350", "description": "Credit: misprinted business cards", "qty": -50, "unit_price": "0.38", "vat_rate": 20, "net": "-19.00", "vat": "-3.80", "gross": "-22.80"}
+      ],
+      "totals": {"net": "-19.00", "vat": "-3.80", "gross": "-22.80"}
+    }
+  ]
+}
+FILE:examples/vat-rules.json
+{
+  "name": "Example rules for a studio's purchase invoices - replace the rates with the ones that apply to you",
+  "currency_decimals": 2,
+  "rounding": "half_up",
+  "vat_rounding": "line",
+  "tolerance": "0.01",
+  "prices_include_vat": false,
+  "allowed_vat_rates": [20, 10, 0],
+  "category_rates": {"books": 0, "catering": 10, "food": 10},
+  "required_invoice_fields": ["number", "date", "seller.name", "seller.vat_id", "buyer.name", "currency"],
+  "required_line_fields": ["description", "qty", "unit_price", "vat_rate"],
+  "max_discount_pct": 100
+}
+FILE:examples/invoice-lines.csv
+invoice_number,invoice_date,due_date,seller_name,seller_vat_id,buyer_name,currency,sku,description,category,qty,unit_price,discount_pct,vat_rate,line_net,vat_amount,line_gross,total_net,total_vat,total_gross
+S-1001,2026-10-28,2026-11-27,Lumen Studio Ltd,GB555000111,Harbour Cafe,GBP,LOGO,"Logo design, 3 concepts",,1,850.00,,20,850.00,170.00,1020.00,1170.00,234.00,1404.00
+S-1001,2026-10-28,2026-11-27,Lumen Studio Ltd,GB555000111,Harbour Cafe,GBP,MENU,Menu layout (A4 folded),,2,160.00,,20,320.00,64.00,384.00,,,
+S-1002,2026-10-30,2026-11-29,Lumen Studio Ltd,GB555000111,,GBP,WEB-DAY,Website build - day rate,,4.5,480.00,10,20,1944.00,388.80,2332.80,2104.00,420.80,2524.80
+S-1002,2026-10-30,2026-11-29,Lumen Studio Ltd,GB555000111,,GBP,PHOTO,"Stock photo licence, 5 images",,5,32.00,,20,160.00,23.00,183.00,,,
+S-1002,2026-10-30,2026-11-29,Lumen Studio Ltd,GB555000111,,EUR,BOOK,Brand guidelines book (printed),books,1,45.00,,0,45.00,0.00,45.00,,,
+FILE:examples/invoice-report.md
+# Invoice check: examples/invoices.json
+
+5 invoice(s), 18 line(s). Rules: half up rounding, tax rounded per line, tolerance 0.01, prices exclude tax, allowed rates 20/10/0%.
+
+**Verdict: 2 of 5 invoice(s) have high findings - do not pay/send until fixed**
+
+Findings: 5 high, 4 medium, 0 low, 1 info.
+
+This is an arithmetic and consistency check against your own rules, not tax advice: confirm rates and required invoice fields with your accountant or tax authority.
+
+## Invoices
+
+| Invoice | Seller | Lines | Stated total | Recomputed | Difference | High | Medium | Low | Status |
+|---|---|---|---|---|---|---|---|---|---|
+| INV-2026-1041 | Northwind Office Supplies | 3 | 332.38 GBP | 332.38 | 0.00 | 0 | 0 | 0 | OK |
+| 2026/0877 | Brightline Print | 5 | 571.55 GBP | 567.95 | 3.60 | 4 | 2 | 0 | FIX |
+| CN-8841 | CloudNest Hosting | 6 | 44.29 GBP | 44.30 | -0.01 | 0 | 1 | 0 | CHECK |
+| INV-2026-1041 (#4) | Northwind Office Supplies | 3 | 332.38 GBP | 332.38 | 0.00 | 1 | 0 | 0 | FIX |
+| CR-0012 (credit note) | Brightline Print | 1 | -22.80 GBP | -22.80 | 0.00 | 0 | 1 | 0 | CHECK |
+
+## 2026/0877 - Brightline Print
+
+| # | Item | Qty | Unit price | Disc % | Rate % | Net (stated / calc) | Tax (stated / calc) | Issues |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Business cards, 350gsm | 250 | 0.38 |  | 20 | 98.00 / 95.00 | 19.60 / 19.00 | net |
+| 2 | A5 flyers, double-sided | 1000 | 0.12 | 10 | 20 | 108.00 / 108.00 | 21.60 / 21.60 | ok |
+| 3 | A5 flyers, double-sided | 1000 | 0.12 | 10 | 20 | 108.00 / 108.00 | 21.60 / 21.60 | duplicate |
+| 4 | Delivery | 1 | 12.50 |  | 18 | 12.50 / 12.50 | 2.25 / 2.25 | rate |
+| 5 | Catering for launch event | 1 | 150.00 |  | 20 | 150.00 / 150.00 | 30.00 / 30.00 | category rate |
+
+| Totals | Stated | Recomputed |
+|---|---|---|
+| Net | 476.50 | 473.50 |
+| Tax | 95.05 | 94.45 |
+| Total | 571.55 | 567.95 |
+| Tax by rate | | 20%: 92.20 on 461.00; 18%: 2.25 on 12.50 |
+
+- **HIGH IV02** line 1 (Business cards, 350gsm): line net 98.00 but 250 x 0.38 = 95.00 (diff 3.00)
+- **HIGH IV04** line 4 (Delivery): tax rate 18% is not in your allowed rates (0, 10, 20)
+- **HIGH IV05** stated net total 476.50 but the lines add up to 473.50 (diff 3.00)
+- **HIGH IV05** stated tax total 95.05 but the lines add up to 94.45 (diff 0.60)
+- **MEDIUM IV04** line 5 (Catering for launch event): category 'catering' is 10% in your rate list but the line uses 20%
+- **MEDIUM IV07** line 3 (A5 flyers, double-sided) repeats line 2 (same item, quantity and price) - duplicate?
+
+## CN-8841 - CloudNest Hosting
+
+| # | Item | Qty | Unit price | Disc % | Rate % | Net (stated / calc) | Tax (stated / calc) | Issues |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Object storage, GB-month | 412.5 | 0.0185 |  | 20 | - / 7.63 | - / 1.53 | ok |
+| 2 | Egress, GB | 96.3 | 0.0725 |  | 20 | - / 6.98 | - / 1.40 | ok |
+| 3 | Load balancer hours | 744 | 0.0225 |  | 20 | - / 16.74 | - / 3.35 | ok |
+| 4 | Snapshot storage, GB-month | 38.4 | 0.0420 |  | 20 | - / 1.61 | - / 0.32 | ok |
+| 5 | DNS queries, per million | 1.7 | 0.35 |  | 20 | - / 0.60 | - / 0.12 | ok |
+| 6 | Static IP hours | 744 | 0.0045 |  | 20 | - / 3.35 | - / 0.67 | ok |
+
+| Totals | Stated | Recomputed |
+|---|---|---|
+| Net | 36.91 | 36.91 |
+| Tax | 7.38 | 7.39 |
+| Total | 44.29 | 44.30 |
+
+- **MEDIUM IV10** due date 2026-10-01 is before the invoice date 2026-10-31
+- **INFO IV06** tax total 7.38 is per-invoice rounding (line rounding gives 7.39) - within tolerance
+
+## INV-2026-1041 (#4) - Northwind Office Supplies
+
+| # | Item | Qty | Unit price | Disc % | Rate % | Net (stated / calc) | Tax (stated / calc) | Issues |
+|---|---|---|---|---|---|---|---|---|
+| 1 | A4 copy paper, box of 5 reams | 4 | 21.50 |  | 20 | - / 86.00 | - / 17.20 | ok |
+| 2 | Toner cartridge 26X | 2 | 89.99 | 5 | 20 | - / 170.98 | - / 34.20 | ok |
+| 3 | Book: Thinking with Type | 1 | 24.00 |  | 0 | - / 24.00 | - / 0.00 | ok |
+
+| Totals | Stated | Recomputed |
+|---|---|---|
+| Net | 280.98 | 280.98 |
+| Tax | 51.40 | 51.40 |
+| Total | 332.38 | 332.38 |
+| Tax by rate | | 20%: 51.40 on 256.98; 0%: 0.00 on 24.00 |
+
+- **HIGH IV07** invoice number INV-2026-1041 from this seller already appears (invoice #1) - duplicate invoice?
+
+## CR-0012 - Brightline Print
+
+| # | Item | Qty | Unit price | Disc % | Rate % | Net (stated / calc) | Tax (stated / calc) | Issues |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Credit: misprinted business cards | -50 | 0.38 |  | 20 | -19.00 / -19.00 | -3.80 / -3.80 | ok |
+
+| Totals | Stated | Recomputed |
+|---|---|---|
+| Net | -19.00 | -19.00 |
+| Tax | -3.80 | -3.80 |
+| Total | -22.80 | -22.80 |
+
+- **MEDIUM IV01** missing invoice field 'seller.vat_id'
+
+FILE:scripts/invoice_check.py
+#!/usr/bin/env python3
+"""Invoice line item and VAT / sales-tax total checker (stdlib only, Python 3.8+).
+
+Recomputes every line (qty x unit price - discount, tax per line) and every invoice total from
+an invoices JSON or a flat line-items CSV, compares them with the stated amounts and reports
+arithmetic errors, tax rates outside your list, rounding-method differences, discounts,
+duplicate lines and invoices, missing required fields and date problems.
+It checks numbers against the rules YOU give it; it does not decide which tax rate applies.
+
+Usage:
+  invoice_check.py INVOICES.json|LINES.csv [--rules RULES.json] [--today YYYY-MM-DD] [--json]
+  invoice_check.py --self-test
+Exit: 0 = no high findings, 1 = high findings (wrong totals, wrong rate, missing number/date,
+duplicate invoice), 2 = bad input.
+"""
+import argparse, csv, datetime, io, json, re, sys
+from decimal import Decimal, ROUND_HALF_UP, ROUND_HALF_EVEN, InvalidOperation
+
+DEFAULT_RULES = {
+    "currency_decimals": 2,
+    "rounding": "half_up",            # half_up | half_even
+    "vat_rounding": "line",           # line = round tax per line then sum; invoice = per rate on the total
+    "tolerance": "0.01",              # accepted difference per amount
+    "prices_include_vat": False,      # unit prices are gross (tax-inclusive)
+    "allowed_vat_rates": None,        # e.g. [20, 10, 1, 0]; None = do not check
+    "category_rates": {},             # your own mapping, e.g. {"books": 0}
+    "required_invoice_fields": ["number", "date", "seller.name", "seller.vat_id", "buyer.name", "currency"],
+    "required_line_fields": ["description", "qty", "unit_price", "vat_rate"],
+    "max_discount_pct": 100,
+}
+SEV = {"high": 0, "medium": 1, "low": 2, "info": 3}
+CSV_MAP = {"invoice_number": "number", "invoice_date": "date", "due_date": "due_date", "type": "type",
+           "seller_name": "seller.name", "seller_vat_id": "seller.vat_id", "buyer_name": "buyer.name",
+           "buyer_vat_id": "buyer.vat_id", "currency": "currency", "invoice_discount_pct": "invoice_discount_pct",
+           "total_net": "totals.net", "total_vat": "totals.vat", "total_gross": "totals.gross"}
+LINE_MAP = {"sku": "sku", "description": "description", "category": "category", "qty": "qty",
+            "unit_price": "unit_price", "discount_pct": "discount_pct", "line_net": "net", "vat_rate": "vat_rate",
+            "vat_amount": "vat", "line_gross": "gross"}
+
+
+class InputError(Exception):
+    pass
+
+
+def D(v, what="number"):
+    if v is None or (isinstance(v, str) and not v.strip()):
+        return None
+    if isinstance(v, float):
+        v = repr(v)
+    try:
+        s = str(v).strip().replace(" ", "")
+        if re.match(r"^-?\d{1,3}(\.\d{3})+,\d+$", s):      # 1.234,56
+            s = s.replace(".", "").replace(",", ".")
+        elif re.match(r"^-?\d+,\d+$", s):                   # 12,50
+            s = s.replace(",", ".")
+        else:
+            s = s.replace(",", "")                          # 1,234.56
+        s = s.rstrip("%")
+        return Decimal(s)
+    except (InvalidOperation, ValueError):
+        raise InputError("not a %s: %r" % (what, v))
+
+
+def get(d, path):
+    for k in path.split("."):
+        if not isinstance(d, dict):
+            return None
+        d = d.get(k)
+    return d
+
+
+def setp(d, path, v):
+    ks = path.split(".")
+    for k in ks[:-1]:
+        d = d.setdefault(k, {})
+    d[ks[-1]] = v
+
+
+def blank(v):
+    return v is None or (isinstance(v, str) and not v.strip())
+
+
+# ---------------------------------------------------------------- loading
+def load_invoices(path_or_text, is_csv=None):
+    text = path_or_text
+    if is_csv is None:
+        is_csv = not text.lstrip().startswith(("{", "["))
+    if not is_csv:
+        try:
+            data = json.loads(text)
+        except ValueError as e:
+            raise InputError("invalid JSON: %s" % e)
+        invs = data.get("invoices") if isinstance(data, dict) else data
+        if not isinstance(invs, list):
+            raise InputError("JSON must be a list of invoices or {\"invoices\": [...]}")
+        rules = data.get("rules") if isinstance(data, dict) else None
+        return invs, rules, []
+    rows = list(csv.DictReader(io.StringIO(text.lstrip("\ufeff"))))
+    if not rows:
+        raise InputError("CSV has no rows")
+    cols = set(rows[0].keys())
+    if "invoice_number" not in cols or not ({"qty", "unit_price"} <= cols):
+        raise InputError("CSV needs at least invoice_number, qty and unit_price columns")
+    invs, order, notes = {}, [], []
+    for n, row in enumerate(rows, 2):
+        key = ((row.get("seller_vat_id") or row.get("seller_name") or "").strip(), (row.get("invoice_number") or "").strip())
+        if key not in invs:
+            inv = {"_rows": [n]}
+            for c, p in CSV_MAP.items():
+                if c in row and not blank(row[c]):
+                    setp(inv, p, row[c].strip())
+            invs[key] = inv; order.append(key)
+        else:
+            inv = invs[key]; inv["_rows"].append(n)
+            for c, p in CSV_MAP.items():
+                if c in row and not blank(row[c]) and not blank(get(inv, p)) and str(get(inv, p)) != row[c].strip():
+                    notes.append((inv, "row %d: %s is '%s' but earlier rows say '%s'" % (n, c, row[c].strip(), get(inv, p))))
+                elif c in row and not blank(row[c]) and blank(get(inv, p)):
+                    setp(inv, p, row[c].strip())
+        line = {"_row": n}
+        for c, p in LINE_MAP.items():
+            if c in row and not blank(row[c]):
+                line[p] = row[c].strip()
+        inv.setdefault("lines", []).append(line)
+    return [invs[k] for k in order], None, notes
+
+
+def parse_date(s):
+    try:
+        return datetime.date.fromisoformat(str(s)[:10]) if not blank(s) else None
+    except ValueError:
+        return "bad"
+
+
+# ---------------------------------------------------------------- checking
+def check(invoices, rules, today=None, csv_notes=()):
+    R = dict(DEFAULT_RULES); R.update(rules or {})
+    q = Decimal(1).scaleb(-int(R["currency_decimals"]))
+    mode = ROUND_HALF_EVEN if R["rounding"] == "half_even" else ROUND_HALF_UP
+    tol = Decimal(str(R["tolerance"]))
+    rnd = lambda x: x.quantize(q, rounding=mode)
+    allowed = None if R["allowed_vat_rates"] is None else {Decimal(str(r)) for r in R["allowed_vat_rates"]}
+    catmap = {k.lower(): Decimal(str(v)) for k, v in (R.get("category_rates") or {}).items()}
+    results, seen_numbers, seen_amounts = [], {}, {}
+    notes_by = {}
+    for inv, msg in csv_notes:
+        notes_by.setdefault(id(inv), []).append(msg)
+    for idx, inv in enumerate(invoices):
+        F = []
+        def f(sev, code, msg):
+            F.append((sev, code, msg))
+        num = inv.get("number")
+        label = str(num) if not blank(num) else "#%d (no number)" % (idx + 1)
+        if any(str(o.get("number")) == str(num) for o in invoices[:idx]) and not blank(num):
+            label += " (#%d)" % (idx + 1)
+        credit = str(inv.get("type", "")).lower().replace(" ", "_") in ("credit_note", "credit", "refund")
+        for p in R["required_invoice_fields"]:
+            if blank(get(inv, p)):
+                f("high" if p in ("number", "date") else "medium", "IV01", "missing invoice field '%s'" % p)
+        for m in notes_by.get(id(inv), []):
+            f("medium", "IV13", "inconsistent header across CSV rows: " + m)
+        d = parse_date(inv.get("date")); dd = parse_date(inv.get("due_date"))
+        if d == "bad":
+            f("high", "IV10", "invoice date '%s' is not YYYY-MM-DD" % inv.get("date")); d = None
+        if dd == "bad":
+            f("medium", "IV10", "due date '%s' is not YYYY-MM-DD" % inv.get("due_date")); dd = None
+        if d and dd and dd < d:
+            f("medium", "IV10", "due date %s is before the invoice date %s" % (dd, d))
+        if d and today and d > today:
+            f("medium", "IV10", "invoice date %s is in the future (today %s)" % (d, today))
+        lines, per_rate, sigs = [], {}, {}
+        sum_net = sum_vat_line = Decimal(0)
+        for ln_i, ln in enumerate(inv.get("lines") or [], 1):
+            L = {"n": ln_i, "desc": str(ln.get("description") or ln.get("sku") or "")[:40], "issues": []}
+            where = "line %d (%s)" % (ln_i, L["desc"] or "no description")
+            for p in R["required_line_fields"]:
+                if blank(ln.get(p)):
+                    f("high" if p in ("qty", "unit_price") else "medium", "IV01", "%s: missing '%s'" % (where, p)); L["issues"].append("missing " + p)
+            try:
+                qty = D(ln.get("qty"), "quantity"); up = D(ln.get("unit_price"), "unit price")
+                disc = D(ln.get("discount_pct"), "discount") or Decimal(0)
+                rate = D(ln.get("vat_rate"), "tax rate")
+                s_net, s_vat, s_gross = D(ln.get("net")), D(ln.get("vat")), D(ln.get("gross"))
+            except InputError as e:
+                f("high", "IV01", "%s: %s" % (where, e)); L["issues"].append("unparseable"); lines.append(L); continue
+            if rate is not None and Decimal(0) < rate < 1:
+                f("low", "IV04", "%s: tax rate %s looks like a fraction - read as %s%%" % (where, rate, rate * 100)); rate = rate * 100
+            if qty is None or up is None:
+                lines.append(L); continue
+            if disc < 0 or disc > Decimal(str(R["max_discount_pct"])):
+                f("high", "IV08", "%s: discount %s%% is outside 0-%s%%" % (where, disc, R["max_discount_pct"])); L["issues"].append("discount")
+            if (qty < 0 or up < 0) and not credit:
+                f("medium", "IV09", "%s: negative quantity or price on an invoice - should this be a credit note?" % where); L["issues"].append("negative")
+            if qty == 0 or up == 0:
+                f("low", "IV09", "%s: zero quantity or price" % where)
+            r = rate if rate is not None else Decimal(0)
+            base = qty * up * (1 - disc / 100)
+            if R["prices_include_vat"]:
+                gross = rnd(base); vat = rnd(gross * r / (100 + r)); net = gross - vat
+            else:
+                net = rnd(base); vat = rnd(net * r / 100); gross = net + vat
+            L.update(qty=qty, up=up, disc=disc, rate=rate, net=net, vat=vat, gross=gross, s_net=s_net, s_vat=s_vat, s_gross=s_gross)
+            if rate is not None:
+                if allowed is not None and rate not in allowed:
+                    f("high", "IV04", "%s: tax rate %s%% is not in your allowed rates (%s)" % (where, plain(rate), ", ".join(plain(x) for x in sorted(allowed))))
+                    L["issues"].append("rate")
+                cat = str(ln.get("category") or "").lower()
+                if cat in catmap and catmap[cat] != rate:
+                    f("medium", "IV04", "%s: category '%s' is %s%% in your rate list but the line uses %s%%" % (where, cat, plain(catmap[cat]), plain(rate)))
+                    L["issues"].append("category rate")
+            if s_net is not None and abs(s_net - net) > tol:
+                f("high", "IV02", "%s: line net %s but %s x %s%s = %s (diff %s)" % (where, s_net, plain(qty), up, " - %s%%" % plain(disc) if disc else "", net, s_net - net))
+                L["issues"].append("net")
+            if s_vat is not None and abs(s_vat - vat) > tol:
+                exp_on_stated = rnd((s_net if s_net is not None else net) * r / 100)
+                if s_net is not None and abs(s_vat - exp_on_stated) <= tol:
+                    pass  # consistent with its own (wrong) net; already reported as IV02
+                else:
+                    f("high", "IV03", "%s: tax %s but %s%% of %s = %s (diff %s)" % (where, s_vat, plain(r), net, vat, s_vat - vat))
+                    L["issues"].append("tax")
+            if s_gross is not None and s_net is not None and s_vat is not None and abs(s_gross - (s_net + s_vat)) > tol:
+                f("high", "IV02", "%s: line gross %s is not net %s + tax %s" % (where, s_gross, s_net, s_vat)); L["issues"].append("gross")
+            for v, nm in ((s_net, "net"), (s_vat, "tax"), (s_gross, "gross")):
+                if v is not None and v != v.quantize(q, rounding=mode):
+                    f("low", "IV12", "%s: stated %s %s has more than %s decimals" % (where, nm, v, R["currency_decimals"]))
+            sig = (str(ln.get("sku") or "").lower(), L["desc"].lower(), qty, up)
+            if sig in sigs:
+                f("medium", "IV07", "%s repeats line %d (same item, quantity and price) - duplicate?" % (where, sigs[sig])); L["issues"].append("duplicate")
+            else:
+                sigs[sig] = ln_i
+            pr = per_rate.setdefault(r, [Decimal(0), Decimal(0)])
+            pr[0] += net; pr[1] += vat
+            sum_net += net; sum_vat_line += vat
+            lines.append(L)
+        if not lines:
+            f("high", "IV01", "invoice has no lines")
+        # invoice-level discount reduces the taxable base proportionally
+        idisc = D(inv.get("invoice_discount_pct"), "invoice discount") if not blank(inv.get("invoice_discount_pct")) else None
+        if idisc:
+            if idisc < 0 or idisc > 100:
+                f("high", "IV08", "invoice discount %s%% is outside 0-100%%" % idisc)
+            factor = 1 - idisc / 100
+            for r in per_rate:
+                n_r = rnd(per_rate[r][0] * factor)
+                per_rate[r] = [n_r, rnd(n_r * r / 100)]
+            sum_net = sum(v[0] for v in per_rate.values())
+            sum_vat_line = sum(v[1] for v in per_rate.values())
+            f("info", "IV08", "invoice discount %s%% applied before tax (taxable base reduced on every rate)" % idisc)
+        vat_invoice_mode = sum((rnd(v[0] * r / 100) for r, v in per_rate.items()), Decimal(0))
+        exp_vat = sum_vat_line if R["vat_rounding"] == "line" else vat_invoice_mode
+        alt_vat = vat_invoice_mode if R["vat_rounding"] == "line" else sum_vat_line
+        exp = {"net": sum_net, "vat": exp_vat, "gross": sum_net + exp_vat}
+        if R["prices_include_vat"] and not idisc:
+            exp["gross"] = sum(L.get("gross", 0) for L in lines)
+            exp["net"] = exp["gross"] - exp_vat
+        T = inv.get("totals") or {}
+        try:
+            st = {k: D(T.get(k), "total") for k in ("net", "vat", "gross")}
+        except InputError as e:
+            f("high", "IV05", str(e)); st = {"net": None, "vat": None, "gross": None}
+        if all(v is None for v in st.values()):
+            f("high", "IV01", "no stated totals (net / tax / gross) to check")
+        for k, nm in (("net", "net total"), ("vat", "tax total"), ("gross", "grand total")):
+            if st[k] is None:
+                continue
+            diff = st[k] - exp[k]
+            if abs(diff) <= tol:
+                if k == "vat" and diff and st[k] == alt_vat:
+                    f("info", "IV06", "tax total %s is %s rounding (%s rounding gives %s) - within tolerance" % (
+                        st[k], "per-invoice" if R["vat_rounding"] == "line" else "per-line", R["vat_rounding"], exp_vat))
+                continue
+            if k == "vat" and abs(st[k] - alt_vat) <= tol:
+                f("low", "IV06", "tax total %s matches %s rounding (%s) instead of your %s rounding (%s) - a rounding-method difference of %s" % (
+                    st[k], "per-invoice" if R["vat_rounding"] == "line" else "per-line", alt_vat, R["vat_rounding"], exp_vat, diff))
+                exp["vat"] = alt_vat; exp["gross"] = exp["net"] + alt_vat
+                continue
+            if k == "gross" and st["net"] is not None and st["vat"] is not None and abs(st["gross"] - (st["net"] + st["vat"])) <= tol and (abs(st["net"] - exp["net"]) > tol or abs(st["vat"] - exp["vat"]) > tol):
+                continue  # follows from the net/tax error already reported
+            sev = "high" if abs(diff) > tol * max(1, len(lines)) else "medium"
+            f(sev, "IV05", "stated %s %s but the lines add up to %s (diff %s)" % (nm, st[k], exp[k], diff))
+        if st["net"] is not None and st["vat"] is not None and st["gross"] is not None and abs(st["gross"] - st["net"] - st["vat"]) > tol:
+            f("high", "IV05", "stated grand total %s is not stated net %s + tax %s" % (st["gross"], st["net"], st["vat"]))
+        for b in inv.get("vat_breakdown") or []:
+            try:
+                br, bn, bv = D(b.get("rate")), D(b.get("net")), D(b.get("vat"))
+            except InputError as e:
+                f("medium", "IV11", "tax breakdown: %s" % e); continue
+            got = per_rate.get(br)
+            if got is None:
+                f("medium", "IV11", "tax breakdown lists %s%% but no line uses that rate" % br)
+            elif (bn is not None and abs(bn - got[0]) > tol) or (bv is not None and abs(bv - got[1]) > tol and abs(bv - rnd(got[0] * br / 100)) > tol):
+                f("medium", "IV11", "tax breakdown %s%%: stated base %s / tax %s, lines give %s / %s" % (br, bn, bv, got[0], got[1]))
+        seller = str(get(inv, "seller.vat_id") or get(inv, "seller.name") or "").strip().lower()
+        if not blank(num):
+            k = (seller, str(num).strip().lower())
+            if k in seen_numbers:
+                f("high", "IV07", "invoice number %s from this seller already appears (invoice #%d) - duplicate invoice?" % (num, seen_numbers[k] + 1))
+            else:
+                seen_numbers[k] = idx
+        if st["gross"] is not None and d:
+            k = (seller, d, st["gross"])
+            if k in seen_amounts and str(invoices[seen_amounts[k]].get("number")) != str(num):
+                f("medium", "IV07", "same seller, date and total %s as invoice %s - possible duplicate under a new number" % (st["gross"], invoices[seen_amounts[k]].get("number")))
+            seen_amounts.setdefault(k, idx)
+        F.sort(key=lambda x: (SEV[x[0]], x[1]))
+        results.append({"label": label, "seller": get(inv, "seller.name") or "", "currency": inv.get("currency") or "",
+                        "credit": credit, "lines": lines, "per_rate": per_rate, "expected": exp, "stated": st,
+                        "findings": F, "rows": inv.get("_rows")})
+    return results, R
+
+
+# ---------------------------------------------------------------- rendering
+def plain(v):
+    """Plain decimal without exponent or trailing zeros (250, 0.0185, 12.5)."""
+    if v is None:
+        return "-"
+    t = format(v.normalize(), "f")
+    return t
+
+
+def money(v):
+    return "-" if v is None else "{:,.2f}".format(v)
+
+
+def report(results, R, src):
+    tot = {s: sum(1 for r in results for f in r["findings"] if f[0] == s) for s in SEV}
+    bad = [r for r in results if any(f[0] == "high" for f in r["findings"])]
+    out = ["# Invoice check: %s" % src, ""]
+    out.append("%d invoice(s), %d line(s). Rules: %s rounding, tax rounded per %s, tolerance %s, prices %s tax%s." % (
+        len(results), sum(len(r["lines"]) for r in results), R["rounding"].replace("_", " "), R["vat_rounding"], R["tolerance"],
+        "include" if R["prices_include_vat"] else "exclude",
+        ", allowed rates " + "/".join(str(x) for x in R["allowed_vat_rates"]) + "%" if R["allowed_vat_rates"] is not None else ""))
+    out += ["", "**Verdict: %s**" % ("%d of %d invoice(s) have high findings - do not pay/send until fixed" % (len(bad), len(results)) if bad else "no high findings"),
+            "", "Findings: %d high, %d medium, %d low, %d info." % (tot["high"], tot["medium"], tot["low"], tot["info"]), "",
+            "This is an arithmetic and consistency check against your own rules, not tax advice: confirm rates and required invoice fields with your accountant or tax authority.", "",
+            "## Invoices", "", "| Invoice | Seller | Lines | Stated total | Recomputed | Difference | High | Medium | Low | Status |", "|---|---|---|---|---|---|---|---|---|---|"]
+    for r in results:
+        c = {s: sum(1 for f in r["findings"] if f[0] == s) for s in SEV}
+        sg, eg = r["stated"]["gross"], r["expected"]["gross"]
+        out.append("| %s%s | %s | %d | %s %s | %s | %s | %d | %d | %d | %s |" % (
+            r["label"], " (credit note)" if r["credit"] else "", r["seller"], len(r["lines"]), money(sg), r["currency"], money(eg),
+            money(sg - eg) if sg is not None else "-", c["high"], c["medium"], c["low"],
+            "FIX" if c["high"] else ("CHECK" if c["medium"] else "OK")))
+    for r in results:
+        if not r["findings"] or all(f[0] == "info" for f in r["findings"]):
+            continue
+        out += ["", "## %s - %s" % (r["label"], r["seller"]), ""]
+        out += ["| # | Item | Qty | Unit price | Disc % | Rate % | Net (stated / calc) | Tax (stated / calc) | Issues |", "|---|---|---|---|---|---|---|---|---|"]
+        for L in r["lines"]:
+            if "net" not in L:
+                out.append("| %d | %s | - | - | - | - | - | - | %s |" % (L["n"], L["desc"], ", ".join(L["issues"])))
+                continue
+            out.append("| %d | %s | %s | %s | %s | %s | %s / %s | %s / %s | %s |" % (
+                L["n"], L["desc"], plain(L["qty"]), L["up"], plain(L["disc"]) if L["disc"] else "", plain(L["rate"]),
+                money(L["s_net"]), money(L["net"]), money(L["s_vat"]), money(L["vat"]), ", ".join(L["issues"]) or "ok"))
+        out += ["", "| Totals | Stated | Recomputed |", "|---|---|---|"]
+        for k, nm in (("net", "Net"), ("vat", "Tax"), ("gross", "Total")):
+            out.append("| %s | %s | %s |" % (nm, money(r["stated"][k]), money(r["expected"][k])))
+        if len(r["per_rate"]) > 1:
+            out.append("| Tax by rate | | %s |" % "; ".join("%s%%: %s on %s" % (plain(k), money(v[1]), money(v[0])) for k, v in sorted(r["per_rate"].items(), reverse=True)))
+        out += [""] + ["- **%s %s** %s" % (s.upper(), c, m) for s, c, m in r["findings"]]
+    out.append("")
+    return "\n".join(out)
+
+
+# ---------------------------------------------------------------- self-test
+def self_test():
+    tests = []
+    def t(name, cond):
+        tests.append((name, bool(cond)))
+    def inv(lines, totals, **kw):
+        base = {"number": "A1", "date": "2026-10-01", "seller": {"name": "S", "vat_id": "X1"}, "buyer": {"name": "B"},
+                "currency": "EUR", "lines": lines, "totals": totals}
+        base.update(kw); return base
+    codes = lambda res: {f[1] for f in res[0]["findings"]}
+    sev = lambda res, c: {f[0] for f in res[0]["findings"] if f[1] == c}
+    ok = [{"description": "a", "qty": 2, "unit_price": "10.00", "vat_rate": 20, "net": "20.00", "vat": "4.00", "gross": "24.00"}]
+    res, _ = check([inv(ok, {"net": "20.00", "vat": "4.00", "gross": "24.00"})], {})
+    t("clean invoice has no findings", not res[0]["findings"])
+    res, _ = check([inv([dict(ok[0], net="22.00", vat="4.40", gross="26.40")], {"net": "22.00", "vat": "4.40", "gross": "26.40"})], {})
+    t("wrong line net -> IV02 high", "high" in sev(res, "IV02"))
+    t("tax consistent with wrong net not double-reported", "IV03" not in codes(res))
+    res, _ = check([inv([dict(ok[0], vat="3.60", gross="23.60")], {"net": "20.00", "vat": "3.60", "gross": "23.60"})], {})
+    t("wrong line tax -> IV03", "IV03" in codes(res))
+    res, _ = check([inv(ok, {"net": "20.00", "vat": "4.00", "gross": "24.00"})], {"allowed_vat_rates": [10, 0]})
+    t("rate not allowed -> IV04 high", "high" in sev(res, "IV04"))
+    res, _ = check([inv([dict(ok[0], category="books")], {"net": "20.00", "vat": "4.00", "gross": "24.00"})], {"category_rates": {"books": 0}})
+    t("category rate mismatch -> IV04 medium", "medium" in sev(res, "IV04"))
+    ten = [{"description": "x%d" % i, "qty": 1, "unit_price": "0.05", "vat_rate": 10} for i in range(10)]
+    res, _ = check([inv(ten, {"net": "0.50", "vat": "0.05", "gross": "0.55"})], {})
+    t("per-invoice rounding detected -> IV06 low", "IV06" in codes(res) and "IV05" not in codes(res))
+    res, _ = check([inv(ten, {"net": "0.50", "vat": "0.10", "gross": "0.60"})], {})
+    res2, _ = check([inv(ten[:2], {"net": "0.10", "vat": "0.01", "gross": "0.11"})], {})
+    t("rounding difference within tolerance -> IV06 info", sev(res2, "IV06") == {"info"})
+    t("per-line rounding: 10 x 0.01 = 0.10 ok", not res[0]["findings"])
+    res, _ = check([inv(ten, {"net": "0.50", "vat": "0.05", "gross": "0.55"})], {"vat_rounding": "invoice"})
+    t("vat_rounding=invoice accepts 0.05", not res[0]["findings"])
+    res, _ = check([inv(ok, {"net": "20.00", "vat": "4.00", "gross": "25.00"})], {})
+    t("grand total wrong -> IV05 high", "high" in sev(res, "IV05"))
+    d = [{"description": "a", "qty": 1, "unit_price": "100", "discount_pct": 15, "vat_rate": 20}]
+    res, _ = check([inv(d, {"net": "85.00", "vat": "17.00", "gross": "102.00"})], {})
+    t("line discount applied before tax", not res[0]["findings"])
+    res, _ = check([inv(d, {"net": "85.00", "vat": "17.00", "gross": "102.00"}, invoice_discount_pct="10")], {})
+    t("invoice discount reduces base", res[0]["expected"]["gross"] == Decimal("91.80"))
+    res, _ = check([inv(ok + ok, {"net": "40.00", "vat": "8.00", "gross": "48.00"})], {})
+    t("duplicate line -> IV07 medium", "medium" in sev(res, "IV07"))
+    a = inv(ok, {"net": "20.00", "vat": "4.00", "gross": "24.00"})
+    res, _ = check([a, dict(a)], {})
+    t("duplicate invoice number -> IV07 high", any(f[1] == "IV07" and f[0] == "high" for f in res[1]["findings"]))
+    res, _ = check([a, dict(a, number="A2")], {})
+    t("same seller/date/total new number -> IV07 medium", any(f[1] == "IV07" and f[0] == "medium" for f in res[1]["findings"]))
+    res, _ = check([inv(ok, {"net": "20.00", "vat": "4.00", "gross": "24.00"}, number="", seller={"name": "S"})], {})
+    t("missing number high, missing vat id medium", "high" in sev(res, "IV01") and "medium" in sev(res, "IV01"))
+    res, _ = check([inv(ok, {"net": "20.00", "vat": "4.00", "gross": "24.00"}, due_date="2026-09-01")], {}, today=datetime.date(2026, 9, 1))
+    t("due before date + future date -> IV10", len([f for f in res[0]["findings"] if f[1] == "IV10"]) == 2)
+    neg = [{"description": "return", "qty": -1, "unit_price": "10", "vat_rate": 20}]
+    res, _ = check([inv(neg, {"net": "-10.00", "vat": "-2.00", "gross": "-12.00"})], {})
+    t("negative line on invoice -> IV09", "IV09" in codes(res))
+    res, _ = check([inv(neg, {"net": "-10.00", "vat": "-2.00", "gross": "-12.00"}, type="credit_note")], {})
+    t("negative ok on credit note", "IV09" not in codes(res))
+    g = [{"description": "a", "qty": 1, "unit_price": "12.00", "vat_rate": 20}]
+    res, _ = check([inv(g, {"net": "10.00", "vat": "2.00", "gross": "12.00"})], {"prices_include_vat": True})
+    t("tax-inclusive prices", not res[0]["findings"])
+    t("decimal comma parsing", D("1.234,56") == Decimal("1234.56") and D("12,5") == Decimal("12.5") and D("1,234.56") == Decimal("1234.56"))
+    csvt = ("invoice_number,invoice_date,seller_name,seller_vat_id,buyer_name,currency,description,qty,unit_price,vat_rate,line_net,vat_amount,total_net,total_vat,total_gross\n"
+            "C1,2026-10-01,S,X1,B,EUR,a,1,10,20,10.00,2.00,15.00,3.00,18.00\nC1,2026-10-01,S,X1,B,USD,b,1,5,20,5.00,1.00,,,\n")
+    invs, _, notes = load_invoices(csvt)
+    res, _ = check(invs, {}, csv_notes=notes)
+    t("CSV grouped into one invoice", len(invs) == 1 and len(invs[0]["lines"]) == 2 and not any(f[0] == "high" for f in res[0]["findings"]))
+    t("CSV inconsistent header -> IV13", "IV13" in codes(res))
+    try:
+        load_invoices("{not json"); okk = False
+    except InputError:
+        okk = True
+    t("bad JSON rejected", okk)
+    res, _ = check([inv([dict(ok[0], qty="two")], {"gross": "24"})], {})
+    t("unparseable qty -> IV01 high", "high" in sev(res, "IV01"))
+    rep = report(*check([a], {}), "x")
+    t("report has verdict and not-tax-advice line", "Verdict" in rep and "not tax advice" in rep)
+    for name, okk in tests:
+        print(("PASS  " if okk else "FAIL  ") + name)
+    n = sum(1 for _, okk in tests if okk)
+    print("%d/%d passed" % (n, len(tests)))
+    return 0 if n == len(tests) else 1
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("invoices", nargs="?", help="invoices .json or line items .csv")
+    ap.add_argument("--rules", help="rules JSON (rates, rounding, tolerance, required fields)")
+    ap.add_argument("--today", help="YYYY-MM-DD for future-date checks (default: today)")
+    ap.add_argument("--json", action="store_true")
+    ap.add_argument("--self-test", action="store_true")
+    a = ap.parse_args(argv)
+    if a.self_test:
+        return self_test()
+    if not a.invoices:
+        ap.error("invoices file required (or --self-test)")
+    try:
+        try:
+            text = open(a.invoices, encoding="utf-8-sig").read()
+        except OSError as e:
+            raise InputError(str(e))
+        invs, emb_rules, notes = load_invoices(text, a.invoices.lower().endswith(".csv") or None)
+        rules = dict(emb_rules or {})
+        if a.rules:
+            try:
+                rules.update(json.load(open(a.rules, encoding="utf-8")))
+            except (OSError, ValueError) as e:
+                raise InputError("rules: %s" % e)
+        unknown = set(rules) - set(DEFAULT_RULES) - {"name", "note"}
+        if unknown:
+            raise InputError("unknown rules key(s): %s" % ", ".join(sorted(unknown)))
+        if rules.get("vat_rounding", "line") not in ("line", "invoice") or rules.get("rounding", "half_up") not in ("half_up", "half_even"):
+            raise InputError("vat_rounding must be line|invoice and rounding half_up|half_even")
+        today = datetime.date.fromisoformat(a.today) if a.today else datetime.date.today()
+        results, R = check(invs, rules, today, notes)
+    except (InputError, ValueError) as e:
+        print("error: %s" % e, file=sys.stderr)
+        return 2
+    if a.json:
+        conv = lambda v: str(v) if isinstance(v, Decimal) else v
+        out = [{"invoice": r["label"], "seller": r["seller"], "currency": r["currency"],
+                "stated": {k: conv(v) for k, v in r["stated"].items()}, "recomputed": {k: conv(v) for k, v in r["expected"].items()},
+                "tax_by_rate": {str(k): [str(v[0]), str(v[1])] for k, v in r["per_rate"].items()},
+                "findings": [{"severity": s, "code": c, "message": m} for s, c, m in r["findings"]]} for r in results]
+        print(json.dumps({"invoices": out}, indent=2))
+    else:
+        print(report(results, R, a.invoices))
+    return 1 if any(f[0] == "high" for r in results for f in r["findings"]) else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+</details>
+
