@@ -30,16 +30,28 @@ Kontekst olmadan, süni intellekt hansı "vəziyyəti" soruşduğunuz haqqında 
 ## Süni İntellekt Vəziyyətsizdir
 
 <Callout type="warning" title="Vacib Konsept">
-Süni intellekt söhbətlər arasında heç nə xatırlamır. Hər API çağırışı sıfırdan başlayır. Süni intellektin bir şeyi "xatırlamasını" istəyirsinizsə, SİZİN hər dəfə kontekstə daxil etməyiniz lazımdır.
+Süni intellekt söhbətlər arasında heç nə xatırlamır. Model hər API çağırışına boş yaddaşla başlayır. Süni intellektin bir şeyi "xatırlamasını" istəyirsinizsə, o, hər dəfə kontekstdə olmalıdır və kimsə onu ora qoymalıdır. Provayder söhbəti bir müddət sizin əvəzinizə saxlasa belə, bu işi çox vaxt SİZİN tətbiqiniz görür.
 </Callout>
 
-Buna görə söhbət botları hər mesajla bütün söhbət tarixçənizi göndərir. Süni intellekt xatırlamır - tətbiq hər şeyi yenidən göndərir.
+Buna görə söhbət botları adətən hər mesajla bütün söhbət tarixçənizi göndərir. Süni intellekt xatırlamır - tətbiq hər şeyi yenidən göndərir.
 
 <TryIt compact prompt={`Tarixçəsi olmayan yeni bir söhbət olduğunu fərz et.
 
 İndicə sənə nə soruşdum?`} />
 
 Süni intellekt bilmədiyini deyəcək çünki həqiqətən əvvəlki kontekstə girişi yoxdur.
+
+### Tarixçəni Kim Daşıyır?
+
+Uzun müddət hekayə bundan ibarət idi: hər sorğu ilk salamdan son suala qədər bütün söhbəti özü ilə aparırdı. Son vaxtlar isə bir sıra model API-ləri daha rahat bir yol təklif edir. Provayder söhbəti bir müddət öz serverlərində saxlaya bilir. Tətbiqiniz ilk sorğunu tam göndərir, sonra isə yalnız yeni mesajları və əvvəlki cavaba işarə edən kiçik bir göstəricini yollayır. O biri tərəfdə provayder, model oxumazdan əvvəl parçaları yenidən bir araya gətirir.
+
+Nəyin dəyişdiyini dəqiq anlamaq vacibdir. Model hələ də vəziyyətsizdir. Özü heç nə xatırlamır və hər növbədə kontekstin hamısını əvvəldən sona qədər yenidən oxuyur. Dəyişən, tarixçəni daşımaq vəzifəsinin kimin üzərində olmasıdır: bu yükün bir hissəsini artıq təkcə tətbiqiniz deyil, provayder də daşıyır. Ona görə də kontekst pəncərəsi eyni sürətlə dolur, tokenlər də əvvəlki kimi hesablanır. Qazanc əsasən sürətdə və yüngülləşən trafikdədir: şəbəkə ilə daha az məlumat gedir, cavabın ilk sözləri isə daha qısa gözləmədən sonra görünür. Bu fərq ən çox uzun müddət işləyən agentlərdə hiss olunur: alət nəticələrinin üst-üstə yığıldığı kodlaşdırma köməkçilərində, bir-birinin ardınca ekran görüntüsü çəkən, kompüterdən istifadə edən agentlərdə, sənəd və şəkillərlə dolu iş axınlarında.
+
+Bu ideya ilə müxtəlif adlar altında qarşılaşacaqsınız. Anthropic-in Messages API-si ona **message threads** (mesaj zəncirləri) deyir; bu sətirlər yazılarkən o, ictimai beta mərhələsində idi. İlk sorğu zəncir yaradır, sonrakı hər sorğu isə əvvəlki cavabın identifikatorundan davam edir və yalnız yeni mesajları göndərir. Anthropic bildirir ki, yarım milyon token və daha böyük sorğularda ilk tokenə qədər gözləmənin median müddəti təxminən 35% azalıb. OpenAI-ın Responses API-sində `previous_response_id` ilə yeni növbəni əvvəlkinə bağlaya bilərsiniz, Google-un Gemini Interactions API-si isə `previous_interaction_id` ilə demək olar ki, eyni işi görür. Təfərrüatlar provayderdən provayderə dəyişir, ona görə də hər hansı birinə arxalanmadan əvvəl onun aktual sənədlərinə baxın.
+
+<Callout type="warning" title="Əmanət Söhbət">
+Serverdə saxlanan söhbət arxiv deyil, sadəcə rahatlıqdır. Onun vaxtı bitə bilər: Anthropic-in mesaj zəncirləri təxminən beş dəqiqə sorğu gəlmədikdə bağlanır, digər provayderlər isə saxlanan cavabları yalnız müəyyən müddət saxlayır, yaddaşa yazmanı söndürsəniz isə heç saxlamır. Zəncir itəndə bütün söhbəti yenidən göndərmək lazım gəlir. Ona görə də tətbiqiniz və ya agentinizi əhatə edən harness tarixçənin öz nüsxəsini həmişə saxlamalı və onu yenidən göndərməyə hazır olmalıdır. Günlər, həftələr boyu xatırlanmasını istədiyiniz hər şey isə yenə sizin işinizdir: ya aşağıdakı Xülasələmə bölməsində izah edildiyi kimi xülasə edin, ya da [Daim İşləyən Botlar: İşi Davam Etdirən Agentlər](/book/28-persistent-bots) fəslindəki botlar kimi davamlı yaddaşda saxlayın.
+</Callout>
 
 ## RAG: Əldəetmə ilə Artırılmış İstehsal
 
@@ -258,7 +270,7 @@ Bu platformun bir MCP serveri var! Promptları birbaşa süni intellekt kömək�
 
 Kontekst mühəndisliyi süni intellektə düzgün məlumatı verməkdir:
 
-- **Sİ vəziyyətsizdir** - hər dəfə ehtiyacı olan hər şeyi daxil et
+- **Sİ vəziyyətsizdir** - model heç nə xatırlamır, ona görə də ehtiyacı olan hər şey hər dəfə kontekstdə olmalıdır, hətta provayder söhbəti qısa müddət sizin üçün saxlasa belə
 - **RAG** promptları artırmaq üçün əlaqəli sənədləri alır
 - **Embedding-lər** semantik axtarışı mümkün edir (yalnız açar sözlər deyil, məna)
 - **Funksiya çağırma** Sİ-nin xarici alətləri istifadə etməsini təmin edir

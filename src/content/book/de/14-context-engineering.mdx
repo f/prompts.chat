@@ -30,16 +30,28 @@ Erinnere dich aus früheren Kapiteln: KI hat ein begrenztes „Kontextfenster" �
 ## KI ist zustandslos
 
 <Callout type="warning" title="Wichtiges Konzept">
-KI erinnert sich an nichts zwischen Gesprächen. Jeder API-Aufruf beginnt frisch. Wenn du willst, dass die KI sich an etwas „erinnert", MUSST DU es jedes Mal in den Kontext einschließen.
+KI erinnert sich an nichts zwischen Gesprächen. Das Modell beginnt jeden API-Aufruf mit leerem Gedächtnis. Wenn du willst, dass die KI sich an etwas „erinnert", muss es jedes Mal im Kontext stehen, und irgendjemand muss es dort hineinlegen. Meistens ist das DEINE App, selbst wenn ein Anbieter das Gespräch eine Weile für dich aufbewahrt.
 </Callout>
 
-Deshalb senden Chatbots deinen gesamten Gesprächsverlauf mit jeder Nachricht. Die KI erinnert sich nicht – die App sendet einfach alles erneut.
+Deshalb senden Chatbots meist deinen gesamten Gesprächsverlauf mit jeder Nachricht. Die KI erinnert sich nicht; die App sendet einfach alles erneut.
 
 <TryIt compact prompt={`Tu so, als wäre das ein neues Gespräch ohne Verlauf.
 
 Wonach habe ich dich gerade gefragt?`} />
 
 Die KI wird sagen, dass sie es nicht weiß, weil sie wirklich keinen Zugang zu vorherigem Kontext hat.
+
+### Wer trägt den Verlauf?
+
+Lange Zeit war das schon die ganze Geschichte: Jede Anfrage trug das komplette Gespräch mit sich, vom ersten Hallo bis zur jüngsten Frage. Inzwischen bieten mehrere Modell-APIs eine sanftere Lösung an. Der Anbieter kann das Gespräch eine Weile auf seinen eigenen Servern aufbewahren. Deine App schickt die erste Anfrage vollständig, danach nur noch die neuen Nachrichten, zusammen mit einem kleinen Verweis auf die vorherige Antwort. Auf der anderen Seite fügt der Anbieter die Teile wieder zusammen, bevor das Modell sie liest.
+
+Es lohnt sich, genau hinzusehen, was sich geändert hat. Das Modell ist weiterhin zustandslos. Es erinnert sich von sich aus an nichts und liest in jeder Runde den gesamten Kontext von vorn bis hinten. Verschoben hat sich nur die Aufgabe, den Verlauf zu tragen: Einen Teil davon übernimmt jetzt der Anbieter, statt dass deine App alles allein schleppt. Das Kontextfenster füllt sich deshalb genauso schnell, und die Tokens werden weiterhin gezählt. Der Gewinn liegt vor allem in Tempo und leichterem Verkehr: Es wandern weniger Daten über die Leitung, und die ersten Worte der Antwort erscheinen nach kürzerem Warten. Das zählt vor allem bei Agents, die lange laufen, etwa bei Coding-Assistenten, bei denen sich Tool-Ergebnisse stapeln, bei Computer-Use-Agents, die Screenshot um Screenshot aufnehmen, und bei Abläufen voller Dokumente und Bilder.
+
+Dieser Idee begegnest du unter verschiedenen Namen. Die Messages API von Anthropic nennt sie **Message Threads**, zum Zeitpunkt des Schreibens eine öffentliche Beta: Die erste Anfrage legt einen Thread an, und jede weitere setzt bei der ID der vorherigen Antwort an und schickt nur die neuen Nachrichten. Anthropic berichtet, dass bei sehr großen Anfragen ab einer halben Million Tokens die mittlere Wartezeit (Median) bis zum ersten Token um etwa 35 % gesunken ist. In der Responses API von OpenAI hängst du mit `previous_response_id` eine neue Runde an eine frühere an, und die Gemini Interactions API von Google macht mit `previous_interaction_id` ziemlich genau dasselbe. Die Details unterscheiden sich von Anbieter zu Anbieter, also wirf einen Blick in die aktuelle Dokumentation, bevor du auf eine davon baust.
+
+<Callout type="warning" title="Ein geliehener Faden">
+Ein auf dem Server gehaltenes Gespräch ist eine Bequemlichkeit, kein Archiv. Es kann ablaufen: Die Message Threads von Anthropic verfallen nach etwa fünf Minuten ohne Anfrage, und die anderen Anbieter bewahren gespeicherte Antworten nur für begrenzte Zeit auf, oder gar nicht, wenn du die Speicherung abschaltest. Ist der Thread weg, muss das ganze Gespräch erneut geschickt werden. Deine App oder der Harness um deinen Agent sollte deshalb immer eine eigene Kopie des Verlaufs behalten und bereit sein, sie erneut zu senden. Und alles, woran sich die KI über Tage oder Wochen erinnern soll, bleibt deine Aufgabe: Fasse es zusammen, wie im Abschnitt Zusammenfassung weiter unten beschrieben, oder bewahre es als dauerhaftes Gedächtnis auf, so wie es die Bots im Kapitel [Always-On-Bots: Agenten, die weiterarbeiten](/book/28-persistent-bots) tun.
+</Callout>
 
 ## RAG: Retrieval-Augmented Generation
 
@@ -275,7 +287,7 @@ Diese Plattform hat einen MCP-Server! Du kannst ihn mit Claude Desktop oder ande
 
 Context Engineering dreht sich darum, KI die richtigen Informationen zu geben:
 
-- **KI ist zustandslos** – schließe alles ein, was sie jedes Mal braucht
+- **KI ist zustandslos**: Das Modell erinnert sich an nichts, also muss alles, was es braucht, jedes Mal im Kontext stehen, auch wenn ein Anbieter das Gespräch kurz für dich aufbewahrt
 - **RAG** holt relevante Dokumente ab, um Prompts zu ergänzen
 - **Embeddings** ermöglichen semantische Suche (Bedeutung, nicht nur Schlüsselwörter)
 - **Function Calling** lässt KI externe Werkzeuge verwenden

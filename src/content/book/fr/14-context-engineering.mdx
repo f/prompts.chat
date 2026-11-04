@@ -30,16 +30,28 @@ Rappelez-vous des chapitres précédents : l'IA a une « fenêtre de contexte »
 ## L'IA est Sans État
 
 <Callout type="warning" title="Concept Important">
-L'IA ne se souvient de rien entre les conversations. Chaque appel API commence à zéro. Si vous voulez que l'IA « se souvienne » de quelque chose, VOUS devez l'inclure dans le contexte à chaque fois.
+L'IA ne se souvient de rien entre les conversations. Le modèle aborde chaque appel API avec une mémoire vierge. Si vous voulez que l'IA « se souvienne » de quelque chose, cela doit figurer dans le contexte à chaque fois, et quelqu'un doit l'y mettre. Ce quelqu'un, c'est le plus souvent VOTRE application, même lorsqu'un fournisseur garde la conversation pour vous pendant un moment.
 </Callout>
 
-C'est pourquoi les chatbots envoient tout votre historique de conversation avec chaque message. Ce n'est pas que l'IA se souvient - c'est que l'application renvoie tout.
+C'est pourquoi les chatbots envoient généralement tout votre historique de conversation avec chaque message. Ce n'est pas que l'IA se souvient - c'est que l'application renvoie tout.
 
 <TryIt compact prompt={`Fais comme si c'était une nouvelle conversation sans historique.
 
 De quoi viens-je de te parler ?`} />
 
 L'IA dira qu'elle ne sait pas parce qu'elle n'a vraiment pas accès à un contexte précédent.
+
+### Qui porte l'historique ?
+
+Pendant longtemps, l'histoire s'arrêtait là : chaque requête emportait la conversation entière, du premier bonjour à la dernière question. Depuis peu, plusieurs API de modèles proposent un arrangement plus doux. Le fournisseur peut conserver la conversation sur ses propres serveurs pendant un certain temps. Votre application envoie la première requête en entier, puis seulement les nouveaux messages, accompagnés d'un petit repère vers la réponse précédente. De l'autre côté, le fournisseur recoud les morceaux avant que le modèle ne les lise.
+
+Il vaut la peine d'être précis sur ce qui a changé. Le modèle reste sans état. Il ne se souvient de rien par lui-même et, à chaque tour, il relit tout le contexte du début à la fin. Ce qui s'est déplacé, c'est la charge de porter l'historique : le fournisseur en assume désormais une partie, au lieu que votre application la porte seule. La fenêtre de contexte se remplit donc tout aussi vite, et les tokens sont toujours comptés. Le gain tient surtout à la vitesse et à un trafic plus léger : moins de données circulent sur le réseau, et les premiers mots de la réponse apparaissent après une attente plus courte. Cela compte surtout pour les agents qui travaillent longtemps, comme les assistants de programmation qui accumulent les résultats d'outils, les agents qui pilotent un ordinateur et prennent capture d'écran sur capture d'écran, ou les flux de travail chargés de documents et d'images.
+
+Vous croiserez cette idée sous différents noms. La Messages API d'Anthropic l'appelle **message threads** (fils de messages), en bêta publique au moment où ces lignes sont écrites : la première requête crée un fil, et chaque requête suivante reprend à partir de l'identifiant de la réponse précédente, en n'envoyant que les nouveaux messages. Anthropic indique que, pour les très grosses requêtes d'un demi-million de tokens ou plus, le temps d'attente médian avant le premier token a baissé d'environ 35 %. Dans la Responses API d'OpenAI, vous pouvez rattacher un nouveau tour à un précédent avec `previous_response_id`, et la Gemini Interactions API de Google fait à peu près la même chose avec `previous_interaction_id`. Les détails varient d'un fournisseur à l'autre : consultez donc la documentation actuelle avant de bâtir quoi que ce soit dessus.
+
+<Callout type="warning" title="Un fil emprunté">
+Une conversation gardée sur le serveur est une commodité, pas une archive. Elle peut expirer : les fils de messages d'Anthropic s'éteignent après environ cinq minutes sans requête, et les autres fournisseurs ne conservent les réponses stockées que pendant une durée limitée, voire pas du tout si vous désactivez le stockage. Quand le fil a disparu, il faut renvoyer la conversation complète. Votre application, ou le harness qui entoure votre agent, doit donc toujours garder sa propre copie de l'historique et être prête à la renvoyer. Et tout ce que vous voulez que l'IA retienne pendant des jours ou des semaines reste votre affaire : résumez-le, comme l'explique la section Résumé plus bas, ou conservez-le comme une mémoire durable, à la manière des bots du chapitre [Bots toujours actifs : des agents qui continuent de travailler](/book/28-persistent-bots).
+</Callout>
 
 ## RAG : Génération Augmentée par Récupération
 
@@ -252,7 +264,7 @@ Cette plateforme a un serveur MCP ! Vous pouvez le connecter à Claude Desktop o
 
 L'ingénierie du contexte consiste à donner à l'IA la bonne information :
 
-- **L'IA est sans état** - incluez tout ce dont elle a besoin à chaque fois
+- **L'IA est sans état** - le modèle ne se souvient de rien, donc tout ce dont il a besoin doit figurer dans le contexte à chaque fois, même si un fournisseur garde brièvement la conversation pour vous
 - **RAG** récupère des documents pertinents pour augmenter les prompts
 - **Les embeddings** permettent la recherche sémantique (sens, pas juste mots-clés)
 - **L'appel de fonction** permet à l'IA d'utiliser des outils externes
