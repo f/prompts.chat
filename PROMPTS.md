@@ -227929,3 +227929,16 @@ A whitewashed Aegean cliffside village at sunset, with white cube houses and blu
 
 </details>
 
+<details>
+<summary><strong>Aegean Cliffside Village at Sunset (Image-to-Video Animation)</strong></summary>
+
+## Aegean Cliffside Village at Sunset (Image-to-Video Animation)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Start from the step 2 image "Whitewashed Aegean Cliffside Village with a Blue-Domed Chapel at Sunset" as the exact first frame, and animate it into a calm ${duration:6}-second cinematic shot. Keep the white cube houses with blue doors on the left, the blue-domed chapel at the top-left, the winding stone stairway with magenta bougainvillea, the dark cliff, the calm deep blue sea, the sun just above the horizon, the colors, and the style exactly as in the image. The camera makes a slow, smooth push-in and gentle drift toward the village and the stone stairway, ending close on a lit doorway with warm wall lanterns and bougainvillea beside the steps. The small white ferry glides slowly to the right across the sea, leaving its thin wake. Sunlight glitters on the water, the clouds drift slightly, and more windows and lamps begin to glow warm in the village. The shot ends warm, peaceful, and romantic in the golden evening light. Natural, realistic motion, no people, no cuts, no text. Soft sound of gentle waves, a light sea breeze, and distant evening calm.
+```
+
+</details>
+
