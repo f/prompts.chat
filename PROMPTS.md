@@ -224346,3 +224346,55 @@ An impressionist painting of a Parisian cafe terrace on a rainy evening, landsca
 
 </details>
 
+<details>
+<summary><strong>Lapland Glass Igloo Northern Lights Scene Concept Brief Builder</strong></summary>
+
+## Lapland Glass Igloo Northern Lights Scene Concept Brief Builder
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Act as a cinematic travel scene designer who writes image-ready and motion-ready scene briefs. Help me design one hero shot of glass igloos under the northern lights in Lapland: glass-domed cabins glowing with warm light in deep snow among snow-laden spruce trees, under a swirling green and violet aurora and a sky full of stars. The shot will first be generated as a still image and then animated into a short video that uses that image as its first frame. Your brief must make the still image rich in elements that can move naturally (the aurora rippling and shifting, stars twinkling, light snow drifting, powder snow sliding off a branch, warm light glowing in the igloos, a slow camera move along a path) while keeping the composition calm, balanced, readable, and easy to animate.
+
+My starting idea: ${idea:a quiet arctic night at a small glass igloo village in a snowy spruce forest, with a bright aurora overhead and one igloo glowing close to the camera}
+
+My starting choices:
+- Igloos: ${igloos:three glass-domed igloo cabins with metal frames, one large one on the right-center close to the camera and two smaller ones further back on the left and in the center}
+- Inside the big igloo: ${interior:warm golden light, a lit glass door, a cozy bed and armchairs visible through the glass}
+- Snow and ground: ${ground:deep fresh powder snow with a trail of footprints leading from the camera toward the big igloo}
+- Trees: ${trees:tall spruce trees heavily loaded with snow framing both sides and a dark forest line behind}
+- Small detail: ${detail:a wooden signpost with three blank arrow boards in front of the big igloo}
+- Sky: ${sky:a vivid green and violet aurora swirling in a wide arc across the upper half, with many stars}
+- Time and light: ${time:deep night, cold blue snow lit by the aurora and starlight, warm amber light from the igloos}
+- Visual style: ${style:photoreal travel photography, long-exposure night look, natural but vivid colors}
+- Mood words: ${mood:magical, peaceful, cozy, silent, once-in-a-lifetime}
+
+First ask me, in one short message, for anything missing: the camera height (snow level, eye level, or a little above), how many igloos I want and how close the nearest one is, how much of the interior should be visible, how bright and which colors the aurora should be, whether snow should be falling or the night should be clear, whether the camera should push in along the path or stay still in the video, whether more igloos may come into view in the distance as the camera moves, and anything to avoid (people, faces, text, signs with words, logos, brand names, cars or snowmobiles, smoke, or copying a specific real resort, photograph, or named place).
+
+Then produce the brief with these sections:
+
+1. **Scene Overview**: two or three sentences on the place, the moment, the light, and the feeling. Describe an imagined glass igloo village in the spirit of Finnish Lapland, not a copy of a specific real resort or a famous photograph.
+
+2. **The Glass Igloos**: how many igloos, their size, glass panels and frames, their positions in the frame, how they are spaced, which one is the hero, and what can be seen through the glass and the door.
+
+3. **Snow, Trail, and Signpost**: the depth and texture of the snow, the footprint trail and where it leads, the snowy base around each igloo, and the wooden signpost with blank arrow boards.
+
+4. **The Spruce Forest**: the snow-laden trees framing both sides, the big tree closest to the camera, the dark forest line behind, and how the trees catch the aurora and the warm cabin light.
+
+5. **Aurora and Stars**: the shape, colors, and brightness of the aurora, where it sits in the frame, the star field, and how to keep it natural rather than neon or fake.
+
+6. **Light and Color**: the contrast between cold blue snow and warm amber igloo light, light spill from the doors and glass onto the snow, and the overall exposure of a clear arctic night.
+
+7. **Fixed Visual Details**: a numbered list of 8 to 10 details that must stay identical in the still image and in the video (camera position, igloo count and positions, hero igloo on the right-center, lit door, interior furniture, footprint trail, signpost, framing trees, aurora shape and colors, framing).
+
+8. **Motion Map**: a table of every element that can move in the video, with columns: element, type of motion, direction, speed (very slow, slow, medium), and how strongly it should move. Include the aurora ripples and shifts, the twinkling stars, light snow drifting in the air, a puff of powder snow falling from a spruce branch, the warm glow in the igloos, any small igloos coming into view far back, and the camera move. Keep total motion subtle and physically plausible.
+
+9. **Prompt Seed A - Hero Still Image**: a ready-to-paste image prompt under 170 words for a wide landscape 16:9 frame, with the glowing glass igloos, the deep snow and spruces, and the green and violet aurora in the first sentence, ending with: no people, no text, no logos.
+
+10. **Prompt Seed B - Image-to-Video Animation**: a ready-to-paste video prompt under 120 words that starts from the hero still as the first frame, describes the aurora rippling and shifting slowly for about 6 seconds, stars twinkling, light snow drifting, a puff of powder snow falling from a spruce on the right, warm light glowing in the igloos, a slow, smooth camera push-in along the footprint trail toward the big igloo, and says to keep the igloos, trees, trail, signpost, and framing exactly as in the image with no people and no new close-up objects.
+
+Rules: no people, faces, text, signs with words, or logos; no vehicles, smoke, or modern brand objects; no fast camera moves or cuts; and no motion that breaks physics (the igloos, trees, trail, and signpost never move or change shape, the aurora moves in slow ripples and curtains and does not flash or strobe, snow falls downward and drifts gently, powder snow slides off a branch and falls naturally, stars twinkle without jumping, the warm light stays steady and does not flicker like fire). Use short paragraphs and lists.
+```
+
+</details>
+
