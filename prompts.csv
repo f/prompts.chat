@@ -195232,3 +195232,26 @@ def main(argv=None):
 
 if __name__ == ""__main__"":
     sys.exit(main())",FALSE,TEXT,f
+Embedded Firmware taste,"# Embedded Firmware taste of a reliability-minded firmware engineer
+- Keep hardware access behind a thin hardware abstraction layer so application logic can be built and unit-tested on the host machine. Confidence: 0.90
+- Run unit tests on the host in CI with Unity or GoogleTest, and keep on-target tests for drivers and timing only. Confidence: 0.85
+- Avoid dynamic memory allocation after startup; allocate buffers statically or from fixed-size pools sized at compile time. Confidence: 0.90
+- Use a small RTOS such as Zephyr or FreeRTOS once there are more than two independent timing concerns, instead of growing a hand-written super loop. Confidence: 0.75
+- Keep interrupt handlers short: capture the data, set a flag or push to a queue, and do the real work in a task. Confidence: 0.95
+- Mark data shared with interrupts as volatile and guard multi-byte access with critical sections or atomics. Confidence: 0.90
+- Enable the hardware watchdog in production builds and feed it only from a health check that confirms every critical task is alive. Confidence: 0.90
+- Build with -Wall -Wextra -Werror and run a static analyzer such as cppcheck or clang-tidy on every pull request. Confidence: 0.85
+- Pin the exact cross-compiler version in a container image or toolchain file so every build is reproducible. Confidence: 0.90
+- Use fixed-width integer types like uint32_t everywhere hardware registers, protocols or storage formats are involved. Confidence: 0.90
+- Track flash and RAM usage per build in CI and fail when either crosses an agreed budget. Confidence: 0.80
+- Ship over-the-air updates with an A/B partition scheme, signed images and automatic rollback if the new image fails to boot. Confidence: 0.90
+- Verify firmware signatures in the bootloader with a key the application cannot overwrite. Confidence: 0.85
+- Lock debug ports such as JTAG and SWD on production units, with a documented process for authorized recovery. Confidence: 0.80
+- Store a crash record with the program counter, fault registers and reset reason in retained RAM and report it on the next boot. Confidence: 0.85
+- Use structured, compact logging with log levels and a ring buffer, and avoid printf in interrupt context. Confidence: 0.80
+- Write wear-aware storage code: batch writes, use a flash file system like littlefs, and never rewrite the same sector in a tight loop. Confidence: 0.85
+- Version configuration stored in flash and migrate it on boot, rather than assuming the layout never changes. Confidence: 0.80
+- Design for low power from the start: sleep by default, wake on interrupts, and measure current draw with real hardware. Confidence: 0.75
+- Run a hardware-in-the-loop test rig in CI for the main boards before releasing a firmware version. Confidence: 0.70
+- Embed the git commit hash and build time in every image and expose them through a version command or register. Confidence: 0.85
+",TRUE,TEXT,f
