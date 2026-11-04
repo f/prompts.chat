@@ -227850,3 +227850,16 @@ A photorealistic photograph of a single beam of sunlight falling into a narrow s
 
 </details>
 
+<details>
+<summary><strong>Charcoal Drawing of a Jazz Trio in a Smoky Club</strong></summary>
+
+## Charcoal Drawing of a Jazz Trio in a Smoky Club
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A charcoal drawing of a jazz trio playing in a smoky club, landscape 4:3, on warm off-white textured drawing paper. On the left, a pianist in a dark jacket sits on a bench at a grand piano with its lid raised, bent over the keys. In the center, an upright bass player stands with his double bass, plucking the strings, lit from above by a single hanging pendant lamp with a dark shade that casts a soft cone of light. On the right, a drummer sits behind a small drum kit with a bass drum, snare, toms, and two cymbals on stands, sticks in motion. Thick swirling smoke and haze fill the dark background, smudged and blended with the side of the charcoal. Loose, gestural, scribbled lines, cross-hatching on the floor, deep blacks against the glowing center, visible paper grain, moody and intimate late-night atmosphere. Faces in soft shadow with no detailed features, no text, no logos.
+```
+
+</details>
+
