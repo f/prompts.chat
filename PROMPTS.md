@@ -227415,3 +227415,16 @@ Write a professional and humanised  business plan requesting for funding to be s
 
 </details>
 
+<details>
+<summary><strong>Hide and seek </strong></summary>
+
+## Hide and seek 
+
+Contributed by [@zagato23arch-ai](https://github.com/zagato23arch-ai)
+
+```md
+Hide and seek function platform tools for Android pipeline who are you; where you come from 
+```
+
+</details>
+
