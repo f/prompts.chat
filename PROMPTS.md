@@ -224411,3 +224411,16 @@ Glass-domed igloo cabins glowing with warm golden light in deep fresh snow among
 
 </details>
 
+<details>
+<summary><strong>Glass Igloos Under the Northern Lights (Image-to-Video Animation)</strong></summary>
+
+## Glass Igloos Under the Northern Lights (Image-to-Video Animation)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Start from the step 2 image "Glass Igloos Glowing Under a Green and Violet Aurora in Snowy Lapland" as the exact first frame, and animate it into a calm ${duration:6}-second cinematic shot. Keep the large glass igloo on the right-center with its lit door and cozy interior, the two smaller glowing igloos further back, the snow-laden spruce trees on both sides, the footprint trail in the deep snow, the wooden signpost with blank arrow boards, the colors, and the composition exactly as in the image. The green and violet aurora ripples and shifts slowly across the sky in soft curtains, and the stars twinkle. Light snow drifts gently through the air, and a small puff of powder snow slides off a spruce branch on the right and falls softly. Warm golden light glows steadily inside the igloos. The camera makes a slow, smooth push-in along the footprint trail toward the big igloo, and a few more small glowing igloos come into view far back among the trees. The shot ends calm and magical in the cold blue night. Natural, realistic motion, no people, no cuts, no text. Soft sound of a gentle wind, faint snow falling, and deep arctic silence.
+```
+
+</details>
+
