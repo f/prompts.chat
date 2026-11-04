@@ -6,7 +6,7 @@ Bu prinsiplər hər süni intellekt modeli və hər tapşırıq üçün keçərl
 
 ## Prinsip 1: Ağıllılıq Deyil Aydınlıq
 
-Ən yaxşı promptlar aydın olanlardır, ağıllı olanlar deyil. Süni intellekt modelləri hərfi tərcüməçilərdir—tam olaraq verdiyiniz şeylə işləyirlər.
+Ən yaxşı promptlar aydın olanlardır, ağıllı olanlar deyil. Süni intellekt modelləri hərfi şərhçilərdir: tam olaraq verdiyiniz şeylə işləyirlər.
 
 ### Açıq Olun
 
@@ -47,7 +47,7 @@ Qeyri-müəyyən girişlər qeyri-müəyyən çıxışlar istehsal edir. Spesifi
 <SpecificitySpectrum levels={[
   { level: "Səviyyə 1", text: "İqlim dəyişikliyi haqqında yaz" },
   { level: "Səviyyə 2", text: "İqlim dəyişikliyi təsirləri haqqında bir məqalə yaz" },
-  { level: "Səviyyə 3", text: "İqlim dəyişikliyinin mərcan riflərini necə təsir etdiyi haqqında 500 sözlük məqalə yaz" },
+  { level: "Səviyyə 3", text: "İqlim dəyişikliyinin mərcan riflərinə necə təsir etdiyi haqqında 500 sözlük məqalə yaz" },
   { level: "Səviyyə 4", text: "Artan okean temperaturlarının mərcan ağarmasına necə səbəb olduğunu izah edən, lisey tələbələrinə yönəlik, Böyük Bariyer Rifindən 2 spesifik nümunə ilə, cəlbedici amma elmi cəhətdən dəqiq tonda 500 sözlük məqalə yaz" }
 ]} />
 
@@ -84,19 +84,19 @@ Hər səviyyə spesifiklik əlavə edir və çıxış keyfiyyətini dramatik ş�
 
 ## Prinsip 3: Kontekst Kraldır
 
-Modellərin yaddaşı, fayllarınıza girişi və ya vəziyyətiniz haqqında biliyi yoxdur. Əlaqəli hər şey promptda olmalıdır.
+Model sizin vəziyyətiniz haqqında söhbətdə ona çatan məlumatdan başqa heç nə bilmir. Hətta yaddaş funksiyası, yüklənmiş faylları və ya qoşulmuş alətləri olan köməkçilər də yalnız onlarla həqiqətən paylaşılanı görür və onu seçici şəkildə xatırlayır. Nəsə vacibdirsə, onu promptda yazın.
 
 ### Kifayət Qədər Kontekst Təmin Edin
 
 <Compare 
   before={{ label: "Qeyri-kafi kontekst", content: "Funksiyam niyə işləmir?" }}
-  after={{ label: "Kifayət qədər kontekst", content: "Müəyyən bir açar dəyərinə görə lüğət siyahısını filtrlməli olan Python funksiyam var. 3 element qaytarmalı olarkən boş siyahı qaytarır.\n\nFunksiya:\ndef filter_items(items, key, value):\n    return [item for item in items if item[key] = value]\n\nÇağırış: filter_items(items, 'status', 'active')\nGözlənilən: 2 element, Gələn: boş siyahı" }}
+  after={{ label: "Kifayət qədər kontekst", content: "Müəyyən bir açar dəyərinə görə lüğət siyahısını filtrləməli olan Python funksiyam var. 3 element qaytarmalı olarkən boş siyahı qaytarır.\n\nFunksiya:\ndef filter_items(items, key, value):\n    return [item for item in items if item.get(key) == value]\n\nNümunə element: {'id': 7, 'status': 'active'}\nÇağırış: filter_items(items, 'Status', 'active')\nGözlənilən: 3 element, Gələn: boş siyahı" }}
 />
 
 ### Kontekst Yoxlama Siyahısı
 
 <Callout type="tip" title="Göndərməzdən Əvvəl">
-Özünüzə soruşun: Ağıllı bir yad adam bu istəyi başa düşərmi? Əgər yox, daha çox kontekst əlavə edin.
+Özünüzdən soruşun: Ağıllı bir yad adam bu istəyi başa düşərmi? Əgər yox, daha çox kontekst əlavə edin.
 </Callout>
 
 <Checklist 
@@ -209,7 +209,7 @@ Modellərin necə öyrədildiyinə uyğun işləyin, əksinə deyil.
 Ardıcıl çıxışa ehtiyacınız varsa, nümunəni göstərin:
 
 <TryIt 
-  title="Nümunə Nümunəsi"
+  title="Şablon Nümunəsi"
   description="Bu prompt, süni intellektə kitab tövsiyələri üçün tam olaraq hansı formatı istədiyinizi göstərir."
   prompt={`3 elmi fantastika kitabı tövsiyə et. Hər tövsiyəni belə formatla:
 
@@ -249,7 +249,7 @@ XÜLASƏ: [1 cümlə]
 
 TÖVSİYƏ: [1-2 cümlə]
 
-ƏMINLIK: [Aşağı/Orta/Yüksək] çünki [səbəb]
+ƏMİNLİK: [Aşağı/Orta/Yüksək] çünki [səbəb]
 ```
 
 ### Ayırıcılardan İstifadə Edin
@@ -321,7 +321,7 @@ Tapılan problemləri siyahıla.
     "Təkrarla və Yaxşılaşdır"
   ]}
   correctIndex={2}
-  explanation="Kontekst Kraldır, süni intellekt modellərinin sessiyalar arasında yaddaşı olmadığını və fikrinizi oxuya bilməyəcəyini vurğulayır. Əlaqəli arxa plan, məhdudiyyətlər və hədəfləri daxil etmək modelin ehtiyaclarınızı başa düşməsinə kömək edir."
+  explanation="Kontekst Kraldır, süni intellekt modellərinin fikrinizi oxuya bilmədiyini vurğulayır: onlar yalnız söhbətdə onlara çatanı bilirlər. Əlaqəli arxa plan, məhdudiyyətlər və hədəfləri daxil etmək modelin ehtiyaclarınızı başa düşməsinə kömək edir."
 />
 
 ## Praktika: Boşluqları Doldurun
@@ -333,7 +333,7 @@ Bu prompt şablonunu tamamlayaraq əsas prinsipləri başa düşdüyünüzü tes
   description="Yaxşı strukturlaşdırılmış bir prompt yaratmaq üçün boşluqları doldurun — istədiyiniz hər şeyi yazın!"
   useAI={true}
   openEnded={true}
-  template={`Sən {{role}} sahəsində {{expertise}} ekspertizasına malik birisən.
+  template={`Sən {{role}} rolundasan və {{expertise}} sahəsində ekspertizaya maliksən.
 
 Kontekst: {{context}} üzərində işləyirəm.
 
@@ -353,19 +353,19 @@ Format: Cavabını {{format}} olaraq qaytar.`}
     { id: "focus", correctAnswers: [], hint: "Hansı aspekt prioritetləşdirilməlidir?", context: "Tapşırığa aid bir keyfiyyət və ya aspekt" },
     { id: "format", correctAnswers: [], hint: "Çıxış necə strukturlaşdırılmalıdır?", context: "Bir çıxış format növü" }
   ]}
-  explanation="Yaxşı strukturlaşdırılmış bir prompt bunları ehtiva edir: aydın bir rol (Prinsip 1), kifayət qədər kontekst (Prinsip 3), spesifik tapşırıq (Prinsip 2), məhdudiyyətlər (Prinsip 4) və çıxış formatı (Prinsip 5). Süni intellekt seçimlərinizin daxili olaraq ardıcıl olub olmadığını yoxlayır."
+  explanation="Yaxşı strukturlaşdırılmış bir prompt bunları ehtiva edir: aydın bir rol (Prinsip 6), kifayət qədər kontekst (Prinsip 3), məhdudiyyətləri olan spesifik tapşırıq (Prinsip 2) və açıq çıxış formatı (Prinsip 7). Süni intellekt seçimlərinizin daxili olaraq ardıcıl olub olmadığını yoxlayır."
 />
 
 <InteractiveChecklist
   title="Prinsiplər Yoxlama Siyahısı"
   items={[
-    { id: "clarity", label: "Ağıllılıq Deyil Aydınlıq", description: "Promptunuz açıq və qeyri-müəyyən deyilmi?" },
+    { id: "clarity", label: "Ağıllılıq Deyil Aydınlıq", description: "Promptunuz açıq və birmənalıdırmı?" },
     { id: "specificity", label: "Spesifiklik Keyfiyyət İstehsal Edir", description: "Hədəf auditoriya, uzunluq, ton və format daxil etdinizmi?" },
     { id: "context", label: "Kontekst Kraldır", description: "Prompt lazımi bütün arxa plan məlumatlarını ehtiva edirmi?" },
-    { id: "examples", label: "Nümunələr İzahatlardan Yaxşıdır", description: "Nə istədiyinizi sadəcə təsvir etmək əvəzinə göstərdinizmi?" },
-    { id: "constraints", label: "Məhdudiyyətlər Çıxışı Fokuslaşdırır", description: "Əhatə və format üzərində aydın sərhədlər varmı?" },
+    { id: "guide", label: "Sadəcə Soruşmayın, İstiqamətləndirin", description: "Sadəcə cavab istəmək əvəzinə, istədiyiniz addımları və ya mühakimə yolunu göstərdinizmi?" },
     { id: "iteration", label: "Təkrarla və Yaxşılaşdır", description: "Nəticələrə görə yaxşılaşdırmağa hazırsınızmı?" },
-    { id: "persona", label: "Persona Perspektivi Formalaşdırır", description: "Süni intellekt hansı rolu oynayacağını bilirmi?" },
+    { id: "strengths", label: "Modelin Güclü Tərəflərindən İstifadə Edin", description: "Modelin yaxşı bacardığı nümunələri göstərir və rollardan istifadə edirsinizmi?" },
+    { id: "structure", label: "Çıxış Strukturunu İdarə Edin", description: "Sizə lazım olan dəqiq formatı göstərdinizmi?" },
     { id: "verify", label: "Doğrulayın və Təsdiqləyin", description: "Dəqiqlik üçün yoxlamalar daxil etdinizmi?" }
   ]}
 />

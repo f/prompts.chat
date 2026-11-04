@@ -39,7 +39,7 @@ Rol, modeli bunları etməyə hazırlayır:
 ```
 "Sən [peşə] sahəsində [X il] təcrübəyə malik [ixtisas] üzrə ekspertsən"
 "[xarakteristika] olan bir [rol] kimi davran"
-"Sən [auditoriya növü]nə kömək edən ekspert bir [sahə] peşəkarisın"
+"Sən [auditoriya növü]nə kömək edən ekspert bir [sahə] peşəkarısan"
 ```
 
 ## 2. Kontekst / Arxa Plan
@@ -71,7 +71,7 @@ Tapşırıq, promptunuzun ürəyidir—modelin nə etməsini istəyirsiniz. Spes
   { level: "Ən Yaxşı", text: "Bu məqaləni qrammatika və aydınlıq baxımından redaktə et, orijinal tonu saxla amma artıqlıqları %20 azalt" }
 ]} />
 
-### Yaxşı İşləyən Feil Felləri
+### Yaxşı İşləyən Hərəkət Felləri
 
 <div className="my-4 grid gap-2">
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
@@ -119,7 +119,7 @@ Məhdudiyyətlər, modelin çıxışını hüdudlaşdırır. Ümumi problemləri
 **Stil məhdudiyyətləri:**
 ```
 "Rəsmi, akademik ton istifadə et"
-"10 yaşında birinə danışır kimi yaz"
+"10 yaşlı birinə danışırmış kimi yaz"
 "Birbaşa ol və qeyri-müəyyən dildən qaçın"
 ```
 
@@ -198,7 +198,7 @@ Nümunələr:
 "Şifrəmi necə dəyişdirə bilərəm?" → Aşağı
 "Ödəniş uğursuz oldu amma məbləğ tutuldu" → Yüksək
 
-Təsnif et: "Parametrləri açdıqda tətbiq çöküyor"
+Təsnif et: "Parametrləri açdıqda tətbiq çökür"
 ```
 
 ## Hamısını Bir Araya Gətirmək
@@ -230,6 +230,10 @@ Sənədləşdirməni belə strukturlaşdır:
 3. Cavab (uğur və xəta nümunələri)
 4. Kod Nümunəsi (JavaScript/Node.js-də)
 
+# Nümunə
+Mövcud sənədlərimizdəki bu xəta təsvirinin tonuna uyğunlaş:
+"card_declined: Müştərinin bankı ödənişi rədd etdi. Ondan başqa ödəniş üsulunu sınamasını xahiş edin."
+
 # Endpoint Detalları
 POST /v1/payments/intents
 Gövdə: { "amount": 1000, "currency": "azn", "description": "Sifariş #1234" }`}
@@ -240,7 +244,7 @@ Gövdə: { "amount": 1000, "currency": "azn", "description": "Sifariş #1234" }`
 Hər promptun bütün komponentlərə ehtiyacı yoxdur. Sadə tapşırıqlar üçün aydın bir təlimat kifayət edə bilər:
 
 ```
-"Salam, necəsən?"ı İngiliscəyə tərcümə et.
+"Salam, necəsən?" ifadəsini ispan dilinə tərcümə et.
 ```
 
 Əlavə komponentləri bu hallarda istifadə edin:
@@ -279,7 +283,7 @@ Effektiv promptlar inşa edilir, kəşf edilmir. Bu struktur komponentlərini an
 />
 
 <TryIt 
-  prompt={`Sən SaaS məhsullarında 10 illik təcrübəyə malik baş məhsul menecerisen.
+  prompt={`Sən SaaS məhsullarında 10 illik təcrübəyə malik baş məhsul menecerisən.
 
 Kontekst: Uzaqdan işləyən komandalar üçün bir tapşırıq idarəetmə tətbiqi qururam. Məhdud mühəndislik resurslarına malik kiçik startapıq.
 
@@ -293,7 +297,7 @@ Format: Hər xüsusiyyət üçün bunları təmin et:
 1. Xüsusiyyət adı
 2. Bir cümləlik təsvir  
 3. Uzaqdan komandalar üçün niyə vacibdir`}
-  description="Bu prompt altı komponentin hamısını istifadə edir. Sınayın və strukturlaşdırılmış yanaşmanın necə fokuslanmış, tətbiq oluna bilən nəticələr istehsal etdiyini görün."
+  description="Bu prompt altı komponentdən beşini (nümunələrdən başqa hamısını) istifadə edir. Sınayın və strukturlaşdırılmış yanaşmanın necə fokuslanmış, tətbiq oluna bilən nəticələr istehsal etdiyini görün."
 />
 
 ## Öz Promptunuzu Yaradın
