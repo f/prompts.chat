@@ -227863,3 +227863,56 @@ A charcoal drawing of a jazz trio playing in a smoky club, landscape 4:3, on war
 
 </details>
 
+<details>
+<summary><strong>Aegean Cliffside Village Sunset Scene Concept Brief Builder</strong></summary>
+
+## Aegean Cliffside Village Sunset Scene Concept Brief Builder
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Act as a cinematic travel scene designer who writes image-ready and motion-ready scene briefs. Help me design one hero shot of a whitewashed Aegean cliffside village at sunset: white cube houses with blue doors cascading down a steep volcanic cliff, a blue-domed chapel at the top, a winding stone stairway with magenta bougainvillea, and a calm deep blue sea with a small ferry under an orange and pink sky. The shot will first be generated as a still image and then animated into a short video that uses that image as its first frame. Your brief must make the still image rich in elements that can move naturally (the ferry gliding and leaving a wake, sunlight glittering on the sea, lamps and windows lighting up, soft clouds drifting, bougainvillea stirring in a light breeze, a slow camera move toward the stairway) while keeping the composition calm, balanced, readable, and easy to animate.
+
+My starting idea: ${idea:a quiet summer evening in a whitewashed village on a Greek island cliff, with the sun touching the horizon and a small ferry crossing the sea below}
+
+My starting choices:
+- Village: ${village:white cube houses with flat roofs, blue doors, and small terraces stacked down a steep cliff on the left side of the frame}
+- Chapel: ${chapel:a small white chapel with a bright blue dome and a cross at the top-left}
+- Stairway: ${stairway:a winding stone stairway with low white walls leading down through the village in the lower left-center}
+- Flowers: ${flowers:big clusters of magenta bougainvillea along the walls and the stairway}
+- Sea and boat: ${sea:a calm deep blue sea filling the right side, with one small white ferry mid-right leaving a thin wake}
+- Distance: ${distance:dark volcanic cliffs curving away and hazy islands and headlands on the horizon}
+- Sky and sun: ${sky:the sun just above the horizon on the right, an orange, pink, and violet sky with long thin clouds}
+- Lights: ${lights:a few windows and wall lanterns already glowing warm in the village}
+- Visual style: ${style:photoreal travel photography, golden hour, natural but rich colors}
+- Mood words: ${mood:warm, peaceful, romantic, timeless, summer evening}
+
+First ask me, in one short message, for anything missing: the camera height and position (on a terrace, on the stairway, or above the village), how much of the frame the village and the sea should take, how many boats I want and where, how low the sun should be, how many lights should be on, whether the camera should push in toward the stairway or stay still in the video, where the camera move should end (for example a lit doorway with lanterns), and anything to avoid (people, faces, text, signs with words, logos, brand names, cars, crowds, or copying a specific real hotel, photograph, or named place).
+
+Then produce the brief with these sections:
+
+1. **Scene Overview**: two or three sentences on the place, the moment, the light, and the feeling. Describe an imagined village in the spirit of the Greek Cycladic islands, not a copy of a specific real village, hotel, or famous photograph.
+
+2. **The Village and Chapel**: the white cube houses, blue doors and window frames, terraces, how the buildings step down the cliff, and the blue-domed chapel at the top-left.
+
+3. **Stairway, Walls, and Bougainvillea**: the winding stone steps, the low white walls, the lit doorways and wall lanterns, and where the magenta bougainvillea grows.
+
+4. **Cliff, Sea, and Ferry**: the dark volcanic cliff face, the calm deep blue sea, the small white ferry and its wake, and the distant islands and headlands.
+
+5. **Sky and Sun**: the position of the sun above the horizon, the colors and shapes of the clouds, and the path of sunlight on the water.
+
+6. **Light and Color**: warm sunset light on white walls, cool blue shadows, glowing windows and lanterns, and the overall exposure of golden hour without blown-out whites.
+
+7. **Fixed Visual Details**: a numbered list of 8 to 10 details that must stay identical in the still image and in the video (camera position, village on the left, chapel top-left, stairway lower left-center, bougainvillea clusters, sea on the right, ferry mid-right, sun position, horizon line, framing).
+
+8. **Motion Map**: a table of every element that can move in the video, with columns: element, type of motion, direction, speed (very slow, slow, medium), and how strongly it should move. Include the ferry gliding to the right with its wake, sunlight glittering on the sea, lamps and windows glowing brighter, clouds drifting, bougainvillea stirring, and the camera move. Keep total motion subtle and physically plausible.
+
+9. **Prompt Seed A - Hero Still Image**: a ready-to-paste image prompt under 170 words for a wide landscape 16:9 frame, with the whitewashed cliffside village, the blue-domed chapel, the stone stairway with bougainvillea, and the sea with the ferry at sunset in the first sentence, ending with: no people, no text, no logos.
+
+10. **Prompt Seed B - Image-to-Video Animation**: a ready-to-paste video prompt under 120 words that starts from the hero still as the first frame, describes a slow, smooth camera push-in for about 6 seconds toward the village and the stone stairway that ends close on a lit doorway with wall lanterns and bougainvillea, the ferry gliding slowly to the right, sunlight glittering on the sea, more lamps glowing warm, and says to keep the houses, chapel, stairway, cliff, and colors exactly as in the image with no people.
+
+Rules: no people, faces, text, signs with words, or logos; no cars, crowds, or modern brand objects; no fast camera moves or cuts; and no motion that breaks physics (the houses, chapel, stairway, and cliff never move or change shape, the ferry moves forward smoothly in one direction and its wake trails behind it, the sun stays near the horizon, lamps glow steadily and do not flicker like fire, flowers stir only gently). Use short paragraphs and lists.
+```
+
+</details>
+
