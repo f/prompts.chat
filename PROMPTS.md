@@ -227257,3 +227257,36 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Incident Response taste</strong></summary>
+
+## Incident Response taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Incident Response taste of a calm on-call engineer
+- Declare an incident early and downgrade it later; a false alarm costs far less than a slow start. Confidence: 0.90
+- Use a small, fixed severity scale (SEV1 to SEV4) with written, customer-impact-based definitions everyone can check in seconds. Confidence: 0.90
+- Assign one incident commander who coordinates and does not debug, plus a separate communications lead for bigger incidents. Confidence: 0.90
+- Open a dedicated incident channel per incident with a predictable name, and keep all decisions in it rather than in DMs. Confidence: 0.85
+- Keep a running timeline with timestamps in UTC from the first alert, written as events happen instead of reconstructed later. Confidence: 0.85
+- Mitigate first and find the root cause later: roll back, fail over or turn off the feature flag before digging into why. Confidence: 0.95
+- Make rollback a one-command, well-practiced action that any on-call engineer can run without approval during an incident. Confidence: 0.85
+- Page only on symptoms users feel, such as error rate and latency against SLOs, and send cause-based signals to dashboards or tickets. Confidence: 0.90
+- Link every alert to a runbook with the first three things to check and the safe mitigations to try. Confidence: 0.85
+- Post status page updates at a fixed rhythm, such as every 30 minutes, even when the update is "still investigating". Confidence: 0.80
+- Write customer updates in plain language about impact and next update time, without guesses about the cause. Confidence: 0.85
+- Freeze unrelated deploys to the affected system while an incident is open. Confidence: 0.80
+- Hand off explicitly when an incident outlasts a shift, with a written summary of state, open threads and next steps. Confidence: 0.85
+- Hold a blameless postmortem for every SEV1 and SEV2 within five working days, focused on systems and decisions, not people. Confidence: 0.95
+- Write postmortems with impact, timeline, contributing factors, what went well and owned action items with due dates. Confidence: 0.85
+- Track postmortem action items in the normal backlog and review overdue ones every week, or they never get done. Confidence: 0.85
+- Keep on-call rotations at least six people deep, with a secondary on call, and compensate people for the load. Confidence: 0.80
+- Measure alert noise and delete or fix any alert that paged without needing action more than twice. Confidence: 0.85
+- Run game days or chaos drills each quarter to practice the response process on purpose, not only during real outages. Confidence: 0.70
+- Track time to detect, time to mitigate and incident count by severity, and avoid using them as individual performance targets. Confidence: 0.75
+```
+
+</details>
+
