@@ -15,13 +15,13 @@ Quando assegni un ruolo, stai essenzialmente dicendo al modello: "Filtra la tua 
 
 ### La Spiegazione Tecnica
 
-Gli LLM funzionano prevedendo il token più probabile successivo basandosi sul contesto che gli viene dato. Quando specifichi un ruolo, stai fondamentalmente cambiando cosa significa "probabile".
+Gli LLM funzionano prevedendo il token successivo più probabile in base al contesto che viene loro fornito. Quando specifichi un ruolo, stai fondamentalmente cambiando cosa significa "probabile".
 
 **Attivare Conoscenza Rilevante**: Il ruolo prepara regioni specifiche delle associazioni apprese dal modello. Dire "Sei un dottore" attiva terminologia medica, pattern di ragionamento diagnostico e stili di comunicazione clinica dai dati di addestramento.
 
 **Condizionamento Statistico**: Gli LLM hanno imparato da milioni di documenti scritti da veri esperti. Quando assegni un ruolo, il modello condiziona le sue distribuzioni di probabilità per corrispondere ai pattern che ha visto da quel tipo di autore.
 
-**Ridurre l'Ambiguità**: Senza un ruolo, il modello fa la media tra tutti i possibili risponditori. Con un ruolo, si restringe a un sottoinsieme specifico, rendendo le risposte più focalizzate e consistenti.
+**Ridurre l'Ambiguità**: Senza un ruolo, il modello fa la media tra tutti i possibili risponditori. Con un ruolo, si restringe a un sottoinsieme specifico, rendendo le risposte più focalizzate e coerenti.
 
 **Ancoraggio del Contesto**: Il ruolo crea un'ancora di contesto persistente per tutta la conversazione. Ogni risposta successiva è influenzata da questo inquadramento iniziale.
 
@@ -29,6 +29,8 @@ Pensala così: se chiedi "Cosa dovrei fare per questa tosse?" il modello potrebb
 
 <Callout type="info" title="Perché È Importante">
 Il modello non sta fingendo o facendo role-play in senso teatrale. Sta statisticamente orientando i suoi output verso pattern che ha imparato da veri esperti, professionisti e specialisti durante l'addestramento. Un ruolo "dottore" attiva percorsi di conoscenza medica; un ruolo "poeta" attiva pattern letterari.
+
+I ruoli modellano soprattutto il tono, il vocabolario e il focus. Non possono aggiungere conoscenze che il modello non ha mai appreso, e la ricerca ha rilevato che una persona da sola raramente rende più accurate le risposte a domande fattuali. Abbina i ruoli a un buon contesto e verifica tutto ciò che conta.
 </Callout>
 
 ## Pattern di Ruolo Base
@@ -53,7 +55,7 @@ Radica il ruolo in un contesto del mondo reale specificando un titolo lavorativo
 
 ### Il Pattern Insegnante
 
-Perfetto per apprendimento e spiegazioni. Specificare il livello del pubblico assicura che la risposta corrisponda al background dello studente, dai principianti ai praticanti avanzati.
+Perfetto per apprendimento e spiegazioni. Specificare il livello del pubblico assicura che la risposta corrisponda al background dello studente, dai principianti ai professionisti esperti.
 
 <TryIt compact prompt={`Sei un insegnante di \${subject} specializzato nello spiegare concetti complessi a \${audience}.
 
@@ -63,7 +65,7 @@ Perfetto per apprendimento e spiegazioni. Specificare il livello del pubblico as
 
 ### Ruoli Composti
 
-Combina identità multiple per ottenere risposte che fondono prospettive diverse. Questa combinazione pediatra-genitore produce consigli che sono sia medicalmente validi che praticamente testati.
+Combina identità multiple per ottenere risposte che fondono prospettive diverse. Questa combinazione pediatra-genitore produce consigli che sono sia validi dal punto di vista medico che collaudati nella pratica.
 
 <TryIt compact prompt={`Sei un pediatra che è anche genitore di tre figli. Capisci sia gli aspetti medici che pratici dei problemi di salute infantile. Comunichi con empatia e senza gergo medico.
 
@@ -92,13 +94,13 @@ Domini diversi beneficiano di tipi diversi di ruoli. Ecco esempi comprovati orga
 
 ### Ruoli Tecnici
 
-**Architetto Software**: Migliore per decisioni di design del sistema, scelte tecnologiche e trade-off architetturali. Il focus sulla manutenibilità orienta le risposte verso soluzioni pratiche a lungo termine.
+**Architetto Software**: Ideale per decisioni di design del sistema, scelte tecnologiche e trade-off architetturali. Il focus sulla manutenibilità orienta le risposte verso soluzioni pratiche a lungo termine.
 
 <TryIt compact prompt={`Sei un architetto software specializzato in sistemi distribuiti scalabili. Dai priorità a manutenibilità, performance e produttività del team nelle tue raccomandazioni.
 
 \${question}`} />
 
-**Specialista di Sicurezza**: La mentalità da attaccante è chiave qui. Questo ruolo produce analisi focalizzate sulle minacce che identificano vulnerabilità che una prospettiva solo difensiva potrebbe perdere.
+**Specialista di Sicurezza**: Qui la mentalità da attaccante è fondamentale. Questo ruolo produce analisi focalizzate sulle minacce che identificano vulnerabilità che una prospettiva solo difensiva potrebbe perdere.
 
 <TryIt compact prompt={`Sei uno specialista di cybersecurity che conduce penetration testing. Pensi come un attaccante per identificare vulnerabilità.
 
@@ -182,7 +184,7 @@ Documenta: \${apiEndpoint}`} />
     <span className="text-muted-foreground">Sviluppatore senior + mentore</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-40">Feedback scrittura</span>
+    <span className="font-semibold min-w-40">Feedback sulla scrittura</span>
     <span className="text-muted-foreground">Editor + membro del pubblico target</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
@@ -190,8 +192,8 @@ Documenta: \${apiEndpoint}`} />
     <span className="text-muted-foreground">Consulente + esperto del settore</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-40">Imparare nuovo argomento</span>
-    <span className="text-muted-foreground">Insegnante paziente + praticante</span>
+    <span className="font-semibold min-w-40">Imparare un nuovo argomento</span>
+    <span className="text-muted-foreground">Insegnante paziente + professionista</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Scrittura creativa</span>
@@ -243,7 +245,7 @@ Il tuo stile di documentazione:
 - Struttura chiara e scansionabile con intestazioni ed esempi di codice
 - Spiega il "perché" insieme al "come"
 - Anticipa domande comuni e casi limite
-- Usa terminologia consistente definita in un glossario
+- Usa terminologia coerente definita in un glossario
 - Include esempi di codice funzionanti che gli utenti possono copiare-incollare
 
 Documenta questo endpoint API: GET /api/users/:id - Restituisce i dati del profilo utente`}
@@ -287,7 +289,7 @@ I ruoli funzionano ancora meglio quando combinati con altre tecniche di promptin
 
 Combina un ruolo con un esempio per mostrare esattamente come il ruolo dovrebbe rispondere. L'esempio insegna tono e formato mentre il ruolo fornisce contesto e competenza.
 
-<TryIt compact prompt={`Sei uno specialista di supporto clienti addestrato a de-escalare clienti arrabbiati.
+<TryIt compact prompt={`Sei uno specialista di supporto clienti addestrato a calmare i clienti arrabbiati.
 
 Esempio di risposta a cliente arrabbiato:
 Cliente: "È ridicolo! Sto aspettando da 2 settimane!"
@@ -310,7 +312,7 @@ Risolvi passo per passo, spiegando le tue deduzioni.`} />
 ## Riepilogo
 
 <Callout type="info" title="Punti Chiave">
-Il prompting basato sui ruoli è potente perché focalizza la vasta conoscenza del modello, imposta aspettative per tono e stile, fornisce contesto implicito e rende gli output più consistenti.
+Il prompting basato sui ruoli è potente perché focalizza la vasta conoscenza del modello, imposta aspettative per tono e stile, fornisce contesto implicito e rende gli output più coerenti.
 </Callout>
 
 <Quiz 
@@ -325,4 +327,4 @@ Il prompting basato sui ruoli è potente perché focalizza la vasta conoscenza d
   explanation="Più il ruolo è dettagliato e realistico, migliori sono i risultati. La specificità aiuta il modello a capire esattamente quale conoscenza, tono e prospettiva applicare."
 />
 
-La chiave è la **specificità**: più il ruolo è dettagliato e realistico, migliori sono i risultati. Nel prossimo capitolo, esploreremo come ottenere output consistenti e strutturati dai tuoi prompt.
+La chiave è la **specificità**: più il ruolo è dettagliato e realistico, migliori sono i risultati. Nel prossimo capitolo, esploreremo come ottenere output coerenti e strutturati dai tuoi prompt.
