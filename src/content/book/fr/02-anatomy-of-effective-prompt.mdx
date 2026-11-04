@@ -44,7 +44,7 @@ Le rôle prépare le modèle à :
 
 ## 2. Contexte / Arrière-plan
 
-Le contexte fournit les informations dont le modèle a besoin pour comprendre votre situation. Rappelez-vous : le modèle ne sait rien de vous, votre projet ou vos objectifs sauf si vous le lui dites.
+Le contexte fournit les informations dont le modèle a besoin pour comprendre votre situation. Rappelez-vous : le modèle ne sait rien de vous, de votre projet ou de vos objectifs sauf si vous le lui dites.
 
 <Compare 
   before={{ label: "Contexte Faible", content: "Corrige ce bug dans mon code." }}
@@ -212,7 +212,7 @@ Voici un prompt complet utilisant tous les composants :
 Tu es un rédacteur technique senior avec 10 ans d'expérience dans la création de documentation développeur.
 
 # Contexte
-Je documente une API REST pour un service de traitement de paiements. L'audience est constituée de développeurs intégrant notre API dans leurs applications. Ils ont des connaissances intermédiaires en programmation mais peuvent être nouveaux aux concepts de traitement de paiements.
+Je documente une API REST pour un service de traitement de paiements. L'audience est constituée de développeurs intégrant notre API dans leurs applications. Ils ont des connaissances intermédiaires en programmation mais découvrent peut-être les concepts du traitement des paiements.
 
 # Tâche
 Écris la documentation pour l'endpoint API suivant qui crée une nouvelle intention de paiement.
@@ -229,6 +229,10 @@ Structure la documentation ainsi :
 2. Requête (méthode, URL, headers, body avec exemple)
 3. Réponse (exemples de succès et d'erreur)
 4. Exemple de Code (en JavaScript/Node.js)
+
+# Exemple
+Reprends le ton de cette description d'erreur tirée de notre documentation existante :
+"card_declined: La banque du client a refusé le paiement. Invitez-le à essayer un autre moyen de paiement."
 
 # Détails de l'Endpoint
 POST /v1/payments/intents
@@ -293,7 +297,7 @@ Format : Pour chaque fonctionnalité, fournis :
 1. Nom de la fonctionnalité
 2. Description en une phrase
 3. Pourquoi c'est important pour les équipes distantes`}
-  description="Ce prompt utilise les six composants. Essayez-le et voyez comment l'approche structurée produit des résultats focalisés et actionnables."
+  description="Ce prompt utilise cinq des six composants (tous sauf les exemples). Essayez-le et voyez comment l'approche structurée produit des résultats focalisés et actionnables."
 />
 
 ## Construisez Votre Propre Prompt
@@ -309,14 +313,14 @@ Format : Pour chaque fonctionnalité, fournis :
   title="Défi du Chapitre : Construire un Prompt de Revue de Code"
   task="Écrivez un prompt qui demande à une IA de réviser du code pour les vulnérabilités de sécurité. Votre prompt doit être assez spécifique pour obtenir un feedback actionnable."
   criteria={[
-    "Inclut un rôle clair ou niveau d'expertise",
+    "Inclut un rôle ou un niveau d'expertise clair",
     "Spécifie le type de revue de code (focus sécurité)",
     "Définit le format de sortie attendu",
     "Établit des contraintes ou une portée appropriées"
   ]}
   hints={[
-    "Pensez à quelle expertise un réviseur de code devrait avoir",
-    "Soyez spécifique sur quels problèmes de sécurité chercher",
+    "Réfléchissez à l'expertise qu'un réviseur de code devrait avoir",
+    "Précisez quels problèmes de sécurité rechercher",
     "Envisagez de demander un format de réponse structuré"
   ]}
   exampleSolution={`Tu es un ingénieur sécurité senior avec expertise en sécurité des applications web et vulnérabilités OWASP Top 10.

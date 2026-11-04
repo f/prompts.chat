@@ -21,7 +21,7 @@ Las palabras pueden tener múltiples significados. Elige lenguaje preciso.
 
 <Compare 
   before={{ label: "Ambiguo", content: "Dame un resumen corto.\n(¿Qué tan corto? ¿1 oración? ¿1 párrafo? ¿1 página?)" }}
-  after={{ label: "Preciso", content: "Resume en exactamente 3 viñetas, cada una bajo 20 palabras." }}
+  after={{ label: "Preciso", content: "Resume en exactamente 3 viñetas, cada una de menos de 20 palabras." }}
 />
 
 ### Declara lo Obvio
@@ -32,7 +32,7 @@ Lo que es obvio para ti no es obvio para el modelo. Explica las suposiciones.
 Me ayudas a escribir una carta de presentación.
 
 Contexto importante:
-- Estoy aplicando para un puesto de Ingeniero de Software en Google
+- Me estoy postulando a un puesto de Ingeniero de Software en Google
 - Tengo 5 años de experiencia en Python y sistemas distribuidos
 - El rol requiere experiencia de liderazgo (he liderado un equipo de 4)
 - Quiero enfatizar mis contribuciones a código abierto
@@ -84,13 +84,13 @@ Cada nivel agrega especificidad y mejora dramáticamente la calidad del resultad
 
 ## Principio 3: El Contexto Es Rey
 
-Los modelos no tienen memoria, ni acceso a tus archivos, ni conocimiento de tu situación. Todo lo relevante debe estar en el prompt.
+Un modelo no sabe nada de tu situación más allá de lo que le llega en la conversación. Incluso los asistentes con funciones de memoria, archivos subidos o herramientas conectadas solo ven lo que realmente se ha compartido con ellos, y lo recuerdan de forma selectiva. Cuando algo importa, ponlo en el prompt.
 
 ### Proporciona Contexto Suficiente
 
 <Compare 
   before={{ label: "Contexto insuficiente", content: "¿Por qué no funciona mi función?" }}
-  after={{ label: "Contexto suficiente", content: "Tengo una función Python que debería filtrar una lista de diccionarios por un valor de clave específico. Está devolviendo una lista vacía cuando debería devolver 3 elementos.\n\nFunción:\ndef filter_items(items, key, value):\n    return [item for item in items if item[key] = value]\n\nLlamada: filter_items(items, 'status', 'active')\nEsperado: 2 elementos, Obtenido: lista vacía" }}
+  after={{ label: "Contexto suficiente", content: "Tengo una función Python que debería filtrar una lista de diccionarios por un valor de clave específico. Está devolviendo una lista vacía cuando debería devolver 3 elementos.\n\nFunción:\ndef filter_items(items, key, value):\n    return [item for item in items if item.get(key) == value]\n\nElemento de ejemplo: {'id': 7, 'status': 'active'}\nLlamada: filter_items(items, 'Status', 'active')\nEsperado: 3 elementos, Obtenido: lista vacía" }}
 />
 
 ### La Lista de Verificación de Contexto
@@ -321,7 +321,7 @@ Lista cualquier problema encontrado.
     "Itera y Refina"
   ]}
   correctIndex={2}
-  explanation="El Contexto Es Rey enfatiza que los modelos de IA no tienen memoria entre sesiones y no pueden leer tu mente. Incluir antecedentes, restricciones y objetivos relevantes ayuda al modelo a entender tus necesidades."
+  explanation="El Contexto Es Rey enfatiza que los modelos de IA no pueden leer tu mente: solo saben lo que les llega en la conversación. Incluir antecedentes, restricciones y objetivos relevantes ayuda al modelo a entender tus necesidades."
 />
 
 ## Práctica: Completa los Espacios en Blanco
@@ -340,7 +340,7 @@ Contexto: Estoy trabajando en {{context}}.
 Tarea: {{task}}
 
 Restricciones:
-- Mantén tu respuesta bajo {{length}} palabras
+- Mantén tu respuesta por debajo de {{length}} palabras
 - Enfócate solo en {{focus}}
 
 Formato: Devuelve tu respuesta como {{format}}.`}
@@ -353,7 +353,7 @@ Formato: Devuelve tu respuesta como {{format}}.`}
     { id: "focus", correctAnswers: [], hint: "¿Qué aspecto debe priorizarse?", context: "Una cualidad o aspecto relevante para la tarea" },
     { id: "format", correctAnswers: [], hint: "¿Cómo debe estructurarse la salida?", context: "Un tipo de formato de salida" }
   ]}
-  explanation="Un prompt bien estructurado incluye: un rol claro (Principio 1), contexto suficiente (Principio 3), tarea específica (Principio 2), restricciones (Principio 4), y formato de salida (Principio 5). La IA verifica si tus elecciones son internamente consistentes."
+  explanation="Un prompt bien estructurado incluye un rol claro (Principio 6), contexto suficiente (Principio 3), una tarea específica con restricciones (Principio 2) y un formato de salida explícito (Principio 7). La IA verifica si tus elecciones son internamente consistentes."
 />
 
 <InteractiveChecklist
@@ -362,10 +362,10 @@ Formato: Devuelve tu respuesta como {{format}}.`}
     { id: "clarity", label: "Claridad Sobre Ingenio", description: "¿Es tu prompt explícito y sin ambigüedades?" },
     { id: "specificity", label: "La Especificidad Produce Calidad", description: "¿Has incluido audiencia, longitud, tono y formato?" },
     { id: "context", label: "El Contexto Es Rey", description: "¿El prompt incluye toda la información de fondo necesaria?" },
-    { id: "examples", label: "Los Ejemplos Superan las Explicaciones", description: "¿Has mostrado lo que quieres, no solo lo has descrito?" },
-    { id: "constraints", label: "Las Restricciones Enfocan la Salida", description: "¿Hay límites claros en alcance y formato?" },
+    { id: "guide", label: "Guía, No Solo Preguntes", description: "¿Has planteado los pasos o el razonamiento que quieres, en lugar de solo pedir una respuesta?" },
     { id: "iteration", label: "Itera y Refina", description: "¿Estás preparado para mejorar basándote en los resultados?" },
-    { id: "persona", label: "La Persona Moldea la Perspectiva", description: "¿Sabe la IA qué rol desempeñar?" },
+    { id: "strengths", label: "Aprovecha las Fortalezas del Modelo", description: "¿Estás mostrando patrones y usando roles que el modelo maneja bien?" },
+    { id: "structure", label: "Controla la Estructura de Salida", description: "¿Has especificado el formato exacto que necesitas?" },
     { id: "verify", label: "Verifica y Valida", description: "¿Has incorporado verificaciones de precisión?" }
   ]}
 />

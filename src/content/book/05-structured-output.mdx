@@ -170,6 +170,10 @@ Return the result as a JSON code block:
 ```
 ````
 
+<Callout type="info" title="Native Structured Outputs">
+If you call a model through an API, you don't have to rely on wording alone. OpenAI, Anthropic, and Google all offer structured output modes that take a JSON Schema and constrain the response to match it, so required fields and allowed values are enforced rather than merely requested. Older "JSON mode" options only guarantee syntactically valid JSON, not your schema. Even with a schema enforced, the values themselves can still be wrong, so keep validating what matters.
+</Callout>
+
 ## YAML Output
 
 YAML is more human-readable than JSON, using indentation instead of brackets. It's the standard for configuration files (Docker, Kubernetes, GitHub Actions) and works well when the output will be read by humans or used in DevOps contexts. YAML is sensitive to indentation, so be specific about formatting requirements.
@@ -181,7 +185,7 @@ YAML is more human-readable than JSON, using indentation instead of brackets. It
 
 Return as valid YAML:
 - Include: install, lint, test, build stages
-- Use Node.js 18
+- Use the current Node.js LTS release
 - Cache npm dependencies
 - Run on push to main and pull requests`}
 />
@@ -353,7 +357,7 @@ Transcript: "[meeting transcript]"
 
 ## Validation Instructions
 
-Self-validation prompts the model to check its own output before responding. This catches common issues like missing sections, placeholder text, or constraint violations. The model will iterate internally to fix problems, improving output quality without additional API calls.
+Self-validation prompts the model to check its own output before responding. This catches common issues like missing sections, placeholder text, or constraint violations. This often improves quality without an extra API call, but it isn't a guarantee: a model can report that a check passed when it didn't, so still verify critical output in your own code.
 
 ```
 Generate the report, then:

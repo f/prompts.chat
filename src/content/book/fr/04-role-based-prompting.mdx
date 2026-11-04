@@ -15,7 +15,7 @@ Quand vous assignez un rôle, vous dites essentiellement au modèle : « Filtre 
 
 ### L'Explication Technique
 
-Les LLM fonctionnent en prédisant le token le plus probable suivant basé sur le contexte qui leur est donné. Quand vous spécifiez un rôle, vous changez fondamentalement ce que « probable » signifie.
+Les LLM fonctionnent en prédisant le token suivant le plus probable en fonction du contexte qui leur est donné. Quand vous spécifiez un rôle, vous changez fondamentalement ce que « probable » signifie.
 
 **Activation des Connaissances Pertinentes** : Le rôle amorce des régions spécifiques des associations apprises du modèle. Dire « Tu es médecin » active la terminologie médicale, les patterns de raisonnement diagnostique, et les styles de communication clinique des données d'entraînement.
 
@@ -28,7 +28,9 @@ Les LLM fonctionnent en prédisant le token le plus probable suivant basé sur l
 Pensez-y ainsi : si vous demandez « Que dois-je faire pour cette toux ? », le modèle pourrait répondre comme un médecin, un ami, un pharmacien, ou un parent inquiet. Chacun donnerait des conseils différents. En spécifiant le rôle d'emblée, vous dites au modèle quelle « voix » utiliser de ses données d'entraînement.
 
 <Callout type="info" title="Pourquoi C'est Important">
-Le modèle ne fait pas semblant ou ne joue pas un rôle au sens théâtral. Il biaise statistiquement ses sorties vers des patterns qu'il a appris de vrais experts, professionnels et spécialistes pendant l'entraînement. Un rôle de « médecin » active les voies de connaissances médicales ; un rôle de « poète » active les patterns littéraires.
+Le modèle ne fait pas semblant et ne joue pas un rôle au sens théâtral. Il biaise statistiquement ses sorties vers des patterns qu'il a appris de vrais experts, professionnels et spécialistes pendant l'entraînement. Un rôle de « médecin » active les voies de connaissances médicales ; un rôle de « poète » active les patterns littéraires.
+
+Les rôles façonnent surtout le ton, le vocabulaire et l'angle d'approche. Ils ne peuvent pas apporter des connaissances que le modèle n'a jamais apprises, et la recherche a montré qu'une persona seule rend rarement plus exactes les réponses aux questions factuelles. Associez les rôles à un bon contexte, et vérifiez tout ce qui compte.
 </Callout>
 
 ## Patterns de Rôle Basiques
@@ -37,7 +39,7 @@ Ces patterns fondamentaux fonctionnent dans la plupart des cas d'usage. Commence
 
 ### Le Pattern Expert
 
-Le pattern le plus polyvalent. Spécifiez le domaine d'expertise et les années d'expérience pour obtenir des réponses autoritaires et approfondies. Fonctionne bien pour les questions techniques, l'analyse et les conseils professionnels.
+Le pattern le plus polyvalent. Spécifiez le domaine d'expertise et les années d'expérience pour obtenir des réponses approfondies qui font autorité. Fonctionne bien pour les questions techniques, l'analyse et les conseils professionnels.
 
 <TryIt compact prompt={`Tu es un(e) expert(e) en \${field} avec \${years:10} ans d'expérience en \${specialty}.
 
@@ -63,7 +65,7 @@ Parfait pour l'apprentissage et les explications. Spécifier le niveau de l'audi
 
 ### Rôles Composés
 
-Combinez plusieurs identités pour obtenir des réponses qui mêlent différentes perspectives. Cette combinaison pédiatre-parent produit des conseils à la fois médicalement fondés et pratiquement testés.
+Combinez plusieurs identités pour obtenir des réponses qui mêlent différentes perspectives. Cette combinaison pédiatre-parent produit des conseils à la fois médicalement fondés et éprouvés dans la pratique.
 
 <TryIt compact prompt={`Tu es pédiatre et aussi parent de trois enfants. Tu comprends à la fois les aspects médicaux et pratiques des problèmes de santé infantile. Tu communiques avec empathie et sans jargon médical.
 
@@ -152,7 +154,7 @@ Question de recherche : \${question}`} />
 
 ### Rôles Éducatifs
 
-**Tuteur Socratique** : Au lieu de donner des réponses, ce rôle pose des questions guidées. Excellent pour un apprentissage plus profond et aider les étudiants à développer leur pensée critique.
+**Tuteur Socratique** : Au lieu de donner des réponses, ce rôle pose des questions guidées. Excellent pour un apprentissage plus profond et pour aider les étudiants à développer leur pensée critique.
 
 <TryIt compact prompt={`Tu es un tuteur utilisant la méthode socratique. Au lieu de donner des réponses directement, tu guides les étudiants à découvrir les réponses par des questions réfléchies.
 
@@ -170,7 +172,7 @@ Pour les tâches complexes, combinez plusieurs aspects de rôle en une seule ide
 
 Cet exemple superpose trois éléments : expertise du domaine (documentation API), audience (développeurs juniors) et guide de style (conventions Google). Chaque couche contraint davantage la sortie.
 
-<TryIt compact prompt={`Tu es un rédacteur technique expert en documentation API. Tu écris pour des développeurs nouveaux aux API REST. Suis le guide de style de documentation développeur Google : utilise la deuxième personne ("vous"), la voix active, le présent, et garde les phrases sous 26 mots.
+<TryIt compact prompt={`Tu es un rédacteur technique expert en documentation API. Tu écris pour des développeurs qui découvrent les API REST. Suis le guide de style de documentation développeur Google : utilise la deuxième personne ("vous"), la voix active, le présent, et garde les phrases sous 26 mots.
 
 Documente : \${apiEndpoint}`} />
 

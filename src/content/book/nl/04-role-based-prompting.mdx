@@ -28,7 +28,9 @@ LLM's werken door het meest waarschijnlijke volgende token te voorspellen op bas
 Zie het zo: als je vraagt "Wat moet ik doen aan deze hoest?" zou het model kunnen antwoorden als een dokter, een vriend, een apotheker of een bezorgde ouder. Elk zou ander advies geven. Door de rol vooraf te specificeren, vertel je het model welke "stem" het moet gebruiken uit zijn trainingsdata.
 
 <Callout type="info" title="Waarom Dit Belangrijk Is">
-Het model doet niet alsof of speelt geen rol in theatrale zin. Het beïnvloedt statistisch zijn outputs richting patronen die het leerde van echte experts, professionals en specialisten tijdens training. Een "dokter" rol activeert medische kennispaden; een "dichter" rol activeert literaire patronen.
+Het model doet niet alsof en speelt geen toneel in theatrale zin. Het stuurt zijn outputs statistisch richting patronen die het tijdens de training leerde van echte experts, professionals en specialisten. Een "dokter"-rol activeert medische kennispaden; een "dichter"-rol activeert literaire patronen.
+
+Rollen bepalen vooral toon, woordkeuze en focus. Ze kunnen geen kennis toevoegen die het model nooit heeft geleerd, en onderzoek wijst uit dat een persona op zichzelf antwoorden op feitelijke vragen zelden nauwkeuriger maakt. Combineer rollen daarom met goede context en controleer alles wat ertoe doet.
 </Callout>
 
 ## Basis Rolpatronen
@@ -166,7 +168,7 @@ Maak curriculum voor: \${topic}`} />
 
 ## De Role Stack Techniek
 
-Voor complexe taken, combineer meerdere rolaspecten in één gelaagde identiteit. Deze techniek stapelt expertise, publiekbewustzijn en stijlrichtlijnen om zeer gespecialiseerde antwoorden te creëren.
+Combineer voor complexe taken meerdere rolaspecten in één gelaagde identiteit. Deze techniek stapelt expertise, publiekbewustzijn en stijlrichtlijnen om zeer gespecialiseerde antwoorden te creëren.
 
 Dit voorbeeld combineert drie elementen: domeinexpertise (API documentatie), publiek (junior developers) en stijlgids (Google's conventies). Elke laag beperkt de output verder.
 
@@ -220,7 +222,7 @@ Documenteer: \${apiEndpoint}`} />
 
 <Compare 
   before={{ label: "Problematisch", content: "Je bent een creatieve schrijver die altijd strikte templates volgt." }}
-  after={{ label: "Beter", content: "Je bent een creatieve schrijver die werkt binnen gevestigde verhaalstructuren terwijl je originele elementen toevoegt." }}
+  after={{ label: "Beter", content: "Je bent een creatieve schrijver die werkt binnen gevestigde verhaalstructuren en daarbij originele elementen toevoegt." }}
 />
 
 ### Onrealistische Expertise

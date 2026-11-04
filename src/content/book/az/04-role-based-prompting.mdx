@@ -1,4 +1,4 @@
-Rol əsaslı prompting, prompt mühəndisliyindəki ən güclü və geniş istifadə olunan texnikalardan biridir. Süni intellektə müəyyən bir rol və ya persona təyin edərək, cavabların keyfiyyətini, stilini və uyğunluğunu dramatik şəkildə təsir edə bilərsiniz.
+Rol əsaslı prompting, prompt mühəndisliyindəki ən güclü və geniş istifadə olunan texnikalardan biridir. Süni intellektə müəyyən bir rol və ya persona təyin edərək, cavabların keyfiyyətinə, stilinə və uyğunluğuna dramatik şəkildə təsir edə bilərsiniz.
 
 <Callout type="tip" title="Personaların Gücü">
 Rolları, süni intellektin geniş biliyi üçün filtrlər kimi düşünün. Doğru rol, cavabları bir linzanın işığı fokuslaması kimi fokuslaşdırır.
@@ -25,10 +25,12 @@ LLM-lər, verilən kontekstə görə ən ehtimal olunan növbəti tokeni proqnoz
 
 **Kontekst Çapası**: Rol, söhbət boyunca daimi bir kontekst çapası yaradır. Hər sonrakı cavab bu başlanğıc çərçivəsindən təsirlənir.
 
-Belə düşünün: "Bu öskürək üçün nə etməliyəm?" deyə soruşsanız, model bir həkim, bir dost, bir əczaçı və ya narahat bir valideyn kimi cavab verə bilər. Hər biri fərqli məsləhət verir. Rolü əvvəlcədən göstərərək, modelə öyrətmə məlumatlarından hansı "səsi" istifadə edəcəyini deyirsiniz.
+Belə düşünün: "Bu öskürək üçün nə etməliyəm?" deyə soruşsanız, model bir həkim, bir dost, bir əczaçı və ya narahat bir valideyn kimi cavab verə bilər. Hər biri fərqli məsləhət verir. Rolu əvvəlcədən göstərərək, modelə öyrətmə məlumatlarından hansı "səsi" istifadə edəcəyini deyirsiniz.
 
 <Callout type="info" title="Bu Niyə Vacibdir">
-Model teatral mənada rol oynamır və ya təqlid etmir. Öyrətmə zamanı həqiqi ekspertlərdən, peşəkarlardan və mütəxəssislərdən öyrəndiyi nümunələrə doğru çıxışlarını statistik olaraq yönləndirir. "Həkim" rolü tibbi bilik yollarını aktivləşdirir; "şair" rolü ədəbi nümunələri aktivləşdirir.
+Model teatral mənada rol oynamır və ya təqlid etmir. Öyrətmə zamanı həqiqi ekspertlərdən, peşəkarlardan və mütəxəssislərdən öyrəndiyi nümunələrə doğru çıxışlarını statistik olaraq yönləndirir. "Həkim" rolu tibbi bilik yollarını aktivləşdirir; "şair" rolu ədəbi nümunələri aktivləşdirir.
+
+Rollar əsasən tonu, lüğəti və fokusu formalaşdırır. Onlar modelin heç vaxt öyrənmədiyi biliyi əlavə edə bilməz və araşdırmalar göstərib ki, persona tək başına faktiki suallara verilən cavabları nadir hallarda daha dəqiq edir. Rolları yaxşı kontekstlə birləşdirin və vacib olan hər şeyi yoxlayın.
 </Callout>
 
 ## Əsas Rol Nümunələri
@@ -39,7 +41,7 @@ Bu əsas nümunələr əksər istifadə hallarında işləyir. Bu şablonlarla b
 
 Ən çox yönlü nümunə. Səlahiyyətli, dərin cavablar almaq üçün ekspertiza sahəsini və təcrübə illərini göstərin. Texniki suallar, analiz və peşəkar məsləhətlər üçün yaxşı işləyir.
 
-<TryIt compact prompt={`Sən \${years:10} illik \${specialty} təcrübəsinə malik ekspert bir \${field} peşəkarisən.
+<TryIt compact prompt={`Sən \${years:10} illik \${specialty} təcrübəsinə malik ekspert bir \${field} peşəkarısan.
 
 \${task}`} />
 
@@ -53,7 +55,7 @@ Bir iş unvanı və təşkilat növü göstərərək rolu real dünya kontekstin
 
 ### Müəllim Nümunəsi
 
-Öyrənmə və izahatlar üçün mükəmməl. Hədəf auditoriya səviyyəsini göstərmək, cavabın öyrənənin keçmişi ilə uyğunlaşmasını təmin edir, yeni başlayanlıqdan qabaqcıl praktiklərə qədər.
+Öyrənmə və izahatlar üçün mükəmməl. Hədəf auditoriya səviyyəsini göstərmək, cavabın öyrənənin keçmişi ilə uyğunlaşmasını təmin edir, yeni başlayanlardan qabaqcıl praktiklərə qədər.
 
 <TryIt compact prompt={`Sən mürəkkəb anlayışları \${audience}-ə izah etməkdə ixtisaslaşmış bir \${subject} müəllimisən.
 
@@ -65,7 +67,7 @@ Bir iş unvanı və təşkilat növü göstərərək rolu real dünya kontekstin
 
 Fərqli perspektivləri birləşdirən cavablar almaq üçün bir neçə kimliyi birləşdirin. Bu uşaq həkimi-valideyn kombinasiyası həm tibbi cəhətdən etibarlı həm də praktik olaraq sınanmış məsləhətlər istehsal edir.
 
-<TryIt compact prompt={`Sən eyni zamanda üç uşağın valideyi olan bir uşaq həkimisən. Uşaqlıq sağlamlıq problemlərinin həm tibbi həm də praktik tərəflərini başa düşürsən. Empatiya ilə və tibbi jarqon olmadan ünsiyyət qurursan.
+<TryIt compact prompt={`Sən eyni zamanda üç uşağın valideyni olan bir uşaq həkimisən. Uşaqlıq sağlamlıq problemlərinin həm tibbi həm də praktik tərəflərini başa düşürsən. Empatiya ilə və tibbi jarqon olmadan ünsiyyət qurursan.
 
 \${question}`} />
 
@@ -80,7 +82,7 @@ Nəzərdən keçiriləcək kod:
 
 ### Perspektiv Rolları
 
-Müəyyən bir maraqlı tərəfin baxış bucağından rəy alın. Bir investor perspektivi, tətbiq olunabilirliyi və miqyaslana bilirliyi bir müştəri və ya mühəndisdən fərqli qiymətləndirir.
+Müəyyən bir maraqlı tərəfin baxış bucağından rəy alın. Vençur kapitalisti perspektivi, layihənin həyat qabiliyyətini və miqyaslanma imkanını bir müştəri və ya mühəndisdən fərqli qiymətləndirir.
 
 <TryIt compact prompt={`Sən startup təqdimatlarını qiymətləndirən bir vençur kapitalistisən. Minlərlə təqdimat görmüsən və güclü tərəfləri, zəiflikləri və təhlükə işarələrini tez müəyyən edə bilərsən. Birbaşa amma konstruktiv ol.
 
@@ -112,7 +114,7 @@ Analiz et: \${target}`} />
 
 ### Yaradıcı Rollar
 
-**Mətn Yazarı**: "Mükafatlı" niteleyicisi və çevrilmə fokusu, ümumi marketinq mətni əvəzinə qısa və inandırıcı mətn istehsal edir.
+**Mətn Yazarı**: "Mükafatlı" təyini və çevrilmə fokusu, ümumi marketinq mətni əvəzinə qısa və inandırıcı mətn istehsal edir.
 
 <TryIt compact prompt={`Sən çevrilmə yaradan cəlbedici başlıqlar və inandırıcı məzmun yaratmasıyla tanınan mükafatlı bir mətn yazarısan.
 
@@ -168,7 +170,7 @@ Bunun üçün kurikulum yarat: \${topic}`} />
 
 Mürəkkəb tapşırıqlar üçün bir neçə rol aspektini tək, qatlanmış bir kimlikdə birləşdirin. Bu texnika, son dərəcə ixtisaslaşmış cavablar yaratmaq üçün ekspertiza, hədəf auditoriya fərqindəliyi və stil bələdçilərini üst-üstə qoyur.
 
-Bu nümunə üç elementi qatlamır: sahə ekspertizası (API sənədləşdirməsi), hədəf auditoriya (junior tərtibatçılar) və stil bələdçisi (Google-un konvensiyaları). Hər qat çıxışı daha da məhdudlaşdırır.
+Bu nümunə üç elementi qat-qat birləşdirir: sahə ekspertizası (API sənədləşdirməsi), hədəf auditoriya (junior tərtibatçılar) və stil bələdçisi (Google-un konvensiyaları). Hər qat çıxışı daha da məhdudlaşdırır.
 
 <TryIt compact prompt={`Sən API sənədləşdirməsində ekspertizaya malik bir texniki yazarsan. REST API-lərinə yeni olan tərtibatçılar üçün yazırsan. Google tərtibatçı sənədləşdirmə stil bələdçisinə əməl et: ikinci tək şəxs ("sən") istifadə et, aktiv səs, indiki zaman və cümlələri 26 sözdən az saxla.
 
@@ -207,7 +209,7 @@ Sənədləşdir: \${apiEndpoint}`} />
   </div>
 </div>
 
-## Qaçınılması Gereken Anti-Nümunələr
+## Qaçınılmalı Anti-Nümunələr
 
 ### Həddən artıq Ümumi Rollar
 
@@ -235,7 +237,7 @@ Sənədləşdir: \${apiEndpoint}`} />
 ### Texniki Sənədləşdirmə
 
 <TryIt 
-  title="Texniki Yazar Rolü"
+  title="Texniki Yazar Rolu"
   description="Bu texniki sənədləşdirmə promptunu öz API endpoint-iniz ilə sınayın."
   prompt={`Sən bir tərtibatçı alətləri şirkətində baş texniki yazarsan. API sənədləşdirməsi, SDK bələdçiləri və tərtibatçı dərslikləri yazmaqda 10 illik təcrübən var.
 
@@ -252,12 +254,12 @@ Bu API endpoint-i sənədləşdir: GET /api/users/:id - İstifadəçi profil mə
 ### Yaradıcı Yazı
 
 <TryIt 
-  title="Romançı Rolü"
+  title="Romançı Rolu"
   description="Bu rol, janr ekspertizasını müəyyən stilistik xüsusiyyətlərlə birləşdirir."
-  prompt={`Sən sehrli realizm elementləri ilə ədəbi bədii ədəbiyyat tərzində yazan bir romançısan. Düz yazın bunlarla tanınır:
+  prompt={`Sən sehrli realizm elementləri ilə ədəbi bədii ədəbiyyat tərzində yazan bir romançısan. Nəsrin bunlarla tanınır:
 - Lirik amma əlçatan dil
 - Dərin psixoloji xarakter portretləri
-- Gündəlik mühitlərə toxunulmuş incə sehrli elementlər
+- Gündəlik mühitlərə hörülmüş incə sehrli elementlər
 - Yaddaş, kimlik və transformasiya temaları
 
 Kitabxanasındakı kitabların sonlarının yavaş-yavaş dəyişdiyini kəşf edən bir kitabxanaçı haqqında bir hekayənin açılış səhnəsini yaz.`}
@@ -266,11 +268,11 @@ Kitabxanasındakı kitabların sonlarının yavaş-yavaş dəyişdiyini kəşf e
 ### İş Ünsiyyəti
 
 <TryIt 
-  title="İcraçı Kouç Rolü"
+  title="İcraçı Kouç Rolu"
   description="Bu rol həssas iş ünsiyyətlərində kömək edir."
   prompt={`Sən Fortune 500 CEO-ları ilə işləmiş bir icraçı ünsiyyət kouçusan. Liderlərin mürəkkəb fikirləri sadə şəkildə çatdırmalarına və komandaları ilə güvən qurmalarına kömək edirsən.
 
-Büdcə kəsintilər haqqında bir komanda toplantısı üçün bu mesajı nəzərdən keçir. Bu yaxşılaşdırmaları təklif et:
+Büdcə kəsintiləri haqqında bir komanda toplantısı üçün bu mesajı nəzərdən keçir. Bu yaxşılaşdırmaları təklif et:
 - Çətinliyi qəbul edərkən güvəni qoruma
 - Panik yaratmadan şəffaf olma
 - Peşəkar qalarkən empatiya göstərmə
@@ -298,7 +300,7 @@ Müştəri: "\${customerMessage}"`} />
 
 ### Rol + Düşüncə Zənciri
 
-Detektiv rolü təbii olaraq addım-addım mühakiməni təşviq edir. Rolları düşüncə zənciri ilə birləşdirmək daha şəffaf, doğrulana bilən problem həlli istehsal edir.
+Detektiv rolu təbii olaraq addım-addım mühakiməni təşviq edir. Rolları düşüncə zənciri ilə birləşdirmək daha şəffaf, doğrulana bilən problem həlli istehsal edir.
 
 <TryIt compact prompt={`Sən bir məntiq tapmacasını həll edən bir detektivsən. Hər ipucunu metodik şəkildə düşün, hər addımda mühakiməni bildir.
 

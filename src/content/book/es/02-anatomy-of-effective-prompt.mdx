@@ -104,7 +104,7 @@ Las restricciones limitan la salida del modelo. Previenen problemas comunes y as
 
 **Restricciones de longitud:**
 ```
-"Mantén tu respuesta bajo 200 palabras"
+"Mantén tu respuesta por debajo de 200 palabras"
 "Proporciona exactamente 5 sugerencias"
 "Escribe 3-4 párrafos"
 ```
@@ -175,7 +175,7 @@ las instrucciones eran confusas."
 
 Los ejemplos son la forma más poderosa de mostrar al modelo exactamente lo que quieres.
 
-### Ejemplo de Un Solo Tiro
+### Ejemplo One-Shot (un solo ejemplo)
 
 ```
 Convierte estas oraciones a tiempo pasado.
@@ -188,7 +188,7 @@ Ahora convierte:
 Entrada: "Ellos corren cada mañana"
 ```
 
-### Ejemplo de Pocos Tiros
+### Ejemplo Few-Shot (pocos ejemplos)
 
 ```
 Clasifica estos tickets de soporte por urgencia.
@@ -229,6 +229,10 @@ Estructura la documentación como:
 2. Solicitud (método, URL, headers, body con ejemplo)
 3. Respuesta (ejemplos de éxito y error)
 4. Ejemplo de Código (en JavaScript/Node.js)
+
+# Ejemplo
+Imita el tono de esta descripción de error de nuestra documentación actual:
+"card_declined: El banco del cliente rechazó el cargo. Pídele que pruebe con otro método de pago."
 
 # Detalles del Endpoint
 POST /v1/payments/intents
@@ -293,7 +297,7 @@ Formato: Para cada característica, proporciona:
 1. Nombre de la característica
 2. Descripción de una oración
 3. Por qué importa para equipos remotos`}
-  description="Este prompt usa los seis componentes. Pruébalo y ve cómo el enfoque estructurado produce resultados enfocados y accionables."
+  description="Este prompt usa cinco de los seis componentes (todos menos los ejemplos). Pruébalo y ve cómo el enfoque estructurado produce resultados enfocados y accionables."
 />
 
 ## Construye Tu Propio Prompt

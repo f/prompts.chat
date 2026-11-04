@@ -47,11 +47,11 @@ Des entrées vagues produisent des sorties vagues. Des entrées spécifiques pro
 <SpecificitySpectrum levels={[
   { level: "Niveau 1", text: "Écris sur le changement climatique" },
   { level: "Niveau 2", text: "Écris un article sur les effets du changement climatique" },
-  { level: "Niveau 3", text: "Écris un article de 500 mots sur comment le changement climatique affecte les récifs coralliens" },
+  { level: "Niveau 3", text: "Écris un article de 500 mots sur la façon dont le changement climatique affecte les récifs coralliens" },
   { level: "Niveau 4", text: "Écris un article de 500 mots expliquant comment la hausse des températures océaniques cause le blanchissement des coraux, destiné aux lycéens, avec 2 exemples spécifiques de la Grande Barrière de Corail, dans un ton engageant mais scientifiquement précis" }
 ]} />
 
-Chaque niveau ajoute de la spécificité et améliore dramatiquement la qualité du résultat.
+Chaque niveau ajoute de la spécificité et améliore considérablement la qualité du résultat.
 
 ### Spécifiez Ces Éléments
 
@@ -84,19 +84,19 @@ Chaque niveau ajoute de la spécificité et améliore dramatiquement la qualité
 
 ## Principe 3 : Le Contexte Est Roi
 
-Les modèles n'ont pas de mémoire, pas d'accès à vos fichiers, et aucune connaissance de votre situation. Tout ce qui est pertinent doit être dans le prompt.
+Un modèle ne sait rien de votre situation au-delà de ce qui lui parvient dans la conversation. Même les assistants dotés d'une mémoire, de fichiers téléversés ou d'outils connectés ne voient que ce qui leur a réellement été communiqué, et ils s'en souviennent de façon sélective. Quand quelque chose compte, mettez-le dans le prompt.
 
 ### Fournissez un Contexte Suffisant
 
 <Compare 
   before={{ label: "Contexte insuffisant", content: "Pourquoi ma fonction ne marche pas ?" }}
-  after={{ label: "Contexte suffisant", content: "J'ai une fonction Python qui devrait filtrer une liste de dictionnaires par une valeur de clé spécifique. Elle retourne une liste vide alors qu'elle devrait retourner 3 éléments.\n\nFonction :\ndef filter_items(items, key, value):\n    return [item for item in items if item[key] = value]\n\nAppel : filter_items(items, 'status', 'active')\nAttendu : 2 éléments, Obtenu : liste vide" }}
+  after={{ label: "Contexte suffisant", content: "J'ai une fonction Python qui devrait filtrer une liste de dictionnaires par une valeur de clé spécifique. Elle retourne une liste vide alors qu'elle devrait retourner 3 éléments.\n\nFonction :\ndef filter_items(items, key, value):\n    return [item for item in items if item.get(key) == value]\n\nExemple d'élément : {'id': 7, 'status': 'active'}\nAppel : filter_items(items, 'Status', 'active')\nAttendu : 3 éléments, Obtenu : liste vide" }}
 />
 
 ### La Checklist du Contexte
 
 <Callout type="tip" title="Avant de Soumettre">
-Demandez-vous : Un étranger intelligent comprendrait-il cette demande ? Si non, ajoutez plus de contexte.
+Demandez-vous : un inconnu intelligent comprendrait-il cette demande ? Sinon, ajoutez plus de contexte.
 </Callout>
 
 <Checklist 
@@ -106,7 +106,7 @@ Demandez-vous : Un étranger intelligent comprendrait-il cette demande ? Si non,
     { text: "Connaît-il mon objectif ?" },
     { text: "A-t-il toutes les informations nécessaires ?" },
     { text: "Comprend-il les contraintes ?" },
-    { text: "Un étranger intelligent comprendrait-il cette demande ?" }
+    { text: "Un inconnu intelligent comprendrait-il cette demande ?" }
   ]}
 />
 
@@ -321,7 +321,7 @@ Liste tous les problèmes trouvés.
     "Itérez et Affinez"
   ]}
   correctIndex={2}
-  explanation="Le Contexte Est Roi souligne que les modèles d'IA n'ont pas de mémoire entre les sessions et ne peuvent pas lire dans vos pensées. Inclure le contexte, les contraintes et les objectifs pertinents aide le modèle à comprendre vos besoins."
+  explanation="Le Contexte Est Roi souligne que les modèles d'IA ne peuvent pas lire dans vos pensées : ils ne savent que ce qui leur parvient dans la conversation. Inclure le contexte, les contraintes et les objectifs pertinents aide le modèle à comprendre vos besoins."
 />
 
 ## Pratique : Remplissez les Blancs
@@ -349,11 +349,11 @@ Format : Retourne ta réponse sous forme de {{format}}.`}
     { id: "expertise", correctAnswers: [], hint: "Quelle connaissance spécifique du domaine est nécessaire ?", context: "Une compétence ou domaine qui correspond au rôle" },
     { id: "context", correctAnswers: [], hint: "Quel est le projet ou la situation ?", context: "Un projet sur lequel quelqu'un avec cette expertise travaillerait" },
     { id: "task", correctAnswers: [], hint: "Quelle action spécifique l'IA devrait-elle entreprendre ?", context: "Une action appropriée pour le rôle et le contexte" },
-    { id: "length", correctAnswers: [], hint: "Quelle longueur devrait avoir la réponse ?", context: "Un nombre (compte de mots)" },
+    { id: "length", correctAnswers: [], hint: "Quelle longueur devrait avoir la réponse ?", context: "Un nombre (de mots)" },
     { id: "focus", correctAnswers: [], hint: "Quel aspect devrait être priorisé ?", context: "Une qualité ou aspect pertinent pour la tâche" },
     { id: "format", correctAnswers: [], hint: "Comment la sortie devrait-elle être structurée ?", context: "Un type de format de sortie" }
   ]}
-  explanation="Un prompt bien structuré inclut : un rôle clair (Principe 1), un contexte suffisant (Principe 3), une tâche spécifique (Principe 2), des contraintes (Principe 4), et un format de sortie (Principe 5). L'IA vérifie si vos choix sont cohérents entre eux."
+  explanation="Un prompt bien structuré inclut un rôle clair (Principe 6), un contexte suffisant (Principe 3), une tâche spécifique assortie de contraintes (Principe 2) et un format de sortie explicite (Principe 7). L'IA vérifie si vos choix sont cohérents entre eux."
 />
 
 <InteractiveChecklist
@@ -362,10 +362,10 @@ Format : Retourne ta réponse sous forme de {{format}}.`}
     { id: "clarity", label: "La Clarté Avant l'Astuce", description: "Votre prompt est-il explicite et sans ambiguïté ?" },
     { id: "specificity", label: "La Spécificité Génère la Qualité", description: "Avez-vous inclus l'audience, la longueur, le ton et le format ?" },
     { id: "context", label: "Le Contexte Est Roi", description: "Le prompt inclut-il toutes les informations de contexte nécessaires ?" },
-    { id: "examples", label: "Les Exemples Valent Mieux que les Explications", description: "Avez-vous montré ce que vous voulez, pas seulement décrit ?" },
-    { id: "constraints", label: "Les Contraintes Focalisent la Sortie", description: "Y a-t-il des limites claires sur la portée et le format ?" },
+    { id: "guide", label: "Guidez, Ne Demandez Pas Seulement", description: "Avez-vous exposé les étapes ou le raisonnement attendus, au lieu de simplement demander une réponse ?" },
     { id: "iteration", label: "Itérez et Affinez", description: "Êtes-vous prêt à améliorer en fonction des résultats ?" },
-    { id: "persona", label: "La Persona Façonne la Perspective", description: "L'IA sait-elle quel rôle jouer ?" },
+    { id: "strengths", label: "Exploitez les Forces du Modèle", description: "Montrez-vous des patterns et utilisez-vous des rôles que le modèle maîtrise bien ?" },
+    { id: "structure", label: "Contrôlez la Structure de Sortie", description: "Avez-vous précisé le format exact dont vous avez besoin ?" },
     { id: "verify", label: "Vérifiez et Validez", description: "Avez-vous intégré des contrôles de précision ?" }
   ]}
 />

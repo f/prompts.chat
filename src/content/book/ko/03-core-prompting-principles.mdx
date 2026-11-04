@@ -84,13 +84,13 @@
 
 ## 원칙 3: 맥락이 가장 중요합니다
 
-모델은 기억이 없고, 여러분의 파일에 접근할 수 없으며, 여러분의 상황을 알지 못합니다. 관련된 모든 것이 프롬프트에 포함되어야 합니다.
+모델은 대화를 통해 전달된 것 외에는 여러분의 상황에 대해 아무것도 알지 못합니다. 메모리 기능, 업로드된 파일, 연결된 도구를 갖춘 어시스턴트라도 실제로 공유된 내용만 볼 수 있고, 그마저도 선택적으로 기억합니다. 중요한 것이 있다면 프롬프트에 담으세요.
 
 ### 충분한 맥락을 제공하세요
 
 <Compare 
   before={{ label: "맥락 부족", content: "내 함수가 왜 작동 안 해?" }}
-  after={{ label: "충분한 맥락", content: "특정 키 값으로 딕셔너리 목록을 필터링하는 Python 함수가 있습니다. 3개 항목을 반환해야 하는데 빈 리스트를 반환합니다.\n\n함수:\ndef filter_items(items, key, value):\n    return [item for item in items if item[key] = value]\n\n호출: filter_items(items, 'status', 'active')\n예상: 2개 항목, 결과: 빈 리스트" }}
+  after={{ label: "충분한 맥락", content: "특정 키 값으로 딕셔너리 목록을 필터링하는 Python 함수가 있습니다. 3개 항목을 반환해야 하는데 빈 리스트를 반환합니다.\n\n함수:\ndef filter_items(items, key, value):\n    return [item for item in items if item.get(key) == value]\n\n샘플 항목: {'id': 7, 'status': 'active'}\n호출: filter_items(items, 'Status', 'active')\n예상: 3개 항목, 결과: 빈 리스트" }}
 />
 
 ### 맥락 체크리스트
@@ -193,7 +193,7 @@
 
 ## 원칙 6: 모델의 강점을 활용하세요
 
-모델이 훈련된 방식에 맞춰 작업하세요, 거스르지 마세요.
+모델이 훈련된 방식을 거스르지 말고, 그 방식에 맞춰 작업하세요.
 
 ### 모델은 도움이 되고 싶어합니다
 
@@ -321,7 +321,7 @@
     "반복하고 개선하세요"
   ]}
   correctIndex={2}
-  explanation="'맥락이 가장 중요합니다'는 AI 모델이 세션 간 기억이 없고 여러분의 마음을 읽을 수 없다는 것을 강조합니다. 관련 배경, 제약 조건, 목표를 포함하면 모델이 여러분의 필요를 이해하는 데 도움이 됩니다."
+  explanation="'맥락이 가장 중요합니다'는 AI 모델이 여러분의 마음을 읽을 수 없으며, 대화를 통해 전달된 것만 알 수 있다는 점을 강조합니다. 관련 배경, 제약 조건, 목표를 포함하면 모델이 여러분의 필요를 이해하는 데 도움이 됩니다."
 />
 
 ## 연습: 빈칸 채우기
@@ -353,7 +353,7 @@
     { id: "focus", correctAnswers: [], hint: "어떤 측면을 우선시해야 하나요?", context: "작업과 관련된 품질이나 측면" },
     { id: "format", correctAnswers: [], hint: "출력은 어떻게 구조화되어야 하나요?", context: "출력 형식 유형" }
   ]}
-  explanation="잘 구조화된 프롬프트는 다음을 포함합니다: 명확한 역할 (원칙 1), 충분한 맥락 (원칙 3), 구체적인 작업 (원칙 2), 제약 조건 (원칙 4), 출력 형식 (원칙 5). AI는 여러분의 선택이 내부적으로 일관성이 있는지 확인합니다."
+  explanation="잘 구조화된 프롬프트는 다음을 포함합니다: 명확한 역할 (원칙 6), 충분한 맥락 (원칙 3), 제약 조건을 갖춘 구체적인 작업 (원칙 2), 명시적인 출력 형식 (원칙 7). AI는 여러분의 선택이 내부적으로 일관성이 있는지 확인합니다."
 />
 
 <InteractiveChecklist
@@ -362,10 +362,10 @@
     { id: "clarity", label: "명확함이 기교보다 중요합니다", description: "프롬프트가 명시적이고 모호하지 않은가요?" },
     { id: "specificity", label: "구체성이 품질을 결정합니다", description: "대상, 길이, 어조, 형식을 포함했나요?" },
     { id: "context", label: "맥락이 가장 중요합니다", description: "프롬프트에 필요한 모든 배경 정보가 포함되어 있나요?" },
-    { id: "examples", label: "예시가 설명보다 낫습니다", description: "원하는 것을 설명하기보다 보여주었나요?" },
-    { id: "constraints", label: "제약이 출력에 집중을 줍니다", description: "범위와 형식에 대한 명확한 경계가 있나요?" },
+    { id: "guide", label: "단순히 묻지 말고 안내하세요", description: "답만 요청하지 않고 원하는 단계나 추론 과정을 제시했나요?" },
     { id: "iteration", label: "반복하고 개선하세요", description: "결과에 따라 개선할 준비가 되어 있나요?" },
-    { id: "persona", label: "페르소나가 관점을 형성합니다", description: "AI가 어떤 역할을 해야 하는지 알고 있나요?" },
+    { id: "strengths", label: "모델의 강점을 활용하세요", description: "패턴을 보여주고 모델이 잘 다루는 역할을 활용하고 있나요?" },
+    { id: "structure", label: "출력 구조를 제어하세요", description: "필요한 형식을 정확히 지정했나요?" },
     { id: "verify", label: "검증하고 확인하세요", description: "정확성을 위한 점검을 포함했나요?" }
   ]}
 />

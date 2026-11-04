@@ -1,4 +1,4 @@
-Her harika prompt ortak yapısal elemanları paylaşır. Bu bileşenleri anlamak, deneme yanılma yerine sistematik olarak prompt oluşturmanızı sağlar.
+Harika promptların hepsinde ortak yapısal öğeler bulunur. Bu bileşenleri anlamak, deneme yanılmaya güvenmek yerine promptlarınızı sistematik olarak kurmanızı sağlar.
 
 <Callout type="tip" title="Yapı Taşları">
 Bu bileşenleri LEGO tuğlaları gibi düşünün. Her prompt için hepsine ihtiyacınız yok, ama nelerin mevcut olduğunu bilmek tam olarak ihtiyacınız olanı oluşturmanıza yardımcı olur.
@@ -21,11 +21,11 @@ Her bir bileşeni detaylı olarak inceleyelim.
 
 ## 1. Rol / Persona
 
-Bir rol belirlemek, modelin yanıtlarını belirli bir uzmanlık veya bakış açısı merceğinden odaklar.
+Bir rol belirlemek, modelin yanıtlarını belirli bir uzmanlığın veya bakış açısının merceğinden geçirerek odaklar.
 
 <Compare 
-  before={{ label: "Rolsüz", content: "Kuantum hesaplamayı açıkla." }}
-  after={{ label: "Rolle", content: "Sen karmaşık konuları yeni başlayanlar için erişilebilir hale getirmede uzmanlaşmış bir fizik profesörüsün. Kuantum hesaplamayı açıkla." }}
+  before={{ label: "Rol Olmadan", content: "Kuantum hesaplamayı açıkla." }}
+  after={{ label: "Rol İle", content: "Sen karmaşık konuları yeni başlayanlar için erişilebilir hale getirmede uzmanlaşmış bir fizik profesörüsün. Kuantum hesaplamayı açıkla." }}
 />
 
 Rol, modeli şunları yapmaya hazırlar:
@@ -37,14 +37,14 @@ Rol, modeli şunları yapmaya hazırlar:
 ### Etkili Rol Kalıpları
 
 ```
-"Sen [meslek] alanında [X yıl] deneyime sahip [uzmanlık] konusunda uzman birisin"
+"Sen [uzmanlık] alanında [X yıl] deneyime sahip bir [meslek]sin"
 "[karakteristik] olan bir [rol] gibi davran"
 "Sen [kitle türü]ne yardım eden uzman bir [alan] profesyonelisin"
 ```
 
 ## 2. Bağlam / Arka Plan
 
-Bağlam, modelin durumunuzu anlaması için gereken bilgiyi sağlar. Unutmayın: siz söylemedikçe model sizin, projenizin veya hedeflerinizin hakkında hiçbir şey bilmez.
+Bağlam, modelin durumunuzu anlaması için gereken bilgiyi sağlar. Unutmayın: siz söylemedikçe model ne sizin hakkınızda ne de projeniz veya hedefleriniz hakkında bir şey bilir.
 
 <Compare 
   before={{ label: "Zayıf Bağlam", content: "Kodumdaki bu hatayı düzelt." }}
@@ -60,7 +60,7 @@ Bağlam, modelin durumunuzu anlaması için gereken bilgiyi sağlar. Unutmayın:
 
 ## 3. Görev / Talimat
 
-Görev, promptunuzun kalbidir—modelin ne yapmasını istiyorsunuz. Spesifik ve belirsiz olmayın.
+Görev, promptunuzun kalbidir: modelden ne yapmasını istediğinizi söyler. Net olun ve yoruma yer bırakmayın.
 
 ### Özgüllük Spektrumu
 
@@ -76,7 +76,7 @@ Görev, promptunuzun kalbidir—modelin ne yapmasını istiyorsunuz. Spesifik ve
 <div className="my-4 grid gap-2">
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-32">Oluşturma</span>
-    <span className="text-muted-foreground">Yaz, Oluştur, Üret, Bestel, Tasarla</span>
+    <span className="text-muted-foreground">Yaz, Oluştur, Üret, Kaleme al, Tasarla</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-32">Analiz</span>
@@ -88,7 +88,7 @@ Görev, promptunuzun kalbidir—modelin ne yapmasını istiyorsunuz. Spesifik ve
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-32">Açıklama</span>
-    <span className="text-muted-foreground">Açıkla, Tanımla, Netleştir, Tanımı ver, Örnekle</span>
+    <span className="text-muted-foreground">Açıkla, Betimle, Netleştir, Tanımla, Örnekle</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-32">Problem Çözme</span>
@@ -98,7 +98,7 @@ Görev, promptunuzun kalbidir—modelin ne yapmasını istiyorsunuz. Spesifik ve
 
 ## 4. Kısıtlamalar / Kurallar
 
-Kısıtlamalar, modelin çıktısını sınırlar. Yaygın sorunları önler ve ilgililiği sağlar.
+Kısıtlamalar, modelin çıktısına sınır çizer. Yaygın sorunları önler ve yanıtın konudan sapmamasını sağlar.
 
 ### Kısıtlama Türleri
 
@@ -119,8 +119,8 @@ Kısıtlamalar, modelin çıktısını sınırlar. Yaygın sorunları önler ve 
 **Stil kısıtlamaları:**
 ```
 "Resmi, akademik bir ton kullan"
-"10 yaşında birine konuşur gibi yaz"
-"Doğrudan ol ve belirsiz dilden kaçın"
+"10 yaşındaki bir çocuğa anlatır gibi yaz"
+"Doğrudan ol ve kaçamak ifadelerden kaçın"
 ```
 
 **Kapsam kısıtlamaları:**
@@ -191,7 +191,7 @@ Girdi: "Her sabah koşuyorlar"
 ### Birkaç Örnek
 
 ```
-Bu destek biletlerini aciliyete göre sınıflandır.
+Bu destek taleplerini aciliyetine göre sınıflandır.
 
 Örnekler:
 "Hesabım hacklendi" → Kritik
@@ -207,7 +207,7 @@ Sınıflandır: "Ayarları açtığımda uygulama çöküyor"
 
 <TryIt 
   title="Tam Prompt Örneği"
-  description="Bu prompt, altı bileşenin birlikte çalıştığını gösterir. Yapılandırılmış promptların nasıl profesyonel sonuçlar ürettiğini görmek için deneyin."
+  description="Bu prompt, altı bileşenin birlikte nasıl çalıştığını gösterir. Yapılandırılmış promptların nasıl profesyonel sonuçlar ürettiğini görmek için deneyin."
   prompt={`# Rol
 Sen 10 yıllık deneyime sahip, geliştirici dokümantasyonu oluşturan kıdemli bir teknik yazarsın.
 
@@ -230,6 +230,10 @@ Dokümantasyonu şöyle yapılandır:
 3. Yanıt (başarı ve hata örnekleri)
 4. Kod Örneği (JavaScript/Node.js'te)
 
+# Örnek
+Mevcut dokümanlarımızdaki şu hata açıklamasının üslubunu yakala:
+"card_declined: Müşterinin bankası ödemeyi reddetti. Müşteriden farklı bir ödeme yöntemi denemesini isteyin."
+
 # Endpoint Detayları
 POST /v1/payments/intents
 Gövde: { "amount": 1000, "currency": "try", "description": "Sipariş #1234" }`}
@@ -237,17 +241,17 @@ Gövde: { "amount": 1000, "currency": "try", "description": "Sipariş #1234" }`}
 
 ## Minimal Etkili Prompt
 
-Her prompt'un tüm bileşenlere ihtiyacı yoktur. Basit görevler için net bir talimat yeterli olabilir:
+Her promptun tüm bileşenlere ihtiyacı yoktur. Basit görevler için net bir talimat yeterli olabilir:
 
 ```
-"Merhaba, nasılsınız?"ı İngilizce'ye çevir.
+"Merhaba, nasılsınız?" cümlesini İngilizceye çevir.
 ```
 
 Ek bileşenleri şu durumlarda kullanın:
-- Görev karmaşık veya belirsiz
-- Belirli formatlama gerekiyor
-- Sonuçlar beklentilerle eşleşmiyor
-- Birden fazla sorguda tutarlılık önemli
+- Görev karmaşık veya belirsizse
+- Belirli bir formatlama gerekiyorsa
+- Sonuçlar beklentilerinizi karşılamıyorsa
+- Birden fazla sorguda tutarlılık önemliyse
 
 ## Yaygın Prompt Kalıpları
 
@@ -262,7 +266,7 @@ Bu çerçeveler, prompt yazarken takip edebileceğiniz basit bir kontrol listesi
 Etkili promptlar inşa edilir, keşfedilmez. Bu yapısal bileşenleri anlayarak ve uygulayarak:
 
 - İlk denemede daha iyi sonuçlar alabilirsiniz
-- Çalışmayan promptları hata ayıklayabilirsiniz
+- Çalışmayan promptlardaki hataları ayıklayabilirsiniz
 - Yeniden kullanılabilir prompt şablonları oluşturabilirsiniz
 - Niyetlerinizi net bir şekilde iletebilirsiniz
 
@@ -293,7 +297,7 @@ Format: Her özellik için şunları sağla:
 1. Özellik adı
 2. Tek cümlelik açıklama  
 3. Uzaktan ekipler için neden önemli`}
-  description="Bu prompt altı bileşenin tümünü kullanır. Deneyin ve yapılandırılmış yaklaşımın nasıl odaklanmış, uygulanabilir sonuçlar ürettiğini görün."
+  description="Bu prompt altı bileşenden beşini kullanır (örnekler dışında hepsini). Deneyin ve yapılandırılmış yaklaşımın nasıl odaklanmış, uygulanabilir sonuçlar ürettiğini görün."
 />
 
 ## Kendi Promptunuzu Oluşturun
@@ -307,7 +311,7 @@ Format: Her özellik için şunları sağla:
 
 <PromptChallenge
   title="Bölüm Meydan Okuması: Kod İnceleme Promptu Oluşturun"
-  task="Bir yapay zekadan güvenlik açıklarına karşı kod incelemesini isteyen bir prompt yazın. Promptunuz uygulanabilir geri bildirim almak için yeterince spesifik olmalı."
+  task="Bir yapay zekadan kodu güvenlik açıkları açısından incelemesini isteyen bir prompt yazın. Promptunuz uygulanabilir geri bildirim almak için yeterince spesifik olmalı."
   criteria={[
     "Net bir rol veya uzmanlık seviyesi içerir",
     "Ne tür kod incelemesi olduğunu belirtir (güvenlik odaklı)",
@@ -321,9 +325,9 @@ Format: Her özellik için şunları sağla:
   ]}
   exampleSolution={`Sen web uygulaması güvenliği ve OWASP Top 10 açıklarında uzman kıdemli bir güvenlik mühendisisin.
 
-Görev: Aşağıdaki kodu güvenlik açıklarına karşı incele.
+Görev: Aşağıdaki kodu güvenlik açıkları açısından incele.
 
-Odaklan:
+Şunlara odaklan:
 - SQL enjeksiyon riskleri
 - XSS açıkları  
 - Kimlik doğrulama/yetkilendirme sorunları
@@ -340,4 +344,4 @@ Bulunan her sorun için:
   difficulty="intermediate"
 />
 
-Bir sonraki bölümde, prompt oluşturma kararlarına rehberlik eden temel prensipleri keşfedeceğiz.
+Bir sonraki bölümde, prompt oluşturma kararlarına yol gösteren temel ilkeleri keşfedeceğiz.

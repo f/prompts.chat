@@ -41,7 +41,7 @@ Formatteer als een markdown tabel met kolommen:
 />
 
 <Callout type="tip" title="Best Practices voor Tabellen">
-Specificeer kolomnamen, verwachte datatypes (tekst, getallen, beoordelingen) en hoeveel rijen je nodig hebt. Voor complexe vergelijkingen, beperk tot 4-6 kolommen voor leesbaarheid.
+Specificeer kolomnamen, verwachte datatypes (tekst, getallen, beoordelingen) en hoeveel rijen je nodig hebt. Beperk je bij complexe vergelijkingen tot 4-6 kolommen voor de leesbaarheid.
 </Callout>
 
 ### Koppen en Secties
@@ -60,7 +60,7 @@ Structureer je antwoord met deze secties:
 ```
 
 <Callout type="tip" title="Best Practices voor Secties">
-Geef je secties op in de volgorde waarin je ze wilt. Voor consistentie, specificeer wat elke sectie moet bevatten (bijv. "Managementsamenvatting: alleen 2-3 zinnen").
+Geef je secties op in de volgorde waarin je ze wilt. Specificeer voor consistentie wat elke sectie moet bevatten (bijv. "Managementsamenvatting: alleen 2-3 zinnen").
 </Callout>
 
 ### Nadruk met Hoofdletteraanwijzingen
@@ -70,12 +70,12 @@ Woorden in hoofdletters fungeren als sterke signalen naar het model, die kritiek
 **Veelvoorkomende Hoofdletteraanwijzingen:**
 
 <InfoGrid items={[
-  { label: "NEVER", description: "Absoluut verbod: \"NEVER include personal opinions\"", color: "red" },
-  { label: "ALWAYS", description: "Verplichte vereiste: \"ALWAYS cite sources\"", color: "green" },
-  { label: "IMPORTANT", description: "Kritieke instructie: \"IMPORTANT: Keep responses under 100 words\"", color: "amber" },
-  { label: "DO NOT", description: "Sterk verbod: \"DO NOT make up statistics\"", color: "red" },
-  { label: "MUST", description: "Vereiste actie: \"Output MUST be valid JSON\"", color: "blue" },
-  { label: "ONLY", description: "Beperking: \"Return ONLY the code, no explanations\"", color: "purple" },
+  { label: "NEVER", description: "Absoluut verbod: 'NEVER voeg persoonlijke meningen toe'", color: "red" },
+  { label: "ALWAYS", description: "Verplichte vereiste: 'ALWAYS vermeld bronnen'", color: "green" },
+  { label: "IMPORTANT", description: "Kritieke instructie: 'IMPORTANT: Houd antwoorden onder 100 woorden'", color: "amber" },
+  { label: "DO NOT", description: "Sterk verbod: 'DO NOT verzin statistieken'", color: "red" },
+  { label: "MUST", description: "Vereiste actie: 'Output MUST geldige JSON zijn'", color: "blue" },
+  { label: "ONLY", description: "Beperking: 'Retourneer ONLY de code, geen uitleg'", color: "purple" },
 ]} />
 
 ```
@@ -117,7 +117,7 @@ Tekst: "Apple Inc., opgericht in 1976, heeft zijn hoofdkantoor in Cupertino, Cal
 
 ### Complexe JSON-structuren
 
-Voor geneste data, gebruik hiërarchische JSON met objecten binnen objecten, arrays van objecten en gemengde types. Definieer elk niveau duidelijk en gebruik TypeScript-stijl annotaties (`"positive" | "negative"`) om waarden te beperken.
+Gebruik voor geneste data hiërarchische JSON met objecten binnen objecten, arrays van objecten en gemengde types. Definieer elk niveau duidelijk en gebruik TypeScript-stijl annotaties (`"positive" | "negative"`) om waarden te beperken.
 
 ```
 Analyseer deze productrecensie en retourneer JSON:
@@ -170,6 +170,10 @@ Retourneer het resultaat als een JSON codeblok:
 ```
 ````
 
+<Callout type="info" title="Ingebouwde Gestructureerde Output">
+Roep je een model aan via een API, dan hoef je niet alleen op je formulering te vertrouwen. OpenAI, Anthropic en Google bieden allemaal modi voor gestructureerde output die een JSON Schema accepteren en het antwoord daaraan binden, zodat verplichte velden en toegestane waarden worden afgedwongen in plaats van alleen gevraagd. Oudere opties zoals "JSON mode" garanderen alleen syntactisch geldige JSON, niet je schema. Ook als een schema wordt afgedwongen, kunnen de waarden zelf nog steeds onjuist zijn, dus blijf valideren wat ertoe doet.
+</Callout>
+
 ## YAML Output
 
 YAML is beter leesbaar voor mensen dan JSON, met inspringingen in plaats van haakjes. Het is de standaard voor configuratiebestanden (Docker, Kubernetes, GitHub Actions) en werkt goed wanneer de output door mensen gelezen wordt of in DevOps-contexten gebruikt wordt. YAML is gevoelig voor inspringingen, dus wees specifiek over formatteringsvereisten.
@@ -181,14 +185,14 @@ YAML is beter leesbaar voor mensen dan JSON, met inspringingen in plaats van haa
 
 Retourneer als geldige YAML:
 - Inclusief: install, lint, test, build fases
-- Gebruik Node.js 18
+- Gebruik de huidige LTS-release van Node.js
 - Cache npm dependencies
 - Voer uit bij push naar main en pull requests`}
 />
 
 ## XML Output
 
-XML is nog steeds vereist voor veel enterprise-systemen, SOAP API's en legacy-integraties. Het is uitgebreider dan JSON maar biedt functies zoals attributen, namespaces en CDATA-secties voor complexe data. Specificeer elementnamen, neststructuur en waar attributen versus child-elementen te gebruiken.
+XML is nog steeds vereist voor veel enterprise-systemen, SOAP API's en legacy-integraties. Het is uitgebreider dan JSON maar biedt functies zoals attributen, namespaces en CDATA-secties voor complexe data. Specificeer elementnamen, neststructuur en waar je attributen versus child-elementen gebruikt.
 
 ```
 Converteer deze data naar XML-formaat:
@@ -237,7 +241,7 @@ Testdekking: [geschat %]
 
 ### Invulformaat
 
-Sjablonen met lege plekken (___) leiden het model om specifieke velden in te vullen terwijl de exacte formattering behouden blijft. Deze aanpak is uitstekend voor formulieren, briefs en gestandaardiseerde documenten waar consistentie belangrijk is.
+Sjablonen met lege plekken (___) brengen het model ertoe specifieke velden in te vullen terwijl de exacte formattering behouden blijft. Deze aanpak is uitstekend voor formulieren, briefs en gestandaardiseerde documenten waar consistentie belangrijk is.
 
 ```
 Vul dit sjabloon in voor het gegeven product:
@@ -324,7 +328,7 @@ Als MEDIUM (enkele gebruiker getroffen, workaround bestaat):
 Als LOW (vragen, functie-aanvragen):
   Retourneer: 🟢 LOW | [Categorie] | [Voorgestelde Actie]
 
-Ticket: "Ik kan niet inloggen op mijn account. Ik heb twee keer geprobeerd mijn wachtwoord te resetten maar krijg nog steeds een foutmelding. Dit blokkeert mijn hele team om toegang te krijgen tot het dashboard."`}
+Ticket: "Ik kan niet inloggen op mijn account. Ik heb twee keer geprobeerd mijn wachtwoord te resetten maar krijg nog steeds een foutmelding. Hierdoor kan mijn hele team niet bij het dashboard."`}
 />
 
 ## Arrays en Lijsten in JSON
@@ -353,7 +357,7 @@ Verslag: "[vergaderverslag]"
 
 ## Validatie-instructies
 
-Zelfvalidatie vraagt het model om zijn eigen output te controleren voordat het antwoordt. Dit vangt veelvoorkomende problemen op zoals ontbrekende secties, placeholder-tekst of overtredingen van beperkingen. Het model zal intern itereren om problemen op te lossen, wat de outputkwaliteit verbetert zonder extra API-aanroepen.
+Zelfvalidatie vraagt het model om zijn eigen output te controleren voordat het antwoordt. Dit vangt veelvoorkomende problemen op zoals ontbrekende secties, placeholder-tekst of overtredingen van beperkingen. Dit verbetert de kwaliteit vaak zonder extra API-aanroep, maar het is geen garantie: een model kan melden dat een controle geslaagd is terwijl dat niet zo is, dus controleer kritieke output toch ook in je eigen code.
 
 ```
 Genereer het rapport, controleer dan:

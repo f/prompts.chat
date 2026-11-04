@@ -24,7 +24,7 @@
 역할을 설정하면 모델의 응답이 특정 전문성이나 관점의 렌즈를 통해 집중됩니다.
 
 <Compare 
-  before={{ label: "역할 없이", content: "양자 컴퓨팅을 설명해 주세요." }}
+  before={{ label: "역할 없음", content: "양자 컴퓨팅을 설명해 주세요." }}
   after={{ label: "역할 있음", content: "당신은 복잡한 주제를 초보자가 이해하기 쉽게 설명하는 것을 전문으로 하는 물리학 교수입니다. 양자 컴퓨팅을 설명해 주세요." }}
 />
 
@@ -230,6 +230,10 @@ Structure the documentation as:
 3. Response (success and error examples)
 4. Code Example (in JavaScript/Node.js)
 
+# Example
+Match the tone of this error description from our existing docs:
+"card_declined: The customer's bank declined the charge. Ask them to try a different payment method."
+
 # Endpoint Details
 POST /v1/payments/intents
 Body: { "amount": 1000, "currency": "usd", "description": "Order #1234" }`}
@@ -293,7 +297,7 @@ Format: For each feature, provide:
 1. Feature name
 2. One-sentence description  
 3. Why it matters for remote teams`}
-  description="이 프롬프트는 6가지 구성 요소를 모두 사용합니다. 시도해 보고 구조화된 접근 방식이 어떻게 집중적이고 실행 가능한 결과를 생성하는지 확인하세요."
+  description="이 프롬프트는 6가지 구성 요소 중 5가지(예시를 제외한 전부)를 사용합니다. 시도해 보고 구조화된 접근 방식이 어떻게 집중적이고 실행 가능한 결과를 생성하는지 확인하세요."
 />
 
 ## 나만의 프롬프트 만들기

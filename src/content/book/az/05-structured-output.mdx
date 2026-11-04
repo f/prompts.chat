@@ -24,7 +24,7 @@ Hər məsləhət qalın olmalı, ardından tire və izahat gəlməlidir.`}
 />
 
 <Callout type="tip" title="Siyahı Ən Yaxşı Təcrübələri">
-İstədiyiniz tam element sayısını, izahatların daxil edilib-edilməyəcəyini və elementlərin qalın mı yoxsa müəyyən bir strukturda mı olması lazım olduğunu göstərin.
+İstədiyiniz dəqiq element sayını, izahatların daxil edilib-edilməyəcəyini və elementlərin qalın yazılmalı olub-olmadığını və ya müəyyən bir struktura malik olmalı olduğunu göstərin.
 </Callout>
 
 ### Cədvəllər
@@ -73,7 +73,7 @@ Böyük hərfli sözlər modelə güclü siqnallar kimi davranır, kritik məhdu
   { label: "ƏSLA", description: "Mütləq qadağa: \"ƏSLA şəxsi fikir əlavə etmə\"", color: "red" },
   { label: "HƏMİŞƏ", description: "Məcburi tələb: \"HƏMİŞƏ mənbə göstər\"", color: "green" },
   { label: "VACİB", description: "Kritik təlimat: \"VACİB: Cavabları 100 sözdən az saxla\"", color: "amber" },
-  { label: "ETMƏ", description: "Güclü qadağa: \"Statistika uyduRMA\"", color: "red" },
+  { label: "ETMƏ", description: "Güclü qadağa: \"Statistika uydurMA\"", color: "red" },
   { label: "OLMALIDIR", description: "Tələb olunan hərəkət: \"Çıxış etibarlı JSON OLMALIDIR\"", color: "blue" },
   { label: "YALNIZ", description: "Məhdudiyyət: \"YALNIZ kodu qaytar, izahat yox\"", color: "purple" },
 ]} />
@@ -88,7 +88,7 @@ HƏMİŞƏ orijinal ton və perspektivi qoru.
 ```
 
 <Callout type="warning" title="Ehtiyatla İstifadə Et">
-Hər şey böyük hərf və ya kritik olaraq işarələnirsə, heç nə öne çıxmır. Bu direktivləri həqiqətən vacib məhdudiyyətlər üçün saxlayın.
+Hər şey böyük hərf və ya kritik olaraq işarələnirsə, heç nə önə çıxmır. Bu direktivləri həqiqətən vacib məhdudiyyətlər üçün saxlayın.
 </Callout>
 
 ## JSON Çıxış
@@ -112,7 +112,7 @@ JSON (JavaScript Object Notation), strukturlaşdırılmış süni intellekt çı
     "sektor": "string"
 }
 
-Mətn: "1976-cı ildə qurulan Apple Inc., mərkəzi Cupertino, Kaliforniyadır. Texnologiya nəhəngi dünya üzrə təxminən 164.000 nəfər işə götürür."`}
+Mətn: "1976-cı ildə qurulan Apple Inc.-in mərkəzi Kaliforniyanın Cupertino şəhərindədir. Texnologiya nəhəngi dünya üzrə təxminən 164.000 nəfər işə götürür."`}
 />
 
 ### Mürəkkəb JSON Strukturları
@@ -170,9 +170,13 @@ Nəticəni JSON kod bloku olaraq qaytar:
 ```
 ````
 
+<Callout type="info" title="Daxili Strukturlaşdırılmış Çıxışlar">
+Modeli API vasitəsilə çağırırsınızsa, yalnız ifadələrə güvənmək məcburiyyətində deyilsiniz. OpenAI, Anthropic və Google bir JSON Schema qəbul edən və cavabı ona uyğun gəlməyə məcbur edən strukturlaşdırılmış çıxış rejimləri təklif edir; beləliklə, tələb olunan sahələr və icazə verilən dəyərlər sadəcə xahiş edilmir, məcburi tətbiq olunur. Köhnə "JSON rejimi" seçimləri yalnız sintaktik cəhətdən etibarlı JSON-a zəmanət verir, sizin sxeminizə yox. Sxem məcburi tətbiq olunsa belə, dəyərlərin özləri yenə də səhv ola bilər, buna görə vacib olanları doğrulamağa davam edin.
+</Callout>
+
 ## YAML Çıxış
 
-YAML, mötərizələr əvəzinə girintidən istifadə edərək JSON-dan daha insan tərəfindən oxuna bilirdir. Konfiqurasiya faylları (Docker, Kubernetes, GitHub Actions) üçün standartdır və çıxış insanlar tərəfindən oxunacaqsa və ya DevOps kontekstlərində istifadə ediləcəksə yaxşı işləyir. YAML girintiyə həssasdır, buna görə formatlama tələbləri haqqında spesifik olun.
+YAML, mötərizələr əvəzinə girintidən istifadə edərək JSON-dan daha asan oxunur. Konfiqurasiya faylları (Docker, Kubernetes, GitHub Actions) üçün standartdır və çıxış insanlar tərəfindən oxunacaqsa və ya DevOps kontekstlərində istifadə ediləcəksə yaxşı işləyir. YAML girintiyə həssasdır, buna görə formatlama tələbləri haqqında spesifik olun.
 
 <TryIt 
   compact
@@ -181,7 +185,7 @@ YAML, mötərizələr əvəzinə girintidən istifadə edərək JSON-dan daha in
 
 Etibarlı YAML olaraq qaytar:
 - Daxil et: yüklə, lint, test, build mərhələləri
-- Node.js 18 istifadə et
+- Node.js-in cari LTS buraxılışını istifadə et
 - npm asılılıqlarını keşlə
 - main-ə push və pull request-lərdə işlət`}
 />
@@ -267,10 +271,10 @@ Tipli cavablar, modelin tanıması və etiketləməsi lazım olan kateqoriyalar�
   prompt={`Bu mətndən varlıqları çıxar.
 
 Varlıq Növləri:
-- ŞƏX: Şəxslərin tam adları
+- ŞƏXS: Şəxslərin tam adları
 - TƏŞKİLAT: Təşkilat/şirkət adları
 - MƏKAN: Şəhərlər, ölkələr, ünvanlar
-- TARİX: ISO formatında tariXlər (YYYY-AA-GG)
+- TARİX: ISO formatında tarixlər (YYYY-AA-GG)
 - PUL: Valyuta ilə pul məbləğləri
 
 Hər birini belə formatla: [NÖV]: [dəyər]
@@ -280,7 +284,7 @@ Mətn: "Tim Cook, Apple-ın Dekabr 2024-ə qədər yeni bir Austin obyektinə 1 
 
 ## Çox Hissəli Strukturlaşdırılmış Cavablar
 
-Bir neçə aspekti əhatə edən hərtərəfli çıxışa ehtiyacınız olduqda, aydın sərhədlərlə ayrı hissələr təyin edin. Hər hissəyə tam olaraq nəyin gedəcəyini göstərin—format, uzunluq və məzmun növü. Bu, modelin bölmələri qarışdırmasını və ya hissələri atlamasını önləyir.
+Bir neçə aspekti əhatə edən hərtərəfli çıxışa ehtiyacınız olduqda, aydın sərhədlərlə ayrı hissələr təyin edin. Hər hissəyə tam olaraq nəyin gedəcəyini göstərin: format, uzunluq və məzmun növü. Bu, modelin bölmələri qarışdırmasının və ya hissələri atlamasının qarşısını alır.
 
 ```
 Bu mövzunu araşdır və bunları təmin et:
@@ -299,13 +303,13 @@ Bu mövzunu araşdır və bunları təmin et:
 ### BÖLMƏ 4: TÖVSİYƏLƏR
 [3 hərəkətə çevrilə bilən tövsiyənin nömrələnmiş siyahısı]
 
-### BÖLMƏ 5: ƏLAVƏİ OXUMA
+### BÖLMƏ 5: ƏLAVƏ OXU
 [Qısa təsvirlərlə 3 tövsiyə edilən mənbə]
 ```
 
 ## Şərti Formatlama
 
-Şərti formatlama, girişin xüsusiyyətlərinə görə fərqli çıxış formatları təyin etməyə imkan verir. Bu, cavab formatının modelin algıladığına görə dəyişməli olan təsnifat, triyaj və yönləndirmə sistemləri üçün güclüdür. Hər hal üçün açıq şablonlarla aydın if/then məntiqi istifadə edin.
+Şərti formatlama, girişin xüsusiyyətlərinə görə fərqli çıxış formatları təyin etməyə imkan verir. Bu, cavab formatının modelin aşkarladığına görə dəyişməli olan təsnifat, triyaj və yönləndirmə sistemləri üçün güclüdür. Hər hal üçün açıq şablonlarla aydın if/then məntiqi istifadə edin.
 
 <TryIt 
   compact
@@ -353,7 +357,7 @@ Transkript: "[görüş transkripti]"
 
 ## Doğrulama Təlimatları
 
-Öz-doğrulama, modeli cavab verməzdən əvvəl öz çıxışını yoxlamağa yönəldir. Bu, əksik bölmələr, yer tutucu mətn və ya məhdudiyyət pozuntuları kimi ümumi problemləri tutur. Model, əlavə API çağırışları olmadan çıxış keyfiyyətini yaxşılaşdıraraq problemləri düzəltmək üçün daxili olaraq iterasiya edir.
+Öz-doğrulama, modeli cavab verməzdən əvvəl öz çıxışını yoxlamağa yönəldir. Bu, əksik bölmələr, yer tutucu mətn və ya məhdudiyyət pozuntuları kimi ümumi problemləri tutur. Bu, çox vaxt əlavə API çağırışı olmadan keyfiyyəti yaxşılaşdırır, amma zəmanət deyil: model yoxlamadan keçmədiyi halda keçdiyini bildirə bilər, buna görə kritik çıxışı yenə də öz kodunuzda doğrulayın.
 
 ```
 Hesabatı yarat, sonra:
