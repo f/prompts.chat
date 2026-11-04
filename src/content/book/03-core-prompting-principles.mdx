@@ -84,13 +84,13 @@ Each level adds specificity and dramatically improves output quality.
 
 ## Principle 3: Context Is King
 
-Models have no memory, no access to your files, and no knowledge of your situation. Everything relevant must be in the prompt.
+A model knows nothing about your situation beyond what reaches it in the conversation. Even assistants with memory features, uploaded files, or connected tools see only what has actually been shared with them, and they recall it selectively. When something matters, put it in the prompt.
 
 ### Provide Sufficient Context
 
 <Compare 
   before={{ label: "Insufficient context", content: "Why isn't my function working?" }}
-  after={{ label: "Sufficient context", content: "I have a Python function that should filter a list of dictionaries by a specific key value. It's returning an empty list when it should return 3 items.\n\nFunction:\ndef filter_items(items, key, value):\n    return [item for item in items if item[key] = value]\n\nCall: filter_items(items, 'status', 'active')\nExpected: 2 items, Got: empty list" }}
+  after={{ label: "Sufficient context", content: "I have a Python function that should filter a list of dictionaries by a specific key value. It's returning an empty list when it should return 3 items.\n\nFunction:\ndef filter_items(items, key, value):\n    return [item for item in items if item.get(key) == value]\n\nSample item: {'id': 7, 'status': 'active'}\nCall: filter_items(items, 'Status', 'active')\nExpected: 3 items, Got: empty list" }}
 />
 
 ### The Context Checklist
@@ -321,7 +321,7 @@ List any issues found.
     "Iterate and Refine"
   ]}
   correctIndex={2}
-  explanation="Context Is King emphasizes that AI models have no memory between sessions and cannot read your mind. Including relevant background, constraints, and goals helps the model understand your needs."
+  explanation="Context Is King emphasizes that AI models cannot read your mind: they only know what reaches them in the conversation. Including relevant background, constraints, and goals helps the model understand your needs."
 />
 
 ## Practice: Fill in the Blanks
@@ -353,7 +353,7 @@ Format: Return your answer as {{format}}.`}
     { id: "focus", correctAnswers: [], hint: "What aspect should be prioritized?", context: "A quality or aspect relevant to the task" },
     { id: "format", correctAnswers: [], hint: "How should the output be structured?", context: "An output format type" }
   ]}
-  explanation="A well-structured prompt includes: a clear role (Principle 1), sufficient context (Principle 3), specific task (Principle 2), constraints (Principle 4), and output format (Principle 5). The AI checks if your choices are internally consistent."
+  explanation="A well-structured prompt includes a clear role (Principle 6), sufficient context (Principle 3), a specific task with constraints (Principle 2), and an explicit output format (Principle 7). The AI checks if your choices are internally consistent."
 />
 
 <InteractiveChecklist
@@ -362,10 +362,10 @@ Format: Return your answer as {{format}}.`}
     { id: "clarity", label: "Clarity Over Cleverness", description: "Is your prompt explicit and unambiguous?" },
     { id: "specificity", label: "Specificity Yields Quality", description: "Have you included audience, length, tone, and format?" },
     { id: "context", label: "Context Is King", description: "Does the prompt include all necessary background information?" },
-    { id: "examples", label: "Examples Beat Explanations", description: "Have you shown what you want, not just described it?" },
-    { id: "constraints", label: "Constraints Focus Output", description: "Are there clear boundaries on scope and format?" },
+    { id: "guide", label: "Guide, Don't Just Ask", description: "Have you laid out the steps or reasoning you want, not just asked for an answer?" },
     { id: "iteration", label: "Iterate and Refine", description: "Are you prepared to improve based on results?" },
-    { id: "persona", label: "Persona Shapes Perspective", description: "Does the AI know what role to play?" },
+    { id: "strengths", label: "Leverage the Model's Strengths", description: "Are you showing patterns and using roles the model handles well?" },
+    { id: "structure", label: "Control Output Structure", description: "Have you specified the exact format you need?" },
     { id: "verify", label: "Verify and Validate", description: "Have you built in checks for accuracy?" }
   ]}
 />
