@@ -30,16 +30,28 @@ Ricorda dai capitoli precedenti: l'IA ha una "finestra di contesto" limitata - l
 ## L'IA è Stateless
 
 <Callout type="warning" title="Concetto Importante">
-L'IA non ricorda nulla tra le conversazioni. Ogni chiamata API parte da zero. Se vuoi che l'IA "ricordi" qualcosa, DEVI includerlo nel contesto ogni volta.
+L'IA non ricorda nulla tra le conversazioni. Il modello comincia ogni chiamata API con la memoria vuota. Se vuoi che l'IA "ricordi" qualcosa, deve trovarsi nel contesto ogni volta, e qualcuno deve mettercelo. Di solito quel qualcuno è la TUA app, anche quando un provider conserva la conversazione per te per un po'.
 </Callout>
 
-Ecco perché i chatbot inviano l'intera cronologia della conversazione con ogni messaggio. Non è che l'IA ricorda - è che l'app re-invia tutto.
+Ecco perché i chatbot di solito inviano l'intera cronologia della conversazione con ogni messaggio. Non è che l'IA ricorda - è che l'app re-invia tutto.
 
 <TryIt compact prompt={`Fai finta che questa sia una nuova conversazione senza cronologia.
 
 Di cosa ti ho appena chiesto?`} />
 
 L'IA dirà che non lo sa perché veramente non ha accesso a nessun contesto precedente.
+
+### Chi porta la cronologia?
+
+Per molto tempo, la storia finiva qui: ogni richiesta si portava dietro l'intera conversazione, dal primo saluto all'ultima domanda. Da qualche tempo, però, diverse API di modelli offrono una soluzione più gentile. Il provider può conservare la conversazione sui propri server per un certo tempo. La tua app invia la prima richiesta per intero e, da lì in poi, solo i messaggi nuovi, insieme a un piccolo riferimento alla risposta precedente. Dall'altra parte, il provider ricuce i pezzi prima che il modello li legga.
+
+Vale la pena essere precisi su che cosa è cambiato. Il modello resta stateless. Da solo non ricorda nulla e, a ogni turno, rilegge l'intero contesto dall'inizio alla fine. Ciò che si è spostato è il compito di portare la cronologia: ora una parte la porta il provider, invece che tutta la tua app. Per questo la finestra di contesto si riempie con la stessa rapidità e i token vengono comunque contati. Il guadagno sta soprattutto nella velocità e in un traffico più leggero: meno dati viaggiano in rete e le prime parole della risposta compaiono dopo un'attesa più breve. Conta soprattutto per gli agenti che lavorano a lungo, come gli assistenti di programmazione che accumulano risultati degli strumenti, gli agenti che usano il computer e scattano uno screenshot dopo l'altro, e i flussi di lavoro carichi di documenti e immagini.
+
+Incontrerai questa idea sotto nomi diversi. La Messages API di Anthropic la chiama **message threads** (thread di messaggi), in beta pubblica mentre scriviamo: la prima richiesta crea un thread e ogni richiesta successiva riparte dall'id della risposta precedente, inviando solo i messaggi nuovi. Anthropic riferisce che, per richieste molto grandi, da mezzo milione di token in su, il tempo di attesa mediano fino al primo token è sceso di circa il 35%. Nella Responses API di OpenAI puoi agganciare un nuovo turno a uno precedente con `previous_response_id`, e la Gemini Interactions API di Google fa più o meno lo stesso con `previous_interaction_id`. I dettagli cambiano da provider a provider, quindi consulta la documentazione aggiornata prima di costruirci sopra.
+
+<Callout type="warning" title="Un filo in prestito">
+Una conversazione conservata sul server è una comodità, non un archivio. Può scadere: i thread di messaggi di Anthropic decadono dopo circa cinque minuti senza richieste, e gli altri provider conservano le risposte salvate solo per un tempo limitato, o per niente se disattivi il salvataggio. Quando il thread non c'è più, bisogna inviare di nuovo l'intera conversazione. Per questo la tua app, o l'harness che avvolge il tuo agente, dovrebbe sempre tenere una propria copia della cronologia ed essere pronta a rinviarla. E tutto ciò che vuoi che l'IA ricordi per giorni o settimane resta compito tuo: riassumilo, come spiega la sezione Riassunto più avanti, oppure conservalo come memoria duratura, come fanno i bot del capitolo [Bot sempre attivi: agenti che continuano a lavorare](/book/28-persistent-bots).
+</Callout>
 
 ## RAG: Retrieval-Augmented Generation
 
@@ -275,7 +287,7 @@ Questa piattaforma ha un server MCP! Puoi connetterlo a Claude Desktop o altri c
 
 Il context engineering riguarda dare all'IA le informazioni giuste:
 
-- **L'IA è stateless** - includi tutto ciò di cui ha bisogno ogni volta
+- **L'IA è stateless** - il modello non ricorda nulla, quindi tutto ciò che gli serve deve essere nel contesto ogni volta, anche se un provider conserva brevemente la conversazione per te
 - **RAG** recupera documenti rilevanti per arricchire i prompt
 - **Embeddings** abilitano la ricerca semantica (significato, non solo parole chiave)
 - **Function calling** permette all'IA di usare strumenti esterni

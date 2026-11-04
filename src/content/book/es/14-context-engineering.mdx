@@ -30,16 +30,28 @@ Recuerda de capítulos anteriores: la IA tiene una "ventana de contexto" limitad
 ## La IA es Sin Estado
 
 <Callout type="warning" title="Concepto Importante">
-La IA no recuerda nada entre conversaciones. Cada llamada API comienza fresca. Si quieres que la IA "recuerde" algo, TÚ tienes que incluirlo en el contexto cada vez.
+La IA no recuerda nada entre conversaciones. El modelo empieza cada llamada a la API con la memoria en blanco. Si quieres que la IA "recuerde" algo, tiene que estar en el contexto cada vez, y alguien tiene que ponerlo ahí. Casi siempre ese alguien es TU aplicación, incluso cuando un proveedor guarda la conversación por ti durante un rato.
 </Callout>
 
-Por esto los chatbots envían tu historial completo de conversación con cada mensaje. No es que la IA recuerde - es que la app re-envía todo.
+Por esto los chatbots suelen enviar tu historial completo de conversación con cada mensaje. No es que la IA recuerde - es que la app re-envía todo.
 
 <TryIt compact prompt={`Finge que esta es una nueva conversación sin historial.
 
 ¿Sobre qué te acabo de preguntar?`} />
 
 La IA dirá que no sabe porque verdaderamente no tiene acceso a ningún contexto anterior.
+
+### ¿Quién lleva el historial?
+
+Durante mucho tiempo, eso era todo: cada petición cargaba con la conversación entera, desde el primer saludo hasta la última pregunta. Últimamente, varias API de modelos ofrecen un arreglo más amable. El proveedor puede guardar la conversación en sus propios servidores durante un tiempo. Tu aplicación envía la primera petición completa y, a partir de ahí, solo los mensajes nuevos, junto con una pequeña referencia a la respuesta anterior. Al otro lado, el proveedor vuelve a unir las piezas antes de que el modelo las lea.
+
+Conviene ser precisos sobre qué ha cambiado. El modelo sigue siendo sin estado. No recuerda nada por sí mismo y, en cada turno, vuelve a leer el contexto completo de principio a fin. Lo que se ha movido es la tarea de cargar con el historial, que ahora viaja en parte con el proveedor en lugar de ir entera con tu aplicación. Por eso la ventana de contexto se llena igual de rápido y los tokens se siguen contando. La ganancia está sobre todo en la velocidad y en un tráfico más ligero: viajan menos datos por la red y las primeras palabras de la respuesta aparecen tras una espera más corta. Eso importa sobre todo en los agentes que trabajan durante mucho tiempo, como los asistentes de programación que van acumulando resultados de herramientas, los agentes que usan el ordenador y toman una captura de pantalla tras otra, y los flujos de trabajo cargados de documentos e imágenes.
+
+Encontrarás esta idea con distintos nombres. La Messages API de Anthropic la llama **message threads** (hilos de mensajes), en beta pública en el momento de escribir esto: la primera petición crea un hilo, y cada petición posterior continúa desde el id de la respuesta anterior, enviando solo los mensajes nuevos. Anthropic informa de que, en peticiones muy grandes, de medio millón de tokens o más, la mediana del tiempo de espera hasta el primer token bajó alrededor de un 35%. En la Responses API de OpenAI puedes encadenar un turno nuevo a uno anterior con `previous_response_id`, y la Gemini Interactions API de Google hace algo muy parecido con `previous_interaction_id`. Los detalles cambian de un proveedor a otro, así que consulta la documentación actual antes de construir sobre cualquiera de ellos.
+
+<Callout type="warning" title="Un hilo prestado">
+Una conversación guardada en el servidor es una comodidad, no un archivo. Puede caducar: los hilos de mensajes de Anthropic expiran tras unos cinco minutos sin peticiones, y los demás proveedores conservan las respuestas almacenadas solo durante un tiempo limitado, o nada en absoluto si desactivas el almacenamiento. Cuando el hilo desaparece, hay que volver a enviar la conversación completa. Por eso tu aplicación, o el harness que rodea a tu agente, debe guardar siempre su propia copia del historial y estar lista para reenviarla. Y todo lo que quieras que la IA recuerde durante días o semanas sigue siendo tarea tuya: resúmelo, como se explica en la sección Resumen más abajo, o guárdalo como memoria duradera, como hacen los bots del capítulo [Bots siempre activos: agentes que siguen trabajando](/book/28-persistent-bots).
+</Callout>
 
 ## RAG: Generación Aumentada por Recuperación
 
@@ -275,7 +287,7 @@ MCP (Model Context Protocol) es una forma estándar de conectar IA a datos y her
 
 La ingeniería de contexto se trata de dar a la IA la información correcta:
 
-- **La IA es sin estado** - incluye todo lo que necesita cada vez
+- **La IA es sin estado** - el modelo no recuerda nada, así que todo lo que necesita debe estar en el contexto cada vez, aunque un proveedor guarde la conversación por ti durante un rato
 - **RAG** recupera documentos relevantes para aumentar prompts
 - **Embeddings** habilitan búsqueda semántica (significado, no solo palabras clave)
 - **Llamadas a funciones** permiten que la IA use herramientas externas

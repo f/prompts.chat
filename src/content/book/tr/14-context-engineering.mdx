@@ -30,16 +30,28 @@ Bağlam olmadan, yapay zeka hangi "durum"u sorduğunuz hakkında hiçbir fikre s
 ## Yapay Zeka Durumsuzdur
 
 <Callout type="warning" title="Önemli Kavram">
-Yapay zeka konuşmalar arasında hiçbir şey hatırlamaz. Her API çağrısı sıfırdan başlar. Yapay zekanın bir şeyi "hatırlamasını" istiyorsanız, SİZİN her seferinde bağlama dahil etmeniz gerekir.
+Yapay zeka konuşmalar arasında hiçbir şey hatırlamaz. Model her API çağrısına bomboş bir hafızayla başlar. Yapay zekanın bir şeyi "hatırlamasını" istiyorsanız, o bilgi her seferinde bağlamda yer almalı ve birinin onu oraya koyması gerekir. Sağlayıcı konuşmayı bir süreliğine sizin yerinize saklasa bile, bu işi çoğu zaman SİZİN uygulamanız üstlenir.
 </Callout>
 
-Bu yüzden sohbet botları her mesajla tüm konuşma geçmişinizi gönderir. Yapay zeka hatırlamaz - uygulama her şeyi yeniden gönderir.
+Bu yüzden sohbet botları genellikle her mesajla tüm konuşma geçmişinizi gönderir. Yapay zeka hatırlamaz - uygulama her şeyi yeniden gönderir.
 
 <TryIt compact prompt={`Geçmişi olmayan yeni bir konuşma olduğunu varsay.
 
 Az önce ne sordum sana?`} />
 
 Yapay zeka bilmediğini söyleyecektir çünkü gerçekten önceki bağlama erişimi yoktur.
+
+### Geçmişi Kim Taşıyor?
+
+Uzun süre hikâye bundan ibaretti: her istek, ilk selamdan son soruya kadar bütün konuşmayı sırtında taşırdı. Son zamanlarda ise birçok model API'si daha zahmetsiz bir yol sunuyor. Sağlayıcı, konuşmayı bir süre kendi sunucularında tutabiliyor. Uygulamanız ilk isteği eksiksiz gönderiyor, sonrasında ise yalnızca yeni mesajları ve önceki yanıtı işaret eden küçük bir referansı yolluyor. Öbür tarafta sağlayıcı, parçaları model okumadan önce yeniden bir araya getiriyor.
+
+Neyin değiştiğini doğru anlamakta fayda var. Model hâlâ durumsuz. Kendi başına hiçbir şey hatırlamıyor ve her turda bağlamın tamamını baştan sona yeniden okuyor. Değişen, geçmişi taşıma işinin kimin omzunda olduğu: Bu yükün bir kısmını artık yalnızca uygulamanız değil, sağlayıcı da taşıyor. Dolayısıyla bağlam penceresi aynı hızla doluyor, token'lar da yine sayılıyor. Kazanç daha çok hızda ve hafifleyen trafikte: Ağ üzerinden daha az veri gidip geliyor, yanıtın ilk kelimeleri de daha kısa bir beklemenin ardından ekrana düşüyor. Bu fark en çok uzun soluklu ajanlarda hissediliyor; araç sonuçlarının üst üste biriktiği kodlama asistanlarında, ekran görüntüsü üstüne ekran görüntüsü alan bilgisayar kullanan ajanlarda, belge ve görsellerle dolu iş akışlarında.
+
+Bu fikirle farklı adlar altında karşılaşacaksınız. Anthropic'in Messages API'si buna **message threads** (mesaj dizileri) diyor; bu satırlar yazılırken özellik herkese açık beta aşamasındaydı. İlk istek bir dizi başlatıyor, sonraki her istek ise önceki yanıtın kimliğinden devam edip yalnızca yeni mesajları gönderiyor. Anthropic'in aktardığına göre yarım milyon token ve üzerindeki çok büyük isteklerde, ilk token'a kadar geçen bekleme süresinin medyanı yaklaşık %35 kısalmış. OpenAI'ın Responses API'sinde `previous_response_id` ile yeni bir turu öncekine bağlayabiliyorsunuz; Google'ın Gemini Interactions API'si de `previous_interaction_id` ile hemen hemen aynı işi görüyor. Ayrıntılar sağlayıcıdan sağlayıcıya değiştiği için, bunlardan birine dayanarak bir şey kurmadan önce güncel belgelere mutlaka göz atın.
+
+<Callout type="warning" title="Emanet Bir Konuşma">
+Sunucuda tutulan bir konuşma bir kolaylıktır, arşiv değil. Süresi dolabilir: Anthropic'in mesaj dizileri yaklaşık beş dakika boyunca istek gelmezse kapanır; diğer sağlayıcılar da saklanan yanıtları yalnızca belirli bir süre tutar, saklamayı kapatırsanız hiç tutmaz. Dizi kaybolduğunda konuşmanın tamamını yeniden göndermek gerekir. Bu yüzden uygulamanız ya da ajanınızı saran harness, geçmişin kendi kopyasını her zaman elinde tutmalı ve gerektiğinde onu baştan gönderebilmeli. Yapay zekanın günler, haftalar boyunca hatırlamasını istediğiniz her şey ise yine sizin sorumluluğunuzda: Ya aşağıdaki Özetleme bölümünde anlatıldığı gibi özetleyin ya da [Sürekli Çalışan Botlar](/book/28-persistent-bots) bölümündeki botlar gibi kalıcı bir hafızada saklayın.
+</Callout>
 
 ## RAG: Alım-Artırılmış Üretim
 
@@ -258,7 +270,7 @@ Bu platformun bir MCP sunucusu var! Promptları doğrudan yapay zeka asistanın�
 
 Bağlam mühendisliği yapay zekaya doğru bilgiyi vermektir:
 
-- **YZ durumsuzdur** - her seferinde ihtiyacı olan her şeyi dahil et
+- **YZ durumsuzdur** - model hiçbir şey hatırlamaz; sağlayıcı konuşmayı kısa süreliğine sizin için saklasa bile, ihtiyaç duyduğu her şey her seferinde bağlamda olmalı
 - **RAG** promptları artırmak için ilgili belgeleri alır
 - **Gömüler** anlamsal aramayı mümkün kılar (sadece anahtar kelimeler değil, anlam)
 - **Fonksiyon çağırma** YZ'nin harici araçları kullanmasını sağlar

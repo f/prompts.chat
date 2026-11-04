@@ -30,16 +30,28 @@ Onthoud van eerdere hoofdstukken: AI heeft een beperkt "contextvenster" - de max
 ## AI is Stateless
 
 <Callout type="warning" title="Belangrijk Concept">
-AI onthoudt niets tussen gesprekken. Elke API-aanroep begint opnieuw. Als je wilt dat de AI iets "onthoudt", MOET JIJ het elke keer in de context meesturen.
+AI onthoudt niets tussen gesprekken. Het model begint elke API-aanroep met een leeg geheugen. Als je wilt dat de AI iets "onthoudt", moet het elke keer in de context staan, en iemand moet het daar neerzetten. Meestal is dat JOUW app, ook als een aanbieder het gesprek een tijdje voor je bewaart.
 </Callout>
 
-Daarom sturen chatbots je hele gespreksgeschiedenis mee bij elk bericht. Het is niet dat de AI onthoudt - het is dat de app alles opnieuw verstuurt.
+Daarom sturen chatbots meestal je hele gespreksgeschiedenis mee bij elk bericht. Het is niet dat de AI onthoudt - het is dat de app alles opnieuw verstuurt.
 
 <TryIt compact prompt={`Doe alsof dit een nieuw gesprek is zonder geschiedenis.
 
 Waar heb ik je zojuist over gevraagd?`} />
 
 De AI zal zeggen dat het het niet weet, omdat het werkelijk geen toegang heeft tot eerdere context.
+
+### Wie draagt de geschiedenis?
+
+Lange tijd was dat het hele verhaal: elk verzoek droeg het complete gesprek met zich mee, van de eerste begroeting tot de laatste vraag. Sinds kort bieden verschillende model-API's een vriendelijkere regeling. De aanbieder kan het gesprek een tijdje op zijn eigen servers bewaren. Je app stuurt het eerste verzoek volledig, en daarna alleen de nieuwe berichten, samen met een kleine verwijzing naar het vorige antwoord. Aan de andere kant zet de aanbieder de stukken weer aan elkaar voordat het model ze leest.
+
+Het loont om precies te zijn over wat er veranderd is. Het model is nog steeds stateless. Het onthoudt uit zichzelf niets en leest bij elke beurt de hele context opnieuw, van begin tot eind. Wat verschoven is, is de taak om de geschiedenis te dragen: een deel daarvan ligt nu bij de aanbieder, in plaats van helemaal bij je app. Het contextvenster loopt dus net zo snel vol, en de tokens worden nog steeds geteld. De winst zit vooral in snelheid en lichter verkeer: er gaan minder gegevens over de lijn, en de eerste woorden van het antwoord verschijnen na een kortere wachttijd. Dat telt het meest bij agents die lang doorwerken, zoals programmeerassistenten waarbij toolresultaten zich opstapelen, agents die een computer bedienen en de ene screenshot na de andere maken, en workflows vol documenten en afbeeldingen.
+
+Je komt dit idee onder verschillende namen tegen. De Messages API van Anthropic noemt het **message threads**, op het moment van schrijven een publieke bèta: het eerste verzoek maakt een thread aan, en elk volgend verzoek gaat verder vanaf de id van het vorige antwoord en stuurt alleen de nieuwe berichten. Anthropic meldt dat bij zeer grote verzoeken, vanaf een half miljoen tokens, de mediane wachttijd tot het eerste token met ongeveer 35% is gedaald. In de Responses API van OpenAI koppel je met `previous_response_id` een nieuwe beurt aan een eerdere, en de Gemini Interactions API van Google doet vrijwel hetzelfde met `previous_interaction_id`. De details verschillen per aanbieder, dus kijk in de actuele documentatie voordat je ergens op bouwt.
+
+<Callout type="warning" title="Een geleende draad">
+Een gesprek dat op de server wordt bewaard, is een gemak, geen archief. Het kan verlopen: de message threads van Anthropic vervallen na ongeveer vijf minuten zonder verzoek, en de andere aanbieders bewaren opgeslagen antwoorden maar een beperkte tijd, of helemaal niet als je opslag uitzet. Is de thread weg, dan moet het volledige gesprek opnieuw worden verstuurd. Je app, of de harness rond je agent, moet dus altijd een eigen kopie van de geschiedenis bijhouden en klaarstaan om die opnieuw te sturen. En alles wat de AI dagen of weken moet onthouden, blijft jouw werk: vat het samen, zoals de sectie Samenvatting verderop uitlegt, of bewaar het als blijvend geheugen, zoals de bots in het hoofdstuk [Altijd-aan-bots: agents die blijven werken](/book/28-persistent-bots) doen.
+</Callout>
 
 ## RAG: Retrieval-Augmented Generation
 
@@ -275,7 +287,7 @@ Dit platform heeft een MCP-server! Je kunt het verbinden met Claude Desktop of a
 
 Context engineering draait om het geven van de juiste informatie aan AI:
 
-- **AI is stateless** - neem alles wat het nodig heeft elke keer mee
+- **AI is stateless** - het model onthoudt niets, dus alles wat het nodig heeft moet elke keer in de context staan, ook als een aanbieder het gesprek even voor je bewaart
 - **RAG** haalt relevante documenten op om prompts uit te breiden
 - **Embeddings** maken semantisch zoeken mogelijk (betekenis, niet alleen trefwoorden)
 - **Function calling** laat AI externe tools gebruiken
