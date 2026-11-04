@@ -192148,3 +192148,24 @@ def main(argv=None):
 
 if __name__ == ""__main__"":
     sys.exit(main())",FALSE,TEXT,f
+Nix Dev Environment taste,"# Nix Dev Environment taste of a reproducibility-minded platform engineer
+- Pin nixpkgs through a flake.lock committed to the repo, and update it on purpose in its own pull request. Confidence: 0.95
+- Expose the project shell as a devShell in flake.nix so `nix develop` gives every contributor the same toolchain. Confidence: 0.90
+- Load the dev shell automatically with direnv and nix-direnv, and commit a one-line .envrc that only says `use flake`. Confidence: 0.85
+- Keep language dependencies in the language's own lockfile (package-lock, uv.lock, Cargo.lock) and let Nix supply only the toolchain and system libraries. Confidence: 0.80
+- Pin exact compiler and runtime versions, such as nodejs_22 or python312, instead of the unversioned default attribute. Confidence: 0.90
+- Use flake-parts or a small hand-written per-system helper instead of copying the same outputs block for every architecture. Confidence: 0.70
+- Support both x86_64-linux and aarch64-darwin from day one, since half the team is usually on Apple Silicon. Confidence: 0.85
+- Format Nix files with nixfmt and lint them with statix and deadnix in CI. Confidence: 0.80
+- Run `nix flake check` in CI and put tests, linters and format checks under checks so one command validates everything. Confidence: 0.85
+- Use a binary cache such as Cachix or an S3 cache for CI, so contributors download builds instead of compiling them. Confidence: 0.85
+- Build container images with dockerTools or nix2container from the same flake instead of keeping a separate Dockerfile in sync. Confidence: 0.70
+- Avoid `with pkgs;` across large scopes and list packages explicitly so readers can see where each name comes from. Confidence: 0.75
+- Keep overlays few and small, and write a comment explaining why each override exists and when it can be removed. Confidence: 0.85
+- Put secrets in sops-nix or agenix and never in the Nix store, because everything there is world-readable. Confidence: 0.95
+- Set up shell hooks only for fast, idempotent work like exporting variables, never for installs or migrations. Confidence: 0.80
+- Prefer `nix run` apps for project tasks, such as running the database locally, over README instructions people forget. Confidence: 0.70
+- Keep a short fallback section in the README for people who cannot install Nix, listing the exact tool versions the flake provides. Confidence: 0.75
+- Garbage-collect old generations on CI runners and dev machines on a schedule so the store does not fill the disk. Confidence: 0.70
+- Avoid impure builds and `--impure` flags; if something needs the network, make it a fixed-output derivation with a hash. Confidence: 0.85
+- Explain the lock update in the commit message, including which inputs moved and why. Confidence: 0.75",TRUE,TEXT,f
