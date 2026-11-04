@@ -192190,3 +192190,24 @@ Incident Response taste,"# Incident Response taste of a calm on-call engineer
 - Measure alert noise and delete or fix any alert that paged without needing action more than twice. Confidence: 0.85
 - Run game days or chaos drills each quarter to practice the response process on purpose, not only during real outages. Confidence: 0.70
 - Track time to detect, time to mitigate and incident count by severity, and avoid using them as individual performance targets. Confidence: 0.75",TRUE,TEXT,f
+WebAssembly Module taste,"# WebAssembly Module taste of a performance-focused systems developer
+- Reach for WebAssembly only for CPU-heavy, measurable hot paths like codecs, parsers or simulations, not for ordinary UI logic. Confidence: 0.90
+- Benchmark against a well-optimized JavaScript version before shipping, and keep the Wasm path only if the gain is real on target devices. Confidence: 0.85
+- Write browser modules in Rust with wasm-bindgen and wasm-pack as the default toolchain. Confidence: 0.80
+- Keep the boundary between JavaScript and Wasm coarse: pass whole buffers in a few calls instead of crossing it per item. Confidence: 0.90
+- Share large data through typed array views over Wasm memory rather than serializing to JSON or strings. Confidence: 0.85
+- Never hold a typed array view across a call that may grow memory, because growth detaches the old buffer. Confidence: 0.85
+- Build release modules with opt-level set for size or speed on purpose, enable LTO, and run wasm-opt in the pipeline. Confidence: 0.85
+- Track the compressed .wasm size in CI and fail the build when it grows past an agreed budget. Confidence: 0.80
+- Load modules with WebAssembly.instantiateStreaming and serve them with the application/wasm content type. Confidence: 0.85
+- Run heavy Wasm work in a Web Worker so it never blocks the main thread. Confidence: 0.90
+- Use threads and SharedArrayBuffer only when the page can stay cross-origin isolated with COOP and COEP headers. Confidence: 0.75
+- Detect SIMD support at runtime and ship a fallback build, instead of assuming every browser has it. Confidence: 0.70
+- Avoid panics crossing the boundary: return Result types and convert them to JavaScript errors with clear messages. Confidence: 0.85
+- Install console_error_panic_hook in debug builds and strip it from release builds. Confidence: 0.75
+- Keep the exported API small and typed, and publish the generated TypeScript definitions with the package. Confidence: 0.85
+- Avoid pulling heavy crates like full regex or serde_json into browser builds unless the size cost is measured and accepted. Confidence: 0.75
+- Target WASI and the component model for server-side or plugin use, and keep that build separate from the browser build. Confidence: 0.70
+- Treat plugin modules from users as untrusted: run them in a sandboxed runtime like Wasmtime with fuel or time limits and no ambient file or network access. Confidence: 0.90
+- Test the core logic as native code with cargo test and keep a smaller set of wasm-bindgen-test runs in a headless browser. Confidence: 0.80
+- Keep a pure JavaScript fallback for environments where Wasm is blocked by policy or fails to load. Confidence: 0.65",TRUE,TEXT,f
