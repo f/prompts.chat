@@ -30,16 +30,28 @@ Remember from earlier chapters: AI has a limited "context window" - the maximum 
 ## AI is Stateless
 
 <Callout type="warning" title="Important Concept">
-AI doesn't remember anything between conversations. Every API call starts fresh. If you want the AI to "remember" something, YOU have to include it in the context every time.
+AI doesn't remember anything between conversations. The model starts every API call with a blank memory. If you want the AI to "remember" something, it has to be in the context every time, and someone has to put it there. Usually that someone is YOUR app, even when a provider holds the conversation for you for a little while.
 </Callout>
 
-This is why chatbots send your entire conversation history with each message. It's not that the AI remembers - it's that the app re-sends everything.
+This is why chatbots usually send your entire conversation history with each message. It's not that the AI remembers - it's that the app re-sends everything.
 
 <TryIt compact prompt={`Pretend this is a new conversation with no history.
 
 What did I just ask you about?`} />
 
 The AI will say it doesn't know because it truly doesn't have access to any previous context.
+
+### Who Carries the History?
+
+For a long time, that was the whole story: every request carried the entire conversation, from the first hello to the latest question. Lately, several model APIs have offered a gentler arrangement. The provider can keep the conversation on its own servers for a while. Your app sends the first request in full, and after that it sends only the new messages, together with a small pointer to the previous response. On the other side, the provider stitches the pieces back together before the model reads them.
+
+It helps to be precise about what changed. The model is still stateless. It remembers nothing on its own, and on every turn it still reads the whole context from beginning to end. What moved is the job of carrying the history, which now travels partly with the provider instead of entirely with your app. So the context window fills up just as quickly, and the tokens are still counted. The gain is mostly speed and lighter traffic: less data sent over the wire, and a shorter wait before the first words of the answer appear. That matters most for long-running agents, such as coding assistants that pile up tool results, computer-use agents that take screenshot after screenshot, and workflows heavy with documents and images.
+
+You will meet this idea under different names. Anthropic's Messages API calls it **message threads**, a public beta at the time of writing: the first request creates a thread, and each later request continues from the previous response's id, sending only the new messages. Anthropic reports that for very large requests, of half a million tokens or more, the median wait for the first token dropped by about 35%. OpenAI's Responses API lets you chain a new turn onto an earlier one with `previous_response_id`, and Google's Gemini Interactions API does much the same with `previous_interaction_id`. The details differ from provider to provider, so check the current documentation before you build on any of them.
+
+<Callout type="warning" title="A Borrowed Thread">
+A conversation held on the server is a convenience, not an archive. It can expire: Anthropic's message threads lapse after about five minutes without a request, and the other providers keep stored responses only for a limited time, or not at all if you switch storage off. When a thread is gone, the full conversation has to be sent again. So your app, or the harness around your agent, should always keep its own copy of the history and be ready to replay it. And anything you want the AI to remember for days or weeks is still your job: summarize it, as described in the Summarization section below, or keep it as lasting memory, the way the bots in [Always-On Bots](/book/28-persistent-bots) do.
+</Callout>
 
 ## RAG: Retrieval-Augmented Generation
 
@@ -275,7 +287,7 @@ This platform has an MCP server! You can connect it to Claude Desktop or other M
 
 Context engineering is about giving AI the right information:
 
-- **AI is stateless** - include everything it needs every time
+- **AI is stateless** - the model remembers nothing, so everything it needs must be in the context every time, even if a provider briefly holds the conversation for you
 - **RAG** retrieves relevant documents to augment prompts
 - **Embeddings** enable semantic search (meaning, not just keywords)
 - **Function calling** lets AI use external tools
