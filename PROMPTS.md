@@ -227824,3 +227824,16 @@ output_format:
 
 </details>
 
+<details>
+<summary><strong>Delft Blue Tile Panel of a Sailing Ship and Dutch Tulip Fields</strong></summary>
+
+## Delft Blue Tile Panel of a Sailing Ship and Dutch Tulip Fields
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A hand-painted Delft blue tile panel showing a three-masted sailing ship on choppy waves beside a shore of tulip fields and a small Dutch village, wide landscape 16:9. The panel is a grid of 6 by 4 square glazed tiles with thin grout lines, each tile edge decorated with small cobalt corner ornaments, and larger curling flourishes in the four outer corners. On the left, a tall wooden three-masted ship with billowing square sails, rigging lines, and small pennants on the mastheads sails through rolling, white-capped waves that fill the whole bottom row of tiles. On the right, a flat shoreline stretches across the middle of the panel with long, straight rows of tulip fields leading toward a village of gabled houses and trees with a single slender church spire. Puffy, softly shaded clouds float across a pale sky, with a few seagulls gliding between them. Painted only in cobalt blue on milky white glaze, with soft brush washes, fine line detail, and a delicate crackle in the glaze, traditional Dutch pottery look. No text, no lettering, no logos.
+```
+
+</details>
+
