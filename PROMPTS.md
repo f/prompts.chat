@@ -225396,3 +225396,984 @@ if __name__ == "__main__":
 
 </details>
 
+<details>
+<summary><strong>Python Requirements Pin and Conflict Checker</strong></summary>
+
+## Python Requirements Pin and Conflict Checker
+
+Contributed by [@f](https://github.com/f)
+
+```md
+---
+name: python-requirements-pin-and-conflict-checker
+description: Checks pip requirements and constraints files offline before they break a build - unpinned and lower-bound-only packages, PEP 440 specifier conflicts across files and markers, git refs without a commit hash, editable and local paths, partial hash mode, pre-releases, --extra-index-url dependency confusion, http indexes, stdlib backports, dev tools in runtime files and pip freeze drift. Includes a stdlib Python checker with --self-test.
+---
+
+# Python Requirements Pin and Conflict Checker
+
+You help Python developers and DevOps engineers make `pip install -r requirements.txt` boring: the same versions on every machine, no ResolutionImpossible at 2 a.m., no package quietly fetched from the wrong index. Most broken installs come from a few patterns that are visible in the files themselves: a constraint file that contradicts a requirement, `requests` with no pin, a git dependency on `@main`, one line with `--hash` that switches the whole file into hash mode, or an extra index that lets a public package shadow an internal one. You read every file pip would read, check the specifiers with real PEP 440 rules, and turn the result into a short fix list and a lock-file plan.
+
+## Files in this skill
+
+- `scripts/req_check.py` - parses requirements files the way pip does (`-r` includes, `-c` constraints, line continuations, comments, extras, PEP 508 markers, `--hash`, index options, VCS/URL/editable lines), evaluates PEP 440 specifiers including `~=`, wildcards and pre-releases, searches for a version that satisfies every specifier per marker environment, compares with `pip freeze` output, and reports findings PR01-PR14 (Python 3.8+ standard library only, no network)
+- `references/specifiers-and-markers.md` - PEP 440 operators, pre-release rules, constraints vs requirements, marker evaluation, and why the checker cannot see transitive dependencies
+- `references/pinning-strategy.md` - apps vs libraries, the requirements.in + lock workflow, hashes, indexes and supply-chain hygiene, and what each finding code means
+- `templates/requirements-review.md` - the review to hand back
+- `examples/requirements.txt` - a Django invoice service with a typo, a git branch dependency, an extra index, a marker-split numpy, a duplicate Django, enum34 and pytest in runtime
+- `examples/constraints.txt` - the platform team's constraints file that contradicts two of those requirements
+- `examples/req-report.md` - the real checker output on those files
+
+## Workflow
+
+### 1. Collect the inputs
+Ask for every file pip reads for the target: the main requirements file, anything it includes with `-r` or `-c`, plus `pip.conf` / `PIP_INDEX_URL` / `PIP_EXTRA_INDEX_URL` settings from CI and Dockerfiles (index options outside the file are invisible to the checker; add them by hand). Ask whether the project is an **app** (deployed service, notebook image, CLI shipped as a container: pins expected) or a **library** (installed by other projects: ranges expected), which Python versions and platforms it targets, and for a `pip freeze` from the environment that misbehaves.
+
+### 2. Run the checker
+```
+python3 scripts/req_check.py examples/requirements.txt
+python3 scripts/req_check.py requirements.txt --python 3.12 --platform linux
+python3 scripts/req_check.py requirements.txt requirements-dev.txt --installed freeze.txt
+python3 scripts/req_check.py requirements.txt --mode lib --json
+python3 scripts/req_check.py --self-test
+```
+Exit 0 = no high findings, 1 = high findings, 2 = a file could not be read. Without `--python`, each marker combination is checked as its own environment; with it, lines whose markers do not apply are dropped. Without a shell, go line by line with `references/specifiers-and-markers.md` and test each package's combined specifiers against a concrete version.
+
+### 3. Read the result
+- Install blockers first: PR03 (no version satisfies the combined specifiers), PR07 (partial hash mode), PR13 (lines pip refuses). These fail before anything installs.
+- Supply chain: PR09 extra index, PR10 http or trusted hosts, PR05 git refs that can move, PR11 bogus or dangerous packages (`sklearn`, `enum34`, `pycrypto`).
+- Reproducibility: PR01 unpinned and PR02 open-ended ranges in apps; in libraries, PR02 flags exact pins that would force versions on users.
+- Drift: PR12 shows where the running environment differs from the files.
+- Tidy-ups: PR04 duplicates, PR06 editable/local paths, PR08 pre-releases, PR14 dev tools in runtime files.
+
+### 4. Fix and lock
+Resolve each conflict by deciding which side is right (often the constraint is stale; check the changelog of the newer version), then move intent-level ranges to `requirements.in` and generate the pinned, hashed lock with pip-tools or uv (`references/pinning-strategy.md`). Re-run the checker on the lock: it should come back with no high or medium findings. Never "fix" a conflict by deleting the constraint without asking who owns it.
+
+### 5. Deliver
+Fill `templates/requirements-review.md`: verdict, blockers with exact replacement lines, supply-chain changes, the lock workflow and CI commands, and an owner for each change.
+
+## Example result
+On `examples/requirements.txt` the checker finds 6 high findings. Two conflicts make pip fail: `urllib3>=2.2` against the platform constraint `urllib3<2`, and `numpy>=2.1` against the constraint `numpy==1.26.4` for Python 3.9+ (the Python < 3.9 branch is fine). `pandas=2.2.3` uses a single `=` and is refused. `pdf-stamp` is installed editable from `@main`, the internal index is added with `--extra-index-url` (dependency confusion risk for `acme-billing-core`), and `enum34` breaks the standard library `enum` on modern Python. Medium and low: open-ended `whitenoise` and `urllib3`, the editable install, Django declared twice as `Django` and `django`, and `pytest` in the runtime file.
+
+## Rules
+
+- Read every file pip reads, including constraints and includes; a single file in isolation hides conflicts.
+- Use PEP 440 semantics, not string comparison (`2.10` > `2.9`, `~=2.1` allows 2.9 but not 3.0, `<2.0` excludes `2.0rc1`).
+- Say clearly that the checker sees only declared packages: transitive conflicts and CVEs need the resolver (`pip install --dry-run`, `pip-compile`, `uv pip compile`) and `pip-audit`.
+- Prefer a lock file generated by a tool over hand pins; never invent version numbers - take them from the current environment, the lock, or the package changelog.
+- Treat index and VCS findings as security issues, not style.
+FILE:references/specifiers-and-markers.md
+# Specifiers, constraints and markers
+
+## PEP 440 operators
+| Specifier | Means | Example matches | Does not match |
+|---|---|---|---|
+| `==2.32.3` | exactly this version (trailing zeros ignored: `==2.0` = `==2.0.0`) | 2.32.3 | 2.32.4 |
+| `==2.32.*` | any 2.32.x | 2.32.0, 2.32.9 | 2.33.0 |
+| `~=2.31` | `>=2.31, ==2.*` | 2.31, 2.40 | 3.0 |
+| `~=2.31.0` | `>=2.31.0, ==2.31.*` | 2.31.5 | 2.32.0 |
+| `>=4.2,<5.0` | range | 4.2.16 | 5.0 |
+| `!=3.1.2` | anything but | 3.1.3 | 3.1.2 |
+| `===foo` | arbitrary string equality (avoid) | foo | |
+
+- Order: `1.0.dev1 < 1.0a1 < 1.0b1 < 1.0rc1 < 1.0 < 1.0.post1`; `1.10 > 1.9` (numeric, not text).
+- `~=2` is invalid (needs at least two release parts); `pkg=1.0` is invalid (single `=`).
+- Pre-releases are only chosen if a specifier names one (`>=2.0rc1`), you pass `--pre`, or nothing else matches.
+- `<2.0` excludes 2.0 pre-releases; `>1.4` excludes 1.4 post-releases.
+- Local versions (`1.0+cpu`) only match `==1.0+cpu` or ranges; `==1.0` matches `1.0+cpu` too.
+
+## Requirements vs constraints
+- A requirement (`pkg>=1`) asks pip to install the package.
+- A constraint (`-c constraints.txt`, `PIP_CONSTRAINT`) only restricts versions if something requires the package; it never installs anything. Constraints cannot have extras or be editable.
+- pip combines all specifiers for a name (after PEP 503 normalisation: `Django`, `django`, `DJANGO` and `foo_bar` / `foo-bar` / `foo.bar` are the same). If nothing satisfies all of them, the resolver stops with ResolutionImpossible.
+
+## Markers (PEP 508)
+- `numpy<2 ; python_version < "3.9"` - the line applies only where the marker is true.
+- Variables: `python_version` ("3.12"), `python_full_version`, `sys_platform` (linux, win32, darwin), `platform_system` (Linux, Windows, Darwin), `os_name` (posix, nt), `platform_machine`, `implementation_name`, `extra`.
+- Two lines for one package with opposite markers are fine; two lines with the same (or no) marker are duplicates.
+- The checker evaluates markers when you pass `--python` / `--platform`; otherwise it checks the unmarked lines plus each marker set as a separate environment.
+
+## What an offline file check cannot see
+- Transitive dependencies: `requests==2.32.3` needs `urllib3>=1.21.1,<3`; a conflict between what your packages need is only visible to the resolver. Run `pip install --dry-run --report report.json -r requirements.txt` or compile a lock.
+- Wheels: a pinned version may have no wheel for your Python/platform (e.g. a new Python release) and fall back to a source build.
+- Yanked releases and CVEs: use `pip-audit` and the index.
+FILE:references/pinning-strategy.md
+# Pinning strategy and supply-chain hygiene
+
+## Apps vs libraries
+| | App (service, job, notebook image) | Library (installed by others) |
+|---|---|---|
+| Direct deps | ranges in `requirements.in` / pyproject | ranges in pyproject `dependencies` |
+| What gets installed | a lock: every package `==` + `--hash` | whatever the user's resolver picks |
+| Exact pins | required (in the lock) | avoid: they force versions on every user |
+| Upper bounds | let the lock hold them | only for known breakage (`<3` when 3.0 broke you) |
+
+## The lock workflow (apps)
+1. `requirements.in`: what you import, with intent-level ranges (`Django>=4.2,<5`).
+2. Compile: `pip-compile --generate-hashes -o requirements.txt requirements.in` or `uv pip compile --generate-hashes requirements.in -o requirements.txt`. Add `-c constraints.txt` if the platform team ships constraints.
+3. Install: `pip install --require-hashes --no-deps -r requirements.txt` (the lock already contains everything).
+4. Update on purpose: `pip-compile --upgrade-package django`, review the diff, run tests. Automate with Dependabot/Renovate.
+5. Dev tools go to `requirements-dev.in` compiled with `-c requirements.txt` so versions agree.
+
+## Hashes
+- One `--hash` anywhere turns on hash-checking mode for the whole install: every package (including transitive ones) needs `==` and a hash, or pip refuses. That is why partial hashes (PR07) break installs.
+- Generate hashes with a tool, never by hand; include every platform's wheel hash if you build on several.
+
+## Indexes
+- `--extra-index-url` makes pip look at both indexes and take the highest version: anyone can upload `acme-billing-core==99.0` to PyPI and win (dependency confusion). Use one `--index-url` that points to a proxy (Artifactory, Nexus, devpi, CodeArtifact, Azure Artifacts) serving PyPI plus internal packages, and reserve internal names on PyPI.
+- https only; `--trusted-host` turns off certificate checks.
+- VCS dependencies: pin a full commit (`@3f2a...` 40 hex); branches and tags move. Better: publish a wheel to the internal index.
+
+## Finding codes (req_check.py)
+| Code | Severity | Meaning |
+|---|---|---|
+| PR01 | high (app) / info (lib) | no version specifier and no pin elsewhere |
+| PR02 | medium | app: only `>=`/`>`; lib: exact `==` pin |
+| PR03 | high | no version satisfies the combined specifiers (per marker environment) |
+| PR04 | low / info | declared more than once, or spelt differently |
+| PR05 | high / medium | VCS ref without commit hash / archive URL without hash |
+| PR06 | medium | editable or local path |
+| PR07 | high | partial hash mode, or hashed line without `==` |
+| PR08 | medium | pre-release pin or `--pre` |
+| PR09 | high | `--extra-index-url` |
+| PR10 | high / medium | http index or URL / `--trusted-host` |
+| PR11 | varies | bogus, unmaintained or backport package (sklearn, pycrypto, enum34, typing, nose ...) |
+| PR12 | high / medium | installed version does not satisfy the files / package missing |
+| PR13 | high | line pip refuses (bad specifier, missing include) |
+| PR14 | low | test or dev tool in a runtime file |
+FILE:templates/requirements-review.md
+# Requirements review: <project>
+
+**Files:** <requirements.txt, constraints.txt (-c)>   **Kind:** <app / library>   **Python:** <3.12, linux>
+**Verdict:** <install fails / installs but not reproducible / reproducible>
+
+## Blockers (install fails)
+| # | Where | Problem | Replace with |
+|---|---|---|---|
+| 1 | <constraints.txt:3 + requirements.txt:24> | <urllib3 <2 vs >=2.2> | <agree on urllib3>=2.2,<3 with platform team; update PLAT-412> |
+| 2 | <requirements.txt:20> | <pandas=2.2.3> | <pandas==2.2.3> |
+
+## Supply chain
+| # | Where | Problem | Fix |
+|---|---|---|---|
+| 1 | <requirements.txt:5> | <--extra-index-url internal> | <single --index-url to the proxy; reserve acme-* on PyPI> |
+| 2 | <requirements.txt:28> | <pdf-stamp @main, editable> | <publish a wheel or pin @<commit>> |
+
+## Reproducibility and tidy-ups
+- <unpinned / open ranges: ...>
+- <duplicates, backports, dev tools: ...>
+
+## Lock plan
+```
+<requirements.in contents (intent ranges)>
+pip-compile --generate-hashes -c constraints.txt -o requirements.txt requirements.in
+pip install --require-hashes --no-deps -r requirements.txt
+```
+
+## Not covered by this check
+<transitive conflicts: run pip install --dry-run / pip-compile; CVEs: pip-audit; wheel availability for Python X.Y>
+
+## Owners and dates
+| Change | Owner | By |
+|---|---|---|
+| <...> | <...> | <...> |
+FILE:examples/requirements.txt
+# invoice-service runtime dependencies (deployed as a Docker image, Python 3.12)
+# org-wide pins from the platform team:
+-c constraints.txt
+--index-url https://pypi.org/simple
+--extra-index-url https://pkgs.acme.internal/simple
+
+# web
+Django>=4.2,<5.0
+djangorestframework~=3.15
+gunicorn==23.0.0
+whitenoise>=6.7
+
+# data and storage
+psycopg[binary]==3.2.3
+redis>=5.0
+celery[redis]==5.4.0
+boto3
+numpy<2 ; python_version < "3.9"
+numpy>=2.1 ; python_version >= "3.9"
+pandas=2.2.3
+
+# http
+requests==2.32.3
+urllib3>=2.2
+
+# pdf invoices
+weasyprint==63.0
+-e git+https://github.com/acme/pdf-stamp.git@main#egg=pdf-stamp
+acme-billing-core==1.8.2
+
+# misc
+python-dateutil==2.9.0.post0
+sentry-sdk>=2.0
+django==4.2.16
+enum34==1.1.10
+pytest==8.3.3
+FILE:examples/constraints.txt
+# Platform team constraints, applied to every service with -c
+# (pins only; a constraint never installs anything by itself)
+urllib3<2                  # legacy proxy TLS issue, see PLAT-412
+numpy==1.26.4              # matches the shared analytics image
+redis==5.0.8
+boto3==1.35.36
+sentry-sdk==2.17.0
+celery==5.4.0
+cryptography>=43.0.1       # CVE floor
+FILE:examples/req-report.md
+# Requirements check: examples/requirements.txt
+
+Mode: app.  Packages: 19 (14 pinned with ==).  Findings: 6 high, 3 medium, 2 low, 0 info.
+
+**Verdict: install will fail or is unsafe - fix the high findings first**
+
+## Packages
+
+| Package | Specifiers (all files) | Marker | Declared in | Status |
+|---|---|---|---|---|
+| urllib3 | `<2,>=2.2` | - | examples/constraints.txt:3 (constraint), examples/requirements.txt:24 | conflict |
+| numpy | `<2,==1.26.4,>=2.1` | `python_version < "3.9"; python_version >= "3.9"` | examples/constraints.txt:4 (constraint), examples/requirements.txt:18, examples/requirements.txt:19 | conflict |
+| redis | `==5.0.8,>=5.0` | - | examples/constraints.txt:5 (constraint), examples/requirements.txt:15 | ok |
+| boto3 | `==1.35.36` | - | examples/constraints.txt:6 (constraint), examples/requirements.txt:17 | ok |
+| sentry-sdk | `==2.17.0,>=2.0` | - | examples/constraints.txt:7 (constraint), examples/requirements.txt:33 | ok |
+| celery | `==5.4.0` | - | examples/constraints.txt:8 (constraint), examples/requirements.txt:16 | ok |
+| cryptography | `>=43.0.1` | - | examples/constraints.txt:9 (constraint) | ok |
+| Django | `<5.0,==4.2.16,>=4.2` | - | examples/requirements.txt:8, examples/requirements.txt:34 | ok |
+| djangorestframework | `~=3.15` | - | examples/requirements.txt:9 | ok |
+| gunicorn | `==23.0.0` | - | examples/requirements.txt:10 | ok |
+| whitenoise | `>=6.7` | - | examples/requirements.txt:11 | ok |
+| psycopg | `==3.2.3` | - | examples/requirements.txt:14 | ok |
+| requests | `==2.32.3` | - | examples/requirements.txt:23 | ok |
+| weasyprint | `==63.0` | - | examples/requirements.txt:27 | ok |
+| pdf-stamp | `url` | - | examples/requirements.txt:28 | ok |
+| acme-billing-core | `==1.8.2` | - | examples/requirements.txt:29 | ok |
+| python-dateutil | `==2.9.0.post0` | - | examples/requirements.txt:32 | ok |
+| enum34 | `==1.1.10` | - | examples/requirements.txt:35 | ok |
+| pytest | `==8.3.3` | - | examples/requirements.txt:36 | ok |
+
+## Findings
+
+- **HIGH PR03** `examples/constraints.txt:3, examples/requirements.txt:24` urllib3: no version satisfies <2 (examples/constraints.txt:3), >=2.2 (examples/requirements.txt:24) - pip will fail with ResolutionImpossible
+- **HIGH PR03** `examples/constraints.txt:4, examples/requirements.txt:19` numpy: no version satisfies ==1.26.4 (examples/constraints.txt:4), >=2.1 (examples/requirements.txt:19) when python_version >= "3.9" - pip will fail with ResolutionImpossible
+- **HIGH PR05** `examples/requirements.txt:28` pdf-stamp comes from git+https://github.com/acme/pdf-stamp.git@main#egg=pdf-stamp without a full commit hash; the branch or tag can move under you - pin @<40-char commit>
+- **HIGH PR09** `examples/requirements.txt:5` --extra-index-url https://pkgs.acme.internal/simple: pip picks the highest version from ANY index, so a public package with the same name as an internal one wins (dependency confusion); use a single --index-url proxy that serves both, or pin with --hash
+- **HIGH PR11** `examples/requirements.txt:35` enum34 breaks the stdlib enum on Python 3.6+ (e.g. AttributeError in re); remove it
+- **HIGH PR13** `examples/requirements.txt:20` pandas: single '=' in '=2.2.3' (use ==) - pip will refuse this line
+- **MEDIUM PR02** `examples/requirements.txt:11` whitenoise >=6.7 has no upper bound and no pin; a future major release installs automatically
+- **MEDIUM PR02** `examples/requirements.txt:24` urllib3 >=2.2 has no upper bound and no pin; a future major release installs automatically
+- **MEDIUM PR06** `examples/requirements.txt:28` pdf-stamp is an editable install; it will not exist on a clean build machine - publish it or build a wheel
+- **LOW PR04** `examples/requirements.txt:8, examples/requirements.txt:34` Django is declared 2 times (spelt Django, django); keep one line
+- **LOW PR14** `examples/requirements.txt:36` pytest is a development/test tool in a runtime requirements file; move it to requirements-dev.txt so production images stay small
+
+## Next steps
+
+1. Fix every PR03/PR07/PR13 line - these stop `pip install` outright.
+2. Keep loose, intent-level ranges in `requirements.in` (or pyproject) and generate a fully pinned, hashed lock with `pip-compile --generate-hashes` or `uv pip compile --generate-hashes`; install with `pip install --require-hashes -r requirements.txt`.
+3. Use one `--index-url` (a proxy that mirrors PyPI and hosts internal packages), https only.
+4. Run `pip-audit -r requirements.txt` (online) for known vulnerabilities - this checker is offline and does not know CVEs.
+FILE:scripts/req_check.py
+#!/usr/bin/env python3
+"""Python requirements pin and conflict checker (Python 3.8+ standard library only, offline).
+
+Reads pip requirements files (following -r includes and -c constraints), and reports what makes
+installs non-reproducible, unsatisfiable or risky:
+
+  PR01 unpinned requirement            PR08 pre-release pin or --pre
+  PR02 lower bound only (>=, >)        PR09 --extra-index-url (dependency confusion)
+  PR03 conflicting specifiers          PR10 plain http:// index/URL, --trusted-host
+  PR04 duplicate / differently spelt   PR11 deprecated, renamed or stdlib-backport package
+  PR05 VCS/URL without immutable ref   PR12 installed version (pip freeze) does not match
+  PR06 editable or local path          PR13 line pip cannot parse
+  PR07 incomplete hash-checking mode  PR14 dev/test tool in runtime requirements
+
+Specifiers follow PEP 440 (==, !=, <=, >=, <, >, ~=, ===, ==X.*), names PEP 503 normalisation,
+markers PEP 508 (evaluated with --python / --platform, otherwise each marker set is checked as its
+own environment).
+
+Usage:
+  python3 req_check.py requirements.txt [more.txt ...] [--mode app|lib] [--installed freeze.txt]
+                       [--python 3.11] [--platform linux] [--json]
+  python3 req_check.py --self-test
+Exit codes: 0 = no high findings, 1 = high findings, 2 = file missing or unreadable.
+"""
+import argparse
+import json
+import os
+import re
+import sys
+from collections import OrderedDict, defaultdict
+
+# ----------------------------------------------------------------------------- versions (PEP 440)
+VERSION_RE = re.compile(r"""^\s*v?(?:(?P<epoch>\d+)!)?(?P<release>\d+(?:\.\d+)*)
+    (?:[-_.]?(?P<pre_l>a|alpha|b|beta|c|rc|pre|preview)[-_.]?(?P<pre_n>\d*))?
+    (?:-(?P<post_n1>\d+)|[-_.]?(?P<post_l>post|rev|r)[-_.]?(?P<post_n2>\d*))?
+    (?:[-_.]?(?P<dev_l>dev)[-_.]?(?P<dev_n>\d*))?
+    (?:\+(?P<local>[a-z0-9]+(?:[-_.][a-z0-9]+)*))?\s*$""", re.I | re.X)
+PRE_RANK = {"a": 0, "alpha": 0, "b": 1, "beta": 1, "c": 2, "rc": 2, "pre": 2, "preview": 2}
+INF = float("inf")
+
+
+class Version:
+    def __init__(self, s):
+        m = VERSION_RE.match(s)
+        if not m:
+            raise ValueError("invalid version %r" % s)
+        self.text = s.strip()
+        self.epoch = int(m.group("epoch") or 0)
+        self.release = tuple(int(x) for x in m.group("release").split("."))
+        self.pre = (PRE_RANK[m.group("pre_l").lower()], int(m.group("pre_n") or 0)) if m.group("pre_l") else None
+        post = m.group("post_n1") or (m.group("post_n2") or "0" if m.group("post_l") else None)
+        self.post = int(post) if post is not None else None
+        self.dev = int(m.group("dev_n") or 0) if m.group("dev_l") else None
+        self.local = m.group("local")
+        rel = list(self.release)
+        while len(rel) > 1 and rel[-1] == 0:
+            rel.pop()
+        if self.pre is None and self.post is None and self.dev is not None:
+            pre = (-1, 0)
+        else:
+            pre = self.pre if self.pre is not None else (3, 0)
+        self.key = (self.epoch, tuple(rel), pre, -1 if self.post is None else self.post,
+                    INF if self.dev is None else self.dev)
+
+    @property
+    def is_prerelease(self):
+        return self.pre is not None or self.dev is not None
+
+    def __lt__(self, o):
+        return self.key < o.key
+
+    def __eq__(self, o):
+        return self.key == o.key
+
+    def __hash__(self):
+        return hash(self.key)
+
+    def __repr__(self):
+        return self.text
+
+
+SPEC_RE = re.compile(r"^\s*(===|==|!=|<=|>=|~=|<|>)\s*([^\s,;]+)\s*$")
+
+
+class Spec:
+    def __init__(self, text):
+        m = SPEC_RE.match(text)
+        if not m:
+            raise ValueError("invalid specifier %r" % text.strip())
+        self.op, self.ver_text = m.group(1), m.group(2)
+        self.wild = self.ver_text.endswith(".*")
+        if self.op == "===":
+            self.version = None
+            return
+        if self.wild and self.op not in ("==", "!="):
+            raise ValueError("wildcard only allowed with == or != (%r)" % text.strip())
+        self.version = Version(self.ver_text[:-2] if self.wild else self.ver_text)
+        if self.op == "~=" and len(self.version.release) < 2:
+            raise ValueError("~= needs at least two release parts, e.g. ~=2.1 (%r)" % text.strip())
+
+    def __repr__(self):
+        return self.op + self.ver_text
+
+    def contains(self, v):
+        op, s = self.op, self.version
+        if op == "===":
+            return v.text == self.ver_text
+        if self.wild:
+            n = len(s.release)
+            rel = tuple(list(v.release) + [0] * max(0, n - len(v.release)))[:n]
+            hit = v.epoch == s.epoch and rel == s.release
+            return hit if op == "==" else not hit
+        vk = v.key
+        if op == "==":
+            return vk == s.key and (s.local is None or v.local == s.local)
+        if op == "!=":
+            return vk != s.key
+        if op == ">=":
+            return vk >= s.key
+        if op == "<=":
+            return vk <= s.key
+        if op == ">":
+            return vk > s.key and not (v.post is not None and v.release == s.release and s.post is None)
+        if op == "<":
+            return vk < s.key and not (v.is_prerelease and not s.is_prerelease and
+                                       Version(".".join(map(str, v.release))).key == s.key)
+        if op == "~=":
+            prefix = s.release[:-1]
+            rel = tuple(list(v.release) + [0] * len(s.release))[:len(prefix)]
+            return vk >= s.key and rel == prefix and v.epoch == s.epoch
+        return False
+
+    def is_prerelease_spec(self):
+        return self.version is not None and self.version.is_prerelease
+
+
+
+def satisfiable(specs):
+    """Return an example final version that satisfies all specs, or None."""
+    if not specs:
+        return "any"
+    for s in specs:
+        if s.op == "===":
+            try:
+                v = Version(s.ver_text)
+            except ValueError:
+                return s.ver_text
+            return v.text if all(x.contains(v) for x in specs) else None
+    cands = set()
+    for s in specs:
+        r = list(s.version.release)
+        e = "%d!" % s.version.epoch if s.version.epoch else ""
+        base = ".".join(map(str, r))
+        cands.update([s.version.text, e + base, e + base + ".0.0.1", e + base + ".post1"])
+        if s.wild or s.op == "~=":
+            pre = r if s.wild else r[:-1]
+            cands.update([e + ".".join(map(str, pre + [0])), e + ".".join(map(str, pre + [999]))])
+            nxt = pre[:-1] + [pre[-1] + 1]
+            cands.add(e + ".".join(map(str, nxt)))
+        for i in range(len(r)):
+            if r[i] > 0:
+                lower = r[:i] + [r[i] - 1] + [999]
+                cands.add(e + ".".join(map(str, lower)))
+            up = r[:i] + [r[i] + 1]
+            cands.add(e + ".".join(map(str, up)))
+    cands.update(["0", "0.0.1", "99999"])
+    allow_pre = any(s.is_prerelease_spec() for s in specs)
+    found = []
+    for c in cands:
+        try:
+            v = Version(c)
+        except ValueError:
+            continue
+        if v.is_prerelease and not allow_pre:
+            continue
+        if all(s.contains(v) for s in specs):
+            found.append(v)
+    return min(found).text if found else None
+
+
+# ----------------------------------------------------------------------------- markers (PEP 508, subset)
+MARKER_TOKEN = re.compile(r"\s*(\(|\)|===|==|!=|<=|>=|~=|<|>|not\s+in\b|in\b|and\b|or\b|'[^']*'|\"[^\"]*\"|[A-Za-z_][A-Za-z0-9_.]*)")
+
+
+def eval_marker(text, env):
+    toks, pos = [], 0
+    while pos < len(text):
+        m = MARKER_TOKEN.match(text, pos)
+        if not m:
+            if text[pos:].strip() == "":
+                break
+            raise ValueError("cannot parse marker %r" % text)
+        toks.append(re.sub(r"\s+", " ", m.group(1)))
+        pos = m.end()
+    i = [0]
+
+    def value():
+        t = toks[i[0]]
+        i[0] += 1
+        if t[0] in "'\"":
+            return t[1:-1], False
+        if t not in env:
+            raise ValueError("unknown marker variable %r" % t)
+        return env[t], t.startswith("python") or t.endswith("_version")
+
+    def comparison():
+        if toks[i[0]] == "(":
+            i[0] += 1
+            r = disj()
+            i[0] += 1
+            return r
+        left, lv = value()
+        op = toks[i[0]]
+        i[0] += 1
+        right, rv = value()
+        if op in ("in", "not in"):
+            r = left in right
+            return r if op == "in" else not r
+        if lv or rv:
+            try:
+                return Spec(op + right).contains(Version(left))
+            except ValueError:
+                pass
+        return {"==": left == right, "!=": left != right, "<": left < right, ">": left > right,
+                "<=": left <= right, ">=": left >= right}.get(op, False)
+
+    def conj():
+        r = comparison()
+        while i[0] < len(toks) and toks[i[0]] == "and":
+            i[0] += 1
+            r = comparison() and r
+        return r
+
+    def disj():
+        r = conj()
+        while i[0] < len(toks) and toks[i[0]] == "or":
+            i[0] += 1
+            r = conj() or r
+        return r
+
+    return disj()
+
+
+def marker_env(python, platform):
+    plat = (platform or "linux").lower()
+    sysplat = {"linux": "linux", "windows": "win32", "win32": "win32", "macos": "darwin", "darwin": "darwin"}.get(plat, plat)
+    system = {"linux": "Linux", "win32": "Windows", "darwin": "Darwin"}.get(sysplat, plat)
+    pv = ".".join(python.split(".")[:2])
+    return {"python_version": pv, "python_full_version": python if python.count(".") == 2 else python + ".0",
+            "sys_platform": sysplat, "platform_system": system, "os_name": "nt" if sysplat == "win32" else "posix",
+            "platform_machine": "x86_64", "implementation_name": "cpython", "platform_python_implementation": "CPython",
+            "extra": ""}
+
+
+# ----------------------------------------------------------------------------- parsing
+NAME_RE = re.compile(r"^([A-Za-z0-9][A-Za-z0-9._-]*)\s*(\[[^\]]*\])?\s*(.*)$")
+HEX40 = re.compile(r"@[0-9a-f]{40}(?:#|$)")
+DEPRECATED = {
+    "sklearn": ("high", "is a dummy package that now fails to install; use scikit-learn"),
+    "bs4": ("low", "is a convenience alias; depend on beautifulsoup4 directly"),
+    "pycrypto": ("high", "is unmaintained since 2013 with known vulnerabilities; use pycryptodome or cryptography"),
+    "nose": ("medium", "is unmaintained and breaks on Python 3.10+; use pytest"),
+    "mock": ("low", "is a backport; on Python 3 use unittest.mock"),
+    "argparse": ("medium", "is in the standard library since 2.7/3.2; remove the backport"),
+    "typing": ("medium", "is a backport for Python < 3.5 and can shadow the stdlib module; remove it"),
+    "dataclasses": ("medium", "is a backport for Python 3.6 only; remove it or add ; python_version < \"3.7\""),
+    "enum34": ("high", "breaks the stdlib enum on Python 3.6+ (e.g. AttributeError in re); remove it"),
+    "futures": ("medium", "is a Python 2 backport of concurrent.futures; remove it"),
+    "pathlib": ("medium", "is an old backport that shadows the stdlib pathlib; remove it"),
+    "distribute": ("medium", "was merged back into setuptools in 2013; use setuptools"),
+    "pkg-resources": ("high", "is a bogus package generated by a broken Ubuntu pip freeze; remove the line"),
+    "python-dateutils": ("medium", "is a typo-like name; you probably meant python-dateutil"),
+}
+
+
+DEV_TOOLS = {"pytest", "pytest-cov", "pytest-django", "pytest-mock", "black", "flake8", "pylint", "mypy", "ruff",
+             "isort", "ipython", "ipdb", "pre-commit", "coverage", "tox", "nox", "factory-boy", "faker", "debugpy",
+             "django-debug-toolbar", "jupyter", "notebook"}
+
+
+def show(path):
+    rel = os.path.relpath(path)
+    return path if rel.startswith("..") else rel
+
+
+def norm(name):
+    return re.sub(r"[-_.]+", "-", name).lower()
+
+
+class Req:
+    def __init__(self, **kw):
+        self.__dict__.update(kw)
+
+
+def logical_lines(text):
+    buf, start = "", None
+    for n, raw in enumerate(text.splitlines(), 1):
+        line = raw
+        if start is None:
+            start = n
+        if line.rstrip().endswith("\\"):
+            buf += line.rstrip()[:-1] + " "
+            continue
+        buf += line
+        yield start, buf
+        buf, start = "", None
+    if buf:
+        yield start, buf
+
+
+def strip_comment(line):
+    if line.lstrip().startswith("#"):
+        return ""
+    return re.split(r"\s+#", line, maxsplit=1)[0].strip()
+
+
+def parse_files(paths, findings):
+    reqs, opts, seen = [], defaultdict(list), set()
+
+    def add(sev, code, src, msg):
+        findings.append({"severity": sev, "code": code, "where": src, "message": msg})
+
+    def parse(path, constraint):
+        real = os.path.abspath(path)
+        if real in seen:
+            return
+        seen.add(real)
+        with open(path, encoding="utf-8") as f:
+            text = f.read()
+        base = os.path.dirname(path)
+        shown = show(path)
+        for n, line in logical_lines(text):
+            src = "%s:%d" % (shown, n)
+            line = strip_comment(line)
+            if not line:
+                continue
+            m = re.match(r"^(-r|--requirement|-c|--constraint)\s*=?\s*(\S+)$", line)
+            if m:
+                inc = os.path.join(base, m.group(2))
+                if not os.path.exists(inc):
+                    add("high", "PR13", src, "included file %s does not exist; pip will fail" % m.group(2))
+                else:
+                    parse(inc, constraint or m.group(1) in ("-c", "--constraint"))
+                continue
+            m = re.match(r"^(-i|--index-url|--extra-index-url|-f|--find-links|--trusted-host)\s*=?\s*(\S+)$", line)
+            if m:
+                opt = {"-i": "--index-url", "-f": "--find-links"}.get(m.group(1), m.group(1))
+                opts[opt].append((src, m.group(2)))
+                continue
+            if line in ("--pre", "--require-hashes") or line.startswith(("--no-binary", "--only-binary", "--prefer-binary")):
+                opts[line.split()[0].split("=")[0]].append((src, line))
+                continue
+            editable = False
+            m = re.match(r"^(-e|--editable)\s+(\S+)(.*)$", line)
+            if m:
+                editable, line = True, m.group(2) + m.group(3)
+            hashes = re.findall(r"--hash[=\s]+(\S+)", line)
+            line = re.sub(r"--hash[=\s]+\S+", "", line).strip()
+            if line.startswith("-"):
+                add("medium", "PR13", src, "unknown option %r ignored by this checker" % line.split()[0])
+                continue
+            marker = ""
+            if ";" in line:
+                line, marker = [x.strip() for x in line.split(";", 1)]
+            url, name, extras, specs, bad = None, None, "", [], None
+            if re.match(r"^(git|hg|svn|bzr)\+|^https?://|^file:|^\.{0,2}/|.*\.(whl|zip|tar\.gz)$", line):
+                url = line
+                egg = re.search(r"[#&]egg=([A-Za-z0-9._-]+)", line)
+                name = egg.group(1) if egg else os.path.basename(line.split("#")[0].rstrip("/")).split("@")[0]
+                name = re.sub(r"(-\d.*)?(\.git|\.whl|\.zip|\.tar\.gz)$", "", name) or line
+            else:
+                m = NAME_RE.match(line)
+                if not m:
+                    add("high", "PR13", src, "pip cannot parse %r" % line)
+                    continue
+                name, extras, rest = m.group(1), m.group(2) or "", m.group(3).strip()
+                if rest.startswith("@"):
+                    url = rest[1:].strip()
+                elif rest:
+                    rest = rest.strip("()")
+                    for part in [p for p in rest.split(",") if p.strip()]:
+                        p = part.strip()
+                        if re.match(r"^=[^=]", p):
+                            bad = "single '=' in %r (use ==)" % p
+                            break
+                        try:
+                            specs.append(Spec(p))
+                        except ValueError as e:
+                            bad = str(e)
+                            break
+            if bad:
+                add("high", "PR13", src, "%s: %s - pip will refuse this line" % (name, bad))
+                continue
+            reqs.append(Req(name=name, key=norm(name), extras=extras, specs=specs, marker=marker, url=url,
+                            editable=editable, hashes=hashes, constraint=constraint, src=src))
+
+    for p in paths:
+        parse(p, False)
+    return reqs, opts
+
+
+# ----------------------------------------------------------------------------- checks
+def check(paths, mode="app", installed=None, python=None, platform=None):
+    findings = []
+    reqs, opts = parse_files(paths, findings)
+
+    def add(sev, code, src, msg):
+        findings.append({"severity": sev, "code": code, "where": src, "message": msg})
+
+    env = marker_env(python, platform) if python else None
+    active = []
+    for r in reqs:
+        if r.marker and env is not None:
+            try:
+                if not eval_marker(r.marker, env):
+                    continue
+            except (ValueError, IndexError):
+                add("medium", "PR13", r.src, "cannot evaluate marker %r" % r.marker)
+        active.append(r)
+
+    by = OrderedDict()
+    for r in active:
+        by.setdefault(r.key, []).append(r)
+
+    # index / transport options
+    for src, url in opts.get("--extra-index-url", []):
+        add("high", "PR09", src, "--extra-index-url %s: pip picks the highest version from ANY index, so a public "
+            "package with the same name as an internal one wins (dependency confusion); use a single --index-url "
+            "proxy that serves both, or pin with --hash" % url)
+    for opt in ("--index-url", "--extra-index-url", "--find-links"):
+        for src, url in opts.get(opt, []):
+            if url.startswith("http://"):
+                add("high", "PR10", src, "%s uses plain http (%s); packages can be swapped in transit - use https" % (opt, url))
+    for src, host in opts.get("--trusted-host", []):
+        add("medium", "PR10", src, "--trusted-host %s disables TLS verification for that host" % host)
+    for src, _ in opts.get("--pre", []):
+        add("medium", "PR08", src, "--pre lets every package resolve to pre-releases; pin the one pre-release you need instead")
+
+    hashed = [r for r in active if r.hashes and not r.constraint]
+    hash_mode = bool(hashed) or bool(opts.get("--require-hashes"))
+    pinned_elsewhere = {}
+    for key, rs in by.items():
+        for r in rs:
+            if any(s.op in ("==", "===") and not s.wild for s in r.specs):
+                pinned_elsewhere[key] = r.src
+
+    packages = []
+    for key, rs in by.items():
+        decl = [r for r in rs if not r.constraint]
+        all_specs = [s for r in rs for s in r.specs]
+        groups = defaultdict(list)
+        for r in rs:
+            groups[r.marker].append(r)
+        unmarked = groups.pop("", [])
+        envs = [("", unmarked)] if not groups else [(m, unmarked + g) for m, g in groups.items()]
+        status, example = "ok", None
+        for m, grp in envs:
+            specs = [s for r in grp for s in r.specs]
+            if any(r.url for r in grp):
+                continue
+            ex = satisfiable(specs)
+            if ex is None:
+                status = "conflict"
+                add("high", "PR03", ", ".join(r.src for r in grp),
+                    "%s: no version satisfies %s%s - pip will fail with ResolutionImpossible"
+                    % (rs[0].name, ", ".join("%s (%s)" % (",".join(map(repr, r.specs)) or "any", r.src) for r in grp if r.specs),
+                       (" when " + m) if m else ""))
+            elif example is None:
+                example = ex
+        spellings = sorted({r.name for r in rs})
+        per_marker = defaultdict(list)
+        for r in decl:
+            per_marker[r.marker].append(r)
+        dups = [g for g in per_marker.values() if len(g) > 1]
+        if dups:
+            g = dups[0]
+            add("low", "PR04", ", ".join(r.src for r in g), "%s is declared %d times%s; keep one line"
+                % (rs[0].name, len(g), (" (spelt " + ", ".join(spellings) + ")") if len(spellings) > 1 else ""))
+        elif len(spellings) > 1:
+            add("info", "PR04", ", ".join(r.src for r in rs), "%s is spelt %s across files (same package after normalisation)"
+                % (rs[0].name, ", ".join(spellings)))
+        for r in decl:
+            if r.url:
+                if r.url.startswith(("git+", "hg+", "svn+", "bzr+")):
+                    if not HEX40.search(r.url):
+                        add("high", "PR05", r.src, "%s comes from %s without a full commit hash; the branch or tag can "
+                            "move under you - pin @<40-char commit>" % (r.name, r.url))
+                elif r.url.startswith(("http://", "https://")):
+                    if r.url.startswith("http://"):
+                        add("high", "PR10", r.src, "%s is downloaded over plain http" % r.name)
+                    if not r.hashes and "#sha256=" not in r.url:
+                        add("medium", "PR05", r.src, "%s is an archive URL without a hash; add #sha256=... or --hash" % r.name)
+                if r.editable or r.url.startswith((".", "/", "file:")):
+                    add("medium" if mode == "app" else "low", "PR06", r.src, "%s is %s; it will not exist on a clean build "
+                        "machine - publish it or build a wheel" % (r.name, "an editable install" if r.editable else "a local path"))
+                continue
+            if r.editable:
+                add("medium", "PR06", r.src, "%s is installed editable" % r.name)
+            ops = {s.op for s in r.specs}
+            if not r.specs and key not in pinned_elsewhere:
+                add("high" if mode == "app" else "info", "PR01", r.src, "%s is unpinned%s" % (r.name,
+                    "; every install can pick a new major version - pin == or add it to a lock/constraints file"
+                    if mode == "app" else " (fine for a library; set a tested lower bound)"))
+            elif ops and ops <= {">=", ">", "!="} and key not in pinned_elsewhere and mode == "app":
+                add("medium", "PR02", r.src, "%s %s has no upper bound and no pin; a future major release installs "
+                    "automatically" % (r.name, ",".join(map(repr, r.specs))))
+            if mode == "lib" and any(s.op in ("==", "===") for s in r.specs):
+                add("medium", "PR02", r.src, "%s is pinned == in a library; this forces the exact version on every "
+                    "project that depends on you - use a range" % r.name)
+            for s in r.specs:
+                if s.version is not None and s.version.is_prerelease and s.op in ("==", ">=", "~="):
+                    add("medium", "PR08", r.src, "%s %r is a pre-release" % (r.name, s))
+            if hash_mode and not r.hashes:
+                add("high", "PR07", r.src, "%s has no --hash but other lines do; pip switches to hash-checking mode "
+                    "for the whole file and will refuse to install it" % r.name)
+            if hash_mode and r.hashes and not any(s.op == "==" and not s.wild for s in r.specs):
+                add("high", "PR07", r.src, "%s has hashes but is not pinned with ==; hash-checking mode requires "
+                    "exact pins" % r.name)
+        if key in DEV_TOOLS and mode == "app" and decl and not re.search(r"dev|test|lint|ci|docs",
+                                                                         decl[0].src.split(":")[0], re.I):
+            add("low", "PR14", decl[0].src, "%s is a development/test tool in a runtime requirements file; move it "
+                "to requirements-dev.txt so production images stay small" % decl[0].name)
+        if key in DEPRECATED and decl:
+            sev, why = DEPRECATED[key]
+            add(sev, "PR11", decl[0].src, "%s %s" % (decl[0].name, why))
+        packages.append({"name": rs[0].name, "key": key,
+                         "specs": ",".join(sorted({repr(s) for s in all_specs})) or ("url" if any(r.url for r in rs) else "any"),
+                         "sources": [r.src + (" (constraint)" if r.constraint else "") for r in rs],
+                         "marker": "; ".join(sorted({r.marker for r in rs if r.marker})),
+                         "status": status, "example": example})
+
+    if installed:
+        inst = {}
+        with open(installed, encoding="utf-8") as f:
+            for n, line in enumerate(f, 1):
+                m = re.match(r"^\s*([A-Za-z0-9][A-Za-z0-9._-]*)\s*==\s*([^\s;#]+)", line)
+                if m:
+                    inst[norm(m.group(1))] = (m.group(2), "%s:%d" % (show(installed), n))
+        for p in packages:
+            if all(r.constraint for r in by[p["key"]]):
+                continue  # constraints never install anything
+            specs = [s for r in by[p["key"]] for s in r.specs]
+            if p["key"] not in inst:
+                if not any(r.marker for r in by[p["key"]]):
+                    add("medium", "PR12", next(r.src for r in by[p["key"]] if not r.constraint), "%s is required but not in %s" % (p["name"], os.path.basename(installed)))
+                p["installed"] = None
+                continue
+            ver, src = inst[p["key"]]
+            p["installed"] = ver
+            try:
+                v = Version(ver)
+            except ValueError:
+                continue
+            bad = [s for s in specs if not s.contains(v)]
+            if bad:
+                add("high", "PR12", src, "%s %s is installed but the requirements say %s; the environment does not "
+                    "match what CI builds" % (p["name"], ver, ",".join(map(repr, bad))))
+
+    order = {"high": 0, "medium": 1, "low": 2, "info": 3}
+    findings.sort(key=lambda f: (order[f["severity"]], f["code"], f["where"]))
+    counts = {k: sum(f["severity"] == k for f in findings) for k in order}
+    pinned = sum(1 for p in packages if re.search(r"(^|,)===?[^=,*]+(,|$)", p["specs"]) and "*" not in p["specs"])
+    return {"files": [show(p) for p in paths], "mode": mode, "python": python, "packages": packages,
+            "pinned": pinned, "findings": findings, "counts": counts, "hash_mode": hash_mode}
+
+
+# ----------------------------------------------------------------------------- report
+def report(r):
+    L = ["# Requirements check: %s" % ", ".join(r["files"]), ""]
+    L.append("Mode: %s%s.  Packages: %d (%d pinned with ==).  Findings: %d high, %d medium, %d low, %d info." % (
+        r["mode"], (", Python " + r["python"]) if r["python"] else "", len(r["packages"]), r["pinned"],
+        r["counts"]["high"], r["counts"]["medium"], r["counts"]["low"], r["counts"]["info"]))
+    L += ["", "**Verdict: %s**" % ("install will fail or is unsafe - fix the high findings first" if any(
+        f["code"] in ("PR03", "PR07", "PR13") and f["severity"] == "high" for f in r["findings"]) else
+        "not reproducible or risky - fix the high findings" if r["counts"]["high"] else
+        "reproducible and resolvable" if not r["counts"]["medium"] else "resolvable, with medium findings to tidy"), ""]
+    L += ["## Packages", ""]
+    has_inst = any("installed" in p for p in r["packages"])
+    L.append("| Package | Specifiers (all files) | Marker | Declared in | Status%s |" % (" | Installed" if has_inst else ""))
+    L.append("|---|---|---|---|---|" + ("---|" if has_inst else ""))
+    for p in r["packages"]:
+        L.append("| %s | `%s` | %s | %s | %s%s |" % (p["name"], p["specs"], ("`%s`" % p["marker"]) if p["marker"] else "-",
+                                                    ", ".join(p["sources"]), p["status"],
+                                                    (" | %s" % (p.get("installed") or "-")) if has_inst else ""))
+    L += ["", "## Findings", ""]
+    if not r["findings"]:
+        L.append("- none")
+    for f in r["findings"]:
+        L.append("- **%s %s** `%s` %s" % (f["severity"].upper(), f["code"], f["where"], f["message"]))
+    L += ["", "## Next steps", "",
+          "1. Fix every PR03/PR07/PR13 line - these stop `pip install` outright.",
+          "2. Keep loose, intent-level ranges in `requirements.in` (or pyproject) and generate a fully pinned, hashed lock "
+          "with `pip-compile --generate-hashes` or `uv pip compile --generate-hashes`; install with `pip install --require-hashes -r requirements.txt`.",
+          "3. Use one `--index-url` (a proxy that mirrors PyPI and hosts internal packages), https only.",
+          "4. Run `pip-audit -r requirements.txt` (online) for known vulnerabilities - this checker is offline and does not know CVEs."]
+    return "\n".join(L) + "\n"
+
+
+# ----------------------------------------------------------------------------- self-test
+def self_test():
+    import tempfile
+    cases = []
+
+    def ok(name, cond, detail=""):
+        cases.append((name, bool(cond), detail))
+
+    V = Version
+    ok("version ordering dev < a < rc < final < post", V("1.0.dev1") < V("1.0a1") < V("1.0rc1") < V("1.0") < V("1.0.post1"))
+    ok("trailing zeros equal", V("1.0") == V("1.0.0"))
+    ok("~=1.4.2 means >=1.4.2,<1.5", Spec("~=1.4.2").contains(V("1.4.9")) and not Spec("~=1.4.2").contains(V("1.5")))
+    ok("~=2.1 allows 2.9 not 3.0", Spec("~=2.1").contains(V("2.9")) and not Spec("~=2.1").contains(V("3.0")))
+    ok("==1.4.* wildcard", Spec("==1.4.*").contains(V("1.4.7")) and not Spec("==1.4.*").contains(V("1.5")))
+    ok("<2.0 excludes 2.0rc1", not Spec("<2.0").contains(V("2.0rc1")))
+    ok("satisfiable range", satisfiable([Spec(">=1.2"), Spec("<2")]) is not None)
+    ok("conflict detected", satisfiable([Spec(">=2.0"), Spec("<1.9")]) is None)
+    ok("pin outside range conflicts", satisfiable([Spec("==1.26.4"), Spec(">=2")]) is None)
+    ok("!= exclusion of only pin", satisfiable([Spec("==3.1"), Spec("!=3.1")]) is None)
+    ok("~= vs upper bound conflict", satisfiable([Spec("~=2.31"), Spec("<2.30")]) is None)
+    env = marker_env("3.8", "linux")
+    ok("marker eval python_version", eval_marker('python_version < "3.9"', env) and
+       not eval_marker('python_version >= "3.9" and sys_platform == "linux"', env))
+    ok("marker eval or/parentheses", eval_marker('(sys_platform == "win32" or os_name == "posix")', env))
+    try:
+        Spec("~=2")
+        ok("~=2 rejected", False)
+    except ValueError:
+        ok("~=2 rejected", True)
+
+    d = tempfile.mkdtemp()
+    with open(os.path.join(d, "c.txt"), "w") as f:
+        f.write("urllib3<2\nnumpy==1.26.4\n")
+    with open(os.path.join(d, "r.txt"), "w") as f:
+        f.write("-c c.txt\n--extra-index-url https://pypi.internal.example/simple\nrequests==2.32.3\nurllib3>=2.2\n"
+                "numpy<2 ; python_version < \"3.9\"\nnumpy>=2.1 ; python_version >= \"3.9\"\nflask\n"
+                "Django>=4.2\ndjango<5\n-e git+https://github.com/acme/tools.git@main#egg=acme-tools\n"
+                "sklearn\npandas=2.2.0\npytest==8.3.3\n")
+    r = check([os.path.join(d, "r.txt")])
+    codes = defaultdict(list)
+    for fnd in r["findings"]:
+        codes[fnd["code"]].append(fnd)
+    ok("PR03 urllib3 conflict with constraint", any("urllib3" in x["message"] for x in codes["PR03"]), codes["PR03"])
+    ok("PR03 numpy conflict only for python>=3.9 marker", any("numpy" in x["message"] and "3.9" in x["message"]
+       for x in codes["PR03"]), codes["PR03"])
+    ok("PR01 flask unpinned high", any("flask" in x["message"] and x["severity"] == "high" for x in codes["PR01"]))
+    ok("PR04 Django/django duplicate", any("Django" in x["message"] for x in codes["PR04"]))
+    ok("PR05 git branch ref", any("acme-tools" in x["message"] for x in codes["PR05"]), codes["PR05"])
+    ok("PR09 extra index", bool(codes["PR09"]))
+    ok("PR11 sklearn", any("scikit-learn" in x["message"] for x in codes["PR11"]))
+    ok("PR14 pytest in runtime file", any("pytest" in x["message"] for x in codes["PR14"]))
+    ok("PR13 single =", any("pandas" in x["message"] for x in codes["PR13"]))
+    r38 = check([os.path.join(d, "r.txt")], python="3.8")
+    ok("--python 3.8 drops the >=3.9 numpy line", not any("numpy" in x["message"] for x in r38["findings"] if x["code"] == "PR03"))
+    with open(os.path.join(d, "h.txt"), "w") as f:
+        f.write("six==1.16.0 --hash=sha256:" + "a" * 64 + "\nidna>=3 --hash=sha256:" + "b" * 64 + "\ncertifi==2024.8.30\n")
+    rh = check([os.path.join(d, "h.txt")])
+    ok("PR07 partial hashes", sum(x["code"] == "PR07" for x in rh["findings"]) == 2, rh["findings"])
+    with open(os.path.join(d, "freeze.txt"), "w") as f:
+        f.write("six==1.15.0\n")
+    rf = check([os.path.join(d, "h.txt")], installed=os.path.join(d, "freeze.txt"))
+    ok("PR12 installed mismatch", any(x["code"] == "PR12" and "six" in x["message"] for x in rf["findings"]))
+    rl = check([os.path.join(d, "h.txt")], mode="lib")
+    ok("lib mode flags == pin", any(x["code"] == "PR02" and "library" in x["message"] for x in rl["findings"]))
+    ok("report renders", "Verdict" in report(r) and "| Package |" in report(r))
+
+    for name, good, detail in cases:
+        print("%s  %s%s" % ("PASS" if good else "FAIL", name, "" if good else "  -> %r" % (detail,)))
+    passed = sum(1 for _, g, _ in cases if g)
+    print("%d/%d passed" % (passed, len(cases)))
+    return 0 if passed == len(cases) else 1
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description="Check pip requirements files for pins, conflicts and risky sources.")
+    ap.add_argument("files", nargs="*")
+    ap.add_argument("--mode", choices=("app", "lib"), default="app",
+                    help="app = deployable service (pins expected), lib = package others install (ranges expected)")
+    ap.add_argument("--installed", help="pip freeze output to compare against")
+    ap.add_argument("--python", help="evaluate markers for this Python version, e.g. 3.11")
+    ap.add_argument("--platform", help="linux | windows | macos (with --python)")
+    ap.add_argument("--json", action="store_true")
+    ap.add_argument("--self-test", action="store_true")
+    a = ap.parse_args(argv)
+    if a.self_test:
+        return self_test()
+    if not a.files:
+        ap.print_usage(sys.stderr)
+        return 2
+    try:
+        r = check(a.files, a.mode, a.installed, a.python, a.platform)
+    except (OSError, UnicodeDecodeError) as e:
+        print("error: %s" % e, file=sys.stderr)
+        return 2
+    print(json.dumps(r, indent=2) if a.json else report(r), end="\n" if a.json else "")
+    return 1 if r["counts"]["high"] else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+</details>
+
