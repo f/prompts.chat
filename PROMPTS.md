@@ -224333,3 +224333,16 @@ Hand-embroidered hoop art of a thatched English cottage garden with a straw beeh
 
 </details>
 
+<details>
+<summary><strong>Impressionist Painting of a Parisian Cafe Terrace on a Rainy Evening</strong></summary>
+
+## Impressionist Painting of a Parisian Cafe Terrace on a Rainy Evening
+
+Contributed by [@f](https://github.com/f)
+
+```md
+An impressionist painting of a Parisian cafe terrace on a rainy evening, landscape 4:3, with thick, visible, textured brushstrokes like an oil or pastel painting. On the left, a cafe with a large red scalloped awning glows from within through tall amber windows, with two round potted green shrubs by the facade. Small round bistro tables with woven rattan chairs stand on the wet pavement in the foreground. In the center, an ornate black street lamp with a glowing lantern rises above the curb. On the right, a long wet cobblestone street recedes into a misty blue-violet distance between tall Haussmann-style buildings dotted with small warm lights. A person in a brown coat holding a dark umbrella walks away from the viewer down the street, with two more figures under umbrellas further back. Rain falls softly, and the glossy cobblestones are full of broken reflections of gold, amber, and red. Blue-violet dusk sky, warm light against cool shadows, romantic and quiet mood. No readable signs, no text, no logos.
+```
+
+</details>
+
