@@ -227323,3 +227323,24 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Vintage Food & Café Travel Diary: Photo + Scrapbook Journal Collage</strong></summary>
+
+## Vintage Food & Café Travel Diary: Photo + Scrapbook Journal Collage
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Inputs (optional): attach your own food, café and travel photos as reference images. Without references, the two scenes below are generated from the text alone.
+
+Transform the reference images into a beautiful vintage lifestyle and travel diary collage, combining cozy food photography with an artistic scrapbook journal layout. Create two connected scenes in a warm, nostalgic editorial aesthetic.
+
+Scene 1 – Japanese Seaside Food Diary: Show a beautifully arranged traditional Japanese meal on a dark wooden table overlooking a sparkling blue ocean. Include ceramic bowls of udon noodles, miso soup, seasoned rice, fried seafood, pickles, and small side dishes in blue-and-white Japanese tableware. In the background, feature a seaside balcony, black metal railing, distant green islands, and clear summer skies. Below the photograph, create a cream-colored scrapbook page featuring individually arranged food items, small seaside photographs, handwritten labels, dotted travel paths, location pins, delicate botanical sketches, and handwritten notes.
+
+Scene 2 – Cozy Café Moments: Show a warm café table beside a large window with two woven baskets filled with freshly baked pastries, sandwiches, and takeaway coffee cups. Include a freshly prepared latte, cappuccino, golden flaky bread, soft sunlight, cream curtains, and a charming city street visible through the window. Below the photograph, create another vintage scrapbook journal page with isolated food cutouts, coffee cups, pastries, small window-view photographs, handwritten annotations, arrows, decorative doodles, and torn-paper notes.
+
+Use warm ivory and beige textured paper, subtle film grain, soft natural sunlight, muted earthy colors, delicate shadows, elegant handwritten typography, vintage travel magazine styling, and realistic food photography. Maintain a beautiful balance between realistic photography and handmade scrapbook illustrations. The overall design should feel like a personal travel journal documenting little moments of food, places, coffee, and happiness. Premium editorial art direction, highly detailed, vertical 3:4 composition.
+```
+
+</details>
+
