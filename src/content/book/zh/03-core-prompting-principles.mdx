@@ -84,13 +84,13 @@
 
 ## 原则 3：上下文为王
 
-模型没有记忆，无法访问你的文件，也不了解你的情况。所有相关内容都必须在提示中。
+除了对话中传达给它的内容，模型对你的情况一无所知。即使是具备记忆功能、可以上传文件或连接工具的助手，也只能看到实际与它分享过的内容，而且只会有选择地回想起来。只要是重要的信息，就把它写进提示里。
 
 ### 提供充分的上下文
 
 <Compare 
   before={{ label: "上下文不足", content: "为什么我的函数不工作？" }}
-  after={{ label: "上下文充分", content: "我有一个 Python 函数，应该按特定键值过滤字典列表。它返回空列表，但应该返回 3 个项目。\n\n函数：\ndef filter_items(items, key, value):\n    return [item for item in items if item[key] = value]\n\n调用：filter_items(items, 'status', 'active')\n预期：2 个项目，实际：空列表" }}
+  after={{ label: "上下文充分", content: "我有一个 Python 函数，应该按特定键值过滤字典列表。它返回空列表，但应该返回 3 个项目。\n\n函数：\ndef filter_items(items, key, value):\n    return [item for item in items if item.get(key) == value]\n\n示例项目：{'id': 7, 'status': 'active'}\n调用：filter_items(items, 'Status', 'active')\n预期：3 个项目，实际：空列表" }}
 />
 
 ### 上下文检查清单
@@ -269,7 +269,7 @@
 
 ### 请求机器可读输出
 
-用于程序化使用：
+供程序使用时：
 
 ```
 只返回有效的 JSON，不要解释：
@@ -321,7 +321,7 @@
     "迭代和优化"
   ]}
   correctIndex={2}
-  explanation="上下文为王 强调 AI 模型在会话之间没有记忆，也无法读取你的想法。包含相关背景、约束和目标有助于模型理解你的需求。"
+  explanation="“上下文为王”强调 AI 模型无法读取你的想法：它们只知道对话中传达给它们的内容。包含相关背景、约束和目标有助于模型理解你的需求。"
 />
 
 ## 练习：填空
@@ -353,7 +353,7 @@
     { id: "focus", correctAnswers: [], hint: "应该优先考虑什么方面？", context: "与任务相关的质量或方面" },
     { id: "format", correctAnswers: [], hint: "输出应该如何结构化？", context: "一种输出格式类型" }
   ]}
-  explanation="结构良好的提示包括：明确的角色（原则 1）、充分的上下文（原则 3）、具体的任务（原则 2）、约束条件（原则 4）和输出格式（原则 5）。AI 会检查你的选择是否内在一致。"
+  explanation="结构良好的提示包括：明确的角色（原则 6）、充分的上下文（原则 3）、带有约束条件的具体任务（原则 2），以及明确的输出格式（原则 7）。AI 会检查你的选择是否内在一致。"
 />
 
 <InteractiveChecklist
@@ -362,10 +362,10 @@
     { id: "clarity", label: "清晰胜于花哨", description: "你的提示是否明确且无歧义？" },
     { id: "specificity", label: "具体性带来质量", description: "你是否包含了受众、长度、语气和格式？" },
     { id: "context", label: "上下文为王", description: "提示是否包含所有必要的背景信息？" },
-    { id: "examples", label: "示例胜过解释", description: "你是否展示了你想要什么，而不仅仅是描述它？" },
-    { id: "constraints", label: "约束聚焦输出", description: "范围和格式是否有明确的边界？" },
+    { id: "guide", label: "引导，而不仅仅是询问", description: "你是否列出了希望模型遵循的步骤或推理思路，而不只是索要答案？" },
     { id: "iteration", label: "迭代和优化", description: "你是否准备好根据结果进行改进？" },
-    { id: "persona", label: "角色塑造视角", description: "AI 是否知道要扮演什么角色？" },
+    { id: "strengths", label: "利用模型的优势", description: "你是否展示了模式，并使用了模型擅长的角色？" },
+    { id: "structure", label: "控制输出结构", description: "你是否指定了所需的确切格式？" },
     { id: "verify", label: "验证和确认", description: "你是否内置了准确性检查？" }
   ]}
 />

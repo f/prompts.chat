@@ -142,9 +142,9 @@ JSON（JavaScript 对象表示法）是结构化 AI 输出最流行的格式。�
   "key_phrases": ["string array of notable phrases"]
 }
 
-Return ONLY valid JSON, no additional text.
+只返回有效的 JSON，不要附加任何文本。
 
-Review: "[review text]"
+评论："[评论文本]"
 ```
 
 ### 确保有效 JSON
@@ -155,10 +155,10 @@ Review: "[review text]"
 
 ```
 IMPORTANT:
-- Return ONLY the JSON object, no markdown code blocks
-- Ensure all strings are properly escaped
-- Use null for missing values, not undefined
-- Validate that the output is parseable JSON
+- 只返回 JSON 对象，不要使用 markdown 代码块
+- 确保所有字符串都已正确转义
+- 缺失值使用 null，而不是 undefined
+- 验证输出是可解析的 JSON
 ```
 
 或通过要求模型包装其输出来请求代码块：
@@ -169,6 +169,10 @@ IMPORTANT:
 { ... }
 ```
 ````
+
+<Callout type="info" title="原生结构化输出">
+如果你通过 API 调用模型，就不必只依赖措辞。OpenAI、Anthropic 和 Google 都提供结构化输出模式：它们接收一个 JSON Schema，并约束响应与之匹配，因此必填字段和允许的取值是被强制执行的，而不只是被请求。较早的"JSON 模式"选项只保证输出是语法有效的 JSON，并不保证符合你的模式。即使模式被强制执行，值本身仍可能出错，所以重要的内容仍要继续验证。
+</Callout>
 
 ## YAML 输出
 
@@ -181,7 +185,7 @@ YAML 比 JSON 更易于人类阅读，使用缩进而非括号。它是配置文
 
 以有效 YAML 返回：
 - 包含：install、lint、test、build 阶段
-- 使用 Node.js 18
+- 使用当前的 Node.js LTS 版本
 - 缓存 npm 依赖
 - 在推送到 main 和拉取请求时运行`}
 />
@@ -216,7 +220,7 @@ XML 仍然是许多企业系统、SOAP API 和遗留集成所必需的。它比 
 === CODE ANALYSIS ===
 
 [SUMMARY]
-One paragraph overview
+一段话概述
 
 [ISSUES]
 • CRITICAL: [issue] — [file:line]
@@ -254,7 +258,7 @@ Key Features:
   3. _______________
 Differentiator: _______________
 
-Product: [product description]
+产品：[产品描述]
 ```
 
 ## 类型化响应
@@ -286,21 +290,21 @@ Product: [product description]
 研究这个主题并提供：
 
 ### PART 1: EXECUTIVE SUMMARY
-[2-3 sentence overview]
+[2-3 句话的概述]
 
 ### PART 2: KEY FINDINGS
-[Exactly 5 bullet points]
+[恰好 5 个要点]
 
 ### PART 3: DATA TABLE
 | Metric | Value | Source |
 |--------|-------|--------|
-[Include 5 rows minimum]
+[至少包含 5 行]
 
 ### PART 4: RECOMMENDATIONS
-[Numbered list of 3 actionable recommendations]
+[3 条可执行建议的编号列表]
 
 ### PART 5: FURTHER READING
-[3 suggested resources with brief descriptions]
+[3 个推荐资源，附简要说明]
 ```
 
 ## 条件格式化
@@ -348,24 +352,24 @@ Product: [product description]
   "total_count": number
 }
 
-Transcript: "[meeting transcript]"
+会议记录："[会议记录内容]"
 ```
 
 ## 验证指令
 
-自我验证提示模型在响应之前检查自己的输出。这可以捕获常见问题，如缺少章节、占位符文本或违反约束。模型将在内部迭代以修复问题，无需额外的 API 调用即可提高输出质量。
+自我验证提示模型在响应之前检查自己的输出。这可以捕获常见问题，如缺少章节、占位符文本或违反约束。这通常无需额外的 API 调用就能提高质量，但并不能保证：模型可能会报告某项检查已通过，而实际上并没有通过，所以关键输出仍应在你自己的代码中进行验证。
 
 ```
 生成报告，然后：
 
 VALIDATION CHECKLIST:
-□ All required sections present
-□ No placeholder text remaining
-□ All statistics include sources
-□ Word count within 500-700 words
-□ Conclusion ties back to introduction
+□ 所有必需章节齐全
+□ 没有残留的占位符文本
+□ 所有统计数据都注明来源
+□ 字数在 500-700 字之间
+□ 结论与引言相呼应
 
-If any check fails, fix before responding.
+如果任何一项检查未通过，请在回复前修正。
 ```
 
 ## 处理可选字段
@@ -385,9 +389,9 @@ If any check fails, fix before responding.
 }
 
 IMPORTANT: 
-- Never invent information not in the source
-- Use null, not empty strings, for missing data
-- Phone numbers in E.164 format if possible
+- 绝不编造来源中没有的信息
+- 缺失数据使用 null，而不是空字符串
+- 电话号码尽可能使用 E.164 格式
 ```
 
 ## 总结
