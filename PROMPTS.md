@@ -231194,3 +231194,56 @@ A detailed cutaway illustration of a cozy three-level treehouse library built in
 
 </details>
 
+<details>
+<summary><strong>Chefchaouen Blue Alley Sunrise Scene Concept Brief Builder</strong></summary>
+
+## Chefchaouen Blue Alley Sunrise Scene Concept Brief Builder
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Act as a cinematic travel scene designer who writes image-ready and motion-ready scene briefs. Help me design one hero shot of a blue-washed stepped alley in a Moroccan mountain town like Chefchaouen at sunrise: bright blue walls and stone stairs climbing away from the camera, terracotta pots of red geraniums along the steps, a large arched wooden door studded with iron nails, and two street cats resting on the stairs, with the first golden sunlight touching the rooftops. The shot will first be generated as a still image and then animated into a short video that uses that image as its first frame. Your brief must make the still image rich in elements that can move or change naturally (a slow camera move up the stairs, a cat turning its head or flicking its tail, geranium leaves stirring in a light breeze, sunlight slowly warming the upper walls) while keeping the composition calm, balanced, readable, and easy to animate.
+
+My starting idea: ${idea:a quiet early morning in a blue mountain town alley, before anyone is awake, with two cats enjoying the first sun on the steps}
+
+My starting choices:
+- Alley and stairs: ${stairs:wide blue stone stairs rising from the bottom center of the frame toward the back of the alley, with low blue walls on the left}
+- Walls and houses: ${walls:blue-washed walls on both sides, a blue house with a small blue window and an iron wall lantern at the upper left, sandy-colored rooftops and chimneys at the top}
+- Door: ${door:a large arched dark wooden door studded with iron nails, set in a deep blue arch on the right}
+- Flowers: ${flowers:terracotta pots with red geraniums on both sides of the stairs, and a big pot of geraniums beside the door at the bottom right}
+- Cats: ${cats:a ginger tabby cat sitting in the middle of the stairs facing the camera, and a white cat curled up asleep on a lower step at the left}
+- Plants: ${plants:a climbing green vine on the right wall above the stairs}
+- Sky and sun: ${sky:a pale clear morning sky, low sunrise light hitting only the rooftops and upper walls}
+- Light: ${light:warm golden light above, cool blue shade on the lower stairs}
+- Visual style: ${style:photoreal travel photography, natural but rich colors, low camera at the bottom of the stairs}
+- Mood words: ${mood:peaceful, sleepy, charming, fresh, timeless}
+
+First ask me, in one short message, for anything missing: the camera height and position (at the bottom of the stairs, on a step, or looking down from above), how much of the frame the stairs, door, and walls should take, how many cats I want and where they sit or lie, how many flower pots and on which side, how strong the sunrise light should be, whether the camera should push up the stairs or stay still in the video, where the camera move should end, and anything to avoid (people, faces, text, shop signs, logos, brand names, laundry with prints, trash, or copying a specific real street, photograph, or named house).
+
+Then produce the brief with these sections:
+
+1. **Scene Overview**: two or three sentences on the place, the moment, the light, and the feeling. Describe an imagined alley in the spirit of blue mountain towns in northern Morocco, not a copy of a specific real street, house, or famous photograph.
+
+2. **Alley, Stairs, and Walls**: the stone steps and their worn edges, how they climb toward the back, the low walls, the blue-washed houses, the window and wall lantern, and the rooftops and chimneys at the top.
+
+3. **The Door**: the arched dark wooden door, its iron studs and handle, and the deep blue arch around it.
+
+4. **Flowers and Plants**: where the terracotta pots stand, the red geraniums, the big pot by the door, and the climbing vine.
+
+5. **The Two Cats**: each cat's color, pose, position on the stairs, and what it is looking at, keeping both calm and natural.
+
+6. **Light and Color**: warm golden sunrise light on the rooftops and upper walls, cool blue shade on the lower stairs, the many shades of blue, and the terracotta and red accents, without blown-out highlights.
+
+7. **Fixed Visual Details**: a numbered list of 8 to 10 details that must stay identical in the still image and in the video (camera position, stairs from bottom center, door on the right, lantern upper left, pot positions, ginger cat mid-stairs, white cat on the lower left step, rooftops at the top, light direction, framing).
+
+8. **Motion Map**: a table of every element that can move in the video, with columns: element, type of motion, direction, speed (very slow, slow, medium), and how strongly it should move. Include the camera move up the stairs, the ginger cat turning its head slightly, the white cat breathing while it sleeps, geranium leaves stirring, and the sunlight slowly warming. Keep total motion subtle and physically plausible.
+
+9. **Prompt Seed A - Hero Still Image**: a ready-to-paste image prompt under 170 words for a wide landscape 16:9 frame, with the blue stepped alley, the red geraniums in terracotta pots, the arched studded door, and the two cats on the stairs at sunrise in the first sentence, ending with: no people, no text, no logos.
+
+10. **Prompt Seed B - Image-to-Video Animation**: a ready-to-paste video prompt under 120 words that starts from the hero still as the first frame, describes a slow, smooth camera push-in for about 6 seconds up the blue stairs toward the back of the alley, the ginger cat staying seated and turning its head slightly, the white cat staying curled asleep, the door and geraniums on the right drifting out past the frame edge as the camera moves forward, and says to keep the walls, stairs, door, cats, and colors exactly as in the image with no people.
+
+Rules: no people, faces, text, shop signs, or logos; no cars, scooters, crowds, or modern brand objects; no fast camera moves or cuts; and no motion that breaks physics (the walls, stairs, door, and pots never move or change shape, the cats move only a little and stay where they are, no new animals appear, the light changes slowly and does not flicker, leaves stir only gently). Use short paragraphs and lists.
+```
+
+</details>
+
