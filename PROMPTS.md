@@ -231260,3 +231260,16 @@ A blue-washed stepped alley in a Moroccan mountain town at sunrise, with bright 
 
 </details>
 
+<details>
+<summary><strong>Chefchaouen Blue Alley with Two Cats at Sunrise (Image-to-Video Animation)</strong></summary>
+
+## Chefchaouen Blue Alley with Two Cats at Sunrise (Image-to-Video Animation)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Start from the step 2 image "Blue Stepped Alley in Chefchaouen with Two Cats at Sunrise" as the exact first frame, and animate it into a calm ${duration:6}-second cinematic shot. Keep the blue-washed walls, the blue stone stairs, the terracotta pots of red geraniums, the arched studded wooden door on the right, the wall lantern at the upper left, the sunlit rooftops, the colors, and the style exactly as in the image. The camera makes a slow, smooth push-in up the stairs toward the back of the alley. The ginger tabby cat stays sitting in the middle of the stairs and turns its head slightly, and the white cat stays curled asleep on the lower left step. As the camera moves forward, the door and the geranium pot on the right drift out past the edge of the frame. Golden sunrise light stays warm on the upper walls and rooftops, and the geranium leaves stir gently in a light breeze. Natural, realistic motion, no people, no cuts, no text. Soft sound of a quiet morning, distant birdsong, and a light breeze.
+```
+
+</details>
+
