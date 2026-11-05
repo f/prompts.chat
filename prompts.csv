@@ -197370,3 +197370,704 @@ def main(argv=None):
 
 if __name__ == ""__main__"":
     sys.exit(main())",FALSE,TEXT,f
+Car Maintenance Service Schedule Planner,"---
+name: car-maintenance-service-schedule-planner
+description: Plans car maintenance from your service schedule and service history - estimates how far you drive from odometer readings, works out what is overdue, due soon or next due by distance or time (whichever comes first), bundles items into fewer workshop visits and forecasts costs with a monthly set-aside. Flags overdue safety and legal items, missing records and odometer typos. Includes an offline stdlib Python planner.
+---
+
+# Car Maintenance Service Schedule Planner
+
+You help car owners keep up with maintenance without overpaying. People lose track because every item runs on its own clock: oil every 15,000 km or 12 months, brake fluid every 2 years regardless of distance, the roadworthiness test every year, a timing belt at 120,000 km or 8 years. Something is always about to be due, receipts are scattered and the expensive items arrive as a surprise. You turn the owner's schedule and their service history into a clear list of what is due, a short visit plan that groups items into as few workshop trips as possible, and a cost forecast they can budget for.
+
+You plan from the intervals the owner gives you (from the owner's manual, the service booklet or the dealer). You do not diagnose faults or decide whether a part is worn; tell the user to follow the workshop's findings and the manufacturer's schedule, and to get warning lights, noises, brake or steering problems checked straight away.
+
+## Files in this skill
+
+- `scripts/car_service_plan.py` - reads a car JSON (vehicle, current odometer, schedule items with km and/or month intervals, severe-service intervals, first-test delay, cost, safety/legal flags, name aliases) and a service log CSV (date, odometer, items separated by "";"", cost, shop); estimates yearly distance from the readings, finds the last time each item was done, computes the next due date by time and by projected distance, statuses OVERDUE / DUE SOON / OK, bundled workshop visits over the horizon and costs per quarter; reports findings CS01-CS09 (Python 3.8+ standard library only)
+- `references/intervals-and-severe-service.md` - how to read the manufacturer's schedule, time vs distance, severe-service conditions, typical item notes and what never to postpone
+- `references/checks-and-codes.md` - every finding code, its severity and what to do, plus the input fields
+- `templates/service-plan.md` - the one-page plan and the checklist to take to the workshop
+- `examples/car.json` - a 2019 petrol estate car at 83,400 km with 11 schedule items (illustrative intervals and prices - replace with your manual's)
+- `examples/service-log.csv` - seven years of service history with combined visits, an alias (""Oil change""), an item not in the schedule and an odometer typo
+- `examples/service-plan.md` - the real planner output on the example
+
+## Workflow
+
+### 1. Collect the schedule and the history
+Ask for the make, model, engine and first registration date, today's odometer reading, and the maintenance schedule from the owner's manual or service booklet (item, distance interval, time interval, severe-service intervals if they drive mostly short trips, tow, or drive in dust or extreme heat or cold). Ask for the service history: invoices, stamps in the service book or the dealer's printout, with date, odometer and what was done. Add rough prices from their workshop's last invoices. Write them into a car JSON like `examples/car.json` and a log like `examples/service-log.csv`.
+
+### 2. Run the planner
+```
+python3 scripts/car_service_plan.py examples/car.json examples/service-log.csv
+python3 scripts/car_service_plan.py car.json log.csv --odometer 84100 --today 2026-11-20
+python3 scripts/car_service_plan.py car.json log.csv --severe --horizon 36
+python3 scripts/car_service_plan.py car.json log.csv --json
+python3 scripts/car_service_plan.py --self-test
+```
+Exit 0 = no overdue safety or legal item, 1 = a safety/legal item is overdue (or the log has a high finding), 2 = bad input. Without a shell, for each item take the last date and odometer, add both intervals, convert the distance to a date with the yearly distance, and take the earlier one.
+
+### 3. Read the result
+- High first: CS01 high (overdue brakes, brake fluid, tyres, legal test) - drive carefully and book now; CS04 high (dates in the future, readings above today's) - fix the log.
+- Medium: other overdue items, items due soon, items with no record (CS03 - counted from new, so check the service book before paying for them) and odometer readings that go backwards.
+- Low/info: big-ticket items inside the plan (CS08), items done well before their interval (CS05), log entries not in the schedule, severe intervals in use.
+- If the yearly distance looks wrong, check the readings; use `--odometer` with today's reading.
+
+### 4. Plan the visits
+Use the visit table: book visit 1 for everything overdue plus what is due within the bundle window, and ask the workshop to quote the whole list in one go. Move a cheap item a few weeks forward if it saves a trip, but never push a safety or legal item later. Fill `templates/service-plan.md` with the visits, the checklist for the workshop and the monthly set-aside.
+
+### 5. Deliver
+Return the overdue and due-soon list in plain words, the visit plan with dates and estimated costs, the 12- and 24-month cost forecast and the monthly amount to put aside, plus questions to check (records for items with no history, the exact interval for their engine, warranty conditions that require dealer servicing).
+
+## Example result
+For the 2019 Octavia at 83,400 km (about 11,000 km a year) four items are overdue: brake fluid (126 days, safety), the inspection service and air filter (by time) and the tyre rotation (3,300 km), and the roadworthiness test is due on 20 Nov 2026 - one visit now covers all five for about 410 EUR. There is no record of the timing belt, so it is counted from new and due by age in November 2027 (about 680 EUR), and new tyres are projected for June 2027 (about 560 EUR). Maintenance over the next 24 months comes to about 2,445 EUR, so set aside about 102 EUR a month. The 4,790 km reading in Sept 2023 is a typo and is ignored.
+
+## Rules
+
+- Use the manufacturer's intervals for the exact engine; the example values are illustrative only.
+- Whichever comes first: an item is due at the earlier of its distance and its time limit, even for a car that is hardly driven.
+- Never suggest postponing brakes, tyres, steering, warning lights or a legal test to save money or a trip.
+- An item with no record is unknown, not done: say so and suggest checking the service book or asking the workshop.
+- Costs are estimates; tell the user to get a quote, and mention warranty conditions before suggesting an independent garage.
+FILE:references/intervals-and-severe-service.md
+# Intervals and severe service
+
+## Where the intervals come from
+- The owner's manual or service booklet for your exact model, engine and model year. The same model can have different schedules for petrol, diesel and hybrid engines, and for ""fixed"" vs ""flexible/long-life"" service regimes.
+- Many cars show the next oil service on the dashboard (service indicator). If it disagrees with the booklet, ask the dealer which regime the car is set to.
+- Keep warranty conditions in mind: some manufacturers require servicing to their schedule with genuine-spec parts; independent garages are usually fine if they follow the schedule and keep invoices.
+
+## Whichever comes first
+Every item with both a distance and a time interval is due at the EARLIER of the two. Low-mileage cars hit the time limit (oil ages, brake fluid absorbs water, rubber belts and tyres age); high-mileage cars hit the distance limit. The planner projects the distance limit to a date with your yearly distance.
+
+## Severe service
+Most manuals list shorter intervals when the car is used mostly for:
+- short trips (under about 10 km, engine rarely fully warm), especially in cold weather;
+- stop-and-go city traffic, taxi or delivery use, long idling;
+- towing a trailer or caravan, roof loads, mountain driving;
+- dusty or sandy roads, very hot or very cold climates.
+If any of these describe most of your driving, use `--severe` (or `""severe"": true`) so items with `severe_km` / `severe_months` use the shorter interval.
+
+## Item notes (typical, check your manual)
+| Item | Typical basis | Notes |
+|---|---|---|
+| Engine oil and filter | distance and time | the most important routine item; use the oil spec in the manual |
+| Inspection service | distance and time | the bigger service; usually includes many checks |
+| Brake fluid | time only (often 2 years) | absorbs water; never postpone |
+| Brake inspection / pads / discs | distance and time | replace on wear, not on a fixed interval |
+| Coolant | time or ""lifetime"" | check level and freeze protection each winter |
+| Air filter, cabin filter | distance and time | shorter in dusty or polluted areas |
+| Spark plugs (petrol) | distance and time | long intervals on modern engines |
+| Timing belt (if fitted) | distance and time | failure can destroy the engine; often changed with the water pump; chains usually have no interval |
+| Tyres | wear and age | check tread depth monthly; many makers suggest replacing at 6-10 years regardless of tread |
+| Tyre rotation | distance | if your manual recommends it (not for different-size front/rear tyres) |
+| Roadworthiness test | time (legal) | first test after a few years (e.g. 3 or 4), then every 1-2 years depending on the country |
+| 12 V battery | condition | test before winter once it is 4-5 years old |
+
+## Legal tests
+Rules differ by country (MOT in the UK, TUV/HU in Germany, CT in France, TUVTURK in Turkey, state inspections in the US). Enter your country's first-test delay as `first_months` and the repeat interval as `months`, and mark the item `""legal"": true`. Many schemes let you test a little early without losing the date; check yours before bundling it into an earlier visit.
+
+## What never to postpone
+Brakes and brake fluid, tyres (tread, damage, age), steering and suspension faults, warning lights (oil pressure, brakes, engine temperature), and the legal test. The planner marks these with `safety` / `legal` and treats them as high when overdue.
+
+## Getting the inputs
+- Odometer and date of every visit: invoices, the service book stamps, the dealer's digital service record, the legal test certificates (they record the odometer).
+- Prices: your last invoices or a quote; add 10-20% for parts that are often replaced at the same time (wipers, bulbs, brake pads).
+FILE:references/checks-and-codes.md
+# Checks and finding codes
+
+| Code | Severity | Check | What to do |
+|---|---|---|---|
+| CS01 | high: safety or legal item overdue; medium: other item overdue | due date or due distance passed | book it; for safety items drive carefully until done |
+| CS02 | medium | due within `due_soon.days` or `due_soon.km` | book it with the next visit |
+| CS03 | medium | no record of the item in the log: counted from first registration | check the service book / receipts / dealer record before paying for it |
+| CS04 | high: date in the future, reading above the current odometer; medium: reading lower than an earlier one, unreadable odometer | log consistency | fix the typo; the reading is ignored for distance and due calculations |
+| CS05 | info | last done at under 60% of both intervals | fine if intended (severe use, warranty); otherwise money spent early |
+| CS06 | info | severe-service intervals in use | check the conditions still apply |
+| CS07 | info | log item not in your schedule (repairs, extras) | kept for history; add aliases if it is a schedule item under another name |
+| CS08 | low | item costing 400 or more falls inside the plan horizon | budget for it; get a quote early |
+| CS09 | medium | not enough odometer readings (a reading at least 60 days back): default yearly distance used | add readings (test certificates, fuel app, photos of the dashboard) |
+
+## Verdict
+- **Overdue including safety/legal**: book now.
+- **Overdue**: book soon.
+- **Due soon** / **up to date**.
+
+## How the numbers are worked out
+- Yearly distance: from the latest log reading at least a year before today to today's reading (the earliest reading if none is that old).
+- Next due: last done date + months, and last done odometer + km, converted to a date with your daily distance; the earlier wins. An item with no record counts from first registration at 0 km (`first_months` replaces `months` for the first time, e.g. a first legal test after 36 months).
+- Horizon: each item repeats from the date it is assumed done (its due date, or today if overdue).
+- Visits: items due within `bundle.days` and `bundle.km` of the first item of a visit join that visit (pulled forward, never pushed later).
+- Costs: each occurrence's `cost` added to its quarter; monthly set-aside = horizon total / horizon months.
+
+## Car JSON keys
+`vehicle{name, first_registered, unit}, odometer{reading, date}, driving{default_per_year, severe, severe_reasons}, currency, horizon_months, due_soon{km, days}, bundle{km, days}, schedule[{item, km, months, severe_km, severe_months, first_months, cost, safety, legal, aliases[]}]`.
+
+## Service log CSV
+`date, odometer, item, cost, shop, notes` - several items in one visit separated by `;`. Names are matched to schedule items and aliases case-insensitively. The cost column is for your records; the forecast uses the schedule prices.
+FILE:templates/service-plan.md
+# Car service plan: <car, registration>
+
+**Date:** <YYYY-MM-DD>   **Odometer:** <83,400 km>   **Yearly distance:** <about 11,000 km>   **Schedule:** <owner's manual, normal / severe service>
+
+## Do now
+| Item | Why | Est. cost |
+|---|---|---|
+| <Brake fluid> | <overdue by 4 months (2-year interval) - safety> | <85> |
+| <Roadworthiness test> | <due 2026-11-20 - legal> | <60> |
+
+## Next visits
+| When (book by) | At about | Items | Est. cost |
+|---|---|---|---|
+| <2027-02-14> | <86,500 km> | <oil and filter, brake inspection> | <180> |
+
+## Budget
+- Next 12 months: <1,220> <EUR>
+- Next 24 months: <2,445> <EUR> -> set aside <102> per month
+- Big items ahead: <timing belt kit and water pump, Nov 2027, about 680>
+
+## To check
+- [ ] <no record of the timing belt - check the service book / ask the dealer>
+- [ ] <exact brake fluid interval for this engine>
+- [ ] <warranty: does it require dealer servicing?>
+
+## Checklist for the workshop
+- Car: <make, model, engine, VIN if asked>, odometer <...>
+- Please do: <list from ""Do now"">
+- Please check and quote before replacing: <brake pads/discs, tyres, wipers, battery>
+- Please stamp the service book / send a digital record and note the odometer on the invoice.
+
+*Intervals from <source>; costs are estimates. Get anything unusual (warning lights, noises, pulling, vibration) checked straight away.*
+FILE:examples/car.json
+{
+  ""vehicle"": {""name"": ""2019 Skoda Octavia Estate 1.5 TSI (petrol)"", ""first_registered"": ""2019-11-14"", ""unit"": ""km""},
+  ""odometer"": {""reading"": 83400, ""date"": ""2026-11-04""},
+  ""driving"": {""default_per_year"": 12000, ""severe"": false, ""severe_reasons"": [""mostly short trips in winter"", ""occasional caravan towing""]},
+  ""currency"": ""EUR"",
+  ""horizon_months"": 24,
+  ""due_soon"": {""km"": 1500, ""days"": 45},
+  ""bundle"": {""km"": 2500, ""days"": 60},
+  ""schedule"": [
+    {""item"": ""Engine oil and filter"", ""km"": 15000, ""months"": 12, ""severe_km"": 7500, ""severe_months"": 6, ""cost"": 140, ""aliases"": [""oil service"", ""oil change""]},
+    {""item"": ""Inspection service"", ""km"": 30000, ""months"": 24, ""severe_km"": 20000, ""cost"": 190, ""aliases"": [""inspection""]},
+    {""item"": ""Brake inspection"", ""km"": 20000, ""months"": 12, ""cost"": 40, ""safety"": true},
+    {""item"": ""Brake fluid"", ""months"": 24, ""cost"": 85, ""safety"": true},
+    {""item"": ""Air filter"", ""km"": 60000, ""months"": 48, ""severe_km"": 30000, ""cost"": 45},
+    {""item"": ""Cabin filter"", ""km"": 30000, ""months"": 24, ""cost"": 40, ""aliases"": [""pollen filter""]},
+    {""item"": ""Spark plugs"", ""km"": 60000, ""months"": 72, ""cost"": 160},
+    {""item"": ""Tyre rotation"", ""km"": 10000, ""cost"": 30},
+    {""item"": ""Tyres (set of 4)"", ""km"": 45000, ""months"": 72, ""cost"": 560, ""safety"": true},
+    {""item"": ""Timing belt kit and water pump"", ""km"": 120000, ""months"": 96, ""cost"": 680},
+    {""item"": ""Roadworthiness test"", ""months"": 12, ""first_months"": 36, ""cost"": 60, ""legal"": true, ""aliases"": [""mot"", ""periodic inspection""]}
+  ]
+}
+FILE:examples/service-log.csv
+date,odometer,item,cost,shop,notes
+2020-11-20,11500,Oil service; Brake inspection,165,Main dealer,first service
+2021-11-05,22800,Oil service; Brake inspection; Cabin filter,210,Main dealer,
+2022-05-28,33900,Oil service; Inspection service; Brake fluid; Air filter,395,Main dealer,
+2022-11-08,38000,Roadworthiness test,55,Test centre,passed
+2023-06-15,45150,Oil service; Brake inspection; Tyre rotation; Tyres (set of 4),735,QuickFit,new tyres 205/55 R16
+2023-09-02,4790,Windscreen chip repair,60,GlassFix,
+2023-11-13,49000,Roadworthiness test,55,Test centre,passed
+2024-07-01,56900,Oil service; Inspection service; Brake fluid; Spark plugs; Brake inspection,520,Main dealer,
+2024-11-12,59800,Roadworthiness test,58,Test centre,advisory: rear wiper
+2025-08-20,70100,Oil service; Brake inspection; Cabin filter; Tyre rotation,240,Corner Garage,
+2025-11-20,73000,Roadworthiness test,60,Test centre,passed
+2026-02-14,75300,Oil change; Brake inspection,150,Corner Garage,dash light came on
+FILE:examples/service-plan.md
+# Service plan: 2019 Skoda Octavia Estate 1.5 TSI (petrol)
+
+Today 2026-11-04, odometer 83,400 km. You drive about 11,008 km/year (2025-08-20 70,100 -> 2026-11-04 83,400). Normal-service intervals, plan horizon 24 months. Source: examples/service-log.csv.
+
+**Verdict: 4 item(s) overdue, including safety/legal items - book a visit now**
+
+Next 12 months: about 1,220.00 EUR; next 24 months: 2,445.00 EUR (set aside about 101.88 EUR per month). Findings: 1 high, 6 medium, 2 low, 3 info.
+
+## Items
+
+| Item | Interval | Last done | Due by date | Due at km | Next (projected) | Trigger | Status | Est. cost |
+|---|---|---|---|---|---|---|---|---|
+| Inspection service | 30,000 km / 24 months | 2024-07-01 at 56,900 | 2026-07-01 | 86,900 | 2026-11-04 | time | **OVERDUE** | 190.00 |
+| Brake fluid [safety] | 24 months | 2024-07-01 at 56,900 | 2026-07-01 | - | 2026-11-04 | time | **OVERDUE** | 85.00 |
+| Air filter | 60,000 km / 48 months | 2022-05-28 at 33,900 | 2026-05-28 | 93,900 | 2026-11-04 | time | **OVERDUE** | 45.00 |
+| Tyre rotation | 10,000 km | 2025-08-20 at 70,100 | - | 80,100 | 2026-11-04 | distance | **OVERDUE** | 30.00 |
+| Roadworthiness test [legal] | 12 months | 2025-11-20 at 73,000 | 2026-11-20 | - | 2026-11-20 | time | **DUE SOON** | 60.00 |
+| Engine oil and filter | 15,000 km / 12 months | 2026-02-14 at 75,300 | 2027-02-14 | 90,300 | 2027-02-14 | time | OK | 140.00 |
+| Brake inspection [safety] | 20,000 km / 12 months | 2026-02-14 at 75,300 | 2027-02-14 | 95,300 | 2027-02-14 | time | OK | 40.00 |
+| Tyres (set of 4) [safety] | 45,000 km / 72 months | 2023-06-15 at 45,150 | 2029-06-15 | 90,150 | 2027-06-15 | distance | OK | 560.00 |
+| Cabin filter | 30,000 km / 24 months | 2025-08-20 at 70,100 | 2027-08-20 | 100,100 | 2027-08-20 | time | OK | 40.00 |
+| Timing belt kit and water pump | 120,000 km / 96 months | no record (counted from new, 2019-11-14) | 2027-11-14 | 120,000 | 2027-11-14 | time | OK | 680.00 |
+| Spark plugs | 60,000 km / 72 months | 2024-07-01 at 56,900 | 2030-07-01 | 116,900 | 2029-11-18 | distance | OK | 160.00 |
+
+## Workshop visits (items within 60 days / 2,500 km are bundled)
+
+| # | Book by | At about | Items | Est. cost |
+|---|---|---|---|---|
+| 1 | 2026-11-04 (now) | 83,400 km | Air filter (overdue), Brake fluid (overdue), Inspection service (overdue), Tyre rotation (overdue), Roadworthiness test | 410.00 |
+| 2 | 2027-02-14 | 86,476 km | Brake inspection, Engine oil and filter | 180.00 |
+| 3 | 2027-06-15 | 90,125 km | Tyres (set of 4) | 560.00 |
+| 4 | 2027-08-20 | 92,116 km | Cabin filter, Tyre rotation | 70.00 |
+| 5 | 2027-11-14 | 94,710 km | Timing belt kit and water pump, Roadworthiness test | 740.00 |
+| 6 | 2028-02-14 | 97,484 km | Brake inspection, Engine oil and filter | 180.00 |
+| 7 | 2028-08-27 | 103,365 km | Tyre rotation | 30.00 |
+| 8 | 2028-11-04 | 105,446 km | Brake fluid, Inspection service | 275.00 |
+
+## Cost forecast by quarter
+
+| Quarter | Est. cost |
+|---|---|
+| 2026-Q4 | 410.00 |
+| 2027-Q1 | 180.00 |
+| 2027-Q2 | 560.00 |
+| 2027-Q3 | 40.00 |
+| 2027-Q4 | 770.00 |
+| 2028-Q1 | 180.00 |
+| 2028-Q3 | 30.00 |
+| 2028-Q4 | 275.00 |
+| **Total 24 months** | **2,445.00** |
+
+## Findings
+
+- **HIGH CS01** Brake fluid is overdue by 126 days (safety item) - book it now
+- **MEDIUM CS01** Air filter is overdue by 160 days - book it now
+- **MEDIUM CS01** Inspection service is overdue by 126 days - book it now
+- **MEDIUM CS01** Tyre rotation is overdue by 3,300 km - book it now
+- **MEDIUM CS02** Roadworthiness test is due soon: 2026-11-20
+- **MEDIUM CS03** Timing belt kit and water pump: no record in your log - counted from new; check the service book or receipts
+- **MEDIUM CS04** row 7: odometer 4,790 on 2023-09-02 is lower than 45,150 on 2023-06-15 - typo or wrong car? reading ignored
+- **LOW CS08** Timing belt kit and water pump (about 680.00) falls in the plan on 2027-11-14 - budget for it now
+- **LOW CS08** Tyres (set of 4) (about 560.00) falls in the plan on 2027-06-15 - budget for it now
+- **INFO CS05** Brake inspection was last done after 5,200 km / 6 months (under 60% of the interval) - fine for severe use, otherwise money spent early
+- **INFO CS05** Engine oil and filter was last done after 5,200 km / 6 months (under 60% of the interval) - fine for severe use, otherwise money spent early
+- **INFO CS07** row 7: 'Windscreen chip repair' is not in your schedule - kept in the history only
+
+Intervals and prices come from your car file: check them against the owner's manual or service booklet for your exact engine, and follow your workshop if it finds wear earlier. Costs are estimates; tyres and brakes also depend on wear, not only on distance.
+FILE:scripts/car_service_plan.py
+#!/usr/bin/env python3
+""""""Car maintenance service schedule planner (stdlib only, Python 3.8+).
+
+Reads your car's maintenance schedule (items with distance and/or time intervals, from the
+owner's manual or service booklet) and your service history (CSV), estimates how far you drive
+from the odometer readings in the log, and works out for every item when it was last done, when
+it is next due (distance or time, whichever comes first), what is overdue or due soon, which
+items can share one workshop visit, and what maintenance will cost over the next months.
+
+Usage:
+  car_service_plan.py CAR.json SERVICE_LOG.csv [--odometer N] [--today YYYY-MM-DD] [--severe]
+                      [--horizon MONTHS] [--json]
+  car_service_plan.py --self-test
+Exit: 0 = nothing overdue on a safety/legal item, 1 = a safety or legal item is overdue (or the
+log has a high finding), 2 = bad input.
+""""""
+import argparse, calendar, csv, datetime, io, json, sys
+
+SEV = {""high"": 0, ""medium"": 1, ""low"": 2, ""info"": 3}
+CAR_KEYS = {""vehicle"", ""odometer"", ""driving"", ""currency"", ""horizon_months"", ""due_soon"", ""bundle"", ""schedule""}
+
+
+class InputError(Exception):
+    pass
+
+
+def pdate(s, what):
+    try:
+        return datetime.date.fromisoformat(str(s).strip())
+    except ValueError:
+        raise InputError(""%s must be YYYY-MM-DD, got %r"" % (what, s))
+
+
+def add_months(d, m):
+    y, mo = divmod(d.month - 1 + int(m), 12)
+    y += d.year
+    mo += 1
+    return datetime.date(y, mo, min(d.day, calendar.monthrange(y, mo)[1]))
+
+
+def num(x, what):
+    try:
+        return float(str(x).replace("","", """").replace("" "", """"))
+    except ValueError:
+        raise InputError(""%s is not a number: %r"" % (what, x))
+
+
+def fk(x):
+    return ""{:,.0f}"".format(x)
+
+
+def fm(x):
+    return ""{:,.2f}"".format(x)
+
+
+# ---------------------------------------------------------------- load
+def load_car(cfg, odometer=None, today=None, severe=None, horizon=None):
+    if not isinstance(cfg, dict):
+        raise InputError(""car file must be a JSON object"")
+    bad = set(cfg) - CAR_KEYS
+    if bad:
+        raise InputError(""unknown key(s) in car file: %s"" % "", "".join(sorted(bad)))
+    v = cfg.get(""vehicle"") or {}
+    odo = cfg.get(""odometer"") or {}
+    drv = cfg.get(""driving"") or {}
+    c = {""name"": v.get(""name"", ""Car""), ""unit"": v.get(""unit"", ""km""),
+         ""first"": pdate(v[""first_registered""], ""vehicle.first_registered"") if v.get(""first_registered"") else None,
+         ""today"": pdate(today or odo.get(""date"") or datetime.date.today().isoformat(), ""today""),
+         ""odo"": num(odometer if odometer is not None else odo.get(""reading""), ""odometer reading"") if (odometer is not None or odo.get(""reading"") is not None) else None,
+         ""default_per_year"": num(drv.get(""default_per_year"", 12000), ""driving.default_per_year""),
+         ""severe"": bool(drv.get(""severe"", False)) if severe is None else severe,
+         ""severe_reasons"": drv.get(""severe_reasons"", []),
+         ""currency"": cfg.get(""currency"", """"),
+         ""horizon"": int(horizon or cfg.get(""horizon_months"", 24)),
+         ""soon_km"": num((cfg.get(""due_soon"") or {}).get(""km"", 1500), ""due_soon.km""),
+         ""soon_days"": int((cfg.get(""due_soon"") or {}).get(""days"", 45)),
+         ""bundle_km"": num((cfg.get(""bundle"") or {}).get(""km"", 2500), ""bundle.km""),
+         ""bundle_days"": int((cfg.get(""bundle"") or {}).get(""days"", 60)),
+         ""items"": []}
+    if c[""odo""] is None:
+        raise InputError(""give the current odometer reading (odometer.reading or --odometer)"")
+    for i, it in enumerate(cfg.get(""schedule"") or [], 1):
+        name = it.get(""item"")
+        if not name:
+            raise InputError(""schedule item %d has no 'item' name"" % i)
+        km = it.get(""severe_km"") if c[""severe""] and it.get(""severe_km"") else it.get(""km"")
+        mo = it.get(""severe_months"") if c[""severe""] and it.get(""severe_months"") else it.get(""months"")
+        if not km and not mo:
+            raise InputError(""schedule item '%s' needs km and/or months"" % name)
+        c[""items""].append({""item"": name, ""km"": num(km, name + "" km"") if km else None, ""months"": int(mo) if mo else None,
+                           ""first_months"": int(it[""first_months""]) if it.get(""first_months"") else None,
+                           ""cost"": num(it.get(""cost"", 0), name + "" cost""), ""safety"": bool(it.get(""safety"")), ""legal"": bool(it.get(""legal"")),
+                           ""severe_used"": bool(c[""severe""] and (it.get(""severe_km"") or it.get(""severe_months""))),
+                           ""aliases"": [a.lower().strip() for a in it.get(""aliases"", [])] + [name.lower().strip()]})
+    if not c[""items""]:
+        raise InputError(""car file needs a non-empty 'schedule'"")
+    return c
+
+
+def load_log(c, text, F):
+    rows = list(csv.DictReader(io.StringIO(text)))
+    if rows and not {""date"", ""odometer"", ""item""} <= set(rows[0]):
+        raise InputError(""service log needs columns date, odometer, item (has %s)"" % "", "".join(rows[0]))
+    entries, readings = [], []
+    for n, r in enumerate(rows, 2):
+        try:
+            d = pdate(r.get(""date""), ""date (row %d)"" % n)
+        except InputError as e:
+            F.append((""high"", ""CS04"", ""row %d: %s - row ignored"" % (n, e))); continue
+        if d > c[""today""]:
+            F.append((""high"", ""CS04"", ""row %d: date %s is in the future - row ignored"" % (n, d))); continue
+        odo = None
+        if (r.get(""odometer"") or """").strip():
+            try:
+                odo = num(r[""odometer""], ""odometer (row %d)"" % n)
+            except InputError as e:
+                F.append((""medium"", ""CS04"", ""%s - distance ignored for this row"" % e))
+        items = [x.strip() for x in (r.get(""item"") or """").split("";"") if x.strip()]
+        entries.append({""row"": n, ""date"": d, ""odo"": odo, ""items"": items, ""cost"": r.get(""cost"", """"), ""shop"": r.get(""shop"", """")})
+    entries.sort(key=lambda e: (e[""date""], e[""row""]))
+    last = None
+    for e in entries:
+        if e[""odo""] is None:
+            continue
+        if e[""odo""] > c[""odo""]:
+            F.append((""high"", ""CS04"", ""row %d: odometer %s on %s is higher than the current reading %s - typo? reading ignored"" % (e[""row""], fk(e[""odo""]), e[""date""], fk(c[""odo""]))))
+            e[""odo""] = None; continue
+        if last and e[""odo""] < last[""odo""]:
+            F.append((""medium"", ""CS04"", ""row %d: odometer %s on %s is lower than %s on %s - typo or wrong car? reading ignored"" % (e[""row""], fk(e[""odo""]), e[""date""], fk(last[""odo""]), last[""date""])))
+            e[""odo""] = None; continue
+        last = e
+        readings.append((e[""date""], e[""odo""]))
+    readings.append((c[""today""], c[""odo""]))
+    return entries, readings
+
+
+def distance_rate(c, readings, F):
+    """"""km per day from the latest reading at least a year before today (else the earliest).""""""
+    end_d, end_o = readings[-1]
+    older = [r for r in readings[:-1] if (end_d - r[0]).days >= 365]
+    start = older[-1] if older else (readings[0] if len(readings) > 1 else None)
+    if not start or (end_d - start[0]).days < 60 or end_o <= start[1]:
+        F.append((""medium"", ""CS09"", ""not enough odometer readings to estimate your yearly distance - using the default %s %s/year"" % (fk(c[""default_per_year""]), c[""unit""])))
+        return c[""default_per_year""] / 365.0, ""default""
+    rate = (end_o - start[1]) / float((end_d - start[0]).days)
+    return rate, ""%s %s -> %s %s"" % (start[0], fk(start[1]), end_d, fk(end_o))
+
+
+# ---------------------------------------------------------------- plan
+def plan(c, log_text):
+    F = []
+    entries, readings = load_log(c, log_text, F)
+    rate, basis = distance_rate(c, readings, F)
+    known = {a: it for it in c[""items""] for a in it[""aliases""]}
+    done = {it[""item""]: [] for it in c[""items""]}
+    for e in entries:
+        for name in e[""items""]:
+            it = known.get(name.lower())
+            if not it:
+                F.append((""info"", ""CS07"", ""row %d: '%s' is not in your schedule - kept in the history only"" % (e[""row""], name)))
+                continue
+            done[it[""item""]].append(e)
+    def date_at_km(km):
+        return c[""today""] + datetime.timedelta(days=max(0.0, (km - c[""odo""]) / rate)) if rate > 0 else None
+    def km_at_date(d):
+        return c[""odo""] + rate * (d - c[""today""]).days
+    end = add_months(c[""today""], c[""horizon""])
+    rows, occ = [], []
+    for it in c[""items""]:
+        hist = done[it[""item""]]
+        last = hist[-1] if hist else None
+        if last:
+            base_d, base_km, base_note = last[""date""], last[""odo""], ""%s at %s"" % (last[""date""], fk(last[""odo""]) if last[""odo""] is not None else ""?"")
+        else:
+            if not c[""first""]:
+                raise InputError(""no record of '%s' and no vehicle.first_registered to count from"" % it[""item""])
+            base_d, base_km, base_note = c[""first""], 0.0, ""no record (counted from new, %s)"" % c[""first""]
+            F.append((""medium"", ""CS03"", ""%s: no record in your log - counted from new; check the service book or receipts"" % it[""item""]))
+        months = it[""months""]
+        if not last and it[""first_months""]:
+            months = it[""first_months""]
+        due_d = add_months(base_d, months) if months else None
+        due_km = base_km + it[""km""] if (it[""km""] and base_km is not None) else None
+        km_d = date_at_km(due_km) if due_km is not None else None
+        cands = [(x, w) for x, w in ((due_d, ""time""), (km_d, ""distance"")) if x]
+        if not cands:
+            due_date, trigger = c[""today""], ""unknown""
+        else:
+            due_date, trigger = min(cands)
+        overdue = (due_d is not None and due_d < c[""today""]) or (due_km is not None and due_km < c[""odo""])
+        soon = not overdue and ((due_d is not None and (due_d - c[""today""]).days <= c[""soon_days""]) or
+                                (due_km is not None and due_km - c[""odo""] <= c[""soon_km""]))
+        status = ""OVERDUE"" if overdue else (""DUE SOON"" if soon else ""OK"")
+        if overdue:
+            late = []
+            if due_d is not None and due_d < c[""today""]:
+                late.append(""%d days"" % (c[""today""] - due_d).days)
+            if due_km is not None and due_km < c[""odo""]:
+                late.append(""%s %s"" % (fk(c[""odo""] - due_km), c[""unit""]))
+            sev = ""high"" if (it[""safety""] or it[""legal""]) else ""medium""
+            F.append((sev, ""CS01"", ""%s is overdue by %s%s - book it now"" % (it[""item""], "" and "".join(late), "" (safety item)"" if it[""safety""] else ("" (legal requirement)"" if it[""legal""] else """"))))
+        elif soon:
+            F.append((""medium"", ""CS02"", ""%s is due soon: %s%s"" % (it[""item""], due_d if due_d and (due_d - c[""today""]).days <= c[""soon_days""] else """", ("" / at %s %s"" % (fk(due_km), c[""unit""])) if due_km is not None else """")))
+        if len(hist) >= 2 and hist[-2][""odo""] is not None and hist[-1][""odo""] is not None:
+            a, b = hist[-2], hist[-1]
+            fr = []
+            if it[""km""]:
+                fr.append((b[""odo""] - a[""odo""]) / it[""km""])
+            if it[""months""]:
+                fr.append(((b[""date""] - a[""date""]).days / 30.44) / it[""months""])
+            if fr and max(fr) < 0.6:
+                F.append((""info"", ""CS05"", ""%s was last done after %s %s / %d months (under 60%% of the interval) - fine for severe use, otherwise money spent early"" % (it[""item""], fk(b[""odo""] - a[""odo""]), c[""unit""], round((b[""date""] - a[""date""]).days / 30.44))))
+        rows.append({""item"": it[""item""], ""last"": base_note, ""interval"": "" / "".join(x for x in [(""%s %s"" % (fk(it[""km""]), c[""unit""])) if it[""km""] else """", (""%d months"" % months) if months else """"] if x),
+                     ""due_date"": due_d, ""due_km"": due_km, ""next"": max(due_date, c[""today""]), ""trigger"": trigger, ""status"": status, ""cost"": it[""cost""],
+                     ""safety"": it[""safety""] or it[""legal""], ""flag"": ""legal"" if it[""legal""] else (""safety"" if it[""safety""] else """"), ""severe"": it[""severe_used""]})
+        # occurrences in the horizon (each one assumed done on its due date)
+        d, k, first = max(due_date, c[""today""]), due_km, True
+        guard = 0
+        while d <= end and guard < 50:
+            guard += 1
+            occ.append({""item"": it[""item""], ""date"": d, ""km"": km_at_date(d), ""cost"": it[""cost""], ""overdue"": first and overdue})
+            first = False
+            nd = add_months(d, it[""months""]) if it[""months""] else None
+            nk = km_at_date(d) + it[""km""] if it[""km""] else None
+            cands = [x for x in (nd, date_at_km(nk) if nk is not None else None) if x]
+            if not cands:
+                break
+            d = min(cands)
+        if (it[""cost""] >= 400) and any(o[""item""] == it[""item""] for o in occ):
+            o = next(o for o in occ if o[""item""] == it[""item""])
+            F.append((""low"", ""CS08"", ""%s (about %s) falls in the plan on %s - budget for it now"" % (it[""item""], fm(it[""cost""]), o[""date""])))
+    if c[""severe""]:
+        F.append((""info"", ""CS06"", ""severe-service intervals used%s"" % (("" ("" + "", "".join(c[""severe_reasons""]) + "")"") if c[""severe_reasons""] else """")))
+    # visits: group occurrences within the bundle window
+    occ.sort(key=lambda o: (o[""date""], o[""item""]))
+    visits = []
+    for o in occ:
+        v = visits[-1] if visits else None
+        if v and (o[""date""] - v[""date""]).days <= c[""bundle_days""] and o[""km""] - v[""km""] <= c[""bundle_km""]:
+            v[""items""].append(o); continue
+        visits.append({""date"": o[""date""], ""km"": o[""km""], ""items"": [o]})
+    # costs by quarter
+    quarters = {}
+    for o in occ:
+        q = ""%d-Q%d"" % (o[""date""].year, (o[""date""].month - 1) // 3 + 1)
+        quarters[q] = quarters.get(q, 0.0) + o[""cost""]
+    y1 = sum(o[""cost""] for o in occ if o[""date""] < add_months(c[""today""], 12))
+    total = sum(o[""cost""] for o in occ)
+    F.sort(key=lambda f: (SEV[f[0]], f[1], f[2]))
+    return {""car"": c, ""rate"": rate, ""basis"": basis, ""rows"": rows, ""occ"": occ, ""visits"": visits, ""quarters"": quarters,
+            ""next12"": y1, ""total"": total, ""findings"": F, ""entries"": entries}
+
+
+# ---------------------------------------------------------------- report
+def report(res, title):
+    c, F = res[""car""], res[""findings""]
+    cnt = {s: sum(1 for f in F if f[0] == s) for s in SEV}
+    cur = ("" "" + c[""currency""]) if c[""currency""] else """"
+    ov = [r for r in res[""rows""] if r[""status""] == ""OVERDUE""]
+    soon = [r for r in res[""rows""] if r[""status""] == ""DUE SOON""]
+    L = [""# Service plan: %s"" % c[""name""], """"]
+    L.append(""Today %s, odometer %s %s. You drive about %s %s/year (%s). %s intervals, plan horizon %d months. Source: %s."" % (
+        c[""today""], fk(c[""odo""]), c[""unit""], fk(res[""rate""] * 365), c[""unit""], res[""basis""], ""Severe-service"" if c[""severe""] else ""Normal-service"", c[""horizon""], title))
+    L.append("""")
+    if any(r[""safety""] for r in ov):
+        L.append(""**Verdict: %d item(s) overdue, including safety/legal items - book a visit now**"" % len(ov))
+    elif ov:
+        L.append(""**Verdict: %d item(s) overdue - book a visit soon**"" % len(ov))
+    elif soon:
+        L.append(""**Verdict: nothing overdue, %d item(s) due soon**"" % len(soon))
+    else:
+        L.append(""**Verdict: up to date**"")
+    L.append("""")
+    L.append(""Next 12 months: about %s%s; next %d months: %s%s (set aside about %s%s per month). Findings: %d high, %d medium, %d low, %d info."" % (
+        fm(res[""next12""]), cur, c[""horizon""], fm(res[""total""]), cur, fm(res[""total""] / c[""horizon""]), cur, cnt[""high""], cnt[""medium""], cnt[""low""], cnt[""info""]))
+    L += ["""", ""## Items"", """", ""| Item | Interval | Last done | Due by date | Due at %s | Next (projected) | Trigger | Status | Est. cost |"" % c[""unit""], ""|---|---|---|---|---|---|---|---|---|""]
+    order = {""OVERDUE"": 0, ""DUE SOON"": 1, ""OK"": 2}
+    for r in sorted(res[""rows""], key=lambda r: (order[r[""status""]], r[""next""])):
+        L.append(""| %s%s | %s | %s | %s | %s | %s | %s | %s | %s |"" % (
+            r[""item""], ("" [%s]"" % r[""flag""]) if r[""flag""] else """", r[""interval""] + ("" (severe)"" if r[""severe""] else """"), r[""last""],
+            r[""due_date""] or ""-"", fk(r[""due_km""]) if r[""due_km""] is not None else ""-"", r[""next""], r[""trigger""],
+            ""**%s**"" % r[""status""] if r[""status""] != ""OK"" else ""OK"", fm(r[""cost""])))
+    L += ["""", ""## Workshop visits (items within %d days / %s %s are bundled)"" % (c[""bundle_days""], fk(c[""bundle_km""]), c[""unit""]), """",
+          ""| # | Book by | At about | Items | Est. cost |"", ""|---|---|---|---|---|""]
+    for i, v in enumerate(res[""visits""], 1):
+        L.append(""| %d | %s%s | %s %s | %s | %s |"" % (i, v[""date""], "" (now)"" if v[""date""] == c[""today""] else """", fk(v[""km""]), c[""unit""],
+                                                    "", "".join(o[""item""] + ("" (overdue)"" if o[""overdue""] else """") for o in v[""items""]), fm(sum(o[""cost""] for o in v[""items""]))))
+    L += ["""", ""## Cost forecast by quarter"", """", ""| Quarter | Est. cost |"", ""|---|---|""]
+    for q in sorted(res[""quarters""]):
+        L.append(""| %s | %s |"" % (q, fm(res[""quarters""][q])))
+    L.append(""| **Total %d months** | **%s** |"" % (c[""horizon""], fm(res[""total""])))
+    L += ["""", ""## Findings"", """"]
+    L += [""- **%s %s** %s"" % (s.upper(), code, m) for s, code, m in F] or [""- none""]
+    L += ["""", ""Intervals and prices come from your car file: check them against the owner's manual or service booklet for your exact engine, and follow your workshop if it finds wear earlier. Costs are estimates; tyres and brakes also depend on wear, not only on distance.""]
+    return ""\n"".join(L) + ""\n""
+
+
+def to_json(res):
+    def j(x):
+        if isinstance(x, datetime.date):
+            return x.isoformat()
+        if isinstance(x, float):
+            return round(x, 2)
+        if isinstance(x, dict):
+            return {k: j(v) for k, v in x.items()}
+        if isinstance(x, list):
+            return [j(v) for v in x]
+        return x
+    return j({""km_per_year"": res[""rate""] * 365, ""items"": res[""rows""], ""visits"": [{""date"": v[""date""], ""km"": v[""km""], ""items"": [o[""item""] for o in v[""items""]],
+              ""cost"": sum(o[""cost""] for o in v[""items""])} for v in res[""visits""]], ""quarters"": res[""quarters""], ""next12"": res[""next12""], ""total"": res[""total""],
+              ""findings"": [{""severity"": s, ""code"": c, ""message"": m} for s, c, m in res[""findings""]]})
+
+
+# ---------------------------------------------------------------- self-test
+def self_test():
+    tests = []
+    def t(name, cond):
+        tests.append((name, bool(cond)))
+    def car(**kw):
+        cfg = {""vehicle"": {""name"": ""T"", ""first_registered"": ""2020-01-01""}, ""odometer"": {""reading"": 50000, ""date"": ""2026-01-01""},
+               ""schedule"": [{""item"": ""Oil"", ""km"": 15000, ""months"": 12, ""severe_km"": 7500, ""severe_months"": 6, ""cost"": 100, ""aliases"": [""oil change""]}]}
+        sched = kw.pop(""schedule"", None)
+        if sched:
+            cfg[""schedule""] = sched
+        cfg.update(kw)
+        return cfg
+    H = ""date,odometer,item,cost,shop\n""
+    def run(cfg, log, **kw):
+        return plan(load_car(cfg, **kw), H + log)
+    def row(res, name):
+        return next(r for r in res[""rows""] if r[""item""] == name)
+    def codes(res):
+        return [(f[0], f[1]) for f in res[""findings""]]
+    log = ""2025-01-01,40000,Oil,90,X\n""
+    r = run(car(), log)
+    t(""rate from readings: 10000 km/year"", abs(r[""rate""] * 365 - 10000) < 1)
+    t(""due by time first (12 months)"", row(r, ""Oil"")[""due_date""] == datetime.date(2026, 1, 1) and row(r, ""Oil"")[""trigger""] == ""time"")
+    t(""due today counts as due soon"", row(r, ""Oil"")[""status""] == ""DUE SOON"")
+    r = run(car(), ""2025-06-01,40000,Oil,90,X\n"")
+    t(""distance triggers first when driving a lot"", row(r, ""Oil"")[""due_km""] == 55000 and row(r, ""Oil"")[""trigger""] == ""distance"")
+    r = run(car(), ""2024-06-01,30000,Oil,90,X\n"")
+    t(""overdue by time and distance -> CS01"", row(r, ""Oil"")[""status""] == ""OVERDUE"" and (""medium"", ""CS01"") in codes(r))
+    sched = [{""item"": ""Brake fluid"", ""months"": 24, ""cost"": 80, ""safety"": True}]
+    r = run(car(schedule=sched), ""2023-06-01,30000,Brake fluid,80,X\n2025-01-01,40000,Other,0,X\n"")
+    t(""overdue safety item -> CS01 high"", (""high"", ""CS01"") in codes(r))
+    t(""item not in schedule -> CS07"", (""info"", ""CS07"") in codes(r))
+    r = run(car(), ""2025-01-01,40000,oil change,90,X\n"")
+    t(""aliases match case-insensitively"", row(r, ""Oil"")[""last""].startswith(""2025-01-01""))
+    r = run(car(), ""2025-01-01,40000,Wipers,20,X\n"")
+    t(""no record -> counted from new, CS03"", (""medium"", ""CS03"") in codes(r) and ""no record"" in row(r, ""Oil"")[""last""])
+    r = run(car(), ""2025-01-01,40000,Oil,90,X\n"", severe=True)
+    t(""severe intervals used"", row(r, ""Oil"")[""due_date""] == datetime.date(2025, 7, 1) and (""info"", ""CS06"") in codes(r))
+    r = run(car(), ""2024-01-01,30000,Oil,90,X\n2024-06-01,20000,Oil,90,X\n2025-01-01,40000,Oil,90,X\n"")
+    t(""odometer going down -> CS04, reading ignored"", (""medium"", ""CS04"") in codes(r))
+    r = run(car(), ""2025-01-01,40000,Oil,90,X\n2027-01-01,60000,Oil,90,X\n"")
+    t(""future date -> CS04 high"", (""high"", ""CS04"") in codes(r))
+    r = run(car(), ""2025-01-01,90000,Oil,90,X\n"")
+    t(""reading above current odometer -> CS04 high"", (""high"", ""CS04"") in codes(r))
+    r = run(car(), """")
+    t(""no readings -> default rate + CS09"", (""medium"", ""CS09"") in codes(r) and abs(r[""rate""] * 365 - 12000) < 1)
+    r = run(car(), ""2025-01-01,40000,Oil,90,X\n2025-04-01,42000,Oil,90,X\n"")
+    t(""done early -> CS05"", (""info"", ""CS05"") in codes(r))
+    sched = [{""item"": ""Test"", ""months"": 12, ""first_months"": 36, ""cost"": 50, ""legal"": True}]
+    r = run(car(vehicle={""first_registered"": ""2024-01-01""}, schedule=sched), ""2025-01-01,40000,Other,0,X\n"")
+    t(""first_months for first test from new"", row(r, ""Test"")[""due_date""] == datetime.date(2027, 1, 1))
+    sched = [{""item"": ""A"", ""months"": 12, ""cost"": 100}, {""item"": ""B"", ""months"": 12, ""cost"": 50}]
+    r = run(car(schedule=sched), ""2025-02-01,41000,A,0,X\n2025-03-15,42000,B,0,X\n"")
+    t(""items within the bundle window share a visit"", len(r[""visits""][0][""items""]) == 2)
+    t(""horizon repeats yearly items"", sum(1 for o in r[""occ""] if o[""item""] == ""A"") == 2)
+    t(""12-month and total forecast"", r[""next12""] == 150 and r[""total""] == 300)
+    sched = [{""item"": ""Belt"", ""km"": 120000, ""months"": 96, ""cost"": 650}]
+    r = run(car(schedule=sched), ""2025-01-01,40000,Other,0,X\n"")
+    t(""big-ticket item in horizon -> CS08"", (""low"", ""CS08"") in codes(r))
+    t(""add_months clamps month end"", add_months(datetime.date(2026, 1, 31), 1) == datetime.date(2026, 2, 28))
+    try:
+        load_car(car(schedule=[{""item"": ""X"", ""cost"": 1}])); ok = False
+    except InputError:
+        ok = True
+    t(""item without interval rejected"", ok)
+    try:
+        load_car(dict(car(), colour=""red"")); ok = False
+    except InputError:
+        ok = True
+    t(""unknown key rejected"", ok)
+    r = run(car(), log)
+    t(""report has verdict, visits and forecast"", all(s in report(r, ""t"") for s in (""**Verdict:"", ""## Workshop visits"", ""## Cost forecast"")))
+    for name, ok in tests:
+        print((""PASS  "" if ok else ""FAIL  "") + name)
+    passed = sum(ok for _, ok in tests)
+    print(""%d/%d passed"" % (passed, len(tests)))
+    return 0 if passed == len(tests) else 1
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=""Plan car maintenance from a schedule and a service log."")
+    ap.add_argument(""car"", nargs=""?"")
+    ap.add_argument(""log"", nargs=""?"")
+    ap.add_argument(""--odometer"", type=float)
+    ap.add_argument(""--today"")
+    ap.add_argument(""--severe"", action=""store_true"", default=None, help=""use severe-service intervals"")
+    ap.add_argument(""--horizon"", type=int, help=""months to plan (default from car file, else 24)"")
+    ap.add_argument(""--json"", action=""store_true"")
+    ap.add_argument(""--self-test"", action=""store_true"")
+    a = ap.parse_args(argv)
+    if a.self_test:
+        return self_test()
+    if not a.car or not a.log:
+        ap.print_usage(sys.stderr)
+        return 2
+    try:
+        try:
+            cfg = json.load(open(a.car, encoding=""utf-8""))
+        except json.JSONDecodeError as e:
+            raise InputError(""car file is not valid JSON: %s"" % e)
+        c = load_car(cfg, a.odometer, a.today, a.severe, a.horizon)
+        res = plan(c, open(a.log, encoding=""utf-8-sig"").read())
+    except (OSError, InputError) as e:
+        print(""error: %s"" % e, file=sys.stderr)
+        return 2
+    if a.json:
+        print(json.dumps(to_json(res), indent=2))
+    else:
+        sys.stdout.write(report(res, a.log))
+    return 1 if any(f[0] == ""high"" for f in res[""findings""]) else 0
+
+
+if __name__ == ""__main__"":
+    sys.exit(main())",FALSE,TEXT,f
