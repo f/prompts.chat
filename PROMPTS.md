@@ -231273,3 +231273,797 @@ Start from the step 2 image "Blue Stepped Alley in Chefchaouen with Two Cats at 
 
 </details>
 
+<details>
+<summary><strong>CODEOWNERS Coverage and Ownership Checker</strong></summary>
+
+## CODEOWNERS Coverage and Ownership Checker
+
+Contributed by [@f](https://github.com/f)
+
+```md
+---
+name: codeowners-coverage-and-ownership-checker
+description: Checks a GitHub CODEOWNERS file against the real repository file list - works out who owns every file (last matching line wins), then reports invalid or unknown owners, unowned files and critical paths left to the catch-all rule, rules that match nothing or are fully overridden by later lines, unsupported ! and [ ] syntax, duplicates, empty teams and one-person bottlenecks. Includes an offline stdlib Python checker.
+---
+
+# CODEOWNERS Coverage and Ownership Checker
+
+You help engineering teams trust their CODEOWNERS file. Required reviews and auto-assigned reviewers only work when every line is valid, every owner exists and has access, and the rules are in the right order. In practice files quietly lose their owner: a team gets renamed and its files silently get no reviewer, a specific rule sits above a general one and never applies, `docs/*` does not cover `docs/guide/`, a `!` negation copied from .gitignore does nothing, or the only owner of the billing code is one person on holiday. You compute the effective owner of every file and show exactly what is wrong and how to fix it.
+
+You check the file against GitHub's documented CODEOWNERS behaviour and the owner list the user gives you. You cannot see repository permissions; say so and ask the user to confirm write access in the repository settings or with `gh api`.
+
+## Files in this skill
+
+- `scripts/codeowners_check.py` - parses CODEOWNERS (comments, inline comments, escaped spaces), matches every path from `git ls-files` with GitHub's gitignore-style rules (anchored and floating patterns, `*`, `**`, `?`, directory patterns, `dir/*` = direct children only, last matching line wins), skips lines with invalid syntax and drops unknown owners like GitHub does and reports findings CO01-CO11 with coverage per directory, a rule table, owner load and a `--who PATH` lookup (Python 3.8+ standard library only)
+- `references/codeowners-syntax-and-matching.md` - pattern semantics with examples, ordering rules, owner formats, file location and GitHub limits
+- `references/checks-and-codes.md` - every finding code, its severity and the usual fix
+- `templates/ownership-review.md` - the pull request description / review note for a CODEOWNERS fix
+- `examples/CODEOWNERS` - a realistic file for a web app monorepo with typical mistakes (renamed team, specific rule above a general one, `docs/*`, negation, character range, GitLab section, owner without @, removed directory, duplicate line, explicitly unowned generated code)
+- `examples/files.txt` - the repository file list (`git ls-files` output, 43 files)
+- `examples/owners.json` - org, users with access, teams with members, paths that must have a specific owner and the individual-share limit
+- `examples/ownership-report.md` - the real checker output on the example
+
+## Workflow
+
+### 1. Collect the inputs
+Ask for the CODEOWNERS file (from `.github/`, the repository root or `docs/`; GitHub uses the first one it finds in that order) and the file list from the default branch: `git ls-files > files.txt`. Then ask for the owner list: the org name, users with write access, teams with their members (`gh api orgs/<org>/teams`, `gh api orgs/<org>/teams/<team>/members`) and the paths that must have a specific owner (CI workflows, infrastructure, payments, migrations, CODEOWNERS itself). Write them into a JSON like `examples/owners.json`. Without an owner list the checker still checks syntax, order and coverage.
+
+### 2. Run the checker
+```
+python3 scripts/codeowners_check.py examples/CODEOWNERS examples/files.txt --owners examples/owners.json
+python3 scripts/codeowners_check.py .github/CODEOWNERS files.txt --owners owners.json --who services/api/billing/invoices.py
+python3 scripts/codeowners_check.py .github/CODEOWNERS files.txt --json
+python3 scripts/codeowners_check.py --self-test
+```
+Exit 0 = no high findings, 1 = high findings, 2 = bad input. Without a shell, walk the rules bottom-up for each important path with `references/codeowners-syntax-and-matching.md`: the first line from the bottom that matches is the owner.
+
+### 3. Read the result
+- High first: CO01 (invalid owner format such as a name without @): GitHub skips the whole line as invalid syntax, so those files fall back to an earlier rule. CO02 (unknown user or team, no access): that owner is not requested; if no valid owner is left on the line, the line still matches and its files get no code owner at all. CO03 high: files under a must-own path have no owner.
+- Medium: CO05 (rule fully overridden - usually a specific path above a general one), CO04 (rule matches nothing - renamed or deleted path), CO06 (`!` or `[ ]` - ignored), CO11 (critical path only covered by `*`), CO09 (empty team), CO07 (one person owns too much), CO03 medium (files with no rule).
+- Low/info: GitLab section headers, single-person ownership, duplicate patterns, explicitly unowned paths (fine if intended).
+- Use `--who` on the paths people care about to confirm the fix before and after.
+
+### 4. Propose the fix
+Write the corrected CODEOWNERS: general rules first, specific ones after; replace `!` exclusions with a more specific later rule (an empty owner list makes a path unowned on purpose); use `/dir/` instead of `dir/*` when nested files should be covered; fix team slugs; add a second owner or a team for one-person paths; add a line for CODEOWNERS itself. Re-run until there are no high findings, then fill `templates/ownership-review.md`.
+
+### 5. Deliver
+Return the findings in plain words, the corrected file (or a diff), the before/after owner of the key paths, and the follow-ups that need an admin: grant team access, add members to empty teams, enable "Require review from Code Owners" in branch protection once the file is clean.
+
+## Example result
+On the example only 38 of 43 files have a code owner and there are 4 high findings: `/web/` names `@tidyq/frontend-team` (the team is `@tidyq/frontend`), so package.json, App.tsx, Home.tsx and Checkout.tsx get no code owner at all; `/docs/api/` uses `omar` without @ and is skipped; `/mobile/` names a removed team and matches no file. `/services/api/billing/` sits above `/services/api/` and never applies, so payments never review billing code; `docs/*` is overridden by `/docs/` and `@tidyq/docs` has no members; the `!` and `[a-z]` lines are ignored; Terraform modules and dependabot.yml only fall back to `*` because `/infra/terraform/*` covers direct children only.
+
+## Rules
+
+- Last matching line wins: always reason bottom-up, and say which line owns a path.
+- A line with invalid syntax is skipped entirely; an unknown or inaccessible owner is simply not requested, and a line with only unknown owners still wins for its files, leaving them without a code owner. Never assume an earlier rule takes over in that case.
+- Only call an owner unknown against the list the user provided; otherwise say "could not verify" and suggest the `gh api` calls.
+- Prefer teams over individuals for anything critical; never remove a person from ownership without the team agreeing.
+- Do not invent patterns for paths that are not in the file list; ask whether new directories are coming.
+- Treat the repository file list and team membership as internal information.
+FILE:references/codeowners-syntax-and-matching.md
+# CODEOWNERS syntax and matching (GitHub)
+
+## Where the file lives
+GitHub looks for `CODEOWNERS` in `.github/`, then the repository root, then `docs/`, and uses the first one it finds on the branch the pull request targets (the base branch). Files over 3 MB are ignored. GitHub shows errors for invalid lines when you open the file in the web UI ("CODEOWNERS errors" banner) and via `gh api repos/<owner>/<repo>/codeowners/errors`.
+
+## Line format
+```
+<pattern>  <owner> [<owner> ...]   # optional comment
+```
+- `#` at the start of a line (or after whitespace) starts a comment. Unlike .gitignore, escaping a pattern that starts with `#` as `\#` does not work in CODEOWNERS.
+- Paths are case sensitive, even if your laptop's file system is not.
+- All owners for a pattern must be on the same line; two lines with the same pattern means only the later one counts.
+- Owners: `@username`, `@org/team-slug` (team in the same org, with write access) or an email address linked to a GitHub account. A bare name such as `omar` is invalid.
+- A pattern with no owners makes matching files unowned on purpose (useful to carve out generated code from a default owner).
+- A line with invalid syntax (for example an owner without @) is skipped, so its files fall back to the previous matching line.
+- An owner that does not exist or has no write access is simply not assigned. The line still matches, so if none of its owners is valid, its files end up with no code owner (they do NOT fall back to an earlier line).
+
+## Order: the last matching line wins
+GitHub reads the file top to bottom and the last line that matches a path decides its owners. Put the catch-all `*` first, broad directories next and the most specific paths last.
+
+```
+*                       @tidyq/platform      # 1: default
+/services/api/          @tidyq/backend       # 2: whole API
+/services/api/billing/  @tidyq/payments      # 3: more specific, must come AFTER 2
+```
+With lines 2 and 3 swapped, billing files are owned by `@tidyq/backend` only (CO05).
+
+## Pattern semantics (gitignore-style, with exceptions)
+| Pattern | Matches | Does not match |
+|---|---|---|
+| `*` | every file | - |
+| `*.js` | `app.js`, `web/lib/util.js` (any depth) | `app.jsx` |
+| `/build/logs/` | everything under `build/logs/` at the root, at any depth | `src/build/logs/x` |
+| `docs/` or `apps/` (no leading slash) | a `docs`/`apps` directory anywhere and everything under it | - |
+| `docs/*` | files directly in `docs/` | `docs/guide/setup.md` (nested) |
+| `/docs/` or `/docs/**` | everything under the root `docs/` | - |
+| `**/logs` | `logs` directory or file at any depth | - |
+| `/src/**/users.py` | `src/users.py`, `src/api/v2/users.py` | - |
+| `README.md` | `README.md` at any depth | - |
+| `/README.md` | only the root `README.md` | `sub/README.md` |
+| `src/ap?.py` | `src/app.py` | `src/apps.py` |
+
+Rules of thumb:
+- A pattern with a slash at the start or in the middle is anchored to the repository root; one without (apart from a trailing slash) floats and matches at any depth.
+- A trailing slash means "this directory and everything in it".
+- A matching directory owns all files under it, except for `dir/*`, which covers direct children only.
+
+## Not supported (the line is ignored or flagged)
+- `!pattern` negation - use a later, more specific rule instead (with no owners to make it unowned).
+- `[a-z]` character ranges - list the paths or use `*`.
+- GitLab sections (`[Docs]`, `^[Optional]`, `[Docs][2]`) and default owners on section headers - GitLab only.
+
+## Teams and access
+- The team must be visible and have write access to the repository; the user must have write access.
+- An empty team gets the review request but nobody is notified.
+- Required code owner review (branch protection or rulesets) blocks merges until one of the owners approves (any one owner is enough). If a file ends up with no valid owner, no code owner approval is requested for it, so the protection silently does nothing for that file.
+
+## Getting the inputs
+```
+git ls-files > files.txt
+gh api orgs/<org>/teams --paginate -q '.[].slug'
+gh api orgs/<org>/teams/<slug>/members --paginate -q '.[].login'
+gh api repos/<owner>/<repo>/collaborators --paginate -q '.[] | select(.permissions.push) | .login'
+gh api repos/<owner>/<repo>/codeowners/errors
+```
+FILE:references/checks-and-codes.md
+# Checks and finding codes
+
+| Code | Severity | Check | Typical fix |
+|---|---|---|---|
+| CO01 | high | owner is not `@user`, `@org/team` or an email (e.g. `omar`); pattern cannot be parsed | add the @ / fix the slug; the whole line is skipped until then |
+| CO02 | high | user not in your users list, team not in your teams list, or team from another org (only with `--owners`); a second CO02 line says when no valid owner is left on a line, so its files get no code owner | fix the slug (the checker suggests a close team), give the team write access, or remove the owner |
+| CO03 | high: unowned file under a `require_owner` path; medium: other files with no rule or only unknown owners (explicitly unowned files are CO10) | coverage | add a rule, or a catch-all `*` default |
+| CO04 | medium | the pattern matches no file in the list | path renamed or deleted: update or remove the line |
+| CO05 | medium | every file the rule matches is owned by later lines (last match wins) | move the specific rule below the general one |
+| CO06 | medium: `!` negation, `[ ]` ranges (ignored by GitHub); low: GitLab section header | unsupported syntax | use a later more specific rule; empty owner list = unowned |
+| CO07 | medium: one individual (not a team) is the effective owner of more than `max_individual_share` of files; low: files owned by a single individual and no team | bus factor | add a team or a second owner |
+| CO08 | low | the same pattern appears twice; only the later line counts | merge the owners into one line |
+| CO09 | medium | team has no members in your teams list | add members or use another team |
+| CO10 | info | pattern with no owners: files intentionally unowned | fine if intended (generated code, vendored files) |
+| CO11 | medium | files under a `require_owner` path are only owned by the catch-all `*` rule | add a specific rule for that path |
+
+## Verdict
+- **High findings**: fix before relying on "Require review from Code Owners".
+- **Medium only**: the file works but some files go to the wrong people.
+- **Healthy**: only low/info.
+
+## Owners file (`--owners`, JSON)
+| Key | Meaning |
+|---|---|
+| `org` | org name; teams from another org are flagged |
+| `users` | logins with write access (without @) |
+| `teams` | `{"org/slug": [members]}` |
+| `require_owner` | patterns (same syntax) for paths that must have a specific owner |
+| `max_individual_share` | share of files one person may own alone (default 0.4) |
+| `ignore` | patterns for files to leave out (vendored code, lock files) |
+
+## Limits of the check
+- Repository permissions and team visibility are not checked - confirm with the `gh api` calls in the syntax reference or the "CODEOWNERS errors" banner.
+- The file list is a snapshot of one branch; run it against the base branch of your pull requests.
+FILE:templates/ownership-review.md
+# CODEOWNERS fix: <repository>
+
+**Branch:** <base branch>   **Checked:** <YYYY-MM-DD>   **Files:** <n>   **Owned before / after:** <x% / y%>
+
+## What was wrong
+| Line | Rule | Problem | Effect |
+|---|---|---|---|
+| <11> | `<pattern> <owners>` | <unknown team @org/frontend-team> | <web files fall back to @org/platform> |
+| <6> | `<pattern>` | <overridden by line 7> | <payments never review billing> |
+
+## Changes
+```diff
+<- /services/api/billing/    @org/payments
+<  /services/api/            @org/backend
+<+ /services/api/billing/    @org/payments>
+```
+
+## Who owns the key paths now
+| Path | Before | After |
+|---|---|---|
+| <services/api/billing/invoices.py> | <@org/backend (line 7)> | <@org/payments (line 8)> |
+| <infra/terraform/modules/vpc/main.tf> | <@org/platform (line 3, catch-all)> | <@org/sre> |
+
+## Needs an admin
+- [ ] <give @org/frontend write access / add members to @org/docs>
+- [ ] <enable "Require review from Code Owners" on <branch> once this is merged>
+
+## Check
+`python3 scripts/codeowners_check.py .github/CODEOWNERS files.txt --owners owners.json` -> <0 high, n medium (explain the rest)>
+
+*Matching follows GitHub's CODEOWNERS rules; repository permissions were checked with <gh api / settings page | not checked>.*
+FILE:examples/CODEOWNERS
+# CODEOWNERS for tidyq/tidyq-app (copied into .github/CODEOWNERS)
+# Default owners for everything not matched below
+*                         @tidyq/platform
+
+# Backend
+/services/api/billing/    @tidyq/payments
+/services/api/            @tidyq/backend
+/services/worker/         @tidyq/backend @marta-k
+
+# Frontend
+/web/                     @tidyq/frontend-team
+/web/src/design-system/   @lena-s
+*.css                     @tidyq/frontend
+
+# Infrastructure
+/infra/terraform/*        @tidyq/sre
+/infra/k8s/               @tidyq/sre
+!/infra/k8s/sandbox/
+
+# CI and repository settings
+/.github/workflows/       @tidyq/sre
+/.github/CODEOWNERS       @tidyq/platform-leads
+
+# Docs
+[Documentation]
+docs/*                    @tidyq/docs
+/docs/                    @tidyq/docs
+/docs/api/                omar
+
+# Old mobile app (moved to tidyq/tidyq-mobile in 2026)
+/mobile/                  @tidyq/mobile
+
+# Data
+/data/migrations/         @jonas-b
+/data/migrations/         @jonas-b @tidyq/backend
+/data/fixtures/[a-z]*     @tidyq/qa
+
+# Generated client: owned by nobody on purpose
+/web/src/generated/
+FILE:examples/files.txt
+.github/CODEOWNERS
+.github/dependabot.yml
+.github/workflows/ci.yml
+.github/workflows/deploy.yml
+.github/workflows/release.yml
+README.md
+package.json
+docs/index.md
+docs/getting-started.md
+docs/api/endpoints.md
+docs/api/auth.md
+docs/runbooks/oncall.md
+infra/terraform/main.tf
+infra/terraform/variables.tf
+infra/terraform/modules/vpc/main.tf
+infra/terraform/modules/rds/main.tf
+infra/k8s/api-deployment.yaml
+infra/k8s/worker-deployment.yaml
+infra/k8s/sandbox/debug-pod.yaml
+services/api/app.py
+services/api/routes/users.py
+services/api/routes/orders.py
+services/api/billing/invoices.py
+services/api/billing/stripe_webhook.py
+services/api/tests/test_routes.py
+services/worker/main.py
+services/worker/jobs/email.py
+services/worker/jobs/reports.py
+web/package.json
+web/src/App.tsx
+web/src/pages/Home.tsx
+web/src/pages/Checkout.tsx
+web/src/styles/main.css
+web/src/design-system/Button.tsx
+web/src/design-system/Modal.tsx
+web/src/design-system/tokens.css
+web/src/generated/api-client.ts
+data/migrations/0041_add_orders.sql
+data/migrations/0042_add_invoices.sql
+data/fixtures/users.json
+data/fixtures/orders.json
+scripts/seed_db.py
+scripts/rotate_keys.sh
+FILE:examples/owners.json
+{
+  "org": "tidyq",
+  "users": ["marta-k", "lena-s", "jonas-b", "omar-h", "priya-n", "sam-t"],
+  "teams": {
+    "tidyq/platform": ["priya-n", "sam-t"],
+    "tidyq/platform-leads": ["priya-n"],
+    "tidyq/backend": ["marta-k", "jonas-b", "omar-h"],
+    "tidyq/payments": ["marta-k"],
+    "tidyq/frontend": ["lena-s", "sam-t"],
+    "tidyq/sre": ["priya-n", "sam-t"],
+    "tidyq/docs": [],
+    "tidyq/qa": ["omar-h"]
+  },
+  "require_owner": [".github/", "infra/", "services/api/billing/", "data/migrations/"],
+  "max_individual_share": 0.25,
+  "ignore": []
+}
+FILE:examples/ownership-report.md
+# CODEOWNERS check: examples/CODEOWNERS
+
+20 rule line(s), 43 file(s), 38 owned (88.4%), 5 unowned.
+
+**Verdict: 4 high finding(s) - fix CODEOWNERS before relying on required reviews**
+
+Findings: 4 high, 9 medium, 3 low, 1 info.
+
+Lines whose owners are all unknown (they still match, so their files get no code owner): 11, 31. Unknown owners are left out of the owner columns below.
+
+## Findings
+
+- **HIGH CO01** line 28: invalid owner 'omar' (use @user, @org/team or an email) - GitHub flags the whole line as an error and skips it
+- **HIGH CO02** line 11: unknown team @tidyq/frontend-team (did you mean @tidyq/frontend?) - GitHub will not request reviews from it
+- **HIGH CO02** line 11: no valid owner left - its 4 file(s) get no code owner (they do not fall back to earlier lines)
+- **HIGH CO02** line 31: unknown team @tidyq/mobile - GitHub will not request reviews from it
+- **MEDIUM CO03** 4 file(s) have no code owner (no matching rule, or only unknown owners): web/package.json, web/src/App.tsx, web/src/pages/Home.tsx, web/src/pages/Checkout.tsx
+- **MEDIUM CO04** line 31: '/mobile/' matches no file - path renamed or removed?
+- **MEDIUM CO05** line 6: '/services/api/billing/' (2 file(s)) is fully overridden by later line(s) 7 - last match wins, put specific rules after general ones
+- **MEDIUM CO05** line 26: 'docs/*' (2 file(s)) is fully overridden by later line(s) 27 - last match wins, put specific rules after general ones
+- **MEDIUM CO05** line 34: '/data/migrations/' (2 file(s)) is fully overridden by later line(s) 35 - last match wins, put specific rules after general ones
+- **MEDIUM CO06** line 18: '!/infra/k8s/sandbox/' uses ! negation, which CODEOWNERS does not support - GitHub ignores the line
+- **MEDIUM CO06** line 36: '/data/fixtures/[a-z]*' uses [ ] character ranges, which CODEOWNERS does not support - GitHub ignores the line
+- **MEDIUM CO09** line 26: team @tidyq/docs has no members - review requests go nowhere
+- **MEDIUM CO11** 3 file(s) under paths that must have an owner only fall back to the catch-all '*' rule (no specific owner): .github/dependabot.yml, infra/terraform/modules/vpc/main.tf, infra/terraform/modules/rds/main.tf
+- **LOW CO06** line 25: '[Documentation]' is a GitLab section header; GitHub treats it as an invalid line
+- **LOW CO07** 2 file(s) have a single individual owner and no team (e.g. web/src/design-system/Button.tsx, web/src/design-system/Modal.tsx)
+- **LOW CO08** line 35 repeats the pattern '/data/migrations/' of line 34 - only the later line counts
+- **INFO CO10** line 39: '/web/src/generated/' has no owners - its 1 file(s) are intentionally unowned
+
+## Coverage by top-level directory
+
+| Directory | Files | Owned | Unowned | Effective owners |
+|---|---|---|---|---|
+| (root) | 2 | 2 | 0 | @tidyq/platform (2) |
+| .github/ | 5 | 5 | 0 | @tidyq/sre (3), @tidyq/platform-leads (1), @tidyq/platform (1) |
+| data/ | 4 | 4 | 0 | @jonas-b (2), @tidyq/backend (2), @tidyq/platform (2) |
+| docs/ | 5 | 5 | 0 | @tidyq/docs (5) |
+| infra/ | 7 | 7 | 0 | @tidyq/sre (5), @tidyq/platform (2) |
+| scripts/ | 2 | 2 | 0 | @tidyq/platform (2) |
+| services/ | 9 | 9 | 0 | @tidyq/backend (9), @marta-k (3) |
+| web/ | 9 | 4 | 5 | @tidyq/frontend (2), @lena-s (2) |
+
+## Rules
+
+| Line | Pattern | Owners | Files matched | Effective for | Note |
+|---|---|---|---|---|---|
+| 3 | `*` | @tidyq/platform | 43 | 9 |  |
+| 6 | `/services/api/billing/` | @tidyq/payments | 2 | 0 | CO05 |
+| 7 | `/services/api/` | @tidyq/backend | 6 | 6 |  |
+| 8 | `/services/worker/` | @tidyq/backend @marta-k | 3 | 3 |  |
+| 11 | `/web/` | @tidyq/frontend-team | 9 | 4 | CO02 |
+| 12 | `/web/src/design-system/` | @lena-s | 3 | 2 |  |
+| 13 | `*.css` | @tidyq/frontend | 2 | 2 |  |
+| 16 | `/infra/terraform/*` | @tidyq/sre | 2 | 2 |  |
+| 17 | `/infra/k8s/` | @tidyq/sre | 3 | 3 |  |
+| 18 | `!/infra/k8s/sandbox/` | (none) | - | - | CO06 |
+| 21 | `/.github/workflows/` | @tidyq/sre | 3 | 3 |  |
+| 22 | `/.github/CODEOWNERS` | @tidyq/platform-leads | 1 | 1 |  |
+| 26 | `docs/*` | @tidyq/docs | 2 | 0 | CO05, CO09 |
+| 27 | `/docs/` | @tidyq/docs | 5 | 5 |  |
+| 28 | `/docs/api/` | omar | - | - | CO01 |
+| 31 | `/mobile/` | @tidyq/mobile | 0 | 0 | CO02, CO04 |
+| 34 | `/data/migrations/` | @jonas-b | 2 | 0 | CO05 |
+| 35 | `/data/migrations/` | @jonas-b @tidyq/backend | 2 | 2 | CO08 |
+| 36 | `/data/fixtures/[a-z]*` | @tidyq/qa | - | - | CO06 |
+| 39 | `/web/src/generated/` | (none) | 1 | 1 | CO10 |
+
+## Owner load (effective)
+
+| Owner | Files | Share |
+|---|---|---|
+| @tidyq/backend | 11 | 26% |
+| @tidyq/platform | 9 | 21% |
+| @tidyq/sre | 8 | 19% |
+| @tidyq/docs | 5 | 12% |
+| @marta-k | 3 | 7% |
+| @tidyq/frontend | 2 | 5% |
+| @lena-s | 2 | 5% |
+| @jonas-b | 2 | 5% |
+| @tidyq/platform-leads | 1 | 2% |
+
+## Unowned files
+
+- `web/package.json` (line 11: only unknown owners)
+- `web/src/App.tsx` (line 11: only unknown owners)
+- `web/src/pages/Home.tsx` (line 11: only unknown owners)
+- `web/src/pages/Checkout.tsx` (line 11: only unknown owners)
+- `web/src/generated/api-client.ts` (explicitly unowned, line 39)
+
+## Who owns
+
+- services/api/billing/invoices.py: @tidyq/backend (line 7: /services/api/)
+- infra/terraform/modules/vpc/main.tf: @tidyq/platform (line 3: *)
+- web/src/pages/Checkout.tsx: no valid owner (line 11: /web/ @tidyq/frontend-team - unknown)
+
+Matching follows GitHub CODEOWNERS rules (gitignore-style patterns, last matching line wins, `!` and `[ ]` unsupported). Owners are checked against your owners file only; confirm write access in the repository settings.
+FILE:scripts/codeowners_check.py
+#!/usr/bin/env python3
+"""CODEOWNERS coverage and ownership checker (stdlib only, Python 3.8+).
+
+Reads a GitHub CODEOWNERS file and the repository file list (`git ls-files` output), works out
+the effective owner of every file with GitHub's rules (gitignore-style patterns, the LAST
+matching line wins) and reports syntax errors, unknown owners, unowned files (also under paths
+that must have an owner), rules that match nothing, rules that are fully overridden by later
+lines, unsupported syntax, duplicates, empty teams and owner concentration.
+
+Usage:
+  codeowners_check.py CODEOWNERS FILES.txt [--owners OWNERS.json] [--who PATH]... [--json]
+  codeowners_check.py --self-test
+Exit: 0 = no high findings, 1 = high findings, 2 = bad input.
+"""
+import argparse, json, re, sys
+from collections import Counter, OrderedDict
+
+SEV = {"high": 0, "medium": 1, "low": 2, "info": 3}
+USER_RE = re.compile(r"^@[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$")
+TEAM_RE = re.compile(r"^@([A-Za-z0-9][A-Za-z0-9-]*)/([A-Za-z0-9][A-Za-z0-9._-]*)$")
+EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+
+class InputError(Exception):
+    pass
+
+
+# ---------------------------------------------------------------- patterns
+def pattern_regex(pat):
+    """Return (compiled regex, dir_only, direct_children_only) for a CODEOWNERS pattern."""
+    dir_only = pat.endswith("/")
+    p = pat.rstrip("/")
+    anchored = p.startswith("/") or "/" in p
+    p = p.lstrip("/")
+    direct_only = p.endswith("/*")
+    out, i = "", 0
+    while i < len(p):
+        if p.startswith("**/", i):
+            out += "(?:.*/)?"; i += 3
+        elif p.startswith("/**", i) and i + 3 == len(p):
+            out += "/.*"; i += 3
+        elif p.startswith("**", i):
+            out += ".*"; i += 2
+        elif p[i] == "*":
+            out += "[^/]*"; i += 1
+        elif p[i] == "?":
+            out += "[^/]"; i += 1
+        elif p[i] == "\\" and i + 1 < len(p):
+            out += re.escape(p[i + 1]); i += 2
+        else:
+            out += re.escape(p[i]); i += 1
+    if not anchored:
+        out = "(?:.*/)?" + out
+    return re.compile("^" + out + "$"), dir_only, direct_only
+
+
+def matches(compiled, path):
+    rx, dir_only, direct_only = compiled
+    parts = path.split("/")
+    if not dir_only and rx.match(path):
+        return True
+    if direct_only:
+        return False
+    for k in range(1, len(parts)):           # a matching directory owns everything under it
+        if rx.match("/".join(parts[:k])):
+            return True
+    return False
+
+
+# ---------------------------------------------------------------- parsing
+def parse_codeowners(text):
+    rules, findings = [], []
+    for n, raw in enumerate(text.splitlines(), 1):
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        if re.match(r"^\^?\[[^\]]+\](\[\d+\])?(\s+@.*)?$", line):
+            findings.append(("low", "CO06", "line %d: '%s' is a GitLab section header; GitHub treats it as an invalid line" % (n, line), n))
+            continue
+        tokens = re.split(r"(?<!\\)\s+", line)
+        pat, owners = tokens[0], []
+        for t in tokens[1:]:
+            if t.startswith("#"):
+                break
+            owners.append(t)
+        rule = {"line": n, "pattern": pat, "owners": owners, "valid": True}
+        if pat.startswith("!"):
+            findings.append(("medium", "CO06", "line %d: '%s' uses ! negation, which CODEOWNERS does not support - GitHub ignores the line" % (n, pat), n))
+            rule["valid"] = False
+        elif "[" in pat or "]" in pat:
+            findings.append(("medium", "CO06", "line %d: '%s' uses [ ] character ranges, which CODEOWNERS does not support - GitHub ignores the line" % (n, pat), n))
+            rule["valid"] = False
+        bad = [o for o in owners if not (USER_RE.match(o) or TEAM_RE.match(o) or EMAIL_RE.match(o))]
+        if bad:
+            findings.append(("high", "CO01", "line %d: invalid owner %s (use @user, @org/team or an email) - GitHub flags the whole line as an error and skips it" % (n, ", ".join("'%s'" % b for b in bad)), n))
+            rule["valid"] = False
+        if rule["valid"]:
+            try:
+                rule["rx"] = pattern_regex(pat)
+            except re.error as e:
+                findings.append(("high", "CO01", "line %d: pattern '%s' cannot be parsed (%s)" % (n, pat, e), n))
+                rule["valid"] = False
+        rules.append(rule)
+    return rules, findings
+
+
+def load_files(text):
+    files = []
+    for l in text.splitlines():
+        l = l.strip()
+        if l and not l.startswith("#"):
+            files.append(l[2:] if l.startswith("./") else l.lstrip("/"))
+    if not files:
+        raise InputError("file list is empty (use: git ls-files > files.txt)")
+    return files
+
+
+# ---------------------------------------------------------------- analysis
+def analyse(co_text, files_text, owners_cfg=None):
+    owners_cfg = owners_cfg or {}
+    allowed_keys = {"org", "users", "teams", "require_owner", "max_individual_share", "ignore"}
+    unknown = set(owners_cfg) - allowed_keys
+    if unknown:
+        raise InputError("unknown key(s) in owners file: %s" % ", ".join(sorted(unknown)))
+    rules, findings = parse_codeowners(co_text)
+    if not rules:
+        raise InputError("CODEOWNERS has no rules")
+    files = load_files(files_text)
+    ignore = [pattern_regex(p) for p in owners_cfg.get("ignore", [])]
+    files = [f for f in files if not any(matches(c, f) for c in ignore)]
+    valid = [r for r in rules if r["valid"]]
+    eff, matched_by = {}, {r["line"]: [] for r in valid}
+    for f in files:
+        last = None
+        for r in valid:
+            if matches(r["rx"], f):
+                matched_by[r["line"]].append(f)
+                last = r
+        eff[f] = last
+    effective = Counter(r["line"] for r in eff.values() if r)
+
+    # known owners
+    org = owners_cfg.get("org")
+    users = {u.lower().lstrip("@") for u in owners_cfg.get("users", [])}
+    teams = {k.lower().lstrip("@"): v for k, v in owners_cfg.get("teams", {}).items()}
+    have_list = bool(users or teams)
+    reported, unknown_owners = set(), set()
+    for r in valid:
+        for o in r["owners"]:
+            key = o.lower()
+            m = TEAM_RE.match(o)
+            problem = None
+            if m and have_list:
+                name = (m.group(1) + "/" + m.group(2)).lower()
+                if org and m.group(1).lower() != org.lower():
+                    problem = "team %s is not in org @%s" % (o, org)
+                elif name not in teams:
+                    close = [t for t in teams if t.split("/")[-1].startswith(m.group(2).lower()[:4])]
+                    problem = "unknown team %s%s" % (o, (" (did you mean @%s?)" % close[0]) if close else "")
+                elif not teams[name] and key not in reported:
+                    findings.append(("medium", "CO09", "line %d: team %s has no members - review requests go nowhere" % (r["line"], o), r["line"])); reported.add(key)
+            elif USER_RE.match(o) and have_list and key.lstrip("@") not in users:
+                problem = "unknown user %s (not in the owners list / no write access)" % o
+            if problem:
+                unknown_owners.add(key)
+                if key not in reported:
+                    findings.append(("high", "CO02", "line %d: %s - GitHub will not request reviews from it" % (r["line"], problem), r["line"])); reported.add(key)
+    for r in rules:
+        r["ok"] = [o for o in r["owners"] if o.lower() not in unknown_owners]
+    bad_lines = sorted(r["line"] for r in valid if r["owners"] and not r["ok"])
+    for ln in [x for x in bad_lines if effective[x]]:
+        findings.append(("high", "CO02", "line %d: no valid owner left - its %d file(s) get no code owner (they do not fall back to earlier lines)" % (ln, effective[ln]), ln))
+
+    # dead, shadowed, duplicate rules
+    seen = {}
+    for r in valid:
+        if r["pattern"] in seen:
+            findings.append(("low", "CO08", "line %d repeats the pattern '%s' of line %d - only the later line counts" % (r["line"], r["pattern"], seen[r["pattern"]]), r["line"]))
+        seen[r["pattern"]] = r["line"]
+        if not matched_by[r["line"]]:
+            findings.append(("medium", "CO04", "line %d: '%s' matches no file - path renamed or removed?" % (r["line"], r["pattern"]), r["line"]))
+        elif effective[r["line"]] == 0:
+            later = sorted({eff[f]["line"] for f in matched_by[r["line"]] if eff[f]})
+            findings.append(("medium", "CO05", "line %d: '%s' (%d file(s)) is fully overridden by later line(s) %s - last match wins, put specific rules after general ones" % (r["line"], r["pattern"], len(matched_by[r["line"]]), ", ".join(map(str, later))), r["line"]))
+        if not r["owners"]:
+            findings.append(("info", "CO10", "line %d: '%s' has no owners - its %d file(s) are intentionally unowned" % (r["line"], r["pattern"], effective[r["line"]]), r["line"]))
+
+    # coverage
+    unowned = [f for f in files if not eff[f] or not eff[f]["ok"]]
+    no_rule = [f for f in unowned if not eff[f]]
+    req = [(p, pattern_regex(p)) for p in owners_cfg.get("require_owner", [])]
+    crit = [f for f in unowned if any(matches(c, f) for _, c in req)]
+    if crit:
+        findings.append(("high", "CO03", "%d file(s) under paths that must have an owner are unowned: %s" % (len(crit), ", ".join(crit[:6]) + (" ..." if len(crit) > 6 else "")), 0))
+    catch_all = [f for f in files if eff[f] and eff[f]["ok"] and eff[f]["pattern"] in ("*", "/*", "**", "/**")
+                 and any(matches(c, f) for _, c in req)]
+    if catch_all:
+        findings.append(("medium", "CO11", "%d file(s) under paths that must have an owner only fall back to the catch-all '%s' rule (no specific owner): %s" % (len(catch_all), eff[catch_all[0]]["pattern"], ", ".join(catch_all[:6]) + (" ..." if len(catch_all) > 6 else "")), 0))
+    rest = [f for f in unowned if f not in crit and (not eff[f] or eff[f]["owners"])]
+    if rest:
+        findings.append(("medium", "CO03", "%d file(s) have no code owner (no matching rule, or only unknown owners): %s" % (len(rest), ", ".join(rest[:6]) + (" ..." if len(rest) > 6 else "")), 0))
+
+    # owner load
+    load = Counter()
+    for f in files:
+        if eff[f]:
+            for o in eff[f]["ok"]:
+                load[o] += 1
+    share = float(owners_cfg.get("max_individual_share", 0.4))
+    for o, n in load.most_common():
+        if USER_RE.match(o) and n / len(files) > share:
+            findings.append(("medium", "CO07", "%s is the owner of %d of %d files (%.0f%%) as an individual - bus factor; add a team or a second owner" % (o, n, len(files), 100.0 * n / len(files)), 0))
+    solo = [f for f in files if eff[f] and len(eff[f]["ok"]) == 1 and USER_RE.match(eff[f]["ok"][0])]
+    if solo:
+        findings.append(("low", "CO07", "%d file(s) have a single individual owner and no team (e.g. %s)" % (len(solo), ", ".join(solo[:3])), 0))
+
+    findings.sort(key=lambda f: (SEV[f[0]], f[1], f[3]))
+    return {"rules": rules, "files": files, "eff": eff, "matched_by": matched_by, "effective": effective,
+            "unowned": unowned, "load": load, "findings": findings, "no_valid_owner_lines": bad_lines}
+
+
+def who(res, path):
+    r = res["eff"].get(path)
+    if path not in res["eff"]:
+        rx_hits = [x for x in res["rules"] if x["valid"] and matches(x["rx"], path)]
+        r = rx_hits[-1] if rx_hits else None
+    if not r:
+        return "%s: no owner (no matching rule)" % path
+    if r["owners"] and not r["ok"]:
+        return "%s: no valid owner (line %d: %s %s - unknown)" % (path, r["line"], r["pattern"], " ".join(r["owners"]))
+    return "%s: %s (line %d: %s)" % (path, " ".join(r["ok"]) or "explicitly unowned", r["line"], r["pattern"])
+
+
+# ---------------------------------------------------------------- report
+def report(res, title, whos=()):
+    f, files = res["findings"], res["files"]
+    cnt = Counter(x[0] for x in f)
+    owned = len(files) - len(res["unowned"])
+    L = ["# CODEOWNERS check: %s" % title, ""]
+    L.append("%d rule line(s), %d file(s), %d owned (%.1f%%), %d unowned." % (len(res["rules"]), len(files), owned, 100.0 * owned / len(files), len(res["unowned"])))
+    L.append("")
+    L.append("**Verdict: %s**" % ("%d high finding(s) - fix CODEOWNERS before relying on required reviews" % cnt["high"] if cnt["high"] else ("review the medium findings" if cnt["medium"] else "CODEOWNERS looks healthy")))
+    L.append("")
+    L.append("Findings: %d high, %d medium, %d low, %d info." % (cnt["high"], cnt["medium"], cnt["low"], cnt["info"]))
+    L.append("")
+    if res["no_valid_owner_lines"]:
+        L.append("Lines whose owners are all unknown (they still match, so their files get no code owner): %s. Unknown owners are left out of the owner columns below." % ", ".join(map(str, res["no_valid_owner_lines"])))
+        L.append("")
+    L += ["## Findings", ""]
+    for s, c, msg, _ in f:
+        L.append("- **%s %s** %s" % (s.upper(), c, msg))
+    L += ["", "## Coverage by top-level directory", "", "| Directory | Files | Owned | Unowned | Effective owners |", "|---|---|---|---|---|"]
+    dirs = OrderedDict()
+    for p in files:
+        d = p.split("/")[0] + "/" if "/" in p else "(root)"
+        dirs.setdefault(d, []).append(p)
+    for d, ps in sorted(dirs.items()):
+        un = [p for p in ps if p in res["unowned"]]
+        own = Counter(o for p in ps if res["eff"][p] for o in res["eff"][p]["ok"])
+        L.append("| %s | %d | %d | %d | %s |" % (d, len(ps), len(ps) - len(un), len(un), ", ".join("%s (%d)" % kv for kv in own.most_common()) or "-"))
+    L += ["", "## Rules", "", "| Line | Pattern | Owners | Files matched | Effective for | Note |", "|---|---|---|---|---|---|"]
+    notes = {}
+    for s, c, msg, ln in f:
+        if ln:
+            notes.setdefault(ln, []).append(c)
+    for r in res["rules"]:
+        m = len(res["matched_by"].get(r["line"], [])) if r["valid"] else "-"
+        e = res["effective"].get(r["line"], 0) if r["valid"] else "-"
+        L.append("| %d | `%s` | %s | %s | %s | %s |" % (r["line"], r["pattern"], " ".join(r["owners"]) or "(none)", m, e, ", ".join(sorted(set(notes.get(r["line"], [])))) or ""))
+    L += ["", "## Owner load (effective)", "", "| Owner | Files | Share |", "|---|---|---|"]
+    for o, n in res["load"].most_common():
+        L.append("| %s | %d | %.0f%% |" % (o, n, 100.0 * n / len(files)))
+    if res["unowned"]:
+        L += ["", "## Unowned files", ""]
+        for p in res["unowned"]:
+            e = res["eff"][p]
+            L.append("- `%s`%s" % (p, "" if not e else (" (explicitly unowned, line %d)" % e["line"] if not e["owners"] else " (line %d: only unknown owners)" % e["line"])))
+    if whos:
+        L += ["", "## Who owns", ""]
+        for p in whos:
+            L.append("- " + who(res, p))
+    L += ["", "Matching follows GitHub CODEOWNERS rules (gitignore-style patterns, last matching line wins, `!` and `[ ]` unsupported). Owners are checked against your owners file only; confirm write access in the repository settings."]
+    return "\n".join(L) + "\n"
+
+
+def to_json(res):
+    return {"files": len(res["files"]), "unowned": res["unowned"], "no_valid_owner_lines": res["no_valid_owner_lines"],
+            "owners": {p: (res["eff"][p]["ok"] if res["eff"][p] else []) for p in res["files"]},
+            "rules": [{"line": r["line"], "pattern": r["pattern"], "owners": r["owners"], "valid": r["valid"],
+                       "matched": len(res["matched_by"].get(r["line"], [])), "effective": res["effective"].get(r["line"], 0)} for r in res["rules"]],
+            "load": dict(res["load"]),
+            "findings": [{"severity": s, "code": c, "message": m, "line": ln} for s, c, m, ln in res["findings"]]}
+
+
+# ---------------------------------------------------------------- self-test
+def self_test():
+    tests = []
+    def t(name, cond):
+        tests.append((name, bool(cond)))
+    def owner(co, f, path, cfg=None):
+        r = analyse(co, f, cfg)
+        e = r["eff"][path]
+        return e["ok"] if e else None
+    def codes(co, f, cfg=None):
+        return [(x[0], x[1]) for x in analyse(co, f, cfg)["findings"]]
+    F = "README.md\nsrc/app.py\nsrc/api/routes.py\nsrc/api/v2/users.py\ndocs/index.md\ndocs/guide/setup.md\nweb/app.js\nweb/lib/util.js\n.github/workflows/ci.yml\n"
+    t("* matches everything", owner("* @a", F, "src/api/v2/users.py") == ["@a"])
+    t("last matching line wins", owner("* @a\n/src/ @b", F, "src/app.py") == ["@b"] and owner("* @a\n/src/ @b", F, "README.md") == ["@a"])
+    t("*.js matches at any depth", owner("*.js @js", F, "web/lib/util.js") == ["@js"])
+    t("/docs/ owns nested files", owner("/docs/ @d", F, "docs/guide/setup.md") == ["@d"])
+    t("docs/* does not own nested files", owner("docs/* @d", F, "docs/guide/setup.md") is None and owner("docs/* @d", F, "docs/index.md") == ["@d"])
+    t("unanchored dir name 'api/' matches anywhere", owner("api/ @x", F, "src/api/v2/users.py") == ["@x"])
+    t("** in the middle", owner("/src/**/users.py @u", F, "src/api/v2/users.py") == ["@u"])
+    t("anchored /README.md only at root", owner("/README.md @r", "README.md\nsub/README.md\n", "sub/README.md") is None)
+    t("? matches one character", owner("src/ap?.py @q", F, "src/app.py") == ["@q"])
+    t("no owners = explicitly unowned", owner("* @a\n/web/", F, "web/app.js") == [] and ("info", "CO10") in codes("* @a\n/web/", F))
+    t("invalid owner -> CO01 high, line skipped", ("high", "CO01") in codes("* @a\n/src/ alice", F) and owner("* @a\n/src/ alice", F, "src/app.py") == ["@a"])
+    t("negation -> CO06 medium", ("medium", "CO06") in codes("* @a\n!/src/", F))
+    t("[ ] range -> CO06 medium", ("medium", "CO06") in codes("* @a\n/src/[ab]* @b", F))
+    t("GitLab section -> CO06 low", ("low", "CO06") in codes("[Docs]\n* @a", F))
+    cfg = {"org": "acme", "users": ["a", "b"], "teams": {"acme/web": ["a"], "acme/empty": []}}
+    t("unknown team -> CO02 high, files get no owner (no fallback)", ("high", "CO02") in codes("* @a\n/web/ @acme/webb", F, cfg) and owner("* @a\n/web/ @acme/webb", F, "web/app.js", cfg) == [] and ("medium", "CO03") in codes("* @a\n/web/ @acme/webb", F, cfg))
+    t("unknown owner dropped, valid co-owner kept", owner("* @a\n/web/ @acme/webb @b", F, "web/app.js", cfg) == ["@b"])
+    t("team of other org -> CO02", ("high", "CO02") in codes("* @other/web", F, cfg))
+    t("unknown user -> CO02", ("high", "CO02") in codes("* @zed", F, cfg))
+    t("empty team -> CO09", ("medium", "CO09") in codes("* @a\n/web/ @acme/empty", F, cfg))
+    t("email owner accepted", ("high", "CO01") not in codes("* dev@acme.io", F))
+    t("dead rule -> CO04", ("medium", "CO04") in codes("* @a\n/legacy/ @b", F))
+    t("shadowed rule -> CO05", ("medium", "CO05") in codes("/src/api/ @b\n/src/ @a", F))
+    t("partially overridden is not CO05", ("medium", "CO05") not in codes("/src/ @a\n/src/api/ @b", F))
+    t("duplicate pattern -> CO08", ("low", "CO08") in codes("* @a\n/src/ @b\n/src/ @c", F))
+    t("unowned file -> CO03 medium", ("medium", "CO03") in codes("/src/ @a", F))
+    t("require_owner path unowned -> CO03 high", ("high", "CO03") in codes("/src/ @acme/web", F, dict(cfg, require_owner=[".github/"])))
+    t("required path only owned by '*' -> CO11", ("medium", "CO11") in codes("* @a\n/src/ @b", F, {"require_owner": [".github/"]}))
+    t("dead rule with unknown owner still -> CO04", ("medium", "CO04") in codes("* @a\n/legacy/ @acme/zz", F, cfg))
+    t("individual owner concentration -> CO07", ("medium", "CO07") in codes("* @a", F, {"max_individual_share": 0.5}))
+    t("ignore list removes files", len(analyse("* @a", F, {"ignore": ["docs/"]})["files"]) == 7)
+    r = analyse("* @a\n/src/ @b", F)
+    t("--who reports line", who(r, "src/api/routes.py") == "src/api/routes.py: @b (line 2: /src/)")
+    t("./ prefix stripped, .github kept", analyse("* @a", "./.github/x.yml\n")["files"] == [".github/x.yml"])
+    t("report has verdict and coverage table", "**Verdict:" in report(r, "t") and "## Coverage by top-level directory" in report(r, "t"))
+    try:
+        analyse("* @a", F, {"orgs": "x"}); ok = False
+    except InputError:
+        ok = True
+    t("unknown owners-file key rejected", ok)
+    for name, ok in tests:
+        print(("PASS  " if ok else "FAIL  ") + name)
+    passed = sum(ok for _, ok in tests)
+    print("%d/%d passed" % (passed, len(tests)))
+    return 0 if passed == len(tests) else 1
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description="Check a GitHub CODEOWNERS file against the repository file list.")
+    ap.add_argument("codeowners", nargs="?")
+    ap.add_argument("files", nargs="?", help="file list, e.g. git ls-files > files.txt")
+    ap.add_argument("--owners", help="JSON with org, users, teams, require_owner, max_individual_share, ignore")
+    ap.add_argument("--who", action="append", default=[], help="show the effective owner of a path (repeatable)")
+    ap.add_argument("--json", action="store_true")
+    ap.add_argument("--self-test", action="store_true")
+    a = ap.parse_args(argv)
+    if a.self_test:
+        return self_test()
+    if not a.codeowners or not a.files:
+        ap.print_usage(sys.stderr)
+        return 2
+    try:
+        co = open(a.codeowners, encoding="utf-8").read()
+        fl = open(a.files, encoding="utf-8").read()
+        cfg = None
+        if a.owners:
+            try:
+                cfg = json.load(open(a.owners, encoding="utf-8"))
+            except json.JSONDecodeError as e:
+                raise InputError("owners file is not valid JSON: %s" % e)
+        res = analyse(co, fl, cfg)
+    except (OSError, InputError) as e:
+        print("error: %s" % e, file=sys.stderr)
+        return 2
+    if a.json:
+        print(json.dumps(to_json(res), indent=2))
+    else:
+        sys.stdout.write(report(res, a.codeowners, a.who))
+    return 1 if any(x[0] == "high" for x in res["findings"]) else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+</details>
+
