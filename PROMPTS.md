@@ -231181,3 +231181,16 @@ An Art Nouveau poster illustration of a tea picker harvesting leaves on a misty 
 
 </details>
 
+<details>
+<summary><strong>Cutaway Illustration of a Cozy Three-Level Treehouse Library at Dusk</strong></summary>
+
+## Cutaway Illustration of a Cozy Three-Level Treehouse Library at Dusk
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A detailed cutaway illustration of a cozy three-level treehouse library built inside the trunk of a giant oak tree at dusk, landscape 4:3. The trunk is cut open to show three warm, lamp-lit rooms. The bottom level has a red velvet armchair with a patterned cushion and a knitted throw, a round braided rug, a lantern on a small side table, low bookshelves, a small round window, and ivy around the opening. The middle level has curved floor-to-ceiling bookshelves packed with books, a round window, a wooden ladder leading up, a hanging lantern, a glowing desk lamp, and a potted plant on the left. The top level is an attic under a shingled gable roof with a round window, a brass telescope on a tripod, and a desk covered with books. Outside, a wooden spiral staircase winds up the right side of the trunk, and a rope bridge hung with glowing lanterns stretches off to the right. Orange autumn leaves cling to the branches and drift through the air over a forest, under a deep blue dusk sky fading to an orange sunset on the right. Storybook style, fine ink lines, warm painted colors. No people, no text, no logos.
+```
+
+</details>
+
