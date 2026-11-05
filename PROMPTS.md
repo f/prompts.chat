@@ -234031,3 +234031,16 @@ Allow the simple skull-and-crossbones pirate flag at the top of the highest mast
 
 </details>
 
+<details>
+<summary><strong>Paper Folk Story: Paper Cut-Out Storybook Character Template</strong></summary>
+
+## Paper Folk Story: Paper Cut-Out Storybook Character Template
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Paper cut-out animation of a ${subject:little brown bear in a patchwork apron} ${simple_action:watering a tall sunflower}, full-body character, layered paper shapes, handmade paper texture, visible cut edges, soft shadows between layers, flat colorful paper tones, slightly imperfect handcrafted details, minimal paper-collage scenery, charming folk story aesthetic, gentle stop-motion feel, poetic children’s book atmosphere, clean white background
+```
+
+</details>
+
