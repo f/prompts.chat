@@ -231247,3 +231247,16 @@ Rules: no people, faces, text, shop signs, or logos; no cars, scooters, crowds, 
 
 </details>
 
+<details>
+<summary><strong>Blue Stepped Alley in Chefchaouen with Two Cats at Sunrise</strong></summary>
+
+## Blue Stepped Alley in Chefchaouen with Two Cats at Sunrise
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A blue-washed stepped alley in a Moroccan mountain town at sunrise, with bright blue stone stairs, terracotta pots of red geraniums, a large arched wooden door studded with iron nails, and two cats resting on the steps, wide landscape 16:9. Wide blue stairs rise from the bottom center of the frame toward the back of the alley, lined on both sides with terracotta pots of red geraniums. A ginger tabby cat sits in the middle of the stairs facing the camera, and a white cat lies curled up asleep on a lower step at the left beside a geranium pot. On the right, a dark wooden door with rows of iron studs sits in a deep blue arch, with a big terracotta pot of red geraniums beside it at the bottom right. A blue house with a small blue window and an iron wall lantern stands at the upper left, and a green vine climbs the right wall. Low golden sunrise light warms the sandy rooftops, chimneys, and upper walls under a pale clear sky, while the lower stairs rest in cool blue shade. Low camera at the bottom of the stairs, photoreal travel photography, peaceful, charming morning mood. No people, no text, no logos.
+```
+
+</details>
+
