@@ -233717,3 +233717,174 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Cyberpunk Pixel-Art Lo-Fi Diorama: Endlessly Looping Animated Scene in One HTML File</strong></summary>
+
+## Cyberpunk Pixel-Art Lo-Fi Diorama: Endlessly Looping Animated Scene in One HTML File
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Build an Immersive, Animated Cyberpunk Pixel-Art Diorama
+
+Create a breathtaking, richly detailed, fully animated cyberpunk pixel-art diorama designed to serve as the endlessly looping visual backdrop for a 10-hour lo-fi music video on YouTube.
+
+I want something genuinely mesmerizing. A tiny, self-contained world that feels alive. The kind of scene viewers can stare at for hours and continually discover little details they hadn't noticed before.
+
+## Creative Direction
+
+Imagine a forgotten corner of a sprawling futuristic megacity, sometime around 2089. It's 2:37 AM. Rain has been falling for days. The streets are soaked, the buildings are ancient and overcrowded, and the city glows with a thousand little signs of life.
+
+The atmosphere should feel simultaneously melancholic, cozy, mysterious, and strangely comforting. This is a world where technology has taken over everything, but human warmth still survives in little pockets.
+
+Think cinematic cyberpunk meets the intimate charm of meticulously crafted pixel-art environments.
+
+Don't settle for a generic neon skyline. Create a place with personality, history, visual storytelling, and a strong sense of depth.
+
+## Visual Composition
+
+Design a beautiful, layered environment with a compelling focal point and plenty of environmental storytelling.
+
+Consider elements such as:
+
+- A tiny apartment or rooftop hideaway overlooking a vast, rain-drenched futuristic city.
+- Glowing windows revealing glimpses of other people's lives.
+- Holographic advertisements, animated signage, and distant traffic.
+- Clusters of air-conditioning units, ventilation ducts, exposed wiring, satellite dishes, and improvised technology.
+- Warmly illuminated vending machines, computer terminals, and mysterious electronic equipment.
+- Rainwater collecting in puddles and cascading from rooftops.
+- Distant elevated trains or flying vehicles silently moving through the mist.
+- Tiny human silhouettes occasionally visible behind windows.
+- Overgrown plants reclaiming corners of this technological world.
+
+These are creative possibilities, not a mandatory checklist. Make deliberate artistic choices. Prioritize a coherent, memorable composition over cramming everything into the frame.
+
+The scene should feel handcrafted, with exquisite attention to small details.
+
+## Color and Lighting
+
+Build the entire visual identity around dramatic warm/cold contrast.
+
+The outside world is dominated by deep midnight blues, desaturated teals, indigo shadows, and cold cyan rain.
+
+Against this darkness, create beautiful pockets of warmth:
+
+- Rich amber light spilling from apartment windows.
+- Soft orange and golden illumination from lamps and electronics.
+- Occasional saturated magenta, electric violet, and crimson neon.
+- Warm reflections shimmering across cold, wet surfaces.
+
+Use lighting to tell a story. Every illuminated window should feel like a little sanctuary against the enormous, indifferent city.
+
+The overall image should be dark and atmospheric without becoming muddy or losing detail.
+
+## Animation: Make the World Feel Alive
+
+This is absolutely critical.
+
+I don't want a static illustration with a generic rain effect. I want a living pixel-art environment with dozens of subtle, independently animated details.
+
+Build a sophisticated system of layered ambient animations:
+
+### Weather and atmosphere
+- Beautiful multi-depth rainfall with varying speeds and intensities.
+- Occasional heavier gusts that push rain diagonally.
+- Thin layers of drifting fog and atmospheric haze.
+- Smoke rising from vents and chimneys, curling into the night.
+- Water dripping from ledges and splashing into puddles.
+- Ripples spreading across reflective surfaces.
+
+### Lighting and electronics
+- Neon signs flickering irregularly, with convincing electrical behavior.
+- Screens cycling through mysterious data and advertisements.
+- Small indicator lights blinking asynchronously.
+- Warm interior lights gently fluctuating.
+- Occasional sparks from damaged electrical equipment.
+- Animated reflections responding to nearby light sources.
+
+### Environmental life
+- Slowly rotating ventilation fans.
+- Distant vehicles passing behind buildings.
+- Tiny silhouettes moving behind illuminated windows.
+- Steam escaping from pipes.
+- Hanging cables or signs subtly swaying in the wind.
+- Occasional small, unexpected details that reward prolonged viewing.
+
+Every effect should have its own rhythm. Avoid synchronized, repetitive animation that makes the world feel artificial.
+
+## Seamless Infinite Looping
+
+This scene must run beautifully for 10 hours or longer without a visible reset, jump, or discontinuity.
+
+Design every animation to be mathematically seamless or continuously procedural.
+
+Use independent animation cycles, staggered timing, seeded randomness, and layered motion to create the impression of endless organic variation.
+
+No sudden resets. No obvious looping rain textures. No visible animation seams.
+
+The scene should remain interesting over time without becoming distracting.
+
+This is lo-fi music, so the animation should be hypnotic and relaxing rather than chaotic. Reserve dramatic events for rare, carefully controlled moments.
+
+## Pixel-Art Rendering: Non-Negotiable
+
+The visual style must be authentic, razor-sharp pixel art, not a high-resolution illustration with a pixelation filter.
+
+Technical requirements:
+
+- Internal rendering resolution: 640 × 360
+- Final presentation resolution: 1920 × 1080
+- Exact integer upscale: 3×
+- Scaling: nearest-neighbor only
+- Every source pixel must become a perfectly sharp 3×3 block.
+- Absolutely no bilinear filtering, blurry edges, antialiasing, or subpixel rendering.
+- No smooth vector graphics mixed into the pixel-art scene.
+- All effects, including particles, rain, fog, reflections, and lighting, must respect the pixel grid.
+- Maintain consistent pixel density across every visual layer.
+
+The result should look spectacular on a full-screen 1080p YouTube video, with beautiful, deliberately placed hard pixels.
+
+## Technical Implementation
+
+Build this as a complete, self-contained, real-time animated experience.
+
+Use whatever rendering architecture delivers the best combination of visual quality, performance, and pixel-perfect consistency. HTML5 Canvas, WebGL, or a hybrid approach are all acceptable.
+
+Prioritize:
+
+- Smooth, efficient rendering at 1080p.
+- Deterministic, seamless animation.
+- Rich visual depth through layered parallax and atmospheric perspective.
+- Procedural particle systems for weather and environmental effects.
+- Carefully controlled lighting, blending, and reflections.
+- Stable performance over extremely long runtimes.
+- A fixed camera with no unintended movement or jitter.
+- Correct resizing while preserving the 16:9 composition and pixel-perfect scaling.
+
+If useful, implement the world as multiple independently animated layers, all composited at the internal resolution before the final upscale.
+
+Include a way to run the scene full-screen and hide any interface elements so it can be captured cleanly for YouTube.
+
+## Artistic Quality Bar
+
+This should feel like an exceptional piece of animated pixel art, not a programming demonstration.
+
+Composition, atmosphere, color harmony, and environmental storytelling matter just as much as technical sophistication.
+
+Avoid generic procedural rectangles masquerading as buildings. Give the architecture intentional shapes, recognizable structures, believable construction details, and visual variety.
+
+Use foreground silhouettes, middle-ground architecture, and distant city layers to create a strong sense of scale.
+
+Every element should contribute to a cohesive world.
+
+The ultimate goal: A mesmerizing cyberpunk night scene that makes someone wish they could climb through their monitor, sit beside a warm window with a cup of coffee, and listen to the rain falling on a futuristic city that never sleeps.
+
+Make it beautiful. Make it atmospheric. Make it technically excellent. And above all, make it feel alive.
+
+Don't just describe how you would build it. Actually implement the complete working experience.
+
+Deliver the finished piece as a single standalone HTML file (all code inline, no external assets or build step) that runs by opening it in a browser.
+```
+
+</details>
+
