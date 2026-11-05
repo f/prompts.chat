@@ -233647,3 +233647,38 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>dbt Analytics Project taste</strong></summary>
+
+## dbt Analytics Project taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# dbt Analytics Project taste of a careful analytics engineer
+- Layer models into staging, intermediate and marts folders, with one staging model per source table. Confidence: 0.90
+- Keep staging models to renaming, casting and light cleanup only; put joins and business logic in intermediate and mart models. Confidence: 0.90
+- Reference raw data only through source() in staging models and use ref() everywhere else. Confidence: 0.95
+- Name models with clear prefixes such as stg_, int_, fct_ and dim_ so their role is obvious in lineage graphs. Confidence: 0.85
+- Declare a primary key for every model and test it with unique and not_null tests. Confidence: 0.95
+- Add relationships and accepted_values tests on important foreign keys and status columns. Confidence: 0.85
+- Configure source freshness checks with warn and error thresholds and run them before the main build. Confidence: 0.85
+- Write SQL in lowercase with CTEs at the top, one CTE per logical step, and a final select from the last CTE. Confidence: 0.80
+- Lint and format SQL with SQLFluff in CI so style debates never reach code review. Confidence: 0.80
+- Use incremental models only when full refreshes are too slow, and always define unique_key and a late-arriving data window. Confidence: 0.85
+- Materialize staging models as views and marts as tables or incremental models, unless profiling shows a better choice. Confidence: 0.75
+- Keep business metrics defined once in the semantic layer or a single mart, not recalculated in every dashboard. Confidence: 0.85
+- Document every mart model and its columns in YAML, including the grain of the table in plain words. Confidence: 0.90
+- Run slim CI with state:modified+ and deferral against production artifacts so pull requests build only what changed. Confidence: 0.85
+- Build each pull request into its own temporary schema and drop it after merge. Confidence: 0.80
+- Pin dbt and package versions in packages.yml and the project requirements, and upgrade them deliberately. Confidence: 0.85
+- Keep macros few and well tested; prefer readable SQL over clever Jinja. Confidence: 0.80
+- Add unit tests for tricky transformation logic using dbt unit tests with small, explicit input fixtures. Confidence: 0.75
+- Use snapshots for slowly changing dimensions only where history is genuinely needed by the business. Confidence: 0.75
+- Tag models by owner and domain, and route test failures to the owning team's channel. Confidence: 0.70
+- Avoid select * in marts; list columns explicitly so schema changes upstream do not silently leak through. Confidence: 0.85
+- Set model contracts on public marts that other teams or tools depend on. Confidence: 0.70
+```
+
+</details>
+
