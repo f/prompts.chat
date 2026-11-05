@@ -231168,3 +231168,16 @@ A photorealistic wildlife photograph of a snowy owl perched on a frosted, weathe
 
 </details>
 
+<details>
+<summary><strong>Art Nouveau Poster of a Tea Picker on a Misty Tea Plantation</strong></summary>
+
+## Art Nouveau Poster of a Tea Picker on a Misty Tea Plantation
+
+Contributed by [@f](https://github.com/f)
+
+```md
+An Art Nouveau poster illustration of a tea picker harvesting leaves on a misty tea plantation, tall portrait 3:4, with no text. A young woman stands in profile facing left in the center, her dark hair in a low bun with a small yellow flower, wearing a long pale green robe-like dress with flowing sleeves and swirling leaf patterns, and carrying a woven wicker basket full of fresh tea leaves on her back by a leather shoulder strap as she reaches out to pick leaves from the bushes. A large golden sun disc with fine radiating rays glows behind her head. Rows of rounded tea bushes fill the foreground, and terraced tea hills and layered blue-green mountains fade into soft mist behind her. Large red and white camellia flowers with golden centers and glossy leaves bloom in both lower corners. An ornate border of curling green vines and leaves frames the whole poster, with a small gilded ornament at the top and an empty arched cartouche across the top. Flat muted greens, cream, gold, and red, fine ink outlines, vintage lithograph paper texture. No text, no lettering, no logos.
+```
+
+</details>
+
