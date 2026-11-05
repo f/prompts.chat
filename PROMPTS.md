@@ -233682,3 +233682,38 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>API Client SDK taste</strong></summary>
+
+## API Client SDK taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# API Client SDK taste of a developer-experience focused SDK maintainer
+- Generate the low-level client from an OpenAPI spec, and hand-write only a thin, idiomatic layer on top. Confidence: 0.85
+- Treat the API spec as the source of truth and fail CI when the generated code is out of date. Confidence: 0.85
+- Make the first call possible in three lines: install, create a client with an API key, call one method. Confidence: 0.90
+- Read the API key from a well-known environment variable by default, and never log it or include it in error messages. Confidence: 0.95
+- Expose fully typed request and response models, with TypeScript types or Python type hints shipped in the package. Confidence: 0.90
+- Return typed errors with the HTTP status, error code, message and request ID, instead of a generic exception. Confidence: 0.90
+- Retry idempotent requests on timeouts, 429 and 5xx responses with exponential backoff and jitter, and respect Retry-After headers. Confidence: 0.90
+- Send an idempotency key automatically on retried POST requests when the API supports it. Confidence: 0.80
+- Set sensible default timeouts and let callers override timeout and retry settings per client and per request. Confidence: 0.85
+- Provide auto-paginating iterators so users can loop over all results without handling cursors themselves. Confidence: 0.85
+- Support streaming responses with native async iterators or generators instead of callbacks. Confidence: 0.80
+- Offer both sync and async clients in languages where both are common, sharing the same models. Confidence: 0.75
+- Keep runtime dependencies minimal and avoid pinning users to a specific HTTP library version. Confidence: 0.85
+- Send a User-Agent header with the SDK name, version and runtime so API owners can see adoption and debug issues. Confidence: 0.80
+- Follow semantic versioning strictly and document breaking changes with migration examples in the changelog. Confidence: 0.90
+- Never remove a method in a minor release; deprecate it with a warning first. Confidence: 0.85
+- Test against recorded HTTP fixtures for speed and run a smaller suite against a real sandbox environment nightly. Confidence: 0.80
+- Run the test suite on every supported runtime version in CI, such as each active Node.js LTS or Python release. Confidence: 0.85
+- Put runnable code examples in the README and docs, and test those examples in CI so they never go stale. Confidence: 0.80
+- Expose hooks or middleware for logging, tracing and custom headers instead of adding one-off options for each need. Confidence: 0.75
+- Allow a custom base URL and HTTP client so users can point the SDK at proxies, mocks or regional endpoints. Confidence: 0.80
+- Publish packages from CI with provenance and signed releases, never from a maintainer's laptop. Confidence: 0.75
+```
+
+</details>
+
