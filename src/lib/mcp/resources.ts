@@ -61,7 +61,7 @@ export function registerResources(server: McpServer, ctx: McpContext) {
 
   server.registerResource(
     "prompt",
-    new ResourceTemplate("prompts-chat://prompts/{id}", { list: () => listOwn(ctx, "prompts", { type: { notIn: ["BOT", "SKILL"] } }) }),
+    new ResourceTemplate("prompts-chat://prompts/{id}", { list: () => listOwn(ctx, "prompts", { type: { notIn: ["BOT", "SKILL", "CLASSIFIER"] } }) }),
     {
       title: "Prompt",
       description: "A prompt as Markdown: its title, description and content with ${variable} placeholders",

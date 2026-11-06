@@ -5,13 +5,25 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { checkPromptAccess } from "@/lib/prompt-access";
 import { botFieldsEqual, botFieldsFromInput, botFieldsFromRecord, botFieldsInputSchema, botFieldsSelect } from "@/lib/bots/change-snapshot";
+import {
+  classifierFieldsEqual,
+  classifierFieldsFromRecord,
+  classifierFieldsInputSchema,
+  classifierJson,
+  type ClassifierFields,
+} from "@/lib/classifiers/change-snapshot";
+import { parseClassifierConfig } from "@/lib/classifiers/schema";
+import { checkClassifierWrite, classifierContent } from "@/lib/classifiers/write";
 
 const createChangeRequestSchema = z.object({
-  proposedContent: z.string().min(1),
+  /** Required except for classifiers, whose content is derived from proposedClassifier */
+  proposedContent: z.string().min(1).optional(),
   proposedTitle: z.string().optional(),
   reason: z.string().optional(),
   /** BOT prompts only: the proposed bot fields; omitted to keep them as they are */
   proposedBot: botFieldsInputSchema.optional(),
+  /** CLASSIFIER prompts only: the proposed summary and structured fields; omitted to keep them as they are */
+  proposedClassifier: classifierFieldsInputSchema.optional(),
 });
 
 export async function POST(
@@ -32,7 +44,7 @@ export async function POST(
     // Check if prompt exists
     const prompt = await db.prompt.findUnique({
       where: { id: promptId },
-      select: { id: true, authorId: true, isPrivate: true, content: true, title: true, type: true, deletedAt: true, ...botFieldsSelect },
+      select: { id: true, authorId: true, isPrivate: true, content: true, title: true, type: true, deletedAt: true, ...botFieldsSelect, classifierSlug: true, classifierConfig: true },
     });
 
     if (!prompt || prompt.deletedAt) {
@@ -68,7 +80,54 @@ export async function POST(
       );
     }
 
-    const { proposedContent, proposedTitle, reason, proposedBot } = parsed.data;
+    const { proposedTitle, reason, proposedBot, proposedClassifier } = parsed.data;
+    let proposedContent = parsed.data.proposedContent;
+
+    if (proposedClassifier && prompt.type !== "CLASSIFIER") {
+      return NextResponse.json(
+        { error: "validation_error", message: "proposedClassifier is only supported for classifiers" },
+        { status: 400 }
+      );
+    }
+
+    // Classifiers: validate the whole proposed classifier now, and derive its content from the fields
+    let originalClassifier: ClassifierFields | null = null;
+    let nextClassifier: ClassifierFields | null = null;
+    if (prompt.type === "CLASSIFIER") {
+      if (proposedBot) {
+        return NextResponse.json({ error: "validation_error", message: "proposedBot is only supported for bots" }, { status: 400 });
+      }
+      originalClassifier = classifierFieldsFromRecord(prompt);
+      const proposedConfig = proposedClassifier ? parseClassifierConfig(proposedClassifier.config) : null;
+      nextClassifier = proposedClassifier
+        ? proposedConfig && { description: proposedClassifier.description, config: proposedConfig }
+        : originalClassifier;
+      if (!nextClassifier || !originalClassifier || !prompt.classifierSlug) {
+        return NextResponse.json(
+          { error: "invalid_classifier", message: "Invalid classifier", details: ["classifier fields are missing or too large"] },
+          { status: 400 }
+        );
+      }
+      const nextTitle = proposedTitle || prompt.title;
+      const problem = await checkClassifierWrite(prompt.id, prompt.classifierSlug, nextTitle, nextClassifier);
+      if (problem) {
+        return NextResponse.json({ error: problem.error, message: problem.message, details: problem.details }, { status: 400 });
+      }
+      if (nextTitle === prompt.title && classifierFieldsEqual(originalClassifier, nextClassifier)) {
+        return NextResponse.json(
+          { error: "no_change", message: "The change request does not change the classifier" },
+          { status: 400 }
+        );
+      }
+      proposedContent = classifierContent(prompt.classifierSlug, nextTitle, nextClassifier);
+    }
+
+    if (!proposedContent) {
+      return NextResponse.json(
+        { error: "validation_error", message: "Invalid input", details: [{ path: ["proposedContent"], message: "Required" }] },
+        { status: 400 }
+      );
+    }
 
     if (proposedBot && prompt.type !== "BOT") {
       return NextResponse.json(
@@ -100,6 +159,10 @@ export async function POST(
         ...(originalBot && {
           originalBot: originalBot as unknown as Prisma.InputJsonValue,
           proposedBot: nextBot as unknown as Prisma.InputJsonValue,
+        }),
+        ...(originalClassifier && nextClassifier && {
+          originalClassifier: classifierJson(originalClassifier),
+          proposedClassifier: classifierJson(nextClassifier),
         }),
       },
     });

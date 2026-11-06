@@ -17,6 +17,23 @@ export function getBotUrl(id: string, slug?: string | null): string {
   return slug ? `/bots/${id}_${slug}` : `/bots/${id}`;
 }
 
+/**
+ * Generates a URL path for a classifier (a prompt of type CLASSIFIER) from its stable classifier slug
+ * Format: /classifiers/{classifierSlug}
+ */
+export function getClassifierUrl(classifierSlug: string): string {
+  return `/classifiers/${classifierSlug}`;
+}
+
+/**
+ * The page of any prompt: its bot or classifier page, or its prompt page
+ */
+export function getPromptPageUrl(prompt: { id: string; slug?: string | null; type?: string | null; classifierSlug?: string | null }): string {
+  if (prompt.type === "CLASSIFIER" && prompt.classifierSlug) return getClassifierUrl(prompt.classifierSlug);
+  if (prompt.type === "BOT") return getBotUrl(prompt.id, prompt.slug);
+  return getPromptUrl(prompt.id, prompt.slug);
+}
+
 export function getBotTeamUrl(slug: string): string {
   return `/bots/teams/${slug}`;
 }

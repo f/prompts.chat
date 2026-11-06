@@ -21,7 +21,7 @@ function getCachedWorkflows(
         isPrivate: false,
         isUnlisted: false,
         deletedAt: null,
-        type: { notIn: ["SKILL", "BOT"] },
+        type: { notIn: ["SKILL", "BOT", "CLASSIFIER"] },
         // Only include prompts with actual flow connections (not "related" connections)
         outgoingConnections: {
           some: {

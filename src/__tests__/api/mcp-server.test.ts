@@ -352,7 +352,7 @@ describe("MCP server", () => {
       expect(nextCursor).toBeUndefined();
       expect(vi.mocked(db.prompt.findMany).mock.calls[0][0]?.where).toMatchObject({
         isPrivate: false,
-        type: { not: "BOT" },
+        type: { notIn: ["BOT", "CLASSIFIER"] },
         tags: { some: { tag: { slug: { in: ["email"] } } } },
         author: { username: { in: ["bob"] } },
       });
