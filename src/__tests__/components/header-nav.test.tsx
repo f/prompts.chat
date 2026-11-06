@@ -86,7 +86,14 @@ describe("Header desktop nav", () => {
     const hrefs = within(menu)
       .getAllByRole("menuitem")
       .map((item) => item.getAttribute("href"));
-    expect(hrefs.slice(0, 5)).toEqual(["/feed", "/workflows", "/categories", "/tags", "/taste"]);
+    expect(hrefs.slice(0, 6)).toEqual(["/feed", "/workflows", "/classifiers", "/categories", "/tags", "/taste"]);
+  });
+
+  it("marks the More button active on classifier detail and chain routes", () => {
+    navState.pathname = "/classifiers/chains/support-inbox-triage";
+    render(<Header />);
+    const trigger = within(desktopNav()).getByRole("button", { name: "nav.more" });
+    expect(trigger.className).toContain("bg-accent");
   });
 
   it("omits Feed from the More menu for signed-out users", () => {
