@@ -1,3 +1,4 @@
+import { CLASSIFIER_CATEGORIES } from "./categories";
 import { CLASSIFIERS, CHAINS } from "./data";
 import { REFERENCES } from "./references";
 import type {
@@ -12,21 +13,7 @@ import type {
 export * from "./types";
 export { REFERENCES, getReference } from "./references";
 
-export const CLASSIFIER_CATEGORIES: ClassifierCategoryId[] = [
-  "support",
-  "refunds",
-  "commerce",
-  "logistics",
-  "moderation",
-  "agents",
-  "grounding",
-  "security",
-  "incidents",
-  "engineering",
-  "documents",
-  "research",
-  "education",
-];
+export { CLASSIFIER_CATEGORIES };
 
 /** Limits from the System One API reference. */
 export const MAX_CHOICE_OPTIONS = 255;
