@@ -12,8 +12,16 @@ import {
   type ClassifierTextField,
 } from "@/lib/classifiers/change-snapshot";
 
-function isListField(field: ClassifierTextField): field is ClassifierListField {
-  return (CLASSIFIER_LIST_FIELDS as readonly string[]).includes(field);
+/**
+ * Fields shown as chips. Inputs, options, outcomes and scenarios carry text behind each key, so
+ * they are shown as a line diff instead, where a changed description is visible.
+ */
+const CHIP_FIELDS: readonly ClassifierListField[] = CLASSIFIER_LIST_FIELDS.filter(
+  (field) => !["input", "options", "outcomes", "scenarios"].includes(field)
+);
+
+function isChipField(field: ClassifierTextField): field is ClassifierListField {
+  return (CHIP_FIELDS as readonly string[]).includes(field);
 }
 
 export interface ClassifierDiffSide {
@@ -41,7 +49,7 @@ export function ClassifierDiff({ original, modified, showUnchanged = false }: Cl
     label: t(`classifierFields.${field}`),
     original: before[field]!,
     modified: after[field]!,
-    items: beforeItems && afterItems && isListField(field) ? { original: beforeItems[field], modified: afterItems[field] } : undefined,
+    items: beforeItems && afterItems && isChipField(field) ? { original: beforeItems[field], modified: afterItems[field] } : undefined,
   }));
   const hasChanges = fields.some((field) => field.original !== field.modified);
 
