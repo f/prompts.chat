@@ -139,6 +139,7 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
   const moreNavItems = [
     ...(user ? [{ href: "/feed", label: t("nav.feed") }] : []),
     { href: "/workflows", label: t("nav.workflows") },
+    { href: "/classifiers", label: t("nav.classifiers") },
     { href: "/categories", label: t("nav.categories") },
     { href: "/tags", label: t("nav.tags") },
     { href: "/taste", label: t("nav.taste") },
@@ -259,6 +260,13 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
                     className={mobileNavClass("/workflows")}
                   >
                     {t("nav.workflows")}
+                  </Link>
+                  <Link 
+                    href="/classifiers" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={mobileNavClass("/classifiers")}
+                  >
+                    {t("nav.classifiers")}
                   </Link>
                   <Link 
                     href="/categories" 

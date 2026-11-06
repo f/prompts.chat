@@ -2,6 +2,7 @@ import { MetadataRoute } from "next";
 import { db } from "@/lib/db";
 import { NON_BOT_PROMPTS } from "@/lib/prompt-list";
 import { getAllChapters } from "@/lib/book/chapters";
+import { getChains, getClassifiers } from "@/lib/classifiers";
 import { getBotTeamUrl, getBotUrl, getPromptUrl } from "@/lib/urls";
 import { getBaseUrl, toSitemapImageUrl } from "@/lib/seo";
 
@@ -41,6 +42,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/tags",
     "/skills",
     "/workflows",
+    "/classifiers",
     "/taste",
     "/promptmasters",
     "/book",
@@ -58,6 +60,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const bookPages: MetadataRoute.Sitemap = chapters.map((chapter) => ({
     url: `${baseUrl}/book/${chapter.slug}`,
   }));
+
+  // Classifier catalog pages come from static data
+  const classifierPages: MetadataRoute.Sitemap = [
+    ...getClassifiers().map((c) => ({ url: `${baseUrl}/classifiers/${c.slug}` })),
+    ...getChains().map((c) => ({ url: `${baseUrl}/classifiers/chains/${c.slug}` })),
+  ];
 
   // Dynamic pages - skip if database is unavailable (e.g., during build)
   try {
@@ -164,10 +172,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: authorUpdates.get(user.id) ?? undefined,
     }));
 
-    return [...staticPages, ...bookPages, ...categoryPages, ...tagPages, ...botPages, ...teamPages, ...promptPages, ...profilePages];
+    return [...staticPages, ...bookPages, ...classifierPages, ...categoryPages, ...tagPages, ...botPages, ...teamPages, ...promptPages, ...profilePages];
   } catch {
     // Database unavailable (build time) - return static and book pages only
     const staticPages: MetadataRoute.Sitemap = staticPaths.map((path) => ({ url: `${baseUrl}${path}` }));
-    return [...staticPages, ...bookPages];
+    return [...staticPages, ...bookPages, ...classifierPages];
   }
 }
