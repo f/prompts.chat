@@ -24,8 +24,12 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "20");
+    const requestedPage = parseInt(searchParams.get("page") || "1");
+    const requestedLimit = parseInt(searchParams.get("limit") || "20");
+    
+    // Cap pagination to prevent database overload
+    const page = Math.max(1, requestedPage);
+    const limit = Math.min(Math.max(1, requestedLimit), 100);
     const search = searchParams.get("search") || "";
     const sortBy = searchParams.get("sortBy") || "createdAt";
     const sortOrder = searchParams.get("sortOrder") || "desc";
