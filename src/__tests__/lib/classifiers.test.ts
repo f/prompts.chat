@@ -2,23 +2,31 @@ import { describe, it, expect } from "vitest";
 import {
   CLASSIFIER_CATEGORIES,
   MAX_SCORE_LEVELS,
-  REFERENCES,
   buildSystemOneRequest,
   filterChains,
   filterClassifiers,
   formatClassifierDefinition,
   formatClassifierOutcomes,
-  getChain,
-  getChains,
-  getChainsForClassifier,
-  getClassifier,
-  getClassifiers,
+  getChainsForClassifier as chainsForClassifier,
   getScenarioHighlight,
-  getSharedChains,
-  validateCatalog,
+  getSharedChains as sharedChains,
+  validateCatalog as validateCatalogWith,
   type ClassifierChain,
   type ClassifierDefinition,
 } from "@/lib/classifiers";
+import { CHAINS, CLASSIFIERS, SOURCES } from "../../../prisma/classifiers/fixtures";
+
+// The curated catalog lives in prisma/classifiers/fixtures and is imported into the database;
+// these tests check the fixtures with the same validators the importer runs.
+const getClassifiers = () => CLASSIFIERS;
+const getChains = () => CHAINS;
+const getClassifier = (slug: string) => CLASSIFIERS.find((c) => c.slug === slug);
+const getChain = (slug: string) => CHAINS.find((c) => c.slug === slug);
+const getChainsForClassifier = (slug: string) => chainsForClassifier(CHAINS, slug);
+const getSharedChains = (a: string, b: string) => sharedChains(CHAINS, a, b);
+const REFERENCES = Object.fromEntries(SOURCES.map((s) => [s.id, s]));
+const validateCatalog = (classifiers: ClassifierDefinition[] = CLASSIFIERS, chains: ClassifierChain[] = CHAINS) =>
+  validateCatalogWith(classifiers, chains, SOURCES.map((s) => s.id));
 
 const clone = <T,>(value: T): T => structuredClone(value);
 

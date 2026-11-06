@@ -1,7 +1,7 @@
 import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { slugify } from "@/lib/slug";
-import { formatClassifierDefinition, validateChain, validateClassifierDefinition } from "./index";
+import { formatClassifierDefinition, RESERVED_SLUGS, validateChain, validateClassifierDefinition } from "./index";
 import { definitionFromConfig, CLASSIFIER_LIMITS } from "./schema";
 import { CLASSIFIERS_CACHE_TAG, toClassifierChain, classifierPromptSelect, toClassifierRecord } from "./store";
 import type { ClassifierFields } from "./change-snapshot";
@@ -93,14 +93,12 @@ export async function checkClassifierWrite(
   return null;
 }
 
-const RESERVED = new Set(["new", "chains"]);
-
 /** A free, stable URL slug for a new classifier: from the title, never a chain's or reserved slug */
 export async function allocateClassifierSlug(title: string): Promise<string> {
   const base = slugify(title).slice(0, 60).replace(/-+$/, "") || "classifier";
   for (let attempt = 0; attempt < 20; attempt++) {
     const candidate = attempt === 0 ? base : `${base}-${attempt < 5 ? attempt + 1 : Math.random().toString(36).slice(2, 7)}`;
-    if (RESERVED.has(candidate)) continue;
+    if (RESERVED_SLUGS.has(candidate)) continue;
     const [prompt, chain] = await Promise.all([
       db.prompt.findUnique({ where: { classifierSlug: candidate }, select: { id: true } }),
       db.classifierChain.findUnique({ where: { slug: candidate }, select: { id: true } }),

@@ -41,7 +41,8 @@ function fail(status: number, error: string, message: string, extra: Record<stri
 export const promptCreateSchema = z.object({
   title: z.string().min(1).max(200),
   description: z.string().max(500).optional(),
-  content: z.string().min(1),
+  /** Required except for classifiers, whose content is derived from their fields */
+  content: z.string().min(1).optional(),
   type: z.enum(["TEXT", "IMAGE", "VIDEO", "AUDIO", "SKILL", "TASTE", "BOT", "CLASSIFIER"]), // Output type, SKILL, TASTE, BOT or CLASSIFIER
   structuredFormat: z.enum(["JSON", "YAML"]).nullish(), // Input type indicator
   categoryId: z.string().optional(),
@@ -71,6 +72,9 @@ export const promptCreateSchema = z.object({
   pairings: botPairingsSchema.optional(),
   /** CLASSIFIER prompts only: summary and structured fields; content is derived from them */
   classifier: classifierFieldsInputSchema.optional(),
+}).refine((data) => data.type === "CLASSIFIER" || data.content !== undefined, {
+  message: "Required",
+  path: ["content"],
 }).refine((data) => (data.type === "CLASSIFIER") === (data.classifier !== undefined), {
   message: "classifier is required for classifiers and only supported for them",
   path: ["classifier"],
@@ -164,7 +168,7 @@ export async function createPrompt(user: PromptWriter, body: unknown) {
     }
     classifierData = { slug, fields, content: classifierContent(slug, title, fields) };
   }
-  const content = classifierData ? classifierData.content : submittedContent;
+  const content = classifierData ? classifierData.content : submittedContent!;
   const description = classifierData ? classifierData.fields.description : submittedDescription;
 
   if (pairings !== undefined) {

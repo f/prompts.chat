@@ -3,7 +3,12 @@ import { render, screen, fireEvent, within } from "@testing-library/react";
 import { ClassifierCatalog } from "@/components/classifiers/classifier-catalog";
 import { ScenarioExplorer } from "@/components/classifiers/scenario-explorer";
 import { ChainFlow } from "@/components/classifiers/chain-flow";
-import { getChain, getChains, getClassifier, getClassifiers } from "@/lib/classifiers";
+import { CHAINS, CLASSIFIERS, SOURCES } from "../../../prisma/classifiers/fixtures";
+
+const getClassifiers = () => CLASSIFIERS;
+const getChains = () => CHAINS;
+const getClassifier = (slug: string) => CLASSIFIERS.find((c) => c.slug === slug);
+const getChain = (slug: string) => CHAINS.find((c) => c.slug === slug);
 
 const classifierMap = Object.fromEntries(getClassifiers().map((c) => [c.slug, c]));
 const chainNames = Object.fromEntries(getChains().map((c) => [c.slug, c.name]));
@@ -61,7 +66,7 @@ describe("ClassifierCatalog", () => {
 describe("ScenarioExplorer", () => {
   it("switches between predefined scenarios", () => {
     const classifier = getClassifier("support-ticket-routing")!;
-    render(<ScenarioExplorer classifier={classifier} />);
+    render(<ScenarioExplorer classifier={classifier} sources={SOURCES} />);
     const tabs = screen.getAllByRole("tab");
     expect(tabs).toHaveLength(classifier.scenarios.length);
     expect(tabs[0]).toHaveAttribute("aria-selected", "true");

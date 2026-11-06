@@ -8,7 +8,7 @@ vi.mock("next-intl", () => ({
 }));
 
 describe("CreateMenu", () => {
-  it("opens a menu linking to the prompt, skill, bot and team create flows", async () => {
+  it("opens a menu linking to the prompt, skill, bot, team and classifier create flows", async () => {
     render(<CreateMenu />);
 
     await userEvent.click(screen.getByRole("button", { name: "label" }));
@@ -19,6 +19,7 @@ describe("CreateMenu", () => {
       ["skill", "/prompts/new?type=SKILL"],
       ["bot", "/bots/new"],
       ["team", "/bots/teams/new"],
+      ["classifier", "/classifiers/new"],
     ]);
   });
 });

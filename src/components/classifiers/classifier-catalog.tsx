@@ -17,7 +17,9 @@ import {
 import { ChainCard, ClassifierCard } from "./classifier-cards";
 
 interface ClassifierCatalogProps {
-  classifiers: ClassifierDefinition[];
+  classifiers: (ClassifierDefinition & { curated?: boolean; author?: { username: string } })[];
+  /** Every classifier chains may use, unlisted ones included; defaults to `classifiers` */
+  stepClassifiers?: ClassifierDefinition[];
   chains: ClassifierChain[];
   initialQuery?: string;
   initialCategory?: ClassifierCategoryId | null;
@@ -25,6 +27,7 @@ interface ClassifierCatalogProps {
 
 export function ClassifierCatalog({
   classifiers,
+  stepClassifiers = classifiers,
   chains,
   initialQuery = "",
   initialCategory = null,
@@ -38,8 +41,8 @@ export function ClassifierCatalog({
     [classifiers, query, category]
   );
   const visibleChains = useMemo(
-    () => filterChains(chains, classifiers, { query, category }),
-    [chains, classifiers, query, category]
+    () => filterChains(chains, stepClassifiers, { query, category }),
+    [chains, stepClassifiers, query, category]
   );
 
   const chainCounts = useMemo(() => {
@@ -53,8 +56,8 @@ export function ClassifierCatalog({
   }, [chains]);
 
   const classifierNames = useMemo(
-    () => Object.fromEntries(classifiers.map((c) => [c.slug, c.name])),
-    [classifiers]
+    () => Object.fromEntries(stepClassifiers.map((c) => [c.slug, c.name])),
+    [stepClassifiers]
   );
 
   // Keep filters shareable without a server round trip.
@@ -98,7 +101,11 @@ export function ClassifierCatalog({
         </div>
       </div>
 
-      {nothingFound ? (
+      {classifiers.length === 0 && chains.length === 0 ? (
+        <div className="rounded-[var(--radius)] border bg-muted/30 py-12 text-center">
+          <p className="text-sm text-muted-foreground">{t("emptyCatalog")}</p>
+        </div>
+      ) : nothingFound ? (
         <div className="rounded-[var(--radius)] border bg-muted/30 py-12 text-center">
           <p className="text-sm text-muted-foreground">{t("noResults")}</p>
           <Button
@@ -132,6 +139,7 @@ export function ClassifierCatalog({
                     key={classifier.slug}
                     classifier={classifier}
                     chainCount={chainCounts[classifier.slug] ?? 0}
+                    author={classifier.curated === false ? classifier.author?.username : undefined}
                   />
                 ))}
               </div>

@@ -4,17 +4,17 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Info } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { REFERENCES, type ClassifierDefinition } from "@/lib/classifiers";
+import type { ClassifierDefinition, ClassifierSource } from "@/lib/classifiers";
 import { IllustrativeBadge, OutcomeChip } from "./classifier-badges";
 import { StateView } from "./state-view";
 
-export function ScenarioExplorer({ classifier }: { classifier: ClassifierDefinition }) {
+export function ScenarioExplorer({ classifier, sources }: { classifier: ClassifierDefinition; sources: readonly ClassifierSource[] }) {
   const t = useTranslations("classifiers");
   const [selectedId, setSelectedId] = useState(classifier.scenarios[0]?.id);
   const scenario = classifier.scenarios.find((s) => s.id === selectedId) ?? classifier.scenarios[0];
   if (!scenario) return null;
   const outcome = classifier.outcomes.find((o) => o.id === scenario.outcome);
-  const source = scenario.adaptedFrom ? REFERENCES[scenario.adaptedFrom] : undefined;
+  const source = scenario.adaptedFrom ? sources.find((s) => s.id === scenario.adaptedFrom) : undefined;
 
   return (
     <div className="space-y-3">

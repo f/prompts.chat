@@ -130,10 +130,10 @@ function matchesQuery(haystack: string[], query: string): boolean {
   return terms.every((term) => text.includes(term));
 }
 
-export function filterClassifiers(
-  classifiers: ClassifierDefinition[],
+export function filterClassifiers<T extends ClassifierDefinition>(
+  classifiers: T[],
   { query = "", category = null }: CatalogFilter
-): ClassifierDefinition[] {
+): T[] {
   return classifiers.filter((c) => {
     if (category && c.category !== category) return false;
     if (!query.trim()) return true;
@@ -208,7 +208,7 @@ function getAncestors(chain: ClassifierChain, targetId: string): Set<string> {
   return ancestors;
 }
 
-const RESERVED_SLUGS = new Set(["chains", "new"]);
+export const RESERVED_SLUGS: ReadonlySet<string> = new Set(["chains", "new"]);
 
 export interface ClassifierValidationOptions {
   /** Ids of known sources; references and scenario sources must be among them */
