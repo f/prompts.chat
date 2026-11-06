@@ -1030,10 +1030,17 @@
     "categories": {
       "support": "고객 지원",
       "refunds": "환불",
+      "commerce": "주문 및 반품",
+      "logistics": "물류 및 배송",
       "moderation": "콘텐츠 검토",
       "agents": "에이전트",
       "grounding": "근거 확인",
-      "security": "보안 신호"
+      "security": "보안 신호",
+      "incidents": "IT 및 장애",
+      "engineering": "소프트웨어 개발",
+      "documents": "문서 및 이메일",
+      "research": "피드백 및 리서치",
+      "education": "교육"
     },
     "questionTypes": {
       "choice": "Choice",

@@ -1030,10 +1030,17 @@
     "categories": {
       "support": "Müştəri dəstəyi",
       "refunds": "Geri ödənişlər",
+      "commerce": "Sifarişlər və qaytarmalar",
+      "logistics": "Logistika və çatdırılma",
       "moderation": "Moderasiya",
       "agents": "Agentlər",
       "grounding": "Mənbəyə əsaslanma",
-      "security": "Təhlükəsizlik siqnalları"
+      "security": "Təhlükəsizlik siqnalları",
+      "incidents": "İT və insidentlər",
+      "engineering": "Proqram təminatının buraxılışı",
+      "documents": "Sənədlər və e-poçt",
+      "research": "Rəy və tədqiqat",
+      "education": "Təhsil"
     },
     "questionTypes": {
       "choice": "Choice",

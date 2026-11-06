@@ -1030,10 +1030,17 @@
     "categories": {
       "support": "دعم العملاء",
       "refunds": "الاسترداد",
+      "commerce": "الطلبات والمرتجعات",
+      "logistics": "الشحن والتوصيل",
       "moderation": "الإشراف",
       "agents": "الوكلاء",
       "grounding": "الاستناد إلى المصادر",
-      "security": "إشارات الأمان"
+      "security": "إشارات الأمان",
+      "incidents": "تقنية المعلومات والحوادث",
+      "engineering": "تطوير البرمجيات",
+      "documents": "المستندات والبريد",
+      "research": "الآراء والأبحاث",
+      "education": "التعليم"
     },
     "questionTypes": {
       "choice": "Choice",

@@ -1030,10 +1030,17 @@
     "categories": {
       "support": "תמיכת לקוחות",
       "refunds": "החזרים",
+      "commerce": "הזמנות והחזרות",
+      "logistics": "לוגיסטיקה ומשלוחים",
       "moderation": "ניהול תוכן",
       "agents": "סוכנים",
       "grounding": "ביסוס",
-      "security": "אותות אבטחה"
+      "security": "אותות אבטחה",
+      "incidents": "IT ותקלות",
+      "engineering": "פיתוח תוכנה",
+      "documents": "מסמכים ודוא״ל",
+      "research": "משוב ומחקר",
+      "education": "חינוך"
     },
     "questionTypes": {
       "choice": "Choice",

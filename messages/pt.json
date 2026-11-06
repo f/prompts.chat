@@ -1030,10 +1030,17 @@
     "categories": {
       "support": "Suporte ao cliente",
       "refunds": "Reembolsos",
+      "commerce": "Pedidos e devoluções",
+      "logistics": "Logística e entregas",
       "moderation": "Moderação",
       "agents": "Agentes",
       "grounding": "Fundamentação",
-      "security": "Sinais de segurança"
+      "security": "Sinais de segurança",
+      "incidents": "TI e incidentes",
+      "engineering": "Entrega de software",
+      "documents": "Documentos e e-mail",
+      "research": "Feedback e pesquisa",
+      "education": "Educação"
     },
     "questionTypes": {
       "choice": "Choice",

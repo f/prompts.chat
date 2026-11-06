@@ -1030,10 +1030,17 @@
     "categories": {
       "support": "Müşteri desteği",
       "refunds": "İadeler",
+      "commerce": "Siparişler ve iadeler",
+      "logistics": "Lojistik ve teslimat",
       "moderation": "Moderasyon",
       "agents": "Ajanlar",
       "grounding": "Kaynağa dayanma",
-      "security": "Güvenlik sinyalleri"
+      "security": "Güvenlik sinyalleri",
+      "incidents": "BT ve olaylar",
+      "engineering": "Yazılım teslimi",
+      "documents": "Belgeler ve e-posta",
+      "research": "Geri bildirim ve araştırma",
+      "education": "Eğitim"
     },
     "questionTypes": {
       "choice": "Choice",

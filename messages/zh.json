@@ -1030,10 +1030,17 @@
     "categories": {
       "support": "客户支持",
       "refunds": "退款",
+      "commerce": "订单与退货",
+      "logistics": "物流与配送",
       "moderation": "内容审核",
       "agents": "智能体",
       "grounding": "依据检查",
-      "security": "安全信号"
+      "security": "安全信号",
+      "incidents": "IT 与故障",
+      "engineering": "软件交付",
+      "documents": "文档与邮件",
+      "research": "反馈与调研",
+      "education": "教育"
     },
     "questionTypes": {
       "choice": "Choice",

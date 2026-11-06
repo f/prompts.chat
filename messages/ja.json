@@ -1030,10 +1030,17 @@
     "categories": {
       "support": "カスタマーサポート",
       "refunds": "返金",
+      "commerce": "注文と返品",
+      "logistics": "物流と配送",
       "moderation": "モデレーション",
       "agents": "エージェント",
       "grounding": "根拠確認",
-      "security": "セキュリティシグナル"
+      "security": "セキュリティシグナル",
+      "incidents": "IT とインシデント",
+      "engineering": "ソフトウェア開発",
+      "documents": "書類とメール",
+      "research": "フィードバックとリサーチ",
+      "education": "教育"
     },
     "questionTypes": {
       "choice": "Choice",

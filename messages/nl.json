@@ -1030,10 +1030,17 @@
     "categories": {
       "support": "Klantenservice",
       "refunds": "Terugbetalingen",
+      "commerce": "Bestellingen en retouren",
+      "logistics": "Logistiek en bezorging",
       "moderation": "Moderatie",
       "agents": "Agents",
       "grounding": "Bronvastheid",
-      "security": "Beveiligingssignalen"
+      "security": "Beveiligingssignalen",
+      "incidents": "IT en incidenten",
+      "engineering": "Softwareontwikkeling",
+      "documents": "Documenten en e-mail",
+      "research": "Feedback en onderzoek",
+      "education": "Onderwijs"
     },
     "questionTypes": {
       "choice": "Choice",
