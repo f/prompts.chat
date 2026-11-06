@@ -26,6 +26,7 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
+    "test:db": "vitest run --config vitest.db.config.ts",
     "lint:mdx": "node scripts/lint-mdx.js",
     "book:pdf": "npx tsx scripts/generate-book-pdf.ts",
     "book:pdf:all": "npx tsx scripts/generate-book-pdf.ts --all",

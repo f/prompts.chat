@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import {
   buildClassifierSeedStatements,
   CLASSIFIER_SEED_SUMMARY_SQL,
@@ -6,6 +6,11 @@ import {
   type ClassifierSeedAuthor,
   type ClassifierSeedCounts,
 } from "./seed-sql";
+
+/** Any Prisma client, whatever its constructor options (the app's client omits embeddings) */
+interface RawTransactionClient {
+  $transaction<R>(fn: (tx: Prisma.TransactionClient) => Promise<R>, options?: { timeout?: number; maxWait?: number }): Promise<R>;
+}
 
 export interface ClassifierImportResult {
   authorId: string;
@@ -20,7 +25,7 @@ export interface ClassifierImportResult {
  * are never touched, and any conflict or failed integrity check rolls the whole import back.
  */
 export async function importClassifierCatalog(
-  prisma: PrismaClient,
+  prisma: RawTransactionClient,
   author: ClassifierSeedAuthor = { firstAdmin: true }
 ): Promise<ClassifierImportResult> {
   const { counts } = prepareClassifierCatalog();
