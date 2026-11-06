@@ -116,7 +116,7 @@ function optionsFor(type: QuestionType, current: { key: string; description: str
 }
 
 /** The structured fields a form submits, exactly as the API validates them */
-export function fieldsFromForm(values: ClassifierFormValues): ClassifierFields {
+function fieldsFromForm(values: ClassifierFormValues): ClassifierFields {
   const usedIds = new Set<string>();
   const scenarios = values.scenarios.map((s, index) => {
     let id = s.id || kebab(s.title) || `scenario-${index + 1}`;
@@ -153,7 +153,7 @@ export function fieldsFromForm(values: ClassifierFormValues): ClassifierFields {
   };
 }
 
-export function formValuesFromFields(title: string, fields: ClassifierFields, isPrivate: boolean): ClassifierFormValues {
+function formValuesFromFields(title: string, fields: ClassifierFields, isPrivate: boolean): ClassifierFormValues {
   const { config } = fields;
   return {
     title,
@@ -190,12 +190,13 @@ interface ClassifierFormProps {
   /** Prompt id of the classifier being edited or proposed against */
   promptId?: string;
   classifierSlug?: string;
-  initialValues?: ClassifierFormValues;
+  /** The classifier being edited or proposed against */
+  initial?: { title: string; fields: ClassifierFields; isPrivate: boolean };
   /** Ids of known sources, for the same checks as the server */
   sourceIds: string[];
 }
 
-export function ClassifierForm({ mode, promptId, classifierSlug, initialValues, sourceIds }: ClassifierFormProps) {
+export function ClassifierForm({ mode, promptId, classifierSlug, initial, sourceIds }: ClassifierFormProps) {
   const t = useTranslations("classifiers.form");
   const tClassifiers = useTranslations("classifiers");
   const tPrompts = useTranslations("prompts");
@@ -211,7 +212,7 @@ export function ClassifierForm({ mode, promptId, classifierSlug, initialValues, 
   const form = useForm<ClassifierFormValues>({
     resolver: zodResolver(formSchema),
     mode: "onTouched",
-    defaultValues: initialValues ?? {
+    defaultValues: initial ? formValuesFromFields(initial.title, initial.fields, initial.isPrivate) : {
       title: "",
       description: "",
       category: "support" as ClassifierCategoryId,

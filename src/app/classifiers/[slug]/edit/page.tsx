@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { ClassifierForm, formValuesFromFields } from "@/components/classifiers/classifier-form";
+import { ClassifierForm } from "@/components/classifiers/classifier-form";
 import { findClassifierBySlug } from "@/lib/classifiers/store";
 import { configFromDefinition } from "@/lib/classifiers/schema";
 import { NOINDEX_ROBOTS } from "@/lib/seo";
@@ -44,7 +44,7 @@ export default async function EditClassifierPage({ params }: EditClassifierPageP
         promptId={row.id}
         classifierSlug={record.slug}
         sourceIds={sources.map((s) => s.id)}
-        initialValues={formValuesFromFields(record.name, { description: record.summary, config: configFromDefinition(record) }, row.isPrivate)}
+        initial={{ title: record.name, fields: { description: record.summary, config: configFromDefinition(record) }, isPrivate: row.isPrivate }}
       />
     </div>
   );
