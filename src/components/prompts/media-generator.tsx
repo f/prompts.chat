@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { Loader2, Wand2, Upload, ChevronDown, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Loader2, Wand2, Upload, ChevronDown, AlertCircle, CheckCircle2, X } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -85,7 +86,7 @@ export function MediaGenerator({
   mediaType,
   onMediaGenerated,
   onUploadClick,
-  inputImageUrl,
+  inputImageUrl: externalInputImageUrl,
 }: MediaGeneratorProps) {
   const t = useTranslations("prompts");
   const [models, setModels] = useState<MediaGeneratorModel[]>([]);
@@ -95,11 +96,20 @@ export function MediaGenerator({
   const [status, setStatus] = useState<GenerationStatus>("idle");
   const [statusKey, setStatusKey] = useState<GenerationStatusKey | null>(null);
   const [progress, setProgress] = useState(0);
+  const [inputImageUrl, setInputImageUrl] = useState<string>(externalInputImageUrl || "");
+  const [inputImageUploadMode, setInputImageUploadMode] = useState(false);
+  const [isUploadingInputImage, setIsUploadingInputImage] = useState(false);
+  const inputImageFileRef = useRef<HTMLInputElement>(null);
 
   // Get translated status message
   const statusMessage = statusKey ? t(`mediaGeneration.${statusKey}`) : "";
   const [error, setError] = useState<string | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
+
+  // Sync external input image URL
+  useEffect(() => {
+    setInputImageUrl(externalInputImageUrl || "");
+  }, [externalInputImageUrl]);
 
   // Fetch available models
   useEffect(() => {
@@ -136,6 +146,51 @@ export function MediaGenerator({
       cleanupWebSocket();
     };
   }, [cleanupWebSocket]);
+
+  const handleInputImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const maxSize = 4 * 1024 * 1024;
+    if (file.size > maxSize) {
+      toast.error(t("fileTooLarge"));
+      return;
+    }
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error(t("invalidFileType"));
+      return;
+    }
+
+    setIsUploadingInputImage(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Upload failed");
+      }
+
+      const result = await response.json();
+      setInputImageUrl(result.url);
+      setInputImageUploadMode(false);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Upload failed");
+    } finally {
+      setIsUploadingInputImage(false);
+      if (inputImageFileRef.current) {
+        inputImageFileRef.current.value = "";
+      }
+    }
+  };
 
   const handleGenerate = async () => {
     if (!selectedModel) return;
@@ -325,9 +380,109 @@ export function MediaGenerator({
 
   const providerDisplayName = selectedModel?.providerName || selectedModel?.provider || "";
 
+  const showInputImageField = mediaType === "VIDEO" || mediaType === "IMAGE";
+  const isImageToVideoHint = inputImageUrl && selectedModel && (
+    selectedModel.id.toLowerCase().includes("image-to-video") || 
+    selectedModel.id.toLowerCase().includes("i2v")
+  );
+
   return (
     <>
-      <div className="flex items-center gap-2">
+      <div className="space-y-3">
+        {/* Input image field for VIDEO and IMAGE types */}
+        {showInputImageField && (
+          <div className="space-y-2">
+            <label className="text-sm font-medium">{t("inputImageOptional")}</label>
+            {inputImageUrl ? (
+              <div className="relative inline-block">
+                <img 
+                  src={inputImageUrl} 
+                  alt="Input" 
+                  className="max-h-32 rounded border"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  className="absolute -top-2 -right-2 h-6 w-6"
+                  onClick={() => setInputImageUrl("")}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                {!inputImageUploadMode ? (
+                  <>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setInputImageUploadMode(true)}
+                    >
+                      <Upload className="h-4 w-4 mr-2" />
+                      {t("uploadInputImage")}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setInputImageUploadMode(true)}
+                    >
+                      {t("pasteInputImageUrl")}
+                    </Button>
+                  </>
+                ) : (
+                  <div className="flex gap-2 items-center w-full">
+                    <input
+                      ref={inputImageFileRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/gif,image/webp"
+                      className="hidden"
+                      onChange={handleInputImageUpload}
+                      disabled={isUploadingInputImage}
+                    />
+                    <Input
+                      placeholder={t("inputImageUrlPlaceholder")}
+                      value={inputImageUrl}
+                      onChange={(e) => setInputImageUrl(e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => inputImageFileRef.current?.click()}
+                      disabled={isUploadingInputImage}
+                    >
+                      {isUploadingInputImage ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <>
+                          <Upload className="h-4 w-4 mr-2" />
+                          {t("upload")}
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setInputImageUploadMode(false);
+                        setInputImageUrl("");
+                      }}
+                    >
+                      {t("cancel")}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className="flex items-center gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button type="button" variant="outline" size="sm" disabled={isGenerating || isLoading}>
@@ -406,6 +561,15 @@ export function MediaGenerator({
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" />
             <span>{statusMessage}</span>
+          </div>
+        )}
+      </div>
+
+        {/* Hint: Check if model is image-to-video compatible */}
+        {inputImageUrl && selectedModel && !isImageToVideoHint && mediaType === "VIDEO" && (
+          <div className="text-xs text-muted-foreground flex items-center gap-2 p-2 rounded border bg-muted/30">
+            <AlertCircle className="h-3 w-3" />
+            <span>{t("inputImageModelHint")}</span>
           </div>
         )}
       </div>
