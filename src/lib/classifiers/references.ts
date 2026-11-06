@@ -1,0 +1,124 @@
+import type { ReferenceId, SourceReference } from "./types";
+
+/**
+ * Primary sources the catalog is grounded in. Notes describe what each source
+ * shows; they do not repeat benchmark numbers or claim production use.
+ */
+export const REFERENCES: Record<ReferenceId, SourceReference> = {
+  "typesafe-system-one": {
+    title: "System One",
+    url: "https://docs.typesafe.ai/concepts/system-one",
+    publisher: "TypeSafe docs",
+    kind: "documentation",
+    note: "Defines the Choice, Score and Noul primitives and walks through a refund request built from a state, independent questions and deterministic checks in code.",
+  },
+  "typesafe-quickstart": {
+    title: "Quick start",
+    url: "https://docs.typesafe.ai/introduction/quickstart",
+    publisher: "TypeSafe docs",
+    kind: "documentation",
+    note: "Routes a support ticket to a department with a Choice, rates frustration with a Score and checks urgency with a Noul in one request.",
+  },
+  "typesafe-api": {
+    title: "System One API reference",
+    url: "https://docs.typesafe.ai/api/system-one",
+    publisher: "TypeSafe docs",
+    kind: "documentation",
+    note: "The request schema (model, state, questions) and answer schema (choice, score, noul with probabilities and confidence) used by the request snippets here.",
+  },
+  "typesafe-companion-noul": {
+    title: "Companion Noul",
+    url: "https://docs.typesafe.ai/patterns/companion-noul",
+    publisher: "TypeSafe docs",
+    kind: "pattern",
+    note: "Pairs a Choice with a Noul asking whether any option fits, because a Choice always picks an option even when none applies.",
+  },
+  "typesafe-noul-screen": {
+    title: "Screen with a Noul first",
+    url: "https://docs.typesafe.ai/patterns/noul-screen",
+    publisher: "TypeSafe docs",
+    kind: "pattern",
+    note: "Uses two thresholds (0.7 and 0.3 as starting points) so a yes, a no and an unsettled answer each get their own handling.",
+  },
+  "typesafe-confidence-routing": {
+    title: "Routing by confidence",
+    url: "https://docs.typesafe.ai/patterns/confidence-routing",
+    publisher: "TypeSafe docs",
+    kind: "pattern",
+    note: "Checks confidence first and sends spread-out answers to a person, then routes the rest on the score.",
+  },
+  "typesafe-probability-routing": {
+    title: "Routing by probability",
+    url: "https://docs.typesafe.ai/patterns/probability-routing",
+    publisher: "TypeSafe docs",
+    kind: "pattern",
+    note: "Gives riskier actions a higher probability threshold before code acts on them.",
+  },
+  "typesafe-fan-out": {
+    title: "Speculative fan-out",
+    url: "https://docs.typesafe.ai/patterns/fan-out",
+    publisher: "TypeSafe docs",
+    kind: "pattern",
+    note: "Sends questions that share a state in one request and lets code decide which answers matter.",
+  },
+  "typesafe-jaggedness": {
+    title: "Model jaggedness",
+    url: "https://docs.typesafe.ai/model-jaggedness",
+    publisher: "TypeSafe docs",
+    kind: "documentation",
+    note: "Lists known failure modes, including literal reading, arithmetic, date comparison, option order and adversarial content.",
+  },
+  "typesafe-guardrails": {
+    title: "Guardrails for LLMs",
+    url: "https://docs.typesafe.ai/cookbooks/llm_guardrails",
+    publisher: "TypeSafe docs",
+    kind: "cookbook",
+    note: "Screens messages into and out of an LLM app with Noul questions per hazard and a harm Score, then passes, reviews or blocks by thresholds set in code.",
+  },
+  "typesafe-twitch-filter": {
+    title: "Twitch chat filter",
+    url: "https://docs.typesafe.ai/cookbooks/twitch_chat_filter",
+    publisher: "TypeSafe docs",
+    kind: "cookbook",
+    note: "Hides insults and spam in a live chat with one request per message and plain rules in code.",
+  },
+  "typesafe-citation-check": {
+    title: "Double-checking citations",
+    url: "https://docs.typesafe.ai/cookbooks/citation_check",
+    publisher: "TypeSafe docs",
+    kind: "cookbook",
+    note: "Matches quotes with a string search first, then uses a Choice to decide whether the source supports, contradicts or says nothing about a claim, with low-confidence verdicts sent to a person.",
+  },
+  "typesafe-rag-passages": {
+    title: "Classifying RAG passages",
+    url: "https://docs.typesafe.ai/cookbooks/classifying_rag_passages",
+    publisher: "TypeSafe docs",
+    kind: "cookbook",
+    note: "Scores each retrieved passage in one request, then decides in code which passages reach the answering model.",
+  },
+  "typesafe-function-calling": {
+    title: "Function calling",
+    url: "https://docs.typesafe.ai/cookbooks/function_calling",
+    publisher: "TypeSafe docs",
+    kind: "cookbook",
+    note: "Maps a request to a function name and closed-set arguments with Choice questions, each with a confidence.",
+  },
+  "kev-repository": {
+    title: "Kev",
+    url: "https://github.com/jaredpalmer/kev",
+    publisher: "Jared Palmer on GitHub",
+    kind: "repository",
+    note: "Open-weight decision models (Apache-2.0) whose server matches the System One API, so the TypeSafe SDK can point at a self-hosted endpoint.",
+  },
+  "kev-4b-model-card": {
+    title: "Kev-4B model card",
+    url: "https://huggingface.co/jaredpalmer/kev-4b",
+    publisher: "Hugging Face",
+    kind: "model-card",
+    note: "Supports choice, score and noul questions in English, shows a billing/shipping/returns routing call, and lists fully automated consequential decisions without human review as out of scope.",
+  },
+};
+
+export function getReference(id: ReferenceId): SourceReference {
+  return REFERENCES[id];
+}
