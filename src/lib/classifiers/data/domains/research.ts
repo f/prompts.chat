@@ -375,6 +375,14 @@ export const chains: ClassifierChain[] = [
         path: [{ step: "topic", outcome: "praise", note: "Positive, no request." }],
         terminal: "highlights",
       },
+      {
+        id: "meh",
+        title: "Nothing to tag",
+        summary: "Feedback with no clear topic is tagged by a researcher.",
+        input: { feedback: "meh", source: "survey" },
+        path: [{ step: "topic", outcome: "low_confidence", note: "No topic to tag." }],
+        terminal: "researcher",
+      },
     ],
     notes: [
       "Topic and sentiment can be asked in one fan-out request; code uses sentiment only for usability, performance and pricing feedback.",

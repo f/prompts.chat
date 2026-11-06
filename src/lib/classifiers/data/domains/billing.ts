@@ -561,6 +561,14 @@ export const chains: ClassifierChain[] = [
         path: [{ step: "issue", outcome: "failed_payment", note: "Expired card." }],
         terminal: "payment_link",
       },
+      {
+        id: "everything-wrong",
+        title: "Several billing issues at once",
+        summary: "A declined card, a double charge and a cancellation in one message go to a billing agent.",
+        input: { message: "Card got declined, then I was charged twice, and now I just want out.", account: ACCOUNT, security_events: [], prior_contacts: 1 },
+        path: [{ step: "issue", outcome: "low_confidence", note: "Three issues in one message." }],
+        terminal: "billing_agent",
+      },
     ],
     notes: [
       "The cancellation branch has no path that stops or delays a cancellation; every reason, including an unclear one, ends in the cancellation being processed.",

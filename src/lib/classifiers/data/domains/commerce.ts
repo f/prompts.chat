@@ -718,6 +718,17 @@ export const chains: ClassifierChain[] = [
         terminal: "cancel_check",
       },
       {
+        id: "new-address",
+        title: "Moved house",
+        summary: "An address change is applied by code before the order ships.",
+        input: { message: "I just moved, can you send it to 14 Elm Road instead?", order: { ...ORDER, status: "processing" }, fulfilment_status: "packed" },
+        path: [
+          { step: "issue", outcome: "change_or_cancel", note: "A change request." },
+          { step: "change", outcome: "change_address", note: "A new delivery address." },
+        ],
+        terminal: "delivery_update",
+      },
+      {
         id: "crushed-and-unsure",
         title: "Mixed message goes to a person",
         summary: "Several problems in one message are not forced into one flow.",
@@ -858,6 +869,17 @@ export const chains: ClassifierChain[] = [
           { step: "condition", outcome: "inspector_review", note: "The item's state isn't described." },
         ],
         terminal: "retest",
+      },
+      {
+        id: "scuffed-speaker",
+        title: "Used, cable missing",
+        summary: "A used item with a missing accessory is sent for refurbishment.",
+        input: { return_comment: "Didn't need it after all.", product: "Bluetooth speaker (audio)", inspection_notes: "Scuff on top casing, USB-C cable missing, powers on." },
+        path: [
+          { step: "reason", outcome: "changed_mind", note: "No longer needed." },
+          { step: "condition", outcome: "refurbish", note: "Signs of use and a missing cable." },
+        ],
+        terminal: "refurbish_queue",
       },
       {
         id: "just-not-right",

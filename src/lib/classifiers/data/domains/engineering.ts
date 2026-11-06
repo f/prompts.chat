@@ -806,6 +806,17 @@ export const chains: ClassifierChain[] = [
         terminal: "feedback_handoff",
       },
       {
+        id: "proxy-question",
+        title: "Usage question",
+        summary: "A how-to question is suggested for the Q&A forum.",
+        input: { title: "How do I use this behind a proxy?", body: "Corporate network, not sure where to set it.", template: "none", candidates: [] },
+        path: [
+          { step: "security", outcome: "not_security", note: "Not security-related." },
+          { step: "type", outcome: "usage_question", note: "Asks how to use it." },
+        ],
+        terminal: "move_to_discussions",
+      },
+      {
         id: "token-debug",
         title: "Possible secrets leak",
         summary: "An unclear security signal goes to a maintainer, not to public labelling.",

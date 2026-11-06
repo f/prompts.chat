@@ -784,6 +784,14 @@ export const chains: ClassifierChain[] = [
         terminal: "attach",
       },
       {
+        id: "cert-expiry",
+        title: "Certificate reminder",
+        summary: "An informational warning is logged without paging anyone.",
+        input: { alert: "tls-expiry api-gateway: expires in 30 days", history: "weekly reminder", open_incidents: [], customer_signals: [], recent_changes: [] },
+        path: [{ step: "actionable", outcome: "informational", note: "Time to act; nothing broken." }],
+        terminal: "log_only",
+      },
+      {
         id: "eu-probe",
         title: "One probe failing, unclear cause",
         summary: "Unclear impact still gets a severity proposal; unclear scope pages the commander.",
@@ -955,6 +963,17 @@ export const chains: ClassifierChain[] = [
           { step: "type", outcome: "password_or_mfa", note: "MFA re-enrolment." },
         ],
         terminal: "self_service",
+      },
+      {
+        id: "monitor-flicker",
+        title: "Hardware problem",
+        summary: "A routine hardware problem goes to the service desk queue.",
+        input: { request: "External monitor keeps flickering and going black.", requester: { department: "Design" }, detector_hits: [] },
+        path: [
+          { step: "sensitive", outcome: "none", note: "Nothing sensitive." },
+          { step: "type", outcome: "hardware", note: "A device problem." },
+        ],
+        terminal: "service_queue",
       },
       {
         id: "everything-slow",

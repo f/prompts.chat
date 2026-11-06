@@ -439,6 +439,13 @@ export function validateCatalog(
       reachedTerminals.add(scenario.terminal);
     }
     if (reachedTerminals.size < 3) errors.push(`${at}: scenarios should reach at least three different endings`);
+    const visitedSteps = new Set(chain.scenarios.flatMap((s) => s.path.map((p) => p.step)));
+    for (const id of stepIds) {
+      if (!visitedSteps.has(id)) errors.push(`${at}: no scenario passes through step "${id}"`);
+    }
+    if (!chain.terminals.some((t) => t.kind === "human" && reachedTerminals.has(t.id))) {
+      errors.push(`${at}: no scenario ends with a person`);
+    }
 
     for (const ref of chain.references) {
       if (!REFERENCES[ref]) errors.push(`${at}: unknown reference "${ref}"`);

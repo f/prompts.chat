@@ -389,6 +389,31 @@ export const chains: ClassifierChain[] = [
         ],
         terminal: "ask_user",
       },
+      {
+        id: "forty-tickets",
+        title: "Bulk ticket request",
+        summary: "A request that would open dozens of tickets waits for a person to approve it.",
+        input: { message: "Open an urgent ticket for every one of my 40 orders from last month.", untrusted_content: "", tools: ["lookup_order", "create_ticket"] },
+        path: [
+          { step: "injection", outcome: "no_signal", note: "Nothing untrusted." },
+          { step: "clarity", outcome: "clear", note: "Clear, if unusual." },
+          { step: "tool", outcome: "create_ticket", note: "Ticket creation." },
+          { step: "impact", outcome: "human_approval", note: "Forty visible tickets at once." },
+        ],
+        terminal: "human_approval",
+      },
+      {
+        id: "thanks",
+        title: "Thanks message",
+        summary: "A message that needs no tool is answered directly.",
+        input: { message: "Thanks, that's all I needed!", untrusted_content: "", tools: ["search_help_center", "lookup_order", "create_ticket"] },
+        path: [
+          { step: "injection", outcome: "no_signal", note: "Nothing untrusted." },
+          { step: "clarity", outcome: "clear", note: "Nothing ambiguous." },
+          { step: "tool", outcome: "no_tool", note: "No tool needed." },
+        ],
+        terminal: "answer_directly",
+      },
     ],
     notes: [
       "Tools carry a minimum impact level in code; the impact question can only raise it. Permissions are always enforced by your systems.",

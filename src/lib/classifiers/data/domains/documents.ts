@@ -475,6 +475,14 @@ export const chains: ClassifierChain[] = [
         terminal: "status_reply",
       },
       {
+        id: "out-of-office",
+        title: "Out-of-office reply",
+        summary: "An automatic reply is archived.",
+        input: { email: { from: "j.smith@supplier.example", subject: "Automatic reply: INV-77", body: "Out of the office until Monday." } },
+        path: [{ step: "intent", outcome: "auto_reply", note: "An automatic reply." }],
+        terminal: "archive",
+      },
+      {
         id: "payslip",
         title: "Payslip sent to finance",
         summary: "Personal records are moved to restricted handling without being read further.",

@@ -506,6 +506,17 @@ export const chains: ClassifierChain[] = [
         path: [{ step: "exception", outcome: "damaged_in_transit", note: "The carrier reports damage." }],
         terminal: "order_handoff",
       },
+      {
+        id: "frozen-box",
+        title: "Perishable parcel delayed",
+        summary: "A delay to perishable goods goes straight to a person.",
+        input: { carrier_events: [{ status: "in_transit", note: "Vehicle breakdown, delayed 24h" }], customer_message: "", address: "15 Oak Way", service: "standard", delay_days: 1, order: "Frozen meal box with ice packs" },
+        path: [
+          { step: "exception", outcome: "delayed_in_network", note: "Delayed by a breakdown." },
+          { step: "impact", outcome: "urgent_handling", note: "Contents won't survive a longer delay." },
+        ],
+        terminal: "logistics_agent",
+      },
     ],
     notes: [
       "Dates, scan gaps and service rules are computed or looked up in code and passed as facts. The classifiers judge text, not timestamps.",
