@@ -16,6 +16,7 @@
     "db:resetadmin": "npx tsx prisma/reset-admin.ts",
     "db:seed:bots": "npx tsx prisma/seed-bots.ts",
     "db:seed:classifiers": "npx tsx prisma/seed-classifiers.ts",
+    "db:classifiers:sql": "tsx scripts/generate-classifier-sql.ts",
     "db:convert:teams": "npx tsx scripts/convert-pairings-to-teams.ts",
     "db:setup": "prisma generate && prisma migrate dev && prisma db seed",
     "setup": "node scripts/setup.js",
