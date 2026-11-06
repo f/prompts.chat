@@ -21,7 +21,7 @@ import { GET as getPromptRoute, PATCH as updatePromptRoute, DELETE as deleteProm
 import { POST as proposeChangeRoute } from "@/app/api/prompts/[id]/changes/route";
 import { PATCH as reviewChangeRoute } from "@/app/api/prompts/[id]/changes/[changeId]/route";
 import { findClassifierBySlug, getClassifierCatalog, listedClassifiers } from "@/lib/classifiers/store";
-import { configFromDefinition, curatedClassifierId } from "@/lib/classifiers/schema";
+import { curatedClassifierId } from "@/lib/classifiers/schema";
 import type { ClassifierFields } from "@/lib/classifiers/change-snapshot";
 import { importClassifierCatalog } from "../../../prisma/classifiers/import";
 import { prepareClassifierCatalog } from "../../../prisma/classifiers/seed-sql";
