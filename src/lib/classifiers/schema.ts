@@ -18,6 +18,18 @@ import type {
  * outcomes, …) are checked by validateClassifierDefinition in ./index.
  */
 
+/** Curated catalog entries are imported with fixed ids (cuid ids never contain a hyphen): `classifier-<slug>` and `chain-<slug>` */
+export const CURATED_CLASSIFIER_ID_PREFIX = "classifier-";
+export const CURATED_CHAIN_ID_PREFIX = "chain-";
+
+export function curatedClassifierId(slug: string) {
+  return `${CURATED_CLASSIFIER_ID_PREFIX}${slug}`;
+}
+
+export function curatedChainId(slug: string) {
+  return `${CURATED_CHAIN_ID_PREFIX}${slug}`;
+}
+
 export const CLASSIFIER_LIMITS = {
   name: 80,
   summary: 300,

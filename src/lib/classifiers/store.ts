@@ -2,7 +2,8 @@ import { unstable_cache } from "next/cache";
 import type { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
 import { CLASSIFIER_CATEGORIES } from "./categories";
-import { parseClassifierConfig, definitionFromConfig } from "./schema";
+import { CURATED_CLASSIFIER_ID_PREFIX, parseClassifierConfig, definitionFromConfig } from "./schema";
+export { CURATED_CHAIN_ID_PREFIX, CURATED_CLASSIFIER_ID_PREFIX, curatedChainId, curatedClassifierId } from "./schema";
 import type {
   ChainBranch,
   ChainInputRef,
@@ -17,18 +18,6 @@ import type {
 
 /** Cache tag of every classifier read; prompt writes also revalidate "prompts", which the catalog listens to */
 export const CLASSIFIERS_CACHE_TAG = "classifiers";
-
-/** Curated catalog entries are imported with fixed ids: `classifier-<slug>` and `chain-<slug>` */
-export const CURATED_CLASSIFIER_ID_PREFIX = "classifier-";
-export const CURATED_CHAIN_ID_PREFIX = "chain-";
-
-export function curatedClassifierId(slug: string) {
-  return `${CURATED_CLASSIFIER_ID_PREFIX}${slug}`;
-}
-
-export function curatedChainId(slug: string) {
-  return `${CURATED_CHAIN_ID_PREFIX}${slug}`;
-}
 
 const visibleClassifierWhere = {
   type: "CLASSIFIER",
