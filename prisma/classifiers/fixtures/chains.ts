@@ -1,4 +1,4 @@
-import type { ClassifierChain } from "../types";
+import type { ClassifierChain } from "../../../src/lib/classifiers/types";
 
 const SUPPORTED_PRODUCTS = ["Analytics dashboard", "Billing portal", "Mobile app"];
 

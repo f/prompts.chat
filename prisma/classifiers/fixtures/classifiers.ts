@@ -1,4 +1,4 @@
-import type { ClassifierDefinition } from "../types";
+import type { ClassifierDefinition } from "../../../src/lib/classifiers/types";
 
 /**
  * Curated classifier definitions. Each one is self-contained: it can be read,

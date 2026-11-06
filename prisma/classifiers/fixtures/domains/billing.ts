@@ -1,4 +1,4 @@
-import type { ClassifierChain, ClassifierDefinition } from "../../types";
+import type { ClassifierChain, ClassifierDefinition } from "../../../../src/lib/classifiers/types";
 import { choiceOutcome, lowConfidence, noulOutcomes } from "../outcomes";
 
 const ACCOUNT = { plan: "Team (monthly)", seats: 8, last_invoice: "2026-03-01", status: "active" };

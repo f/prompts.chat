@@ -1,5 +1,9 @@
-import { CLASSIFIER_CATEGORIES } from "../categories";
-import type { ClassifierChain, ClassifierDefinition } from "../types";
+/**
+ * Curated classifier catalog fixtures. Bootstrap-only: prisma/classifiers/import.ts and the SQL
+ * generator read them to insert the catalog once; the app reads classifiers from the database.
+ */
+import { CLASSIFIER_CATEGORIES } from "../../../src/lib/classifiers/categories";
+import type { ClassifierChain, ClassifierDefinition } from "../../../src/lib/classifiers/types";
 import { CLASSIFIERS as CORE_CLASSIFIERS } from "./classifiers";
 import { CHAINS as CORE_CHAINS } from "./chains";
 import * as agents from "./domains/agents";
@@ -11,6 +15,7 @@ import * as engineering from "./domains/engineering";
 import * as itOperations from "./domains/it-operations";
 import * as logistics from "./domains/logistics";
 import * as research from "./domains/research";
+import { SOURCES } from "./sources";
 
 const DOMAINS = [commerce, logistics, billing, itOperations, engineering, documents, research, education, agents];
 
@@ -23,3 +28,5 @@ export const CLASSIFIERS: ClassifierDefinition[] = byCategory([
 ]);
 
 export const CHAINS: ClassifierChain[] = byCategory([...CORE_CHAINS, ...DOMAINS.flatMap((d) => d.chains)]);
+
+export { SOURCES };

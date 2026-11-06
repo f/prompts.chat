@@ -1,4 +1,4 @@
-import type { ClassifierOutcome, OutcomeTone } from "../types";
+import type { ClassifierOutcome, OutcomeTone } from "../../../src/lib/classifiers/types";
 
 /** Outcome for a Choice option, taken when the model picks it with enough confidence. */
 export function choiceOutcome(id: string, label: string, tone: OutcomeTone = "proceed"): ClassifierOutcome {

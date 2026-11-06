@@ -1,4 +1,4 @@
-import type { ClassifierChain, ClassifierDefinition } from "../../types";
+import type { ClassifierChain, ClassifierDefinition } from "../../../../src/lib/classifiers/types";
 import { choiceOutcome, lowConfidence, noulOutcomes } from "../outcomes";
 
 const ORDER = {
