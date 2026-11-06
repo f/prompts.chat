@@ -86,7 +86,7 @@ describe("Header desktop nav", () => {
     const hrefs = within(menu)
       .getAllByRole("menuitem")
       .map((item) => item.getAttribute("href"));
-    expect(hrefs.slice(0, 5)).toEqual(["/feed", "/workflows", "/categories", "/tags", "/taste"]);
+    expect(hrefs.slice(0, 6)).toEqual(["/my-library", "/feed", "/workflows", "/categories", "/tags", "/taste"]);
   });
 
   it("omits Feed from the More menu for signed-out users", () => {
