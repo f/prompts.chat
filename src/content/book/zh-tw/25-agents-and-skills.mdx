@@ -1,0 +1,552 @@
+隨著 AI 系統從簡單的問答發展到自主任務執行，理解**代理（Agent）**和**技能（Skill）**變得至關重要。本章探討提示詞如何作為 AI 代理的基礎建構塊，以及技能如何將專業知識封裝成可重複使用的綜合指令集。
+
+<div className="my-8 p-6 bg-muted/20 rounded-xl border">
+  <div className="flex flex-col items-center gap-6">
+    <div className="text-center">
+      <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/50 border-2 border-blue-300 dark:border-blue-700">
+        <IconSettings className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+      </div>
+      <p className="font-semibold mt-2 m-0!">代理</p>
+      <p className="text-xs text-muted-foreground m-0!">自主 AI 系統</p>
+    </div>
+    <div className="flex items-center gap-2 text-muted-foreground text-sm">
+      <span>由以下驅動</span>
+      <span>↓</span>
+    </div>
+    <div className="flex flex-wrap justify-center gap-4">
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-lg bg-purple-100 dark:bg-purple-900/50 border-2 border-purple-300 dark:border-purple-700">
+          <IconStar className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+        </div>
+        <p className="font-medium text-sm mt-2 m-0!">技能</p>
+        <p className="text-xs text-muted-foreground m-0!">可重複使用的專業知識</p>
+      </div>
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-lg bg-purple-100 dark:bg-purple-900/50 border-2 border-purple-300 dark:border-purple-700">
+          <IconStar className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+        </div>
+        <p className="font-medium text-sm mt-2 m-0!">技能</p>
+        <p className="text-xs text-muted-foreground m-0!">可重複使用的專業知識</p>
+      </div>
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-lg bg-purple-100 dark:bg-purple-900/50 border-2 border-purple-300 dark:border-purple-700">
+          <IconStar className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+        </div>
+        <p className="font-medium text-sm mt-2 m-0!">技能</p>
+        <p className="text-xs text-muted-foreground m-0!">可重複使用的專業知識</p>
+      </div>
+    </div>
+    <div className="flex items-center gap-2 text-muted-foreground text-sm">
+      <span>由以下組成</span>
+      <span>↓</span>
+    </div>
+    <div className="flex flex-wrap justify-center gap-2">
+      <div className="px-3 py-2 rounded bg-amber-100 dark:bg-amber-900/50 border border-amber-300 dark:border-amber-700 flex items-center gap-1">
+        <IconClipboard className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+        <span className="text-xs font-medium">提示詞</span>
+      </div>
+      <div className="px-3 py-2 rounded bg-amber-100 dark:bg-amber-900/50 border border-amber-300 dark:border-amber-700 flex items-center gap-1">
+        <IconClipboard className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+        <span className="text-xs font-medium">提示詞</span>
+      </div>
+      <div className="px-3 py-2 rounded bg-amber-100 dark:bg-amber-900/50 border border-amber-300 dark:border-amber-700 flex items-center gap-1">
+        <IconClipboard className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+        <span className="text-xs font-medium">提示詞</span>
+      </div>
+      <div className="px-3 py-2 rounded bg-amber-100 dark:bg-amber-900/50 border border-amber-300 dark:border-amber-700 flex items-center gap-1">
+        <IconClipboard className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+        <span className="text-xs font-medium">提示詞</span>
+      </div>
+      <div className="px-3 py-2 rounded bg-amber-100 dark:bg-amber-900/50 border border-amber-300 dark:border-amber-700 flex items-center gap-1">
+        <IconClipboard className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+        <span className="text-xs font-medium">提示詞</span>
+      </div>
+    </div>
+    <p className="text-xs text-muted-foreground text-center m-0! mt-2">提示詞是原子 → 技能是分子 → 代理是完整結構</p>
+  </div>
+</div>
+
+## 什麼是 AI 代理？
+
+**AI 代理**是一個能夠自主規劃、執行和迭代任務的 AI 系統。與簡單的提示-回應互動不同，代理可以：
+
+- **規劃** - 將複雜目標分解為可執行的步驟
+- **執行** - 使用工具並在現實世界中採取行動
+- **觀察** - 處理其行動的反饋
+- **適應** - 根據結果調整其方法
+- **持久化** - 在互動之間維護上下文和記憶
+
+<div className="my-6 flex items-center justify-center p-6 bg-muted/30 rounded-lg">
+  <div className="relative">
+    <div className="flex items-center gap-3">
+      <div className="px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-center text-sm">
+        <p className="font-medium text-blue-700 dark:text-blue-300 m-0!">目標</p>
+      </div>
+      <div className="text-muted-foreground">→</div>
+      <div className="flex flex-col items-center gap-2">
+        <div className="flex items-center gap-2 px-4 py-3 bg-muted/50 border border-dashed rounded-lg">
+          <div className="px-3 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded text-center text-sm">
+            <p className="font-medium text-purple-700 dark:text-purple-300 m-0!">規劃</p>
+          </div>
+          <div className="text-muted-foreground">→</div>
+          <div className="px-3 py-2 bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800 rounded text-center text-sm">
+            <p className="font-medium text-amber-700 dark:text-amber-300 m-0!">執行</p>
+          </div>
+          <div className="text-muted-foreground">→</div>
+          <div className="px-3 py-2 bg-teal-100 dark:bg-teal-900/50 border border-teal-200 dark:border-teal-800 rounded text-center text-sm">
+            <p className="font-medium text-teal-700 dark:text-teal-300 m-0!">觀察</p>
+          </div>
+          <div className="text-muted-foreground">→</div>
+          <div className="px-3 py-2 bg-rose-100 dark:bg-rose-900/50 border border-rose-200 dark:border-rose-800 rounded text-center text-sm">
+            <p className="font-medium text-rose-700 dark:text-rose-300 m-0!">適應</p>
+          </div>
+        </div>
+        <div className="text-xs text-muted-foreground flex items-center gap-1">
+          <span>↺</span> 循環直到完成
+        </div>
+      </div>
+      <div className="text-muted-foreground">→</div>
+      <div className="px-4 py-3 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg text-center text-sm">
+        <p className="font-medium text-green-700 dark:text-green-300 m-0!">完成</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+## 提示詞作為建構塊
+
+每個代理，無論多麼複雜，都是由提示詞建構的。正如原子結合形成分子，分子結合形成複雜結構，提示詞結合起來創造智慧的代理行為。
+
+<div className="my-6 grid md:grid-cols-4 gap-3 text-center text-sm">
+  <div className="border rounded-lg p-4 bg-blue-50/50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900">
+    <p className="font-semibold text-blue-700 dark:text-blue-300 m-0!">系統提示詞</p>
+    <p className="text-xs text-blue-600 dark:text-blue-400 m-0! mt-1">身份與角色</p>
+  </div>
+  <div className="border rounded-lg p-4 bg-purple-50/50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-900">
+    <p className="font-semibold text-purple-700 dark:text-purple-300 m-0!">規劃提示詞</p>
+    <p className="text-xs text-purple-600 dark:text-purple-400 m-0! mt-1">如何思考</p>
+  </div>
+  <div className="border rounded-lg p-4 bg-amber-50/50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900">
+    <p className="font-semibold text-amber-700 dark:text-amber-300 m-0!">工具提示詞</p>
+    <p className="text-xs text-amber-600 dark:text-amber-400 m-0! mt-1">如何行動</p>
+  </div>
+  <div className="border rounded-lg p-4 bg-rose-50/50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-900">
+    <p className="font-semibold text-rose-700 dark:text-rose-300 m-0!">恢復提示詞</p>
+    <p className="text-xs text-rose-600 dark:text-rose-400 m-0! mt-1">如何恢復</p>
+  </div>
+</div>
+
+這些提示詞類型疊加在一起形成完整的代理行為：
+
+### 系統提示詞（代理的身份）
+
+建立代理是誰以及如何行為的基礎提示詞：
+
+```markdown
+You are a code review assistant. Your role is to:
+- Analyze code for bugs, security issues, and performance problems
+- Suggest improvements following best practices
+- Explain your reasoning clearly
+- Be constructive and educational in feedback
+
+You have access to tools for reading files, searching code, and running tests.
+```
+
+### 規劃提示詞（如何思考）
+
+指導代理推理和規劃過程的指令：
+
+```markdown
+Before taking action, always:
+1. Understand the complete request
+2. Break it into smaller, verifiable steps
+3. Identify which tools you'll need
+4. Consider edge cases and potential issues
+5. Execute step by step, validating as you go
+```
+
+### 工具使用提示詞（如何行動）
+
+關於何時以及如何使用可用工具的指導：
+
+```markdown
+When you need to understand a codebase:
+- Use grep_search for finding specific patterns
+- Use read_file to examine file contents
+- Use list_dir to explore directory structure
+- Always verify your understanding before making changes
+```
+
+### 恢復提示詞（如何處理失敗）
+
+當事情出錯時的指令：
+
+```markdown
+If an action fails:
+1. Analyze the error message carefully
+2. Consider alternative approaches
+3. Ask for clarification if the task is ambiguous
+4. Never repeat the same failed action without changes
+```
+
+<Callout type="info" title="提示詞堆疊">
+代理的行為源於多層提示詞的協同工作。系統提示詞奠定基礎，規劃提示詞指導推理，工具提示詞啟用行動，恢復提示詞處理失敗。它們共同創造出連貫、有能力的行為。
+</Callout>
+
+## 什麼是技能？
+
+如果提示詞是原子，**技能就是分子**——賦予代理特定能力的可重複使用建構塊。
+
+**技能**是一個全面的、可移植的指令包，為 AI 代理提供特定領域或任務的專業知識。技能是代理的可重複使用模組：你只需建構一次，任何代理都可以使用它們。
+
+<Callout type="tip" title="技能 = 可重複使用的代理模組">
+只需編寫一次程式碼審查技能。現在每個程式設計代理——無論是用於 Python、JavaScript 還是 Rust——都可以通過載入該技能立即成為專業的程式碼審查員。技能讓你像搭積木一樣建構代理能力。
+</Callout>
+
+### 技能的結構
+
+一個設計良好的技能通常包括：
+
+<div className="my-6 grid md:grid-cols-2 gap-4">
+  <div className="border rounded-lg p-4 bg-muted/30">
+    <p className="font-semibold text-sm m-0! mb-2">📄 SKILL.md（必需）</p>
+    <p className="text-sm text-muted-foreground m-0!">主指令文件。包含定義技能的核心專業知識、指南和行為。</p>
+  </div>
+  <div className="border rounded-lg p-4 bg-muted/30">
+    <p className="font-semibold text-sm m-0! mb-2">📚 參考文件</p>
+    <p className="text-sm text-muted-foreground m-0!">代理在工作時可以參考的支援文件、範例和上下文。</p>
+  </div>
+  <div className="border rounded-lg p-4 bg-muted/30">
+    <p className="font-semibold text-sm m-0! mb-2">🔧 腳本與工具</p>
+    <p className="text-sm text-muted-foreground m-0!">支援技能功能的輔助腳本、範本或工具設定。</p>
+  </div>
+  <div className="border rounded-lg p-4 bg-muted/30">
+    <p className="font-semibold text-sm m-0! mb-2">⚙️ 設定</p>
+    <p className="text-sm text-muted-foreground m-0!">用於將技能調整到不同上下文的設定、參數和自訂選項。</p>
+  </div>
+</div>
+
+### 範例：程式碼審查技能
+
+以下是程式碼審查技能可能的樣子：
+
+<div className="my-6 border rounded-lg overflow-hidden bg-muted/20">
+  <div className="px-3 py-2 bg-muted/50 border-b flex items-center gap-2">
+    <span className="text-sm">📁</span>
+    <span className="text-sm font-medium">code-review-skill/</span>
+  </div>
+  <div className="p-3 space-y-1 text-sm font-mono">
+    <div className="flex items-center gap-2 px-2 py-1 rounded hover:bg-muted/50">
+      <span>📄</span>
+      <span className="font-medium">SKILL.md</span>
+      <span className="text-muted-foreground text-xs ml-auto">核心審查指南</span>
+    </div>
+    <div className="flex items-center gap-2 px-2 py-1 rounded hover:bg-muted/50">
+      <span>📄</span>
+      <span>security-checklist.md</span>
+      <span className="text-muted-foreground text-xs ml-auto">安全模式</span>
+    </div>
+    <div className="flex items-center gap-2 px-2 py-1 rounded hover:bg-muted/50">
+      <span>📄</span>
+      <span>performance-tips.md</span>
+      <span className="text-muted-foreground text-xs ml-auto">優化指南</span>
+    </div>
+    <div className="mt-2 border-t pt-2">
+      <div className="flex items-center gap-2 px-2 py-1">
+        <span>📁</span>
+        <span className="font-medium">language-specific/</span>
+      </div>
+      <div className="ml-6 space-y-1">
+        <div className="flex items-center gap-2 px-2 py-1 rounded hover:bg-muted/50">
+          <span>📄</span>
+          <span>python.md</span>
+          <span className="text-muted-foreground text-xs ml-auto">Python 最佳做法</span>
+        </div>
+        <div className="flex items-center gap-2 px-2 py-1 rounded hover:bg-muted/50">
+          <span>📄</span>
+          <span>javascript.md</span>
+          <span className="text-muted-foreground text-xs ml-auto">JavaScript 模式</span>
+        </div>
+        <div className="flex items-center gap-2 px-2 py-1 rounded hover:bg-muted/50">
+          <span>📄</span>
+          <span>rust.md</span>
+          <span className="text-muted-foreground text-xs ml-auto">Rust 指南</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+`SKILL.md` 文件定義整體方法：
+
+```markdown
+---
+name: code-review
+description: Comprehensive code review with security, performance, and style analysis
+---
+
+# Code Review Skill
+
+You are an expert code reviewer. When reviewing code:
+
+## Process
+1. **Understand Context** - What does this code do? What problem does it solve?
+2. **Check Correctness** - Does it work? Are there logic errors?
+3. **Security Scan** - Reference security-checklist.md for common vulnerabilities
+4. **Performance Review** - Check performance-tips.md for optimization opportunities
+5. **Style & Maintainability** - Is the code readable and maintainable?
+
+## Output Format
+Provide feedback in categories:
+- 🔴 **Critical** - Must fix before merge
+- 🟡 **Suggested** - Recommended improvements
+- 🟢 **Nice to have** - Optional enhancements
+
+Always explain *why* something is an issue, not just *what* is wrong.
+```
+
+## 技能與簡單提示詞的區別
+
+<div className="my-6 grid md:grid-cols-2 gap-4">
+  <div className="border rounded-lg bg-muted/30">
+    <p className="text-sm font-semibold px-4 pt-3 m-0!">簡單提示詞</p>
+    <div className="text-sm p-4 pt-2 space-y-2">
+      <p className="m-0!">單一指令</p>
+      <p className="m-0!">一次性使用</p>
+      <p className="m-0!">有限上下文</p>
+      <p className="m-0!">通用方法</p>
+      <p className="m-0!">無支援材料</p>
+    </div>
+  </div>
+  <div className="border rounded-lg bg-primary/5 border-primary/20">
+    <p className="text-sm font-semibold px-4 pt-3 m-0!">技能</p>
+    <div className="text-sm p-4 pt-2 space-y-2">
+      <p className="m-0!">全面的指令集</p>
+      <p className="m-0!">跨專案可重複使用</p>
+      <p className="m-0!">帶參考資料的豐富上下文</p>
+      <p className="m-0!">特定領域的專業知識</p>
+      <p className="m-0!">支援文件、腳本、設定</p>
+    </div>
+  </div>
+</div>
+
+## 建構有效的技能
+
+### 1. 清晰定義專業知識
+
+從清晰描述技能能實現什麼開始：
+
+```markdown
+---
+name: api-design
+description: Design RESTful APIs following industry best practices,
+  including versioning, error handling, and documentation standards
+---
+```
+
+### 2. 層次化組織知識
+
+從通用到具體組織訊息：
+
+```markdown
+# API Design Skill
+
+## Core Principles
+- Resources should be nouns, not verbs
+- Use HTTP methods semantically
+- Version your APIs from day one
+
+## Detailed Guidelines
+[More specific rules...]
+
+## Reference Materials
+- See `rest-conventions.md` for naming conventions
+- See `error-codes.md` for standard error responses
+```
+
+### 3. 包含具體範例
+
+抽象規則通過範例變得清晰：
+
+```markdown
+## Endpoint Naming
+
+✅ Good:
+- GET /users/{id}
+- POST /orders
+- DELETE /products/{id}/reviews/{reviewId}
+
+❌ Avoid:
+- GET /getUser
+- POST /createNewOrder
+- DELETE /removeProductReview
+```
+
+### 4. 提供決策框架
+
+幫助代理在模糊情況下做出選擇：
+
+```markdown
+## When to Use Pagination
+
+Use pagination when:
+- Collection could exceed 100 items
+- Response size impacts performance
+- Client may not need all items
+
+Use full response when:
+- Collection is always small (<20 items)
+- Client typically needs everything
+- Real-time consistency is critical
+```
+
+### 5. 新增恢復模式
+
+預見可能出錯的情況：
+
+```markdown
+## Common Issues
+
+**Problem**: Client needs fields not in standard response
+**Solution**: Implement field selection: GET /users?fields=id,name,email
+
+**Problem**: Breaking changes needed
+**Solution**: Create new version, deprecate old with timeline
+```
+
+## 組合技能
+
+當多個技能協同工作時，代理變得更加強大。考慮技能如何相互補充：
+
+<div className="my-6 flex flex-wrap items-center justify-center gap-4 p-6 bg-muted/30
+ rounded-lg">
+  <div className="px-4 py-2 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-sm font-medium text-blue-700 dark:text-blue-300"> 
+    程式碼審查
+  </div>
+  <div className="text-xl">+</div>
+  <div className="px-4 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded-lg text-sm font-medium text-purple-700 dark:text-purple-300">
+    安全審計
+  </div>
+  <div className="text-xl">+</div>
+  <div className="px-4 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg text-sm font-medium text-green-700 dark:text-green-300">
+    文件編寫
+  </div>
+  <div className="text-xl">=</div>
+  <div className="px-4 py-2 bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800 rounded-lg text-sm font-medium text-amber-700 dark:text-amber-300">
+    完整的程式碼品質代理
+  </div>
+</div>
+
+組合技能時，確保它們不會衝突。技能應該是：
+
+- **模組化** - 每個技能很好地處理一個領域
+- **兼容** - 技能不應給出矛盾的指令
+- **有優先級** - 當技能重疊時，定義哪個優先
+
+## 分享和發現技能
+
+技能在分享時最有價值。像 [prompts.chat](https://prompts.chat/skills) 這樣的平台允許你：
+
+- **發現**社群為常見任務建立的技能
+- **下載**技能直接到你的專案
+- **分享**你自己的專業知識作為可重複使用技能
+- **迭代**基於實際使用改進技能
+
+<Callout type="tip" title="從社群技能開始">
+在從零開始建構技能之前，檢查是否有人已經解決了你的問題。社群技能經過實戰驗證，通常比從零開始更好。
+</Callout>
+
+## 代理-技能生態系
+
+代理和技能之間的關係創造了一個強大的生態系：
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="text-center mb-4">
+    <span className="text-sm font-semibold text-muted-foreground">AI 代理</span>
+  </div>
+  <div className="flex flex-wrap justify-center gap-3 mb-4">
+    <div className="px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
+      <p className="font-medium text-blue-700 dark:text-blue-300 text-sm m-0!">程式碼審查</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">技能 1</p>
+    </div>
+    <div className="px-4 py-3 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded-lg text-center">
+      <p className="font-medium text-purple-700 dark:text-purple-300 text-sm m-0!">API 設計</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">技能 2</p>
+    </div>
+    <div className="px-4 py-3 bg-teal-100 dark:bg-teal-900/50 border border-teal-200 dark:border-teal-800 rounded-lg text-center">
+      <p className="font-medium text-teal-700 dark:text-teal-300 text-sm m-0!">測試編寫</p>
+      <p className="text-xs text-teal-600 dark:text-teal-400 m-0!">技能 3</p>
+    </div>
+  </div>
+  <div className="flex justify-center mb-3">
+    <div className="text-muted-foreground">↓</div>
+  </div>
+  <div className="flex justify-center">
+    <div className="px-6 py-4 bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800 rounded-lg text-center">
+      <p className="font-semibold text-amber-700 dark:text-amber-300 text-sm m-0!">核心提示詞</p>
+      <p className="text-xs text-amber-600 dark:text-amber-400 m-0!">規劃 • 工具 • 恢復 • 記憶</p>
+    </div>
+  </div>
+</div>
+
+代理提供執行框架——規劃、工具使用和記憶——而技能提供領域專業知識。這種分離意味著：
+
+- **技能是可移植的** - 同一個技能可以與不同的代理一起工作
+- **代理是可擴充的** - 通過新增技能來新增新功能
+- **專業知識是可分享的** - 領域專家可以貢獻技能而無需建構完整的代理
+
+## 最佳做法
+
+### 建構技能
+
+1. **從具體開始，然後通用化** - 首先為你的確切使用案例建構技能，然後抽象化
+2. **包含失敗案例** - 記錄技能無法做什麼以及如何處理
+3. **為技能新增版本** - 追蹤更改，以便代理可以依賴穩定版本
+4. **用真實任務測試** - 根據實際工作驗證技能，而不僅僅是理論
+
+### 與代理一起使用技能
+
+1. **先閱讀技能** - 在部署之前瞭解技能的功能
+2. **謹慎自訂** - 僅在必要時覆蓋技能預設值
+3. **監控效能** - 追蹤技能在你的上下文中的表現
+4. **貢獻改進** - 當你改進技能時，考慮回饋社群
+
+<Callout type="info" title="未來是可組合的">
+隨著 AI 代理變得更加強大，組合、分享和自訂技能的能力將成為核心競爭力。未來的提示工程師不僅僅編寫提示詞——他們將架構使 AI 代理在特定領域真正專業的技能生態系。
+</Callout>
+
+<Quiz
+  question="簡單提示詞和技能之間的關鍵區別是什麼？"
+  options={[
+    "技能比提示詞更長",
+    "技能是可重複使用的多文件包，為代理提供領域專業知識",
+    "技能只能與特定的 AI 模型一起工作",
+    "技能不需要任何提示詞"
+  ]}
+  correctIndex={1}
+  explanation="技能是全面的、可移植的包，結合了多個提示詞、參考文件、腳本和設定。它們是可重複使用的建構塊，可以新增到任何代理以賦予其特定功能。"
+/>
+
+<Quiz
+  question="什麼是代理循環？"
+  options={[
+    "一種偵錯 AI 錯誤的技術",
+    "規劃 → 執行 → 觀察 → 適應，重複直到目標達成",
+    "一種將多個提示詞連結在一起的方法",
+    "一種訓練新 AI 模型的方法"
+  ]}
+  correctIndex={1}
+  explanation="AI 代理在一個持續的循環中工作：它們規劃如何處理任務，執行操作，觀察結果，並根據反饋調整方法——重複直到目標完成。"
+/>
+
+<Quiz
+  question="為什麼技能被描述為'代理的可重複使用模組'？"
+  options={[
+    "因為它們只能使用一次",
+    "因為它們是用塊程式語言編寫的",
+    "因為任何代理都可以載入技能來立即獲得該能力",
+    "因為技能取代了對代理的需求"
+  ]}
+  correctIndex={2}
+  explanation="技能是可移植的專業知識包。只需編寫一次程式碼審查技能，任何程式設計代理都可以通過載入該技能成為專業的程式碼審查員——就像可以拼接到任何結構的樂高積木。"
+/>

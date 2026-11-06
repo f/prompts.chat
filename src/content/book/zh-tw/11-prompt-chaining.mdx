@@ -1,0 +1,379 @@
+提示鏈將複雜任務分解為一系列更簡單的提示，每個步驟的輸出作為下一步的輸入。這種技術顯著提高了可靠性，並能實現單個提示無法完成的複雜工作流程。
+
+<Callout type="tip" title="像產線一樣思考">
+就像工廠產線將製造過程分解為專門的工作站一樣，提示鏈將 AI 任務分解為專門的步驟。每個步驟專注於做好一件事，組合輸出遠比試圖一次完成所有事情要好得多。
+</Callout>
+
+## 為什麼要使用提示鏈？
+
+單個提示在處理複雜任務時會遇到困難，因為它們試圖同時完成太多事情。AI 必須同時理解、分析、規劃和生成，這會導致錯誤和不一致。
+
+<div className="my-6 grid md:grid-cols-2 gap-4">
+  <div className="border rounded-lg bg-red-50/50 dark:bg-red-950/20 border-red-200 dark:border-red-900">
+    <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> 單個提示的困境</p>
+    <div className="text-sm p-4 pt-2 space-y-1">
+      <p className="m-0!">多步推理容易混亂</p>
+      <p className="m-0!">不同的"思維模式"相互衝突</p>
+      <p className="m-0!">複雜輸出缺乏一致性</p>
+      <p className="m-0!">沒有品質控制的機會</p>
+    </div>
+  </div>
+  <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
+    <p className="text-sm font-semibold text-green-700 dark:text-green-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconCheck className="h-4 w-4" /> 提示鏈解決方案</p>
+    <div className="text-sm p-4 pt-2 space-y-1">
+      <p className="m-0!">每個步驟專注於一個任務</p>
+      <p className="m-0!">每種模式有專門的提示</p>
+      <p className="m-0!">在步驟之間進行驗證</p>
+      <p className="m-0!">偵錯和改進單個步驟</p>
+    </div>
+  </div>
+</div>
+
+## 基本鏈式模式
+
+最簡單的鏈將一個提示的輸出直接傳遞給下一個。每個步驟都有明確、專注的目的。
+
+<div className="my-6 flex items-center justify-center gap-3 p-6 bg-muted/30 rounded-lg overflow-x-auto">
+  <div className="flex flex-col items-center">
+    <div className="px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">提示 1</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">（提取）</p>
+    </div>
+    <p className="text-xs text-muted-foreground mt-1 m-0!">輸入</p>
+  </div>
+  <div className="text-blue-400 dark:text-blue-500">→</div>
+  <div className="flex flex-col items-center">
+    <div className="px-4 py-3 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">提示 2</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">（分析）</p>
+    </div>
+    <p className="text-xs text-muted-foreground mt-1 m-0!">中間結果</p>
+  </div>
+  <div className="text-purple-400 dark:text-purple-500">→</div>
+  <div className="flex flex-col items-center">
+    <div className="px-4 py-3 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">提示 3</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0!">（生成）</p>
+    </div>
+    <p className="text-xs text-muted-foreground mt-1 m-0!">輸出</p>
+  </div>
+</div>
+
+<Callout type="info" title="ETG 模式">
+最常見的鏈式模式是**提取 → 轉換 → 生成**。首先提取原始資料，然後根據您的目的重塑它，最後生成最終輸出。這種模式幾乎適用於任何內容任務。
+</Callout>
+
+## 鏈的類型
+
+不同的任務需要不同的鏈式架構。選擇與您的工作流程相匹配的模式。
+
+<ChainFlowDemo />
+
+### 順序鏈
+
+最直接的模式：每個步驟都依賴於前一個步驟。可以把它想像成接力賽，每個選手將接力棒傳遞給下一個。
+
+<ChainExample
+  type="sequential"
+  steps={[
+    { step: "步驟 1：提取", prompt: "從以下文本中提取所有日期、姓名和數位：[text]", output: '{ dates: ["2024-01-15", "2024-02-20"], names: ["John Smith", "Acme Corp"], numbers: [15000, 42] }' },
+    { step: "步驟 2：分析", prompt: "根據提取的資料：[step1_output]，識別關係和模式。", output: '{ patterns: ["每月安排會議"], relationships: ["John Smith 在 Acme Corp 工作"] }' },
+    { step: "步驟 3：生成", prompt: "使用這些模式：[step2_output]，撰寫一份總結報告，突出最重要的發現。", output: "總結報告：文件分析揭示了 John Smith 與 Acme Corp 之間的業務關係，並安排了每月例會..." }
+  ]}
+/>
+
+### 並行鏈
+
+當您需要從多個角度分析同一輸入時，可以並行執行提示並合併結果。這比順序鏈更快，並能提供更豐富的分析。
+
+<ChainExample
+  type="parallel"
+  steps={[
+    { step: "輸入", prompt: "產品評論文本", output: '"我太喜歡這款耳機了！電池續航超長，充電盒上的顯示屏太方便了。非常適合我的日常通勤。"' },
+    { step: "分支 A：情感分析", prompt: "分析情感：[text]", output: '{ sentiment: "positive", score: 0.85 }' },
+    { step: "分支 B：功能提取", prompt: "提取提到的功能：[text]", output: '{ features: ["電池", "顯示屏"] }' },
+    { step: "分支 C：使用者畫像", prompt: "識別使用者畫像：[text]", output: '{ persona: "通勤者" }' },
+    { step: "合併", prompt: "將分析結果合併為統一報告", output: "統一報告：來自通勤使用者的正面評價，強調了電池和顯示屏功能。" }
+  ]}
+/>
+
+### 條件鏈
+
+根據分類將輸入路由到不同的路徑。這就像一個決策樹，AI 首先對輸入進行分類，然後以不同方式處理每個類別。
+
+<ChainExample
+  type="conditional"
+  steps={[
+    { step: "分類輸入", prompt: "將此客戶訊息分類為：投訴、問題、反饋或其他。\n\n訊息：[text]", output: '{ classification: "complaint", confidence: 0.92 }' },
+    { step: "路由：問題（跳過）", prompt: "識別需要的訊息", output: "跳過 - 輸入被分類為投訴" },
+    { step: "路由：投訴", prompt: "識別問題和嚴重程度：[text]", output: '{ issue: "發貨延遲", severity: "中等" }' },
+    { step: "生成回覆", prompt: "生成帶有解決方案的同理心回覆：[analysis]", output: "尊敬的客戶，對於延遲我們深表歉意。您的訂單已加急處理..." }
+  ]}
+/>
+
+### 迭代鏈
+
+不斷優化輸出，直到達到品質標準。AI 在循環中生成、評估和改進，直到滿意或達到最大迭代次數。
+
+<Callout type="warning" title="設定迭代限制">
+始終設定最大迭代次數（通常為 3-5 次）以防止無限循環並控制成本。收益遞減規律適用於此：大部分改進發生在前 2-3 次迭代中。
+</Callout>
+
+<ChainExample
+  type="iterative"
+  steps={[
+    { step: "生成草稿", prompt: "為[無線耳機]撰寫產品描述", output: "這款無線耳機音質不錯，佩戴舒適，適合日常使用。" },
+    { step: "評估（得分：5）", prompt: "從清晰度、說服力、準確性三個維度為此描述打分 1-10。\n\n描述：[current_draft]", output: '{ score: 5, improvements: ["新增具體功能", "加入情感利益點", "提及電池續航", "新增行動號召"] }' },
+    { step: "改進草稿", prompt: "根據反饋改進此描述：\n\n當前版本：[current_draft]\n反饋：[improvements]", output: "體驗我們高端無線耳機帶來的水晶般清澈音質。具備 30 小時電池續航、主動降噪功能，以及全天舒適的人體工學設計。無論是音樂愛好者還是職場人士都是理想之選。立即訂購，開啟全新聽覺體驗。" },
+    { step: "評估（得分：8）", prompt: "從清晰度、說服力、準確性三個維度為此描述打分 1-10。\n\n描述：[improved_draft]", output: '{ score: 8, improvements: ["小建議：可以新增保修訊息"] }\n\n✓ 得分 >= 8：退出循環' }
+  ]}
+/>
+
+## 常見鏈式模式
+
+這些久經考驗的模式可以解決常見問題。將它們作為起點，根據您的需求進行調整。
+
+### 提取 → 轉換 → 生成
+
+內容處理的主力模式。提取資料，重塑它，然後建立新內容。
+
+<div className="mb-4 p-3 rounded-lg bg-blue-50/50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+  <p className="text-xs font-semibold text-blue-700 dark:text-blue-300 mb-1 m-0!">最適用於</p>
+  <p className="text-sm text-blue-600 dark:text-blue-400 m-0!">文件摘要、報告生成、內容再利用、資料轉敘事</p>
+</div>
+
+<ChainExample
+  type="sequential"
+  steps={[
+    { step: "提取", prompt: "從此文件中提取：\n- 主題\n- 關鍵論點（列表）\n- 支援證據（列表）\n- 結論\n以 JSON 格式返回。", output: '{ "topic": "氣候變化影響", "arguments": ["氣溫上升", "海平面上升"], "evidence": ["NASA 資料", "IPCC 報告"], "conclusions": ["需要緊急行動"] }' },
+    { step: "轉換", prompt: "為[企業高管]重新組織此訊息：\n[extracted_data]\n重點關注：經濟影響\n移除：技術術語", output: '{ "summary": "氣候對企業的風險", "key_points": ["供應鏈中斷", "保險成本上升"], "action_items": ["評估脆弱性", "規劃適應措施"] }' },
+    { step: "生成", prompt: "使用重構後的訊息，撰寫一份[執行摘要]：\n[transformed_data]\n語氣：專業\n長度：200 字", output: "執行摘要：氣候變化對我們的業務構成重大運營風險。主要關注點包括極端天氣事件造成的供應鏈中斷和不斷上漲的保險費用。我們建議立即評估設施脆弱性並制定適應策略..." }
+  ]}
+/>
+
+### 分析 → 規劃 → 執行
+
+非常適合程式碼重構、專案規劃或任何需要先理解後行動的任務。
+
+<div className="mb-4 p-3 rounded-lg bg-purple-50/50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-800">
+  <p className="text-xs font-semibold text-purple-700 dark:text-purple-300 mb-1 m-0!">最適用於</p>
+  <p className="text-sm text-purple-600 dark:text-purple-400 m-0!">程式碼重構、專案規劃、故障排除、戰略決策、複雜問題解決</p>
+</div>
+
+<ChainExample
+  type="sequential"
+  steps={[
+    { step: "分析", prompt: "分析此程式碼庫結構並識別：\n- 架構模式\n- 主要元件\n- 相依性\n- 潛在問題\n[code]", output: '{ "pattern": "MVC", "components": ["UserController", "AuthService", "Database"], "dependencies": ["express", "mongoose"], "issues": ["沒有輸入驗證", "硬編碼密鑰"] }' },
+    { step: "規劃", prompt: "基於此分析，建立重構計劃：\n[analysis_output]\n目標：提高安全性\n約束：無破壞性更改", output: '{ "steps": ["1. 新增輸入驗證中介軟體", "2. 將密鑰移至環境變數", "3. 新增速率限制"], "priority": "高", "estimated_time": "4 小時" }' },
+    { step: "執行", prompt: "實施此計劃的第 1 步：\n[plan_output]\n展示重構後的程式碼並附說明。", output: "// 新增驗證中介軟體\nconst validateInput = (req, res, next) => {\n  const { email, password } = req.body;\n  if (!email || !isValidEmail(email)) {\n    return res.status(400).json({ error: 'Invalid email' });\n  }\n  next();\n};" }
+  ]}
+/>
+
+### 生成 → 評審 → 優化
+
+自我改進循環。生成內容，讓 AI 進行批判性評估，然後根據反饋進行改進。這模擬了專業作家和編輯的協作方式。
+
+<div className="mb-4 p-3 rounded-lg bg-green-50/50 dark:bg-green-950/20 border border-green-200 dark:border-green-800">
+  <p className="text-xs font-semibold text-green-700 dark:text-green-300 mb-1 m-0!">最適用於</p>
+  <p className="text-sm text-green-600 dark:text-green-400 m-0!">行銷文案、創意寫作、郵件草稿、簡報，以及任何能從修訂中受益的內容</p>
+</div>
+
+<ChainExample
+  type="iterative"
+  steps={[
+    { step: "生成", prompt: "為[健身應用]撰寫一封針對[忙碌職場人士]的行銷郵件。", output: "主題：快速健身！\n\n嗨！我們的應用幫助您鍛鍊。今天就下載，開始您的健身之旅。謝謝！" },
+    { step: "評審", prompt: "作為行銷專家，評審這封郵件：\n[generated_email]\n評估：主題行、開頭吸引力、價值主張、行動號召、語氣\n每項打分 1-10。", output: '{ "subject_line": 4, "hook": 3, "value_proposition": 2, "cta": 5, "tone": 4, "feedback": "太籠統，沒有具體好處，缺乏緊迫感" }' },
+    { step: "優化", prompt: "根據反饋重寫郵件：\n原版：[generated_email]\n評審：[critique_output]\n重點改進得分最低的方面。", output: "主題：午休時間的 15 分鐘健身\n\n日程繁忙？我們理解。我們的應用提供經科學驗證的健身計劃，專為沒有時間浪費的職場人士設計。加入超過 50,000 名高管的行列，每天只需 15 分鐘就能改變健康狀況。立即開始免費試用——未來的您會感謝現在的決定。" },
+    { step: "最終得分", prompt: "重新評估優化後的郵件。", output: '{ "subject_line": 8, "hook": 8, "value_proposition": 9, "cta": 8, "tone": 9, "improvement": "總分提升 +23 分" }' }
+  ]}
+/>
+
+## 實現鏈
+
+您可以手動實現鏈進行實驗，或以程式化方式實現用於生產系統。從簡單開始，根據需要增加複雜性。
+
+### 手動鏈式操作
+
+複製貼上方法非常適合原型設計和實驗。手動執行每個提示，檢查輸出，然後將其貼上到下一個提示中。
+
+<CodeEditor
+  language="python"
+  filename="manual_chain.py"
+  code={`# Pseudocode for manual chaining
+step1_output = call_ai("Extract entities from: " + input_text)
+step2_output = call_ai("Analyze relationships: " + step1_output)
+final_output = call_ai("Generate report: " + step2_output)`}
+/>
+
+### 程式化鏈式操作
+
+對於生產系統，使用程式碼自動化鏈。這可以實現錯誤處理、記錄以及與應用程式的整合。
+
+<CodeEditor
+  language="python"
+  filename="chain.py"
+  code={`def analysis_chain(document):
+    # Step 1: Summarize
+    summary = call_ai(f"""
+        Summarize the key points of this document in 5 bullets:
+        {document}
+    """)
+
+    # Step 2: Extract entities
+    entities = call_ai(f"""
+        Extract named entities (people, organizations, locations)
+        from this summary. Return as JSON.
+        {summary}
+    """)
+
+    # Step 3: Generate insights
+    insights = call_ai(f"""
+        Based on this summary and entities, generate 3 actionable
+        insights for a business analyst.
+        Summary: {summary}
+        Entities: {entities}
+    """)
+
+    return {
+        "summary": summary,
+        "entities": json.loads(entities),
+        "insights": insights
+    }`}
+/>
+
+### 使用鏈式範本
+
+將鏈定義為設定檔以便重用和輕鬆修改。這將提示邏輯與應用程式程式碼分離。
+
+<CodeEditor
+  language="yaml"
+  filename="chain_template.yaml"
+  code={`name: "Document Analysis Chain"
+steps:
+  - name: "extract"
+    prompt: |
+      Extract key information from this document:
+      {input}
+      Return JSON with: topics, entities, dates, numbers
+
+  - name: "analyze"
+    prompt: |
+      Analyze this extracted data for patterns:
+      {extract.output}
+      Identify: trends, anomalies, relationships
+
+  - name: "report"
+    prompt: |
+      Generate an executive summary based on:
+      Data: {extract.output}
+      Analysis: {analyze.output}
+      Format: 3 paragraphs, business tone`}
+/>
+
+## 鏈中的錯誤處理
+
+鏈可能在任何步驟失敗。內建驗證、重試和備援機制可使您的鏈更加健壯。
+
+<ChainErrorDemo />
+
+<Callout type="warning" title="垃圾進，垃圾出">
+如果某個步驟產生了糟糕的輸出，後續每個步驟都會受到影響。在將關鍵中間結果傳遞下去之前，務必進行驗證。
+</Callout>
+
+### 步驟間驗證
+
+在任何產生結構化資料的步驟之後新增驗證步驟。這可以在錯誤級聯之前及早捕獲它們。
+
+<ValidationDemo />
+
+### 備援鏈
+
+當主要方法失敗時，準備一個更簡單的備用方案。用能力換取可靠性。
+
+<FallbackDemo />
+
+## 鏈的優化
+
+一旦您的鏈正常工作，就可以針對速度、成本和可靠性進行優化。這些因素通常需要相互權衡。
+
+<div className="my-6 grid md:grid-cols-3 gap-4">
+  <div className="border rounded-lg bg-blue-50/50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900 p-4">
+    <p className="text-sm font-semibold text-blue-700 dark:text-blue-400 mb-2 m-0!">降低延遲</p>
+    <div className="text-sm space-y-1">
+      <p className="m-0!">並行化獨立步驟</p>
+      <p className="m-0!">快取中間結果</p>
+      <p className="m-0!">簡單步驟使用較小模型</p>
+      <p className="m-0!">批次處理相似操作</p>
+    </div>
+  </div>
+  <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900 p-4">
+    <p className="text-sm font-semibold text-green-700 dark:text-green-400 mb-2 m-0!">降低成本</p>
+    <div className="text-sm space-y-1">
+      <p className="m-0!">分類任務使用更便宜的模型</p>
+      <p className="m-0!">限制循環迭代次數</p>
+      <p className="m-0!">儘可能提前終止</p>
+      <p className="m-0!">快取重複查詢</p>
+    </div>
+  </div>
+  <div className="border rounded-lg bg-purple-50/50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-900 p-4">
+    <p className="text-sm font-semibold text-purple-700 dark:text-purple-400 mb-2 m-0!">提高可靠性</p>
+    <div className="text-sm space-y-1">
+      <p className="m-0!">在步驟間新增驗證</p>
+      <p className="m-0!">包含重試邏輯</p>
+      <p className="m-0!">記錄中間結果</p>
+      <p className="m-0!">實現備援路徑</p>
+    </div>
+  </div>
+</div>
+
+## 實際鏈式範例
+
+讓我們來看一個完整的生產鏈。這個內容管道將原始想法轉化為精美的文章包。
+
+### 內容管道鏈
+
+<ContentPipelineDemo />
+
+## 總結
+
+提示鏈通過將不可能的任務分解為可實現的步驟，從而改變了 AI 所能完成的事情。
+
+<div className="my-6 grid md:grid-cols-2 gap-4">
+  <div className="border rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900 p-4">
+    <p className="text-sm font-semibold text-amber-700 dark:text-amber-400 mb-2 m-0!">鏈式操作的優勢</p>
+    <div className="text-sm space-y-1">
+      <p className="m-0!">複雜的多步驟工作流程</p>
+      <p className="m-0!">通過專業化提高品質</p>
+      <p className="m-0!">更好的錯誤處理和驗證</p>
+      <p className="m-0!">模組化、可重用的提示元件</p>
+    </div>
+  </div>
+  <div className="border rounded-lg bg-cyan-50/50 dark:bg-cyan-950/20 border-cyan-200 dark:border-cyan-900 p-4">
+    <p className="text-sm font-semibold text-cyan-700 dark:text-cyan-400 mb-2 m-0!">關鍵原則</p>
+    <div className="text-sm space-y-1">
+      <p className="m-0!">將複雜任務分解為簡單步驟</p>
+      <p className="m-0!">設計步驟間清晰的介面</p>
+      <p className="m-0!">驗證中間輸出</p>
+      <p className="m-0!">內建錯誤處理和備援機制</p>
+      <p className="m-0!">根據約束條件進行優化</p>
+    </div>
+  </div>
+</div>
+
+<Callout type="tip" title="從簡單開始">
+從 2-3 步的順序鏈開始。讓它可靠執行後再增加複雜性。大多數任務不需要複雜的鏈式架構。
+</Callout>
+
+<Quiz
+  question="與單個複雜提示相比，提示鏈的主要優勢是什麼？"
+  options={[
+    "它總體上使用更少的 token",
+    "執行速度更快",
+    "每個步驟可以專業化，提高品質並支援錯誤處理",
+    "它需要更少的規劃"
+  ]}
+  correctIndex={2}
+  explanation="提示鏈將複雜任務分解為專業化的步驟。每個步驟可以專注於做好一件事，中間結果可以被驗證，錯誤可以被捕獲和重試，通過專業化提高整體品質。"
+/>
+
+在下一章中，我們將探索多模態提示：處理圖像、音訊和其他非文本內容。

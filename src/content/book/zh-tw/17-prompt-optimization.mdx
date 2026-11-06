@@ -1,0 +1,269 @@
+一個好的提示詞能完成任務。一個優化過的提示詞能高效地完成任務——更快、更便宜、更穩定。本章將教你如何從多個維度系統性地改進提示詞。
+
+<Callout type="tip" title="試試提示詞增強器">
+想要自動優化你的提示詞？使用我們的[提示詞增強器](/developers#enhancer)工具。它會分析你的提示詞，應用優化技術，並展示類似的社群提示詞供你參考。
+</Callout>
+
+## 優化的權衡
+
+每項優化都涉及權衡。理解這些權衡有助於你做出有意識的選擇：
+
+<InfoGrid items={[
+  { label: "品質 vs. 成本", description: "更高的品質通常需要更多 token 或更好的模型", example: "新增範例可以提高準確性，但會增加 token 數量", exampleType: "text", color: "blue" },
+  { label: "速度 vs. 品質", description: "更快的模型可能會犧牲一些能力", example: "GPT-4 比 GPT-4o-mini 更智慧但更慢", exampleType: "text", color: "purple" },
+  { label: "一致性 vs. 創造性", description: "較低的 Temperature = 更可預測但創造性更低", example: "事實性內容用 0.2，頭腦風暴用 0.8", exampleType: "text", color: "green" },
+  { label: "簡單性 vs. 強健性", description: "邊緣情況處理會增加複雜性", example: "簡單的提示詞在例外輸入時會失敗", exampleType: "text", color: "amber" }
+]} />
+
+## 衡量重要指標
+
+在優化之前，先定義成功。對於你的使用案例來說，"更好"意味著什麼？
+
+<InfoGrid items={[
+  { label: "準確性", description: "輸出正確的頻率有多高？", example: "90% 的程式碼建議可以無錯誤編譯", exampleType: "text", color: "blue" },
+  { label: "相關性", description: "是否回答了實際被問到的問題？", example: "回覆直接回答問題 vs. 離題", exampleType: "text", color: "blue" },
+  { label: "完整性", description: "是否涵蓋了所有要求？", example: "輸出中包含所有 5 個要求的部分", exampleType: "text", color: "blue" },
+  { label: "延遲", description: "回應到達需要多長時間？", example: "聊天應用 p50 < 2 秒，p95 < 5秒", exampleType: "text", color: "purple" },
+  { label: "Token 效率", description: "相同結果需要多少 token？", example: "500 tokens vs. 1500 tokens 達到相同輸出", exampleType: "text", color: "purple" },
+  { label: "一致性", description: "相似輸入的輸出有多相似？", example: "相同問題得到結構相似的答案", exampleType: "text", color: "green" }
+]} />
+
+<Callout type="info" title="p50 和 p95 是什麼意思？">
+百分位指標顯示回應時間分佈。**p50**（中位數）意味著 50% 的請求比這個值更快。**p95** 意味著 95% 更快——它能捕捉到慢速例外值。如果你的 p50 是 1 秒但 p95 是 10 秒，大多數使用者體驗良好，但有 5% 的使用者會感到延遲困擾。
+</Callout>
+
+<TryIt
+  title="定義你的成功指標"
+  description="在做出更改之前，使用此範本來明確你要優化的目標。"
+  prompt={`幫我為提示詞優化定義成功指標。
+
+**我的使用案例**：\${useCase}
+**當前痛點**：\${painPoints}
+
+針對這個使用案例，幫我定義：
+
+1. **主要指標**：哪個單一指標最重要？
+2. **次要指標**：還應該追蹤什麼？
+3. **可接受的權衡**：為了主要指標可以犧牲什麼？
+4. **紅線**：什麼樣的品質水平是不可接受的？
+5. **如何衡量**：評估每個指標的實用方法`}
+/>
+
+## Token 優化
+
+Token 花費金錢並增加延遲。以下是如何用更少的 token 表達相同的內容。
+
+### 壓縮原則
+
+<Compare
+  before={{ label: "冗長版（67 tokens）", content: "I would like you to please help me with the following task. I need you to take the text that I'm going to provide below and create a summary of it. The summary should capture the main points and be concise. Please make sure to include all the important information. Here is the text:\n\n[text]" }}
+  after={{ label: "簡潔版（12 tokens）", content: "Summarize this text, capturing main points concisely:\n\n[text]" }}
+/>
+
+**相同結果，減少 82% 的 token。**
+
+### Token 節省技巧
+
+<InfoGrid items={[
+  { label: "刪除客套話", description: "\"Please\" 和 \"Thank you\" 增加 token 但不會改善輸出", example: "\"Please summarize\" → \"Summarize\"", color: "green" },
+  { label: "消除冗餘", description: "不要重複自己或陳述顯而易見的事情", example: "\"Write a summary that summarizes\" → \"Summarize\"", color: "green" },
+  { label: "使用縮寫", description: "在意思明確的地方使用縮寫", example: "\"for example\" → \"e.g.\"", color: "green" },
+  { label: "通過位置引用", description: "指向內容而不是重複它", example: "\"the text above\" 而不是重新引用", color: "green" }
+]} />
+
+<TryIt
+  title="提示詞壓縮器"
+  description="貼上一個冗長的提示詞，獲取 token 優化版本。"
+  prompt={`壓縮這個提示詞，同時保留其含義和有效性：
+
+原始提示詞：
+"\${verbosePrompt}"
+
+說明：
+1. 刪除不必要的客套話和贅詞
+2. 消除冗餘
+3. 使用簡潔的措辭
+4. 保留所有關鍵指令和約束
+5. 保持清晰——不要為了簡短而犧牲理解
+
+提供：
+- **壓縮版本**：優化後的提示詞
+- **Token 減少量**：估計節省的百分比
+- **刪除了什麼**：簡要說明刪除了什麼以及為什麼可以安全刪除`}
+/>
+
+## 品質優化
+
+有時你需要更好的輸出，而不是更便宜的輸出。以下是如何提高品質。
+
+### 準確性提升技巧
+
+<InfoGrid items={[
+  { label: "新增驗證", description: "讓模型檢查自己的工作", example: "\"...then verify your answer is correct\"", color: "blue" },
+  { label: "請求信心度", description: "讓不確定性明確化", example: "\"Rate your confidence 1-10 and explain any uncertainty\"", color: "blue" },
+  { label: "多種方法", description: "獲取不同的視角，然後選擇", example: "\"Provide 3 approaches and recommend the best one\"", color: "blue" },
+  { label: "明確推理", description: "強制逐步思考", example: "\"Think step by step and show your reasoning\"", color: "blue" }
+]} />
+
+### 一致性提升技巧
+
+<InfoGrid items={[
+  { label: "詳細格式規範", description: "準確展示輸出應該是什麼樣子", example: "包含範本或 Schema", exampleType: "text", color: "purple" },
+  { label: "少樣本範例", description: "提供 2-3 個理想輸出的範例", example: "\"Here's what good looks like: [examples]\"", color: "purple" },
+  { label: "降低 Temperature", description: "減少隨機性以獲得更可預測的輸出", example: "Temperature 0.3-0.5 以獲得一致的結果", exampleType: "text", color: "purple" },
+  { label: "輸出驗證", description: "為關鍵欄位新增驗證步驟", example: "\"Verify all required fields are present\"", color: "purple" }
+]} />
+
+<TryIt
+  title="品質增強器"
+  description="為你的提示詞新增品質提升元素。"
+  prompt={`增強這個提示詞以獲得更高品質的輸出：
+
+原始提示詞：
+"\${originalPrompt}"
+
+**我看到的品質問題**：\${qualityIssue}
+
+新增適當的品質提升器：
+1. 如果問題是準確性 → 新增驗證步驟
+2. 如果問題是一致性 → 新增格式規範或範例
+3. 如果問題是相關性 → 新增上下文和約束
+4. 如果問題是完整性 → 新增明確的要求
+
+提供增強後的提示詞，並解釋每個新增項。`}
+/>
+
+## 延遲優化
+
+當速度很重要時，每毫秒都很關鍵。
+
+### 按速度需求選擇模型
+
+<InfoGrid items={[
+  { label: "即時（< 500ms）", description: "使用最小有效模型 + 積極快取", example: "GPT-4o-mini、Claude Haiku、快取回應", exampleType: "text", color: "red" },
+  { label: "互動式（< 2s）", description: "快速模型，啟用串流輸出", example: "GPT-4o-mini 配合串流輸出", exampleType: "text", color: "amber" },
+  { label: "可容忍（< 10s）", description: "中等模型，平衡品質/速度", example: "GPT-4o、Claude Sonnet", exampleType: "text", color: "green" },
+  { label: "非同步/批量", description: "使用最佳模型，背景處理", example: "GPT-4、Claude Opus 用於離線處理", exampleType: "text", color: "blue" }
+]} />
+
+### 速度優化技巧
+
+<InfoGrid items={[
+  { label: "更短的提示詞", description: "更少的輸入 token = 更快的處理", example: "壓縮提示詞，刪除不必要的上下文", exampleType: "text", color: "cyan" },
+  { label: "限制輸出", description: "設定 max_tokens 防止回應過長", example: "摘要使用 max_tokens: 500", exampleType: "text", color: "cyan" },
+  { label: "使用串流輸出", description: "更快獲得第一個 token，更好的使用者體驗", example: "任何超過 100 tokens 的回應都使用串流", exampleType: "text", color: "cyan" },
+  { label: "積極快取", description: "不要重複計算相同的查詢", example: "快取常見問題、範本輸出", exampleType: "text", color: "cyan" }
+]} />
+
+## 成本優化
+
+在規模化運營時，小的節省會累積成顯著的預算影響。
+
+### 理解成本
+
+使用此計算器估算不同模型的 API 成本：
+
+<CostCalculatorDemo />
+
+### 成本降低策略
+
+<InfoGrid items={[
+  { label: "模型路由", description: "只在需要時使用昂貴的模型", example: "簡單問題 → GPT-4o-mini，複雜問題 → GPT-4", exampleType: "text", color: "green" },
+  { label: "提示詞效率", description: "更短的提示詞 = 更低的每次請求成本", example: "減少 50% 的 token = 節省 50% 的輸入成本", exampleType: "text", color: "green" },
+  { label: "輸出控制", description: "當不需要完整細節時限制回應長度", example: "\"Answer in 2-3 sentences\" vs. 無限制", color: "green" },
+  { label: "批次處理", description: "將相關查詢合併到單個請求中", example: "在一個提示詞中分析 10 個項目 vs. 10 次單獨呼叫", exampleType: "text", color: "green" },
+  { label: "預過濾", description: "不要發送不需要 AI 的請求", example: "在昂貴的分類之前使用關鍵詞匹配", exampleType: "text", color: "green" }
+]} />
+
+## 優化循環
+
+優化是迭代的。這是一個系統性的過程：
+
+### 第一步：建立基準
+
+你無法改進你沒有衡量的東西。在改變任何事情之前，嚴格記錄你的起點。
+
+<InfoGrid items={[
+  { label: "提示詞文件", description: "保存精確的提示詞文本，包括系統提示詞和任何範本", example: "像管理程式碼一樣對提示詞進行版本控制", exampleType: "text", color: "blue" },
+  { label: "測試集", description: "建立 20-50 個代表性輸入，涵蓋常見情況和邊緣情況", example: "包含簡單、中等和困難的範例", exampleType: "text", color: "blue" },
+  { label: "品質指標", description: "根據你的成功標準對每個輸出評分", example: "準確率 %、相關性評分、格式合規性", exampleType: "text", color: "purple" },
+  { label: "效能指標", description: "測量每個測試案例的 token 和時間", example: "平均輸入：450 tokens，平均輸出：200 tokens，p50 延遲：1.2s", exampleType: "text", color: "purple" }
+]} />
+
+<TryIt
+  title="基準文件範本"
+  description="在優化之前使用此範本建立全面的基準。"
+  prompt={`為我的提示詞優化專案建立基準文件。
+
+**當前提示詞**：
+"\${currentPrompt}"
+
+**提示詞的功能**：\${promptPurpose}
+
+**我看到的當前問題**：\${currentIssues}
+
+生成一個基準文件範本，包含：
+
+1. **提示詞快照**：精確的提示詞文本（用於版本控制）
+
+2. **測試案例**：建議我應該使用的 10 個代表性測試輸入，涵蓋：
+   - 3 個典型/簡單案例
+   - 4 個中等複雜度案例
+   - 3 個邊緣案例或困難輸入
+
+3. **要追蹤的指標**：
+   - 針對此使用案例的品質指標
+   - 效率指標（tokens、延遲）
+   - 如何對每個指標評分
+
+4. **基準假設**：我預期當前效能是多少？
+
+5. **成功標準**：什麼數字會讓我對優化感到滿意？`}
+/>
+
+### 第二步：形成假設
+
+<Compare
+  before={{ label: "模糊目標", content: "我想讓我的提示詞變得更好。" }}
+  after={{ label: "可測試的假設", content: "如果我新增 2 個少樣本範例，準確率將從 75% 提高到 85%，因為模型將學會預期的模式。" }}
+/>
+
+### 第三步：測試單一變更
+
+一次只改變一件事。在相同的測試輸入上執行兩個版本。衡量重要的指標。
+
+### 第四步：分析並決策
+
+有效嗎？保留更改。有害嗎？還原。中性的？還原（簡單更好）。
+
+### 第五步：重複
+
+根據你學到的內容生成新的假設。持續迭代，直到達到目標或邊際效益遞減。
+
+## 優化清單
+
+<Checklist
+  title="部署優化後的提示詞之前"
+  items={[
+    { text: "定義了明確的成功指標" },
+    { text: "測量了基準效能" },
+    { text: "在代表性輸入上測試了更改" },
+    { text: "驗證了品質沒有退化" },
+    { text: "檢查了邊緣情況處理" },
+    { text: "計算了預期規模下的成本" },
+    { text: "測試了負載下的延遲" },
+    { text: "記錄了更改的內容和原因" }
+  ]}
+/>
+
+<Quiz
+  question="你有一個效果很好但規模化時成本太高的提示詞。你應該首先做什麼？"
+  options={[
+    "立即切換到更便宜的模型",
+    "從提示詞中刪除詞語以減少 token",
+    "測量提示詞的哪個部分使用了最多的 token",
+    "為所有請求新增快取"
+  ]}
+  correctIndex={2}
+  explanation="在優化之前，先測量。你需要了解 token 花在哪裡，然後才能有效地減少它們。提示詞可能有不必要的上下文、冗長的指令，或生成比需要的更長的輸出。測量告訴你應該把優化工作集中在哪裡。"
+/>
