@@ -31,6 +31,17 @@ describe("ClassifierCatalog", () => {
     expect(window.location.search).toContain("category=security");
   });
 
+  it("filters by a domain category and keeps chains that use it", () => {
+    renderCatalog();
+    fireEvent.click(screen.getByRole("button", { name: "categories.logistics" }));
+    expect(screen.getAllByTestId("classifier-card")).toHaveLength(
+      getClassifiers().filter((c) => c.category === "logistics").length
+    );
+    const chainCards = screen.getAllByTestId("chain-card").map((card) => card.textContent ?? "");
+    expect(chainCards.some((text) => text.includes(getChain("delivery-exception-routing")!.name))).toBe(true);
+    expect(window.location.search).toContain("category=logistics");
+  });
+
   it("searches and recovers from no results", () => {
     renderCatalog();
     const input = screen.getByRole("searchbox");
@@ -157,5 +168,39 @@ describe("ChainFlow", () => {
     const steps = screen.getAllByTestId("chain-step");
     const branchText = steps.map((s) => s.querySelector("ul")!.textContent).join(" ");
     for (const label of humanEnds) expect(branchText).toContain(label);
+  });
+});
+
+describe("ChainFlow across the catalog", () => {
+  it("opens every scenario of every chain from its deep link", () => {
+    for (const each of getChains()) {
+      for (const scenario of each.scenarios) {
+        window.history.replaceState(null, "", `/classifiers/chains/${each.slug}?scenario=${scenario.id}`);
+        const { unmount } = render(<ChainFlow chain={each} classifiers={classifierMap} chainNames={chainNames} />);
+        const label = `${each.slug}?scenario=${scenario.id}`;
+        expect(screen.queryByTestId("scenario-path"), label).not.toBeNull();
+        expect(document.querySelectorAll("[data-taken]").length, label).toBe(scenario.path.length);
+        const reached = document.querySelectorAll("[data-reached]");
+        expect(reached.length, label).toBe(1);
+        expect(reached[0].closest("li"), label).toHaveAttribute("id", `end-${scenario.terminal}`);
+        unmount();
+      }
+    }
+  });
+
+  it("links every handoff endpoint to its chain", () => {
+    for (const each of getChains()) {
+      const handoffs = each.terminals.filter((t) => t.kind === "handoff");
+      if (handoffs.length === 0) continue;
+      const { unmount } = render(<ChainFlow chain={each} classifiers={classifierMap} chainNames={chainNames} />);
+      const overview = screen.getByTestId("chain-overview");
+      for (const t of handoffs) {
+        expect(within(overview).getByRole("link", { name: t.label }), `${each.slug}/${t.id}`).toHaveAttribute(
+          "href",
+          `/classifiers/chains/${t.handoffChain}`
+        );
+      }
+      unmount();
+    }
   });
 });
