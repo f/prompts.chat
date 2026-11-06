@@ -1093,12 +1093,10 @@
     "selfHostedKev": "Kev (kendi sunucunuzda)",
     "requestSnippetNote": "İstek biçimi System One API başvurusundan alınmıştır; bir Kev sunucusu aynı gövdeyi kabul eder. Yer tutucu durumu kendi verilerinizle değiştirin. İstekler için kendi API anahtarınız veya sunucunuz gerekir.",
     "decisionChain": "Karar zinciri",
-    "chainInput": "Zincir girdisi",
     "howItRuns": "Nasıl çalışır",
     "scenarioPaths": "Örnek yollar",
     "scenarioPathsNote": "Zincirde vurgulamak için önceden tanımlanmış bir yol seçin. Hiçbir model çağrılmaz; sonuçlar açıklayıcıdır.",
     "allBranches": "Tüm dallar",
-    "scenarioInput": "Senaryo girdisi",
     "stepLabel": "Adım {number}",
     "endsAt": "Bittiği yer",
     "steps": "Adımlar",
@@ -1109,14 +1107,18 @@
     "fromStep": "Adım {number} çıktısı",
     "branches": "Dallar",
     "endpoints": "Varış noktaları",
-    "endpointsDescription": "Her yolun bittiği yer. Her sonuç belirli bir yere çıkar.",
     "terminalKinds": {
       "automated": "Otomatik",
       "human": "İnsan incelemesi",
       "stop": "Durdur",
       "handoff": "Devir"
     },
-    "continuesIn": "{chain} ile devam eder"
+    "continuesIn": "{chain} ile devam eder",
+    "aboutChain": "Bu zincir hakkında",
+    "goalAndInput": "Amaç ve girdi",
+    "endpointDetails": "Her varış noktasının anlamı",
+    "pathDetails": "Adım notları ve girdi",
+    "stepDetails": "Soru, girdiler ve notlar"
   },
   "bots": {
     "description": "Talimatları, rutinleri ve becerileriyle hazır yapay zekâ ajan botları. OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent veya Grok Bot'a kurun.",

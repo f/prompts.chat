@@ -1093,12 +1093,10 @@
     "selfHostedKev": "Kev（セルフホスト）",
     "requestSnippetNote": "リクエスト形式は System One API リファレンスに基づきます。Kev サーバーも同じ本文を受け付けます。プレースホルダーの状態を自分のデータに置き換えてください。リクエストには自分の API キーまたはサーバーが必要です。",
     "decisionChain": "判定チェーン",
-    "chainInput": "チェーンの入力",
     "howItRuns": "動作の流れ",
     "scenarioPaths": "例示パス",
     "scenarioPathsNote": "用意されたパスを選ぶと、チェーン上で強調表示されます。モデルは呼び出しません。結果は例示です。",
     "allBranches": "すべての分岐",
-    "scenarioInput": "シナリオの入力",
     "stepLabel": "ステップ {number}",
     "endsAt": "終点",
     "steps": "ステップ",
@@ -1109,14 +1107,18 @@
     "fromStep": "ステップ {number} から",
     "branches": "分岐",
     "endpoints": "終点",
-    "endpointsDescription": "各パスの行き着く先。どの結果にも明確な行き先があります。",
     "terminalKinds": {
       "automated": "自動処理",
       "human": "人によるレビュー",
       "stop": "停止",
       "handoff": "引き継ぎ"
     },
-    "continuesIn": "{chain} に続く"
+    "continuesIn": "{chain} に続く",
+    "aboutChain": "このチェーンについて",
+    "goalAndInput": "目的と入力",
+    "endpointDetails": "各終点の意味",
+    "pathDetails": "ステップのメモと入力",
+    "stepDetails": "質問・入力・メモ"
   },
   "bots": {
     "description": "指示・ルーティン・スキルを備えたすぐに使える AI エージェントボット。OpenClaw、AutoGPT、OpenAI Dots、Claude Duet、Meta Muse、Hermes Agent、Grok Bot にインストールできます。",

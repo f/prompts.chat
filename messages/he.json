@@ -1093,12 +1093,10 @@
     "selfHostedKev": "Kev (אירוח עצמי)",
     "requestSnippetNote": "מבנה הבקשה לקוח מתיעוד System One API; שרת Kev מקבל את אותו גוף בקשה. החליפו את מצב הדוגמה בנתונים שלכם. בקשות דורשות מפתח API או שרת משלכם.",
     "decisionChain": "שרשרת החלטה",
-    "chainInput": "קלט השרשרת",
     "howItRuns": "איך זה פועל",
     "scenarioPaths": "מסלולים לדוגמה",
     "scenarioPathsNote": "בחרו מסלול מוגדר מראש כדי להדגיש אותו בשרשרת. לא מופעל אף מודל; התוצאות הן להמחשה.",
     "allBranches": "כל ההסתעפויות",
-    "scenarioInput": "קלט התרחיש",
     "stepLabel": "שלב {number}",
     "endsAt": "מסתיים ב",
     "steps": "שלבים",
@@ -1109,14 +1107,18 @@
     "fromStep": "משלב {number}",
     "branches": "הסתעפויות",
     "endpoints": "נקודות סיום",
-    "endpointsDescription": "היכן מסתיים כל מסלול. לכל תוצאה יש יעד מוגדר.",
     "terminalKinds": {
       "automated": "אוטומטי",
       "human": "בדיקה אנושית",
       "stop": "עצירה",
       "handoff": "העברה"
     },
-    "continuesIn": "ממשיך ב{chain}"
+    "continuesIn": "ממשיך ב{chain}",
+    "aboutChain": "על השרשרת",
+    "goalAndInput": "מטרה וקלט",
+    "endpointDetails": "מה המשמעות של כל נקודת סיום",
+    "pathDetails": "הערות השלבים והקלט",
+    "stepDetails": "שאלה, קלטים והערות"
   },
   "bots": {
     "description": "בוטים מוכנים של סוכני בינה מלאכותית עם הנחיות, שגרות ומיומנויות. התקינו אותם ב-OpenClaw, ב-AutoGPT, ב-OpenAI Dots, ב-Claude Duet, ב-Meta Muse, ב-Hermes Agent או ב-Grok Bot.",

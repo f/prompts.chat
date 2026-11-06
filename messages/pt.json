@@ -1093,12 +1093,10 @@
     "selfHostedKev": "Kev (auto-hospedado)",
     "requestSnippetNote": "Formato da requisição segundo a referência da API System One; um servidor Kev aceita o mesmo corpo. Substitua o estado de exemplo pelos seus dados. As requisições exigem a sua própria chave de API ou servidor.",
     "decisionChain": "Cadeia de decisão",
-    "chainInput": "Entrada da cadeia",
     "howItRuns": "Como funciona",
     "scenarioPaths": "Percursos de exemplo",
     "scenarioPathsNote": "Escolha um percurso predefinido para destacá-lo na cadeia. Nenhum modelo é chamado; os resultados são ilustrativos.",
     "allBranches": "Todas as ramificações",
-    "scenarioInput": "Entrada do cenário",
     "stepLabel": "Etapa {number}",
     "endsAt": "Termina em",
     "steps": "Etapas",
@@ -1109,14 +1107,18 @@
     "fromStep": "Da etapa {number}",
     "branches": "Ramificações",
     "endpoints": "Destinos",
-    "endpointsDescription": "Onde cada percurso termina. Cada resultado leva a um lugar específico.",
     "terminalKinds": {
       "automated": "Automático",
       "human": "Revisão humana",
       "stop": "Parar",
       "handoff": "Encaminhamento"
     },
-    "continuesIn": "Continua em {chain}"
+    "continuesIn": "Continua em {chain}",
+    "aboutChain": "Sobre esta cadeia",
+    "goalAndInput": "Objetivo e entrada",
+    "endpointDetails": "O que significa cada destino",
+    "pathDetails": "Notas das etapas e entrada",
+    "stepDetails": "Pergunta, entradas e notas"
   },
   "bots": {
     "description": "Bots de agentes de IA prontos, com instruções, rotinas e habilidades. Instale no OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent ou Grok Bot.",

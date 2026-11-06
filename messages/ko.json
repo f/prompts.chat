@@ -1093,12 +1093,10 @@
     "selfHostedKev": "Kev (자체 호스팅)",
     "requestSnippetNote": "요청 형식은 System One API 레퍼런스를 따르며, Kev 서버도 같은 본문을 받습니다. 자리표시자 상태를 자신의 데이터로 바꾸세요. 요청에는 자신의 API 키나 서버가 필요합니다.",
     "decisionChain": "판단 체인",
-    "chainInput": "체인 입력",
     "howItRuns": "동작 방식",
     "scenarioPaths": "예시 경로",
     "scenarioPathsNote": "미리 정의된 경로를 선택하면 체인에서 강조됩니다. 모델을 호출하지 않으며, 결과는 예시입니다.",
     "allBranches": "모든 분기",
-    "scenarioInput": "시나리오 입력",
     "stepLabel": "{number}단계",
     "endsAt": "종착점",
     "steps": "단계",
@@ -1109,14 +1107,18 @@
     "fromStep": "{number}단계에서",
     "branches": "분기",
     "endpoints": "종착점",
-    "endpointsDescription": "각 경로가 끝나는 곳입니다. 모든 결과에는 정해진 행선지가 있습니다.",
     "terminalKinds": {
       "automated": "자동 처리",
       "human": "사람 검토",
       "stop": "중단",
       "handoff": "인계"
     },
-    "continuesIn": "{chain}(으)로 이어짐"
+    "continuesIn": "{chain}(으)로 이어짐",
+    "aboutChain": "이 체인 정보",
+    "goalAndInput": "목표와 입력",
+    "endpointDetails": "각 종착점의 의미",
+    "pathDetails": "단계 메모와 입력",
+    "stepDetails": "질문, 입력, 메모"
   },
   "bots": {
     "description": "지침, 루틴, 스킬을 갖춘 바로 쓸 수 있는 AI 에이전트 봇입니다. OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent 또는 Grok Bot에 설치하세요.",

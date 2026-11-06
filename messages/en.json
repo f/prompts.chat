@@ -1093,12 +1093,10 @@
     "selfHostedKev": "Kev (self-hosted)",
     "requestSnippetNote": "Request shape from the System One API reference; a Kev server accepts the same body. Replace the placeholder state with your data. Requests need your own API key or server.",
     "decisionChain": "Decision chain",
-    "chainInput": "Chain input",
     "howItRuns": "How it runs",
     "scenarioPaths": "Scenario paths",
     "scenarioPathsNote": "Pick a predefined path to highlight it through the chain. No model is called; outcomes are illustrative.",
     "allBranches": "All branches",
-    "scenarioInput": "Scenario input",
     "stepLabel": "Step {number}",
     "endsAt": "Ends at",
     "steps": "Steps",
@@ -1109,14 +1107,18 @@
     "fromStep": "From step {number}",
     "branches": "Branches",
     "endpoints": "Endpoints",
-    "endpointsDescription": "Where each path ends. Every outcome leads somewhere specific.",
     "terminalKinds": {
       "automated": "Automated",
       "human": "Human review",
       "stop": "Stop",
       "handoff": "Handoff"
     },
-    "continuesIn": "Continues in {chain}"
+    "continuesIn": "Continues in {chain}",
+    "aboutChain": "About this chain",
+    "goalAndInput": "Goal and input",
+    "endpointDetails": "What each endpoint means",
+    "pathDetails": "Step notes and input",
+    "stepDetails": "Question, inputs and notes"
   },
   "bots": {
     "description": "Ready-made AI agent bots with instructions, routines and skills. Install them on OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent or Grok Bot.",

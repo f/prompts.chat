@@ -1093,12 +1093,10 @@
     "selfHostedKev": "Kev (میزبانی شخصی)",
     "requestSnippetNote": "قالب درخواست از مرجع System One API گرفته شده است؛ سرور Kev همین بدنه را می‌پذیرد. وضعیت نمونه را با داده‌های خود جایگزین کنید. درخواست‌ها به کلید API یا سرور خودتان نیاز دارند.",
     "decisionChain": "زنجیرهٔ تصمیم",
-    "chainInput": "ورودی زنجیره",
     "howItRuns": "نحوهٔ اجرا",
     "scenarioPaths": "مسیرهای نمونه",
     "scenarioPathsNote": "یک مسیر از پیش تعریف‌شده را انتخاب کنید تا در زنجیره برجسته شود. هیچ مدلی فراخوانی نمی‌شود؛ نتیجه‌ها توضیحی‌اند.",
     "allBranches": "همهٔ شاخه‌ها",
-    "scenarioInput": "ورودی سناریو",
     "stepLabel": "گام {number}",
     "endsAt": "پایان در",
     "steps": "گام‌ها",
@@ -1109,14 +1107,18 @@
     "fromStep": "از گام {number}",
     "branches": "شاخه‌ها",
     "endpoints": "نقاط پایان",
-    "endpointsDescription": "جایی که هر مسیر به پایان می‌رسد. هر نتیجه مقصد مشخصی دارد.",
     "terminalKinds": {
       "automated": "خودکار",
       "human": "بازبینی انسانی",
       "stop": "توقف",
       "handoff": "واگذاری"
     },
-    "continuesIn": "ادامه در {chain}"
+    "continuesIn": "ادامه در {chain}",
+    "aboutChain": "دربارهٔ این زنجیره",
+    "goalAndInput": "هدف و ورودی",
+    "endpointDetails": "معنای هر نقطهٔ پایان",
+    "pathDetails": "یادداشت‌های گام‌ها و ورودی",
+    "stepDetails": "پرسش، ورودی‌ها و یادداشت‌ها"
   },
   "bots": {
     "description": "ربات‌های آماده عامل هوش مصنوعی با دستورالعمل‌ها، روال‌ها و مهارت‌ها. آن‌ها را روی OpenClaw، AutoGPT، OpenAI Dots، Claude Duet، Meta Muse، Hermes Agent یا Grok Bot نصب کنید.",

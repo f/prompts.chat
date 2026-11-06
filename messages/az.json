@@ -1093,12 +1093,10 @@
     "selfHostedKev": "Kev (öz serverinizdə)",
     "requestSnippetNote": "Sorğu formatı System One API arayışından götürülüb; Kev serveri eyni gövdəni qəbul edir. Nümunə vəziyyəti öz məlumatlarınızla əvəz edin. Sorğular üçün öz API açarınız və ya serveriniz lazımdır.",
     "decisionChain": "Qərar zənciri",
-    "chainInput": "Zəncirin girişi",
     "howItRuns": "Necə işləyir",
     "scenarioPaths": "Nümunə yollar",
     "scenarioPathsNote": "Zəncirdə vurğulamaq üçün əvvəlcədən müəyyən edilmiş yolu seçin. Heç bir model çağırılmır; nəticələr izahedicidir.",
     "allBranches": "Bütün şaxələr",
-    "scenarioInput": "Ssenari girişi",
     "stepLabel": "Addım {number}",
     "endsAt": "Bitdiyi yer",
     "steps": "Addımlar",
@@ -1109,14 +1107,18 @@
     "fromStep": "{number}-ci addımdan",
     "branches": "Şaxələr",
     "endpoints": "Son nöqtələr",
-    "endpointsDescription": "Hər yolun bitdiyi yer. Hər nəticə müəyyən yerə aparır.",
     "terminalKinds": {
       "automated": "Avtomatik",
       "human": "İnsan yoxlaması",
       "stop": "Dayan",
       "handoff": "Ötürmə"
     },
-    "continuesIn": "{chain} ilə davam edir"
+    "continuesIn": "{chain} ilə davam edir",
+    "aboutChain": "Bu zəncir haqqında",
+    "goalAndInput": "Məqsəd və giriş",
+    "endpointDetails": "Hər son nöqtənin mənası",
+    "pathDetails": "Addım qeydləri və giriş",
+    "stepDetails": "Sual, girişlər və qeydlər"
   },
   "bots": {
     "description": "Təlimatları, rutinləri və bacarıqları olan hazır süni intellekt agent botları. Onları OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent və ya Grok Bot-a quraşdırın.",

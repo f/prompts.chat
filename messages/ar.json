@@ -1093,12 +1093,10 @@
     "selfHostedKev": "Kev (استضافة ذاتية)",
     "requestSnippetNote": "صيغة الطلب مأخوذة من مرجع System One API؛ ويقبل خادم Kev نفس المحتوى. استبدل الحالة النموذجية ببياناتك. تتطلب الطلبات مفتاح API أو خادمًا خاصًا بك.",
     "decisionChain": "سلسلة قرار",
-    "chainInput": "مدخلات السلسلة",
     "howItRuns": "كيف تعمل",
     "scenarioPaths": "مسارات أمثلة",
     "scenarioPathsNote": "اختر مسارًا محددًا مسبقًا لإبرازه في السلسلة. لا يُستدعى أي نموذج؛ النتائج توضيحية.",
     "allBranches": "كل الفروع",
-    "scenarioInput": "مدخلات السيناريو",
     "stepLabel": "الخطوة {number}",
     "endsAt": "ينتهي عند",
     "steps": "الخطوات",
@@ -1109,14 +1107,18 @@
     "fromStep": "من الخطوة {number}",
     "branches": "الفروع",
     "endpoints": "النهايات",
-    "endpointsDescription": "أين ينتهي كل مسار. لكل نتيجة وجهة محددة.",
     "terminalKinds": {
       "automated": "تلقائي",
       "human": "مراجعة بشرية",
       "stop": "إيقاف",
       "handoff": "تسليم"
     },
-    "continuesIn": "يتابع في {chain}"
+    "continuesIn": "يتابع في {chain}",
+    "aboutChain": "حول هذه السلسلة",
+    "goalAndInput": "الهدف والمدخلات",
+    "endpointDetails": "معنى كل نهاية",
+    "pathDetails": "ملاحظات الخطوات والمدخلات",
+    "stepDetails": "السؤال والمدخلات والملاحظات"
   },
   "bots": {
     "description": "بوتات وكلاء ذكاء اصطناعي جاهزة مع التعليمات والمهام الروتينية والمهارات. ثبّتها على OpenClaw أو AutoGPT أو OpenAI Dots أو Claude Duet أو Meta Muse أو Hermes Agent أو Grok Bot.",

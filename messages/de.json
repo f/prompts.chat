@@ -1093,12 +1093,10 @@
     "selfHostedKev": "Kev (selbst gehostet)",
     "requestSnippetNote": "Anfrageformat laut Referenz der System-One-API; ein Kev-Server akzeptiert denselben Body. Ersetze den Platzhalter-Zustand durch deine Daten. Anfragen benötigen einen eigenen API-Schlüssel oder Server.",
     "decisionChain": "Entscheidungskette",
-    "chainInput": "Eingabe der Kette",
     "howItRuns": "Ablauf",
     "scenarioPaths": "Beispielpfade",
     "scenarioPathsNote": "Wähle einen vordefinierten Pfad, um ihn in der Kette hervorzuheben. Es wird kein Modell aufgerufen; die Ergebnisse sind veranschaulichend.",
     "allBranches": "Alle Verzweigungen",
-    "scenarioInput": "Eingabe des Szenarios",
     "stepLabel": "Schritt {number}",
     "endsAt": "Endet bei",
     "steps": "Schritte",
@@ -1109,14 +1107,18 @@
     "fromStep": "Aus Schritt {number}",
     "branches": "Verzweigungen",
     "endpoints": "Endpunkte",
-    "endpointsDescription": "Wo jeder Pfad endet. Jedes Ergebnis führt an einen bestimmten Ort.",
     "terminalKinds": {
       "automated": "Automatisch",
       "human": "Menschliche Prüfung",
       "stop": "Stopp",
       "handoff": "Übergabe"
     },
-    "continuesIn": "Weiter in {chain}"
+    "continuesIn": "Weiter in {chain}",
+    "aboutChain": "Über diese Kette",
+    "goalAndInput": "Ziel und Eingabe",
+    "endpointDetails": "Was jeder Endpunkt bedeutet",
+    "pathDetails": "Schrittnotizen und Eingabe",
+    "stepDetails": "Frage, Eingaben und Hinweise"
   },
   "bots": {
     "description": "Fertige KI-Agenten-Bots mit Anweisungen, Routinen und Skills. Installiere sie auf OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent oder Grok Bot.",

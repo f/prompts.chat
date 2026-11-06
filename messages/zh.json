@@ -1093,12 +1093,10 @@
     "selfHostedKev": "Kev（自托管）",
     "requestSnippetNote": "请求格式来自 System One API 参考；Kev 服务器接受相同的请求体。请用你自己的数据替换占位状态。发送请求需要你自己的 API 密钥或服务器。",
     "decisionChain": "决策链",
-    "chainInput": "决策链输入",
     "howItRuns": "运行方式",
     "scenarioPaths": "示例路径",
     "scenarioPathsNote": "选择一条预定义路径以在决策链中高亮显示。不会调用任何模型；结果仅为示意。",
     "allBranches": "所有分支",
-    "scenarioInput": "场景输入",
     "stepLabel": "第 {number} 步",
     "endsAt": "终点",
     "steps": "步骤",
@@ -1109,14 +1107,18 @@
     "fromStep": "来自第 {number} 步",
     "branches": "分支",
     "endpoints": "终点",
-    "endpointsDescription": "每条路径的结束位置。每个结果都通向明确的去处。",
     "terminalKinds": {
       "automated": "自动处理",
       "human": "人工审核",
       "stop": "停止",
       "handoff": "移交"
     },
-    "continuesIn": "在 {chain} 中继续"
+    "continuesIn": "在 {chain} 中继续",
+    "aboutChain": "关于此决策链",
+    "goalAndInput": "目标与输入",
+    "endpointDetails": "各终点的含义",
+    "pathDetails": "步骤说明与输入",
+    "stepDetails": "问题、输入与说明"
   },
   "bots": {
     "description": "现成的 AI 智能体机器人，包含指令、例行任务和技能。可安装到 OpenClaw、AutoGPT、OpenAI Dots、Claude Duet、Meta Muse、Hermes Agent 或 Grok Bot。",

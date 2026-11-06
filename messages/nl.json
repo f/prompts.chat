@@ -1093,12 +1093,10 @@
     "selfHostedKev": "Kev (zelf gehost)",
     "requestSnippetNote": "Verzoekformaat volgens de API-referentie van System One; een Kev-server accepteert dezelfde body. Vervang de voorbeeldtoestand door je eigen gegevens. Verzoeken vereisen je eigen API-sleutel of server.",
     "decisionChain": "Beslisketen",
-    "chainInput": "Invoer van de keten",
     "howItRuns": "Hoe het werkt",
     "scenarioPaths": "Voorbeeldpaden",
     "scenarioPathsNote": "Kies een vooraf vastgelegd pad om het in de keten te markeren. Er wordt geen model aangeroepen; uitkomsten zijn illustratief.",
     "allBranches": "Alle vertakkingen",
-    "scenarioInput": "Invoer van het scenario",
     "stepLabel": "Stap {number}",
     "endsAt": "Eindigt bij",
     "steps": "Stappen",
@@ -1109,14 +1107,18 @@
     "fromStep": "Uit stap {number}",
     "branches": "Vertakkingen",
     "endpoints": "Eindpunten",
-    "endpointsDescription": "Waar elk pad eindigt. Elke uitkomst leidt naar een concrete plek.",
     "terminalKinds": {
       "automated": "Automatisch",
       "human": "Menselijke beoordeling",
       "stop": "Stop",
       "handoff": "Overdracht"
     },
-    "continuesIn": "Gaat verder in {chain}"
+    "continuesIn": "Gaat verder in {chain}",
+    "aboutChain": "Over deze keten",
+    "goalAndInput": "Doel en invoer",
+    "endpointDetails": "Wat elk eindpunt betekent",
+    "pathDetails": "Stapnotities en invoer",
+    "stepDetails": "Vraag, invoer en notities"
   },
   "bots": {
     "description": "Kant-en-klare AI-agentbots met instructies, routines en skills. Installeer ze op OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent of Grok Bot.",

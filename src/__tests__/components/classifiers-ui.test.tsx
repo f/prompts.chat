@@ -93,6 +93,15 @@ describe("ChainFlow", () => {
     expect(window.location.search).not.toContain("scenario=");
   });
 
+  it("selects a scenario from the compact phone picker", () => {
+    renderFlow();
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "invoice-copy" } });
+    expect(screen.getByTestId("scenario-path")).toBeInTheDocument();
+    expect(window.location.search).toContain("scenario=invoice-copy");
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "" } });
+    expect(screen.queryByTestId("scenario-path")).toBeNull();
+  });
+
   it("opens a scenario from the URL", () => {
     window.history.replaceState(null, "", "/classifiers/chains/support-inbox-triage?scenario=recruiter");
     renderFlow();
@@ -100,9 +109,53 @@ describe("ChainFlow", () => {
     expect(document.querySelectorAll("[data-taken]")).toHaveLength(1);
   });
 
-  it("links the handoff to the refund chain", () => {
+  it("links the handoff endpoint to the next chain from the overview", () => {
     renderFlow();
-    const link = screen.getByRole("link", { name: /continuesIn/ });
+    const overview = screen.getByTestId("chain-overview");
+    const handoff = chain.terminals.find((t) => t.handoffChain)!;
+    const link = within(overview).getByRole("link", { name: handoff.label });
     expect(link).toHaveAttribute("href", "/classifiers/chains/refund-request-resolution");
+  });
+
+  it("summarises every step and endpoint in the overview", () => {
+    renderFlow();
+    const overview = screen.getByTestId("chain-overview");
+    for (const step of chain.steps) {
+      const name = classifierMap[step.classifier].name;
+      expect(within(overview).getByRole("link", { name })).toHaveAttribute("href", `#step-${step.id}`);
+    }
+    for (const end of chain.terminals) {
+      expect(overview.querySelector(`#end-${end.id}`)).not.toBeNull();
+    }
+  });
+
+  it("marks the endpoint a scenario reaches", () => {
+    renderFlow();
+    fireEvent.click(screen.getByRole("button", { name: chain.scenarios[0].title }));
+    const reached = document.querySelectorAll("[data-reached]");
+    expect(reached).toHaveLength(1);
+    expect(reached[0].closest("li")).toHaveAttribute("id", `end-${chain.scenarios[0].terminal}`);
+  });
+
+  it("links each step to its classifier and keeps verbose details collapsed", () => {
+    renderFlow();
+    const [first] = screen.getAllByTestId("chain-step");
+    const classifier = classifierMap[chain.steps[0].classifier];
+    expect(within(first).getByRole("link", { name: classifier.name })).toHaveAttribute(
+      "href",
+      `/classifiers/${classifier.slug}`
+    );
+    const details = first.querySelector("details")!;
+    expect(details.open).toBe(false);
+    expect(within(details).getByText(classifier.question.instructions)).toBeInTheDocument();
+  });
+
+  it("keeps manual review branches visible", () => {
+    renderFlow();
+    const humanEnds = chain.terminals.filter((t) => t.kind === "human").map((t) => t.label);
+    expect(humanEnds.length).toBeGreaterThan(0);
+    const steps = screen.getAllByTestId("chain-step");
+    const branchText = steps.map((s) => s.querySelector("ul")!.textContent).join(" ");
+    for (const label of humanEnds) expect(branchText).toContain(label);
   });
 });

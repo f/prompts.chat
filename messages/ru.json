@@ -1093,12 +1093,10 @@
     "selfHostedKev": "Kev (свой сервер)",
     "requestSnippetNote": "Формат запроса взят из справочника System One API; сервер Kev принимает то же тело. Замените заглушку состояния своими данными. Для запросов нужен собственный API-ключ или сервер.",
     "decisionChain": "Цепочка решений",
-    "chainInput": "Вход цепочки",
     "howItRuns": "Как это работает",
     "scenarioPaths": "Примеры путей",
     "scenarioPathsNote": "Выберите заранее заданный путь, чтобы выделить его в цепочке. Модель не вызывается; результаты иллюстративны.",
     "allBranches": "Все ветви",
-    "scenarioInput": "Вход сценария",
     "stepLabel": "Шаг {number}",
     "endsAt": "Завершается",
     "steps": "Шаги",
@@ -1109,14 +1107,18 @@
     "fromStep": "Из шага {number}",
     "branches": "Ветви",
     "endpoints": "Исходы",
-    "endpointsDescription": "Где заканчивается каждый путь. Каждый результат ведёт в конкретное место.",
     "terminalKinds": {
       "automated": "Автоматически",
       "human": "Проверка человеком",
       "stop": "Стоп",
       "handoff": "Передача"
     },
-    "continuesIn": "Продолжается в «{chain}»"
+    "continuesIn": "Продолжается в «{chain}»",
+    "aboutChain": "Об этой цепочке",
+    "goalAndInput": "Цель и вход",
+    "endpointDetails": "Что означает каждый исход",
+    "pathDetails": "Заметки по шагам и вход",
+    "stepDetails": "Вопрос, входы и заметки"
   },
   "bots": {
     "description": "Готовые боты ИИ-агентов с инструкциями, рутинами и навыками. Установите их в OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent или Grok Bot.",
