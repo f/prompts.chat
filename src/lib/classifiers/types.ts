@@ -7,10 +7,17 @@
 export type ClassifierCategoryId =
   | "support"
   | "refunds"
+  | "commerce"
+  | "logistics"
   | "moderation"
   | "agents"
   | "grounding"
-  | "security";
+  | "security"
+  | "incidents"
+  | "engineering"
+  | "documents"
+  | "research"
+  | "education";
 
 /** System One question types used in the catalog (image-only `box` is omitted). */
 export type QuestionType = "choice" | "score" | "noul";

@@ -1,5 +1,4 @@
-import { CLASSIFIERS } from "./data/classifiers";
-import { CHAINS } from "./data/chains";
+import { CLASSIFIERS, CHAINS } from "./data";
 import { REFERENCES } from "./references";
 import type {
   ClassifierCategoryId,
@@ -16,10 +15,17 @@ export { REFERENCES, getReference } from "./references";
 export const CLASSIFIER_CATEGORIES: ClassifierCategoryId[] = [
   "support",
   "refunds",
+  "commerce",
+  "logistics",
   "moderation",
   "agents",
   "grounding",
   "security",
+  "incidents",
+  "engineering",
+  "documents",
+  "research",
+  "education",
 ];
 
 /** Limits from the System One API reference. */
@@ -284,12 +290,21 @@ export function validateCatalog(
       }
     }
 
-    if (c.scenarios.length < 2) errors.push(`${at}: needs at least two scenarios`);
+    if (c.scenarios.length < 3) errors.push(`${at}: needs at least three scenarios`);
     const scenarioIds = c.scenarios.map((s) => s.id);
     if (new Set(scenarioIds).size !== scenarioIds.length) errors.push(`${at}: duplicate scenario ids`);
     for (const s of c.scenarios) {
       if (!outcomeIds.includes(s.outcome)) errors.push(`${at}: scenario "${s.id}" uses unknown outcome "${s.outcome}"`);
       if (s.adaptedFrom && !REFERENCES[s.adaptedFrom]) errors.push(`${at}: scenario "${s.id}" cites unknown reference`);
+    }
+    if (new Set(c.scenarios.map((s) => s.outcome)).size < 3) {
+      errors.push(`${at}: scenarios should show at least three different outcomes`);
+    }
+    const uncertainOutcomes = new Set(
+      c.outcomes.filter((o) => o.tone === "review" || o.tone === "caution").map((o) => o.id)
+    );
+    if (!c.scenarios.some((s) => uncertainOutcomes.has(s.outcome))) {
+      errors.push(`${at}: needs a scenario that ends in review or caution`);
     }
 
     for (const ref of c.references) {
@@ -307,6 +322,10 @@ export function validateCatalog(
       if (linked.has(link.slug)) errors.push(`${at}: links to "${link.slug}" twice`);
       linked.add(link.slug);
       if (!link.reason.trim()) errors.push(`${at}: link to "${link.slug}" needs a reason`);
+      const partner = bySlug.get(link.slug);
+      if (partner && !partner.betterTogether.some((l) => l.slug === c.slug)) {
+        errors.push(`${at}: "${link.slug}" does not link back`);
+      }
     }
   }
 
@@ -320,6 +339,9 @@ export function validateCatalog(
   for (const chain of chains) {
     const at = `chain "${chain.slug}"`;
     if (!SLUG_PATTERN.test(chain.slug)) errors.push(`${at}: slug must be kebab-case`);
+    if (bySlug.has(chain.slug)) errors.push(`${at}: slug is also used by a classifier`);
+    if (!CLASSIFIER_CATEGORIES.includes(chain.category)) errors.push(`${at}: unknown category`);
+    if (!chain.terminals.some((t) => t.kind === "human")) errors.push(`${at}: needs a terminal where a person decides`);
     const stepIds = chain.steps.map((s) => s.id);
     const terminalIds = chain.terminals.map((t) => t.id);
     const nodeIds = [...stepIds, ...terminalIds];
@@ -385,7 +407,9 @@ export function validateCatalog(
       }
     }
 
-    if (chain.scenarios.length < 2) errors.push(`${at}: needs at least two scenarios`);
+    if (chain.scenarios.length < 5) errors.push(`${at}: needs at least five scenarios`);
+    const chainScenarioIds = chain.scenarios.map((s) => s.id);
+    if (new Set(chainScenarioIds).size !== chainScenarioIds.length) errors.push(`${at}: duplicate scenario ids`);
     const reachedTerminals = new Set<string>();
     for (const scenario of chain.scenarios) {
       const scAt = `${at} scenario "${scenario.id}"`;
@@ -414,7 +438,7 @@ export function validateCatalog(
       if (!terminalIds.includes(scenario.terminal)) errors.push(`${scAt}: unknown terminal "${scenario.terminal}"`);
       reachedTerminals.add(scenario.terminal);
     }
-    if (reachedTerminals.size < 2) errors.push(`${at}: scenarios should cover more than one outcome path`);
+    if (reachedTerminals.size < 3) errors.push(`${at}: scenarios should reach at least three different endings`);
 
     for (const ref of chain.references) {
       if (!REFERENCES[ref]) errors.push(`${at}: unknown reference "${ref}"`);
