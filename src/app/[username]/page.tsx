@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getTranslations, getLocale } from "next-intl/server";
 import { formatDistanceToNow } from "@/lib/date";
-import { getBotTeamUrl, getBotUrl, getPromptPageUrl, getPromptUrl } from "@/lib/urls";
+import { getBotTeamUrl, getPromptPageUrl } from "@/lib/urls";
 import { Calendar, ArrowBigUp, Bot, UsersRound, ChevronLeft, ChevronRight, FileText, Settings, GitPullRequest, Clock, Check, X, Pin, BadgeCheck, Users, ShieldCheck, Heart, ImageIcon } from "lucide-react";
 import { BotCard } from "@/components/bots/bot-card";
 import { listBotsByAuthor, publicBotWhere } from "@/lib/bots";
