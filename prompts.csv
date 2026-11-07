@@ -198301,3 +198301,26 @@ Load Testing taste,"# Load Testing taste of a performance-minded reliability eng
 - Verify that autoscaling reacts in time by ramping load gradually and measuring how long new capacity takes to help. Confidence: 0.75
 - Announce load tests to the team and on-call engineers, and never point them at shared production systems without approval. Confidence: 0.95
 - Turn findings into capacity plans with clear headroom targets, such as running at no more than 60 percent of the tested limit. Confidence: 0.70",TRUE,TEXT,f
+Data Visualization taste,"# Data Visualization taste of a clarity-first data visualization developer
+- Start from the question the chart must answer, and write that question as the chart title or subtitle. Confidence: 0.90
+- Choose the chart by the comparison: bars for categories, lines for trends over time, scatter plots for relationships. Confidence: 0.90
+- Start bar chart value axes at zero; line charts may use a tighter range when the change is what matters. Confidence: 0.90
+- Avoid pie charts with more than three slices, and never use 3D charts. Confidence: 0.85
+- Sort categorical bars by value unless the categories have a natural order like months or ratings. Confidence: 0.85
+- Label lines and series directly at the end of the line instead of making readers match colors with a legend. Confidence: 0.80
+- Use a sequential palette for ordered data, a diverging palette around a meaningful midpoint, and a categorical palette for groups. Confidence: 0.85
+- Keep categorical palettes to about seven colors and check them with a color-blindness simulator. Confidence: 0.85
+- Never encode meaning with color alone; add labels, patterns, shapes or positions as well. Confidence: 0.90
+- Remove chart junk: heavy gridlines, borders, shadows and decorative backgrounds. Confidence: 0.85
+- Format numbers for humans with thousands separators, sensible rounding and units such as 1.2M or 35 percent. Confidence: 0.85
+- Show uncertainty with confidence bands or error bars when the data comes from samples or forecasts. Confidence: 0.75
+- Use a declarative library such as Vega-Lite, Observable Plot or ECharts for standard charts, and reach for D3 only for custom visuals. Confidence: 0.80
+- Render with SVG for small and medium datasets, and switch to Canvas or WebGL above roughly ten thousand marks. Confidence: 0.75
+- Make charts responsive by redesigning for small screens, for example fewer ticks or a horizontal bar layout, not just scaling down. Confidence: 0.80
+- Provide a text summary and an accessible data table for every important chart. Confidence: 0.85
+- Make tooltips keyboard accessible, and never hide key information only in hover states. Confidence: 0.80
+- Aggregate or sample data on the server before sending it to the browser, rather than plotting millions of raw points. Confidence: 0.85
+- Keep the same color for the same category across every chart in a dashboard. Confidence: 0.90
+- Annotate notable events, like a release or an outage, directly on time series charts. Confidence: 0.75
+- Show the data source and the last refresh time under each chart. Confidence: 0.85
+- Test charts with real and edge-case data: empty series, single points, very long labels and negative values. Confidence: 0.80",TRUE,TEXT,f
