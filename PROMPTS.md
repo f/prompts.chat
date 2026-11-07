@@ -231242,3 +231242,16 @@ A red wooden canoe tied to the end of a short weathered wooden dock on a mirror-
 
 </details>
 
+<details>
+<summary><strong>Alpine Lake Red Canoe at Autumn Sunrise (Image-to-Video Animation)</strong></summary>
+
+## Alpine Lake Red Canoe at Autumn Sunrise (Image-to-Video Animation)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Start from the step 2 image "Red Canoe at a Wooden Dock on a Misty Alpine Lake at Autumn Sunrise" as the exact first frame, and animate it into a calm ${duration:6}-second cinematic shot. Keep the weathered wooden dock, the red canoe on the left of the dock, the dark green pines on the left shore, the golden larches on the right shore, the three snow-capped peaks, the colors, and the style exactly as in the image. The camera makes a slow, smooth drift forward and slightly down toward the canoe and the dock. Low mist slides softly across the water, the canoe stays tied to the end of the dock and rocks only very slightly, and the reflections of the peaks and trees ripple gently. The peaks stay lit pink and gold by the sunrise. Natural, realistic motion, no people, no cuts, no text. Soft sound of a still morning lake, gentle lapping water, and faint distant birdsong.
+```
+
+</details>
+
