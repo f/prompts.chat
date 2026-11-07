@@ -231176,3 +231176,56 @@ A pop art comic-style illustration of a gleaming chrome 1950s roadside diner in 
 
 </details>
 
+<details>
+<summary><strong>Alpine Lake Red Canoe at Autumn Sunrise Scene Concept Brief Builder</strong></summary>
+
+## Alpine Lake Red Canoe at Autumn Sunrise Scene Concept Brief Builder
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Act as a cinematic landscape scene designer who writes image-ready and motion-ready scene briefs. Help me design one hero shot of a red wooden canoe tied to a small weathered wooden dock on a mirror-still alpine lake at autumn sunrise: dark green pines on one shore, golden-orange larches on the other, three jagged snow-capped peaks glowing pink and gold in the first light, low mist drifting over the water, and a perfect reflection of the peaks and trees. The shot will first be generated as a still image and then animated into a short video that uses that image as its first frame. Your brief must make the still image rich in elements that can move or change naturally (a slow camera drift toward the canoe, mist sliding across the water, the canoe rocking very slightly on its rope, soft ripples in the reflection) while keeping the composition calm, balanced, readable, and easy to animate.
+
+My starting idea: ${idea:a silent autumn morning at a mountain lake, just before anyone arrives, with a single red canoe waiting at the end of the dock}
+
+My starting choices:
+- Dock: ${dock:a short weathered wooden dock pointing out into the lake from the bottom center of the frame}
+- Canoe: ${canoe:a red wooden canoe with wooden seats, tied to the end of the dock by a rope or chain, floating on the LEFT side of the dock}
+- Lake: ${lake:a mirror-still alpine lake filling the middle of the frame, with low mist floating just above the water}
+- Left shore: ${left_shore:dark green pine forest on a rocky shoreline}
+- Right shore: ${right_shore:golden-orange autumn larches on a rocky shoreline with dry grass}
+- Mountains: ${mountains:three jagged snow-capped peaks in the center background, lit pink and gold by the sunrise}
+- Sky: ${sky:a pale clear morning sky with a soft warm glow near the horizon}
+- Light: ${light:warm sunrise light on the peaks and larch tops, soft cool light on the water and dock}
+- Visual style: ${style:photoreal landscape photography, natural but rich colors, low camera just behind the dock}
+- Mood words: ${mood:calm, crisp, quiet, fresh, timeless}
+
+First ask me, in one short message, for anything missing: the camera height and position (on the dock, just behind it, or from the shore), how much of the frame the dock, canoe, lake, and mountains should take, which side of the dock the canoe floats on and which way it points, how many peaks I want and how much snow they carry, how thick the mist should be, how strong the sunrise light should be, whether the camera should drift forward or stay still in the video, where the camera move should end, and anything to avoid (people, paddlers, boats with logos, houses, roads, power lines, text, brand names, or copying a specific real lake, photograph, or famous viewpoint).
+
+Then produce the brief with these sections:
+
+1. **Scene Overview**: two or three sentences on the place, the moment, the light, and the feeling. Describe an imagined alpine lake in the spirit of high mountain lakes in autumn, not a copy of a specific real lake, viewpoint, or famous photograph.
+
+2. **Dock and Canoe**: the weathered planks and posts of the dock, its length and angle, the red canoe's color, wooden seats, and position, and how it is tied to the end of the dock.
+
+3. **Lake and Mist**: the still water, the mirror reflection of the peaks and trees, and how the low mist lies over the water and thins toward the shores.
+
+4. **Shores and Trees**: the dark green pines on the left shore, the golden-orange larches on the right shore, the rocky shorelines, and how the trees step back toward the mountains.
+
+5. **Mountains and Sky**: the three jagged peaks, their snow and rock, the pink and gold sunrise glow on their faces, and the pale clear sky.
+
+6. **Light and Color**: warm sunrise light on the peaks and larch tops, cool soft light on the water and dock, the red canoe as the main color accent, and the green, gold, and blue palette, without blown-out highlights.
+
+7. **Fixed Visual Details**: a numbered list of 8 to 10 details that must stay identical in the still image and in the video (camera position, dock from the bottom center, canoe on the left of the dock and tied at its end, pines on the left shore, larches on the right shore, three peaks in the center, mist on the water, reflection, light direction, framing).
+
+8. **Motion Map**: a table of every element that can move in the video, with columns: element, type of motion, direction, speed (very slow, slow, medium), and how strongly it should move. Include the camera drifting forward and slightly down toward the canoe and dock, mist sliding softly across the water, the canoe rocking very slightly on its rope, gentle ripples in the reflection, and the sunrise glow holding on the peaks. Keep total motion subtle and physically plausible.
+
+9. **Prompt Seed A - Hero Still Image**: a ready-to-paste image prompt under 170 words for a wide landscape 16:9 frame, with the red canoe tied to the end of the wooden dock, the mirror-still alpine lake, the pines and golden larches, and the snow-capped peaks at sunrise in the first sentence, ending with: no people, no text, no logos.
+
+10. **Prompt Seed B - Image-to-Video Animation**: a ready-to-paste video prompt under 120 words that starts from the hero still as the first frame, describes a slow, smooth camera drift for about 6 seconds forward and slightly down toward the canoe and dock, the mist drifting softly across the water, the canoe staying tied and rocking only very slightly, the reflections rippling gently, the peaks staying lit pink and gold, and says to keep the dock, canoe, trees, mountains, and colors exactly as in the image with no people.
+
+Rules: no people, paddlers, faces, text, signs, or logos; no houses, roads, cars, power lines, or other boats; no fast camera moves or cuts; and no motion that breaks physics (the dock, shores, trees, and mountains never move or change shape, the canoe stays tied in place and only rocks a little, no animals or birds suddenly appear, the light changes slowly and does not flicker, the water stays calm with only gentle ripples). Use short paragraphs and lists.
+```
+
+</details>
+
