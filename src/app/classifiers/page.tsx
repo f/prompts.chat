@@ -1,13 +1,11 @@
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { FlaskConical } from "lucide-react";
+import Link from "next/link";
+import { FlaskConical, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { ClassifierCatalog } from "@/components/classifiers/classifier-catalog";
-import {
-  CLASSIFIER_CATEGORIES,
-  getChains,
-  getClassifiers,
-  type ClassifierCategoryId,
-} from "@/lib/classifiers";
+import { CLASSIFIER_CATEGORIES, type ClassifierCategoryId } from "@/lib/classifiers";
+import { getClassifierCatalog, listedClassifiers } from "@/lib/classifiers/store";
 import { buildPageMetadata } from "@/lib/seo";
 
 interface ClassifiersPageProps {
@@ -33,11 +31,20 @@ export default async function ClassifiersPage({ searchParams }: ClassifiersPageP
   const t = await getTranslations("classifiers");
   const tSeo = await getTranslations("seo.classifiers");
   const params = await searchParams;
+  const catalog = await getClassifierCatalog();
 
   return (
     <div className="container py-6">
       <div className="mb-6 max-w-3xl space-y-3">
-        <h1 className="text-lg font-semibold">{tSeo("heading")}</h1>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h1 className="text-lg font-semibold">{tSeo("heading")}</h1>
+          <Button size="sm" className="h-8 text-xs" asChild>
+            <Link href="/classifiers/new">
+              <Plus className="mr-1 h-3.5 w-3.5" />
+              {t("create")}
+            </Link>
+          </Button>
+        </div>
         <p className="text-sm text-muted-foreground">{t("intro")}</p>
         <div className="flex items-start gap-2 rounded-[var(--radius)] border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-xs text-muted-foreground">
           <FlaskConical className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-600 dark:text-amber-400" />
@@ -48,8 +55,9 @@ export default async function ClassifiersPage({ searchParams }: ClassifiersPageP
       </div>
 
       <ClassifierCatalog
-        classifiers={getClassifiers()}
-        chains={getChains()}
+        classifiers={listedClassifiers(catalog)}
+        stepClassifiers={catalog.classifiers}
+        chains={catalog.chains}
         initialQuery={params.q ?? ""}
         initialCategory={parseCategory(params.category)}
       />

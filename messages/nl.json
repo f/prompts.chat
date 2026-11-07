@@ -63,7 +63,8 @@
       "prompt": "Prompt",
       "skill": "Skill",
       "bot": "Bot",
-      "team": "Team"
+      "team": "Team",
+      "classifier": "Classifier"
     }
   },
   "brand": {
@@ -498,6 +499,25 @@
       "added": "Toegevoegd",
       "removed": "Verwijderd",
       "changed": "Gewijzigd"
+    },
+    "proposeClassifierTitle": "Wijzigingen voorstellen voor deze classifier",
+    "proposeClassifierIntro": "Stel verbeteringen voor deze classifier voor. De eigenaar beoordeelt je voorstel en kan het goedkeuren of afwijzen.",
+    "backToClassifier": "Terug naar classifier",
+    "classifierFields": {
+      "title": "Naam",
+      "summary": "Samenvatting",
+      "category": "Categorie",
+      "problem": "Probleem",
+      "goal": "Doel",
+      "input": "Invoer",
+      "question": "Vraag",
+      "options": "Opties",
+      "outcomes": "Uitkomsten",
+      "scenarios": "Scenario's",
+      "guidance": "Richtlijnen",
+      "caveats": "Kanttekeningen",
+      "tags": "Trefwoorden",
+      "references": "Bronnen"
     }
   },
   "categories": {
@@ -1030,10 +1050,17 @@
     "categories": {
       "support": "Klantenservice",
       "refunds": "Terugbetalingen",
+      "commerce": "Bestellingen en retouren",
+      "logistics": "Logistiek en bezorging",
       "moderation": "Moderatie",
       "agents": "Agents",
       "grounding": "Bronvastheid",
-      "security": "Beveiligingssignalen"
+      "security": "Beveiligingssignalen",
+      "incidents": "IT en incidenten",
+      "engineering": "Softwareontwikkeling",
+      "documents": "Documenten en e-mail",
+      "research": "Feedback en onderzoek",
+      "education": "Onderwijs"
     },
     "questionTypes": {
       "choice": "Choice",
@@ -1118,7 +1145,102 @@
     "goalAndInput": "Doel en invoer",
     "endpointDetails": "Wat elk eindpunt betekent",
     "pathDetails": "Stapnotities en invoer",
-    "stepDetails": "Vraag, invoer en notities"
+    "stepDetails": "Vraag, invoer en notities",
+    "form": {
+      "defaultReviewLabel": "Controle nodig",
+      "defaultReviewWhen": "Het vertrouwen is laag of het antwoord is onduidelijk.",
+      "defaultOptionWhen": "Het antwoord is \"{option}\".",
+      "updated": "Classifier bijgewerkt",
+      "created": "Classifier aangemaakt",
+      "remove": "Verwijderen",
+      "editTitle": "Classifier bewerken",
+      "createTitle": "Classifier maken",
+      "steps": "Stappen",
+      "step": {
+        "basics": "Basis",
+        "input": "Invoer",
+        "question": "Vraag",
+        "outcomes": "Uitkomsten",
+        "scenarios": "Scenario's",
+        "review": "Controleren"
+      },
+      "stepHint": {
+        "basics": "Geef de beslissing een naam en beschrijf welk probleem ze oplost.",
+        "input": "Beschrijf de toestand die je applicatie bij elk verzoek meestuurt.",
+        "question": "Stel één vraag over de toestand en noem de mogelijke antwoorden.",
+        "outcomes": "Koppel antwoorden aan de uitkomsten waar je code op reageert. Voeg er één toe voor onzekere antwoorden.",
+        "scenarios": "Voeg illustratieve voorbeelden toe. Je schrijft hun uitkomsten zelf; het is geen modeluitvoer.",
+        "review": "Controleer de classifier voor het opslaan. De server voert dezelfde controles uit."
+      },
+      "name": "Naam",
+      "namePlaceholder": "bijv. Recht op terugbetaling",
+      "summary": "Samenvatting",
+      "summaryPlaceholder": "Een of twee zinnen over wat de classifier beslist",
+      "category": "Categorie",
+      "problemPlaceholder": "Wat gaat er mis zonder deze beslissing?",
+      "goalPlaceholder": "Wat moet de beslissing bereiken?",
+      "inputSummary": "Samenvatting van de invoer",
+      "inputSummaryPlaceholder": "bijv. Een supportticket met de bestelgeschiedenis",
+      "inputFields": "Invoervelden",
+      "inputFieldsHint": "snake_case-namen van de waarden in de toestand",
+      "fieldName": "Veldnaam",
+      "fieldDescription": "Wat het veld bevat",
+      "addInputField": "Veld toevoegen",
+      "questionType": "Vraagtype",
+      "questionTypeHint": {
+        "choice": "Kiest één optie uit een lijst",
+        "score": "Plaatst de toestand op een geordende schaal",
+        "noul": "Kans dat een ja/nee-stelling waar is"
+      },
+      "question": "Vraag",
+      "questionPlaceholder": "bijv. Welk team moet dit ticket oppakken?",
+      "optionsHint": {
+        "choice": "Optiesleutels moeten snake_case zijn. Elke optie heeft een uitkomst met dezelfde id nodig.",
+        "score": "Niveaus worden genummerd vanaf 0, de laagste eerst.",
+        "noul": "Beschrijf wat telt als ja en wat als nee."
+      },
+      "optionKey": "Optiesleutel",
+      "optionDescription": "Betekenis van de optie",
+      "addOption": "Optie toevoegen",
+      "addOutcomesForOptions": "Voor elke optie een uitkomst toevoegen",
+      "outcomesHint": "Id's zijn snake_case. Tonen: doorgaan, voorzichtig, controle of stop.",
+      "outcomeId": "Uitkomst-id",
+      "outcomeLabel": "Label",
+      "outcomeTone": "Toon",
+      "tones": {
+        "proceed": "Doorgaan",
+        "caution": "Voorzichtig",
+        "review": "Controle",
+        "stop": "Stop"
+      },
+      "addOutcome": "Uitkomst toevoegen",
+      "onePerLine": "Eén per regel",
+      "guidanceHint": "Praktisch advies voor het gebruik van het antwoord",
+      "caveatsHint": "Beperkingen die lezers niet mogen missen",
+      "scenarioTitle": "Scenariotitel",
+      "scenarioOutcome": "Uitkomst",
+      "scenarioStatePlaceholder": "Tekst, of een JSON-object zoals {\"message\": \"...\"}",
+      "scenarioState": "Toestand",
+      "scenarioRationale": "Waarom deze uitkomst",
+      "addScenario": "Scenario toevoegen",
+      "tags": "Trefwoorden",
+      "tagsPlaceholder": "Kommagescheiden, bijv. terugbetalingen, betalingen",
+      "fixBeforeSaving": "Los deze problemen op voor het opslaan:",
+      "readyToSave": "Alles ziet er goed uit. Dit is de definitie die mensen kopiëren:",
+      "back": "Terug",
+      "next": "Volgende",
+      "save": "Wijzigingen opslaan",
+      "create": "Classifier maken"
+    },
+    "create": "Nieuwe classifier",
+    "edit": "Bewerken",
+    "community": "Community",
+    "private": "Privé",
+    "unlisted": "Niet vermeld",
+    "copyJson": "JSON kopiëren",
+    "suggestedDescription": "Zelfde categorie: classifiers die je hiermee kunt combineren.",
+    "noSuggestions": "Nog geen verwante classifiers.",
+    "emptyCatalog": "Nog geen classifiers. Maak de eerste."
   },
   "bots": {
     "description": "Kant-en-klare AI-agentbots met instructies, routines en skills. Installeer ze op OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent of Grok Bot.",

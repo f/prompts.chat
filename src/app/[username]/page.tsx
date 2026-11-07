@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getTranslations, getLocale } from "next-intl/server";
 import { formatDistanceToNow } from "@/lib/date";
-import { getBotTeamUrl, getBotUrl, getPromptUrl } from "@/lib/urls";
+import { getBotTeamUrl, getPromptPageUrl } from "@/lib/urls";
 import { Calendar, ArrowBigUp, Bot, UsersRound, ChevronLeft, ChevronRight, FileText, Settings, GitPullRequest, Clock, Check, X, Pin, BadgeCheck, Users, ShieldCheck, Heart, ImageIcon } from "lucide-react";
 import { BotCard } from "@/components/bots/bot-card";
 import { listBotsByAuthor, publicBotWhere } from "@/lib/bots";
@@ -61,7 +61,7 @@ export async function generateMetadata({ params, searchParams }: UserProfilePage
       bio: true,
       _count: {
         select: {
-          prompts: { where: { isPrivate: false, isUnlisted: false, deletedAt: null, type: { not: "BOT" } } },
+          prompts: { where: { isPrivate: false, isUnlisted: false, deletedAt: null, type: { notIn: ["BOT", "CLASSIFIER"] } } },
         },
       },
     },
@@ -133,7 +133,7 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
       customLinks: true,
       _count: {
         select: {
-          prompts: { where: { type: { not: "BOT" } } },
+          prompts: { where: { type: { notIn: ["BOT", "CLASSIFIER"] } } },
           contributions: true,
         },
       },
@@ -213,7 +213,7 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
       },
     }),
     db.pinnedPrompt.findMany({
-      where: { userId: user.id, prompt: { type: { not: "BOT" } } },
+      where: { userId: user.id, prompt: { type: { notIn: ["BOT", "CLASSIFIER"] } } },
       orderBy: { order: "asc" },
       include: {
         prompt: {
@@ -277,7 +277,7 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
         authorId: user.id,
         isPrivate: true,
         deletedAt: null,
-        type: { not: "BOT" },
+        type: { notIn: ["BOT", "CLASSIFIER"] },
       },
     }) : Promise.resolve(0),
     // Activity: prompts created in last year
@@ -434,6 +434,7 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
             slug: true,
             title: true,
             type: true,
+            classifierSlug: true,
             author: {
               select: {
                 id: true,
@@ -471,6 +472,7 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
             slug: true,
             title: true,
             type: true,
+            classifierSlug: true,
             author: {
               select: {
                 id: true,
@@ -509,7 +511,7 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
     status: cr.status,
     createdAt: cr.createdAt,
     title: cr.prompt.title,
-    href: `${cr.prompt.type === "BOT" ? getBotUrl(cr.prompt.id, cr.prompt.slug) : getPromptUrl(cr.prompt.id, cr.prompt.slug)}/changes/${cr.id}`,
+    href: `${getPromptPageUrl(cr.prompt)}/changes/${cr.id}`,
     ownerName: cr.prompt.author?.name || cr.prompt.author?.username,
     authorName: cr.author.name || cr.author.username,
   });

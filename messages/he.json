@@ -63,7 +63,8 @@
       "prompt": "פרומפט",
       "skill": "מיומנות",
       "bot": "בוט",
-      "team": "צוות"
+      "team": "צוות",
+      "classifier": "מסווג"
     }
   },
   "brand": {
@@ -498,6 +499,25 @@
       "added": "נוסף",
       "removed": "הוסר",
       "changed": "שונה"
+    },
+    "proposeClassifierTitle": "הצעת שינויים למסווג",
+    "proposeClassifierIntro": "הציעו שיפורים למסווג. הבעלים בודק את ההצעה ויכול לאשר או לדחות אותה.",
+    "backToClassifier": "חזרה למסווג",
+    "classifierFields": {
+      "title": "שם",
+      "summary": "תקציר",
+      "category": "קטגוריה",
+      "problem": "בעיה",
+      "goal": "מטרה",
+      "input": "קלט",
+      "question": "שאלה",
+      "options": "אפשרויות",
+      "outcomes": "תוצאות",
+      "scenarios": "תרחישים",
+      "guidance": "הנחיות",
+      "caveats": "הסתייגויות",
+      "tags": "מילות מפתח",
+      "references": "מקורות"
     }
   },
   "categories": {
@@ -1030,10 +1050,17 @@
     "categories": {
       "support": "תמיכת לקוחות",
       "refunds": "החזרים",
+      "commerce": "הזמנות והחזרות",
+      "logistics": "לוגיסטיקה ומשלוחים",
       "moderation": "ניהול תוכן",
       "agents": "סוכנים",
       "grounding": "ביסוס",
-      "security": "אותות אבטחה"
+      "security": "אותות אבטחה",
+      "incidents": "IT ותקלות",
+      "engineering": "פיתוח תוכנה",
+      "documents": "מסמכים ודוא״ל",
+      "research": "משוב ומחקר",
+      "education": "חינוך"
     },
     "questionTypes": {
       "choice": "Choice",
@@ -1118,7 +1145,102 @@
     "goalAndInput": "מטרה וקלט",
     "endpointDetails": "מה המשמעות של כל נקודת סיום",
     "pathDetails": "הערות השלבים והקלט",
-    "stepDetails": "שאלה, קלטים והערות"
+    "stepDetails": "שאלה, קלטים והערות",
+    "form": {
+      "defaultReviewLabel": "דורש בדיקה",
+      "defaultReviewWhen": "רמת הביטחון נמוכה או שהתשובה לא ברורה.",
+      "defaultOptionWhen": "התשובה היא \"{option}\".",
+      "updated": "המסווג עודכן",
+      "created": "המסווג נוצר",
+      "remove": "הסרה",
+      "editTitle": "עריכת מסווג",
+      "createTitle": "יצירת מסווג",
+      "steps": "שלבים",
+      "step": {
+        "basics": "בסיס",
+        "input": "קלט",
+        "question": "שאלה",
+        "outcomes": "תוצאות",
+        "scenarios": "תרחישים",
+        "review": "בדיקה"
+      },
+      "stepHint": {
+        "basics": "תנו שם להחלטה וכתבו איזו בעיה היא פותרת.",
+        "input": "תארו את המצב שהאפליקציה שולחת בכל בקשה.",
+        "question": "שאלו שאלה אחת על המצב ופרטו את התשובות האפשריות.",
+        "outcomes": "מפו תשובות לתוצאות שהקוד מבצע. הוסיפו תוצאה לתשובות לא ודאיות.",
+        "scenarios": "הוסיפו דוגמאות להמחשה. התוצאות נכתבות על ידיכם ואינן פלט של המודל.",
+        "review": "בדקו את המסווג לפני השמירה. השרת מריץ את אותן בדיקות."
+      },
+      "name": "שם",
+      "namePlaceholder": "למשל: זכאות להחזר",
+      "summary": "תקציר",
+      "summaryPlaceholder": "משפט או שניים על מה המסווג מחליט",
+      "category": "קטגוריה",
+      "problemPlaceholder": "מה משתבש בלי ההחלטה הזו?",
+      "goalPlaceholder": "מה ההחלטה צריכה להשיג?",
+      "inputSummary": "תקציר הקלט",
+      "inputSummaryPlaceholder": "למשל: פנייה לתמיכה עם היסטוריית הזמנות",
+      "inputFields": "שדות קלט",
+      "inputFieldsHint": "שמות snake_case של הערכים במצב",
+      "fieldName": "שם השדה",
+      "fieldDescription": "מה השדה מכיל",
+      "addInputField": "הוספת שדה",
+      "questionType": "סוג השאלה",
+      "questionTypeHint": {
+        "choice": "בוחר אפשרות אחת מרשימה",
+        "score": "ממקם את המצב על סולם מדורג",
+        "noul": "ההסתברות שטענת כן/לא נכונה"
+      },
+      "question": "שאלה",
+      "questionPlaceholder": "למשל: איזה צוות צריך לטפל בפנייה?",
+      "optionsHint": {
+        "choice": "מפתחות האפשרויות חייבים להיות snake_case. לכל אפשרות נדרשת תוצאה עם אותו מזהה.",
+        "score": "הרמות ממוספרות מ-0, הנמוכה ראשונה.",
+        "noul": "תארו מה נחשב כן ומה נחשב לא."
+      },
+      "optionKey": "מפתח אפשרות",
+      "optionDescription": "משמעות האפשרות",
+      "addOption": "הוספת אפשרות",
+      "addOutcomesForOptions": "הוספת תוצאה לכל אפשרות",
+      "outcomesHint": "מזהים ב-snake_case. גוונים: המשך, זהירות, בדיקה או עצירה.",
+      "outcomeId": "מזהה תוצאה",
+      "outcomeLabel": "תווית",
+      "outcomeTone": "גוון",
+      "tones": {
+        "proceed": "המשך",
+        "caution": "זהירות",
+        "review": "בדיקה",
+        "stop": "עצירה"
+      },
+      "addOutcome": "הוספת תוצאה",
+      "onePerLine": "אחד בכל שורה",
+      "guidanceHint": "עצות מעשיות לשימוש בתשובה",
+      "caveatsHint": "מגבלות שאסור לפספס",
+      "scenarioTitle": "כותרת התרחיש",
+      "scenarioOutcome": "תוצאה",
+      "scenarioStatePlaceholder": "טקסט, או אובייקט JSON כמו {\"message\": \"...\"}",
+      "scenarioState": "מצב",
+      "scenarioRationale": "למה התוצאה הזו",
+      "addScenario": "הוספת תרחיש",
+      "tags": "מילות מפתח",
+      "tagsPlaceholder": "מופרדות בפסיקים, למשל: החזרים, תשלומים",
+      "fixBeforeSaving": "תקנו את הבעיות האלה לפני השמירה:",
+      "readyToSave": "הכול תקין. זו ההגדרה שאנשים יעתיקו:",
+      "back": "חזרה",
+      "next": "הבא",
+      "save": "שמירת שינויים",
+      "create": "יצירת מסווג"
+    },
+    "create": "מסווג חדש",
+    "edit": "עריכה",
+    "community": "קהילה",
+    "private": "פרטי",
+    "unlisted": "לא רשום",
+    "copyJson": "העתקת JSON",
+    "suggestedDescription": "אותה קטגוריה: מסווגים שאפשר לשלב עם זה.",
+    "noSuggestions": "אין עדיין מסווגים קשורים.",
+    "emptyCatalog": "אין עדיין מסווגים. צרו את הראשון."
   },
   "bots": {
     "description": "בוטים מוכנים של סוכני בינה מלאכותית עם הנחיות, שגרות ומיומנויות. התקינו אותם ב-OpenClaw, ב-AutoGPT, ב-OpenAI Dots, ב-Claude Duet, ב-Meta Muse, ב-Hermes Agent או ב-Grok Bot.",

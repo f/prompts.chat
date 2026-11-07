@@ -1,6 +1,7 @@
 import { PrismaClient, PromptType, StructuredFormat, RequiredMediaType } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { seedExampleBots } from "./seed-bots";
+import { importClassifierCatalog } from "./classifiers/import";
 
 const prisma = new PrismaClient();
 
@@ -311,6 +312,9 @@ async function main() {
 
   const botsCreated = await seedExampleBots(prisma, admin.id);
   console.log(`✅ Created ${botsCreated} example bots`);
+
+  const classifiers = await importClassifierCatalog(prisma, { id: admin.id });
+  console.log(`✅ Created ${classifiers.classifiersInserted} classifiers and ${classifiers.chainsInserted} classifier chains`);
 
   console.log("\n🎉 Seeding complete!");
   console.log("\n📋 Test credentials (password: password123):");

@@ -63,7 +63,8 @@
       "prompt": "提示词",
       "skill": "技能",
       "bot": "机器人",
-      "team": "团队"
+      "team": "团队",
+      "classifier": "分类器"
     }
   },
   "brand": {
@@ -498,6 +499,25 @@
       "added": "已添加",
       "removed": "已移除",
       "changed": "已更改"
+    },
+    "proposeClassifierTitle": "为此分类器提议修改",
+    "proposeClassifierIntro": "为此分类器提出改进建议。所有者会审核你的提议，并可批准或拒绝。",
+    "backToClassifier": "返回分类器",
+    "classifierFields": {
+      "title": "名称",
+      "summary": "摘要",
+      "category": "分类",
+      "problem": "问题背景",
+      "goal": "目标",
+      "input": "输入",
+      "question": "问题",
+      "options": "选项",
+      "outcomes": "结果",
+      "scenarios": "场景",
+      "guidance": "指南",
+      "caveats": "注意事项",
+      "tags": "关键词",
+      "references": "来源"
     }
   },
   "categories": {
@@ -1030,10 +1050,17 @@
     "categories": {
       "support": "客户支持",
       "refunds": "退款",
+      "commerce": "订单与退货",
+      "logistics": "物流与配送",
       "moderation": "内容审核",
       "agents": "智能体",
       "grounding": "依据检查",
-      "security": "安全信号"
+      "security": "安全信号",
+      "incidents": "IT 与故障",
+      "engineering": "软件交付",
+      "documents": "文档与邮件",
+      "research": "反馈与调研",
+      "education": "教育"
     },
     "questionTypes": {
       "choice": "Choice",
@@ -1118,7 +1145,102 @@
     "goalAndInput": "目标与输入",
     "endpointDetails": "各终点的含义",
     "pathDetails": "步骤说明与输入",
-    "stepDetails": "问题、输入与说明"
+    "stepDetails": "问题、输入与说明",
+    "form": {
+      "defaultReviewLabel": "需要审核",
+      "defaultReviewWhen": "置信度低或答案不明确。",
+      "defaultOptionWhen": "答案为“{option}”。",
+      "updated": "分类器已更新",
+      "created": "分类器已创建",
+      "remove": "移除",
+      "editTitle": "编辑分类器",
+      "createTitle": "创建分类器",
+      "steps": "步骤",
+      "step": {
+        "basics": "基本信息",
+        "input": "输入",
+        "question": "问题",
+        "outcomes": "结果",
+        "scenarios": "场景",
+        "review": "检查"
+      },
+      "stepHint": {
+        "basics": "为决策命名，并说明它解决什么问题。",
+        "input": "描述应用在每次请求中发送的状态。",
+        "question": "就状态提出一个问题，并列出可能的答案。",
+        "outcomes": "把答案映射到代码要执行的结果。为不确定的答案保留一个结果。",
+        "scenarios": "添加示例场景。结果由你编写，不是模型输出。",
+        "review": "保存前检查分类器。服务器会执行相同的检查。"
+      },
+      "name": "名称",
+      "namePlaceholder": "例如：退款资格",
+      "summary": "摘要",
+      "summaryPlaceholder": "用一两句话说明分类器决定什么",
+      "category": "分类",
+      "problemPlaceholder": "没有这个决策会出什么问题？",
+      "goalPlaceholder": "这个决策要达成什么？",
+      "inputSummary": "输入概述",
+      "inputSummaryPlaceholder": "例如：带订单历史的客服工单",
+      "inputFields": "输入字段",
+      "inputFieldsHint": "状态中各值的 snake_case 名称",
+      "fieldName": "字段名",
+      "fieldDescription": "字段内容",
+      "addInputField": "添加字段",
+      "questionType": "问题类型",
+      "questionTypeHint": {
+        "choice": "从列表中选择一个选项",
+        "score": "把状态放到有序评分表上",
+        "noul": "是/否陈述为真的概率"
+      },
+      "question": "问题",
+      "questionPlaceholder": "例如：哪个团队应处理这个工单？",
+      "optionsHint": {
+        "choice": "选项键必须是 snake_case。每个选项都需要一个同 id 的结果。",
+        "score": "等级从 0 开始编号，最低的在前。",
+        "noul": "说明什么算“是”，什么算“否”。"
+      },
+      "optionKey": "选项键",
+      "optionDescription": "选项含义",
+      "addOption": "添加选项",
+      "addOutcomesForOptions": "为每个选项添加结果",
+      "outcomesHint": "id 使用 snake_case。语气：继续、谨慎、审核或停止。",
+      "outcomeId": "结果 id",
+      "outcomeLabel": "标签",
+      "outcomeTone": "语气",
+      "tones": {
+        "proceed": "继续",
+        "caution": "谨慎",
+        "review": "审核",
+        "stop": "停止"
+      },
+      "addOutcome": "添加结果",
+      "onePerLine": "每行一条",
+      "guidanceHint": "使用答案的实用建议",
+      "caveatsHint": "读者不能忽略的限制",
+      "scenarioTitle": "场景标题",
+      "scenarioOutcome": "结果",
+      "scenarioStatePlaceholder": "文本，或 {\"message\": \"...\"} 这样的 JSON 对象",
+      "scenarioState": "状态",
+      "scenarioRationale": "为什么是这个结果",
+      "addScenario": "添加场景",
+      "tags": "关键词",
+      "tagsPlaceholder": "用逗号分隔，例如：退款, 支付",
+      "fixBeforeSaving": "保存前请修正以下问题：",
+      "readyToSave": "一切正常。这是大家会复制的定义：",
+      "back": "返回",
+      "next": "下一步",
+      "save": "保存更改",
+      "create": "创建分类器"
+    },
+    "create": "新建分类器",
+    "edit": "编辑",
+    "community": "社区",
+    "private": "私密",
+    "unlisted": "未列出",
+    "copyJson": "复制 JSON",
+    "suggestedDescription": "同一分类：可与此分类器组合使用的分类器。",
+    "noSuggestions": "还没有相关的分类器。",
+    "emptyCatalog": "还没有分类器。创建第一个吧。"
   },
   "bots": {
     "description": "现成的 AI 智能体机器人，包含指令、例行任务和技能。可安装到 OpenClaw、AutoGPT、OpenAI Dots、Claude Duet、Meta Muse、Hermes Agent 或 Grok Bot。",

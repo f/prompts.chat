@@ -148,6 +148,11 @@ model Prompt {
   installUrl          String? // BOT prompts only: one-click install link (e.g. Grok Bot template share URL)
   computerRequirements BotComputerRequirement[] @default([]) // BOT prompts only: CLOUD and/or LOCAL, empty when the bot needs no computer
   botConfig           Json? // BOT prompts only: { routines, skills, connectors }, see src/lib/bots/schema.ts
+  classifierSlug      String?                @unique // CLASSIFIER prompts only: stable URL slug, /classifiers/{classifierSlug}; kept when the title changes
+  classifierConfig    Json? // CLASSIFIER prompts only: category, input, question, outcomes, scenarios, …, see src/lib/classifiers/schema.ts
+  classifierPairingsFrom ClassifierPairing[]   @relation("ClassifierPairingFrom")
+  classifierPairingsTo   ClassifierPairing[]   @relation("ClassifierPairingTo")
+  classifierChainSteps   ClassifierChainStep[]
 
   @@index([authorId])
   @@index([categoryId])
@@ -173,6 +178,8 @@ model PromptVersion {
   createdBy  String
   /// BOT prompts only: title and bot fields at this version, see src/lib/bots/change-snapshot.ts; null on older versions
   botSnapshot Json?
+  /// CLASSIFIER prompts only: title, summary and classifier config at this version, see src/lib/classifiers/change-snapshot.ts
+  classifierSnapshot Json?
   author     User     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   prompt     Prompt   @relation(fields: [promptId], references: [id], onDelete: Cascade)
 
@@ -197,6 +204,9 @@ model ChangeRequest {
   /// BOT prompts only: bot fields when the request was made and as proposed, see src/lib/bots/change-snapshot.ts
   originalBot     Json?
   proposedBot     Json?
+  /// CLASSIFIER prompts only: summary and classifier config when the request was made and as proposed, see src/lib/classifiers/change-snapshot.ts
+  originalClassifier Json?
+  proposedClassifier Json?
   author          User                @relation(fields: [authorId], references: [id], onDelete: Cascade)
   prompt          Prompt              @relation(fields: [promptId], references: [id], onDelete: Cascade)
 
@@ -423,6 +433,81 @@ model PromptConnection {
 /// "Better together with" link between two BOT prompts, shown on both bots' pages.
 /// Each pair is stored once with fromId < toId (enforced by a CHECK constraint in the
 /// migration), which rules out self-links and reversed duplicates. See src/lib/bots/pairings.ts
+/// "Better together with" links between classifiers. Directed: each side explains the pairing in its own words.
+model ClassifierPairing {
+  fromId    String
+  toId      String
+  reason    String   @db.VarChar(300)
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+  from      Prompt   @relation("ClassifierPairingFrom", fields: [fromId], references: [id], onDelete: Cascade)
+  to        Prompt   @relation("ClassifierPairingTo", fields: [toId], references: [id], onDelete: Cascade)
+
+  @@id([fromId, toId])
+  @@index([toId])
+  @@map("classifier_pairings")
+}
+
+/// A curated decision chain: classifiers combined by branches on their outcomes, see src/lib/classifiers/schema.ts
+model ClassifierChain {
+  id         String                @id @default(cuid())
+  slug       String                @unique
+  name       String
+  category   String
+  summary    String
+  goal       String
+  /// { summary, fields: [{ name, description }] }
+  input      Json
+  /// Id of the first step
+  entry      String
+  /// [{ id, label, description, kind, handoffChain? }]
+  terminals  Json
+  /// [{ id, title, summary, input, path: [{ step, outcome, note }], terminal }]
+  scenarios  Json
+  notes      String[]              @default([])
+  references String[]              @default([])
+  position   Int                   @default(0)
+  createdAt  DateTime              @default(now())
+  updatedAt  DateTime              @updatedAt
+  steps      ClassifierChainStep[]
+
+  @@index([category])
+  @@map("classifier_chains")
+}
+
+model ClassifierChainStep {
+  chainId      String
+  /// Step id within the chain, referenced by branches and scenario paths
+  stepId       String
+  position     Int
+  classifierId String
+  purpose      String
+  /// [{ from: "input" | stepId, value }]
+  receives     Json
+  /// [{ outcomes: [outcomeId], to: stepId | terminalId, note? }]
+  branches     Json
+  chain        ClassifierChain @relation(fields: [chainId], references: [id], onDelete: Cascade)
+  classifier   Prompt          @relation(fields: [classifierId], references: [id], onDelete: Restrict)
+
+  @@id([chainId, stepId])
+  @@index([classifierId])
+  @@map("classifier_chain_steps")
+}
+
+/// Primary documentation that classifiers and chains cite
+model ClassifierSource {
+  id        String   @id
+  title     String
+  url       String
+  publisher String
+  kind      String
+  note      String
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@map("classifier_sources")
+}
+
 model BotPairing {
   fromId    String
   toId      String
@@ -590,6 +675,7 @@ enum PromptType {
   SKILL
   TASTE
   BOT
+  CLASSIFIER
 }
 
 enum BotPlatform {

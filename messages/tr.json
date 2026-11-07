@@ -63,7 +63,8 @@
       "prompt": "Prompt",
       "skill": "Yetenek",
       "bot": "Bot",
-      "team": "Takım"
+      "team": "Takım",
+      "classifier": "Sınıflandırıcı"
     }
   },
   "brand": {
@@ -498,6 +499,25 @@
       "added": "Eklendi",
       "removed": "Kaldırıldı",
       "changed": "Değişti"
+    },
+    "proposeClassifierTitle": "Bu sınıflandırıcı için değişiklik öner",
+    "proposeClassifierIntro": "Bu sınıflandırıcı için iyileştirmeler önerin. Sahibi önerinizi inceler ve onaylayabilir veya reddedebilir.",
+    "backToClassifier": "Sınıflandırıcıya dön",
+    "classifierFields": {
+      "title": "Ad",
+      "summary": "Özet",
+      "category": "Kategori",
+      "problem": "Sorun",
+      "goal": "Hedef",
+      "input": "Girdi",
+      "question": "Soru",
+      "options": "Seçenekler",
+      "outcomes": "Sonuçlar",
+      "scenarios": "Senaryolar",
+      "guidance": "Rehber",
+      "caveats": "Uyarılar",
+      "tags": "Anahtar kelimeler",
+      "references": "Kaynaklar"
     }
   },
   "categories": {
@@ -1030,10 +1050,17 @@
     "categories": {
       "support": "Müşteri desteği",
       "refunds": "İadeler",
+      "commerce": "Siparişler ve iadeler",
+      "logistics": "Lojistik ve teslimat",
       "moderation": "Moderasyon",
       "agents": "Ajanlar",
       "grounding": "Kaynağa dayanma",
-      "security": "Güvenlik sinyalleri"
+      "security": "Güvenlik sinyalleri",
+      "incidents": "BT ve olaylar",
+      "engineering": "Yazılım teslimi",
+      "documents": "Belgeler ve e-posta",
+      "research": "Geri bildirim ve araştırma",
+      "education": "Eğitim"
     },
     "questionTypes": {
       "choice": "Choice",
@@ -1118,7 +1145,102 @@
     "goalAndInput": "Amaç ve girdi",
     "endpointDetails": "Her varış noktasının anlamı",
     "pathDetails": "Adım notları ve girdi",
-    "stepDetails": "Soru, girdiler ve notlar"
+    "stepDetails": "Soru, girdiler ve notlar",
+    "form": {
+      "defaultReviewLabel": "İnceleme gerekli",
+      "defaultReviewWhen": "Güven düşük veya yanıt belirsiz.",
+      "defaultOptionWhen": "Yanıt \"{option}\".",
+      "updated": "Sınıflandırıcı güncellendi",
+      "created": "Sınıflandırıcı oluşturuldu",
+      "remove": "Kaldır",
+      "editTitle": "Sınıflandırıcıyı düzenle",
+      "createTitle": "Sınıflandırıcı oluştur",
+      "steps": "Adımlar",
+      "step": {
+        "basics": "Temeller",
+        "input": "Girdi",
+        "question": "Soru",
+        "outcomes": "Sonuçlar",
+        "scenarios": "Senaryolar",
+        "review": "Gözden geçir"
+      },
+      "stepHint": {
+        "basics": "Kararı adlandırın ve hangi sorunu çözdüğünü yazın.",
+        "input": "Uygulamanızın her istekte gönderdiği durumu tanımlayın.",
+        "question": "Durum hakkında tek bir soru sorun ve olası yanıtları listeleyin.",
+        "outcomes": "Yanıtları kodunuzun uyguladığı sonuçlara eşleyin. Belirsiz yanıtlar için bir sonuç ekleyin.",
+        "scenarios": "Açıklayıcı örnekler ekleyin. Sonuçlarını siz yazarsınız, model çıktısı değildir.",
+        "review": "Kaydetmeden önce sınıflandırıcıyı kontrol edin. Sunucu aynı kontrolleri yapar."
+      },
+      "name": "Ad",
+      "namePlaceholder": "örn. İade uygunluğu",
+      "summary": "Özet",
+      "summaryPlaceholder": "Sınıflandırıcının neye karar verdiğini anlatan bir iki cümle",
+      "category": "Kategori",
+      "problemPlaceholder": "Bu karar olmadan ne ters gider?",
+      "goalPlaceholder": "Karar neyi sağlamalı?",
+      "inputSummary": "Girdi özeti",
+      "inputSummaryPlaceholder": "örn. Sipariş geçmişiyle birlikte bir destek talebi",
+      "inputFields": "Girdi alanları",
+      "inputFieldsHint": "Durumdaki değerlerin snake_case adları",
+      "fieldName": "Alan adı",
+      "fieldDescription": "Alanın içeriği",
+      "addInputField": "Alan ekle",
+      "questionType": "Soru türü",
+      "questionTypeHint": {
+        "choice": "Listeden bir seçenek seçer",
+        "score": "Durumu sıralı bir ölçeğe yerleştirir",
+        "noul": "Evet/hayır ifadesinin doğru olma olasılığı"
+      },
+      "question": "Soru",
+      "questionPlaceholder": "örn. Bu talebi hangi ekip ele almalı?",
+      "optionsHint": {
+        "choice": "Seçenek anahtarları snake_case olmalı. Her seçeneğin aynı kimliğe sahip bir sonucu olmalı.",
+        "score": "Seviyeler 0'dan başlar, en düşük önce.",
+        "noul": "Neyin evet, neyin hayır sayıldığını açıklayın."
+      },
+      "optionKey": "Seçenek anahtarı",
+      "optionDescription": "Bu seçeneğin anlamı",
+      "addOption": "Seçenek ekle",
+      "addOutcomesForOptions": "Her seçenek için sonuç ekle",
+      "outcomesHint": "Kimlikler snake_case olmalı. Tonlar: devam, dikkat, inceleme veya dur.",
+      "outcomeId": "Sonuç kimliği",
+      "outcomeLabel": "Etiket",
+      "outcomeTone": "Ton",
+      "tones": {
+        "proceed": "Devam",
+        "caution": "Dikkat",
+        "review": "İnceleme",
+        "stop": "Dur"
+      },
+      "addOutcome": "Sonuç ekle",
+      "onePerLine": "Her satıra bir tane",
+      "guidanceHint": "Yanıtı kullanmak için pratik öneriler",
+      "caveatsHint": "Okuyucuların kaçırmaması gereken sınırlar",
+      "scenarioTitle": "Senaryo başlığı",
+      "scenarioOutcome": "Sonuç",
+      "scenarioStatePlaceholder": "Metin veya {\"message\": \"...\"} gibi bir JSON nesnesi",
+      "scenarioState": "Durum",
+      "scenarioRationale": "Neden bu sonuç",
+      "addScenario": "Senaryo ekle",
+      "tags": "Anahtar kelimeler",
+      "tagsPlaceholder": "Virgülle ayrılmış, örn. iadeler, ödemeler",
+      "fixBeforeSaving": "Kaydetmeden önce bu sorunları düzeltin:",
+      "readyToSave": "Her şey yolunda. Kullanıcıların kopyalayacağı tanım bu:",
+      "back": "Geri",
+      "next": "İleri",
+      "save": "Değişiklikleri kaydet",
+      "create": "Sınıflandırıcı oluştur"
+    },
+    "create": "Yeni sınıflandırıcı",
+    "edit": "Düzenle",
+    "community": "Topluluk",
+    "private": "Gizli",
+    "unlisted": "Listelenmemiş",
+    "copyJson": "JSON kopyala",
+    "suggestedDescription": "Aynı kategori: bununla birleştirebileceğiniz sınıflandırıcılar.",
+    "noSuggestions": "Henüz ilgili sınıflandırıcı yok.",
+    "emptyCatalog": "Henüz sınıflandırıcı yok. İlkini oluşturun."
   },
   "bots": {
     "description": "Talimatları, rutinleri ve becerileriyle hazır yapay zekâ ajan botları. OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent veya Grok Bot'a kurun.",

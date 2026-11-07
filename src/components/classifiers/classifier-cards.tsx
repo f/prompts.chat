@@ -9,9 +9,11 @@ const MAX_OUTCOMES_SHOWN = 4;
 interface ClassifierCardProps {
   classifier: ClassifierDefinition;
   chainCount: number;
+  /** Username of a community classifier's author; curated classifiers show none */
+  author?: string;
 }
 
-export function ClassifierCard({ classifier, chainCount }: ClassifierCardProps) {
+export function ClassifierCard({ classifier, chainCount, author }: ClassifierCardProps) {
   const t = useTranslations("classifiers");
   const hidden = classifier.outcomes.length - MAX_OUTCOMES_SHOWN;
 
@@ -40,6 +42,7 @@ export function ClassifierCard({ classifier, chainCount }: ClassifierCardProps) 
       <div className="mt-auto flex items-center gap-1.5 pt-1 text-xs text-muted-foreground">
         <GitBranch className="h-3.5 w-3.5" />
         {t("usedInChainCount", { count: chainCount })}
+        {author && <span className="ml-auto truncate">@{author}</span>}
       </div>
     </Link>
   );

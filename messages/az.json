@@ -63,7 +63,8 @@
       "prompt": "Prompt",
       "skill": "Bacarıq",
       "bot": "Bot",
-      "team": "Komanda"
+      "team": "Komanda",
+      "classifier": "Təsnifatçı"
     }
   },
   "brand": {
@@ -498,6 +499,25 @@
       "added": "Əlavə edildi",
       "removed": "Silindi",
       "changed": "Dəyişdi"
+    },
+    "proposeClassifierTitle": "Bu təsnifatçıya dəyişiklik təklif et",
+    "proposeClassifierIntro": "Bu təsnifatçı üçün təkmilləşdirmələr təklif edin. Sahibi təklifinizi nəzərdən keçirir və təsdiq və ya rədd edə bilər.",
+    "backToClassifier": "Təsnifatçıya qayıt",
+    "classifierFields": {
+      "title": "Ad",
+      "summary": "Xülasə",
+      "category": "Kateqoriya",
+      "problem": "Problem",
+      "goal": "Məqsəd",
+      "input": "Giriş",
+      "question": "Sual",
+      "options": "Seçimlər",
+      "outcomes": "Nəticələr",
+      "scenarios": "Ssenarilər",
+      "guidance": "Təlimat",
+      "caveats": "Xəbərdarlıqlar",
+      "tags": "Açar sözlər",
+      "references": "Mənbələr"
     }
   },
   "categories": {
@@ -1030,10 +1050,17 @@
     "categories": {
       "support": "Müştəri dəstəyi",
       "refunds": "Geri ödənişlər",
+      "commerce": "Sifarişlər və qaytarmalar",
+      "logistics": "Logistika və çatdırılma",
       "moderation": "Moderasiya",
       "agents": "Agentlər",
       "grounding": "Mənbəyə əsaslanma",
-      "security": "Təhlükəsizlik siqnalları"
+      "security": "Təhlükəsizlik siqnalları",
+      "incidents": "İT və insidentlər",
+      "engineering": "Proqram təminatının buraxılışı",
+      "documents": "Sənədlər və e-poçt",
+      "research": "Rəy və tədqiqat",
+      "education": "Təhsil"
     },
     "questionTypes": {
       "choice": "Choice",
@@ -1118,7 +1145,102 @@
     "goalAndInput": "Məqsəd və giriş",
     "endpointDetails": "Hər son nöqtənin mənası",
     "pathDetails": "Addım qeydləri və giriş",
-    "stepDetails": "Sual, girişlər və qeydlər"
+    "stepDetails": "Sual, girişlər və qeydlər",
+    "form": {
+      "defaultReviewLabel": "Yoxlama lazımdır",
+      "defaultReviewWhen": "Etibar aşağıdır və ya cavab aydın deyil.",
+      "defaultOptionWhen": "Cavab \"{option}\"-dir.",
+      "updated": "Təsnifatçı yeniləndi",
+      "created": "Təsnifatçı yaradıldı",
+      "remove": "Sil",
+      "editTitle": "Təsnifatçını redaktə et",
+      "createTitle": "Təsnifatçı yarat",
+      "steps": "Addımlar",
+      "step": {
+        "basics": "Əsaslar",
+        "input": "Giriş",
+        "question": "Sual",
+        "outcomes": "Nəticələr",
+        "scenarios": "Ssenarilər",
+        "review": "Yoxlama"
+      },
+      "stepHint": {
+        "basics": "Qərarı adlandırın və hansı problemi həll etdiyini yazın.",
+        "input": "Tətbiqinizin hər sorğuda göndərdiyi vəziyyəti təsvir edin.",
+        "question": "Vəziyyət haqqında bir sual verin və mümkün cavabları sadalayın.",
+        "outcomes": "Cavabları kodunuzun icra etdiyi nəticələrə uyğunlaşdırın. Qeyri-müəyyən cavablar üçün bir nəticə əlavə edin.",
+        "scenarios": "İllüstrativ nümunələr əlavə edin. Nəticələri siz yazırsınız, model çıxışı deyil.",
+        "review": "Saxlamazdan əvvəl təsnifatçını yoxlayın. Server eyni yoxlamaları aparır."
+      },
+      "name": "Ad",
+      "namePlaceholder": "məs. Geri ödəniş hüququ",
+      "summary": "Xülasə",
+      "summaryPlaceholder": "Təsnifatçının nəyə qərar verdiyi barədə bir-iki cümlə",
+      "category": "Kateqoriya",
+      "problemPlaceholder": "Bu qərar olmadan nə səhv gedir?",
+      "goalPlaceholder": "Qərar nəyə nail olmalıdır?",
+      "inputSummary": "Giriş xülasəsi",
+      "inputSummaryPlaceholder": "məs. Sifariş tarixçəsi ilə dəstək bileti",
+      "inputFields": "Giriş sahələri",
+      "inputFieldsHint": "Vəziyyətdəki dəyərlərin snake_case adları",
+      "fieldName": "Sahə adı",
+      "fieldDescription": "Sahənin məzmunu",
+      "addInputField": "Sahə əlavə et",
+      "questionType": "Sual növü",
+      "questionTypeHint": {
+        "choice": "Siyahıdan bir seçim edir",
+        "score": "Vəziyyəti sıralı şkalaya yerləşdirir",
+        "noul": "Bəli/xeyr ifadəsinin doğru olma ehtimalı"
+      },
+      "question": "Sual",
+      "questionPlaceholder": "məs. Bu bileti hansı komanda həll etməlidir?",
+      "optionsHint": {
+        "choice": "Seçim açarları snake_case olmalıdır. Hər seçimin eyni id ilə nəticəsi olmalıdır.",
+        "score": "Səviyyələr 0-dan, ən aşağıdan başlayaraq nömrələnir.",
+        "noul": "Nəyin bəli, nəyin xeyr sayıldığını izah edin."
+      },
+      "optionKey": "Seçim açarı",
+      "optionDescription": "Seçimin mənası",
+      "addOption": "Seçim əlavə et",
+      "addOutcomesForOptions": "Hər seçim üçün nəticə əlavə et",
+      "outcomesHint": "Id-lər snake_case olur. Tonlar: davam, ehtiyat, yoxlama və ya dayan.",
+      "outcomeId": "Nəticə id-si",
+      "outcomeLabel": "Etiket",
+      "outcomeTone": "Ton",
+      "tones": {
+        "proceed": "Davam",
+        "caution": "Ehtiyat",
+        "review": "Yoxlama",
+        "stop": "Dayan"
+      },
+      "addOutcome": "Nəticə əlavə et",
+      "onePerLine": "Hər sətirdə bir",
+      "guidanceHint": "Cavabdan istifadə üçün praktik məsləhətlər",
+      "caveatsHint": "Oxucuların qaçırmamalı olduğu məhdudiyyətlər",
+      "scenarioTitle": "Ssenari başlığı",
+      "scenarioOutcome": "Nəticə",
+      "scenarioStatePlaceholder": "Mətn və ya {\"message\": \"...\"} kimi JSON obyekti",
+      "scenarioState": "Vəziyyət",
+      "scenarioRationale": "Niyə bu nəticə",
+      "addScenario": "Ssenari əlavə et",
+      "tags": "Açar sözlər",
+      "tagsPlaceholder": "Vergüllə ayrılmış, məs. geri ödənişlər, ödənişlər",
+      "fixBeforeSaving": "Saxlamazdan əvvəl bu problemləri düzəldin:",
+      "readyToSave": "Hər şey qaydasındadır. İnsanların kopyalayacağı tərif budur:",
+      "back": "Geri",
+      "next": "Növbəti",
+      "save": "Dəyişiklikləri saxla",
+      "create": "Təsnifatçı yarat"
+    },
+    "create": "Yeni təsnifatçı",
+    "edit": "Redaktə et",
+    "community": "İcma",
+    "private": "Gizli",
+    "unlisted": "Siyahıda deyil",
+    "copyJson": "JSON-u kopyala",
+    "suggestedDescription": "Eyni kateqoriya: bununla birləşdirə biləcəyiniz təsnifatçılar.",
+    "noSuggestions": "Hələ əlaqəli təsnifatçı yoxdur.",
+    "emptyCatalog": "Hələ təsnifatçı yoxdur. İlkini yaradın."
   },
   "bots": {
     "description": "Təlimatları, rutinləri və bacarıqları olan hazır süni intellekt agent botları. Onları OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent və ya Grok Bot-a quraşdırın.",

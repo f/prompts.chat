@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Bot, FileText, Plus, Puzzle, Users } from "lucide-react";
+import { Bot, FileText, Plus, Puzzle, Split, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,6 +16,7 @@ const CREATE_ITEMS = [
   { key: "skill", href: "/prompts/new?type=SKILL", icon: Puzzle },
   { key: "bot", href: "/bots/new", icon: Bot },
   { key: "team", href: "/bots/teams/new", icon: Users },
+  { key: "classifier", href: "/classifiers/new", icon: Split },
 ] as const;
 
 export function CreateMenu() {

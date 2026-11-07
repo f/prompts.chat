@@ -63,7 +63,8 @@
       "prompt": "Prompt",
       "skill": "Skill",
       "bot": "Bot",
-      "team": "Team"
+      "team": "Team",
+      "classifier": "Klassifikator"
     }
   },
   "brand": {
@@ -498,6 +499,25 @@
       "added": "Hinzugefügt",
       "removed": "Entfernt",
       "changed": "Geändert"
+    },
+    "proposeClassifierTitle": "Änderungen an diesem Klassifikator vorschlagen",
+    "proposeClassifierIntro": "Schlage Verbesserungen für diesen Klassifikator vor. Der Eigentümer prüft deinen Vorschlag und kann ihn annehmen oder ablehnen.",
+    "backToClassifier": "Zurück zum Klassifikator",
+    "classifierFields": {
+      "title": "Name",
+      "summary": "Zusammenfassung",
+      "category": "Kategorie",
+      "problem": "Problem",
+      "goal": "Ziel",
+      "input": "Eingabe",
+      "question": "Frage",
+      "options": "Optionen",
+      "outcomes": "Ergebnisse",
+      "scenarios": "Szenarien",
+      "guidance": "Hinweise",
+      "caveats": "Einschränkungen",
+      "tags": "Stichwörter",
+      "references": "Quellen"
     }
   },
   "categories": {
@@ -1030,10 +1050,17 @@
     "categories": {
       "support": "Kundensupport",
       "refunds": "Erstattungen",
+      "commerce": "Bestellungen & Retouren",
+      "logistics": "Logistik & Zustellung",
       "moderation": "Moderation",
       "agents": "Agenten",
       "grounding": "Quellentreue",
-      "security": "Sicherheitssignale"
+      "security": "Sicherheitssignale",
+      "incidents": "IT & Störungen",
+      "engineering": "Softwareentwicklung",
+      "documents": "Dokumente & E-Mail",
+      "research": "Feedback & Research",
+      "education": "Bildung"
     },
     "questionTypes": {
       "choice": "Choice",
@@ -1118,7 +1145,102 @@
     "goalAndInput": "Ziel und Eingabe",
     "endpointDetails": "Was jeder Endpunkt bedeutet",
     "pathDetails": "Schrittnotizen und Eingabe",
-    "stepDetails": "Frage, Eingaben und Hinweise"
+    "stepDetails": "Frage, Eingaben und Hinweise",
+    "form": {
+      "defaultReviewLabel": "Prüfung nötig",
+      "defaultReviewWhen": "Die Konfidenz ist niedrig oder die Antwort unklar.",
+      "defaultOptionWhen": "Die Antwort ist „{option}“.",
+      "updated": "Klassifikator aktualisiert",
+      "created": "Klassifikator erstellt",
+      "remove": "Entfernen",
+      "editTitle": "Klassifikator bearbeiten",
+      "createTitle": "Klassifikator erstellen",
+      "steps": "Schritte",
+      "step": {
+        "basics": "Grundlagen",
+        "input": "Eingabe",
+        "question": "Frage",
+        "outcomes": "Ergebnisse",
+        "scenarios": "Szenarien",
+        "review": "Prüfen"
+      },
+      "stepHint": {
+        "basics": "Benenne die Entscheidung und beschreibe, welches Problem sie löst.",
+        "input": "Beschreibe den Zustand, den deine Anwendung mit jeder Anfrage sendet.",
+        "question": "Stelle eine Frage zum Zustand und liste die möglichen Antworten auf.",
+        "outcomes": "Ordne die Antworten den Ergebnissen zu, auf die dein Code reagiert. Plane eines für unsichere Antworten ein.",
+        "scenarios": "Füge veranschaulichende Beispiele hinzu. Ihre Ergebnisse schreibst du selbst, sie sind keine Modellausgaben.",
+        "review": "Prüfe den Klassifikator vor dem Speichern. Der Server führt dieselben Prüfungen aus."
+      },
+      "name": "Name",
+      "namePlaceholder": "z. B. Erstattungsberechtigung",
+      "summary": "Zusammenfassung",
+      "summaryPlaceholder": "Ein bis zwei Sätze darüber, was der Klassifikator entscheidet",
+      "category": "Kategorie",
+      "problemPlaceholder": "Was geht ohne diese Entscheidung schief?",
+      "goalPlaceholder": "Was soll die Entscheidung erreichen?",
+      "inputSummary": "Eingabe-Zusammenfassung",
+      "inputSummaryPlaceholder": "z. B. Ein Support-Ticket mit der Bestellhistorie",
+      "inputFields": "Eingabefelder",
+      "inputFieldsHint": "snake_case-Namen der Werte im Zustand",
+      "fieldName": "Feldname",
+      "fieldDescription": "Inhalt des Feldes",
+      "addInputField": "Feld hinzufügen",
+      "questionType": "Fragetyp",
+      "questionTypeHint": {
+        "choice": "Wählt eine Option aus einer Liste",
+        "score": "Ordnet den Zustand auf einer geordneten Skala ein",
+        "noul": "Wahrscheinlichkeit, dass eine Ja/Nein-Aussage zutrifft"
+      },
+      "question": "Frage",
+      "questionPlaceholder": "z. B. Welches Team soll dieses Ticket bearbeiten?",
+      "optionsHint": {
+        "choice": "Optionsschlüssel müssen snake_case sein. Jede Option braucht ein Ergebnis mit derselben ID.",
+        "score": "Stufen werden ab 0 nummeriert, die niedrigste zuerst.",
+        "noul": "Beschreibe, was als Ja und was als Nein gilt."
+      },
+      "optionKey": "Optionsschlüssel",
+      "optionDescription": "Bedeutung der Option",
+      "addOption": "Option hinzufügen",
+      "addOutcomesForOptions": "Für jede Option ein Ergebnis hinzufügen",
+      "outcomesHint": "IDs sind snake_case. Töne: weiter, Vorsicht, Prüfung oder Stopp.",
+      "outcomeId": "Ergebnis-ID",
+      "outcomeLabel": "Bezeichnung",
+      "outcomeTone": "Ton",
+      "tones": {
+        "proceed": "Weiter",
+        "caution": "Vorsicht",
+        "review": "Prüfung",
+        "stop": "Stopp"
+      },
+      "addOutcome": "Ergebnis hinzufügen",
+      "onePerLine": "Eins pro Zeile",
+      "guidanceHint": "Praktische Hinweise zur Nutzung der Antwort",
+      "caveatsHint": "Grenzen, die niemand übersehen darf",
+      "scenarioTitle": "Szenariotitel",
+      "scenarioOutcome": "Ergebnis",
+      "scenarioStatePlaceholder": "Text oder ein JSON-Objekt wie {\"message\": \"...\"}",
+      "scenarioState": "Zustand",
+      "scenarioRationale": "Warum dieses Ergebnis",
+      "addScenario": "Szenario hinzufügen",
+      "tags": "Stichwörter",
+      "tagsPlaceholder": "Kommagetrennt, z. B. Erstattungen, Zahlungen",
+      "fixBeforeSaving": "Behebe diese Probleme vor dem Speichern:",
+      "readyToSave": "Alles in Ordnung. Diese Definition werden andere kopieren:",
+      "back": "Zurück",
+      "next": "Weiter",
+      "save": "Änderungen speichern",
+      "create": "Klassifikator erstellen"
+    },
+    "create": "Neuer Klassifikator",
+    "edit": "Bearbeiten",
+    "community": "Community",
+    "private": "Privat",
+    "unlisted": "Nicht gelistet",
+    "copyJson": "JSON kopieren",
+    "suggestedDescription": "Gleiche Kategorie: Klassifikatoren, die du damit kombinieren kannst.",
+    "noSuggestions": "Noch keine verwandten Klassifikatoren.",
+    "emptyCatalog": "Noch keine Klassifikatoren. Erstelle den ersten."
   },
   "bots": {
     "description": "Fertige KI-Agenten-Bots mit Anweisungen, Routinen und Skills. Installiere sie auf OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent oder Grok Bot.",

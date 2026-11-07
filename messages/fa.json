@@ -63,7 +63,8 @@
       "prompt": "پرامپت",
       "skill": "مهارت",
       "bot": "ربات",
-      "team": "تیم"
+      "team": "تیم",
+      "classifier": "طبقه‌بند"
     }
   },
   "brand": {
@@ -498,6 +499,25 @@
       "added": "اضافه شد",
       "removed": "حذف شد",
       "changed": "تغییر کرد"
+    },
+    "proposeClassifierTitle": "پیشنهاد تغییر برای این طبقه‌بند",
+    "proposeClassifierIntro": "بهبودهایی برای این طبقه‌بند پیشنهاد دهید. مالک پیشنهاد را بررسی می‌کند و می‌تواند آن را بپذیرد یا رد کند.",
+    "backToClassifier": "بازگشت به طبقه‌بند",
+    "classifierFields": {
+      "title": "نام",
+      "summary": "خلاصه",
+      "category": "دسته",
+      "problem": "مسئله",
+      "goal": "هدف",
+      "input": "ورودی",
+      "question": "پرسش",
+      "options": "گزینه‌ها",
+      "outcomes": "نتیجه‌ها",
+      "scenarios": "سناریوها",
+      "guidance": "راهنما",
+      "caveats": "هشدارها",
+      "tags": "کلیدواژه‌ها",
+      "references": "منابع"
     }
   },
   "categories": {
@@ -1030,10 +1050,17 @@
     "categories": {
       "support": "پشتیبانی مشتری",
       "refunds": "بازپرداخت",
+      "commerce": "سفارش‌ها و مرجوعی‌ها",
+      "logistics": "لجستیک و تحویل",
       "moderation": "نظارت بر محتوا",
       "agents": "عامل‌ها",
       "grounding": "اتکا به منابع",
-      "security": "سیگنال‌های امنیتی"
+      "security": "سیگنال‌های امنیتی",
+      "incidents": "فناوری اطلاعات و رخدادها",
+      "engineering": "تحویل نرم‌افزار",
+      "documents": "اسناد و ایمیل",
+      "research": "بازخورد و پژوهش",
+      "education": "آموزش"
     },
     "questionTypes": {
       "choice": "Choice",
@@ -1118,7 +1145,102 @@
     "goalAndInput": "هدف و ورودی",
     "endpointDetails": "معنای هر نقطهٔ پایان",
     "pathDetails": "یادداشت‌های گام‌ها و ورودی",
-    "stepDetails": "پرسش، ورودی‌ها و یادداشت‌ها"
+    "stepDetails": "پرسش، ورودی‌ها و یادداشت‌ها",
+    "form": {
+      "defaultReviewLabel": "نیاز به بررسی",
+      "defaultReviewWhen": "اطمینان پایین است یا پاسخ روشن نیست.",
+      "defaultOptionWhen": "پاسخ «{option}» است.",
+      "updated": "طبقه‌بند به‌روزرسانی شد",
+      "created": "طبقه‌بند ساخته شد",
+      "remove": "حذف",
+      "editTitle": "ویرایش طبقه‌بند",
+      "createTitle": "ساخت طبقه‌بند",
+      "steps": "مراحل",
+      "step": {
+        "basics": "پایه",
+        "input": "ورودی",
+        "question": "پرسش",
+        "outcomes": "نتیجه‌ها",
+        "scenarios": "سناریوها",
+        "review": "بازبینی"
+      },
+      "stepHint": {
+        "basics": "برای تصمیم نامی بگذارید و بنویسید چه مشکلی را حل می‌کند.",
+        "input": "وضعیتی را که برنامه در هر درخواست می‌فرستد توصیف کنید.",
+        "question": "یک پرسش دربارهٔ وضعیت بپرسید و پاسخ‌های ممکن را فهرست کنید.",
+        "outcomes": "پاسخ‌ها را به نتیجه‌هایی که کد اجرا می‌کند نگاشت کنید. یک نتیجه برای پاسخ‌های نامطمئن بگذارید.",
+        "scenarios": "مثال‌های نمونه اضافه کنید. نتیجه‌ها را خودتان می‌نویسید و خروجی مدل نیستند.",
+        "review": "پیش از ذخیره طبقه‌بند را بررسی کنید. سرور همین بررسی‌ها را انجام می‌دهد."
+      },
+      "name": "نام",
+      "namePlaceholder": "مثلاً: واجد شرایط بودن برای بازپرداخت",
+      "summary": "خلاصه",
+      "summaryPlaceholder": "یک یا دو جمله دربارهٔ آنچه طبقه‌بند تصمیم می‌گیرد",
+      "category": "دسته",
+      "problemPlaceholder": "بدون این تصمیم چه چیزی خراب می‌شود؟",
+      "goalPlaceholder": "این تصمیم باید به چه برسد؟",
+      "inputSummary": "خلاصهٔ ورودی",
+      "inputSummaryPlaceholder": "مثلاً: تیکت پشتیبانی همراه با سابقهٔ سفارش",
+      "inputFields": "فیلدهای ورودی",
+      "inputFieldsHint": "نام‌های snake_case مقادیر وضعیت",
+      "fieldName": "نام فیلد",
+      "fieldDescription": "محتوای فیلد",
+      "addInputField": "افزودن فیلد",
+      "questionType": "نوع پرسش",
+      "questionTypeHint": {
+        "choice": "یک گزینه از فهرست انتخاب می‌کند",
+        "score": "وضعیت را روی مقیاسی مرتب قرار می‌دهد",
+        "noul": "احتمال درست بودن یک گزارهٔ بله/خیر"
+      },
+      "question": "پرسش",
+      "questionPlaceholder": "مثلاً: کدام تیم باید به این تیکت رسیدگی کند؟",
+      "optionsHint": {
+        "choice": "کلید گزینه‌ها باید snake_case باشد. هر گزینه به نتیجه‌ای با همان شناسه نیاز دارد.",
+        "score": "سطح‌ها از ۰ شماره می‌خورند، پایین‌ترین اول.",
+        "noul": "توضیح دهید چه چیزی بله و چه چیزی خیر حساب می‌شود."
+      },
+      "optionKey": "کلید گزینه",
+      "optionDescription": "معنای گزینه",
+      "addOption": "افزودن گزینه",
+      "addOutcomesForOptions": "افزودن نتیجه برای هر گزینه",
+      "outcomesHint": "شناسه‌ها snake_case هستند. لحن‌ها: ادامه، احتیاط، بررسی یا توقف.",
+      "outcomeId": "شناسهٔ نتیجه",
+      "outcomeLabel": "برچسب",
+      "outcomeTone": "لحن",
+      "tones": {
+        "proceed": "ادامه",
+        "caution": "احتیاط",
+        "review": "بررسی",
+        "stop": "توقف"
+      },
+      "addOutcome": "افزودن نتیجه",
+      "onePerLine": "هر مورد در یک خط",
+      "guidanceHint": "توصیه‌های عملی برای استفاده از پاسخ",
+      "caveatsHint": "محدودیت‌هایی که نباید نادیده گرفته شوند",
+      "scenarioTitle": "عنوان سناریو",
+      "scenarioOutcome": "نتیجه",
+      "scenarioStatePlaceholder": "متن، یا یک شیء JSON مانند {\"message\": \"...\"}",
+      "scenarioState": "وضعیت",
+      "scenarioRationale": "چرا این نتیجه",
+      "addScenario": "افزودن سناریو",
+      "tags": "کلیدواژه‌ها",
+      "tagsPlaceholder": "جدا شده با ویرگول، مثلاً: بازپرداخت، پرداخت",
+      "fixBeforeSaving": "پیش از ذخیره این مشکلات را رفع کنید:",
+      "readyToSave": "همه‌چیز درست است. این تعریفی است که دیگران کپی می‌کنند:",
+      "back": "بازگشت",
+      "next": "بعدی",
+      "save": "ذخیرهٔ تغییرات",
+      "create": "ساخت طبقه‌بند"
+    },
+    "create": "طبقه‌بند جدید",
+    "edit": "ویرایش",
+    "community": "جامعه",
+    "private": "خصوصی",
+    "unlisted": "فهرست‌نشده",
+    "copyJson": "کپی JSON",
+    "suggestedDescription": "همان دسته: طبقه‌بندهایی که می‌توانید با این ترکیب کنید.",
+    "noSuggestions": "هنوز طبقه‌بند مرتبطی نیست.",
+    "emptyCatalog": "هنوز طبقه‌بندی نیست. اولی را بسازید."
   },
   "bots": {
     "description": "ربات‌های آماده عامل هوش مصنوعی با دستورالعمل‌ها، روال‌ها و مهارت‌ها. آن‌ها را روی OpenClaw، AutoGPT، OpenAI Dots، Claude Duet، Meta Muse، Hermes Agent یا Grok Bot نصب کنید.",

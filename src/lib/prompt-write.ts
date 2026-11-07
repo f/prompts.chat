@@ -9,6 +9,16 @@ import { isSimilarContent, normalizeContent } from "@/lib/similarity";
 import { BOT_PLATFORMS, EMPTY_BOT_CONFIG, botColorSchema, botComputerRequirementsSchema, botConfigSchema, botIconSchema, botPairingsSchema, botPlatformsData, botPlatformsSchema, installUrlSchema } from "@/lib/bots/schema";
 import { BotPairingError, buildPairingRows, findInvalidPairingTargets, replaceBotPairings } from "@/lib/bots/pairings";
 import { botFieldsFromRecord, botFieldsSelect, botSnapshotsEqual, versionBotSnapshot } from "@/lib/bots/change-snapshot";
+import {
+  classifierFieldsEqual,
+  classifierFieldsFromRecord,
+  classifierFieldsInputSchema,
+  classifierJson,
+  versionClassifierSnapshot,
+  type ClassifierFields,
+} from "@/lib/classifiers/change-snapshot";
+import { parseClassifierConfig } from "@/lib/classifiers/schema";
+import { allocateClassifierSlug, checkClassifierWrite, classifierContent } from "@/lib/classifiers/write";
 
 /**
  * Prompt (and bot) create and update logic shared by POST /api/prompts, PATCH /api/prompts/[id]
@@ -31,8 +41,9 @@ function fail(status: number, error: string, message: string, extra: Record<stri
 export const promptCreateSchema = z.object({
   title: z.string().min(1).max(200),
   description: z.string().max(500).optional(),
-  content: z.string().min(1),
-  type: z.enum(["TEXT", "IMAGE", "VIDEO", "AUDIO", "SKILL", "TASTE", "BOT"]), // Output type, SKILL, TASTE, or BOT
+  /** Required except for classifiers, whose content is derived from their fields */
+  content: z.string().min(1).optional(),
+  type: z.enum(["TEXT", "IMAGE", "VIDEO", "AUDIO", "SKILL", "TASTE", "BOT", "CLASSIFIER"]), // Output type, SKILL, TASTE, BOT or CLASSIFIER
   structuredFormat: z.enum(["JSON", "YAML"]).nullish(), // Input type indicator
   categoryId: z.string().optional(),
   tagIds: z.array(z.string()),
@@ -59,6 +70,14 @@ export const promptCreateSchema = z.object({
   botConfig: botConfigSchema.optional(),
   /** "Better together with" links to other bots; admins only */
   pairings: botPairingsSchema.optional(),
+  /** CLASSIFIER prompts only: summary and structured fields; content is derived from them */
+  classifier: classifierFieldsInputSchema.optional(),
+}).refine((data) => data.type === "CLASSIFIER" || data.content !== undefined, {
+  message: "Required",
+  path: ["content"],
+}).refine((data) => (data.type === "CLASSIFIER") === (data.classifier !== undefined), {
+  message: "classifier is required for classifiers and only supported for them",
+  path: ["classifier"],
 }).refine((data) => data.type !== "BOT" || !!data.botPlatforms || !!data.botPlatform, {
   message: "botPlatforms is required for bots",
   path: ["botPlatforms"],
@@ -71,7 +90,7 @@ export const promptUpdateSchema = z.object({
   title: z.string().min(1).max(200).optional(),
   description: z.string().max(500).optional(),
   content: z.string().min(1).optional(),
-  type: z.enum(["TEXT", "IMAGE", "VIDEO", "AUDIO", "SKILL", "TASTE", "BOT"]).optional(), // Output type, SKILL, TASTE, or BOT
+  type: z.enum(["TEXT", "IMAGE", "VIDEO", "AUDIO", "SKILL", "TASTE", "BOT", "CLASSIFIER"]).optional(), // Output type, SKILL, TASTE, BOT or CLASSIFIER
   structuredFormat: z.enum(["JSON", "YAML"]).optional().nullable(),
   categoryId: z.string().optional().nullable(),
   tagIds: z.array(z.string()).optional(),
@@ -100,7 +119,16 @@ export const promptUpdateSchema = z.object({
   pairings: botPairingsSchema.optional(),
   /** Hides the prompt or bot from listings, search and profiles; admins only */
   isUnlisted: z.boolean().optional(),
+  /** CLASSIFIER prompts only: replaces the summary and structured fields; content is derived from them */
+  classifier: classifierFieldsInputSchema.optional(),
 });
+
+const BOT_FIELD_KEYS = ["botPlatforms", "botPlatform", "botIcon", "botColor", "computerRequirements", "installUrl", "botConfig", "pairings"] as const;
+
+function classifierFields(input: z.output<typeof classifierFieldsInputSchema>): ClassifierFields | null {
+  const config = parseClassifierConfig(input.config);
+  return config ? { description: input.description, config } : null;
+}
 
 /** A failed cache revalidation must not fail a write that has already been committed */
 function revalidateTags(tags: string[]) {
@@ -120,8 +148,28 @@ export async function createPrompt(user: PromptWriter, body: unknown) {
     return fail(400, "validation_error", "Invalid input", { details: parsed.error.issues });
   }
 
-  const { title, description, content, type, structuredFormat, categoryId, tagIds, contributorIds, isPrivate, mediaUrl, requiresMediaUpload, requiredMediaType, requiredMediaCount, bestWithModels, bestWithMCP, workflowLink, botPlatforms, botPlatform, botIcon, botColor, computerRequirements, installUrl, botConfig, pairings } = parsed.data;
+  const { title, description: submittedDescription, content: submittedContent, type, structuredFormat, categoryId, tagIds, contributorIds, isPrivate, mediaUrl, requiresMediaUpload, requiredMediaType, requiredMediaCount, bestWithModels, bestWithMCP, workflowLink, botPlatforms, botPlatform, botIcon, botColor, computerRequirements, installUrl, botConfig, pairings, classifier } = parsed.data;
   const isBot = type === "BOT";
+
+  // Classifiers: validated structured fields, a stable URL slug, and content derived from the fields
+  let classifierData: { slug: string; fields: ClassifierFields; content: string } | null = null;
+  if (type === "CLASSIFIER" && classifier) {
+    if (BOT_FIELD_KEYS.some((key) => parsed.data[key] !== undefined)) {
+      return fail(400, "validation_error", "Bot fields are not supported for classifiers");
+    }
+    const fields = classifierFields(classifier);
+    if (!fields) {
+      return fail(400, "invalid_classifier", "Invalid classifier", { details: ["classifier is too large"] });
+    }
+    const slug = await allocateClassifierSlug(title);
+    const problem = await checkClassifierWrite(null, slug, title, fields, { isPrivate });
+    if (problem) {
+      return fail(400, problem.error, problem.message, { details: problem.details });
+    }
+    classifierData = { slug, fields, content: classifierContent(slug, title, fields) };
+  }
+  const content = classifierData ? classifierData.content : submittedContent!;
+  const description = classifierData ? classifierData.fields.description : submittedDescription;
 
   if (pairings !== undefined) {
     if (user.role !== "ADMIN") {
@@ -227,8 +275,8 @@ export async function createPrompt(user: PromptWriter, body: unknown) {
     }
   }
 
-  // Generate slug from title (translated to English)
-  const slug = await generatePromptSlug(title);
+  // Generate slug from title (translated to English); classifiers keep their URL slug
+  const slug = classifierData ? classifierData.slug : await generatePromptSlug(title);
 
   // Create prompt with tags
   // Auto-delist if user is flagged
@@ -255,6 +303,10 @@ export async function createPrompt(user: PromptWriter, body: unknown) {
         computerRequirements: computerRequirements ?? [],
         installUrl: installUrl || null,
         botConfig: botConfig ?? EMPTY_BOT_CONFIG,
+      }),
+      ...(classifierData && {
+        classifierSlug: classifierData.slug,
+        classifierConfig: classifierJson(classifierData.fields.config),
       }),
       authorId: user.id,
       categoryId: categoryId || null,
@@ -311,6 +363,7 @@ export async function createPrompt(user: PromptWriter, body: unknown) {
       changeNote: "Initial version",
       createdBy: user.id,
       ...(isBot && { botSnapshot: versionBotSnapshot(prompt.title, botFieldsFromRecord(prompt)) }),
+      ...(classifierData && { classifierSnapshot: classifierJson(versionClassifierSnapshot(prompt.title, classifierData.fields)) }),
     },
   });
 
@@ -367,7 +420,7 @@ export async function createPrompt(user: PromptWriter, body: unknown) {
   }
 
   // Revalidate caches (prompts, categories, tags counts change)
-  revalidateTags(["prompts", "categories", "tags"]);
+  revalidateTags(["prompts", "categories", "tags", ...(classifierData ? ["classifiers"] : [])]);
 
   return {
     ok: true as const,
@@ -382,7 +435,7 @@ export async function updatePrompt(user: PromptWriter, id: string, body: unknown
   // Check if prompt exists and user owns it
   const existing = await db.prompt.findUnique({
     where: { id },
-    select: { authorId: true, content: true, type: true, title: true, ...botFieldsSelect },
+    select: { authorId: true, content: true, type: true, title: true, isPrivate: true, ...botFieldsSelect, classifierSlug: true, classifierConfig: true },
   });
 
   if (!existing) {
@@ -399,7 +452,41 @@ export async function updatePrompt(user: PromptWriter, id: string, body: unknown
     return fail(400, "validation_error", "Invalid input", { details: parsed.error.issues });
   }
 
-  const { tagIds, contributorIds, categoryId, mediaUrl, title, bestWithModels, bestWithMCP, workflowLink, installUrl, botPlatforms, botPlatform, botIcon, botColor, pairings, isUnlisted, ...data } = parsed.data;
+  const { tagIds, contributorIds, categoryId, mediaUrl, title, bestWithModels, bestWithMCP, workflowLink, installUrl, botPlatforms, botPlatform, botIcon, botColor, pairings, isUnlisted, classifier, ...data } = parsed.data;
+
+  // Classifiers: the type is fixed, content is derived from the structured fields, and every change
+  // is validated against the chains that use the classifier
+  const isClassifier = existing.type === "CLASSIFIER";
+  if (data.type && data.type !== existing.type && (isClassifier || data.type === "CLASSIFIER")) {
+    return fail(400, "validation_error", "Classifiers cannot change type");
+  }
+  if (classifier && !isClassifier) {
+    return fail(400, "validation_error", "classifier is only supported for classifiers");
+  }
+  let classifierBefore: { title: string; fields: ClassifierFields } | null = null;
+  let classifierAfter: { title: string; fields: ClassifierFields; content: string } | null = null;
+  if (isClassifier) {
+    if (data.content !== undefined) {
+      return fail(400, "content_derived", "A classifier's content is derived from its fields; send classifier instead");
+    }
+    if (BOT_FIELD_KEYS.some((key) => parsed.data[key] !== undefined)) {
+      return fail(400, "validation_error", "Bot fields are not supported for classifiers");
+    }
+    const current = classifierFieldsFromRecord(existing);
+    const next = classifier
+      ? classifierFields(classifier)
+      : current && (data.description !== undefined ? { ...current, description: data.description.trim() } : current);
+    if (!next || !existing.classifierSlug) {
+      return fail(400, "invalid_classifier", "Invalid classifier", { details: ["classifier fields are missing or too large"] });
+    }
+    const nextTitle = title ?? existing.title;
+    const problem = await checkClassifierWrite(id, existing.classifierSlug, nextTitle, next, { isPrivate: data.isPrivate ?? existing.isPrivate });
+    if (problem) {
+      return fail(problem.error === "classifier_in_chain" ? 409 : 400, problem.error, problem.message, { details: problem.details });
+    }
+    classifierBefore = current && { title: existing.title, fields: current };
+    classifierAfter = { title: nextTitle, fields: next, content: classifierContent(existing.classifierSlug, nextTitle, next) };
+  }
 
   if (isUnlisted !== undefined && user.role !== "ADMIN") {
     return fail(403, "forbidden", "Only admins can unlist prompts");
@@ -428,9 +515,9 @@ export async function updatePrompt(user: PromptWriter, id: string, body: unknown
   }
   const nextBotPlatforms = botPlatforms ?? (botPlatform ? [botPlatform] : undefined);
 
-  // Regenerate slug if title changed
+  // Regenerate slug if title changed; a classifier's URL slug stays as it is
   let newSlug: string | undefined;
-  if (title) {
+  if (title && !isClassifier) {
     newSlug = await generatePromptSlug(title);
   }
 
@@ -449,6 +536,11 @@ export async function updatePrompt(user: PromptWriter, id: string, body: unknown
     ...(botIcon !== undefined && { botIcon: botIcon || null }),
     ...(botColor !== undefined && { botColor: botColor || null }),
     ...(isUnlisted !== undefined && { isUnlisted, unlistedAt: isUnlisted ? new Date() : null }),
+    ...(classifierAfter && {
+      description: classifierAfter.fields.description,
+      classifierConfig: classifierJson(classifierAfter.fields.config),
+      content: classifierAfter.content,
+    }),
   };
 
   // Update prompt
@@ -499,7 +591,10 @@ export async function updatePrompt(user: PromptWriter, id: string, body: unknown
   const botAfter = isBotPrompt ? { title: prompt.title, instructions: prompt.content, fields: botFieldsFromRecord(prompt) } : null;
   const contentVersionChanged = !!data.content && data.content !== existing.content;
   const botVersionChanged = !!botAfter && (!botBefore || !botSnapshotsEqual(botBefore, botAfter));
-  if (contentVersionChanged || botVersionChanged) {
+  const classifierVersionChanged =
+    !!classifierAfter &&
+    (!classifierBefore || classifierBefore.title !== classifierAfter.title || !classifierFieldsEqual(classifierBefore.fields, classifierAfter.fields));
+  if (contentVersionChanged || botVersionChanged || classifierVersionChanged) {
     const latestVersion = await db.promptVersion.findFirst({
       where: { promptId: id },
       orderBy: { version: "desc" },
@@ -510,9 +605,10 @@ export async function updatePrompt(user: PromptWriter, id: string, body: unknown
         promptId: id,
         version: (latestVersion?.version || 0) + 1,
         content: data.content ?? prompt.content,
-        changeNote: contentVersionChanged ? "Content updated" : "Bot updated",
+        changeNote: contentVersionChanged ? "Content updated" : classifierVersionChanged ? "Classifier updated" : "Bot updated",
         createdBy: user.id,
         ...(botAfter && { botSnapshot: versionBotSnapshot(botAfter.title, botAfter.fields) }),
+        ...(classifierAfter && { classifierSnapshot: classifierJson(versionClassifierSnapshot(classifierAfter.title, classifierAfter.fields)) }),
       },
     });
   }
@@ -520,7 +616,7 @@ export async function updatePrompt(user: PromptWriter, id: string, body: unknown
   // Regenerate embedding if content, title, or description changed (non-blocking)
   // Only for public prompts - the function checks if aiSearch is enabled
   // After embedding is regenerated, update related prompts
-  const contentChanged = data.content || title || data.description !== undefined;
+  const contentChanged = data.content || title || data.description !== undefined || classifierVersionChanged;
   if (contentChanged && !prompt.isPrivate) {
     generatePromptEmbedding(id)
       .then(() => findAndSaveRelatedPrompts(id))
@@ -615,7 +711,7 @@ export async function updatePrompt(user: PromptWriter, id: string, body: unknown
   }
 
   // Revalidate prompts and flow cache
-  revalidateTags(["prompts", "prompt-flow", ...(isUnlisted !== undefined ? ["categories", "tags"] : [])]);
+  revalidateTags(["prompts", "prompt-flow", ...(isUnlisted !== undefined ? ["categories", "tags"] : []), ...(isClassifier ? ["classifiers"] : [])]);
 
   return {
     ok: true as const,

@@ -63,7 +63,8 @@
       "prompt": "プロンプト",
       "skill": "スキル",
       "bot": "ボット",
-      "team": "チーム"
+      "team": "チーム",
+      "classifier": "分類器"
     }
   },
   "brand": {
@@ -498,6 +499,25 @@
       "added": "追加",
       "removed": "削除",
       "changed": "変更"
+    },
+    "proposeClassifierTitle": "この分類器への変更を提案",
+    "proposeClassifierIntro": "この分類器の改善を提案してください。所有者が提案を確認し、承認または却下します。",
+    "backToClassifier": "分類器に戻る",
+    "classifierFields": {
+      "title": "名前",
+      "summary": "概要",
+      "category": "カテゴリ",
+      "problem": "課題",
+      "goal": "目的",
+      "input": "入力",
+      "question": "質問",
+      "options": "選択肢",
+      "outcomes": "結果",
+      "scenarios": "シナリオ",
+      "guidance": "ガイダンス",
+      "caveats": "注意点",
+      "tags": "キーワード",
+      "references": "出典"
     }
   },
   "categories": {
@@ -1030,10 +1050,17 @@
     "categories": {
       "support": "カスタマーサポート",
       "refunds": "返金",
+      "commerce": "注文と返品",
+      "logistics": "物流と配送",
       "moderation": "モデレーション",
       "agents": "エージェント",
       "grounding": "根拠確認",
-      "security": "セキュリティシグナル"
+      "security": "セキュリティシグナル",
+      "incidents": "IT とインシデント",
+      "engineering": "ソフトウェア開発",
+      "documents": "書類とメール",
+      "research": "フィードバックとリサーチ",
+      "education": "教育"
     },
     "questionTypes": {
       "choice": "Choice",
@@ -1118,7 +1145,102 @@
     "goalAndInput": "目的と入力",
     "endpointDetails": "各終点の意味",
     "pathDetails": "ステップのメモと入力",
-    "stepDetails": "質問・入力・メモ"
+    "stepDetails": "質問・入力・メモ",
+    "form": {
+      "defaultReviewLabel": "要確認",
+      "defaultReviewWhen": "確信度が低いか、答えがはっきりしません。",
+      "defaultOptionWhen": "答えは「{option}」です。",
+      "updated": "分類器を更新しました",
+      "created": "分類器を作成しました",
+      "remove": "削除",
+      "editTitle": "分類器を編集",
+      "createTitle": "分類器を作成",
+      "steps": "ステップ",
+      "step": {
+        "basics": "基本",
+        "input": "入力",
+        "question": "質問",
+        "outcomes": "結果",
+        "scenarios": "シナリオ",
+        "review": "確認"
+      },
+      "stepHint": {
+        "basics": "判断に名前を付け、どんな問題を解決するか書いてください。",
+        "input": "アプリがリクエストごとに送る状態を説明してください。",
+        "question": "状態について質問を1つ書き、考えられる答えを挙げてください。",
+        "outcomes": "答えを、コードが実行する結果に対応させます。不確かな答え用の結果も用意してください。",
+        "scenarios": "説明用の例を追加します。結果はあなたが書くもので、モデルの出力ではありません。",
+        "review": "保存前に分類器を確認してください。サーバーも同じチェックを行います。"
+      },
+      "name": "名前",
+      "namePlaceholder": "例：返金の可否",
+      "summary": "概要",
+      "summaryPlaceholder": "分類器が何を判断するかを1〜2文で",
+      "category": "カテゴリ",
+      "problemPlaceholder": "この判断がないと何が問題になりますか？",
+      "goalPlaceholder": "この判断で何を実現しますか？",
+      "inputSummary": "入力の概要",
+      "inputSummaryPlaceholder": "例：注文履歴付きのサポートチケット",
+      "inputFields": "入力フィールド",
+      "inputFieldsHint": "状態に含まれる値の snake_case 名",
+      "fieldName": "フィールド名",
+      "fieldDescription": "フィールドの内容",
+      "addInputField": "フィールドを追加",
+      "questionType": "質問の種類",
+      "questionTypeHint": {
+        "choice": "リストから1つ選ぶ",
+        "score": "状態を順序付きの尺度に当てはめる",
+        "noul": "はい/いいえの文が正しい確率"
+      },
+      "question": "質問",
+      "questionPlaceholder": "例：このチケットはどのチームが担当すべき？",
+      "optionsHint": {
+        "choice": "選択肢のキーは snake_case にします。各選択肢には同じ id の結果が必要です。",
+        "score": "レベルは 0 から、低い順に番号を付けます。",
+        "noul": "何を「はい」、何を「いいえ」とするか説明してください。"
+      },
+      "optionKey": "選択肢のキー",
+      "optionDescription": "この選択肢の意味",
+      "addOption": "選択肢を追加",
+      "addOutcomesForOptions": "選択肢ごとに結果を追加",
+      "outcomesHint": "id は snake_case。トーン：続行、注意、確認、停止。",
+      "outcomeId": "結果の id",
+      "outcomeLabel": "ラベル",
+      "outcomeTone": "トーン",
+      "tones": {
+        "proceed": "続行",
+        "caution": "注意",
+        "review": "確認",
+        "stop": "停止"
+      },
+      "addOutcome": "結果を追加",
+      "onePerLine": "1行に1つ",
+      "guidanceHint": "答えを使うための実用的なアドバイス",
+      "caveatsHint": "見落としてはいけない制約",
+      "scenarioTitle": "シナリオのタイトル",
+      "scenarioOutcome": "結果",
+      "scenarioStatePlaceholder": "テキスト、または {\"message\": \"...\"} のような JSON オブジェクト",
+      "scenarioState": "状態",
+      "scenarioRationale": "この結果になる理由",
+      "addScenario": "シナリオを追加",
+      "tags": "キーワード",
+      "tagsPlaceholder": "カンマ区切り。例：返金, 決済",
+      "fixBeforeSaving": "保存する前に次の問題を修正してください：",
+      "readyToSave": "問題ありません。皆がコピーする定義はこちらです：",
+      "back": "戻る",
+      "next": "次へ",
+      "save": "変更を保存",
+      "create": "分類器を作成"
+    },
+    "create": "新しい分類器",
+    "edit": "編集",
+    "community": "コミュニティ",
+    "private": "非公開",
+    "unlisted": "一覧に非表示",
+    "copyJson": "JSON をコピー",
+    "suggestedDescription": "同じカテゴリ：この分類器と組み合わせられる分類器です。",
+    "noSuggestions": "関連する分類器はまだありません。",
+    "emptyCatalog": "まだ分類器がありません。最初の1つを作りましょう。"
   },
   "bots": {
     "description": "指示・ルーティン・スキルを備えたすぐに使える AI エージェントボット。OpenClaw、AutoGPT、OpenAI Dots、Claude Duet、Meta Muse、Hermes Agent、Grok Bot にインストールできます。",

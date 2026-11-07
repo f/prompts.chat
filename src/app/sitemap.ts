@@ -2,8 +2,8 @@ import { MetadataRoute } from "next";
 import { db } from "@/lib/db";
 import { NON_BOT_PROMPTS } from "@/lib/prompt-list";
 import { getAllChapters } from "@/lib/book/chapters";
-import { getChains, getClassifiers } from "@/lib/classifiers";
-import { getBotTeamUrl, getBotUrl, getPromptUrl } from "@/lib/urls";
+import { getClassifierCatalog, listedClassifiers } from "@/lib/classifiers/store";
+import { getBotTeamUrl, getBotUrl, getClassifierUrl, getPromptUrl } from "@/lib/urls";
 import { getBaseUrl, toSitemapImageUrl } from "@/lib/seo";
 
 // Revalidate every 5 minutes so new prompts reach crawlers quickly
@@ -61,15 +61,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${baseUrl}/book/${chapter.slug}`,
   }));
 
-  // Classifier catalog pages come from static data
-  const classifierPages: MetadataRoute.Sitemap = [
-    ...getClassifiers().map((c) => ({ url: `${baseUrl}/classifiers/${c.slug}` })),
-    ...getChains().map((c) => ({ url: `${baseUrl}/classifiers/chains/${c.slug}` })),
-  ];
-
   // Dynamic pages - skip if database is unavailable (e.g., during build)
   try {
-    const [latestPrompt, categories, categoryUpdates, prompts, bots, tags, authors, teams] = await Promise.all([
+    const [latestPrompt, categories, categoryUpdates, prompts, bots, tags, authors, teams, classifierCatalog] = await Promise.all([
       db.prompt.findFirst({
         where: listedPromptFilter,
         orderBy: { updatedAt: "desc" },
@@ -116,6 +110,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         orderBy: { updatedAt: "desc" },
         take: MAX_PROMPTS,
       }),
+      getClassifierCatalog(),
     ]);
 
     const authorUsers = await db.user.findMany({
@@ -150,6 +145,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: team.updatedAt,
     }));
 
+    const classifierPages: MetadataRoute.Sitemap = [
+      ...listedClassifiers(classifierCatalog).map((c) => ({ url: `${baseUrl}${getClassifierUrl(c.slug)}`, lastModified: c.updatedAt })),
+      ...classifierCatalog.chains.map((c) => ({ url: `${baseUrl}/classifiers/chains/${c.slug}` })),
+    ];
+
     const promptPages: MetadataRoute.Sitemap = prompts.slice(0, Math.max(0, MAX_PROMPTS - bots.length - teams.length)).map((prompt) => {
       const image = prompt.type === "IMAGE" && prompt.mediaUrl ? toSitemapImageUrl(prompt.mediaUrl) : null;
       return {
@@ -176,6 +176,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   } catch {
     // Database unavailable (build time) - return static and book pages only
     const staticPages: MetadataRoute.Sitemap = staticPaths.map((path) => ({ url: `${baseUrl}${path}` }));
-    return [...staticPages, ...bookPages, ...classifierPages];
+    return [...staticPages, ...bookPages];
   }
 }

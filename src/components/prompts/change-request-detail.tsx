@@ -15,6 +15,8 @@ import { ReopenChangeRequestButton } from "@/components/prompts/reopen-change-re
 import { DismissChangeRequestButton } from "@/components/prompts/dismiss-change-request-button";
 import { BotDiff } from "@/components/bots/bot-diff";
 import { parseBotFields } from "@/lib/bots/change-snapshot";
+import { ClassifierDiff } from "@/components/classifiers/classifier-diff";
+import { parseClassifierFields } from "@/lib/classifiers/change-snapshot";
 
 interface ChangeRequestDetailProps {
   promptId: string;
@@ -76,7 +78,8 @@ export async function ChangeRequestDetail({ promptId, changeId, basePath, backLa
 
   const StatusIcon = statusConfig[changeRequest.status].icon;
   const isBot = changeRequest.prompt.type === "BOT";
-  const hasTitleChange = !isBot && changeRequest.proposedTitle && changeRequest.proposedTitle !== changeRequest.originalTitle;
+  const isClassifier = changeRequest.prompt.type === "CLASSIFIER";
+  const hasTitleChange = !isBot && !isClassifier && changeRequest.proposedTitle && changeRequest.proposedTitle !== changeRequest.originalTitle;
 
   return (
     <div className="container max-w-3xl pt-6 pb-24 sm:pb-6">
@@ -162,8 +165,21 @@ export async function ChangeRequestDetail({ promptId, changeId, basePath, backLa
         </div>
       )}
 
+      {/* Classifiers: every changed structured field */}
+      {isClassifier && (
+        <div className="mb-6">
+          <ClassifierDiff
+            original={{ title: changeRequest.originalTitle, fields: parseClassifierFields(changeRequest.originalClassifier) }}
+            modified={{
+              title: changeRequest.proposedTitle || changeRequest.originalTitle,
+              fields: parseClassifierFields(changeRequest.proposedClassifier),
+            }}
+          />
+        </div>
+      )}
+
       {/* Content diff */}
-      {!isBot && (
+      {!isBot && !isClassifier && (
       <div className="mb-6">
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">{t("contentChanges")}</p>
         {changeRequest.prompt.type === "SKILL" ? (

@@ -63,7 +63,8 @@
       "prompt": "Prompt",
       "skill": "Skill",
       "bot": "Bot",
-      "team": "Team"
+      "team": "Team",
+      "classifier": "Classifier"
     }
   },
   "brand": {
@@ -498,6 +499,25 @@
       "added": "Added",
       "removed": "Removed",
       "changed": "Changed"
+    },
+    "proposeClassifierTitle": "Propose changes to this classifier",
+    "proposeClassifierIntro": "Suggest improvements to this classifier. The owner reviews your proposal and can approve or reject it.",
+    "backToClassifier": "Back to classifier",
+    "classifierFields": {
+      "title": "Name",
+      "summary": "Summary",
+      "category": "Category",
+      "problem": "Problem",
+      "goal": "Goal",
+      "input": "Input",
+      "question": "Question",
+      "options": "Options",
+      "outcomes": "Outcomes",
+      "scenarios": "Scenarios",
+      "guidance": "Guidance",
+      "caveats": "Caveats",
+      "tags": "Keywords",
+      "references": "Sources"
     }
   },
   "categories": {
@@ -1030,10 +1050,17 @@
     "categories": {
       "support": "Customer support",
       "refunds": "Refunds",
+      "commerce": "Orders & returns",
+      "logistics": "Logistics & delivery",
       "moderation": "Moderation",
       "agents": "Agents",
       "grounding": "Grounding",
-      "security": "Security signals"
+      "security": "Security signals",
+      "incidents": "IT & incidents",
+      "engineering": "Software delivery",
+      "documents": "Documents & email",
+      "research": "Feedback & research",
+      "education": "Education"
     },
     "questionTypes": {
       "choice": "Choice",
@@ -1118,7 +1145,102 @@
     "goalAndInput": "Goal and input",
     "endpointDetails": "What each endpoint means",
     "pathDetails": "Step notes and input",
-    "stepDetails": "Question, inputs and notes"
+    "stepDetails": "Question, inputs and notes",
+    "form": {
+      "defaultReviewLabel": "Needs review",
+      "defaultReviewWhen": "Confidence is low or the answer is unclear.",
+      "defaultOptionWhen": "The answer is \"{option}\".",
+      "updated": "Classifier updated",
+      "created": "Classifier created",
+      "remove": "Remove",
+      "editTitle": "Edit classifier",
+      "createTitle": "Create a classifier",
+      "steps": "Steps",
+      "step": {
+        "basics": "Basics",
+        "input": "Input",
+        "question": "Question",
+        "outcomes": "Outcomes",
+        "scenarios": "Scenarios",
+        "review": "Review"
+      },
+      "stepHint": {
+        "basics": "Name the decision and say what problem it solves.",
+        "input": "Describe the state your application sends with each request.",
+        "question": "Ask one question about the state and list the possible answers.",
+        "outcomes": "Map answers to the outcomes your code acts on. Include one for uncertain answers.",
+        "scenarios": "Add illustrative examples. Their outcomes are written by you, not model output.",
+        "review": "Check the classifier before saving. The server runs the same checks."
+      },
+      "name": "Name",
+      "namePlaceholder": "e.g. Refund eligibility",
+      "summary": "Summary",
+      "summaryPlaceholder": "One or two sentences about what the classifier decides",
+      "category": "Category",
+      "problemPlaceholder": "What goes wrong without this decision?",
+      "goalPlaceholder": "What should the decision achieve?",
+      "inputSummary": "Input summary",
+      "inputSummaryPlaceholder": "e.g. A support ticket with the order history",
+      "inputFields": "Input fields",
+      "inputFieldsHint": "snake_case names of the values in the state",
+      "fieldName": "Field name",
+      "fieldDescription": "What the field contains",
+      "addInputField": "Add field",
+      "questionType": "Question type",
+      "questionTypeHint": {
+        "choice": "Pick one option from a list",
+        "score": "Place the state on an ordered rubric",
+        "noul": "Probability that a yes/no statement is true"
+      },
+      "question": "Question",
+      "questionPlaceholder": "e.g. Which team should handle this ticket?",
+      "optionsHint": {
+        "choice": "Option keys must be snake_case. Each option needs an outcome with the same id.",
+        "score": "Levels are numbered from 0, lowest first.",
+        "noul": "Describe what counts as yes and as no."
+      },
+      "optionKey": "Option key",
+      "optionDescription": "What this option means",
+      "addOption": "Add option",
+      "addOutcomesForOptions": "Add an outcome for each option",
+      "outcomesHint": "Ids are snake_case. Tones: proceed, caution, review or stop.",
+      "outcomeId": "Outcome id",
+      "outcomeLabel": "Label",
+      "outcomeTone": "Tone",
+      "tones": {
+        "proceed": "Proceed",
+        "caution": "Caution",
+        "review": "Review",
+        "stop": "Stop"
+      },
+      "addOutcome": "Add outcome",
+      "onePerLine": "One per line",
+      "guidanceHint": "Practical advice for using the answer",
+      "caveatsHint": "Limits readers must not miss",
+      "scenarioTitle": "Scenario title",
+      "scenarioOutcome": "Outcome",
+      "scenarioStatePlaceholder": "Text, or a JSON object such as {\"message\": \"...\"}",
+      "scenarioState": "State",
+      "scenarioRationale": "Why this outcome",
+      "addScenario": "Add scenario",
+      "tags": "Keywords",
+      "tagsPlaceholder": "Comma separated, e.g. refunds, payments",
+      "fixBeforeSaving": "Fix these problems before saving:",
+      "readyToSave": "Everything looks good. This is the definition people will copy:",
+      "back": "Back",
+      "next": "Next",
+      "save": "Save changes",
+      "create": "Create classifier"
+    },
+    "create": "New classifier",
+    "edit": "Edit",
+    "community": "Community",
+    "private": "Private",
+    "unlisted": "Unlisted",
+    "copyJson": "Copy JSON",
+    "suggestedDescription": "Same category: classifiers you may combine with this one.",
+    "noSuggestions": "No related classifiers yet.",
+    "emptyCatalog": "No classifiers yet. Create the first one."
   },
   "bots": {
     "description": "Ready-made AI agent bots with instructions, routines and skills. Install them on OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent or Grok Bot.",

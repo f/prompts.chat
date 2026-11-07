@@ -7,10 +7,17 @@
 export type ClassifierCategoryId =
   | "support"
   | "refunds"
+  | "commerce"
+  | "logistics"
   | "moderation"
   | "agents"
   | "grounding"
-  | "security";
+  | "security"
+  | "incidents"
+  | "engineering"
+  | "documents"
+  | "research"
+  | "education";
 
 /** System One question types used in the catalog (image-only `box` is omitted). */
 export type QuestionType = "choice" | "score" | "noul";
@@ -115,23 +122,12 @@ export interface SourceReference {
   note: string;
 }
 
-export type ReferenceId =
-  | "typesafe-system-one"
-  | "typesafe-quickstart"
-  | "typesafe-api"
-  | "typesafe-companion-noul"
-  | "typesafe-noul-screen"
-  | "typesafe-confidence-routing"
-  | "typesafe-probability-routing"
-  | "typesafe-fan-out"
-  | "typesafe-jaggedness"
-  | "typesafe-guardrails"
-  | "typesafe-twitch-filter"
-  | "typesafe-citation-check"
-  | "typesafe-rag-passages"
-  | "typesafe-function-calling"
-  | "kev-repository"
-  | "kev-4b-model-card";
+/** Id of a row in the classifier_sources table, e.g. "typesafe-system-one". */
+export type ReferenceId = string;
+
+export interface ClassifierSource extends SourceReference {
+  id: ReferenceId;
+}
 
 /** Where a step's input comes from: the chain's initial input or an earlier step. */
 export interface ChainInputRef {
@@ -195,4 +191,25 @@ export interface ClassifierChain {
   scenarios: ChainScenario[];
   notes: string[];
   references: ReferenceId[];
+}
+
+export interface ClassifierAuthor {
+  id: string;
+  name: string | null;
+  username: string;
+  avatar: string | null;
+  verified: boolean;
+}
+
+/** A classifier as stored: a prompt of type CLASSIFIER with its definition and shared prompt fields. */
+export interface ClassifierRecord extends ClassifierDefinition {
+  /** Prompt id, used by the shared prompt APIs (votes, comments, change requests, versions) */
+  id: string;
+  /** Curated catalog entries have fixed ids; everything else was added by a member */
+  curated: boolean;
+  author: ClassifierAuthor;
+  isPrivate: boolean;
+  isUnlisted: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }

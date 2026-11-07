@@ -139,11 +139,11 @@ describe("GET /api/prompts", () => {
 
     expect(db.prompt.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
-        where: expect.objectContaining({ type: { not: "BOT" } }),
+        where: expect.objectContaining({ type: { notIn: ["BOT", "CLASSIFIER"] } }),
       })
     );
     expect(db.prompt.count).toHaveBeenCalledWith({
-      where: expect.objectContaining({ type: { not: "BOT" } }),
+      where: expect.objectContaining({ type: { notIn: ["BOT", "CLASSIFIER"] } }),
     });
   });
 
@@ -156,7 +156,7 @@ describe("GET /api/prompts", () => {
     expect(db.prompt.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
-          type: { not: "BOT" },
+          type: { notIn: ["BOT", "CLASSIFIER"] },
           trendingUntil: { gt: expect.any(Date) },
         }),
       })

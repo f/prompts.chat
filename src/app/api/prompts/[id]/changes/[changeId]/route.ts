@@ -4,6 +4,8 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { checkPromptAccess } from "@/lib/prompt-access";
 import { botFieldsUpdateData, parseBotFields, versionBotSnapshot } from "@/lib/bots/change-snapshot";
+import { classifierJson, parseClassifierFields, versionClassifierSnapshot } from "@/lib/classifiers/change-snapshot";
+import { checkClassifierWrite, classifierContent, revalidateClassifiers } from "@/lib/classifiers/write";
 
 const updateChangeRequestSchema = z.object({
   status: z.enum(["APPROVED", "REJECTED", "PENDING"]),
@@ -28,7 +30,7 @@ export async function PATCH(
     // Check if prompt exists and user is owner
     const prompt = await db.prompt.findUnique({
       where: { id: promptId },
-      select: { authorId: true, content: true, title: true, type: true },
+      select: { authorId: true, content: true, title: true, type: true, classifierSlug: true },
     });
 
     if (!prompt) {
@@ -55,6 +57,7 @@ export async function PATCH(
         proposedContent: true, 
         proposedTitle: true,
         proposedBot: true,
+        proposedClassifier: true,
         authorId: true,
         reason: true,
         author: {
@@ -134,26 +137,53 @@ export async function PATCH(
       const proposedBot = prompt.type === "BOT" ? parseBotFields(changeRequest.proposedBot) : null;
       const newTitle = changeRequest.proposedTitle || prompt.title;
 
+      // Classifiers take the proposed fields only if they still make a valid classifier for the chains
+      // that use it now; the content is derived again from the fields rather than taken from the request
+      const isClassifier = prompt.type === "CLASSIFIER";
+      const proposedClassifier = isClassifier ? parseClassifierFields(changeRequest.proposedClassifier) : null;
+      let proposedContent = changeRequest.proposedContent;
+      if (isClassifier) {
+        if (!proposedClassifier || !prompt.classifierSlug) {
+          return NextResponse.json(
+            { error: "invalid_classifier", message: "The change request has no valid classifier fields" },
+            { status: 400 }
+          );
+        }
+        const problem = await checkClassifierWrite(promptId, prompt.classifierSlug, newTitle, proposedClassifier);
+        if (problem) {
+          return NextResponse.json(
+            { error: problem.error, message: problem.message, details: problem.details },
+            { status: 409 }
+          );
+        }
+        proposedContent = classifierContent(prompt.classifierSlug, newTitle, proposedClassifier);
+      }
+
       // Update prompt and create version in transaction
       await db.$transaction([
         // Create version record with the NEW content (the approved change)
         db.promptVersion.create({
           data: {
             prompt: { connect: { id: promptId } },
-            content: changeRequest.proposedContent,
+            content: proposedContent,
             changeNote,
             version: nextVersion,
             author: { connect: { id: changeRequest.authorId } },
             ...(proposedBot && { botSnapshot: versionBotSnapshot(newTitle, proposedBot) }),
+            ...(proposedClassifier && { classifierSnapshot: classifierJson(versionClassifierSnapshot(newTitle, proposedClassifier)) }),
           },
         }),
         // Update prompt with proposed changes and add contributor
         db.prompt.update({
           where: { id: promptId },
           data: {
-            content: changeRequest.proposedContent,
+            content: proposedContent,
             ...(changeRequest.proposedTitle && { title: changeRequest.proposedTitle }),
             ...(proposedBot && botFieldsUpdateData(proposedBot)),
+            ...(proposedClassifier && {
+              description: proposedClassifier.description,
+              classifierConfig: classifierJson(proposedClassifier.config),
+            }),
             contributors: {
               connect: { id: changeRequest.authorId },
             },
@@ -165,6 +195,7 @@ export async function PATCH(
           data: { status, reviewNote },
         }),
       ]);
+      if (isClassifier) revalidateClassifiers();
     } else {
       // Just update the change request status
       await db.changeRequest.update({

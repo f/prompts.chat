@@ -156,6 +156,7 @@ export async function DELETE(
         authorId: true, 
         isUnlisted: true,
         delistReason: true,
+        type: true,
       },
     });
 
@@ -191,6 +192,13 @@ export async function DELETE(
       );
     }
 
+    if (existing.type === "CLASSIFIER" && (await db.classifierChainStep.count({ where: { classifierId: id } })) > 0) {
+      return NextResponse.json(
+        { error: "classifier_in_chain", message: "This classifier is a step in a chain and cannot be deleted" },
+        { status: 409 }
+      );
+    }
+
     // Soft delete by setting deletedAt timestamp
     await db.prompt.update({
       where: { id },
@@ -202,6 +210,7 @@ export async function DELETE(
     revalidateTag("categories", "max");
     revalidateTag("tags", "max");
     revalidateTag("prompt-flow", "max");
+    if (existing.type === "CLASSIFIER") revalidateTag("classifiers", "max");
 
     return NextResponse.json({ 
       success: true, 

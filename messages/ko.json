@@ -63,7 +63,8 @@
       "prompt": "프롬프트",
       "skill": "스킬",
       "bot": "봇",
-      "team": "팀"
+      "team": "팀",
+      "classifier": "분류기"
     }
   },
   "brand": {
@@ -498,6 +499,25 @@
       "added": "추가됨",
       "removed": "제거됨",
       "changed": "변경됨"
+    },
+    "proposeClassifierTitle": "이 분류기 변경 제안",
+    "proposeClassifierIntro": "이 분류기의 개선 사항을 제안하세요. 소유자가 제안을 검토하고 승인하거나 거절할 수 있습니다.",
+    "backToClassifier": "분류기로 돌아가기",
+    "classifierFields": {
+      "title": "이름",
+      "summary": "요약",
+      "category": "카테고리",
+      "problem": "문제",
+      "goal": "목표",
+      "input": "입력",
+      "question": "질문",
+      "options": "옵션",
+      "outcomes": "결과",
+      "scenarios": "시나리오",
+      "guidance": "가이드",
+      "caveats": "주의 사항",
+      "tags": "키워드",
+      "references": "출처"
     }
   },
   "categories": {
@@ -1030,10 +1050,17 @@
     "categories": {
       "support": "고객 지원",
       "refunds": "환불",
+      "commerce": "주문 및 반품",
+      "logistics": "물류 및 배송",
       "moderation": "콘텐츠 검토",
       "agents": "에이전트",
       "grounding": "근거 확인",
-      "security": "보안 신호"
+      "security": "보안 신호",
+      "incidents": "IT 및 장애",
+      "engineering": "소프트웨어 개발",
+      "documents": "문서 및 이메일",
+      "research": "피드백 및 리서치",
+      "education": "교육"
     },
     "questionTypes": {
       "choice": "Choice",
@@ -1118,7 +1145,102 @@
     "goalAndInput": "목표와 입력",
     "endpointDetails": "각 종착점의 의미",
     "pathDetails": "단계 메모와 입력",
-    "stepDetails": "질문, 입력, 메모"
+    "stepDetails": "질문, 입력, 메모",
+    "form": {
+      "defaultReviewLabel": "검토 필요",
+      "defaultReviewWhen": "신뢰도가 낮거나 답이 불분명합니다.",
+      "defaultOptionWhen": "답은 \"{option}\"입니다.",
+      "updated": "분류기가 업데이트되었습니다",
+      "created": "분류기가 생성되었습니다",
+      "remove": "삭제",
+      "editTitle": "분류기 편집",
+      "createTitle": "분류기 만들기",
+      "steps": "단계",
+      "step": {
+        "basics": "기본",
+        "input": "입력",
+        "question": "질문",
+        "outcomes": "결과",
+        "scenarios": "시나리오",
+        "review": "검토"
+      },
+      "stepHint": {
+        "basics": "결정에 이름을 붙이고 어떤 문제를 해결하는지 적어 주세요.",
+        "input": "애플리케이션이 요청마다 보내는 상태를 설명하세요.",
+        "question": "상태에 대해 질문 하나를 하고 가능한 답을 나열하세요.",
+        "outcomes": "답을 코드가 처리할 결과에 연결하세요. 불확실한 답을 위한 결과도 하나 넣으세요.",
+        "scenarios": "예시를 추가하세요. 결과는 직접 작성하는 것이며 모델 출력이 아닙니다.",
+        "review": "저장하기 전에 분류기를 확인하세요. 서버도 같은 검사를 합니다."
+      },
+      "name": "이름",
+      "namePlaceholder": "예: 환불 가능 여부",
+      "summary": "요약",
+      "summaryPlaceholder": "분류기가 무엇을 결정하는지 한두 문장으로",
+      "category": "카테고리",
+      "problemPlaceholder": "이 결정이 없으면 무엇이 잘못되나요?",
+      "goalPlaceholder": "이 결정으로 무엇을 이뤄야 하나요?",
+      "inputSummary": "입력 요약",
+      "inputSummaryPlaceholder": "예: 주문 내역이 포함된 지원 티켓",
+      "inputFields": "입력 필드",
+      "inputFieldsHint": "상태 값의 snake_case 이름",
+      "fieldName": "필드 이름",
+      "fieldDescription": "필드 내용",
+      "addInputField": "필드 추가",
+      "questionType": "질문 유형",
+      "questionTypeHint": {
+        "choice": "목록에서 하나를 고릅니다",
+        "score": "상태를 순서가 있는 척도에 놓습니다",
+        "noul": "예/아니오 문장이 참일 확률"
+      },
+      "question": "질문",
+      "questionPlaceholder": "예: 이 티켓은 어느 팀이 처리해야 하나요?",
+      "optionsHint": {
+        "choice": "옵션 키는 snake_case여야 합니다. 각 옵션에는 같은 id의 결과가 필요합니다.",
+        "score": "단계는 0부터 낮은 순으로 번호를 매깁니다.",
+        "noul": "무엇이 예이고 무엇이 아니오인지 설명하세요."
+      },
+      "optionKey": "옵션 키",
+      "optionDescription": "옵션 의미",
+      "addOption": "옵션 추가",
+      "addOutcomesForOptions": "옵션마다 결과 추가",
+      "outcomesHint": "id는 snake_case입니다. 톤: 진행, 주의, 검토, 중지.",
+      "outcomeId": "결과 id",
+      "outcomeLabel": "라벨",
+      "outcomeTone": "톤",
+      "tones": {
+        "proceed": "진행",
+        "caution": "주의",
+        "review": "검토",
+        "stop": "중지"
+      },
+      "addOutcome": "결과 추가",
+      "onePerLine": "한 줄에 하나씩",
+      "guidanceHint": "답을 활용하는 실용적인 조언",
+      "caveatsHint": "놓치면 안 되는 한계",
+      "scenarioTitle": "시나리오 제목",
+      "scenarioOutcome": "결과",
+      "scenarioStatePlaceholder": "텍스트 또는 {\"message\": \"...\"} 같은 JSON 객체",
+      "scenarioState": "상태",
+      "scenarioRationale": "이 결과인 이유",
+      "addScenario": "시나리오 추가",
+      "tags": "키워드",
+      "tagsPlaceholder": "쉼표로 구분, 예: 환불, 결제",
+      "fixBeforeSaving": "저장하기 전에 다음 문제를 고치세요:",
+      "readyToSave": "모두 좋습니다. 사람들이 복사할 정의입니다:",
+      "back": "이전",
+      "next": "다음",
+      "save": "변경 사항 저장",
+      "create": "분류기 만들기"
+    },
+    "create": "새 분류기",
+    "edit": "편집",
+    "community": "커뮤니티",
+    "private": "비공개",
+    "unlisted": "목록에서 숨김",
+    "copyJson": "JSON 복사",
+    "suggestedDescription": "같은 카테고리: 이 분류기와 함께 쓸 수 있는 분류기입니다.",
+    "noSuggestions": "아직 관련 분류기가 없습니다.",
+    "emptyCatalog": "아직 분류기가 없습니다. 첫 번째를 만들어 보세요."
   },
   "bots": {
     "description": "지침, 루틴, 스킬을 갖춘 바로 쓸 수 있는 AI 에이전트 봇입니다. OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent 또는 Grok Bot에 설치하세요.",

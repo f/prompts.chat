@@ -1,4 +1,4 @@
-import type { ClassifierDefinition } from "../types";
+import type { ClassifierDefinition } from "../../../src/lib/classifiers/types";
 
 /**
  * Curated classifier definitions. Each one is self-contained: it can be read,
@@ -95,6 +95,8 @@ export const CLASSIFIERS: ClassifierDefinition[] = [
         slug: "agent-tool-routing",
         reason: "The same \"does any option fit?\" guard keeps an assistant from forcing a tool call on an off-topic request.",
       },
+      { slug: "ticket-urgency", reason: "Only in-scope messages need an urgency read; off-topic mail never pages anyone." },
+      { slug: "order-issue-type", reason: "Screens out messages that aren't about an order before an issue type is forced onto them." },
     ],
     references: ["typesafe-companion-noul", "typesafe-noul-screen"],
     tags: ["noul", "triage", "guard"],
@@ -186,6 +188,8 @@ export const CLASSIFIERS: ClassifierDefinition[] = [
       { slug: "in-scope-check", reason: "Answers \"does any team fit?\" so the team choice isn't trusted on off-topic mail." },
       { slug: "ticket-urgency", reason: "Routing decides who; urgency decides how fast. Ask both about the same message in one request." },
       { slug: "refund-request-detection", reason: "Billing tickets often contain a refund request that should move to the refund flow." },
+      { slug: "billing-issue-type", reason: "Breaks the billing team's tickets down into charges, payments, plan questions and cancellations." },
+      { slug: "reply-resolution-check", reason: "A customer's reply can raise a new issue that needs routing like a fresh ticket." },
     ],
     references: ["typesafe-quickstart", "kev-4b-model-card", "typesafe-jaggedness"],
     tags: ["choice", "routing", "helpdesk"],
@@ -260,6 +264,7 @@ export const CLASSIFIERS: ClassifierDefinition[] = [
     betterTogether: [
       { slug: "support-ticket-routing", reason: "Urgency picks the queue inside the team that routing chose." },
       { slug: "in-scope-check", reason: "Urgency on an off-topic message is noise; screen scope first." },
+      { slug: "customer-frustration", reason: "Urgency is about the problem; frustration is about the person. Together they choose the queue and the replier." },
     ],
     references: ["typesafe-confidence-routing", "typesafe-api", "typesafe-quickstart"],
     tags: ["score", "triage", "prioritization"],
@@ -322,6 +327,8 @@ export const CLASSIFIERS: ClassifierDefinition[] = [
       { slug: "refund-information-completeness", reason: "Once a refund is requested, check the request has what the policy needs." },
       { slug: "refund-eligibility", reason: "Detection says a refund is wanted; eligibility says whether the policy allows it." },
       { slug: "support-ticket-routing", reason: "Pull refund requests out of billing tickets and into the refund flow." },
+      { slug: "resolution-preference", reason: "For damaged or wrong items, the customer may prefer a replacement or credit over a refund." },
+      { slug: "billing-issue-type", reason: "Duplicate and post-cancellation charges usually come with a refund request." },
     ],
     references: ["typesafe-system-one", "typesafe-api", "typesafe-noul-screen"],
     tags: ["noul", "billing", "intent"],
@@ -583,6 +590,7 @@ export const CLASSIFIERS: ClassifierDefinition[] = [
     ],
     betterTogether: [
       { slug: "harm-severity", reason: "The category says which rule; severity says how fast and how visibly to act." },
+      { slug: "listing-policy-category", reason: "On marketplaces, content policy covers what a listing says; listing policy covers what is sold." },
     ],
     references: ["typesafe-guardrails", "typesafe-twitch-filter", "typesafe-jaggedness"],
     tags: ["choice", "moderation", "trust-and-safety"],
@@ -653,6 +661,7 @@ export const CLASSIFIERS: ClassifierDefinition[] = [
     betterTogether: [
       { slug: "content-policy-category", reason: "Severity is most useful once the policy area is known." },
       { slug: "answer-groundedness", reason: "Before an assistant's reply is sent, groundedness checks it is true to sources and severity checks it is safe." },
+      { slug: "listing-policy-category", reason: "On marketplaces, severity decides how quickly a prohibited listing is taken down." },
     ],
     references: ["typesafe-guardrails", "typesafe-confidence-routing"],
     tags: ["score", "moderation", "trust-and-safety"],
@@ -732,6 +741,8 @@ export const CLASSIFIERS: ClassifierDefinition[] = [
     betterTogether: [
       { slug: "agent-tool-routing", reason: "Screen first, so a flagged message never reaches a tool choice." },
       { slug: "passage-relevance", reason: "Retrieved passages are untrusted too; screen them before they reach the answer." },
+      { slug: "phishing-report-triage", reason: "Emails that an assistant reads can carry both phishing and instructions aimed at the assistant." },
+      { slug: "security-sensitive-report", reason: "Issue text read by bots can carry injected instructions as well as vulnerability details." },
     ],
     references: ["typesafe-guardrails", "typesafe-jaggedness"],
     tags: ["noul", "security", "agents", "defense-in-depth"],
@@ -825,6 +836,10 @@ export const CLASSIFIERS: ClassifierDefinition[] = [
       { slug: "prompt-injection-signal", reason: "Screen the message before a tool is chosen, and restrict tools when the signal is unclear." },
       { slug: "passage-relevance", reason: "When the router picks search, score what comes back before it reaches the answer." },
       { slug: "in-scope-check", reason: "Lets the assistant tell when no tool fits an off-topic request." },
+      { slug: "request-clarity", reason: "Ask a clarifying question before choosing a tool for an ambiguous request." },
+      { slug: "action-impact", reason: "Once a tool is chosen, grade the action to decide whether it runs, needs confirmation or needs approval." },
+      { slug: "tool-result-sufficiency", reason: "Check the tool's result answers the request before replying from it." },
+      { slug: "sensitive-data-type", reason: "Screen arguments for secrets and personal data before they are sent to another system." },
     ],
     references: ["typesafe-function-calling", "typesafe-companion-noul"],
     tags: ["choice", "agents", "tool-use"],
@@ -900,6 +915,7 @@ export const CLASSIFIERS: ClassifierDefinition[] = [
       { slug: "answer-groundedness", reason: "Relevance filters what goes into the answer; groundedness checks what comes out." },
       { slug: "agent-tool-routing", reason: "Runs when the router decides a search is needed." },
       { slug: "prompt-injection-signal", reason: "Retrieved passages are untrusted input; screen them as well as scoring them." },
+      { slug: "course-material-answerability", reason: "Score course passages first, then check whether the relevant ones cover the question." },
     ],
     references: ["typesafe-rag-passages", "typesafe-fan-out"],
     tags: ["score", "rag", "retrieval"],
@@ -974,6 +990,8 @@ export const CLASSIFIERS: ClassifierDefinition[] = [
     betterTogether: [
       { slug: "passage-relevance", reason: "Better passages in mean fewer unsupported claims out." },
       { slug: "harm-severity", reason: "A grounded reply can still be unsafe; score it before sending, as the guardrails cookbook does on outputs." },
+      { slug: "answer-giveaway-check", reason: "For tutoring replies, check both that they're supported and that they don't solve graded work." },
+      { slug: "tool-result-sufficiency", reason: "Check the result has what's needed first, then check the reply sticks to it." },
     ],
     references: ["typesafe-citation-check", "typesafe-confidence-routing"],
     tags: ["choice", "rag", "hallucination"],

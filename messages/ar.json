@@ -63,7 +63,8 @@
       "prompt": "موجه",
       "skill": "مهارة",
       "bot": "بوت",
-      "team": "فريق"
+      "team": "فريق",
+      "classifier": "مصنِّف"
     }
   },
   "brand": {
@@ -498,6 +499,25 @@
       "added": "مضاف",
       "removed": "محذوف",
       "changed": "معدّل"
+    },
+    "proposeClassifierTitle": "اقتراح تغييرات على هذا المصنِّف",
+    "proposeClassifierIntro": "اقترح تحسينات لهذا المصنِّف. يراجع المالك اقتراحك ويمكنه قبوله أو رفضه.",
+    "backToClassifier": "العودة إلى المصنِّف",
+    "classifierFields": {
+      "title": "الاسم",
+      "summary": "الملخص",
+      "category": "الفئة",
+      "problem": "المشكلة",
+      "goal": "الهدف",
+      "input": "المدخلات",
+      "question": "السؤال",
+      "options": "الخيارات",
+      "outcomes": "النتائج",
+      "scenarios": "السيناريوهات",
+      "guidance": "الإرشادات",
+      "caveats": "تنبيهات",
+      "tags": "الكلمات المفتاحية",
+      "references": "المصادر"
     }
   },
   "categories": {
@@ -1030,10 +1050,17 @@
     "categories": {
       "support": "دعم العملاء",
       "refunds": "الاسترداد",
+      "commerce": "الطلبات والمرتجعات",
+      "logistics": "الشحن والتوصيل",
       "moderation": "الإشراف",
       "agents": "الوكلاء",
       "grounding": "الاستناد إلى المصادر",
-      "security": "إشارات الأمان"
+      "security": "إشارات الأمان",
+      "incidents": "تقنية المعلومات والحوادث",
+      "engineering": "تطوير البرمجيات",
+      "documents": "المستندات والبريد",
+      "research": "الآراء والأبحاث",
+      "education": "التعليم"
     },
     "questionTypes": {
       "choice": "Choice",
@@ -1118,7 +1145,102 @@
     "goalAndInput": "الهدف والمدخلات",
     "endpointDetails": "معنى كل نهاية",
     "pathDetails": "ملاحظات الخطوات والمدخلات",
-    "stepDetails": "السؤال والمدخلات والملاحظات"
+    "stepDetails": "السؤال والمدخلات والملاحظات",
+    "form": {
+      "defaultReviewLabel": "يحتاج إلى مراجعة",
+      "defaultReviewWhen": "الثقة منخفضة أو الإجابة غير واضحة.",
+      "defaultOptionWhen": "الإجابة هي \"{option}\".",
+      "updated": "تم تحديث المصنِّف",
+      "created": "تم إنشاء المصنِّف",
+      "remove": "إزالة",
+      "editTitle": "تعديل المصنِّف",
+      "createTitle": "إنشاء مصنِّف",
+      "steps": "الخطوات",
+      "step": {
+        "basics": "الأساسيات",
+        "input": "المدخلات",
+        "question": "السؤال",
+        "outcomes": "النتائج",
+        "scenarios": "السيناريوهات",
+        "review": "المراجعة"
+      },
+      "stepHint": {
+        "basics": "سمِّ القرار واذكر المشكلة التي يحلها.",
+        "input": "صِف الحالة التي يرسلها تطبيقك مع كل طلب.",
+        "question": "اطرح سؤالًا واحدًا عن الحالة واذكر الإجابات الممكنة.",
+        "outcomes": "اربط الإجابات بالنتائج التي ينفذها الكود. أضف نتيجة للإجابات غير المؤكدة.",
+        "scenarios": "أضف أمثلة توضيحية. نتائجها من كتابتك وليست مخرجات النموذج.",
+        "review": "راجع المصنِّف قبل الحفظ. يُجري الخادم الفحوص نفسها."
+      },
+      "name": "الاسم",
+      "namePlaceholder": "مثال: أهلية الاسترداد",
+      "summary": "الملخص",
+      "summaryPlaceholder": "جملة أو جملتان عمّا يقرره المصنِّف",
+      "category": "الفئة",
+      "problemPlaceholder": "ما الذي يسوء دون هذا القرار؟",
+      "goalPlaceholder": "ما الذي يجب أن يحققه القرار؟",
+      "inputSummary": "ملخص المدخلات",
+      "inputSummaryPlaceholder": "مثال: تذكرة دعم مع سجل الطلبات",
+      "inputFields": "حقول المدخلات",
+      "inputFieldsHint": "أسماء قيم الحالة بصيغة snake_case",
+      "fieldName": "اسم الحقل",
+      "fieldDescription": "محتوى الحقل",
+      "addInputField": "إضافة حقل",
+      "questionType": "نوع السؤال",
+      "questionTypeHint": {
+        "choice": "يختار خيارًا واحدًا من قائمة",
+        "score": "يضع الحالة على مقياس مرتب",
+        "noul": "احتمال أن تكون عبارة نعم/لا صحيحة"
+      },
+      "question": "السؤال",
+      "questionPlaceholder": "مثال: أي فريق يجب أن يتولى هذه التذكرة؟",
+      "optionsHint": {
+        "choice": "يجب أن تكون مفاتيح الخيارات بصيغة snake_case. يحتاج كل خيار إلى نتيجة بالمعرّف نفسه.",
+        "score": "تُرقَّم المستويات من 0، الأدنى أولًا.",
+        "noul": "صِف ما يُعد نعم وما يُعد لا."
+      },
+      "optionKey": "مفتاح الخيار",
+      "optionDescription": "معنى الخيار",
+      "addOption": "إضافة خيار",
+      "addOutcomesForOptions": "إضافة نتيجة لكل خيار",
+      "outcomesHint": "المعرّفات بصيغة snake_case. النبرات: متابعة، حذر، مراجعة أو إيقاف.",
+      "outcomeId": "معرّف النتيجة",
+      "outcomeLabel": "التسمية",
+      "outcomeTone": "النبرة",
+      "tones": {
+        "proceed": "متابعة",
+        "caution": "حذر",
+        "review": "مراجعة",
+        "stop": "إيقاف"
+      },
+      "addOutcome": "إضافة نتيجة",
+      "onePerLine": "واحد في كل سطر",
+      "guidanceHint": "نصائح عملية لاستخدام الإجابة",
+      "caveatsHint": "حدود لا يجب أن يغفلها القارئ",
+      "scenarioTitle": "عنوان السيناريو",
+      "scenarioOutcome": "النتيجة",
+      "scenarioStatePlaceholder": "نص، أو كائن JSON مثل {\"message\": \"...\"}",
+      "scenarioState": "الحالة",
+      "scenarioRationale": "سبب هذه النتيجة",
+      "addScenario": "إضافة سيناريو",
+      "tags": "الكلمات المفتاحية",
+      "tagsPlaceholder": "مفصولة بفواصل، مثال: استرداد، مدفوعات",
+      "fixBeforeSaving": "أصلح هذه المشكلات قبل الحفظ:",
+      "readyToSave": "كل شيء جيد. هذا هو التعريف الذي سينسخه الناس:",
+      "back": "رجوع",
+      "next": "التالي",
+      "save": "حفظ التغييرات",
+      "create": "إنشاء المصنِّف"
+    },
+    "create": "مصنِّف جديد",
+    "edit": "تعديل",
+    "community": "المجتمع",
+    "private": "خاص",
+    "unlisted": "غير مدرج",
+    "copyJson": "نسخ JSON",
+    "suggestedDescription": "الفئة نفسها: مصنِّفات يمكنك دمجها مع هذا.",
+    "noSuggestions": "لا توجد مصنِّفات ذات صلة بعد.",
+    "emptyCatalog": "لا توجد مصنِّفات بعد. أنشئ الأول."
   },
   "bots": {
     "description": "بوتات وكلاء ذكاء اصطناعي جاهزة مع التعليمات والمهام الروتينية والمهارات. ثبّتها على OpenClaw أو AutoGPT أو OpenAI Dots أو Claude Duet أو Meta Muse أو Hermes Agent أو Grok Bot.",

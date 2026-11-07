@@ -259,7 +259,8 @@ export function ChainFlow({ chain, classifiers, chainNames }: ChainFlowProps) {
 
                   <ul className="space-y-1" aria-label={t("branches")}>
                     {step.branches.map((branch) => {
-                      const taken = highlight?.edges.has(`${step.id}->${branch.to}`) ?? false;
+                      const takenOutcome = highlight?.outcomes.get(step.id);
+                      const taken = takenOutcome !== undefined && branch.outcomes.includes(takenOutcome);
                       const target = chain.steps.find((s) => s.id === branch.to);
                       const end = terminal(branch.to);
                       return (

@@ -76,7 +76,7 @@ describe("DiscoveryPrompts trending section", () => {
       isPrivate: false,
       isUnlisted: false,
       deletedAt: null,
-      type: { not: "BOT" },
+      type: { notIn: ["BOT", "CLASSIFIER"] },
       trendingUntil: { gt: expect.any(Date) },
     });
     expect((query.where.trendingUntil as { gt: Date }).gt.getTime()).toBeLessThanOrEqual(Date.now());

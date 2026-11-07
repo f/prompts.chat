@@ -2,23 +2,31 @@ import { describe, it, expect } from "vitest";
 import {
   CLASSIFIER_CATEGORIES,
   MAX_SCORE_LEVELS,
-  REFERENCES,
   buildSystemOneRequest,
   filterChains,
   filterClassifiers,
   formatClassifierDefinition,
   formatClassifierOutcomes,
-  getChain,
-  getChains,
-  getChainsForClassifier,
-  getClassifier,
-  getClassifiers,
+  getChainsForClassifier as chainsForClassifier,
   getScenarioHighlight,
-  getSharedChains,
-  validateCatalog,
+  getSharedChains as sharedChains,
+  validateCatalog as validateCatalogWith,
   type ClassifierChain,
   type ClassifierDefinition,
 } from "@/lib/classifiers";
+import { CHAINS, CLASSIFIERS, SOURCES } from "../../../prisma/classifiers/fixtures";
+
+// The curated catalog lives in prisma/classifiers/fixtures and is imported into the database;
+// these tests check the fixtures with the same validators the importer runs.
+const getClassifiers = () => CLASSIFIERS;
+const getChains = () => CHAINS;
+const getClassifier = (slug: string) => CLASSIFIERS.find((c) => c.slug === slug);
+const getChain = (slug: string) => CHAINS.find((c) => c.slug === slug);
+const getChainsForClassifier = (slug: string) => chainsForClassifier(CHAINS, slug);
+const getSharedChains = (a: string, b: string) => sharedChains(CHAINS, a, b);
+const REFERENCES = Object.fromEntries(SOURCES.map((s) => [s.id, s]));
+const validateCatalog = (classifiers: ClassifierDefinition[] = CLASSIFIERS, chains: ClassifierChain[] = CHAINS) =>
+  validateCatalogWith(classifiers, chains, SOURCES.map((s) => s.id));
 
 const clone = <T,>(value: T): T => structuredClone(value);
 
@@ -27,10 +35,40 @@ describe("classifier catalog integrity", () => {
     expect(validateCatalog()).toEqual([]);
   });
 
-  it("ships a focused initial set", () => {
-    expect(getClassifiers().length).toBeGreaterThanOrEqual(8);
-    expect(getClassifiers().length).toBeLessThanOrEqual(12);
-    expect(getChains().length).toBeGreaterThanOrEqual(3);
+  it("ships an expanded catalog of around sixty classifiers and fifteen chains", () => {
+    expect(getClassifiers().length).toBeGreaterThanOrEqual(55);
+    expect(getClassifiers().length).toBeLessThanOrEqual(65);
+    expect(getChains().length).toBeGreaterThanOrEqual(14);
+    expect(getChains().length).toBeLessThanOrEqual(17);
+  });
+
+  it("covers each requested domain with classifiers and a chain", () => {
+    const domainChains = [
+      "order-problem-resolution",
+      "return-intake-and-inspection",
+      "delivery-exception-routing",
+      "saas-billing-desk",
+      "incident-alert-triage",
+      "it-helpdesk-intake",
+      "issue-intake-triage",
+      "pull-request-review-prep",
+      "finance-mailbox-intake",
+      "feedback-triage",
+      "course-assistant-questions",
+      "agent-action-safety",
+      "community-post-moderation",
+      "grounded-support-assistant",
+    ];
+    for (const slug of domainChains) expect(getChain(slug), slug).toBeDefined();
+    for (const category of CLASSIFIER_CATEGORIES) {
+      expect(getClassifiers().filter((c) => c.category === category).length, category).toBeGreaterThanOrEqual(2);
+    }
+  });
+
+  it("reuses shared classifiers across chains", () => {
+    for (const slug of ["prompt-injection-signal", "agent-tool-routing", "passage-relevance", "answer-groundedness"]) {
+      expect(getChainsForClassifier(slug).length, slug).toBeGreaterThanOrEqual(2);
+    }
   });
 
   it("covers every requested use case", () => {
@@ -53,16 +91,24 @@ describe("classifier catalog integrity", () => {
     expect([...used].sort()).toEqual([...CLASSIFIER_CATEGORIES].sort());
   });
 
-  it("puts every classifier in at least one chain and some in several", () => {
-    for (const c of getClassifiers()) {
-      expect(getChainsForClassifier(c.slug).length, c.slug).toBeGreaterThan(0);
-    }
-    expect(getClassifiers().some((c) => getChainsForClassifier(c.slug).length > 1)).toBe(true);
+  it("puts nearly every classifier in a chain and pairs the standalone ones", () => {
+    const standalone = getClassifiers().filter((c) => getChainsForClassifier(c.slug).length === 0);
+    expect(standalone.length / getClassifiers().length).toBeLessThanOrEqual(0.1);
+    for (const c of standalone) expect(c.betterTogether.length, c.slug).toBeGreaterThanOrEqual(2);
   });
 
   it("gives each classifier a human review or caution outcome", () => {
     for (const c of getClassifiers()) {
       expect(c.outcomes.some((o) => o.tone === "review" || o.tone === "caution"), c.slug).toBe(true);
+    }
+  });
+
+  it("gives each classifier varied examples, including an uncertain one", () => {
+    for (const c of getClassifiers()) {
+      expect(c.scenarios.length, c.slug).toBeGreaterThanOrEqual(3);
+      expect(new Set(c.scenarios.map((s) => s.outcome)).size, c.slug).toBeGreaterThanOrEqual(3);
+      const uncertain = c.outcomes.filter((o) => o.tone === "review" || o.tone === "caution").map((o) => o.id);
+      expect(c.scenarios.some((s) => uncertain.includes(s.outcome)), c.slug).toBe(true);
     }
   });
 
@@ -75,6 +121,46 @@ describe("classifier catalog integrity", () => {
         expect(link.reason.length).toBeGreaterThan(10);
       }
     }
+  });
+
+  it("makes every Better together link reciprocal", () => {
+    for (const c of getClassifiers()) {
+      for (const link of c.betterTogether) {
+        const partner = getClassifier(link.slug)!;
+        expect(partner.betterTogether.map((l) => l.slug), `${link.slug} -> ${c.slug}`).toContain(c.slug);
+      }
+    }
+  });
+
+  it("keeps classifier and chain slugs unique across the catalog", () => {
+    const slugs = [...getClassifiers().map((c) => c.slug), ...getChains().map((c) => c.slug)];
+    expect(new Set(slugs).size).toBe(slugs.length);
+  });
+
+  it("only classifies the type of high-stakes documents and messages, then hands off", () => {
+    const documentType = getClassifier("business-document-type")!;
+    expect(documentType.caveats?.join(" ")).toMatch(/type only/);
+    expect(getClassifier("student-question-type")!.caveats?.join(" ")).toMatch(/doesn't assess/);
+    const finance = getChain("finance-mailbox-intake")!;
+    for (const id of ["legal", "restricted", "callback", "approval"]) {
+      expect(finance.terminals.find((t) => t.id === id)?.kind, id).toBe("human");
+    }
+  });
+
+  it("never blocks a cancellation", () => {
+    const desk = getChain("saas-billing-desk")!;
+    const reason = desk.steps.find((s) => s.classifier === "cancellation-reason")!;
+    for (const branch of reason.branches) expect(branch.to, branch.outcomes.join()).toMatch(/^cancel/);
+  });
+
+  it("keeps a person in charge of merges, payments, severity and access", () => {
+    const prChain = getChain("pull-request-review-prep")!;
+    for (const t of prChain.terminals.filter((t) => t.kind === "automated" && t.id !== "ask_author")) {
+      expect(t.description, t.id).toMatch(/A person reviews and merges/);
+    }
+    expect(getClassifier("pr-change-risk")!.caveats?.join(" ")).toMatch(/Never merge/);
+    expect(getClassifier("incident-severity")!.caveats?.join(" ")).toMatch(/proposal only/i);
+    expect(getClassifier("access-request-completeness")!.caveats?.join(" ")).toMatch(/never grants access/);
   });
 
   it("only cites known references with https URLs", () => {
@@ -131,6 +217,23 @@ describe("chains", () => {
     for (const chain of getChains()) {
       expect(new Set(chain.scenarios.map((s) => s.terminal)).size, chain.slug).toBeGreaterThanOrEqual(3);
     }
+  });
+
+  it("passes every step in at least one scenario and ends at least one with a person", () => {
+    for (const chain of getChains()) {
+      const visited = new Set(chain.scenarios.flatMap((s) => s.path.map((p) => p.step)));
+      for (const step of chain.steps) expect(visited.has(step.id), `${chain.slug}/${step.id}`).toBe(true);
+      const ends = new Set(chain.scenarios.map((s) => s.terminal));
+      expect(chain.terminals.some((t) => t.kind === "human" && ends.has(t.id)), chain.slug).toBe(true);
+      expect(new Set(chain.scenarios.map((s) => s.id)).size, chain.slug).toBe(chain.scenarios.length);
+    }
+  });
+
+  it("only hands off to chains that exist", () => {
+    const slugs = new Set(getChains().map((c) => c.slug));
+    const handoffs = getChains().flatMap((c) => c.terminals.filter((t) => t.kind === "handoff"));
+    expect(handoffs.length).toBeGreaterThanOrEqual(8);
+    for (const t of handoffs) expect(slugs.has(t.handoffChain!), t.id).toBe(true);
   });
 
   it("links the triage and refund chains in both directions", () => {
@@ -222,6 +325,40 @@ describe("validateCatalog catches broken data", () => {
     const last = chain.steps[chain.steps.length - 1];
     last.branches[0].to = chain.entry;
     expect(validateCatalog(getClassifiers(), list).length).toBeGreaterThan(0);
+  });
+
+  it("flags a Better together link that is not returned", () => {
+    const list = classifiers();
+    const routing = list.find((c) => c.slug === "support-ticket-routing")!;
+    routing.betterTogether.push({ slug: "reading-level-fit", reason: "Not linked back on purpose." });
+    expect(validateCatalog(list, getChains()).join("\n")).toMatch(/does not link back/);
+  });
+
+  it("flags a classifier without an uncertain example", () => {
+    const list = classifiers();
+    const routing = list.find((c) => c.slug === "support-ticket-routing")!;
+    routing.scenarios = routing.scenarios.filter((s) => s.outcome !== "low_confidence");
+    expect(validateCatalog(list, getChains()).join("\n")).toMatch(/review or caution/);
+  });
+
+  it("flags a chain with no human ending", () => {
+    const list = chains();
+    const chain = list.find((c) => c.slug === "feedback-triage")!;
+    for (const t of chain.terminals) if (t.kind === "human") t.kind = "automated";
+    expect(validateCatalog(getClassifiers(), list).join("\n")).toMatch(/person decides/);
+  });
+
+  it("flags a step that no scenario passes through", () => {
+    const list = chains();
+    const chain = list.find((c) => c.slug === "feedback-triage")!;
+    chain.scenarios = chain.scenarios.filter((s) => !s.path.some((p) => p.step === "specificity"));
+    expect(validateCatalog(getClassifiers(), list).join("\n")).toMatch(/no scenario passes through step "specificity"/);
+  });
+
+  it("flags duplicate chain scenario ids", () => {
+    const list = chains();
+    list[0].scenarios[1].id = list[0].scenarios[0].id;
+    expect(validateCatalog(getClassifiers(), list).join("\n")).toMatch(/duplicate scenario ids/);
   });
 
   it("flags a handoff to an unknown chain", () => {

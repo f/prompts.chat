@@ -3,13 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { ArrowLeft, ExternalLink, Route } from "lucide-react";
-import {
-  getChain,
-  getChains,
-  getClassifier,
-  REFERENCES,
-  type ClassifierDefinition,
-} from "@/lib/classifiers";
+import type { ClassifierDefinition } from "@/lib/classifiers";
+import { getClassifierCatalog } from "@/lib/classifiers/store";
 import { buildPageMetadata, NOINDEX_ROBOTS } from "@/lib/seo";
 import { CategoryBadge, SourcedBadge } from "@/components/classifiers/classifier-badges";
 import { ChainFlow } from "@/components/classifiers/chain-flow";
@@ -21,13 +16,9 @@ interface ChainPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export function generateStaticParams() {
-  return getChains().map((c) => ({ slug: c.slug }));
-}
-
 export async function generateMetadata({ params }: ChainPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const chain = getChain(slug);
+  const chain = (await getClassifierCatalog()).chains.find((c) => c.slug === slug);
   const t = await getTranslations("seo.classifiers");
   if (!chain) {
     return { title: t("notFound"), robots: NOINDEX_ROBOTS };
@@ -41,16 +32,18 @@ export async function generateMetadata({ params }: ChainPageProps): Promise<Meta
 
 export default async function ChainPage({ params }: ChainPageProps) {
   const { slug } = await params;
-  const chain = getChain(slug);
+  const catalog = await getClassifierCatalog();
+  const chain = catalog.chains.find((c) => c.slug === slug);
   if (!chain) notFound();
 
   const t = await getTranslations("classifiers");
   const classifiers: Record<string, ClassifierDefinition> = {};
   for (const step of chain.steps) {
-    const classifier = getClassifier(step.classifier);
+    const classifier = catalog.classifiers.find((c) => c.slug === step.classifier);
     if (classifier) classifiers[classifier.slug] = classifier;
   }
-  const chainNames = Object.fromEntries(getChains().map((c) => [c.slug, c.name]));
+  const chainNames = Object.fromEntries(catalog.chains.map((c) => [c.slug, c.name]));
+  const sources = chain.references.flatMap((id) => catalog.sources.filter((s) => s.id === id));
 
   return (
     <div className="container py-6">
@@ -109,13 +102,12 @@ export default async function ChainPage({ params }: ChainPageProps) {
               </ul>
             </AboutPanel>
 
-            <AboutPanel summary={`${t("sources")} (${chain.references.length})`}>
+            <AboutPanel summary={`${t("sources")} (${sources.length})`}>
               <p>{t("chainSourcesDescription")}</p>
               <ul className="space-y-2">
-                {chain.references.map((id) => {
-                  const ref = REFERENCES[id];
+                {sources.map((ref) => {
                   return (
-                    <li key={id} className="space-y-1">
+                    <li key={ref.id} className="space-y-1">
                       <div className="flex flex-wrap items-center gap-1.5">
                         <SourcedBadge />
                         <span>

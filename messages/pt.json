@@ -63,7 +63,8 @@
       "prompt": "Prompt",
       "skill": "Habilidade",
       "bot": "Bot",
-      "team": "Equipe"
+      "team": "Equipe",
+      "classifier": "Classificador"
     }
   },
   "brand": {
@@ -498,6 +499,25 @@
       "added": "Adicionado",
       "removed": "Removido",
       "changed": "Alterado"
+    },
+    "proposeClassifierTitle": "Propor alterações a este classificador",
+    "proposeClassifierIntro": "Sugira melhorias para este classificador. O dono analisa sua proposta e pode aprová-la ou rejeitá-la.",
+    "backToClassifier": "Voltar ao classificador",
+    "classifierFields": {
+      "title": "Nome",
+      "summary": "Resumo",
+      "category": "Categoria",
+      "problem": "Problema",
+      "goal": "Objetivo",
+      "input": "Entrada",
+      "question": "Pergunta",
+      "options": "Opções",
+      "outcomes": "Resultados",
+      "scenarios": "Cenários",
+      "guidance": "Orientações",
+      "caveats": "Ressalvas",
+      "tags": "Palavras-chave",
+      "references": "Fontes"
     }
   },
   "categories": {
@@ -1030,10 +1050,17 @@
     "categories": {
       "support": "Suporte ao cliente",
       "refunds": "Reembolsos",
+      "commerce": "Pedidos e devoluções",
+      "logistics": "Logística e entregas",
       "moderation": "Moderação",
       "agents": "Agentes",
       "grounding": "Fundamentação",
-      "security": "Sinais de segurança"
+      "security": "Sinais de segurança",
+      "incidents": "TI e incidentes",
+      "engineering": "Entrega de software",
+      "documents": "Documentos e e-mail",
+      "research": "Feedback e pesquisa",
+      "education": "Educação"
     },
     "questionTypes": {
       "choice": "Choice",
@@ -1118,7 +1145,102 @@
     "goalAndInput": "Objetivo e entrada",
     "endpointDetails": "O que significa cada destino",
     "pathDetails": "Notas das etapas e entrada",
-    "stepDetails": "Pergunta, entradas e notas"
+    "stepDetails": "Pergunta, entradas e notas",
+    "form": {
+      "defaultReviewLabel": "Precisa de revisão",
+      "defaultReviewWhen": "A confiança é baixa ou a resposta não é clara.",
+      "defaultOptionWhen": "A resposta é \"{option}\".",
+      "updated": "Classificador atualizado",
+      "created": "Classificador criado",
+      "remove": "Remover",
+      "editTitle": "Editar classificador",
+      "createTitle": "Criar um classificador",
+      "steps": "Etapas",
+      "step": {
+        "basics": "Básico",
+        "input": "Entrada",
+        "question": "Pergunta",
+        "outcomes": "Resultados",
+        "scenarios": "Cenários",
+        "review": "Revisão"
+      },
+      "stepHint": {
+        "basics": "Dê um nome à decisão e diga qual problema ela resolve.",
+        "input": "Descreva o estado que sua aplicação envia em cada requisição.",
+        "question": "Faça uma pergunta sobre o estado e liste as respostas possíveis.",
+        "outcomes": "Associe as respostas aos resultados que seu código aplica. Inclua um para respostas incertas.",
+        "scenarios": "Adicione exemplos ilustrativos. Os resultados são escritos por você, não saídas do modelo.",
+        "review": "Confira o classificador antes de salvar. O servidor faz as mesmas verificações."
+      },
+      "name": "Nome",
+      "namePlaceholder": "ex.: Elegibilidade para reembolso",
+      "summary": "Resumo",
+      "summaryPlaceholder": "Uma ou duas frases sobre o que o classificador decide",
+      "category": "Categoria",
+      "problemPlaceholder": "O que dá errado sem esta decisão?",
+      "goalPlaceholder": "O que a decisão deve alcançar?",
+      "inputSummary": "Resumo da entrada",
+      "inputSummaryPlaceholder": "ex.: Um chamado de suporte com o histórico de pedidos",
+      "inputFields": "Campos de entrada",
+      "inputFieldsHint": "Nomes snake_case dos valores do estado",
+      "fieldName": "Nome do campo",
+      "fieldDescription": "O que o campo contém",
+      "addInputField": "Adicionar campo",
+      "questionType": "Tipo de pergunta",
+      "questionTypeHint": {
+        "choice": "Escolhe uma opção de uma lista",
+        "score": "Coloca o estado numa escala ordenada",
+        "noul": "Probabilidade de uma afirmação sim/não ser verdadeira"
+      },
+      "question": "Pergunta",
+      "questionPlaceholder": "ex.: Qual equipe deve tratar este chamado?",
+      "optionsHint": {
+        "choice": "As chaves das opções devem ser snake_case. Cada opção precisa de um resultado com o mesmo id.",
+        "score": "Os níveis são numerados a partir de 0, o mais baixo primeiro.",
+        "noul": "Descreva o que conta como sim e como não."
+      },
+      "optionKey": "Chave da opção",
+      "optionDescription": "O que esta opção significa",
+      "addOption": "Adicionar opção",
+      "addOutcomesForOptions": "Adicionar um resultado por opção",
+      "outcomesHint": "Ids são snake_case. Tons: prosseguir, cautela, revisão ou parar.",
+      "outcomeId": "Id do resultado",
+      "outcomeLabel": "Rótulo",
+      "outcomeTone": "Tom",
+      "tones": {
+        "proceed": "Prosseguir",
+        "caution": "Cautela",
+        "review": "Revisão",
+        "stop": "Parar"
+      },
+      "addOutcome": "Adicionar resultado",
+      "onePerLine": "Um por linha",
+      "guidanceHint": "Dicas práticas para usar a resposta",
+      "caveatsHint": "Limites que o leitor não pode ignorar",
+      "scenarioTitle": "Título do cenário",
+      "scenarioOutcome": "Resultado",
+      "scenarioStatePlaceholder": "Texto ou um objeto JSON como {\"message\": \"...\"}",
+      "scenarioState": "Estado",
+      "scenarioRationale": "Por que este resultado",
+      "addScenario": "Adicionar cenário",
+      "tags": "Palavras-chave",
+      "tagsPlaceholder": "Separadas por vírgula, ex.: reembolsos, pagamentos",
+      "fixBeforeSaving": "Corrija estes problemas antes de salvar:",
+      "readyToSave": "Tudo certo. Esta é a definição que as pessoas vão copiar:",
+      "back": "Voltar",
+      "next": "Próximo",
+      "save": "Salvar alterações",
+      "create": "Criar classificador"
+    },
+    "create": "Novo classificador",
+    "edit": "Editar",
+    "community": "Comunidade",
+    "private": "Privado",
+    "unlisted": "Não listado",
+    "copyJson": "Copiar JSON",
+    "suggestedDescription": "Mesma categoria: classificadores que você pode combinar com este.",
+    "noSuggestions": "Ainda não há classificadores relacionados.",
+    "emptyCatalog": "Ainda não há classificadores. Crie o primeiro."
   },
   "bots": {
     "description": "Bots de agentes de IA prontos, com instruções, rotinas e habilidades. Instale no OpenClaw, AutoGPT, OpenAI Dots, Claude Duet, Meta Muse, Hermes Agent ou Grok Bot.",
