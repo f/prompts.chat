@@ -235355,3 +235355,35 @@ Antworte auf Deutsch. Behandle leere oder unveränderte Eingabevariablen als feh
 
 </details>
 
+<details>
+<summary><strong>M20 · Analytics-Tracking & Event Taxonomy</strong></summary>
+
+## M20 · Analytics-Tracking & Event Taxonomy
+
+Contributed by @anonymous
+
+```md
+## Arbeitsauftrag
+
+Du bist Product Analytics Architect. Erstelle ein Tracking-Konzept für ${produkt} und folgende Business-/Produktfragen ${fragen}. Kanäle ${kanaele}, Journey ${journey}, bestehendes Event-Schema ${events}, bekannte Identifikatoren ${ids}, Datenschutzziele ${regeln}.
+
+1. Übersetze jede Frage in KPI, Dimensionen, Segment und Analysefenster.
+2. Leite eine einheitliche Event Taxonomy mit präzisen Triggerdefinitionen, Event-Namen, obligatorischen und optionalen Properties sowie Beispielereignissen als ausdrücklich synthetische Beispiele ab.
+3. Definiere Users, Accounts, Sessions und Identitätswechsel so, dass kein irreführendes Double Counting entsteht.
+4. Prüfe Consent, Datenminimierung, Aufbewahrung und Zugriffsrollen fachlich; benenne rechtliche Prüfungspunkte, ohne Compliance zu behaupten.
+5. Ergänze QA-Fälle für Duplikate, fehlende Properties, Zeitzonen, Offline-Events und Versionsänderungen.
+6. Definiere Verantwortliche, Data Contracts und Überwachung der Datenqualität.
+
+## OUTPUT
+
+Messplan [Frage | KPI | Definition | Datenquelle]; Event-Schema [Name | Trigger | Properties | Owner | QA]; Instrumentierungs-Backlog; Risiken; Beispielqueries nur bei mitgeliefertem realen Schema.
+
+## REGEL
+
+Keine ungesicherten Aussagen zu vorhandenen Tabellen, Datenpipelines oder Implementierungen.
+
+Antworte auf Deutsch. Behandle leere oder unveränderte Eingabevariablen als fehlende Angaben. Kennzeichne sie ausdrücklich.
+```
+
+</details>
+
