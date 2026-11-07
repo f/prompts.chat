@@ -231229,3 +231229,16 @@ Rules: no people, paddlers, faces, text, signs, or logos; no houses, roads, cars
 
 </details>
 
+<details>
+<summary><strong>Red Canoe at a Wooden Dock on a Misty Alpine Lake at Autumn Sunrise</strong></summary>
+
+## Red Canoe at a Wooden Dock on a Misty Alpine Lake at Autumn Sunrise
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A red wooden canoe tied to the end of a short weathered wooden dock on a mirror-still alpine lake at autumn sunrise, with snow-capped peaks, dark green pines, and golden larches reflected in the water, wide landscape 16:9. The gray wooden dock points out into the lake from the bottom center of the frame, and the red canoe with wooden seats floats on the left side of the dock, tied to its end by a short chain. Low mist drifts just above the calm water. Dark green pines line the rocky left shore, and golden-orange autumn larches stand on the rocky right shore with dry grass. Three jagged snow-capped peaks rise in the center background, their faces lit pink and gold by the first sunrise light, under a pale clear sky with a soft warm glow near the horizon. The still lake holds a perfect reflection of the peaks and the trees. Low camera just behind the dock, photoreal landscape photography, crisp, calm, quiet morning mood. No people, no text, no logos.
+```
+
+</details>
+
