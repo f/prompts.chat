@@ -199436,3 +199436,25 @@ Playwright E2E taste,"# Playwright E2E taste of a flake-intolerant QA engineer
 - Review traces for every new flake before merging a ""retry"" config change. Confidence: 0.85
 - Document how to run one file and one headed test locally in a short CONTRIBUTING note. Confidence: 0.80
 ",TRUE,TEXT,f
+Cloudflare Worker taste,"# Cloudflare Worker taste of an edge-first platform engineer
+- Prefer Wrangler for local dev, secrets, and deploys; keep `wrangler.toml` (or `wrangler.json`) as the source of truth for bindings. Confidence: 0.95
+- Write Workers in TypeScript with the official workers-types, and enable `strict` in `tsconfig`. Confidence: 0.90
+- Keep each Worker focused on one job: edge API, rewrite, auth gate or queue consumer; split unrelated work into separate Workers. Confidence: 0.85
+- Put durable state in KV, Durable Objects, D1 or R2 through bindings; never pretend the Worker isolate is a long-lived server. Confidence: 0.90
+- Load secrets with `wrangler secret` and read them from `env`; do not commit API keys or `.dev.vars` with real values. Confidence: 0.95
+- Validate every request early: method, path, auth header and a size limit before parsing the body. Confidence: 0.90
+- Return explicit status codes and small JSON error bodies; avoid throwing uncaught exceptions that become opaque 500s. Confidence: 0.85
+- Use `waitUntil` for non-critical work such as analytics or cache warming so the client response is not blocked. Confidence: 0.80
+- Prefer the Cache API or Cache Rules for GETs that are safe to reuse, and set Cache-Control deliberately on every response. Confidence: 0.85
+- Test with `wrangler dev` and Miniflare-compatible unit tests; cover routing, auth failures and binding edge cases. Confidence: 0.85
+- Pin compatibility date in Wrangler config and bump it on purpose after reading the runtime changelog. Confidence: 0.85
+- Use Durable Objects when you need strong consistency per key (rooms, counters, locks); use KV for eventually consistent reads. Confidence: 0.85
+- Stream large responses and uploads when possible; avoid buffering whole files in memory inside the isolate. Confidence: 0.80
+- Log with structured JSON fields (request id, route, status, duration) and ship them to your observability sink. Confidence: 0.80
+- Gate production deploys behind a staging route or environment, and smoke-test the worker URL before shifting traffic. Confidence: 0.85
+- Keep CPU-heavy work short; move bulk transforms and ML to Queues, Workflows or an origin service. Confidence: 0.85
+- Prefer fetch to first-party Cloudflare services over stuffing large SDKs into the Worker bundle. Confidence: 0.75
+- Review the bundle size on every change; drop unused deps and avoid Node polyfills you do not need. Confidence: 0.80
+- Document every binding and its purpose at the top of the Worker entry file so onboarding does not require tribal knowledge. Confidence: 0.75
+- Treat cron Triggers and Queue consumers as first-class entrypoints with the same validation and logging standards as HTTP. Confidence: 0.80
+",TRUE,TEXT,f
