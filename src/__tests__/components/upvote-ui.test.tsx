@@ -7,6 +7,9 @@ vi.mock("sonner", () => ({
   toast: { error: vi.fn() },
 }));
 
+const { refresh } = vi.hoisted(() => ({ refresh: vi.fn() }));
+vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh }) }));
+
 vi.mock("@/lib/analytics", () => ({
   analyticsPrompt: { upvote: vi.fn(), removeUpvote: vi.fn() },
 }));
@@ -75,6 +78,36 @@ describe("UpvoteButton", () => {
     await waitFor(() => expect(screen.getByRole("button", { pressed: true })).toHaveTextContent("8"));
     expect(fetchMock).toHaveBeenCalledWith("/api/bots/teams/t/vote", { method: "POST" });
     expect(iconOf(screen.getByRole("button"))).toHaveClass("fill-current");
+    expect(refresh).not.toHaveBeenCalled();
+
+    vi.unstubAllGlobals();
+  });
+
+  it("refreshes the router after a vote when asked, so cached pages show the new count", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({ ok: true, json: async () => ({ voted: false, voteCount: 6 }) })
+    );
+
+    render(<UpvoteButton promptId="p1" initialVoted initialCount={7} isLoggedIn size="circular" refreshAfterVote />);
+    fireEvent.click(screen.getByRole("button"));
+
+    await waitFor(() => expect(screen.getByRole("button", { pressed: false })).toHaveTextContent("6"));
+    expect(refresh).toHaveBeenCalledTimes(1);
+
+    vi.unstubAllGlobals();
+  });
+
+  it("asks signed-out visitors to log in without voting or refreshing", () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<UpvoteButton promptId="p1" initialVoted={false} initialCount={7} isLoggedIn={false} size="circular" refreshAfterVote />);
+    fireEvent.click(screen.getByRole("button"));
+
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(refresh).not.toHaveBeenCalled();
 
     vi.unstubAllGlobals();
   });

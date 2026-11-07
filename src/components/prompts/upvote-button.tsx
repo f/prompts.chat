@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Loader2, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +30,8 @@ type UpvoteButtonProps = UpvoteTarget & {
   isLoggedIn: boolean;
   size?: "sm" | "default" | "circular";
   showLabel?: boolean;
+  /** Clear the client router cache after a vote, so pages kept for back/forward show the new count */
+  refreshAfterVote?: boolean;
   className?: string;
 };
 
@@ -40,8 +43,10 @@ export function UpvoteButton({
   isLoggedIn,
   size = "default",
   showLabel = false,
+  refreshAfterVote = false,
   className,
 }: UpvoteButtonProps) {
+  const router = useRouter();
   const t = useTranslations("vote");
   const tCommon = useTranslations("common");
   const [isVoted, setIsVoted] = useState(initialVoted);
@@ -70,6 +75,7 @@ export function UpvoteButton({
       const data = await response.json();
       setIsVoted(data.voted);
       setVoteCount(data.voteCount);
+      if (refreshAfterVote) router.refresh();
       
       if (promptId && data.voted) {
         analyticsPrompt.upvote(promptId);

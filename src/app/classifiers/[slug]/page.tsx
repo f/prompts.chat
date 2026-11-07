@@ -216,6 +216,7 @@ export default async function ClassifierPage({ params }: ClassifierPageProps) {
             initialCount={row._count.votes}
             isLoggedIn={!!session?.user}
             size="circular"
+            refreshAfterVote
           />
           <h1 className="min-w-0 flex-1 text-2xl font-semibold tracking-tight wrap-anywhere">{classifier.name}</h1>
         </div>
