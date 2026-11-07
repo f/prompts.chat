@@ -234423,3 +234423,16 @@ Rules: no crowds, faces, readable text, logos, or brand marks on balloons; no ca
 
 </details>
 
+<details>
+<summary><strong>Colorful Hot Air Balloons Rising Over Cappadocia Fairy Chimneys at Sunrise</strong></summary>
+
+## Colorful Hot Air Balloons Rising Over Cappadocia Fairy Chimneys at Sunrise
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Dozens of colorful hot-air balloons rising over Cappadocia fairy chimneys and rock pinnacles at golden sunrise, with soft valley mist and warm side light, wide landscape 16:9. The warm sandstone fairy chimneys and eroded pinnacles fill the mid-ground across the frame; soft mist pools in the valley gaps between them. Many striped and solid-colored balloons float at staggered heights — some just clearing the rock tops, others higher as smaller shapes in the pale gold-to-blue sky. Warm sunrise light comes from the right, lighting the stone faces and catching the balloon envelopes; long soft shadows fall to the left. Photoreal travel landscape photography, calm, airy, wonder-filled morning mood. No people, no crowds, no text, no logos, no watermarks.
+```
+
+</details>
+
