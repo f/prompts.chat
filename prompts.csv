@@ -198279,3 +198279,25 @@ Neovim Config taste,"# Neovim Config taste of a minimalist terminal-first develo
 - Keep machine-specific settings in a git-ignored local.lua file so the main config stays portable. Confidence: 0.75
 - Run :checkhealth after upgrades and fix warnings before adding new plugins. Confidence: 0.80
 - Store the config in a dotfiles repository and upgrade plugins deliberately, reviewing the lazy.nvim changelog first. Confidence: 0.85",TRUE,TEXT,f
+Load Testing taste,"# Load Testing taste of a performance-minded reliability engineer
+- Start every load test from a written goal, such as p95 latency under 300 ms at 500 requests per second, not from a vague ""see what breaks"". Confidence: 0.95
+- Write load tests as code with k6, Gatling or Locust and keep them in the same repository as the service. Confidence: 0.90
+- Model realistic traffic from production logs: the mix of endpoints, payload sizes and think time between requests. Confidence: 0.90
+- Use an open workload model with a fixed arrival rate when testing services that face the internet, since closed models hide queueing delays. Confidence: 0.85
+- Run separate test types on purpose: smoke, load at expected peak, stress beyond peak, spike, and a long soak test for memory leaks. Confidence: 0.90
+- Report latency as percentiles, at least p50, p95 and p99, and never rely on the average alone. Confidence: 0.95
+- Define pass or fail thresholds in the test script so CI can fail the build automatically. Confidence: 0.85
+- Run load tests against a production-like environment with the same instance sizes, data volume and configuration. Confidence: 0.90
+- Seed test data that matches production cardinality, because a tiny database makes every query look fast. Confidence: 0.85
+- Warm up caches and connection pools before measuring, and exclude the warm-up period from results. Confidence: 0.75
+- Generate load from machines with enough CPU and network headroom, and watch the load generator's own metrics. Confidence: 0.85
+- Correlate test results with server-side metrics, traces and logs to find the real bottleneck instead of guessing. Confidence: 0.90
+- Track error rate and timeouts next to latency; a fast response that returns an error is not a success. Confidence: 0.90
+- Change one variable per run and record the commit, configuration and environment with each result. Confidence: 0.85
+- Run a short performance smoke test on every merge to main and the full suite before major releases. Confidence: 0.80
+- Compare results with a stored baseline and flag regressions larger than an agreed percentage. Confidence: 0.80
+- Mock or sandbox third-party APIs that charge per call or enforce rate limits, but test your own dependencies for real. Confidence: 0.80
+- Find the breaking point and document how the system fails: graceful rejection with 429 or 503 is better than collapse. Confidence: 0.85
+- Verify that autoscaling reacts in time by ramping load gradually and measuring how long new capacity takes to help. Confidence: 0.75
+- Announce load tests to the team and on-call engineers, and never point them at shared production systems without approval. Confidence: 0.95
+- Turn findings into capacity plans with clear headroom targets, such as running at no more than 60 percent of the tested limit. Confidence: 0.70",TRUE,TEXT,f
