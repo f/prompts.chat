@@ -299,6 +299,21 @@ As partes que você escreve costumam viajar melhor do que o ciclo. Skills e MCP 
 
 Seja qual for o caminho, algumas coisas nunca passam para o provedor: o resultado que você quer, as instruções e skills que o descrevem, as ferramentas e acessos que você concede e as verificações que mostram que o trabalho está feito. Um harness pode rodar o ciclo por você. Ele não pode decidir o que “pronto” significa.
 
+### Quando um modelo é treinado para um harness
+
+Até aqui, tratamos o modelo como uma peça que se pode trocar. Muitas vezes é, mas o encaixe pode ser mais profundo. Cada harness tem suas próprias ferramentas, seu próprio prompt de sistema e seu próprio ritmo de passos. Quando um modelo é treinado com aprendizado por reforço dentro de um harness, ele aprende esses hábitos junto com o trabalho. Leve-o para outro harness e ele pode usar as ferramentas pior, dar mais passos do que precisa ou parar antes de terminar.
+
+A OpenAI diz isso abertamente sobre seus modelos Codex. Ela descreve o GPT-5-Codex como ["purpose-built"](https://openai.com/index/introducing-upgrades-to-codex/), feito sob medida para o Codex, e o recomenda apenas para programação agêntica no Codex ou em ambientes parecidos. O [Codex Prompting Guide](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide) aconselha quem constrói o próprio harness a partir do prompt padrão do Codex e a usar suas ferramentas `apply_patch` e de shell, com as quais o modelo foi treinado. Também pede que se remova qualquer instrução que peça um plano antecipado ou atualizações de status durante a execução, porque isso pode fazer o modelo parar de repente antes de concluir o trabalho. O Cursor descreveu o mesmo ajuste do outro lado, ao [adaptar seu próprio harness para esses modelos](https://cursor.com/blog/codex-model-harness): aproximou os nomes das ferramentas de seus equivalentes no shell, como `rg`, e percebeu que só a definição de uma ferramenta de lint não bastava; o modelo precisava de uma instrução literal sobre quando chamá-la.
+
+Os modelos abertos estão seguindo o mesmo caminho. Em 6 de novembro de 2026, a Hugging Face apresentou os [harness adapters](https://huggingface.co/blog/harness-hub/harness-adapters): um pequeno adaptador LoRA para cada modelo e harness, treinado com aprendizado por reforço em tarefas verificáveis dentro de harnesses sem modificação (pi, opencode e hermes), todos servidos a partir de um único modelo base. No que a equipe chama de testes de fumaça (smoke tests), os adaptadores fizeram menos chamadas de ferramentas que o modelo base em tarefas deixadas fora do treinamento, mantendo ou melhorando sua precisão. Durante o treinamento, um proxy chamado safeagents confere cada chamada de ferramenta com regras fixas e bloqueia tentativas de burlar a recompensa, como editar os testes ou procurar a resposta. Uma execução com uma chamada bloqueada recebe nota zero. Mesmo enquanto o modelo aprende, as verificações pertencem ao harness.
+
+Para quem escreve prompts, a lição é prática. Se você usa um modelo em um harness para o qual ele não foi feito, leia o guia de prompting do fornecedor para esse modelo. Mantenha os nomes e as descrições das ferramentas próximos do que ele já conhece e corte as instruções que brigam com os hábitos do treinamento. Descreva o resultado e quando ele deve parar, em vez de ditar como deve relatar pelo caminho. E, ao comparar harnesses, lembre que um modelo pode favorecer aquele em que foi treinado; teste com suas próprias tarefas antes de decidir.
+
+<Compare
+  before={{ label: "Um prompt genérico de harness", content: "Primeiro escreva um plano e me envie. Depois de cada passo, me mande uma atualização de status. Edite os arquivos com a ferramenta edit_file." }}
+  after={{ label: "Adaptado a um modelo treinado no seu harness", content: "Corrija os testes de busca que estão falhando sem mudar a forma como as correspondências são encontradas. Faça as edições com apply_patch. Continue até os testes passarem ou você ficar bloqueado e depois informe o que mudou, quais verificações rodaram e o que você não conseguiu verificar." }}
+/>
+
 ## O que torna um harness útil?
 
 Mais autonomia só é útil quando o sistema consegue verificar seu trabalho e se recuperar de problemas. Para uma tarefa longa, observe como o harness lida com estes pontos:

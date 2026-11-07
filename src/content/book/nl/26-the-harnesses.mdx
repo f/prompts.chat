@@ -299,6 +299,21 @@ Wat je zelf schrijft, reist meestal beter dan de lus. Skills en MCP zijn open st
 
 Welke weg je ook kiest, sommige dingen gaan nooit over naar de aanbieder: de uitkomst die je wilt, de instructies en skills die die beschrijven, de tools en toegang die je verleent, en de controles die laten zien dat het werk af is. Een harness kan de lus voor je draaien. Wat 'klaar' betekent, kan hij niet bepalen.
 
+### Als een model voor een harness is getraind
+
+Tot nu toe behandelden we het model als een onderdeel dat je kunt verwisselen. Vaak klopt dat, maar de pasvorm kan dieper gaan. Elke harness heeft zijn eigen tools, zijn eigen systeemprompt en zijn eigen ritme van stappen. Wanneer een model met reinforcement learning binnen één harness wordt getraind, leert het naast het werk ook die gewoonten. Zet je het in een andere harness, dan roept het tools misschien minder goed aan, zet het meer stappen dan nodig of stopt het voordat het werk af is.
+
+OpenAI zegt dit openlijk over zijn Codex-modellen. Het noemt GPT-5-Codex ["purpose-built"](https://openai.com/index/introducing-upgrades-to-codex/), speciaal gebouwd voor Codex, en raadt het alleen aan voor agentisch programmeren in Codex of Codex-achtige omgevingen. De [Codex Prompting Guide](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide) raadt wie een eigen harness bouwt aan om uit te gaan van de standaardprompt van Codex en de `apply_patch`- en shelltools te gebruiken waarop het model is getraind. Ook vraagt de gids om elke instructie te schrappen die vooraf om een plan of tijdens de uitvoering om statusupdates vraagt, omdat het model daardoor abrupt kan stoppen voordat het werk klaar is. Cursor beschreef dezelfde afstemming van de andere kant, toen het [zijn eigen harness voor deze modellen aanpaste](https://cursor.com/blog/codex-model-harness). Het bracht toolnamen dichter bij hun shell-tegenhangers, zoals `rg`, en merkte dat de definitie van een linttool alleen niet genoeg was: het model had een letterlijke instructie nodig over wanneer het die tool moest aanroepen.
+
+Open modellen gaan dezelfde weg. Op 6 november 2026 presenteerde Hugging Face [harness adapters](https://huggingface.co/blog/harness-hub/harness-adapters): per model en harness één kleine LoRA-adapter, getraind met reinforcement learning op controleerbare taken binnen ongewijzigde harnesses (pi, opencode en hermes), en allemaal geserveerd vanuit één basismodel. In wat het team zelf smoketests noemt, deden de adapters op achtergehouden taken minder toolaanroepen dan het basismodel, terwijl de nauwkeurigheid gelijk bleef of beter werd. Tijdens de training controleert een proxy met de naam safeagents elke toolaanroep met vaste regels en blokkeert pogingen om de beloning te omzeilen, zoals de tests aanpassen of het antwoord opzoeken. Een run met een geblokkeerde aanroep krijgt nul punten. Zelfs terwijl een model leert, horen de controles in de harness.
+
+Voor wie prompts schrijft, is de les praktisch. Gebruik je een model in een harness waarvoor het niet is gebouwd, lees dan de promptgids van de aanbieder voor dat model. Houd toolnamen en -beschrijvingen dicht bij wat het al kent, en schrap instructies die tegen zijn aangeleerde gewoonten ingaan. Beschrijf de uitkomst en wanneer het moet stoppen, in plaats van voor te schrijven hoe het onderweg moet rapporteren. En als je harnesses vergelijkt, onthoud dan dat een model de voorkeur kan geven aan de harness waarin het is getraind. Test daarom met je eigen taken voordat je beslist.
+
+<Compare
+  before={{ label: "Een algemene harness-prompt", content: "Schrijf eerst een plan en stuur het naar me. Stuur me na elke stap een statusupdate. Bewerk bestanden met de tool edit_file." }}
+  after={{ label: "Afgestemd op een model dat voor zijn harness is getraind", content: "Repareer de falende zoektests zonder te veranderen hoe treffers worden gevonden. Bewerk bestanden met apply_patch. Ga door tot de tests slagen of je vastloopt, en meld dan wat er is veranderd, welke controles zijn gedraaid en wat je niet kon verifiëren." }}
+/>
+
 ## Wat maakt een harness nuttig?
 
 Meer autonomie is alleen nuttig als het systeem zijn werk kan controleren en problemen kan opvangen. Kijk bij een lange taak hoe de harness met deze punten omgaat:
