@@ -14,10 +14,10 @@ import {
   type ClassifierChain,
   type ClassifierDefinition,
 } from "@/lib/classifiers";
-import { ChainCard, ClassifierCard } from "./classifier-cards";
+import { ChainCard, ClassifierCard, type ClassifierCardData } from "./classifier-cards";
 
 interface ClassifierCatalogProps {
-  classifiers: (ClassifierDefinition & { curated?: boolean; author?: { username: string } })[];
+  classifiers: ClassifierCardData[];
   /** Every classifier chains may use, unlisted ones included; defaults to `classifiers` */
   stepClassifiers?: ClassifierDefinition[];
   chains: ClassifierChain[];
@@ -135,12 +135,7 @@ export function ClassifierCatalog({
               </div>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {visibleClassifiers.map((classifier) => (
-                  <ClassifierCard
-                    key={classifier.slug}
-                    classifier={classifier}
-                    chainCount={chainCounts[classifier.slug] ?? 0}
-                    author={classifier.curated === false ? classifier.author?.username : undefined}
-                  />
+                  <ClassifierCard key={classifier.slug} classifier={classifier} chainCount={chainCounts[classifier.slug] ?? 0} />
                 ))}
               </div>
             </section>

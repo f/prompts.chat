@@ -163,6 +163,25 @@ export async function getClassifierCatalog(): Promise<ClassifierCatalog> {
   };
 }
 
+export interface ClassifierVotes {
+  counts: Map<string, number>;
+  /** Prompt ids the viewer has upvoted */
+  voted: Set<string>;
+}
+
+/** Vote counts and the viewer's own votes, read outside the catalog cache so a vote shows on the next visit */
+export async function getClassifierVotes(promptIds: string[], userId?: string): Promise<ClassifierVotes> {
+  if (promptIds.length === 0) return { counts: new Map(), voted: new Set() };
+  const [counts, own] = await Promise.all([
+    db.promptVote.groupBy({ by: ["promptId"], where: { promptId: { in: promptIds } }, _count: { _all: true } }),
+    userId ? db.promptVote.findMany({ where: { userId, promptId: { in: promptIds } }, select: { promptId: true } }) : [],
+  ]);
+  return {
+    counts: new Map(counts.map((c) => [c.promptId, c._count._all])),
+    voted: new Set(own.map((v) => v.promptId)),
+  };
+}
+
 /** Classifiers listed in the catalog: public, not unlisted */
 export function listedClassifiers(catalog: ClassifierCatalog): ClassifierRecord[] {
   return catalog.classifiers.filter((c) => !c.isUnlisted);
