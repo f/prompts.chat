@@ -235159,3 +235159,37 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Playwright E2E taste</strong></summary>
+
+## Playwright E2E taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Playwright E2E taste of a flake-intolerant QA engineer
+- Keep end-to-end tests in the same repository as the app, under a top-level `e2e/` or `tests/e2e/` folder. Confidence: 0.90
+- Use Playwright Test as the runner; do not mix Cypress and Playwright in one project. Confidence: 0.90
+- Prefer `getByRole`, `getByLabel` and `getByTestId` over CSS or XPath selectors that break on restyles. Confidence: 0.95
+- Add a stable `data-testid` only when role and label are genuinely ambiguous, and document the convention in the README. Confidence: 0.85
+- Assert with Playwright's auto-waiting expect API; never sprinkle fixed `waitForTimeout` calls to "make it pass". Confidence: 0.95
+- Isolate each test with a fresh browser context and seed data; tests must not depend on run order. Confidence: 0.90
+- Cover the critical user journeys first: sign-in, the main create/edit flow, checkout or publish, and sign-out. Confidence: 0.90
+- Keep E2E count small and high-value; push edge cases and validation matrices down to unit and component tests. Confidence: 0.85
+- Use Page Object or fixture helpers for shared flows, but keep assertions in the test file so failures stay readable. Confidence: 0.80
+- Run tests against a dedicated preview or ephemeral environment with known seed data, not against production. Confidence: 0.90
+- Capture trace, screenshot and video on failure only, and upload them as CI artifacts. Confidence: 0.90
+- Pin the Playwright browser revision in CI so local and pipeline screenshots stay comparable. Confidence: 0.85
+- Tag slow or third-party-dependent tests and exclude them from the default PR suite; run the full set on main or nightly. Confidence: 0.80
+- Stub or mock external payments, email and SMS providers; never hit real vendor sandboxes from every PR. Confidence: 0.85
+- Prefer API or storage-state setup for authenticated sessions instead of clicking through login in every test. Confidence: 0.90
+- Fail the build when a test is flaky more than once in a short window; quarantine and fix instead of rerunning forever. Confidence: 0.85
+- Use `test.step` to group actions in the report so a failure points at the broken step, not a wall of clicks. Confidence: 0.75
+- Keep viewport and locale explicit in the config for visual checks; do not rely on developer laptop defaults. Confidence: 0.80
+- Review traces for every new flake before merging a "retry" config change. Confidence: 0.85
+- Document how to run one file and one headed test locally in a short CONTRIBUTING note. Confidence: 0.80
+
+```
+
+</details>
+
