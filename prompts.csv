@@ -198338,3 +198338,55 @@ Describe what this skill does and how the agent should use it.
 - Step 1: ...
 - Step 2: ...
 ",FALSE,TEXT,muazzamusman0@gmail.com
+Rough Anime Crayon Doodle: Turn Any Character into a Scribbly Japanese-Style Sketch,"Convert the character in the reference image into a rough, Japanese-style digital doodle.
+
+Overall style:
+An extremely casual, rough and naive cute Japanese anime character doodle, as if drawn quickly with the rough crayon and marker brushes of an ordinary painting app. Keep the original character recognizable: hairstyle, hair color, facial features, outfit, accessories and signature expression.
+
+Line art:
+
+* Outline the character with obvious, rough black strokes.
+* Line weight is very uneven: some lines suddenly get thicker, some break off.
+* Contours are loose, inaccurate and slightly crooked.
+* Lines have a clear hand-drawn grainy, smudged texture.
+* Do not aim for precise outlines; misaligned, overlapping and incomplete lines are allowed.
+* No fine, smooth vector line art.
+
+Coloring:
+
+* Use large areas of simple, opaque flat color.
+* Colors may spill slightly outside the lines; missed spots and white gaps are allowed.
+* Shadows use a few rough gray strokes or darker strokes of the same hue.
+* Highlights are casual, short white strokes.
+* Keep the rough texture of mixed crayon, pastel and marker.
+* No complex gradients, detailed lighting or rich layers of color.
+
+Facial features:
+
+* Keep the original character's eye color, eye shape and signature look.
+* Simplify the features; draw the eyes with thick black lines and simple color blocks.
+* Keep the mouth as simple as possible; the nose can be left out.
+* A few casual pink blush strokes can be added to the cheeks.
+* Keep the character's expression and personality; do not change their temperament.
+
+Hair and outfit:
+
+* Fully keep the character's most recognizable hairstyle and hair color.
+* Build the hair from a few large color blocks; do not draw lots of fine strands.
+* Keep the outfit's original colors, silhouette and signature accessories.
+* Heavily simplify clothing folds and decorations.
+* Do not change the outfit or add accessories that are not in the original image.
+
+Composition:
+
+* 1:1 square canvas.
+* Half-body portrait of the character, with a slightly oversized head.
+* Character centered, with natural white space around them.
+* Pure white background; no text, complex scenery or decorative borders.
+
+Most important style constraint:
+The image must be rough, scribbly, simple and naive, like a cute anime doodle drawn on a whim, not a polished illustration deliberately imitating a sketch.
+
+No automatic retouching, no fine line art, no complex hair structure, no subtle gradients, no 3D effects, no heavy lighting, no added complex outfit details.
+
+Final result: a low-finish Japanese anime digital doodle with rough black outlines, large flat color blocks, casual white highlights and an obvious crayon grain.",FALSE,TEXT,f
