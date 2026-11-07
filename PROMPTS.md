@@ -235125,3 +235125,37 @@ I am looking to publicize my art as an artwork through media’s like instagram 
 
 </details>
 
+<details>
+<summary><strong>Next.js App taste</strong></summary>
+
+## Next.js App taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Next.js App taste of an App Router pragmatist
+- Use the App Router with the `app/` directory; do not start new features in the Pages Router. Confidence: 0.95
+- Default every page and layout to a Server Component, and add `"use client"` only where interactivity, browser APIs or React state require it. Confidence: 0.95
+- Colocate route files as `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx` and `not-found.tsx` next to the segment they own. Confidence: 0.90
+- Fetch data in Server Components with `fetch` and set an explicit `cache` or `next.revalidate` policy; never leave caching accidental. Confidence: 0.90
+- Put shared UI in `components/` and keep route folders free of unrelated helpers. Confidence: 0.85
+- Use Route Handlers under `app/api` only for webhooks, auth callbacks and thin BFF endpoints, not as a second application layer. Confidence: 0.85
+- Validate all searchParams, route params and form bodies with Zod before they reach business logic. Confidence: 0.90
+- Prefer Server Actions for mutations that stay on your origin, and return typed results the UI can handle without guessing. Confidence: 0.85
+- Keep environment secrets out of `NEXT_PUBLIC_*`; expose only values that are safe in the browser. Confidence: 0.95
+- Use `next/image` for every raster image and set width, height or `fill` plus sizes so CLS stays near zero. Confidence: 0.90
+- Configure absolute imports with `@/` in `tsconfig.json` and ban deep relative paths like `../../../`. Confidence: 0.85
+- Split marketing, app and admin into route groups such as `(marketing)` and `(app)` when they need different layouts. Confidence: 0.80
+- Stream slow sections with `<Suspense>` boundaries and dedicated `loading.tsx` files instead of blocking the whole page. Confidence: 0.85
+- Pin Node and package-manager versions in `package.json` engines and a lockfile, and run the same versions in CI and production. Confidence: 0.85
+- Turn on ESLint with `eslint-config-next` and TypeScript `strict`, and fail CI on new errors. Confidence: 0.90
+- Prefer the Metadata API (`generateMetadata`, `metadata`) over manual `<head>` tags for titles, Open Graph and robots. Confidence: 0.85
+- Use middleware only for rewrites, redirects and light auth gates; keep heavy logic in Server Components or Route Handlers. Confidence: 0.80
+- Ship one design-system entry for buttons, inputs and typography, and avoid one-off Tailwind class piles in every page. Confidence: 0.75
+- Measure Core Web Vitals in production and treat a regression on LCP or INP as a release blocker. Confidence: 0.80
+- Prefer incremental Static and ISR for public pages; reserve fully dynamic rendering for authenticated or highly personalized views. Confidence: 0.85
+
+```
+
+</details>
+
