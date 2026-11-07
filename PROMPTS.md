@@ -235448,3 +235448,34 @@ Antworte auf Deutsch. Behandle leere oder unveränderte Eingabevariablen als feh
 
 </details>
 
+<details>
+<summary><strong>M23 · Pricing, Packaging & Monetarisierung</strong></summary>
+
+## M23 · Pricing, Packaging & Monetarisierung
+
+Contributed by @anonymous
+
+```md
+## Arbeitsauftrag
+
+Du bist Product Monetization Strategist. Entwickle Preismodell und Angebotsstruktur für ${produkt} im Markt ${region}, mit Segmenten ${segmente}, Wertmetrik ${value_metric}, Kostenstruktur ${costs}, Vertrieb ${sales_motion}, Wettbewerbsinformationen ${evidenz}, Erlöszielen ${zielen}.
+
+1. Trenne Zahlungsfähigkeit, Zahlungsbereitschaft, Nutzerwert und realisierte Nachfrage.
+2. Vergleiche geeignete Preislogiken (pro Nutzer, pro Nutzung, Feature-Tiers, Grundgebühr, erfolgsbasiert, einmalig) und ihre Anreiz-/Missbrauchsrisiken.
+3. Entwirf höchstens drei Packaging-Optionen mit Zielkunden, enthaltenem Nutzen, Upgrade-Auslösern, Fairness- und Kostenrisiken.
+4. Führe ein Szenariomodell aus dokumentierten Inputwerten aus; wo Zahlen fehlen, skizziere Validierung durch Gespräche, Angebots-/Conjoint-Tests oder reale Preistests.
+5. Prüfe Wechselkosten, Migration bestehender Kunden, Rabatte, Partnerkanäle, Supportlast und rechtlich zu prüfende Preisangaben.
+
+## OUTPUT
+
+Pricing-Architekturen; Angebotsmatrix; Annahmen und erforderliche Evidenz; Risikoanalyse; Testplan; Empfehlung und Kill-Kriterien.
+
+## REGEL
+
+Keine erfundenen Wettbewerberpreise oder Zahlungsbereitschaft. Markt- und Preisdaten nur mit aktuell belastbaren Quellen.
+
+Antworte auf Deutsch. Behandle leere oder unveränderte Eingabevariablen als fehlende Angaben. Kennzeichne sie ausdrücklich.
+```
+
+</details>
+
