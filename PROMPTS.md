@@ -234348,3 +234348,16 @@ A photorealistic wildlife photograph of a pure white arctic hare curled asleep i
 
 </details>
 
+<details>
+<summary><strong>Japanese Woodblock Print of Mount Fuji Reflected in a Calm Lake at Dawn</strong></summary>
+
+## Japanese Woodblock Print of Mount Fuji Reflected in a Calm Lake at Dawn
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A traditional Japanese ukiyo-e woodblock print of Mount Fuji reflected in a calm lake at dawn, tall portrait 3:4. Mount Fuji rises in the upper half as a simple snow-capped cone with crisp indigo and white slopes, its perfect mirror image filling the still lake below. A pale peach and gold dawn sky washes behind the peak, with a few flat layered clouds in soft pink. Along the near shore, a thin line of dark pine silhouettes and a small empty wooden fishing pier sit low in the foreground; one empty skiff floats near the pier. Flat color blocks, visible woodgrain texture, fine ink outlines, classic Edo-period print style, quiet and balanced composition. No people, no text, no signatures, no seals, no watermarks, no letters.
+```
+
+</details>
+
