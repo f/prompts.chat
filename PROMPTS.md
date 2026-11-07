@@ -234374,3 +234374,52 @@ An isometric cutaway illustration of a busy corner coffee roastery at dawn, land
 
 </details>
 
+<details>
+<summary><strong>Cappadocia Hot Air Balloons at Sunrise Scene Concept Brief Builder</strong></summary>
+
+## Cappadocia Hot Air Balloons at Sunrise Scene Concept Brief Builder
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Act as a cinematic landscape scene designer who writes image-ready and motion-ready scene briefs. Help me design one hero shot of dozens of colorful hot-air balloons rising over the fairy chimneys and rock pinnacles of Göreme in Cappadocia at golden sunrise: soft valley mist, warm side light on the stone, and a calm wide sky filling with balloons. The shot will first be generated as a still image and then animated into a short video that uses that image as its first frame. Your brief must make the still image rich in elements that can move or change naturally (a slow forward camera drift with a slight upward tilt, balloons gently rising at different rates, mist sliding through the valley, soft parallax between near rock and far balloons) while keeping the composition calm, balanced, readable, and easy to animate.
+
+My starting idea: ${idea:a quiet Cappadocia sunrise just as the first balloons clear the fairy chimneys, valley still soft with mist}
+
+My starting choices:
+- Place: ${place:Göreme valley, Cappadocia — fairy chimneys and rock pinnacles in the mid-ground, open sky above}
+- Balloons: ${balloons:dozens of colorful hot-air balloons at staggered heights, mixed stripes and solid colors, some just clearing the rock tops, others higher}
+- Rocks: ${rocks:cluster of fairy chimneys and eroded rock pinnacles in warm sandstone tones across the mid-ground}
+- Mist: ${mist:soft low valley mist between the rocks, thinning toward the sun}
+- Light: ${light:warm golden sunrise side light from the right, long soft shadows on the stone}
+- Sky: ${sky:clear pale gold near the horizon shifting to soft blue higher up}
+- Visual style: ${style:photoreal travel landscape photography, natural rich colors, wide 16:9}
+- Mood words: ${mood:wonder, calm, golden, airy, timeless}
+
+First ask me, in one short message, for anything missing: camera height and angle (low in the valley looking up, mid-slope looking across, or high overlook looking down), how much of the frame the rocks versus sky should take, roughly how many balloons and whether any sit lower than the rock tops, how thick the mist should be, how strong the sunrise sidelight should be, whether the camera should drift forward, tilt up, or both in the video, where the move should end, and anything to avoid (crowds, cars, modern buildings, power lines, readable balloon logos or text, brand names, or copying a specific famous photograph).
+
+Then produce the brief with these sections:
+
+1. **Scene Overview**: two or three sentences on the place, the moment, the light, and the feeling. Describe Cappadocia's fairy-chimney landscape in spirit, not as a copy of one exact postcard viewpoint.
+
+2. **Balloons**: colors, shapes, staggered heights, how many feel "dozens," which ones sit just above the rocks, and which float higher as small shapes in the sky.
+
+3. **Fairy Chimneys and Valley**: the warm sandstone pinnacles, their eroded shapes, the valley floor between them, and how mist pools in the low gaps.
+
+4. **Sky and Horizon**: the golden-to-blue sunrise gradient, any thin morning clouds, and how the balloons read against the sky.
+
+5. **Light and Color**: warm side light from the right on the stone faces, cooler shade in the gaps, balloon colors as accents, and soft mist glow, without blown-out highlights.
+
+6. **Fixed Visual Details**: a numbered list of 8 to 10 details that must stay identical in the still image and in the video (camera position, rock cluster placement, balloon color layout, mist bands, light direction, framing, no crowds, no readable logos).
+
+7. **Motion Map**: a table of every element that can move in the video, with columns: element, type of motion, direction, speed (very slow, slow, medium), and how strongly it should move. Include the camera drifting slowly forward with a slight upward tilt, balloons rising gently at slightly different speeds, mist sliding through the valley, and soft parallax between near rocks and far balloons. Keep total motion subtle and physically plausible.
+
+8. **Prompt Seed A - Hero Still Image**: a ready-to-paste image prompt under 170 words for a wide landscape 16:9 frame, with colorful hot-air balloons and fairy chimneys in the first sentence, ending with: no people, no text, no logos.
+
+9. **Prompt Seed B - Image-to-Video Animation**: a ready-to-paste video prompt under 120 words that starts from the hero still as the first frame, describes a calm ~6-second move (slow forward drift and slight upward tilt), balloons gently rising, mist sliding, soft parallax, and says to keep rocks, balloon colors, light, and framing exactly as in the image with no crowds and no readable text.
+
+Rules: no crowds, faces, readable text, logos, or brand marks on balloons; no cars, buses, modern hotels, or power lines in frame; no fast camera moves or cuts; and no motion that breaks physics (rocks never move or change shape, balloons only rise and drift gently, mist moves softly, light changes slowly). Use short paragraphs and lists.
+```
+
+</details>
+
