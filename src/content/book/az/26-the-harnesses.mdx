@@ -299,6 +299,21 @@ Sizin yazdığınız hissələr adətən dövrün özündən daha asan köçür�
 
 Hansı yolu seçsəniz də, bəzi şeylər heç vaxt provayderə keçmir: istədiyiniz nəticə, onu təsvir edən təlimatlar və bacarıqlar, verdiyiniz alətlər və giriş hüquqları, işin bitdiyini göstərən yoxlamalar. Harness dövrü sizin əvəzinizə işlədə bilər. Amma "hazırdır" sözünün nə demək olduğuna o qərar verə bilməz.
 
+### Model Müəyyən Harness Üçün Öyrədiləndə
+
+İndiyədək modeli istənilən vaxt dəyişdirilə bilən bir hissə kimi götürdük. Çox vaxt belədir, amma model ilə harness arasındakı uyğunluq bəzən daha dərinə gedir. Hər harness-in öz alətləri, öz sistem prompt-u və addımlarının özünəməxsus ritmi var. Model gücləndirici öyrənmə ilə bir harness-in içində öyrədiləndə, işlə yanaşı həmin harness-in vərdişlərini də mənimsəyir. Onu başqa harness-ə köçürsəniz, alətləri əvvəlki qədər yaxşı çağırmaya, lazım olandan çox addım ata və ya iş bitmədən dayana bilər.
+
+OpenAI Codex modelləri barədə bunu açıq deyir. GPT-5-Codex-i Codex üçün ["purpose-built"](https://openai.com/index/introducing-upgrades-to-codex/), yəni xüsusi hazırlanmış model kimi təqdim edir və onu yalnız Codex-də və ya Codex-ə bənzər mühitlərdə agent əsaslı kodlaşdırma üçün tövsiyə edir. [Codex Prompting Guide](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide) öz harness-ini quranlara standart Codex prompt-undan başlamağı və modelin istifadə etmək üçün öyrədildiyi `apply_patch` və shell alətlərindən istifadə etməyi məsləhət görür. Həmçinin modeldən əvvəlcədən plan və ya iş zamanı status yeniləmələri istəyən göstərişləri çıxarmağı xahiş edir, çünki bu, modelin iş tamamlanmadan qəfil dayanmasına səbəb ola bilər. Cursor da eyni uyğunlaşdırmanı o biri tərəfdən, [öz harness-ini bu modellərə uyğunlaşdırarkən](https://cursor.com/blog/codex-model-harness) təsvir etdi. Alət adlarını `rg` kimi shell qarşılıqlarına yaxınlaşdırdı və lint alətinin təkcə təsvirinin kifayət etmədiyini gördü: modelə onu nə vaxt çağırmalı olduğunu açıq deyən göstəriş lazım idi.
+
+Açıq modellər də eyni yoldan keçir. Hugging Face 6 noyabr 2026-cı ildə [harness adapterlərini](https://huggingface.co/blog/harness-hub/harness-adapters) təqdim etdi: hər model və harness üçün bir kiçik LoRA adapteri. Onlar dəyişdirilməmiş harness-lərin (pi, opencode və hermes) içində yoxlanıla bilən tapşırıqlar üzərində gücləndirici öyrənmə ilə öyrədilir və hamısı bir baza modeldən təqdim olunur. Komandanın "smoke test" adlandırdığı ilkin sınaqlarda adapterlər öyrətmədə istifadə olunmamış tapşırıqlarda baza modeldən daha az alət çağırışı etdi, dəqiqliyi isə ya qorudu, ya da artırdı. Öyrətmə zamanı safeagents adlı proxy hər alət çağırışını sabit qaydalarla yoxlayır və testləri redaktə etmək və ya cavabı haradansa tapmaq kimi mükafatı aldatma cəhdlərini bloklayır. Bloklanmış çağırış olan cəhd sıfır bal alır. Yəni model hələ öyrənərkən belə yoxlamaların yeri harness-dir.
+
+Prompt yazanlar üçün dərs praktikdir. Modeli onun üçün qurulmamış harness-də işlədirsinizsə, əvvəlcə provayderin həmin model üçün prompt bələdçisini oxuyun. Alət adlarını və təsvirlərini modelin artıq tanıdığına yaxın saxlayın, öyrədilmiş vərdişləri ilə toqquşan göstərişləri çıxarın. Yol boyu necə hesabat verəcəyini addım-addım diktə etmək əvəzinə, istədiyiniz nəticəni və nə vaxt dayanmalı olduğunu deyin. Harness-ləri müqayisə edərkən isə unutmayın ki, model içində öyrədildiyi harness-ə meylli ola bilər; qərar verməzdən əvvəl öz tapşırıqlarınızla sınayın.
+
+<Compare
+  before={{ label: "Ümumi harness prompt-u", content: "Əvvəlcə plan yaz və mənə göndər. Hər addımdan sonra mənə status yeniləməsi göndər. Faylları edit_file aləti ilə redaktə et." }}
+  after={{ label: "Harness-i ilə öyrədilmiş modelə uyğunlaşdırılmış", content: "Axtarışın uyğun nəticələri necə tapdığını dəyişmədən uğursuz axtarış testlərini düzəlt. Redaktələri apply_patch ilə et. Testlər keçənə və ya maneə ilə qarşılaşana qədər davam et, sonra nəyin dəyişdiyini, hansı yoxlamaların işlədiyini və yoxlaya bilmədiyin hər şeyi bildir." }}
+/>
+
 ## Harness-i Faydalı Edən Nədir?
 
 Daha çox müstəqillik yalnız sistem öz işini yoxlaya və problemlərdən sonra bərpa oluna bildikdə faydalıdır. Uzun tapşırıq üçün harness-in bunları necə idarə etdiyinə baxın:

@@ -299,6 +299,21 @@ The parts you write usually travel better than the loop. Skills and MCP are open
 
 Whichever path you choose, some things never move to the provider: the outcome you want, the instructions and skills that describe it, the tools and access you grant, and the checks that show the work is done. A harness can run the loop for you. It cannot decide what "done" means.
 
+### When a Model Is Trained for a Harness
+
+So far we have treated the model as a part you can swap. Often it is, but the fit can run deeper than that. Every harness has its own tools, its own system prompt, and its own rhythm of steps. When a model is trained with reinforcement learning inside one harness, it learns those habits along with the work. Move it to a different harness and it may call tools less well, take more steps than it needs, or stop before the job is done.
+
+OpenAI says this openly about its Codex models. It describes GPT-5-Codex as ["purpose-built"](https://openai.com/index/introducing-upgrades-to-codex/) for Codex and recommends it only for agentic coding in Codex or Codex-like environments. Its [Codex Prompting Guide](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide) advises people who build their own harness to start from the standard Codex prompt and to use its `apply_patch` and shell tools, which the model was trained to use. It also asks them to remove any prompting for an upfront plan or for status updates during the run, because that can make the model stop abruptly before the work is complete. Cursor described the same fitting from the other side when it [adapted its own harness for these models](https://cursor.com/blog/codex-model-harness). It brought tool names closer to their shell equivalents, such as `rg`, and found that a lint tool's definition alone was not enough: the model needed a literal instruction about when to call it.
+
+Open models are getting the same treatment. On November 6, 2026, Hugging Face introduced [harness adapters](https://huggingface.co/blog/harness-hub/harness-adapters): one small LoRA adapter for each model and harness, trained with reinforcement learning on verifiable tasks inside unmodified harnesses (pi, opencode, and hermes), all served from a single base model. In what the team calls smoke tests, the adapters made fewer tool calls than the base model on held-out tasks while keeping or improving its accuracy. During training, a proxy called safeagents checks every tool call against fixed rules and blocks attempts to cheat the reward, such as editing the tests or looking up the answer. A run with a blocked call scores zero. Even while a model is learning, the checks belong to the harness.
+
+For anyone writing prompts, the lesson is practical. When you use a model in a harness it was not built for, read the vendor's prompting guide for that model. Keep tool names and descriptions close to what it already knows, and drop instructions that fight its trained habits. Describe the outcome and when to stop, instead of scripting how it should report along the way. And when you compare harnesses, remember that a model may favor the one it was trained in, so test on your own tasks before you decide.
+
+<Compare
+  before={{ label: "A generic harness prompt", content: "First write a plan and send it to me. After each step, send me a status update. Edit files with the edit_file tool." }}
+  after={{ label: "Adapted to a harness-trained model", content: "Fix the failing search tests without changing how matches are found. Make edits with apply_patch. Keep working until the tests pass or you are blocked, then report what changed, which checks ran, and anything you could not verify." }}
+/>
+
 ## What Makes a Harness Useful?
 
 More autonomy is useful only when the system can check its work and recover from problems. For a long task, look at how the harness handles:

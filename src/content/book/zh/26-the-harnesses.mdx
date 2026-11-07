@@ -299,6 +299,21 @@ harness 运行在哪里，也决定了它的边界在哪里被强制执行。指
 
 无论选择哪条路，有些东西永远不会交给提供方：你想要的结果、描述它的指令和技能、你授予的工具和访问权限，以及证明工作已经完成的检查。harness 可以替你运行循环，却无法替你决定什么才算“完成”。
 
+### 当模型是为某个 harness 训练的
+
+到目前为止，我们一直把模型当作可以随时替换的零件。很多时候确实如此，但模型和 harness 之间的契合可能更深。每个 harness 都有自己的工具、自己的系统提示词，以及自己推进步骤的节奏。当一个模型在某个 harness 里通过强化学习训练时，它在学会做事的同时，也学会了这个 harness 的习惯。把它换到另一个 harness，它可能不那么会调用工具，多走一些不必要的步骤，或者在任务完成前就停下来。
+
+OpenAI 对 Codex 模型就坦率地说明了这一点。它称 GPT-5-Codex 是为 Codex ["purpose-built"](https://openai.com/index/introducing-upgrades-to-codex/)，也就是专门打造的，并建议只在 Codex 或类似 Codex 的环境中把它用于智能体编程。它的 [Codex Prompting Guide](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide) 建议自己搭建 harness 的人以 Codex 的标准提示词为起点，并使用模型在训练中用惯了的 `apply_patch` 和 shell 工具。指南还要求删掉所有让模型先给出计划、或在运行过程中汇报进度的提示，因为这可能让模型在工作完成前突然停下。Cursor 则从另一侧讲述了同样的磨合：在[为这些模型调整自家 harness](https://cursor.com/blog/codex-model-harness) 时，它让工具名称更接近对应的 shell 命令，比如 `rg`；它还发现，只给出 lint 工具的定义并不够，模型需要一条明确写出何时调用它的指令。
+
+开放模型也在走同一条路。2026 年 11 月 6 日，Hugging Face 介绍了 [harness adapters](https://huggingface.co/blog/harness-hub/harness-adapters)：每个模型和 harness 的组合各配一个小型 LoRA 适配器，在未经修改的 harness（pi、opencode 和 hermes）里，用可验证的任务通过强化学习训练，全部由同一个基础模型提供服务。在团队称为冒烟测试（smoke tests）的初步试验中，这些适配器在未参与训练的任务上比基础模型调用工具更少，准确率则保持不变或有所提高。训练期间，一个名为 safeagents 的代理会按固定规则检查每一次工具调用，拦下骗取奖励的尝试，比如修改测试或去查找现成答案。只要一次运行里有被拦下的调用，就记零分。即使在模型学习的阶段，检查也属于 harness 的职责。
+
+对写提示词的人来说，这里的启示很实际。如果你要在一个并非为它打造的 harness 里使用某个模型，先读一读厂商为这个模型写的提示词指南。让工具的名称和描述贴近模型已经熟悉的样子，删掉那些和它训练出来的习惯相冲突的指令。与其规定它一路上怎么汇报，不如讲清你要的结果和它该在什么时候停下。比较不同 harness 时也要记住，模型可能偏向它受训时所在的那个；下结论之前，先用你自己的任务试一试。
+
+<Compare
+  before={{ label: "一个通用的 harness 提示词", content: "先写一份计划发给我。每完成一步，都给我发一次进度更新。用 edit_file 工具编辑文件。" }}
+  after={{ label: "为在 harness 中训练过的模型调整后的提示词", content: "修复失败的搜索测试，但不要改变查找匹配结果的方式。用 apply_patch 进行修改。一直做到测试通过或遇到阻碍为止，然后告诉我改了什么、运行了哪些检查，以及哪些内容未能验证。" }}
+/>
+
 ## 什么样的 Harness 才有用？
 
 只有系统能够检查工作并从问题中恢复时，更高的自主性才有用。对于长任务，要关注 harness 如何处理以下事项：
