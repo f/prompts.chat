@@ -11,7 +11,8 @@ import { HeroCategories } from "@/components/prompts/hero-categories";
 import { CliCommand } from "@/components/layout/cli-command";
 import { ExtensionLink } from "@/components/layout/extension-link";
 import { AnimatedText } from "@/components/layout/animated-text";
-import { SponsorLink, BecomeSponsorLink, BuiltWithLink } from "@/components/layout/sponsor-link";
+import { SponsorLink, BecomeSponsorLink } from "@/components/layout/sponsor-link";
+import { BuiltWith } from "@/components/layout/built-with";
 import { WebsiteStructuredData } from "@/components/seo/structured-data";import { buildPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -298,65 +299,7 @@ export default async function HomePage() {
                 />
               ))}
             </div>
-            {!useCloneBranding && (
-              <div className="flex flex-col md:flex-row items-center justify-center gap-1.5 mt-4 pt-4 border-t text-xs text-muted-foreground">
-                <span><b>prompts.chat</b> is built with</span>
-                <span className="inline-flex items-center gap-1.5">
-                  <BuiltWithLink href="https://devin.ai/?utm_source=prompts.chat" toolName="Devin">
-                    <Image
-                      src="/sponsors/devin.svg"
-                      alt="Devin"
-                      width={80}
-                      height={20}
-                      className="h-6 w-auto dark:hidden"
-                    />
-                    <Image
-                      src="/sponsors/devin-dark.svg"
-                      alt="Devin"
-                      width={80}
-                      height={20}
-                      className="h-6 w-auto hidden dark:block"
-                    />
-                  </BuiltWithLink>
-                  <span>by Cognition</span>
-                  <span>and</span>
-                  <BuiltWithLink href="https://grok.com/?utm_source=prompts.chat" toolName="Grok Bot">
-                    <Image
-                      src="/sponsors/grok-bot.svg"
-                      alt="Grok Bot"
-                      width={80}
-                      height={20}
-                      className="h-6 w-auto dark:hidden"
-                    />
-                    <Image
-                      src="/sponsors/grok-bot-dark.svg"
-                      alt="Grok Bot"
-                      width={80}
-                      height={20}
-                      className="h-6 w-auto hidden dark:block"
-                    />
-                  </BuiltWithLink>
-                  <span className="mx-0.5">·</span>
-                  <span>hosted on</span>
-                  <Link href="https://vercel.com/oss" target="_blank" rel="noopener noreferrer" className="inline-flex items-center opacity-60 hover:opacity-100 transition-opacity">
-                    <Image
-                      src="/sponsors/vercel-oss.svg"
-                      alt="Vercel OSS Program"
-                      width={240}
-                      height={24}
-                      className="h-4.5 w-auto dark:hidden"
-                    />
-                    <Image
-                      src="/sponsors/vercel-oss-dark.svg"
-                      alt="Vercel OSS Program"
-                      width={240}
-                      height={24}
-                      className="h-4.5 w-auto hidden dark:block"
-                    />
-                  </Link>
-                </span>
-              </div>
-            )}
+            {!useCloneBranding && <BuiltWith />}
             {/* Achievements */}
             {config.homepage?.achievements?.enabled !== false && (
               <div className="mt-6 pt-6 border-t">
