@@ -20,7 +20,8 @@ import { POST as createPromptRoute } from "@/app/api/prompts/route";
 import { GET as getPromptRoute, PATCH as updatePromptRoute, DELETE as deletePromptRoute } from "@/app/api/prompts/[id]/route";
 import { POST as proposeChangeRoute } from "@/app/api/prompts/[id]/changes/route";
 import { PATCH as reviewChangeRoute } from "@/app/api/prompts/[id]/changes/[changeId]/route";
-import { findClassifierBySlug, getClassifierCatalog, listedClassifiers } from "@/lib/classifiers/store";
+import { POST as voteRoute, DELETE as unvoteRoute } from "@/app/api/prompts/[id]/vote/route";
+import { findClassifierBySlug, getClassifierCatalog, getClassifierVotes, listedClassifiers } from "@/lib/classifiers/store";
 import { curatedClassifierId } from "@/lib/classifiers/schema";
 import type { ClassifierFields } from "@/lib/classifiers/change-snapshot";
 import { importClassifierCatalog } from "../../../prisma/classifiers/import";
@@ -411,6 +412,26 @@ describe("classifiers used by curated chains", () => {
     const response = await propose(bob, urgencyId, { proposedClassifier: { description: row.description!, config } });
     expect(response.status).toBe(400);
     expect(await response.json()).toMatchObject({ error: "classifier_in_chain" });
+  });
+
+  it("counts upvotes from the shared prompt vote route for catalog cards, per viewer", async () => {
+    const id = curatedClassifierId("refund-eligibility");
+    const vote = (user: TestUser | null, method: "POST" | "DELETE") => {
+      signIn(user);
+      return (method === "POST" ? voteRoute : unvoteRoute)(request(`/api/prompts/${id}/vote`, method), idParams(id));
+    };
+
+    expect((await vote(null, "POST")).status).toBe(401);
+    expect(await getClassifierVotes([id])).toEqual({ counts: new Map(), voted: new Set() });
+
+    expect(await (await vote(alice, "POST")).json()).toEqual({ voted: true, voteCount: 1 });
+    expect(await (await vote(bob, "POST")).json()).toEqual({ voted: true, voteCount: 2 });
+    expect(await getClassifierVotes([id, urgencyId], alice.id)).toEqual({ counts: new Map([[id, 2]]), voted: new Set([id]) });
+    expect((await getClassifierVotes([id])).voted.size).toBe(0);
+
+    expect(await (await vote(alice, "DELETE")).json()).toEqual({ voted: false, voteCount: 1 });
+    expect(await getClassifierVotes([id], alice.id)).toEqual({ counts: new Map([[id, 1]]), voted: new Set() });
+    expect((await getClassifierVotes([id], bob.id)).voted).toEqual(new Set([id]));
   });
 
   it("accepts a change that keeps every chain valid and serves it from the catalog", async () => {

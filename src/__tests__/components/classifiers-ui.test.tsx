@@ -5,7 +5,9 @@ import { ScenarioExplorer } from "@/components/classifiers/scenario-explorer";
 import { ChainFlow } from "@/components/classifiers/chain-flow";
 import { CHAINS, CLASSIFIERS, SOURCES } from "../../../prisma/classifiers/fixtures";
 
-const getClassifiers = () => CLASSIFIERS;
+const author = { id: "user-ada", name: "Ada", username: "ada", avatar: null, verified: false };
+const getClassifiers = () =>
+  CLASSIFIERS.map((c, index) => ({ ...c, id: `prompt-${c.slug}`, author, voteCount: index, voted: index === 1 }));
 const getChains = () => CHAINS;
 const getClassifier = (slug: string) => CLASSIFIERS.find((c) => c.slug === slug);
 const getChain = (slug: string) => CHAINS.find((c) => c.slug === slug);
@@ -24,6 +26,26 @@ describe("ClassifierCatalog", () => {
     renderCatalog();
     expect(screen.getAllByTestId("classifier-card")).toHaveLength(getClassifiers().length);
     expect(screen.getAllByTestId("chain-card")).toHaveLength(getChains().length);
+  });
+
+  it("shows the author and upvotes like prompt cards, with the title linking the whole card", () => {
+    renderCatalog();
+    const [first, second] = screen.getAllByTestId("classifier-card");
+    const [firstClassifier, secondClassifier] = getClassifiers();
+
+    const title = within(first).getByRole("link", { name: firstClassifier.name });
+    expect(title).toHaveAttribute("href", `/classifiers/${firstClassifier.slug}`);
+    expect(title.className).toContain("after:inset-0");
+    const profile = within(first).getByRole("link", { name: /@ada/ });
+    expect(profile).toHaveAttribute("href", "/@ada");
+    expect(profile).toHaveClass("relative", "z-10");
+    expect(within(first).getAllByRole("link")).toHaveLength(2);
+    expect(first.querySelector("a a")).toBeNull();
+
+    const count = (card: HTMLElement, value: number) => within(card).getByText(String(value), { selector: "span" });
+    expect(count(first, 0)).not.toHaveClass("text-primary");
+    expect(count(second, 1)).toHaveClass("text-primary");
+    expect(within(second).getByRole("link", { name: secondClassifier.name })).toBeInTheDocument();
   });
 
   it("filters by category and syncs the URL", () => {

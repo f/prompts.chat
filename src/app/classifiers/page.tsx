@@ -5,7 +5,8 @@ import { FlaskConical, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ClassifierCatalog } from "@/components/classifiers/classifier-catalog";
 import { CLASSIFIER_CATEGORIES, type ClassifierCategoryId } from "@/lib/classifiers";
-import { getClassifierCatalog, listedClassifiers } from "@/lib/classifiers/store";
+import { getClassifierCatalog, getClassifierVotes, listedClassifiers } from "@/lib/classifiers/store";
+import { auth } from "@/lib/auth";
 import { buildPageMetadata } from "@/lib/seo";
 
 interface ClassifiersPageProps {
@@ -31,7 +32,9 @@ export default async function ClassifiersPage({ searchParams }: ClassifiersPageP
   const t = await getTranslations("classifiers");
   const tSeo = await getTranslations("seo.classifiers");
   const params = await searchParams;
-  const catalog = await getClassifierCatalog();
+  const [catalog, session] = await Promise.all([getClassifierCatalog(), auth()]);
+  const listed = listedClassifiers(catalog);
+  const votes = await getClassifierVotes(listed.map((c) => c.id), session?.user?.id);
 
   return (
     <div className="container py-6">
@@ -55,7 +58,7 @@ export default async function ClassifiersPage({ searchParams }: ClassifiersPageP
       </div>
 
       <ClassifierCatalog
-        classifiers={listedClassifiers(catalog)}
+        classifiers={listed.map((c) => ({ ...c, voteCount: votes.counts.get(c.id) ?? 0, voted: votes.voted.has(c.id) }))}
         stepClassifiers={catalog.classifiers}
         chains={catalog.chains}
         initialQuery={params.q ?? ""}
