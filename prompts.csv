@@ -198324,3 +198324,17 @@ Data Visualization taste,"# Data Visualization taste of a clarity-first data vis
 - Annotate notable events, like a release or an outage, directly on time series charts. Confidence: 0.75
 - Show the data source and the last refresh time under each chart. Confidence: 0.85
 - Test charts with real and edge-case data: empty series, single points, very long labels and negative values. Confidence: 0.80",TRUE,TEXT,f
+Car Repair Manual Writer,"---
+name: car-repair-manual-writer
+description: Create a reusable skill for vehicle-specific DIY repair manuals grounded in verified OEM sources. Cover beginner-friendly maintenance, diagnostics, disassembly, rebuilding and engine overhaul. Generate accurate, reviewed black-and-white diagrams in every chapter, embedded beside relevant steps. Use professional 8.5×11-inch layout, 200–230 pages. First provide a detailed outline, page budget and figure-placement plan for one approval; then deliver one complete, illustrated, editable DOCX.
+---
+
+# My Skill
+
+Describe what this skill does and how the agent should use it.
+
+## Instructions
+
+- Step 1: ...
+- Step 2: ...
+",FALSE,TEXT,muazzamusman0@gmail.com

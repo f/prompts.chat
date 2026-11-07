@@ -233865,3 +233865,29 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Car Repair Manual Writer</strong></summary>
+
+## Car Repair Manual Writer
+
+Contributed by @anonymous
+
+```md
+---
+name: car-repair-manual-writer
+description: Create a reusable skill for vehicle-specific DIY repair manuals grounded in verified OEM sources. Cover beginner-friendly maintenance, diagnostics, disassembly, rebuilding and engine overhaul. Generate accurate, reviewed black-and-white diagrams in every chapter, embedded beside relevant steps. Use professional 8.5×11-inch layout, 200–230 pages. First provide a detailed outline, page budget and figure-placement plan for one approval; then deliver one complete, illustrated, editable DOCX.
+---
+
+# My Skill
+
+Describe what this skill does and how the agent should use it.
+
+## Instructions
+
+- Step 1: ...
+- Step 2: ...
+
+```
+
+</details>
+
