@@ -10,6 +10,7 @@
 
 import { wiroGeneratorPlugin } from "./wiro";
 import { falGeneratorPlugin } from "./fal";
+import { minimaxGeneratorPlugin } from "./minimax";
 import type { MediaGeneratorPlugin, MediaGeneratorModel, MediaType, WebSocketHandler } from "./types";
 
 export * from "./types";
@@ -20,6 +21,7 @@ export * from "./types";
 const plugins: MediaGeneratorPlugin[] = [
   wiroGeneratorPlugin,
   falGeneratorPlugin,
+  minimaxGeneratorPlugin,
   // Add new plugins here:
   // myNewPlugin,
 ];
