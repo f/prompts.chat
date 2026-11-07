@@ -198740,3 +198740,654 @@ Then produce the brief with these sections:
 Rules: no crowds, faces, readable text, logos, or brand marks on balloons; no cars, buses, modern hotels, or power lines in frame; no fast camera moves or cuts; and no motion that breaks physics (rocks never move or change shape, balloons only rise and drift gently, mist moves softly, light changes slowly). Use short paragraphs and lists.",FALSE,TEXT,f
 Colorful Hot Air Balloons Rising Over Cappadocia Fairy Chimneys at Sunrise,"Dozens of colorful hot-air balloons rising over Cappadocia fairy chimneys and rock pinnacles at golden sunrise, with soft valley mist and warm side light, wide landscape 16:9. The warm sandstone fairy chimneys and eroded pinnacles fill the mid-ground across the frame; soft mist pools in the valley gaps between them. Many striped and solid-colored balloons float at staggered heights — some just clearing the rock tops, others higher as smaller shapes in the pale gold-to-blue sky. Warm sunrise light comes from the right, lighting the stone faces and catching the balloon envelopes; long soft shadows fall to the left. Photoreal travel landscape photography, calm, airy, wonder-filled morning mood. No people, no crowds, no text, no logos, no watermarks.",FALSE,TEXT,f
 Cappadocia Hot Air Balloons at Sunrise (Image-to-Video Animation),"Start from the step 2 image ""Colorful Hot Air Balloons Rising Over Cappadocia Fairy Chimneys at Sunrise"" as the exact first frame, and animate it into a calm ${duration:6}-second cinematic shot. Keep the fairy chimneys, rock pinnacles, balloon colors and layout, valley mist, warm right-side sunrise light, and style exactly as in the image. The camera makes a slow, smooth forward drift with a slight upward tilt, as if rising gently with the scene. The balloons rise slowly at slightly different speeds, the mist slides softly through the valley gaps, and near rocks show a soft parallax against the farther balloons. Natural, realistic motion, no people, no crowds, no cuts, no text, no logos. Soft morning ambience, distant quiet air, faint breeze.",FALSE,TEXT,f
+Postgres EXPLAIN Slow Query Analyzer,"---
+name: postgres-explain-slow-query-analyzer
+description: Reads Postgres EXPLAIN and EXPLAIN ANALYZE plans (text or JSON) and finds why a query is slow - sequential scans on large relations, nested loops with huge row estimates, misestimates (estimated vs actual), high buffer reads, Sort/Hash that spill to disk, missing LIMIT pushdown and expensive nodes by actual time. Ranks fixes (index, rewrite, stats). Offline stdlib Python analyzer.
+---
+
+# Postgres EXPLAIN Slow Query Analyzer
+
+You help developers and DBAs read Postgres query plans. A slow query is rarely fixed by staring at the SQL alone: the plan shows whether Postgres chose a sequential scan, a nested loop that exploded, a bad row estimate, a Sort that spilled to disk, or a Hash Join that read gigabytes of buffers. You take an `EXPLAIN` or `EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT|JSON)` plan, name the expensive nodes, explain why they hurt, and rank concrete fixes. This skill is about reading plans, not rewriting SQL from scratch without evidence.
+
+You do not run destructive statements. Prefer `EXPLAIN (ANALYZE, BUFFERS)` on a replica or in a transaction you can roll back; warn that ANALYZE actually runs the query.
+
+## Files in this skill
+
+- `scripts/explain_analyze.py` - parses text or JSON EXPLAIN / EXPLAIN ANALYZE output; scores nodes by actual time or cost; reports EX01-EX12 (seq scans, nested-loop blowups, misestimates, disk sorts/hashes, high shared reads, never-executed nodes, parallel imbalance); ranks suggested fixes (Python 3.8+ standard library only)
+- `references/plan-nodes-and-buffers.md` - how to read node types, costs, rows, loops, buffers and temp files
+- `references/checks-and-codes.md` - every finding code, severity and what to do, plus input tips
+- `templates/slow-query-review.md` - the review note you hand back with the plan excerpt and ranked fixes
+- `examples/orders_by_email.explain.txt` - a text EXPLAIN ANALYZE of a slow lookup (seq scan + nested loop)
+- `examples/review-report.md` - the real analyzer output on the example
+
+## Workflow
+
+### 1. Collect the plan
+Ask for Postgres version, the SQL, and an `EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)` (or JSON). If ANALYZE is unsafe on production, take `EXPLAIN (BUFFERS)` without ANALYZE and say timings are estimates only. Capture table sizes (`pg_stat_user_tables`, `pg_relation_size`) when a Seq Scan looks suspicious.
+
+### 2. Run the analyzer
+```
+python3 scripts/explain_analyze.py examples/orders_by_email.explain.txt
+python3 scripts/explain_analyze.py plan.json --json-out
+python3 scripts/explain_analyze.py plan.txt --min-ms 5
+python3 scripts/explain_analyze.py --self-test
+```
+Exit 0 = no high findings, 1 = high findings, 2 = bad input. Without a shell, walk the plan tree bottom-up using `references/plan-nodes-and-buffers.md` and apply the codes in `references/checks-and-codes.md`.
+
+### 3. Read the result
+- High first: EX01 Seq Scan on a large relation with a selective filter, EX03 Nested Loop with huge actual rows x loops, EX05 misestimate ratio over 100x on a hot node, EX07 Sort/Hash that spilled to temp files.
+- Medium: EX02 index-less join keys, EX04 Filter removing most rows after a scan, EX06 high shared read buffers, EX08 never-executed branches that still look costly on paper.
+- Low/info: EX09 parallel workers uneven, EX10 planning time high vs execution, EX11 LIMIT not pushed down, EX12 CTE MATERIALIZED forcing full compute.
+
+### 4. Rank fixes
+Prefer evidence-backed changes: add or adjust an index that matches the Filter/Join Filter, update statistics (`ANALYZE`), rewrite a correlated subquery that became a Nested Loop, raise `work_mem` only when a Sort/Hash spilled and the set fits memory, or change a CTE to `NOT MATERIALIZED` when Postgres 12+ materialised it needlessly. Do not invent indexes without naming columns from the plan.
+
+### 5. Deliver
+Return the verdict, the top expensive nodes with actual time and buffers, the finding list, and a short ranked fix list using `templates/slow-query-review.md`.
+
+## Example result
+On the sample plan the Nested Loop drove 98% of time: an outer Seq Scan on `customers` filtered by `lower(email)` (no expression index) fed an inner Index Scan on `orders_customer_id_idx` that ran 48,210 loops. Estimated rows on the outer scan were 42 vs actual 48,210 (misestimate). Shared read buffers were high on `orders`. Ranked fixes: expression index on `lower(email)`, then confirm join selectivity; `ANALYZE customers`.
+
+## Rules
+
+- Base every claim on a node in the plan (type, cost/actual, rows, loops, buffers).
+- Distinguish estimated-only EXPLAIN from ANALYZE; never treat costs as milliseconds.
+- Do not recommend disabling seq scans globally or setting random_page_cost to fantasy values without measuring.
+- Warn that EXPLAIN ANALYZE runs the query (triggers, writes, locks).
+- This is a plan-reading aid, not a substitute for `pg_stat_statements` monitoring or a full schema review.
+FILE:examples/orders_by_email.explain.txt
+QUERY PLAN
+-----------------------------------------------------------------------------------------------------------------------------
+Nested Loop  (cost=0.42..184220.50 rows=12 width=72) (actual time=0.085..912.440 rows=96 loops=1)
+  Buffers: shared hit=1204 read=88440
+  ->  Seq Scan on public.customers c  (cost=0.00..1850.00 rows=42 width=40) (actual time=0.040..88.200 rows=48210 loops=1)
+        Filter: (lower((email)::text) = 'ada@example.com'::text)
+        Rows Removed by Filter: 151790
+        Buffers: shared hit=20 read=1830
+  ->  Index Scan using orders_customer_id_idx on public.orders o  (cost=0.42..4.20 rows=8 width=40) (actual time=0.015..0.016 rows=0 loops=48210)
+        Index Cond: (customer_id = c.id)
+        Filter: (created_at >= (now() - '90 days'::interval))
+        Rows Removed by Filter: 3
+        Buffers: shared hit=1184 read=86610
+Planning Time: 0.412 ms
+Execution Time: 912.610 ms
+FILE:examples/review-report.md
+# Postgres EXPLAIN analysis
+
+Source: `examples/orders_by_email.explain.txt`
+Execution Time: 912.61 ms
+Planning Time: 0.412 ms
+
+**Verdict: NEEDS WORK** - 3 high finding(s).
+
+## Top nodes by time (or cost)
+
+| Node | Relation | Actual ms (x loops) | Cost | Rows est -> act | Loops | Shared read |
+|------|----------|---------------------|------|-----------------|-------|-------------|
+| Nested Loop | - | 912.4 | 184220 | 12 -> 96 | 1 | 88440 |
+| Index Scan | public.orders | 771.4 | 4 | 8 -> 0 | 48210 | 86610 |
+| Seq Scan | public.customers | 88.2 | 1850 | 42 -> 48210 | 1 | 1830 |
+
+## Findings
+
+| Sev | Code | Detail |
+|-----|------|--------|
+| high | EX01 | Seq Scan on public.customers with selective Filter ((lower((email)::text) = 'ada@example.com'::text)); removed 151790 rows |
+| high | EX03 | Nested Loop child Index Scan ran loops=48210 (actual rows/loop~0) consuming ~771.4 ms |
+| high | EX05 | Misestimate on Seq Scan public.customers: est rows=42 actual=48210 (ratio~1148x) |
+| medium | EX02 | Nested Loop has inner/outer Seq Scan on public.customers |
+| medium | EX06 | Nested Loop ? shared read=88440 blocks |
+| medium | EX06 | Index Scan public.orders shared read=86610 blocks |
+
+## Ranked fixes (suggested)
+
+1. Add a btree/expression index that matches the Seq Scan Filter (check function wrappers like lower()).
+2. Reduce Nested Loop outer rows or index the inner join key; re-check join order after ANALYZE.
+3. Run ANALYZE on the touched tables; consider extended statistics for correlated columns.
+4. Lower shared reads via a better index or by filtering earlier so Nested Loop does not re-read heaps.
+
+FILE:references/checks-and-codes.md
+# Checks and codes
+
+| Code | Severity | Meaning | What to do |
+|------|----------|---------|------------|
+| EX01 | high | Seq Scan on a relation with a selective Filter and large actual rows or high actual time | Expression or btree index matching the filter; avoid wrapping the column in a function without a matching expression index |
+| EX02 | medium | Join condition looks unindexed (Nested Loop inner Seq Scan or high loops with Filter on join key) | Index the inner join key; confirm data types match (no cast that kills the index) |
+| EX03 | high | Nested Loop with very high loops * actual rows (row explosion) | Reduce outer rows first; consider Hash/Merge Join; fix misestimates driving NL choice |
+| EX04 | medium | Filter removes most rows after a scan (rows in >> rows out) | Push predicate into an index condition; rewrite so the planner can use an index |
+| EX05 | high | Misestimate: actual/estimate or estimate/actual >= 100 on a node that matters | ANALYZE; extended stats for correlated columns; avoid non-immutable functions in predicates |
+| EX06 | medium | High shared read buffers on a hot node | Caching/index to reduce heap fetches; check if Nested Loop re-reads the same pages |
+| EX07 | high | Sort or Hash spilled to temp files (external merge / Batches > 1 with temp written) | Reduce rows before sort/hash; raise work_mem carefully for this query session; add supporting index to avoid sort |
+| EX08 | low | Node never executed (actual loops=0) but dominates estimated cost | Ignore for runtime; useful when comparing plans without ANALYZE |
+| EX09 | low | Parallel query with uneven worker contribution | Check parallel_* settings and whether gather is worth it |
+| EX10 | info | Planning time large vs execution time | Prepared statements; simplify one-off planning; partition pruning issues |
+| EX11 | medium | LIMIT above a full Sort or full aggregate of a large set | Rewrite so order/filter allows an index scan with early stop |
+| EX12 | medium | CTE Scan with MATERIALIZED forcing full evaluation | WITH ... AS NOT MATERIALIZED (PG12+) or inline the CTE |
+
+## Input tips
+- Text plans: paste the full tree; do not strip indentation.
+- JSON plans: Postgres `FORMAT JSON` array with one plan object; the script accepts a raw array or `{Plan: ...}`.
+- Optional header lines like `QUERY PLAN` or dashed rules are ignored.
+FILE:references/plan-nodes-and-buffers.md
+# Plan nodes and buffers
+
+## Capturing a useful plan
+```sql
+EXPLAIN (ANALYZE, BUFFERS, VERBOSE, FORMAT TEXT) <query>;
+-- or
+EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) <query>;
+```
+On production prefer a hot standby or wrap writes in a transaction you roll back. `ANALYZE` executes the statement.
+
+## Reading a text node line
+Example: `Seq Scan on public.customers  (cost=0.00..1550.00 rows=42 width=64) (actual time=0.020..85.110 rows=48210 loops=1)`
+- Node type and relation
+- `cost=startup..total` (planner units, not ms)
+- `rows` = estimated rows; under ANALYZE also `actual time` and `rows` and `loops`
+- Total time for that node ~= (actual time total) * loops for the subtree contribution pattern; leaf time is clearer than parent when parents include children
+
+## Common node types
+- **Seq Scan**: read the whole heap. Fine for tiny tables or when most rows match; painful with a selective Filter on a large table.
+- **Index Scan / Index Only Scan / Bitmap Heap Scan**: good when selective. Bitmap Heap with many rechecks can still hurt.
+- **Nested Loop**: for each outer row, run inner. Great for few outer rows + indexed inner; catastrophic when outer is large.
+- **Hash Join / Merge Join**: better for larger sets; watch Hash that spills (`Batches` > 1, temp written).
+- **Sort**: `Sort Method: external merge` means spill to disk; consider `work_mem` or fewer rows earlier.
+- **Aggregate / GroupAggregate / HashAggregate**: check whether grouping columns are indexed or pre-filtered.
+- **CTE Scan**: Postgres 12+ may MATERIALIZE CTEs; can block filter pushdown.
+- **Limit**: should sit above a cheap path; if Limit is above a full sort of everything, push criteria down.
+
+## Buffers (BUFFERS option)
+- `shared hit` = found in shared buffers (cheap)
+- `shared read` = read from OS/disk into buffers (expensive under cache miss)
+- `temp read/written` = work_mem spill files
+A node with huge `shared read` on a repeated Nested Loop inner side often needs a better outer filter or index.
+
+## Row misestimates
+Compare `rows` (estimate) to actual `rows`. Ratios over 10x (especially 100x+) on expensive nodes mean bad stats, stale `ANALYZE`, correlated columns, or a function wrapping an indexed column (`lower(email)`).
+
+## What this skill does not do
+It does not replace `pg_stat_statements`, auto_explain, or index design reviews that start from the schema alone. It starts from one plan and explains that plan.
+FILE:scripts/explain_analyze.py
+#!/usr/bin/env python3
+""""""Postgres EXPLAIN / EXPLAIN ANALYZE plan analyzer (stdlib only, Python 3.8+).
+
+Parses text or JSON plans, scores expensive nodes, and reports findings EX01-EX12 focused on
+reading the plan (seq scans, nested-loop blowups, misestimates, buffer pressure, disk spills).
+
+Usage:
+  explain_analyze.py PLAN.txt|.json [--min-ms N] [--json-out]
+  explain_analyze.py --self-test
+Exit: 0 = no high findings, 1 = high findings, 2 = bad input.
+""""""
+import argparse, json, re, sys
+
+SEV = {""high"": 0, ""medium"": 1, ""low"": 2, ""info"": 3}
+
+NODE_RE = re.compile(
+    r""^(?P<indent>\s*)(?:->\s*)?(?P<type>.+?)""
+    r""(?=\s+using\s+|\s+on\s+|\s*\(cost=)""
+    r""(?:\s+using\s+(?P<idx>[\w.]+))?""
+    r""(?:\s+on\s+(?P<rel>[\w.]+))?""
+    r""(?:\s+(?P<alias>\w+))?""
+    r""\s*\(cost=(?P<cstart>[\d.]+)\.\.(?P<ctotal>[\d.]+)\s+rows=(?P<erows>[\d]+)\s+width=(?P<width>[\d]+)\)""
+    r""(?:\s*\(actual time=(?P<astart>[\d.]+)\.\.(?P<atotal>[\d.]+)\s+rows=(?P<arows>[\d]+)\s+loops=(?P<loops>[\d]+)\))?""
+)
+BUF_RE = re.compile(
+    r""Buffers:\s*(?:shared hit=(?P<shit>\d+))?""
+    r""(?:\s*read=(?P<sread>\d+))?""
+    r""(?:.*?temp read=(?P<tread>\d+))?""
+    r""(?:.*?written=(?P<twrite>\d+))?"",
+    re.I,
+)
+FILTER_RE = re.compile(r""^\s+Filter:\s*(.+)$"")
+REMOVED_RE = re.compile(r""Rows Removed by Filter:\s*(\d+)"")
+SORT_RE = re.compile(r""Sort Method:\s*(.+)$"", re.I)
+HASH_BATCH_RE = re.compile(r""Batches:\s*(\d+)"", re.I)
+PLAN_TIME_RE = re.compile(r""Planning Time:\s*([\d.]+)\s*ms"", re.I)
+EXEC_TIME_RE = re.compile(r""Execution Time:\s*([\d.]+)\s*ms"", re.I)
+
+
+class InputError(Exception):
+    pass
+
+
+def parse_text(text):
+    lines = text.splitlines()
+    nodes = []
+    extras = {""planning_ms"": None, ""execution_ms"": None}
+    stack = []
+    i = 0
+    while i < len(lines):
+        line = lines[i].rstrip()
+        if not line or set(line) <= set(""-="") or line.strip() == ""QUERY PLAN"":
+            i += 1
+            continue
+        m = PLAN_TIME_RE.search(line)
+        if m:
+            extras[""planning_ms""] = float(m.group(1)); i += 1; continue
+        m = EXEC_TIME_RE.search(line)
+        if m:
+            extras[""execution_ms""] = float(m.group(1)); i += 1; continue
+        m = NODE_RE.match(line)
+        if m:
+            raw_indent = re.match(r""^(\s*)"", line).group(1)
+            ind = len(raw_indent)
+            node = {
+                ""type"": m.group(""type"").strip(),
+                ""rel"": m.group(""rel""),
+                ""idx"": m.group(""idx""),
+                ""cost_start"": float(m.group(""cstart"")),
+                ""cost_total"": float(m.group(""ctotal"")),
+                ""est_rows"": int(m.group(""erows"")),
+                ""width"": int(m.group(""width"")),
+                ""act_start"": float(m.group(""astart"")) if m.group(""astart"") else None,
+                ""act_total"": float(m.group(""atotal"")) if m.group(""atotal"") else None,
+                ""act_rows"": int(m.group(""arows"")) if m.group(""arows"") else None,
+                ""loops"": int(m.group(""loops"")) if m.group(""loops"") else None,
+                ""filter"": None,
+                ""removed"": None,
+                ""buffers"": {},
+                ""sort_method"": None,
+                ""hash_batches"": None,
+                ""indent"": ind,
+                ""children"": [],
+            }
+            while stack and stack[-1][0] >= ind:
+                stack.pop()
+            if stack:
+                stack[-1][1][""children""].append(node)
+            else:
+                nodes.append(node)
+            stack.append((ind, node))
+            j = i + 1
+            while j < len(lines):
+                pl = lines[j]
+                if not pl.strip():
+                    break
+                if NODE_RE.match(pl) or PLAN_TIME_RE.search(pl) or EXEC_TIME_RE.search(pl):
+                    break
+                if not pl.startswith("" "") and not pl.startswith(""\t""):
+                    break
+                fm = FILTER_RE.match(pl)
+                if fm:
+                    node[""filter""] = fm.group(1).strip()
+                rm = REMOVED_RE.search(pl)
+                if rm:
+                    node[""removed""] = int(rm.group(1))
+                bm = BUF_RE.search(pl)
+                if bm:
+                    node[""buffers""] = {k: int(bm.group(k)) for k in (""shit"", ""sread"", ""tread"", ""twrite"") if bm.group(k)}
+                sm = SORT_RE.search(pl)
+                if sm:
+                    node[""sort_method""] = sm.group(1).strip()
+                hb = HASH_BATCH_RE.search(pl)
+                if hb:
+                    node[""hash_batches""] = int(hb.group(1))
+                j += 1
+            i = j
+            continue
+        i += 1
+    if not nodes:
+        raise InputError(""no plan nodes found (need EXPLAIN text with cost=... rows=...)"")
+    return nodes, extras
+
+
+def parse_json_plan(obj):
+    if isinstance(obj, list):
+        if not obj:
+            raise InputError(""empty JSON plan array"")
+        obj = obj[0]
+    if not isinstance(obj, dict):
+        raise InputError(""JSON plan must be an object or array of objects"")
+    plan = obj.get(""Plan"") or obj.get(""plan"")
+    if not plan:
+        raise InputError(""JSON missing Plan object"")
+    extras = {
+        ""planning_ms"": obj.get(""Planning Time""),
+        ""execution_ms"": obj.get(""Execution Time""),
+    }
+
+    def conv(p, indent=0):
+        node = {
+            ""type"": p.get(""Node Type"", ""Unknown""),
+            ""rel"": p.get(""Relation Name"") or p.get(""Relation""),
+            ""idx"": p.get(""Index Name""),
+            ""cost_start"": float(p.get(""Startup Cost"", 0)),
+            ""cost_total"": float(p.get(""Total Cost"", 0)),
+            ""est_rows"": int(p.get(""Plan Rows"", 0)),
+            ""width"": int(p.get(""Plan Width"", 0)),
+            ""act_start"": p.get(""Actual Startup Time""),
+            ""act_total"": p.get(""Actual Total Time""),
+            ""act_rows"": p.get(""Actual Rows""),
+            ""loops"": p.get(""Actual Loops""),
+            ""filter"": p.get(""Filter""),
+            ""removed"": p.get(""Rows Removed by Filter""),
+            ""buffers"": {},
+            ""sort_method"": p.get(""Sort Method""),
+            ""hash_batches"": p.get(""Hash Batches"") or p.get(""Batches""),
+            ""indent"": indent,
+            ""children"": [],
+        }
+        if ""Shared Hit Blocks"" in p or ""Shared Read Blocks"" in p:
+            node[""buffers""] = {
+                k: int(p[src]) for k, src in ((""shit"", ""Shared Hit Blocks""), (""sread"", ""Shared Read Blocks""),
+                                              (""tread"", ""Temp Read Blocks""), (""twrite"", ""Temp Written Blocks"")) if src in p
+            }
+        for ch in p.get(""Plans"") or []:
+            node[""children""].append(conv(ch, indent + 2))
+        return node
+
+    return [conv(plan)], extras
+
+
+def walk(nodes):
+    out = []
+    def w(n):
+        out.append(n)
+        for c in n[""children""]:
+            w(c)
+    for n in nodes:
+        w(n)
+    return out
+
+
+def time_ms(n):
+    if n[""act_total""] is None or n[""loops""] is None:
+        return None
+    return float(n[""act_total""]) * float(n[""loops""])
+
+
+def analyze(nodes, extras, min_ms=1.0):
+    findings = []
+    flat = walk(nodes)
+
+    def add(sev, code, msg, node=None):
+        findings.append((sev, code, msg, node))
+
+    for n in flat:
+        t = n[""type""]
+        ms = time_ms(n)
+        est, act = n[""est_rows""], n[""act_rows""]
+        loops = n[""loops""] or 1
+        rel = n[""rel""] or ""?""
+
+        if t.startswith(""Seq Scan"") and n.get(""filter"") and (n.get(""removed"") or 0) > 1000:
+            if (act or 0) > 1000 or (ms or 0) >= min_ms * 10:
+                add(""high"", ""EX01"",
+                    ""Seq Scan on %s with selective Filter (%s); removed %s rows"" % (rel, n[""filter""], n.get(""removed"")), n)
+
+        if t.startswith(""Nested Loop""):
+            for c in n[""children""]:
+                if c[""type""].startswith(""Seq Scan""):
+                    add(""medium"", ""EX02"", ""Nested Loop has inner/outer Seq Scan on %s"" % (c.get(""rel"") or ""?""), c)
+
+        if t.startswith(""Nested Loop""):
+            for c in n[""children""]:
+                cl = c.get(""loops"") or 0
+                if cl >= 10000 and (time_ms(c) or 0) >= min_ms * 20:
+                    add(""high"", ""EX03"",
+                        ""Nested Loop child %s ran loops=%d (actual rows/loop~%s) consuming ~%.1f ms"" % (
+                            c[""type""], cl, c.get(""act_rows""), time_ms(c) or 0), c)
+
+        if n.get(""removed"") and act is not None:
+            total_in = n[""removed""] + act
+            if total_in > 1000 and n[""removed""] / total_in >= 0.9:
+                add(""medium"", ""EX04"",
+                    ""Filter on %s %s removes %.0f%% of rows (%d removed, %d kept)"" % (
+                        t, rel, 100.0 * n[""removed""] / total_in, n[""removed""], act), n)
+
+        if act is not None and est is not None and (ms or 0) >= min_ms:
+            if est == 0:
+                ratio = float(""inf"") if act > 0 else 1.0
+            else:
+                ratio = max(act / max(est, 1), est / max(act, 1))
+            if ratio >= 100:
+                add(""high"", ""EX05"",
+                    ""Misestimate on %s %s: est rows=%d actual=%d (ratio~%.0fx)"" % (t, rel, est, act, ratio if ratio != float(""inf"") else 9999), n)
+
+        sread = n.get(""buffers"", {}).get(""sread"") or 0
+        if sread >= 5000 and (ms or 0) >= min_ms:
+            add(""medium"", ""EX06"", ""%s %s shared read=%d blocks"" % (t, rel, sread), n)
+
+        sm = (n.get(""sort_method"") or """").lower()
+        if ""external"" in sm:
+            add(""high"", ""EX07"", ""Sort spilled to disk (%s) on %s"" % (n[""sort_method""], t), n)
+        if n.get(""hash_batches"") and n[""hash_batches""] > 1 and (n.get(""buffers"", {}).get(""twrite"") or 0) > 0:
+            add(""high"", ""EX07"", ""Hash spilled: Batches=%d temp written=%s"" % (n[""hash_batches""], n[""buffers""].get(""twrite"")), n)
+
+        if loops == 0 and n[""cost_total""] >= 1000:
+            add(""low"", ""EX08"", ""Node %s never executed but cost=%.0f"" % (t, n[""cost_total""]), n)
+
+        if t.startswith(""Limit""):
+            for c in n[""children""]:
+                if c[""type""].startswith(""Sort"") and (c.get(""act_rows"") or c.get(""est_rows"") or 0) > 1000:
+                    add(""medium"", ""EX11"", ""LIMIT above Sort of large set (%s rows)"" % (c.get(""act_rows"") or c.get(""est_rows"")), n)
+
+        if ""CTE"" in t and (ms or n[""cost_total""] > 1000):
+            add(""medium"", ""EX12"", ""CTE Scan %s may be materialized; consider NOT MATERIALIZED if filters should push down"" % (n.get(""rel"") or """"), n)
+
+    if extras.get(""planning_ms"") and extras.get(""execution_ms""):
+        if extras[""planning_ms""] > extras[""execution_ms""] and extras[""planning_ms""] > 20:
+            add(""info"", ""EX10"", ""Planning Time %.1f ms > Execution Time %.1f ms"" % (extras[""planning_ms""], extras[""execution_ms""]), None)
+
+    findings.sort(key=lambda x: (SEV.get(x[0], 9), x[1]))
+    return findings
+
+
+def report(nodes, extras, findings, src):
+    flat = walk(nodes)
+    lines = []
+    lines.append(""# Postgres EXPLAIN analysis"")
+    lines.append("""")
+    lines.append(""Source: `%s`"" % src)
+    if extras.get(""execution_ms"") is not None:
+        lines.append(""Execution Time: %s ms"" % extras[""execution_ms""])
+    if extras.get(""planning_ms"") is not None:
+        lines.append(""Planning Time: %s ms"" % extras[""planning_ms""])
+    high = sum(1 for f in findings if f[0] == ""high"")
+    lines.append("""")
+    if high:
+        lines.append(""**Verdict: NEEDS WORK** - %d high finding(s)."" % high)
+    elif findings:
+        lines.append(""**Verdict: OK with notes** - %d finding(s), none high."" % len(findings))
+    else:
+        lines.append(""**Verdict: OK** - no findings above thresholds."")
+    lines.append("""")
+    lines.append(""## Top nodes by time (or cost)"")
+    lines.append("""")
+    scored = []
+    for n in flat:
+        ms = time_ms(n)
+        scored.append((ms if ms is not None else -1, n[""cost_total""], n))
+    scored.sort(key=lambda x: (x[0] if x[0] >= 0 else -1, x[1]), reverse=True)
+    lines.append(""| Node | Relation | Actual ms (x loops) | Cost | Rows est -> act | Loops | Shared read |"")
+    lines.append(""|------|----------|---------------------|------|-----------------|-------|-------------|"")
+    for ms, cost, n in scored[:12]:
+        am = (""%.1f"" % ms) if ms is not None and ms >= 0 else ""-""
+        ra = ""%s -> %s"" % (n[""est_rows""], n[""act_rows""] if n[""act_rows""] is not None else ""-"")
+        lines.append(""| %s | %s | %s | %.0f | %s | %s | %s |"" % (
+            n[""type""], n[""rel""] or ""-"", am, cost, ra, n[""loops""] if n[""loops""] is not None else ""-"",
+            n.get(""buffers"", {}).get(""sread"", ""-"")))
+    lines.append("""")
+    lines.append(""## Findings"")
+    lines.append("""")
+    if not findings:
+        lines.append(""None."")
+    else:
+        lines.append(""| Sev | Code | Detail |"")
+        lines.append(""|-----|------|--------|"")
+        for sev, code, msg, _ in findings:
+            lines.append(""| %s | %s | %s |"" % (sev, code, msg.replace(""|"", ""/"")))
+    lines.append("""")
+    lines.append(""## Ranked fixes (suggested)"")
+    lines.append("""")
+    fixes = []
+    codes = {f[1] for f in findings}
+    if ""EX01"" in codes:
+        fixes.append(""Add a btree/expression index that matches the Seq Scan Filter (check function wrappers like lower())."")
+    if ""EX03"" in codes or ""EX02"" in codes:
+        fixes.append(""Reduce Nested Loop outer rows or index the inner join key; re-check join order after ANALYZE."")
+    if ""EX05"" in codes:
+        fixes.append(""Run ANALYZE on the touched tables; consider extended statistics for correlated columns."")
+    if ""EX07"" in codes:
+        fixes.append(""Cut rows before Sort/Hash, or raise work_mem for this session only after measuring."")
+    if ""EX06"" in codes:
+        fixes.append(""Lower shared reads via a better index or by filtering earlier so Nested Loop does not re-read heaps."")
+    if ""EX11"" in codes:
+        fixes.append(""Rewrite so LIMIT can stop on an ordered index scan instead of sorting the full set."")
+    if ""EX12"" in codes:
+        fixes.append(""Try WITH ... AS NOT MATERIALIZED or inline the CTE so filters push down."")
+    if not fixes:
+        fixes.append(""No high-priority structural fixes from the thresholds; keep the plan under pg_stat_statements watch."")
+    for i, f in enumerate(fixes, 1):
+        lines.append(""%d. %s"" % (i, f))
+    lines.append("""")
+    return ""\n"".join(lines) + ""\n""
+
+
+def load_plan(path):
+    raw = open(path, encoding=""utf-8"").read()
+    if path.endswith("".json"") or raw.lstrip().startswith((""["", ""{"")):
+        try:
+            obj = json.loads(raw)
+        except json.JSONDecodeError as e:
+            raise InputError(""invalid JSON: %s"" % e)
+        return parse_json_plan(obj)
+    return parse_text(raw)
+
+
+def self_test():
+    tests = []
+    def t(name, ok):
+        tests.append((name, bool(ok)))
+
+    sample = """"""Nested Loop  (cost=0.42..184220.50 rows=12 width=72) (actual time=0.085..912.440 rows=96 loops=1)
+  Buffers: shared hit=1204 read=88440
+  ->  Seq Scan on public.customers c  (cost=0.00..1850.00 rows=42 width=40) (actual time=0.040..88.200 rows=48210 loops=1)
+        Filter: (lower((email)::text) = 'ada@example.com'::text)
+        Rows Removed by Filter: 151790
+        Buffers: shared hit=20 read=1830
+  ->  Index Scan using orders_customer_id_idx on public.orders o  (cost=0.42..4.20 rows=8 width=40) (actual time=0.015..0.016 rows=0 loops=48210)
+        Index Cond: (customer_id = c.id)
+        Buffers: shared hit=1184 read=86610
+Planning Time: 0.412 ms
+Execution Time: 912.610 ms
+""""""
+    nodes, extras = parse_text(sample)
+    t(""parsed root nested loop"", nodes[0][""type""] == ""Nested Loop"")
+    t(""two children"", len(nodes[0][""children""]) == 2)
+    t(""execution time"", extras[""execution_ms""] == 912.610)
+    findings = analyze(nodes, extras)
+    codes = {f[1] for f in findings}
+    t(""EX01 seq scan selective"", ""EX01"" in codes)
+    t(""EX03 nested loop explosion"", ""EX03"" in codes)
+    t(""EX05 misestimate"", ""EX05"" in codes)
+    t(""EX06 shared reads"", ""EX06"" in codes)
+    r = report(nodes, extras, findings, ""t"")
+    t(""report verdict needs work"", ""NEEDS WORK"" in r)
+
+    tiny = """"""Seq Scan on public.t  (cost=0.00..1.05 rows=5 width=4) (actual time=0.002..0.003 rows=5 loops=1)
+Execution Time: 0.020 ms
+""""""
+    nodes2, ex2 = parse_text(tiny)
+    f2 = analyze(nodes2, ex2)
+    t(""tiny table no high"", not any(x[0] == ""high"" for x in f2))
+
+    spill = """"""Sort  (cost=1000..1100 rows=10000 width=8) (actual time=50..60 rows=10000 loops=1)
+  Sort Method: external merge  Disk: 4096kB
+""""""
+    ns, es = parse_text(spill)
+    fs = analyze(ns, es)
+    t(""EX07 external sort"", any(x[1] == ""EX07"" for x in fs))
+
+    j = [{""Plan"": {""Node Type"": ""Limit"", ""Startup Cost"": 0, ""Total Cost"": 10, ""Plan Rows"": 10, ""Plan Width"": 4,
+                  ""Actual Startup Time"": 0.1, ""Actual Total Time"": 5.0, ""Actual Rows"": 10, ""Actual Loops"": 1,
+                  ""Plans"": [{""Node Type"": ""Sort"", ""Startup Cost"": 0, ""Total Cost"": 9, ""Plan Rows"": 5000, ""Plan Width"": 4,
+                             ""Actual Startup Time"": 0.1, ""Actual Total Time"": 4.9, ""Actual Rows"": 5000, ""Actual Loops"": 1,
+                             ""Sort Method"": ""quicksort""}]},
+          ""Planning Time"": 1.0, ""Execution Time"": 5.1}]
+    nj, ej = parse_json_plan(j)
+    fj = analyze(nj, ej)
+    t(""JSON limit+sort -> EX11"", any(x[1] == ""EX11"" for x in fj))
+
+    try:
+        parse_text(""not a plan"")
+        ok = False
+    except InputError:
+        ok = True
+    t(""bad input rejected"", ok)
+
+    for name, ok in tests:
+        print((""PASS  "" if ok else ""FAIL  "") + name)
+    passed = sum(ok for _, ok in tests)
+    print(""%d/%d passed"" % (passed, len(tests)))
+    return 0 if passed == len(tests) else 1
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=""Analyze Postgres EXPLAIN / EXPLAIN ANALYZE plans."")
+    ap.add_argument(""plan"", nargs=""?"")
+    ap.add_argument(""--min-ms"", type=float, default=1.0)
+    ap.add_argument(""--json-out"", action=""store_true"")
+    ap.add_argument(""--self-test"", action=""store_true"")
+    a = ap.parse_args(argv)
+    if a.self_test:
+        return self_test()
+    if not a.plan:
+        ap.print_usage(sys.stderr)
+        return 2
+    try:
+        nodes, extras = load_plan(a.plan)
+        findings = analyze(nodes, extras, min_ms=a.min_ms)
+    except (OSError, InputError) as e:
+        print(""error: %s"" % e, file=sys.stderr)
+        return 2
+    if a.json_out:
+        print(json.dumps({
+            ""execution_ms"": extras.get(""execution_ms""),
+            ""planning_ms"": extras.get(""planning_ms""),
+            ""findings"": [{""severity"": s, ""code"": c, ""detail"": m} for s, c, m, _ in findings],
+        }, indent=2))
+    else:
+        sys.stdout.write(report(nodes, extras, findings, a.plan))
+    return 1 if any(f[0] == ""high"" for f in findings) else 0
+
+
+if __name__ == ""__main__"":
+    sys.exit(main())
+FILE:templates/slow-query-review.md
+# Slow query plan review
+
+- Date:
+- Database / Postgres version:
+- Environment (prod replica / staging):
+- Query name or ticket:
+
+## SQL (short)
+```sql
+
+```
+
+## Verdict
+- Overall:
+- Dominant time sinks:
+
+## Top nodes
+| Node | Actual time / cost | Rows est -> act | Loops | Buffers | Notes |
+|------|--------------------|-----------------|-------|---------|-------|
+|      |                    |                 |       |         |       |
+
+## Findings
+| Code | Severity | Detail |
+|------|----------|--------|
+|      |          |        |
+
+## Ranked fixes
+1.
+2.
+3.
+
+## Follow-ups
+- [ ] Capture `EXPLAIN (ANALYZE, BUFFERS)` after the change
+- [ ] Check `pg_stat_user_indexes` / unused indexes before adding more
+- [ ] Note whether ANALYZE on base tables was stale",FALSE,TEXT,f
