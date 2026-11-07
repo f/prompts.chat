@@ -231163,3 +231163,16 @@ A painterly impasto oil painting of a rainy stone-paved street in old Kyoto at d
 
 </details>
 
+<details>
+<summary><strong>Pop Art Comic Illustration of a Chrome 1950s Roadside Diner at Night</strong></summary>
+
+## Pop Art Comic Illustration of a Chrome 1950s Roadside Diner at Night
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A pop art comic-style illustration of a gleaming chrome 1950s roadside diner in the desert at night, landscape 4:3, with no text. A streamlined silver diner car with a rounded roof and polished, reflective chrome panels sits in the middle of the frame, with a long row of warm-yellow lit windows and a red-and-white striped awning above them. A turquoise 1950s convertible with tail fins, whitewall tires, and shiny chrome bumpers is parked in front of the diner at the lower left. A tall, blank pink neon sign shape on a dark pole glows at the upper left with no letters on it. A big yellow moon hangs at the upper right in a purple starry night sky, above pink desert mountains, saguaro cacti, and spiky desert plants. A curving desert road with a white edge line sweeps away on the right. Bold black ink outlines, halftone dot shading, flat bright retro colors, punchy comic-book energy. No text, no lettering, no speech bubbles, no logos.
+```
+
+</details>
+
