@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Çocuklar İçin Yapay Zeka Okulu | AI Prompt School</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 20'><rect x='7' y='0' width='2' height='2' fill='%23FFD700'/><rect x='2' y='4' width='12' height='8' fill='%234A90D9'/><rect x='4' y='6' width='3' height='3' fill='white'/><rect x='9' y='6' width='3' height='3' fill='white'/></svg>">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Sky Background & Animated Clouds -->
+  <div class="sky-bg">
+    <div class="clouds-container">
+      <!-- Fast Cloud -->
+      <svg viewBox="0 0 32 16" class="cloud animate-cloud-fast" style="top: 6%; width: 100px; height: 50px; opacity: 0.85;">
+        <rect x="8" y="8" width="16" height="8" />
+        <rect x="4" y="12" width="8" height="4" />
+        <rect x="20" y="12" width="8" height="4" />
+        <rect x="12" y="4" width="8" height="4" />
+        <rect x="6" y="8" width="4" height="4" />
+        <rect x="22" y="8" width="4" height="4" />
+      </svg>
+      <!-- Medium Cloud -->
+      <svg viewBox="0 0 32 16" class="cloud animate-cloud-medium" style="top: 14%; width: 140px; height: 70px; opacity: 0.8; animation-delay: -10s;">
+        <rect x="8" y="8" width="16" height="8" />
+        <rect x="4" y="12" width="8" height="4" />
+        <rect x="20" y="12" width="8" height="4" />
+        <rect x="12" y="4" width="8" height="4" />
+        <rect x="6" y="8" width="4" height="4" />
+        <rect x="22" y="8" width="4" height="4" />
+      </svg>
+      <!-- Slow Cloud -->
+      <svg viewBox="0 0 32 16" class="cloud animate-cloud-slow" style="top: 22%; width: 180px; height: 90px; opacity: 0.75; animation-delay: -20s;">
+        <rect x="8" y="8" width="16" height="8" />
+        <rect x="4" y="12" width="8" height="4" />
+        <rect x="20" y="12" width="8" height="4" />
+        <rect x="12" y="4" width="8" height="4" />
+        <rect x="6" y="8" width="4" height="4" />
+        <rect x="22" y="8" width="4" height="4" />
+      </svg>
+      <!-- Fast Low Cloud -->
+      <svg viewBox="0 0 32 16" class="cloud animate-cloud-fast" style="top: 30%; width: 120px; height: 60px; opacity: 0.7; animation-delay: -5s;">
+        <rect x="8" y="8" width="16" height="8" />
+        <rect x="4" y="12" width="8" height="4" />
+        <rect x="20" y="12" width="8" height="4" />
+        <rect x="12" y="4" width="8" height="4" />
+        <rect x="6" y="8" width="4" height="4" />
+        <rect x="22" y="8" width="4" height="4" />
+      </svg>
+    </div>
+  </div>
+
+  <!-- App Wrapper -->
+  <div id="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div id="btn-header-brand" class="header-brand" title="Yapay Zeka Okulu">
+        <!-- populated by JS -->
+      </div>
+
+      <div class="header-stats">
+        <!-- Stars count -->
+        <div class="stat-pill pixel-border-sm" title="Yıldızlar">
+          <svg viewBox="0 0 12 12" style="width: 16px; height: 16px; image-rendering: pixelated; fill: #FFD700;">
+            <rect x="5" y="0" width="2" height="2" />
+            <rect x="4" y="2" width="4" height="2" />
+            <rect x="0" y="4" width="12" height="2" />
+            <rect x="2" y="6" width="8" height="2" />
+            <rect x="2" y="8" width="2" height="2" />
+            <rect x="8" y="8" width="2" height="2" />
+            <rect x="0" y="10" width="2" height="2" />
+            <rect x="10" y="10" width="2" height="2" />
+          </svg>
+          <span id="stat-stars">0</span>
+        </div>
+
+        <!-- Levels count -->
+        <div class="stat-pill stat-green pixel-border-sm" title="Tamamlanan Seviyeler">
+          <span id="stat-levels">0/19</span>
+        </div>
+
+        <!-- Music Button -->
+        <button id="btn-header-music" class="pixel-btn pixel-btn-amber" style="padding: 6px 10px; height: 32px;" title="Müziği Aç / Kapat">
+          <!-- populated by JS -->
+        </button>
+
+        <!-- Settings Button -->
+        <button id="btn-header-settings" class="pixel-btn pixel-btn-purple" style="padding: 6px 10px; height: 32px;" title="Ayarlar">
+          <!-- populated by JS -->
+        </button>
+
+        <!-- Home Button -->
+        <button id="btn-header-home" class="pixel-btn" style="padding: 6px 10px; height: 32px;" title="Ana Sayfa">
+          <!-- populated by JS -->
+        </button>
+
+        <!-- Map Button -->
+        <button id="btn-header-map" class="pixel-btn pixel-btn-green" style="padding: 6px 10px; height: 32px;" title="Harita">
+          <!-- populated by JS -->
+        </button>
+      </div>
+    </header>
+
+    <!-- App Dynamic Main Area -->
+    <main id="app-main" class="app-main"></main>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>⚙️ Ayarlar / Settings</h2>
+        <button id="btn-modal-close" class="modal-close-btn">&times;</button>
+      </div>
+
+      <div class="setting-row">
+        <span>🌐 Dil / Language:</span>
+        <div style="display: flex; gap: 8px;">
+          <button id="btn-lang-tr" class="pixel-btn pixel-btn-green lang-toggle-btn">Türkçe 🇹🇷</button>
+          <button id="btn-lang-en" class="pixel-btn lang-toggle-btn">English 🇬🇧</button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <span>🎵 Müzik Ses Seviyesi:</span>
+        <input type="range" id="music-volume-slider" class="volume-slider" min="0" max="1" step="0.05" value="0.3">
+      </div>
+
+      <div class="setting-row">
+        <span>🔄 İlerlemeyi Sıfırla:</span>
+        <button id="btn-reset-prog" class="pixel-btn pixel-btn-red" style="padding: 6px 12px; font-size: 0.95rem;">
+          Tümünü Sıfırla
+        </button>
+      </div>
+
+      <div style="margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.04); border-radius: 6px; font-size: 0.95rem; color: #78350F; text-align: center;">
+        💡 Çocuklar İçin Yapay Zeka Prompt Okulu - 19 Seviye ve 5 Dünya Tamamen Çevrimdışı Çalışır.
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Application Logic Scripts -->
+  <script src="levels-data.js"></script>
+  <script src="pixel-assets.js"></script>
+  <script src="audio.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
