@@ -235262,3 +235262,34 @@ Optional prefix for extra punch: Cel Shaded Art,
 
 </details>
 
+<details>
+<summary><strong>Ocean of Memories: 30-Second Dawn Beach with Glowing Bottles (16:9 Video)</strong></summary>
+
+## Ocean of Memories: 30-Second Dawn Beach with Glowing Bottles (16:9 Video)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+[Global Setting] 30-second poetic magical realism sequence, 16:9, 4K, photoreal, emotional atmosphere. A quiet, wide sandy beach at dawn. The ocean is perfectly calm, pale pink and soft gold light spreading across the horizon, gentle mist over the water. No dialogue, no text on screen.
+
+[Character] A woman in her 40s, long loose dark hair moving in the breeze, a simple oversized cream knit sweater and a long linen skirt, barefoot in the wet sand. Calm, melancholic, gentle eyes. She holds an old pale seashell, worn smooth by time.
+
+[0–2s] Medium shot. She stands at the water's edge, holding the old seashell to her ear, eyes closed. She hears only silence. Soft waves touch her feet.
+
+[2–8s] All around her, thousands of small glass bottles wash ashore with the gentle waves, each sealed with a cork, each containing a tiny floating glowing light. She kneels, picks one up, uncorks it. A child's laugh echoes softly across the water. Her eyes fill with tears, a small smile.
+
+[8–15s] The camera moves low along the shoreline at sand level. One by one, the bottles begin to glow brighter, warm white and gold, until the entire beach becomes a field of soft lights stretching into the distance.
+
+[15–23s] The waves turn transparent like glass. Beneath the surface, fleeting images appear and dissolve like reflections: an old family house, a birthday cake with candles, two people talking at a kitchen table, a hand holding another hand, faces of people once loved. They drift by gently and fade.
+
+[23–30s] She walks into the shallow water and gently places the seashell back into the sea. A moment of stillness. Then the ocean answers: a warm golden glow spreads from where the shell sank, across the whole surface, all the way to the horizon, meeting the rising sun. She stands bathed in golden light, peaceful. Hold.
+
+[Camera] Slow, gentle, floating movements. Medium shots on her, low tracking along the shoreline, a wide shot for the golden ocean. No cuts, no shaky cam.
+
+[Audio] Soft lapping waves, gentle breeze, silence in the shell, the clink of glass bottles on sand, a child's distant laugh echoing, faint overlapping whispers and laughter from the memories beneath the waves, a delicate piano and soft strings rising, then a warm resonant hum as the ocean glows.
+
+[Consistency] Same woman, same seashell, same beach. Dawn pink light turning golden. Tender, emotional, never dark.
+```
+
+</details>
+
