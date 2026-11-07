@@ -235112,3 +235112,16 @@ if __name__ == "__main__":
 
 </details>
 
+<details>
+<summary><strong>Juicestain’s art breakthrough</strong></summary>
+
+## Juicestain’s art breakthrough
+
+Contributed by @anonymous
+
+```md
+I am looking to publicize my art as an artwork through media’s like instagram and TikTok to start monetizing my art. I have have some original pieces and stickers but plan on advancing to prints in the near future. My art stems from pokemon fanart. What steps do I need to follow to successfully gain traction on social media platforms and creating an online shop
+```
+
+</details>
+
