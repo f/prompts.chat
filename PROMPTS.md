@@ -234436,3 +234436,16 @@ Dozens of colorful hot-air balloons rising over Cappadocia fairy chimneys and ro
 
 </details>
 
+<details>
+<summary><strong>Cappadocia Hot Air Balloons at Sunrise (Image-to-Video Animation)</strong></summary>
+
+## Cappadocia Hot Air Balloons at Sunrise (Image-to-Video Animation)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Start from the step 2 image "Colorful Hot Air Balloons Rising Over Cappadocia Fairy Chimneys at Sunrise" as the exact first frame, and animate it into a calm ${duration:6}-second cinematic shot. Keep the fairy chimneys, rock pinnacles, balloon colors and layout, valley mist, warm right-side sunrise light, and style exactly as in the image. The camera makes a slow, smooth forward drift with a slight upward tilt, as if rising gently with the scene. The balloons rise slowly at slightly different speeds, the mist slides softly through the valley gaps, and near rocks show a soft parallax against the farther balloons. Natural, realistic motion, no people, no crowds, no cuts, no text, no logos. Soft morning ambience, distant quiet air, faint breeze.
+```
+
+</details>
+
