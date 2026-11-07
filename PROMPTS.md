@@ -231150,3 +231150,16 @@ A photorealistic macro wildlife photograph of a panther chameleon walking along 
 
 </details>
 
+<details>
+<summary><strong>Painterly Impasto Rainy Kyoto Lantern Street at Dusk</strong></summary>
+
+## Painterly Impasto Rainy Kyoto Lantern Street at Dusk
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A painterly impasto oil painting of a rainy stone-paved street in old Kyoto at dusk, tall portrait 3:4, with thick visible brushstrokes and a heavy textured paint surface. Dark wooden two-story machiya townhouses with lattice windows and tiled eaves line both sides of the street, with glowing red paper lanterns hanging along the eaves, larger and closer on the left, smaller and fading into the distance. The wet paving stones shine and reflect warm orange lantern light in long, broken streaks. A lone figure in a long dark coat, holding a red paper umbrella, walks away from the viewer up the middle of the street. At the far end, the silhouette of a tall five-story pagoda rises into the misty blue distance. Above, a deep blue cloudy evening sky with a faint warm glow near the horizon. Rich deep blues against warm orange and red, quiet, nostalgic, rainy mood. No text, no lettering, no logos.
+```
+
+</details>
+
