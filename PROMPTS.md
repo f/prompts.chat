@@ -233761,3 +233761,38 @@ if __name__ == "__main__":
 
 </details>
 
+<details>
+<summary><strong>Neovim Config taste</strong></summary>
+
+## Neovim Config taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Neovim Config taste of a minimalist terminal-first developer
+- Write the whole config in Lua, starting from a single init.lua that requires small modules under lua/config and lua/plugins. Confidence: 0.90
+- Use lazy.nvim as the plugin manager and commit lazy-lock.json so every machine gets the same plugin versions. Confidence: 0.90
+- Lazy-load plugins by event, command, filetype or key mapping, and keep startup time under 50 ms measured with :Lazy profile. Confidence: 0.80
+- Prefer the built-in LSP client with nvim-lspconfig over heavier all-in-one language plugins. Confidence: 0.85
+- Install language servers, formatters and linters with mason.nvim, but pin the tool list in config instead of installing by hand. Confidence: 0.80
+- Format on save with conform.nvim and lint with nvim-lint, using the same tools and settings the project runs in CI. Confidence: 0.85
+- Use nvim-treesitter for highlighting, indentation and text objects, and list the parsers you need explicitly. Confidence: 0.85
+- Pick one fuzzy finder, such as telescope.nvim or fzf-lua, and route files, grep, buffers and LSP symbols through it. Confidence: 0.85
+- Set the leader key to space before loading any plugin so every mapping uses it. Confidence: 0.90
+- Give every custom mapping a desc field so which-key and :map show what it does. Confidence: 0.85
+- Group mappings by prefix, like leader f for find, leader g for git and leader l for LSP, and avoid overriding core Vim motions. Confidence: 0.80
+- Keep options in one options.lua file using vim.opt, with a short comment for anything that is not obvious. Confidence: 0.80
+- Use relative line numbers, a sign column that is always shown, and persistent undo files. Confidence: 0.75
+- Use autocommand groups with clear = true so reloading the config never duplicates handlers. Confidence: 0.90
+- Respect .editorconfig files and avoid hard-coding indentation per language unless a project has no settings. Confidence: 0.80
+- Show git changes in the sign column with gitsigns.nvim and stage hunks from the editor. Confidence: 0.80
+- Use the built-in completion engine or blink.cmp, with LSP and snippet sources only, to keep the popup fast and relevant. Confidence: 0.70
+- Choose one colorscheme with good Tree-sitter and LSP semantic token support, and do not chase new themes every week. Confidence: 0.65
+- Add a plugin only when it replaces a repeated manual step, and remove plugins you have not used in a month. Confidence: 0.80
+- Keep machine-specific settings in a git-ignored local.lua file so the main config stays portable. Confidence: 0.75
+- Run :checkhealth after upgrades and fix warnings before adding new plugins. Confidence: 0.80
+- Store the config in a dotfiles repository and upgrade plugins deliberately, reviewing the lazy.nvim changelog first. Confidence: 0.85
+```
+
+</details>
+
