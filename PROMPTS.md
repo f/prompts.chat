@@ -231137,3 +231137,16 @@ output_format:
 
 </details>
 
+<details>
+<summary><strong>Photoreal Panther Chameleon on a Mossy Rainforest Branch</strong></summary>
+
+## Photoreal Panther Chameleon on a Mossy Rainforest Branch
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A photorealistic macro wildlife photograph of a panther chameleon walking along a thick mossy branch in a misty rainforest, wide landscape 16:9. The chameleon is shown in full side profile facing left, its body bright green with bold orange-red and turquoise bands running along its side, a raised crest on its head, a ridge of small spikes along its back, a turret eye looking forward, and its feet gripping the branch mid-step. Its long tail curls into a tight spiral at the right. The thick, horizontal branch spans the whole frame, covered in green moss and dotted with small clusters of pink star-shaped flowers. Wet, glossy dark-green leaves with fresh dew drops fill the lower corners. Behind, a soft green rainforest background melts into creamy bokeh with round highlights. Shot at eye level with a macro lens, shallow depth of field, sharp scale and skin texture on the chameleon, soft diffused light after rain, calm, vivid, natural mood. No people, no text, no logos.
+```
+
+</details>
+
