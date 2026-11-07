@@ -233955,3 +233955,16 @@ Final result: a low-finish Japanese anime digital doodle with rough black outlin
 
 </details>
 
+<details>
+<summary><strong>Extreme Fisheye Space Girl: Blue Wolf-Cut Anime Poster with Barrel Distortion (Midjourney)</strong></summary>
+
+## Extreme Fisheye Space Girl: Blue Wolf-Cut Anime Poster with Barrel Distortion (Midjourney)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Digital animation style illustration. beautiful blue wolfcut hair girl, space planet background, alien spacecraft, funny moment, wide Extreme perspective effect, lens distortion, strong sense of depth, minimalist vibe, text "${background_text:STARDUST}" in the background, featuring strong circular barrel distortion. The edges of the frame bend drastically inward while the center bulges out, delivering an extreme 180-degree fisheye perspective, cinematic lighting, and deep shadows. --chaos 50 --ar 1:2 --raw --stylize 400 --hd
+```
+
+</details>
+
