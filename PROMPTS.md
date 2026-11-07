@@ -234361,3 +234361,16 @@ A traditional Japanese ukiyo-e woodblock print of Mount Fuji reflected in a calm
 
 </details>
 
+<details>
+<summary><strong>Isometric Cutaway of a Busy Corner Coffee Roastery at Dawn</strong></summary>
+
+## Isometric Cutaway of a Busy Corner Coffee Roastery at Dawn
+
+Contributed by [@f](https://github.com/f)
+
+```md
+An isometric cutaway illustration of a busy corner coffee roastery at dawn, landscape 4:3. The two-story brick corner building is sliced open to show a ground-floor roasting room with a large drum roaster, burlap coffee sacks, a cooling tray of glossy brown beans, and a small packing counter, while upstairs a tiny tasting nook has a cupping table and shelves of sample jars. Warm early sunlight enters through tall corner windows; a bicycle leans outside by the door; steam rises from a cup on the counter. Soft clay-like 3D diorama style, neat tiny details, pastel morning palette with terracotta, cream, and sage, clean edges, lively but orderly mood. No readable text, no logos, no watermarks, no brand names on bags or signs.
+```
+
+</details>
+
