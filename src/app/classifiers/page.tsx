@@ -38,18 +38,18 @@ export default async function ClassifiersPage({ searchParams }: ClassifiersPageP
 
   return (
     <div className="container py-6">
-      <div className="mb-6 max-w-3xl space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <h1 className="text-lg font-semibold">{tSeo("heading")}</h1>
-          <Button size="sm" className="h-8 text-xs" asChild>
+      <div className="mb-6 space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-2" data-testid="classifiers-header">
+          <h1 className="min-w-0 text-lg font-semibold wrap-anywhere">{tSeo("heading")}</h1>
+          <Button size="sm" className="h-8 shrink-0 text-xs" asChild>
             <Link href="/classifiers/new">
               <Plus className="mr-1 h-3.5 w-3.5" />
               {t("create")}
             </Link>
           </Button>
         </div>
-        <p className="text-sm text-muted-foreground">{t("intro")}</p>
-        <div className="flex items-start gap-2 rounded-[var(--radius)] border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-xs text-muted-foreground">
+        <p className="max-w-3xl text-sm text-muted-foreground">{t("intro")}</p>
+        <div className="flex max-w-3xl items-start gap-2 rounded-[var(--radius)] border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-xs text-muted-foreground">
           <FlaskConical className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-600 dark:text-amber-400" />
           <p>
             <span className="font-medium text-foreground">{t("disclaimerTitle")}</span> {t("disclaimer")}
