@@ -6,7 +6,21 @@ import { useFieldArray, useForm, type FieldPath } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
-import { ArrowLeft, ArrowRight, Check, Loader2, Plus, Trash2 } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Braces,
+  Check,
+  CircleHelp,
+  ClipboardCheck,
+  FileText,
+  FlaskConical,
+  Loader2,
+  Plus,
+  Split,
+  Trash2,
+  type LucideIcon,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +40,7 @@ import { CLASSIFIER_LIMITS as L, classifierConfigSchema, classifierSummarySchema
 import type { ClassifierFields } from "@/lib/classifiers/change-snapshot";
 import { getClassifierUrl } from "@/lib/urls";
 import { cn } from "@/lib/utils";
+import { QUESTION_TYPE_ICONS } from "./classifier-styles";
 
 const C = classifierConfigSchema.shape;
 const QUESTION_TYPES: QuestionType[] = ["choice", "score", "noul"];
@@ -67,13 +82,13 @@ const formSchema = z.object({
 
 export type ClassifierFormValues = z.infer<typeof formSchema>;
 
-const STEPS: { id: string; fields: FieldPath<ClassifierFormValues>[] }[] = [
-  { id: "basics", fields: ["title", "description", "category", "problem", "goal"] },
-  { id: "input", fields: ["inputSummary", "inputFields"] },
-  { id: "question", fields: ["questionType", "questionKey", "instructions", "options"] },
-  { id: "outcomes", fields: ["outcomes", "guidance", "caveats"] },
-  { id: "scenarios", fields: ["scenarios", "tags"] },
-  { id: "review", fields: [] },
+const STEPS: { id: string; icon: LucideIcon; fields: FieldPath<ClassifierFormValues>[] }[] = [
+  { id: "basics", icon: FileText, fields: ["title", "description", "category", "problem", "goal"] },
+  { id: "input", icon: Braces, fields: ["inputSummary", "inputFields"] },
+  { id: "question", icon: CircleHelp, fields: ["questionType", "questionKey", "instructions", "options"] },
+  { id: "outcomes", icon: Split, fields: ["outcomes", "guidance", "caveats"] },
+  { id: "scenarios", icon: FlaskConical, fields: ["scenarios", "tags"] },
+  { id: "review", icon: ClipboardCheck, fields: [] },
 ];
 
 function kebab(value: string) {
@@ -378,8 +393,9 @@ export function ClassifierForm({ mode, promptId, classifierSlug, initial, source
                       : "bg-background text-muted-foreground opacity-60"
                 )}
               >
-                {index < reached && index !== step ? <Check className="h-3 w-3" /> : <span>{index + 1}</span>}
+                <s.icon className="h-3.5 w-3.5 shrink-0" aria-hidden />
                 {t(`step.${s.id}`)}
+                {index < reached && index !== step && <Check className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden />}
               </button>
             </li>
           ))}
@@ -536,22 +552,29 @@ export function ClassifierForm({ mode, promptId, classifierSlug, initial, source
             <FormItem>
               <FormLabel>{t("questionType")}</FormLabel>
               <div role="radiogroup" aria-label={t("questionType")} className="grid gap-2 sm:grid-cols-3">
-                {QUESTION_TYPES.map((type) => (
-                  <button
-                    key={type}
-                    type="button"
-                    role="radio"
-                    aria-checked={questionType === type}
-                    onClick={() => setQuestionType(type)}
-                    className={cn(
-                      "rounded-md border p-3 text-left transition-colors hover:bg-accent/50",
-                      questionType === type && "border-primary bg-primary/5"
-                    )}
-                  >
-                    <span className="block text-sm font-medium">{tClassifiers(`questionTypes.${type}`)}</span>
-                    <span className="block text-xs text-muted-foreground">{t(`questionTypeHint.${type}`)}</span>
-                  </button>
-                ))}
+                {QUESTION_TYPES.map((type) => {
+                  const TypeIcon = QUESTION_TYPE_ICONS[type];
+                  const selected = questionType === type;
+                  return (
+                    <button
+                      key={type}
+                      type="button"
+                      role="radio"
+                      aria-checked={selected}
+                      onClick={() => setQuestionType(type)}
+                      className={cn(
+                        "rounded-md border p-3 text-left transition-colors hover:bg-accent/50",
+                        selected && "border-primary bg-primary/5"
+                      )}
+                    >
+                      <span className="flex items-center gap-1.5 text-sm font-medium">
+                        <TypeIcon className={cn("h-4 w-4 shrink-0", selected ? "text-primary" : "text-muted-foreground")} aria-hidden />
+                        {tClassifiers(`questionTypes.${type}`)}
+                      </span>
+                      <span className="mt-0.5 block text-xs text-muted-foreground">{t(`questionTypeHint.${type}`)}</span>
+                    </button>
+                  );
+                })}
               </div>
             </FormItem>
             <div className="grid gap-4 sm:grid-cols-[200px_minmax(0,1fr)]">
