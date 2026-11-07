@@ -43724,28 +43724,6 @@ Use variables such as:
 - ${integration:kafka} to indicate future integration plans.",FALSE,TEXT,ZhenjieZhao66
 Daiquiri Cocktail Cinematic Video,"A cinematic 9:16 vertical video of a Daiquiri  cocktail placed on a wooden bar table. The camera is positioned at a slight angle on the front of the glass. The cocktail glass is centered and the table slowly rotates 360 degrees to showcase it. Soft, warm lighting and realistic reflections on the glass. Background slightly blurred. Smooth slow zoom in. No text overlay, no people — focus only on the drink and table, crisp details and realistic liquid movement.",FALSE,TEXT,carlonxx41@gmail.com
 Solar System Scale Model Classroom Poster,"Design a classroom poster that illustrates the solar system with scale distances between planets. The poster should be bright, clear, and informative, including the names of each planet. This poster is intended for educational purposes, helping students understand the structure and scale of the solar system.",FALSE,TEXT,rkedron_231i1@e.zseeim.edu.pl
-Prompt Optimization,"Act as a certified and expert AI prompt engineer.
-
-Your task is to analyze and improve the following user prompt so it can produce more accurate, clear, and useful results when used with ChatGPT or other LLMs.
-
-Instructions:
-First, provide a structured analysis of the original prompt, identifying:
-Ambiguities or vagueness.
-Redundancies or unnecessary parts.
-Missing details that could make the prompt more effective.
-
-Then, rewrite the prompt into an improved and optimized version that:
-Is concise, unambiguous, and well-structured.
-Clearly states the role of the AI (if needed).
-Defines the format and depth of the expected output.
-Anticipates potential misunderstandings and avoids them.
-
-Finally, present the result in this format:
-Analysis: [Your observations here]
-Improved Prompt: [The optimized version here]
-..... 
-- أجب باللغة العربية.
-",FALSE,TEXT,almubarmij@gmail.com
 4 Optimized Versions of A Prompt (in Arabic),"Act as a certified and expert AI prompt engineer
 
 Analyze and improve the following prompt to get more accurate and best results and answers.
