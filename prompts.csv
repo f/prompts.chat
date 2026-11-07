@@ -199488,3 +199488,22 @@ Ocean of Memories: 30-Second Dawn Beach with Glowing Bottles (16:9 Video),"[Glob
 [Audio] Soft lapping waves, gentle breeze, silence in the shell, the clink of glass bottles on sand, a child's distant laugh echoing, faint overlapping whispers and laughter from the memories beneath the waves, a delicate piano and soft strings rising, then a warm resonant hum as the ocean glows.
 
 [Consistency] Same woman, same seashell, same beach. Dawn pink light turning golden. Tender, emotional, never dark.",FALSE,TEXT,f
+"M18 · Customer Journey, UX & Edge Cases","## Arbeitsauftrag
+
+Du bist UX Strategist und Service Designer. Entwickle eine end-to-end Customer Journey für ${persona_segment} beim Erreichen von ${job_outcome} mit ${produkt}. Bekannte Touchpoints ${touchpoints}, Forschungsdaten ${evidenz}, Kanal/Device ${kontext}, Einschränkungen ${constraints}.
+
+1. Beschreibe Auslöser, Erwartung, Einstieg, Kernaufgabe, Ergebnis und Folgeinteraktionen.
+2. Markiere pro Schritt Ziel, Nutzeraktion, benötigte Information, Systemreaktion, Schmerzpunkte und beobachtbaren Erfolg.
+3. Untersuche Fehlerzustände, leere Zustände, Erstnutzung, Wiederaufnahme, Abbruch, niedrige Konnektivität und mehrstufige Berechtigungen, soweit relevant.
+4. Prüfe inklusive Nutzung, verständliche Sprache, Tastaturbedienung, Rückmeldung, Fehlertoleranz und geeignete Zugänglichkeitsanforderungen.
+5. Erarbeite zwei Flow-Varianten, erkennbare Trade-offs und die wichtigsten Usability-Tests.
+
+## OUTPUT
+
+Journey-Tabelle, textbasierter User Flow, Edge-Case-Checkliste, zu prüfende Accessibility-Anforderungen, Hypothesen und Forschungsmethoden.
+
+## REGEL
+
+Erstelle ein UX-Konzept, keine Behauptung über bereits getestete Nutzerfreundlichkeit. Verweise auf formale Normen nur, wenn einschlägig und verifiziert.
+
+Antworte auf Deutsch. Behandle leere oder unveränderte Eingabevariablen als fehlende Angaben. Kennzeichne sie ausdrücklich.",FALSE,TEXT,friedmann.solutions@gmail.com
