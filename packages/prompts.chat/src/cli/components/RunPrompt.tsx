@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Box, Text, useInput, useStdout } from 'ink';
 import { chatPlatforms, codePlatforms, imagePlatforms, videoPlatforms, buildUrl, type Platform } from '../platforms.js';
+import type { Prompt } from '../api.js';
 
 interface RunPromptProps {
   content: string;
   title?: string;
   description?: string;
-  promptType?: 'TEXT' | 'IMAGE' | 'VIDEO' | 'AUDIO' | 'SKILL';
+  promptType?: Prompt['type'];
   mediaUrl?: string | null;
   onRun: (url: string, platform: Platform) => void;
   onCopyAndOpen: (content: string, platform: Platform) => void;

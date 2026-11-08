@@ -5,6 +5,7 @@ import { type Prompt } from '../api.js';
 import { extractVariables, compile } from '../../variables/index.js';
 import { RunPrompt } from './RunPrompt.js';
 import { type Platform } from '../platforms.js';
+import { getBaseUrl } from '../config.js';
 
 interface PromptDetailProps {
   prompt: Prompt;
@@ -210,13 +211,13 @@ export function PromptDetail({ prompt, onBack, onCopy }: PromptDetailProps) {
 
     if (input === 'o' && prompt) {
       import('open').then(({ default: open }) => {
-        open(`https://prompts.chat/prompts/${prompt.id}_${prompt.slug}`);
+        open(`${getBaseUrl()}/prompts/${prompt.id}_${prompt.slug}`);
       });
     }
 
     if (input === 'u' && prompt) {
       import('open').then(({ default: open }) => {
-        open(`https://prompts.chat/@${prompt.author.username}`);
+        open(`${getBaseUrl()}/@${prompt.author.username}`);
       });
     }
 
