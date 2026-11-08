@@ -235298,3 +235298,37 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Helm Chart taste</strong></summary>
+
+## Helm Chart taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Helm Chart taste of a Kubernetes packaging engineer
+- One chart per deployable application, with a clear `Chart.yaml` name, version and `appVersion` that track semver. Confidence: 0.90
+- Keep default `values.yaml` safe for a non-production install, and document every key in `values.schema.json` or a VALUES.md. Confidence: 0.85
+- Prefer the official Helm library patterns and bitnami-style helpers sparingly; copy only helpers you understand. Confidence: 0.75
+- Template labels and selectors from a single `_helpers.tpl` so Services always match Pods. Confidence: 0.95
+- Never hard-code namespaces in templates; take them from `Release.Namespace` or an explicit value. Confidence: 0.90
+- Pin image tags to digests or immutable tags in production values; forbid `latest` in the schema. Confidence: 0.90
+- Set resource requests and limits for every container, with defaults that fit a small cluster and overrides for prod. Confidence: 0.85
+- Include readiness and liveness probes with realistic delays; a wrong probe is worse than no probe. Confidence: 0.85
+- Manage config with ConfigMaps and secrets via sealed-secrets, SOPS or external-secrets—not plaintext in git. Confidence: 0.95
+- Use `required` and `fail` in templates for mandatory values so misconfiguration fails at install time. Confidence: 0.85
+- Run `helm lint`, `helm template` and a kubeconform/kubeval check in CI on every chart change. Confidence: 0.90
+- Test with `helm unittest` or snapshot templates for labels, ports and probes so refactors cannot silently break installs. Confidence: 0.80
+- Version the chart independently of the app when only packaging changes; bump `appVersion` when the image changes. Confidence: 0.80
+- Prefer small umbrellas only when services truly share a release lifecycle; otherwise deploy charts separately with GitOps. Confidence: 0.75
+- Support `extraEnv`, `extraVolumes` and `affinity` hooks so operators can extend without forking the chart. Confidence: 0.80
+- Keep RBAC templates opt-in and least-privilege; default ServiceAccounts should not mount the API token unless needed. Confidence: 0.85
+- Document upgrade notes in `README.md` for breaking values renames, and provide a values migration example. Confidence: 0.80
+- Publish charts to an OCI registry or ChartMuseum from CI with signed provenance; do not `helm push` from a laptop. Confidence: 0.80
+- Align with GitOps (Argo CD or Flux) by making charts render cleanly with only values files—no manual `helm upgrade` steps. Confidence: 0.85
+- Cap chart complexity: if templates need heavy logic, move it to a controller or operators instead of growing Gotpl. Confidence: 0.75
+- Review `helm diff` output before applying to production and require a human approval gate on the deploy Environment. Confidence: 0.85
+```
+
+</details>
+
