@@ -10,6 +10,8 @@
   </a>
 </h1>
 
+<p align="center"><b>English</b> | <a href="./README.zh-CN.md">简体中文</a></p>
+
 <p align="center">
   <strong>The world's largest open-source prompt library for AI</strong><br>
   <sub>Works with ChatGPT, Claude, Gemini, Llama, Mistral, and more</sub>
