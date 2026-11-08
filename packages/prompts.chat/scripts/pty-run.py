@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Runs a command in a pseudo-terminal with a fixed window size, relaying stdin and stdout.
 
-Used by pack-smoke.mjs to drive the TUI. script(1) inherits a 0x0 window when the caller has no
-terminal (as on CI runners), which makes Ink lay everything out at zero width.
+Used by pack-smoke.mjs to drive the TUI with a known window size, whatever terminal (if any) the
+caller has.
 
     pty-run.py <columns> <rows> <command> [args...]
 """

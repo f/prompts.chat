@@ -55,10 +55,12 @@ function run(cmd, args, options) {
 /** Runs the TUI in a 120x40 pseudo-terminal: open the first prompt, then quit */
 function runTui(node, mockUrl) {
   return new Promise((resolve) => {
-    const child = spawn('python3', [join(packageDir, 'scripts/pty-run.py'), '120', '40', join(project, 'node_modules/.bin/prompts.chat')], {
-      cwd: project,
-      env: { ...envFor(node, { PROMPTS_CHAT_URL: mockUrl }), TERM: 'xterm-256color' },
-    });
+    // Ink only prints the last frame, on exit, when it detects CI, so drop the CI markers
+    const env = Object.fromEntries(
+      Object.entries(envFor(node, { PROMPTS_CHAT_URL: mockUrl, TERM: 'xterm-256color' }))
+        .filter(([key]) => key !== 'CI' && key !== 'CONTINUOUS_INTEGRATION' && !key.startsWith('CI_')),
+    );
+    const child = spawn('python3', [join(packageDir, 'scripts/pty-run.py'), '120', '40', join(project, 'node_modules/.bin/prompts.chat')], { cwd: project, env });
     let output = '';
     // Keys are sent once the screen they act on has rendered; fixed delays race on slow CI runners
     const steps = [
