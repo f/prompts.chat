@@ -52,12 +52,12 @@ function run(cmd, args, options) {
   return { code: result.status, stdout: result.stdout ?? '', stderr: (result.stderr ?? '') + (result.error ? String(result.error) : '') };
 }
 
-/** Runs the TUI in a pseudo-terminal via script(1): open the first prompt, then quit */
+/** Runs the TUI in a 120x40 pseudo-terminal: open the first prompt, then quit */
 function runTui(node, mockUrl) {
   return new Promise((resolve) => {
-    const child = spawn('script', ['-qfec', 'node_modules/.bin/prompts.chat', '/dev/null'], {
+    const child = spawn('python3', [join(packageDir, 'scripts/pty-run.py'), '120', '40', join(project, 'node_modules/.bin/prompts.chat')], {
       cwd: project,
-      env: { ...envFor(node, { PROMPTS_CHAT_URL: mockUrl }), TERM: 'xterm-256color', COLUMNS: '120', LINES: '40' },
+      env: { ...envFor(node, { PROMPTS_CHAT_URL: mockUrl }), TERM: 'xterm-256color' },
     });
     let output = '';
     // Keys are sent once the screen they act on has rendered; fixed delays race on slow CI runners
@@ -149,7 +149,7 @@ try {
     const npxSearch = run('npx', ['--yes', `--package=${tarball}`, 'prompts.chat', 'skills'], { cwd: npxDir, env });
     check('npx --package=<tarball> prompts.chat skills', npxSearch.code === 0 && npxSearch.stdout.includes('Postgres EXPLAIN Analyzer'), npxSearch.stdout + npxSearch.stderr);
 
-    if (process.platform === 'linux' && run('script', ['--version']).code === 0) {
+    if (process.platform !== 'win32' && run('python3', ['--version']).code === 0) {
       const tui = await runTui(node, server.url);
       // eslint-disable-next-line no-control-regex
       const text = tui.output.replace(/\x1b\[[0-9;?]*[A-Za-z]/g, '').replace(/\r/g, '');
