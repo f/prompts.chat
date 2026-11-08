@@ -235462,3 +235462,18 @@ The camera position and horizon stay identical throughout. One man only. No morp
 
 </details>
 
+<details>
+<summary><strong>Cozy Mushroom-Embroidered Knit Cape Cardigan: Autumn Outfit Prompt for Any Character</strong></summary>
+
+## Cozy Mushroom-Embroidered Knit Cape Cardigan: Autumn Outfit Prompt for Any Character
+
+Contributed by [@f](https://github.com/f)
+
+```md
+[Your character], full-body view, wearing:
+
+olive green knitted cape cardigan, wide flowing poncho silhouette, hip length cape with continuous fabric draping from shoulders to hem, broad sloping sides and loose open lower edges, round neckline with warm chestnut brown knitted Peter Pan collar, two rounded collar lobes with scalloped edges, layered textured brown knitting across collar, small embroidered red mushrooms with white spotted caps and ivory stems on both collar tips, chestnut brown knitted cords tied in a long loose bow at center neckline, long brown cord ends hanging down chest, olive green center front button band, single vertical row of small round ivory buttons with decorative silver rims, two raised olive green cable knit columns flanking button band, dense horizontal knit stitches across cape body, raglan style knitted shoulder lines, scattered red and ivory mushroom embroidery near both lower front sides, dark green embroidered winding stems and tiny leaves, gently flared olive green hem, brown collar and olive green cape body
+```
+
+</details>
+
