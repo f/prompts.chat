@@ -236534,3 +236534,30 @@ Begin by presenting the proposed architecture and database schema, then implemen
 
 </details>
 
+<details>
+<summary><strong>- Egg - Adani Tea Order: 772609034</strong></summary>
+
+## - Egg - Adani Tea Order: 772609034
+
+Contributed by @anonymous
+
+```md
+Create a 50-second delicious food commercial video, vertical 9:16 for TikTok, cinematic, realistic, warm bright light.
+
+Scene 1 (0-8 sec): Wide shot of a cozy Yemeni sandwich shop in Al Mahwit, wooden table, steam, welcoming atmosphere.
+Scene 2 (8-18 sec): Close-up of a hot crispy potato sandwich, golden toasted bread, crispy fried potato slices, melted cheese dripping, steam rising, cheese stretching, appetizing.
+Scene 3 (18-28 sec): Close-up of a hot egg sandwich, fresh scrambled eggs, Yemeni spices, golden bread, steam rising, mouth-watering.
+Scene 4 (28-38 sec): Close-up of a small glass of hot Yemeni Adani tea with steam, next to a bowl of boiled potatoes, cozy warm background.
+Scene 5 (38-50 sec): Final shot, both sandwiches and tea together on wooden table, steam, slow zoom out, golden light.
+
+Text on screen at the end, big gold letters:
+AL-RAIMI FOR SANDWICHES
+Potato - Egg - Adani Tea
+Al Mahwit - Sanaa Street
+Order: 772609034
+
+Style: Professional restaurant advertisement, high quality, mouth-watering, no voice, only visuals, because voiceover will be added later.
+```
+
+</details>
+
