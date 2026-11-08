@@ -199740,3 +199740,893 @@ Quotes, titles, names, commands, links and data. Code snippets inside prose stay
 - Code: the code only, as in section 2.
 - Images: the image, or the image prompt, with no extra notes unless I ask.
 ",FALSE,TEXT,maryam-salawudeen
+Protocols handling and management ,"# MASTER PRODUCT DEVELOPMENT PROMPT
+## Clinical Research Command Center (CRCC)
+### An AI-Powered Clinical Trial Operations and Management Platform
+
+Act as a senior software architect, full-stack developer, clinical research operations specialist, clinical trial project manager, regulatory affairs specialist, and AI product designer.
+
+Your assignment is to design and build a complete, professional, secure, web-based application called:
+
+**CLINICAL RESEARCH COMMAND CENTER (CRCC)**
+
+This application is intended for a Clinical Research Coordinator who serves as the primary coordinator and operational lead for clinical trials and is responsible for overseeing study conduct, coordinating site activities, maintaining protocol compliance, managing subjects, supporting the Principal Investigator, coordinating study teams, and ensuring inspection readiness.
+
+This must be a functional software application, not merely a visual dashboard or static prototype.
+
+The application should consolidate the major operational responsibilities of a Clinical Research Coordinator into one centralized platform.
+
+---
+
+# 1. CORE PRODUCT OBJECTIVE
+
+Build a centralized clinical research management system that allows me to:
+
+- Manage multiple clinical trials simultaneously.
+- Organize all protocol documents and study-related materials.
+- Extract and interpret protocol requirements using AI.
+- Convert the Schedule of Activities (SoA) into structured visit plans.
+- Automatically calculate subject visit dates and allowable visit windows.
+- Track subjects throughout their participation.
+- Manage study startup and activation activities.
+- Track regulatory documents and essential documents.
+- Manage laboratory and sample processing requirements.
+- Monitor AE and SAE reporting requirements.
+- Generate professional draft progress notes and study documentation.
+- Track protocol deviations and corrective/preventive actions.
+- Prepare for monitoring visits and audits.
+- Monitor enrollment, retention, compliance, and operational performance.
+- Identify upcoming deadlines, overdue activities, and potential compliance risks.
+
+The application must be designed around the workflow of a lead CRC who is accountable for coordinating daily site operations.
+
+# 2. APPLICATION DESIGN AND USER EXPERIENCE
+
+Create a modern, professional clinical research software interface.
+
+Design characteristics:
+
+- Clean, enterprise-grade dashboard.
+- Professional medical and clinical research aesthetic.
+- White and light-gray backgrounds.
+- Sage green, forest green, and muted teal accents.
+- Minimalistic icons.
+- Organized side navigation.
+- Responsive desktop and tablet layouts.
+- Searchable tables, filters, and interactive calendars.
+- Clear status indicators.
+- Notification center.
+- Global search.
+- User activity history.
+
+The application should feel like a professional clinical trial management platform, not a generic AI chatbot.
+
+Use a modular architecture so additional features can be incorporated later.
+
+# 3. MAIN DASHBOARD
+
+Create a central dashboard with the following sections:
+
+**Study Overview**
+- Total active studies.
+- Studies in startup.
+- Studies actively enrolling.
+- Studies in follow-up.
+- Studies closed to enrollment.
+- Studies in closeout.
+
+**Subject Overview**
+- Total screened subjects.
+- Screen failures.
+- Enrolled subjects.
+- Randomized subjects.
+- Active subjects.
+- Completed subjects.
+- Withdrawn subjects.
+- Subjects lost to follow-up.
+
+**Operational Dashboard**
+- Upcoming subject visits.
+- Visits approaching their scheduling windows.
+- Overdue visits.
+- Missing eDiary entries.
+- Pending laboratory results.
+- Pending data queries.
+- Outstanding documentation.
+- Pending AE/SAE follow-up.
+- Open protocol deviations.
+- Pending regulatory documents.
+
+**Notifications and Alerts**
+- Upcoming deadlines.
+- Expiring certifications.
+- Protocol amendments requiring implementation.
+- Overdue activities.
+- Missing essential documents.
+- Subject visits outside allowable windows.
+
+Allow filtering by study and date range.
+
+# 4. STUDY MANAGEMENT MODULE
+
+Create a dedicated workspace for each clinical trial.
+
+Each study must have:
+
+- Study title.
+- Protocol number.
+- Sponsor.
+- CRO.
+- Principal Investigator.
+- Sub-Investigators.
+- Study coordinator.
+- Study team members.
+- Therapeutic area.
+- Study phase.
+- Study design.
+- Enrollment target.
+- Enrollment cap.
+- Study status.
+- Site number.
+- IRB/IEC information.
+- Current protocol version.
+- Protocol effective date.
+- Study activation date.
+- Enrollment opening date.
+- Enrollment closure date.
+- Study completion date.
+
+Allow multiple studies to be managed independently.
+
+Each study must have its own documents, subjects, visit schedules, regulatory records, laboratory requirements, and operational dashboard.
+
+# 5. AI PROTOCOL INTELLIGENCE ENGINE
+
+This is one of the most important components.
+
+Allow uploading:
+
+- Clinical study protocols.
+- Protocol amendments.
+- Schedule of Activities.
+- Investigator Brochures.
+- Laboratory manuals.
+- Pharmacy manuals.
+- Study-specific manuals.
+- Informed Consent Forms.
+- Study reference guides.
+- Monitoring plans.
+- Data management plans.
+- Study newsletters.
+- Sponsor communications.
+- Other study-related documents.
+
+Supported file formats:
+- PDF.
+- DOCX.
+- XLSX.
+- CSV.
+- PPTX.
+
+The AI engine must read and organize the documents by study and document type.
+
+Extract and organize:
+
+1. Study objectives.
+2. Study design.
+3. Inclusion criteria.
+4. Exclusion criteria.
+5. Screening requirements.
+6. Randomization requirements.
+7. Dosing requirements.
+8. Visit schedules.
+9. Visit windows.
+10. Required procedures.
+11. Laboratory assessments.
+12. Specimen collection requirements.
+13. Safety reporting requirements.
+14. Contraception requirements.
+15. Prohibited medications.
+16. Concomitant medication requirements.
+17. Subject diary requirements.
+18. Follow-up requirements.
+19. Study completion criteria.
+20. Early termination requirements.
+
+Every extracted requirement must have:
+
+- Source document.
+- Protocol version.
+- Section number.
+- Page number.
+- Exact supporting passage or table reference.
+- Extraction confidence.
+- Review status.
+
+The AI must never invent protocol requirements.
+
+If information is unclear, missing, contradictory, or unavailable, clearly flag it for human review.
+
+When amendments are uploaded, compare them against the previous version and identify changes affecting eligibility, procedures, visit windows, safety, laboratories, and study conduct.
+
+Maintain a version-controlled protocol knowledge base.
+
+# 6. SCHEDULE OF ACTIVITIES (SoA) BUILDER
+
+Develop a sophisticated SoA extraction and management module.
+
+Automatically identify:
+
+- Visit names.
+- Study days.
+- Visit numbers.
+- Visit windows.
+- Screening periods.
+- Baseline assessments.
+- Procedures.
+- Laboratory tests.
+- Questionnaires.
+- Safety assessments.
+- Dosing activities.
+- Follow-up activities.
+- Optional procedures.
+- Conditional procedures.
+- Assessments that apply only to specific cohorts.
+
+Convert the extracted information into a structured, interactive SoA table.
+
+Allow the CRC to:
+
+- Review extracted procedures.
+- Edit incorrect extractions.
+- Approve requirements.
+- Add notes.
+- Identify conditional requirements.
+- Compare protocol versions.
+- Export the approved SoA into Excel or PDF.
+
+Each visit must have its own detailed procedure checklist.
+
+Never assume that every procedure occurs at every visit.
+
+# 7. AUTOMATED VISIT CALCULATOR
+
+Develop a protocol-driven visit scheduling engine.
+
+This feature must allow me to enter:
+
+- Subject ID.
+- Screening date.
+- Informed consent date.
+- Baseline date.
+- Randomization date.
+- First dose date.
+- Other protocol-defined reference dates.
+
+Automatically calculate:
+
+- Target visit dates.
+- Earliest allowable visit dates.
+- Latest allowable visit dates.
+- Visit windows.
+- Follow-up dates.
+- Laboratory collection time points.
+- Safety follow-up dates.
+- Study completion dates.
+
+IMPORTANT:
+
+The calculation engine must use the actual protocol-defined reference event for each visit.
+
+Support:
+- Calendar-day calculations.
+- Business-day calculations where explicitly required.
+- Inclusive and exclusive date rules.
+- Visit windows expressed as plus/minus days.
+- Different reference dates for different visits.
+- Unscheduled visits.
+- Early termination visits.
+- Rescheduled visits.
+
+Show the calculation logic and source reference.
+
+Provide a warning when a scheduled visit falls outside the approved window.
+
+Never silently change a reference date or assume a visit window.
+
+Include a calendar view and subject-specific visit timeline.
+
+# 8. SUBJECT MANAGEMENT
+
+Create a comprehensive subject management module.
+
+Each subject record should include:
+
+- Study-specific subject ID.
+- Screening number.
+- Enrollment status.
+- Randomization status.
+- Cohort or treatment group, with appropriate access restrictions.
+- Informed consent date.
+- Screening date.
+- Baseline date.
+- Visit history.
+- Dosing history.
+- Laboratory collection history.
+- Safety events.
+- Concomitant medications.
+- Protocol deviations.
+- Pending procedures.
+- Diary compliance.
+- Follow-up status.
+- Withdrawal or completion status.
+
+Provide a chronological subject timeline.
+
+Allow the CRC to see which procedures are required, completed, pending, missed, or not applicable at each visit.
+
+Support multiple subjects within each study.
+
+Use role-based access controls, including separation of blinded and unblinded information.
+
+# 9. STUDY STARTUP AND ACTIVATION MODULE
+
+Build a complete startup tracker.
+
+Include tasks such as:
+
+- Feasibility questionnaires.
+- Confidentiality agreements.
+- Site selection.
+- Site qualification visit.
+- Clinical trial agreements.
+- Budget negotiations.
+- IRB submission.
+- IRB approval.
+- FDA Form 1572.
+- Investigator CVs.
+- Medical licenses.
+- Financial disclosures.
+- GCP training.
+- IATA training.
+- Delegation of Authority Log.
+- Training logs.
+- Laboratory certifications.
+- Normal laboratory ranges.
+- Pharmacy documentation.
+- Equipment calibration.
+- Temperature logs.
+- IP accountability preparation.
+- IRT access.
+- EDC access.
+- CTMS access.
+- EPRO access.
+- Vendor access.
+- Site initiation visit.
+- Activation confirmation.
+
+Allow assignment of an owner, due date, completion date, status, and supporting document.
+
+Include a readiness dashboard.
+
+# 10. REGULATORY DOCUMENT MANAGEMENT
+
+Create an electronic regulatory binder organization system.
+
+Organize documents into categories:
+
+- Investigator documents.
+- IRB/IEC documents.
+- Protocols and amendments.
+- Informed Consent Forms.
+- Delegation logs.
+- Training records.
+- Financial disclosures.
+- Safety documents.
+- Laboratory documents.
+- Pharmacy documents.
+- Monitoring reports.
+- Correspondence.
+- Essential documents.
+- Study closure documents.
+
+Features:
+
+- Document version tracking.
+- Expiration date tracking.
+- Missing document alerts.
+- Review and approval status.
+- Document owner.
+- Upload date.
+- Effective date.
+- Expiration date.
+- Filing category.
+- Audit history.
+
+Include an essential document completeness dashboard.
+
+Do not represent this module as a validated electronic Trial Master File or regulatory e-signature system unless those capabilities are actually implemented and validated.
+
+# 11. LABORATORY AND SPECIMEN MANAGEMENT
+
+Build a laboratory operations module based on the study laboratory manual.
+
+Extract:
+
+- Required specimen types.
+- Tube types.
+- Collection volumes.
+- Collection time points.
+- Processing instructions.
+- Centrifugation requirements.
+- Temperature requirements.
+- Storage requirements.
+- Shipping conditions.
+- Stability periods.
+- Shipment deadlines.
+- Laboratory kits.
+- Central laboratory requirements.
+- Local laboratory requirements.
+
+Create visit-specific laboratory checklists.
+
+Include sample tracking:
+
+- Subject ID.
+- Visit.
+- Sample type.
+- Collection date/time.
+- Processing date/time.
+- Processing status.
+- Shipment date.
+- Tracking number.
+- Laboratory receipt status.
+- Sample issue or rejection.
+- Deviation or corrective action.
+
+Allow documentation of:
+- Hemolysis.
+- Fibrin clots.
+- Insufficient samples.
+- Incorrect tubes.
+- Temperature excursions.
+- Delayed processing.
+- Missing samples.
+- Recollection requirements.
+
+Include alerts for time-sensitive processing and shipping requirements.
+
+# 12. SAFETY MANAGEMENT: AE, SAE, AESI
+
+Build a safety management module that helps the CRC track protocol-defined reporting requirements.
+
+Include:
+
+- Adverse Events (AEs).
+- Serious Adverse Events (SAEs).
+- Adverse Events of Special Interest (AESIs).
+- Solicited adverse events.
+- Unsolicited adverse events.
+- Severity.
+- Seriousness criteria.
+- Onset date.
+- Resolution date.
+- Outcome.
+- Causality assessment.
+- Expectedness, where applicable.
+- Action taken.
+- Follow-up documentation.
+- Reporting deadlines.
+- Sponsor notification status.
+- Investigator review status.
+
+Allow protocol-specific reporting rules to be configured from source documents.
+
+Create alerts for upcoming reporting deadlines.
+
+Maintain a chronological safety-event history.
+
+Do not independently determine seriousness, causality, expectedness, or reportability. These require appropriate investigator and sponsor review.
+
+# 13. SOURCE DOCUMENTATION AND PROGRESS NOTE ASSISTANT
+
+Create an AI-powered documentation assistant for CRCs.
+
+Allow drafting of:
+
+- Screening notes.
+- Enrollment notes.
+- Visit progress notes.
+- Unscheduled visit notes.
+- Telephone contact notes.
+- eDiary follow-up notes.
+- AE follow-up notes.
+- SAE follow-up notes.
+- Missed visit notes.
+- Missed eDiary documentation.
+- Subject withdrawal notes.
+- Protocol deviation narratives.
+- Corrective and preventive action narratives.
+- Monitoring follow-up notes.
+- Source document filing notes.
+
+Support professional clinical research language.
+
+Provide English and Spanish drafting options.
+
+Use structured templates with fields for:
+
+- Date.
+- Time.
+- Visit.
+- Contact method.
+- Reason for contact.
+- Relevant findings.
+- Subject statements.
+- Investigator notification.
+- Education provided.
+- Follow-up plan.
+
+Never invent clinical findings, investigator assessments, or statements that an AE or SAE was absent.
+
+Allow the user to review and edit drafts before use.
+
+The application must not automatically sign or backdate clinical records.
+
+# 14. PROTOCOL DEVIATION MANAGEMENT
+
+Create a deviation tracker.
+
+Include:
+
+- Subject ID or site-level classification.
+- Study.
+- Date of occurrence.
+- Date identified.
+- Description.
+- Protocol section.
+- Category.
+- Impact assessment.
+- Immediate action.
+- Root cause.
+- Corrective action.
+- Preventive action.
+- Investigator review.
+- Sponsor notification.
+- IRB notification, when required.
+- Resolution status.
+
+Allow generation of draft deviation narratives and CAPA documentation.
+
+Provide deviation trend reports.
+
+Do not automatically determine reportability without applying the study's and applicable oversight body's requirements.
+
+# 15. CONCOMITANT MEDICATIONS AND MEDICAL HISTORY
+
+Include structured tracking for:
+
+- Medical history.
+- Current medications.
+- Start dates.
+- Stop dates.
+- Dosages.
+- Routes.
+- Frequencies.
+- Indications.
+- Medication changes.
+- Prohibited medications.
+- Medication washout requirements.
+
+Use protocol-specific rules to flag potential conflicts for CRC and investigator review.
+
+# 16. MONITORING VISIT AND AUDIT READINESS
+
+Build a monitoring preparation module.
+
+Include:
+
+- Upcoming monitoring visits.
+- Monitoring visit dates.
+- CRA requests.
+- Open action items.
+- Pending data queries.
+- Missing source documents.
+- Missing regulatory documents.
+- Outstanding training.
+- Unresolved deviations.
+- Pending safety follow-ups.
+- IP accountability review.
+- Laboratory documentation review.
+- Subject binder completeness.
+
+Generate a monitoring readiness checklist.
+
+Allow action-item assignment and due-date tracking.
+
+Include a dashboard showing outstanding items before each monitoring visit.
+
+# 17. EDC, CTMS, IRT, EPRO AND VENDOR TRACKING
+
+Create an external systems access and issue tracker.
+
+Track systems such as:
+
+- Medidata Rave.
+- Veeva Vault.
+- CRIO.
+- RealTime CTMS.
+- Oracle.
+- OpenClinica.
+- Flatiron.
+- Clario.
+- Almac.
+- Endpoint IRT.
+- Patient Cloud.
+- eDiary and ePRO platforms.
+- Central laboratory portals.
+- Vendor portals.
+
+For each system, track:
+
+- Study.
+- User role.
+- Access status.
+- Training status.
+- Access request date.
+- Activation date.
+- Deactivation date.
+- Support tickets.
+- Open access issues.
+
+Do not store passwords or authentication secrets.
+
+# 18. ENROLLMENT AND RETENTION MANAGEMENT
+
+Create a study enrollment tracker.
+
+Include:
+
+- Referral pipeline.
+- Pre-screening.
+- Screening.
+- Screen failures.
+- Enrollment.
+- Randomization.
+- Retention.
+- Withdrawals.
+- Completed subjects.
+- Enrollment cap.
+- Recruitment goals.
+
+Create enrollment metrics and trend charts.
+
+Support weekly, monthly, and cumulative reporting.
+
+Track subject visit attendance and eDiary completion where relevant.
+
+# 19. TASK MANAGEMENT AND NOTIFICATIONS
+
+Create a centralized task management system.
+
+Every task should include:
+
+- Study.
+- Subject, if applicable.
+- Task description.
+- Responsible person.
+- Priority.
+- Due date.
+- Status.
+- Completion date.
+- Supporting documentation.
+
+Provide filters for:
+- Today.
+- This week.
+- Overdue.
+- Upcoming.
+- Completed.
+- High priority.
+
+Support configurable reminders and recurring tasks.
+
+# 20. AI RESEARCH ASSISTANT
+
+Build an AI assistant that can search across approved study documents.
+
+Example questions:
+
+- What procedures are required at Visit 4?
+- What is the allowable window for Day 90?
+- Which laboratory samples are required before dosing?
+- What is the processing time for this specimen?
+- What are the exclusion criteria?
+- When must an SAE be reported?
+- What are the study's prohibited medications?
+- Which documents are required for site activation?
+- What assessments are required for early termination?
+- What changed in the latest protocol amendment?
+
+Every answer must cite the relevant document, version, section, and page.
+
+When the documents do not contain an answer, state that the information was not found.
+
+Never invent information or present general medical knowledge as a protocol-specific requirement.
+
+# 21. STUDY METRICS AND PERFORMANCE ANALYTICS
+
+Create visual analytics for:
+
+- Enrollment progress.
+- Recruitment conversion.
+- Screen failure rate.
+- Subject retention.
+- Visit completion.
+- Missed visits.
+- Visit window compliance.
+- eDiary compliance.
+- Data query resolution.
+- Protocol deviations.
+- Safety-event follow-up.
+- Laboratory sample issues.
+- Regulatory document completeness.
+- Outstanding action items.
+
+Provide exportable study reports in Excel and PDF.
+
+# 22. SECURITY, PRIVACY, AND REGULATORY DESIGN
+
+Security must be a foundational requirement.
+
+Implement:
+
+- Private authentication.
+- Multi-factor authentication.
+- Encryption in transit and at rest.
+- Secure document storage.
+- Role-based permissions.
+- Session management.
+- Audit trails.
+- Backup and recovery.
+- Data retention controls.
+- Data export controls.
+- Secure deletion procedures.
+
+The system must be designed to support assessment against applicable HIPAA, GCP, FDA 21 CFR Part 11, and electronic records requirements where applicable.
+
+Do not claim regulatory compliance or validation without the necessary implementation, documentation, testing, and organizational assessment.
+
+Separate blinded and unblinded information.
+
+Ensure that confidential study documents and participant information are not transmitted to unauthorized third-party AI services.
+
+Use fictional data during development.
+
+Do not allow AI-generated drafts to become official clinical records without human review and approval.
+
+# 23. TECHNICAL ARCHITECTURE
+
+Build the application with a scalable architecture.
+
+Recommended stack:
+
+- Frontend: Next.js and React.
+- Language: TypeScript.
+- Styling: Tailwind CSS.
+- UI: Professional reusable component library.
+- Database: PostgreSQL.
+- Authentication: Secure identity management.
+- File storage: Encrypted private storage.
+- Backend: Secure APIs.
+- Document processing: PDF, DOCX, XLSX parsers.
+- AI: Retrieval-augmented generation (RAG) with document citations.
+- Calculations: Separate deterministic scheduling engine.
+- Charts: Interactive analytics.
+- Audit system: Append-only activity records.
+
+Create normalized database tables for:
+- Users.
+- Studies.
+- Study team members.
+- Documents.
+- Document versions.
+- Protocol requirements.
+- SoA visits.
+- Visit procedures.
+- Subjects.
+- Subject visits.
+- Visit windows.
+- Laboratory requirements.
+- Specimens.
+- Safety events.
+- Deviations.
+- Regulatory documents.
+- Tasks.
+- Notifications.
+- Audit events.
+
+# 24. REQUIRED DEVELOPMENT DELIVERABLES
+
+Do not stop at a design mockup.
+
+Build:
+
+1. Functional dashboard.
+2. Study creation and management.
+3. Document upload interface.
+4. Study-specific document library.
+5. Protocol extraction workflow.
+6. Interactive SoA builder.
+7. Visit scheduling and calculation engine.
+8. Subject management.
+9. Task management.
+10. AI protocol assistant.
+11. Laboratory and safety modules.
+12. Documentation assistant.
+13. Analytics dashboard.
+14. Secure backend and database.
+15. Application testing.
+16. Technical documentation.
+17. Deployment instructions.
+
+Implement working features incrementally.
+
+Do not display fake operational data as actual study information. Clearly distinguish sample data, imported data, calculated values, and human-approved records.
+
+# 25. DEVELOPMENT PRIORITIES
+
+Build in the following order:
+
+PHASE 1:
+- Application architecture.
+- Authentication.
+- Dashboard.
+- Study management.
+- Document library.
+- Protocol and amendment version control.
+
+PHASE 2:
+- Protocol AI extraction.
+- SoA builder.
+- Protocol reference search.
+- Human review and approval workflow.
+
+PHASE 3:
+- Subject management.
+- Visit calculator.
+- Subject calendars.
+- Visit checklists.
+- Task management.
+
+PHASE 4:
+- Laboratory and specimen management.
+- Safety management.
+- Protocol deviations.
+- Documentation assistant.
+
+PHASE 5:
+- Startup and regulatory management.
+- Monitoring and audit readiness.
+- Enrollment and retention analytics.
+- External system tracking.
+
+PHASE 6:
+- Security assessment.
+- Validation testing.
+- Backup and recovery.
+- Deployment.
+
+# FINAL INSTRUCTIONS
+
+Think like a senior clinical research operations professional, not just a web designer.
+
+The platform must be designed to support the real responsibilities of a lead CRC who coordinates several clinical trials and must maintain oversight of protocol compliance, subject safety, documentation, regulatory readiness, laboratory operations, and study performance.
+
+Prioritize accuracy, traceability, organization, efficiency, and usability.
+
+Do not sacrifice functionality for visual appearance.
+
+Build a professional, scalable, secure Clinical Research Command Center that can become the central operational workspace for my clinical research responsibilities.
+
+Begin by presenting the proposed architecture and database schema, then implement Phase 1 and Phase 2. Do not claim a feature is operational until it has been implemented and tested.",FALSE,TEXT,llanioraudel@gmail.com
