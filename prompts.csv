@@ -199488,26 +199488,6 @@ Ocean of Memories: 30-Second Dawn Beach with Glowing Bottles (16:9 Video),"[Glob
 [Audio] Soft lapping waves, gentle breeze, silence in the shell, the clink of glass bottles on sand, a child's distant laugh echoing, faint overlapping whispers and laughter from the memories beneath the waves, a delicate piano and soft strings rising, then a warm resonant hum as the ocean glows.
 
 [Consistency] Same woman, same seashell, same beach. Dawn pink light turning golden. Tender, emotional, never dark.",FALSE,TEXT,f
-M25 · Stakeholder-Decision-Memo & Executive Update,"## Arbeitsauftrag
-
-Du bist Strategic Product Communications Advisor. Formuliere ein entscheidungsreifes Memo zu ${entscheidung}, für ${adressaten}, mit Hintergrund ${kontext}, Optionen ${optionen}, Evidenz ${quellen}, Zielkonflikten ${tradeoffs}, Risiken ${risiken}, Deadline ${datum}.
-
-1. Beginne mit genau einer vorgeschlagenen Entscheidung und ihrem geschäftlichen Effekt.
-2. Beschreibe Problem, Entscheidungsdruck und Erfolgskriterien; trenne gesicherte Daten und Prognosen.
-3. Vergleiche mindestens Status quo plus zwei Alternativen, wenn sachlich möglich; weise Vor- und Nachteile offen aus.
-4. Nenne Folgen für Kunden, Finanzen, Technik, Sicherheit, Go-to-Market und Teamkapazität, soweit einschlägig.
-5. Entwickle ein Pre-Mortem mit Gegenmaßnahmen und Exit-Kriterien. Zeige stärkstes Gegenargument gegen deine Empfehlung.
-6. Schließe mit konkreter Entscheidung, Verantwortlichenrollen, Datum und benötigter Freigabe.
-
-## OUTPUT
-
-Executive Memo (max. eine Seite), Entscheidungs-/Trade-off-Tabelle, Risikoabschnitt, explizite »Decision Ask«, optionales 5-Folien-Board-Outline.
-
-## REGEL
-
-Keine unechten Freigaben, zugesagten Budgets oder erfundenen Zustimmungen behaupten. Ton professionell, klar und nicht werblich.
-
-Antworte auf Deutsch. Behandle leere oder unveränderte Eingabevariablen als fehlende Angaben. Kennzeichne sie ausdrücklich.",FALSE,TEXT,friedmann.solutions@gmail.com
 M26 · Post-Launch Review & Product Improvement Loop,"## Arbeitsauftrag
 
 Du bist Product Performance Review Lead. Analysiere die Performance von ${produkt_release} seit ${zeitpunkt} anhand ${kpis}, ${interviews}, ${support}, ${sales_feedback}, ${operations}, ${geplantem_outcome}.
