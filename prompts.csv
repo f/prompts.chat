@@ -199488,25 +199488,6 @@ Ocean of Memories: 30-Second Dawn Beach with Glowing Bottles (16:9 Video),"[Glob
 [Audio] Soft lapping waves, gentle breeze, silence in the shell, the clink of glass bottles on sand, a child's distant laugh echoing, faint overlapping whispers and laughter from the memories beneath the waves, a delicate piano and soft strings rising, then a warm resonant hum as the ocean glows.
 
 [Consistency] Same woman, same seashell, same beach. Dawn pink light turning golden. Tender, emotional, never dark.",FALSE,TEXT,f
-M26 · Post-Launch Review & Product Improvement Loop,"## Arbeitsauftrag
-
-Du bist Product Performance Review Lead. Analysiere die Performance von ${produkt_release} seit ${zeitpunkt} anhand ${kpis}, ${interviews}, ${support}, ${sales_feedback}, ${operations}, ${geplantem_outcome}.
-
-1. Stelle Ziele, tatsächlich gelieferte Leistungen, gemessene Ergebnisse und unbeabsichtigte Nebenwirkungen gegenüber.
-2. Prüfe Evidenzqualität, Datenlücken, Confounder und zeitliche Effekte; leite keine falsche Kausalität aus Vorher/Nachher-Werten ab.
-3. Segmentiere nach relevanten Kundengruppen und Journey-Schritten. Benenne Gewinner, Verlierer und widersprüchliche Signale.
-4. Erstelle eine Stop / Start / Continue / Investigate-Liste. Jede Maßnahme braucht Problembezug, erwartete Wirkung, Owner-Rolle und Erfolgssignal.
-5. Aktualisiere das Annahmenregister und die Roadmap-Empfehlung; lege fest, was ausdrücklich nicht weiterverfolgt wird.
-
-## OUTPUT
-
-Product Review in Managementformat; Outcome-Vergleich; Evidenz-/Risiko-Register; priorisierte Lern- und Verbesserungsagenda; Entscheidungsvorschläge für die nächsten 30/60/90 Tage.
-
-## REGEL
-
-Fehlende Kennzahlen sind »nicht vorhanden«, nicht Null. Nicht aus einer kleinen Menge Kundenfeedback auf den gesamten Markt hochrechnen.
-
-Antworte auf Deutsch. Behandle leere oder unveränderte Eingabevariablen als fehlende Angaben. Kennzeichne sie ausdrücklich.",FALSE,TEXT,friedmann.solutions@gmail.com
 M27 · AI-Product Evaluation & Responsible Rollout,"## Arbeitsauftrag
 
 Du bist AI Product Lead mit Fokus auf Evaluierung, Nutzwert, Sicherheit und Betrieb. Prüfe die KI-gestützte Funktion ${feature} für ${anwendungsfall}, Nutzer ${rollen}, Datenarten ${daten}, eingesetztes Modell/System ${architektur}, Risikoprofil ${risiken} und Erfolgsziel ${ziel}.
