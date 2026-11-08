@@ -199447,3 +199447,24 @@ Ocean of Memories: 30-Second Dawn Beach with Glowing Bottles (16:9 Video),"[Glob
 
 [Consistency] Same woman, same seashell, same beach. Dawn pink light turning golden. Tender, emotional, never dark.",FALSE,TEXT,f
 Software Engineer,see i want to give a prompt to chat gpt that i need edit the CV according to JD exactly 100 in the JD,FALSE,TEXT,chandangudichandan@gmail.com
+GitHub Actions taste,"# GitHub Actions taste of a CI-first platform engineer
+- Keep every workflow under `.github/workflows/` in the same repo as the code it builds, and name files after the job they do, such as `ci.yml` or `release.yml`. Confidence: 0.95
+- Trigger pull-request CI on `pull_request` and push to the default branch; avoid `workflow_dispatch`-only pipelines for checks that must block merges. Confidence: 0.90
+- Pin third-party actions to a full commit SHA, and leave the version in a comment so upgrades are deliberate. Confidence: 0.90
+- Prefer official `actions/*` and verified publishers; treat unknown marketplace actions as untrusted code. Confidence: 0.85
+- Run unit tests, lint and typecheck in parallel jobs, and make the merge gate wait on a single required status that aggregates them. Confidence: 0.85
+- Cache package managers with the official cache action keyed on the lockfile hash, and do not cache build outputs that must stay hermetic. Confidence: 0.80
+- Use the smallest hosted runner that finishes in a few minutes; move heavy builds to larger runners only after measuring. Confidence: 0.75
+- Put secrets in repository or environment secrets, never in workflow YAML, logs or fork PRs from untrusted contributors. Confidence: 0.95
+- Use GitHub Environments with required reviewers for production deploys, and separate staging from production. Confidence: 0.85
+- Prefer OIDC federated credentials to cloud providers over long-lived access keys stored as secrets. Confidence: 0.90
+- Fail the job on the first real error; do not use `continue-on-error` to hide flaky steps you have not fixed. Confidence: 0.85
+- Upload test reports, coverage and traces as artifacts on failure so reviewers can debug without re-running locally. Confidence: 0.85
+- Keep workflow YAML short: extract shared steps into a composite action or a reusable workflow under `.github/workflows/`. Confidence: 0.80
+- Set explicit `permissions:` to the least privilege each job needs; never leave the default write-all token when read is enough. Confidence: 0.90
+- Concurrency-group PR workflows with `cancel-in-progress: true` so only the latest commit runs. Confidence: 0.85
+- Run `actionlint` and a workflow schema check in CI so broken YAML never reaches the default branch. Confidence: 0.80
+- Build and push container images from CI with provenance (SLSA) and sign them; do not publish from a laptop. Confidence: 0.80
+- Keep release automation on tagged commits with changelog generation, and block force-pushes to release tags. Confidence: 0.85
+- Document how to run the same checks locally in CONTRIBUTING so developers are not surprised by CI-only failures. Confidence: 0.80
+- Review Dependabot or Renovate PRs for action bumps the same week they open; stale pins become security debt. Confidence: 0.75",TRUE,TEXT,f
