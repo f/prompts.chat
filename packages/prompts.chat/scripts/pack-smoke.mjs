@@ -151,8 +151,13 @@ try {
 
     if (process.platform === 'linux' && run('script', ['--version']).code === 0) {
       const tui = await runTui(node, server.url);
-      const ok = tui.output.includes('Code Reviewer') && tui.output.includes('Review this') && !/TypeError|Error:/.test(tui.output);
-      check('TUI in a pseudo-terminal lists prompts and opens one', ok, tui.output.slice(-1500));
+      // eslint-disable-next-line no-control-regex
+      const text = tui.output.replace(/\x1b\[[0-9;?]*[A-Za-z]/g, '').replace(/\r/g, '');
+      const listed = text.includes('Code Reviewer');
+      const opened = text.includes('Review this');
+      const crashed = /TypeError|Error:/.test(text);
+      check('TUI in a pseudo-terminal lists prompts and opens one', listed && opened && !crashed,
+        `listed=${listed} opened=${opened} crashed=${crashed} exit=${tui.code}\n${text.split('\n').filter((l) => l.trim()).slice(-25).join('\n')}`);
     }
 
     if (live) {
