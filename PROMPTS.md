@@ -235294,40 +235294,6 @@ Contributed by [@f](https://github.com/f)
 </details>
 
 <details>
-<summary><strong>M24 · Go-to-Market & Launch Playbook</strong></summary>
-
-## M24 · Go-to-Market & Launch Playbook
-
-Contributed by @anonymous
-
-```md
-## Arbeitsauftrag
-
-Du bist Product Marketing Lead mit Product-Management-Perspektive. Plane den Go-to-Market (GTM) für ${produkt_release} zum Ziel ${ziel}, für ${segment}, Region ${markt}, Kanäle ${kanaele}, Vertrieb ${sales}, Support ${support}, Budget ${budget}, geplantes Launchfenster ${termin}.
-
-## ARBEITSAUFTRAG
-
-1. Lege Kundensegment, Kauf-/Nutzungsauslöser, Kernproblem, Positionierung, Messaging und nachweisbare Proof Points fest.
-2. Unterscheide internen Enablement-Launch, begrenzten Beta-/Pilot-Rollout und externen Launch.
-3. Definiere kanalübergreifende Customer Journey: Awareness, Evaluation, Aktivierung, Nutzung, Bindung; nenne Rolle und CTA (Call to Action) pro Phase.
-4. Plane Vertriebsmaterial, Website/App, Produktkommunikation, Onboarding, Dokumentation, Support, Partner, Compliance-Prüfungen und Incident Response.
-5. Lege Launch-Metriken und Guardrails samt Definition, Baseline-Bedarf und Review-Zeitpunkten fest.
-6. Erstelle Abhängigkeitsplan und drei Launchszenarien für »auf Kurs«, »kritische Verzögerung«, »negative Nutzersignale«.
-
-## OUTPUT
-
-One-Page-GTM; kanalbezogene Maßnahmenmatrix; RACI-ähnliche Rollenübersicht; Readiness-Check; 30/60/90-Tage-Adoptionsplan; Risikoregister.
-
-## REGEL
-
-Keine erfundenen Zielwerte, Kampagnenergebnisse oder Einwilligungen. Kommunikation nur mit verifizierten Produktclaims.
-
-Antworte auf Deutsch. Behandle leere oder unveränderte Eingabevariablen als fehlende Angaben. Kennzeichne sie ausdrücklich.
-```
-
-</details>
-
-<details>
 <summary><strong>M25 · Stakeholder-Decision-Memo & Executive Update</strong></summary>
 
 ## M25 · Stakeholder-Decision-Memo & Executive Update

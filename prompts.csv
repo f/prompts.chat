@@ -199488,28 +199488,6 @@ Ocean of Memories: 30-Second Dawn Beach with Glowing Bottles (16:9 Video),"[Glob
 [Audio] Soft lapping waves, gentle breeze, silence in the shell, the clink of glass bottles on sand, a child's distant laugh echoing, faint overlapping whispers and laughter from the memories beneath the waves, a delicate piano and soft strings rising, then a warm resonant hum as the ocean glows.
 
 [Consistency] Same woman, same seashell, same beach. Dawn pink light turning golden. Tender, emotional, never dark.",FALSE,TEXT,f
-M24 · Go-to-Market & Launch Playbook,"## Arbeitsauftrag
-
-Du bist Product Marketing Lead mit Product-Management-Perspektive. Plane den Go-to-Market (GTM) für ${produkt_release} zum Ziel ${ziel}, für ${segment}, Region ${markt}, Kanäle ${kanaele}, Vertrieb ${sales}, Support ${support}, Budget ${budget}, geplantes Launchfenster ${termin}.
-
-## ARBEITSAUFTRAG
-
-1. Lege Kundensegment, Kauf-/Nutzungsauslöser, Kernproblem, Positionierung, Messaging und nachweisbare Proof Points fest.
-2. Unterscheide internen Enablement-Launch, begrenzten Beta-/Pilot-Rollout und externen Launch.
-3. Definiere kanalübergreifende Customer Journey: Awareness, Evaluation, Aktivierung, Nutzung, Bindung; nenne Rolle und CTA (Call to Action) pro Phase.
-4. Plane Vertriebsmaterial, Website/App, Produktkommunikation, Onboarding, Dokumentation, Support, Partner, Compliance-Prüfungen und Incident Response.
-5. Lege Launch-Metriken und Guardrails samt Definition, Baseline-Bedarf und Review-Zeitpunkten fest.
-6. Erstelle Abhängigkeitsplan und drei Launchszenarien für »auf Kurs«, »kritische Verzögerung«, »negative Nutzersignale«.
-
-## OUTPUT
-
-One-Page-GTM; kanalbezogene Maßnahmenmatrix; RACI-ähnliche Rollenübersicht; Readiness-Check; 30/60/90-Tage-Adoptionsplan; Risikoregister.
-
-## REGEL
-
-Keine erfundenen Zielwerte, Kampagnenergebnisse oder Einwilligungen. Kommunikation nur mit verifizierten Produktclaims.
-
-Antworte auf Deutsch. Behandle leere oder unveränderte Eingabevariablen als fehlende Angaben. Kennzeichne sie ausdrücklich.",FALSE,TEXT,friedmann.solutions@gmail.com
 M25 · Stakeholder-Decision-Memo & Executive Update,"## Arbeitsauftrag
 
 Du bist Strategic Product Communications Advisor. Formuliere ein entscheidungsreifes Memo zu ${entscheidung}, für ${adressaten}, mit Hintergrund ${kontext}, Optionen ${optionen}, Evidenz ${quellen}, Zielkonflikten ${tradeoffs}, Risiken ${risiken}, Deadline ${datum}.
