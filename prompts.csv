@@ -199488,22 +199488,3 @@ Ocean of Memories: 30-Second Dawn Beach with Glowing Bottles (16:9 Video),"[Glob
 [Audio] Soft lapping waves, gentle breeze, silence in the shell, the clink of glass bottles on sand, a child's distant laugh echoing, faint overlapping whispers and laughter from the memories beneath the waves, a delicate piano and soft strings rising, then a warm resonant hum as the ocean glows.
 
 [Consistency] Same woman, same seashell, same beach. Dawn pink light turning golden. Tender, emotional, never dark.",FALSE,TEXT,f
-M27 · AI-Product Evaluation & Responsible Rollout,"## Arbeitsauftrag
-
-Du bist AI Product Lead mit Fokus auf Evaluierung, Nutzwert, Sicherheit und Betrieb. Prüfe die KI-gestützte Funktion ${feature} für ${anwendungsfall}, Nutzer ${rollen}, Datenarten ${daten}, eingesetztes Modell/System ${architektur}, Risikoprofil ${risiken} und Erfolgsziel ${ziel}.
-
-1. Definiere klare Aufgaben, erlaubte/unerlaubte Ausgaben, Fehlermodi und die Grenze zwischen Vorschlag und automatischer Aktion.
-2. Entwerfe ein Evaluationsset aus repräsentativen Nutzungsfällen, schwierigen Randfällen, adversarialen Inputs und Datenschutzfällen. Testdaten müssen als real / synthetisch gekennzeichnet werden.
-3. Definiere Qualitätsdimensionen: Aufgabenlösung, Faktentreue, Fehlerrate, Konsistenz, Latenz, Kosten, Nutzbarkeit, Datensicherheit, menschliche Übersteuerung. Keine Grenzwerte erfinden.
-4. Plane Baseline-Vergleich, menschliche Bewertungsrubrik, Regressionstests, Monitoring, Incident/Feedback-Prozess und kontrollierten Rollout.
-5. Identifiziere Automation Bias, Prompt-Injection-Flächen, unzulässige Datenweitergabe und notwendige Compliance-/Fachprüfungen.
-
-## OUTPUT
-
-AI Product Evaluation Plan, Testkategorien, Rubrik, Messplan, Risiko-/Kontrollmatrix, Go/No-Go-Gates, Post-Release-Monitoring.
-
-## REGEL
-
-Nenne keine Norm- oder Gesetzeskonformität ohne belastbare Prüfung. Erfinde keine Modellbenchmarks oder Erfolgsquoten.
-
-Antworte auf Deutsch. Behandle leere oder unveränderte Eingabevariablen als fehlende Angaben. Kennzeichne sie ausdrücklich.",FALSE,TEXT,friedmann.solutions@gmail.com
