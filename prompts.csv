@@ -199512,3 +199512,16 @@ Helm Chart taste,"# Helm Chart taste of a Kubernetes packaging engineer
 - Align with GitOps (Argo CD or Flux) by making charts render cleanly with only values files—no manual `helm upgrade` steps. Confidence: 0.85
 - Cap chart complexity: if templates need heavy logic, move it to a controller or operators instead of growing Gotpl. Confidence: 0.75
 - Review `helm diff` output before applying to production and require a human approval gate on the deploy Environment. Confidence: 0.85",TRUE,TEXT,f
+Nature,"---
+name: nature
+description: Introduction 
+---
+
+# Nature
+
+Describe what this skill does and how the agent should use it.
+
+## Instructions
+
+- Step 1: ...
+- Step 2: ...",FALSE,TEXT,www.sirikrishnalasya@gmail.com
