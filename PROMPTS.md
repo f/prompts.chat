@@ -235264,3 +235264,37 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Prisma ORM taste</strong></summary>
+
+## Prisma ORM taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Prisma ORM taste of a type-safe database pragmatist
+- Treat `schema.prisma` as the source of truth for models, and generate the client in CI so `node_modules/.prisma` never drifts. Confidence: 0.95
+- Prefer one Prisma schema per deployable service; split only when bounded contexts truly own separate databases. Confidence: 0.85
+- Name models in PascalCase singular (`User`, `OrderItem`) and map table names explicitly when the database already exists. Confidence: 0.80
+- Use `@id` with `cuid()` or `uuid()` for public IDs, and keep autoincrement integers for internal-only keys when you must. Confidence: 0.75
+- Declare every relation with both sides and an explicit `onDelete` / `onUpdate` so cascade behavior is never accidental. Confidence: 0.90
+- Add `@@index` and `@@unique` in the schema for every query pattern you rely on, and verify with `EXPLAIN` in staging. Confidence: 0.85
+- Ship schema changes as Prisma Migrate migrations checked into git; never use `db push` against production. Confidence: 0.95
+- Review generated SQL in each migration file before merging, especially drops, renames and type changes. Confidence: 0.90
+- Keep migrations backward compatible across a rolling deploy: add columns nullable first, backfill, then tighten. Confidence: 0.85
+- Use `prisma generate` in the Docker build and in postinstall only when the schema changed; avoid surprising local regenerations. Confidence: 0.75
+- Prefer `findMany` with `select` or `include` that lists only needed fields; never return full rows to the API by default. Confidence: 0.85
+- Wrap multi-step writes in `prisma.$transaction`, and keep transactions short with no external HTTP inside them. Confidence: 0.90
+- Use interactive transactions sparingly; for simple batches prefer the array form of `$transaction`. Confidence: 0.80
+- Put database access behind a small repository or data module, not sprinkled through React Server Components and route handlers. Confidence: 0.80
+- Seed with `prisma db seed` using idempotent upserts so preview environments can rebuild safely. Confidence: 0.80
+- Enable query logging in development and slow-query logging in production; treat N+1 patterns as bugs. Confidence: 0.85
+- Use Prisma's typed `Prisma.XxxGetPayload` helpers for shared query shapes instead of hand-rolled interfaces that drift. Confidence: 0.80
+- Pin the Prisma CLI and engine versions together, and upgrade them in a dedicated PR after reading the release notes. Confidence: 0.85
+- For raw SQL, use `Prisma.sql` tagged templates only, never string concatenation with user input. Confidence: 0.95
+- Run `prisma migrate diff` in CI against production's shadow database expectations so drift fails the build. Confidence: 0.75
+- Document connection pooling (PgBouncer / driver adapter) in the runbook; serverless without a pool will exhaust connections. Confidence: 0.85
+```
+
+</details>
+
