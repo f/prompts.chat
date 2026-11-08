@@ -150,8 +150,11 @@ The setup wizard configures branding, theme, authentication (GitHub/Google/Azure
 
 ### CLI
 ```bash
-npx prompts.chat
+npx prompts.chat                        # interactive prompt browser
+npx prompts.chat search "code review"   # or: skills, tastes, classifiers, bots, teams
+npx prompts.chat show <id> --raw        # print a prompt for piping
 ```
+📖 [CLI Documentation](packages/prompts.chat/README.md#cli)
 
 ### Claude Code Plugin
 ```
