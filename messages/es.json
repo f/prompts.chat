@@ -143,6 +143,8 @@
     "delete": "Eliminar Prompt",
     "noPrompts": "No se encontraron prompts",
     "noPromptsDescription": "Intenta ajustar tu búsqueda o criterios de filtro para encontrar lo que buscas.",
+    "searchSkillsPlaceholder": "Buscar habilidades...",
+    "noSkills": "No se encontraron habilidades",
     "promptTitle": "Título",
     "promptContent": "Contenido",
     "promptDescription": "Descripción",

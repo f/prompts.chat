@@ -23,6 +23,7 @@ import { PATCH as reviewChangeRoute } from "@/app/api/prompts/[id]/changes/[chan
 import { POST as voteRoute, DELETE as unvoteRoute } from "@/app/api/prompts/[id]/vote/route";
 import { findClassifierBySlug, getClassifierCatalog, getClassifierVotes, listedClassifiers } from "@/lib/classifiers/store";
 import { curatedClassifierId } from "@/lib/classifiers/schema";
+import { filterClassifiers } from "@/lib/classifiers";
 import type { ClassifierFields } from "@/lib/classifiers/change-snapshot";
 import { importClassifierCatalog } from "../../../prisma/classifiers/import";
 import { prepareClassifierCatalog } from "../../../prisma/classifiers/seed-sql";
@@ -379,6 +380,29 @@ describe("user classifiers", () => {
       expect(listedClassifiers(catalog).some((c) => c.slug === aliceSlug)).toBe(false);
       expect(await findClassifierBySlug(aliceSlug)).not.toBeNull();
       await db.prompt.update({ where: { id: aliceId }, data: { isUnlisted: false } });
+    });
+
+    it("never surfaces private or unlisted classifiers through catalog search or categories", async () => {
+      await db.prompt.update({ where: { id: aliceId }, data: { isUnlisted: true } });
+      try {
+        const catalog = await getClassifierCatalog();
+        const unlisted = catalog.classifiers.find((c) => c.slug === aliceSlug)!;
+        const listed = listedClassifiers(catalog);
+        for (const [query, category] of [
+          ["Private triage", null],
+          ["Private triage", "support"],
+          [unlisted.name, null],
+          [unlisted.name, unlisted.category],
+          ["", unlisted.category],
+        ] as const) {
+          const slugs = filterClassifiers(listed, { query, category }).map((c) => c.slug);
+          expect(slugs, `${query}/${category}`).not.toContain(privateSlug);
+          expect(slugs, `${query}/${category}`).not.toContain(aliceSlug);
+        }
+        expect(filterClassifiers(catalog.classifiers, { query: unlisted.name, category: null }).map((c) => c.slug)).toContain(aliceSlug);
+      } finally {
+        await db.prompt.update({ where: { id: aliceId }, data: { isUnlisted: false } });
+      }
     });
 
     it("drops deleted classifiers from the catalog", async () => {

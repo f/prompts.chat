@@ -24,6 +24,8 @@ interface InfinitePromptListProps {
     sort?: string;
     trending?: string;
   };
+  /** Heading of the empty state; defaults to "No prompts found" */
+  emptyTitle?: string;
 }
 
 function PromptCardSkeleton() {
@@ -51,7 +53,8 @@ function PromptCardSkeleton() {
 export function InfinitePromptList({ 
   initialPrompts, 
   initialTotal,
-  filters 
+  filters,
+  emptyTitle,
 }: InfinitePromptListProps) {
   const t = useTranslations("prompts");
   const _searchParams = useSearchParams();
@@ -186,7 +189,7 @@ export function InfinitePromptList({
         <div className="rounded-full bg-muted p-4 mb-4">
           <SearchX className="h-8 w-8 text-muted-foreground" />
         </div>
-        <h3 className="text-lg font-medium mb-1">{t("noPrompts")}</h3>
+        <h3 className="text-lg font-medium mb-1">{emptyTitle ?? t("noPrompts")}</h3>
         <p className="text-sm text-muted-foreground max-w-sm">
           {t("noPromptsDescription")}
         </p>

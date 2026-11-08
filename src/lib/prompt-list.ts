@@ -16,6 +16,27 @@ export function promptListTypeWhere(type?: string | null): Pick<Prisma.PromptWhe
 }
 
 /**
+ * Public skills for /skills, optionally narrowed to a case-insensitive search in the
+ * title, description or content. Matches /api/prompts?type=SKILL&q=, which loads further pages.
+ */
+export function skillListWhere(q?: string | null) {
+  const query = q?.trim();
+  return {
+    type: "SKILL",
+    isPrivate: false,
+    isUnlisted: false,
+    deletedAt: null,
+    ...(query && {
+      OR: [
+        { title: { contains: query, mode: "insensitive" } },
+        { content: { contains: query, mode: "insensitive" } },
+        { description: { contains: query, mode: "insensitive" } },
+      ],
+    }),
+  } satisfies Prisma.PromptWhereInput;
+}
+
+/**
  * Public, non-bot prompts that are currently trending, matching what
  * /prompts?trending=1 lists without a type filter
  */
