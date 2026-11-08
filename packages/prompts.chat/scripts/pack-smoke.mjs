@@ -60,12 +60,22 @@ function runTui(node, mockUrl) {
       env: { ...envFor(node, { PROMPTS_CHAT_URL: mockUrl }), TERM: 'xterm-256color', COLUMNS: '120', LINES: '40' },
     });
     let output = '';
-    child.stdout.on('data', (d) => (output += d));
-    child.stderr.on('data', (d) => (output += d));
-    setTimeout(() => child.stdin.write('\r'), 2500);
-    setTimeout(() => child.stdin.write('b'), 3500);
-    setTimeout(() => child.stdin.write('q'), 4500);
-    const kill = setTimeout(() => child.kill('SIGKILL'), 15_000);
+    // Keys are sent once the screen they act on has rendered; fixed delays race on slow CI runners
+    const steps = [
+      { waitFor: 'Code Reviewer', key: '\r' },
+      { waitFor: 'Review this', key: 'q' },
+    ];
+    const onData = (d) => {
+      output += d;
+      const step = steps[0];
+      if (step && output.includes(step.waitFor)) {
+        steps.shift();
+        setTimeout(() => child.stdin.write(step.key), 300);
+      }
+    };
+    child.stdout.on('data', onData);
+    child.stderr.on('data', onData);
+    const kill = setTimeout(() => child.kill('SIGKILL'), 30_000);
     child.on('close', (code) => {
       clearTimeout(kill);
       resolve({ code, output });
