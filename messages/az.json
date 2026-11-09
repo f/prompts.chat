@@ -1883,7 +1883,7 @@
     "interactiveBanner": {
       "badge": "İnteraktiv Versiya Mövcuddur",
       "title": "Daha Ətraflı və İnteraktiv Təcrübə İstəyirsiniz?",
-      "description": "30 fəsil, praktiki təmrinlər və real dünya nümunələri ilə hərtarafəli interaktiv rəhbərimizlə AI prompt yazmağı mənimsaəyin.",
+      "description": "31 fəsil, praktiki təmrinlər və real dünya nümunələri ilə hərtarafəli interaktiv rəhbərimizlə AI prompt yazmağı mənimsaəyin.",
       "cta": "İnteraktiv Kitabı Oxuyun"
     },
     "generalTips": {
@@ -2353,7 +2353,7 @@
     "donate": "Layihəni dəstəkləyin",
     "subtitle": "Aydın və Effektiv Promptlar Yaratmaq üçün İnteraktiv Bələdçi",
     "metaTitle": "Prompt Mühəndisliyi Bələdçisi: İnteraktiv Prompting Kitabı",
-    "metaDescription": "Bu pulsuz, interaktiv bələdçi ilə AI prompt mühəndisliyini mənimsəyin. ChatGPT promptları, düşüncə zənciri, az nümunə ilə öyrənmə və qabaqcıl texnikaları öyrənin. Real nümunələrlə 30+ fəsil.",
+    "metaDescription": "Bu pulsuz, interaktiv bələdçi ilə AI prompt mühəndisliyini mənimsəyin. ChatGPT promptları, düşüncə zənciri, az nümunə ilə öyrənmə və qabaqcıl texnikaları öyrənin. Real nümunələrlə 31+ fəsil.",
     "interactiveGuideBy": "İnteraktiv Bələdçi",
     "authorIntro": "Salam, mən <author>Fatih Kadir Akın</author>-am, GitHub-da populyar <repoLink>Awesome ChatGPT Prompts</repoLink> deposunun və <siteName>prompts.chat</siteName> saytının yaradıcısıyam.",
     "bookDescription": "Bu hərtərəfli və interaktiv bələdçidə, cəlbedici və effektiv söhbətlər aparan AI promptları yaratmaq üçün ekspert strategiyaları kəşf edəcəksiniz. AI modellərinin necə işlədiyini anlamaqdan prompt zəncirləmə və agent sistemləri kimi qabaqcıl texnikalara qədər, bu kitab AI qarşılıqlı əlaqələrinizi növbəti səviyyəyə çatdırmaq üçün lazım olan alətləri təqdim edir.",
@@ -2375,7 +2375,7 @@
       "part4": "Hissə 4: Ən Yaxşı Təcrübələr",
       "part5": "Hissə 5: İstifadə Halları",
       "part6": "Hissə 6: Nəticə",
-      "chapters": "30 İnteraktiv Fəsil"
+      "chapters": "31 İnteraktiv Fəsil"
     },
     "startReading": "Oxumağa Başla",
     "skipToChapter1": "1-ci Fəsilə Keç",
@@ -2447,7 +2447,8 @@
       "24-future-of-prompting": "Promptinqin Gələcəyi",
       "27-tools-mcp-connectors": "Alətlər, MCP və konnektorlar",
       "26-the-harnesses": "Harness-lər",
-      "28-persistent-bots": "Daim İşləyən Botlar: İşi Davam Etdirən Agentlər"
+      "28-persistent-bots": "Daim İşləyən Botlar: İşi Davam Etdirən Agentlər",
+      "28a-software-development-with-ai": "Süni İntellektlə Proqram Təminatı Hazırlamaq"
     },
     "chapterDescriptions": {
       "00a-preface": "Müəllifdən şəxsi qeyd",
@@ -2482,7 +2483,8 @@
       "24-future-of-prompting": "Yüksələn tendensiyalar və gələcəyə baxış",
       "27-tools-mcp-connectors": "Alətlər, MCP və konnektorlar AI-a məlumatlara çıxış və əməliyyat imkanı necə verir",
       "26-the-harnesses": "Harness-lər modelləri, promptları, bacarıqları və alətləri necə birləşdirir",
-      "28-persistent-bots": "Davamlı botlar işləməyə davam etmək üçün yaddaşdan, rutinlərdən və təsdiqlərdən necə istifadə edir"
+      "28-persistent-bots": "Davamlı botlar işləməyə davam etmək üçün yaddaşdan, rutinlərdən və təsdiqlərdən necə istifadə edir",
+      "28a-software-development-with-ai": "Tab ilə tamamlamadan avtonom agentlərə: vibe coding, agent mühəndisliyi, səy və nəzərdən keçirmə"
     },
     "interactive": {
       "tryIt": "Özünüz Sınayın",

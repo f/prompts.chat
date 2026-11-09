@@ -1883,7 +1883,7 @@
     "interactiveBanner": {
       "badge": "Interactieve versie beschikbaar",
       "title": "Wil je een meer gedetailleerde & interactieve ervaring?",
-      "description": "Duik dieper met onze uitgebreide interactieve gids met 30 hoofdstukken, praktische oefeningen en echte voorbeelden om AI-prompting te beheersen.",
+      "description": "Duik dieper met onze uitgebreide interactieve gids met 31 hoofdstukken, praktische oefeningen en echte voorbeelden om AI-prompting te beheersen.",
       "cta": "Lees het interactieve boek"
     },
     "generalTips": {
@@ -2353,7 +2353,7 @@
     "donate": "Steun het project",
     "subtitle": "Een Interactieve Gids voor het Maken van Duidelijke en Effectieve Prompts",
     "metaTitle": "Gids voor prompt engineering: Het Interactieve Prompting Boek",
-    "metaDescription": "Beheers AI prompt engineering met deze gratis interactieve gids. Leer ChatGPT prompts, chain-of-thought redeneren, few-shot leren en geavanceerde technieken. 30+ hoofdstukken met echte voorbeelden.",
+    "metaDescription": "Beheers AI prompt engineering met deze gratis interactieve gids. Leer ChatGPT prompts, chain-of-thought redeneren, few-shot leren en geavanceerde technieken. 31+ hoofdstukken met echte voorbeelden.",
     "interactiveGuideBy": "Een Interactieve Gids door",
     "authorIntro": "Hallo, ik ben <author>Fatih Kadir Akın</author>, de curator van de populaire <repoLink>Awesome ChatGPT Prompts</repoLink> repository op GitHub en <siteName>prompts.chat</siteName>.",
     "bookDescription": "In deze uitgebreide, interactieve gids ontdek je expertstrategieën voor het maken van overtuigende AI-prompts die boeiende en effectieve gesprekken genereren. Van het begrijpen hoe AI-modellen werken tot het beheersen van geavanceerde technieken zoals prompt chaining en agentische systemen, dit boek geeft je de tools om je AI-interacties naar een hoger niveau te tillen.",
@@ -2375,7 +2375,7 @@
       "part4": "Deel 4: Best Practices",
       "part5": "Deel 5: Use Cases",
       "part6": "Deel 6: Conclusie",
-      "chapters": "30 Interactieve Hoofdstukken"
+      "chapters": "31 Interactieve Hoofdstukken"
     },
     "startReading": "Begin met Lezen",
     "skipToChapter1": "Ga naar Hoofdstuk 1",
@@ -2447,7 +2447,8 @@
       "24-future-of-prompting": "De Toekomst van Prompting",
       "27-tools-mcp-connectors": "Tools, MCP en connectors",
       "26-the-harnesses": "De harnesses",
-      "28-persistent-bots": "Altijd-aan-bots: agents die blijven werken"
+      "28-persistent-bots": "Altijd-aan-bots: agents die blijven werken",
+      "28a-software-development-with-ai": "Softwareontwikkeling met AI"
     },
     "chapterDescriptions": {
       "00a-preface": "Een persoonlijke notitie van de auteur",
@@ -2482,7 +2483,8 @@
       "24-future-of-prompting": "Opkomende trends en toekomstige vooruitzichten",
       "27-tools-mcp-connectors": "Hoe tools, MCP en connectors AI toegang geven tot gegevens en acties",
       "26-the-harnesses": "Hoe harnesses modellen, prompts, vaardigheden en tools verbinden",
-      "28-persistent-bots": "Hoe persistente bots geheugen, routines en goedkeuringen gebruiken om te blijven werken"
+      "28-persistent-bots": "Hoe persistente bots geheugen, routines en goedkeuringen gebruiken om te blijven werken",
+      "28a-software-development-with-ai": "Van tabaanvulling tot autonome agents: vibe coding, agentische engineering, inspanning en review"
     },
     "interactive": {
       "tryIt": "Probeer het Zelf",

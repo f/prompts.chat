@@ -1883,7 +1883,7 @@
     "interactiveBanner": {
       "badge": "Version Interactive Disponible",
       "title": "Vous voulez une expérience plus détaillée et interactive ?",
-      "description": "Approfondissez avec notre guide interactif complet comprenant 30 chapitres, des exercices pratiques et des exemples concrets pour maîtriser les prompts IA.",
+      "description": "Approfondissez avec notre guide interactif complet comprenant 31 chapitres, des exercices pratiques et des exemples concrets pour maîtriser les prompts IA.",
       "cta": "Lire le Livre Interactif"
     },
     "generalTips": {
@@ -2353,7 +2353,7 @@
     "donate": "Soutenir le projet",
     "subtitle": "Un Guide Interactif pour Créer des Prompts Clairs et Efficaces",
     "metaTitle": "Guide de l'ingénierie des prompts : Le Livre Interactif du Prompting",
-    "metaDescription": "Maîtrisez l'ingénierie des prompts IA avec ce guide interactif gratuit. Apprenez les prompts ChatGPT, le raisonnement chain-of-thought, le few-shot learning et les techniques avancées. 30+ chapitres avec des exemples réels.",
+    "metaDescription": "Maîtrisez l'ingénierie des prompts IA avec ce guide interactif gratuit. Apprenez les prompts ChatGPT, le raisonnement chain-of-thought, le few-shot learning et les techniques avancées. 31+ chapitres avec des exemples réels.",
     "interactiveGuideBy": "Un Guide Interactif par",
     "authorIntro": "Bonjour, je suis <author>Fatih Kadir Akın</author>, le curateur du populaire dépôt <repoLink>Awesome ChatGPT Prompts</repoLink> sur GitHub et de <siteName>prompts.chat</siteName>.",
     "bookDescription": "Dans ce guide complet et interactif, vous découvrirez des stratégies expertes pour créer des prompts IA captivants qui génèrent des conversations efficaces. De la compréhension du fonctionnement des modèles IA à la maîtrise des techniques avancées comme le prompt chaining et les systèmes agentiques, ce livre vous fournit les outils nécessaires pour porter vos interactions IA au niveau supérieur.",
@@ -2375,7 +2375,7 @@
       "part4": "Partie 4 : Bonnes Pratiques",
       "part5": "Partie 5 : Cas d'Utilisation",
       "part6": "Partie 6 : Conclusion",
-      "chapters": "30 Chapitres Interactifs"
+      "chapters": "31 Chapitres Interactifs"
     },
     "startReading": "Commencer la Lecture",
     "skipToChapter1": "Aller au Chapitre 1",
@@ -2447,7 +2447,8 @@
       "24-future-of-prompting": "L'Avenir du Prompting",
       "27-tools-mcp-connectors": "Outils, MCP et connecteurs",
       "26-the-harnesses": "Les harnesses",
-      "28-persistent-bots": "Bots toujours actifs : des agents qui continuent de travailler"
+      "28-persistent-bots": "Bots toujours actifs : des agents qui continuent de travailler",
+      "28a-software-development-with-ai": "Développement logiciel avec l'IA"
     },
     "chapterDescriptions": {
       "00a-preface": "Une note personnelle de l'auteur",
@@ -2482,7 +2483,8 @@
       "24-future-of-prompting": "Tendances émergentes et perspectives d'avenir",
       "27-tools-mcp-connectors": "Comment les outils, MCP et les connecteurs donnent à l’IA accès aux données et aux actions",
       "26-the-harnesses": "Comment les harnesses relient les modèles, les prompts, les compétences et les outils",
-      "28-persistent-bots": "Comment les bots persistants utilisent la mémoire, les routines et les validations pour continuer à travailler"
+      "28-persistent-bots": "Comment les bots persistants utilisent la mémoire, les routines et les validations pour continuer à travailler",
+      "28a-software-development-with-ai": "De la complétion avec Tab aux agents autonomes : vibe coding, ingénierie agentique, effort et relecture"
     },
     "interactive": {
       "tryIt": "Essayez Vous-Même",

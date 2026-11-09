@@ -1883,7 +1883,7 @@
     "interactiveBanner": {
       "badge": "Interactive Version Available",
       "title": "Want a More Detailed & Interactive Experience?",
-      "description": "Dive deeper with our comprehensive interactive guide featuring 30 chapters, hands-on exercises, and real-world examples to master AI prompting.",
+      "description": "Dive deeper with our comprehensive interactive guide featuring 31 chapters, hands-on exercises, and real-world examples to master AI prompting.",
       "cta": "Read the Interactive Book"
     },
     "generalTips": {
@@ -2353,7 +2353,7 @@
     "donate": "Support the project",
     "subtitle": "An Interactive Guide to Crafting Clear and Effective Prompts",
     "metaTitle": "Prompt Engineering Guide: The Interactive Book of Prompting",
-    "metaDescription": "Master AI prompt engineering with this free, interactive guide. Learn ChatGPT prompts, chain-of-thought reasoning, few-shot learning, and advanced techniques. 30+ chapters with real examples.",
+    "metaDescription": "Master AI prompt engineering with this free, interactive guide. Learn ChatGPT prompts, chain-of-thought reasoning, few-shot learning, and advanced techniques. 31+ chapters with real examples.",
     "interactiveGuideBy": "An Interactive Guide by",
     "authorIntro": "Hi, I'm <author>Fatih Kadir Akın</author>, the curator of the popular <repoLink>Awesome ChatGPT Prompts</repoLink> repository on GitHub and <siteName>prompts.chat</siteName>.",
     "bookDescription": "In this comprehensive and interactive guide, you'll discover expert strategies for crafting compelling AI prompts that drive engaging and effective conversations. From understanding how AI models work to mastering advanced techniques like prompt chaining and agentic systems, this book provides you with the tools you need to take your AI interactions to the next level.",
@@ -2375,7 +2375,7 @@
       "part4": "Part 4: Best Practices",
       "part5": "Part 5: Use Cases",
       "part6": "Part 6: Conclusion",
-      "chapters": "30 Interactive Chapters"
+      "chapters": "31 Interactive Chapters"
     },
     "startReading": "Start Reading",
     "skipToChapter1": "Skip to Chapter 1",
@@ -2447,7 +2447,8 @@
       "24-future-of-prompting": "The Future of Prompting",
       "27-tools-mcp-connectors": "Tools, MCP and Connectors",
       "26-the-harnesses": "The Harnesses",
-      "28-persistent-bots": "Always-On Bots: Agents That Keep Working"
+      "28-persistent-bots": "Always-On Bots: Agents That Keep Working",
+      "28a-software-development-with-ai": "Software Development with AI"
     },
     "chapterDescriptions": {
       "00a-preface": "A personal note from the author",
@@ -2482,7 +2483,8 @@
       "24-future-of-prompting": "Emerging trends and looking ahead",
       "27-tools-mcp-connectors": "How tools, MCP, and connectors give AI access to data and actions",
       "26-the-harnesses": "How harnesses connect models, prompts, skills, and tools",
-      "28-persistent-bots": "How persistent bots use memory, routines, and approvals to keep working"
+      "28-persistent-bots": "How persistent bots use memory, routines, and approvals to keep working",
+      "28a-software-development-with-ai": "From tab completion to autonomous agents: vibe coding, agentic engineering, effort, and review"
     },
     "interactive": {
       "tryIt": "Try It Yourself",

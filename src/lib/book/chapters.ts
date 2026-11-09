@@ -64,6 +64,7 @@ export const parts: Part[] = [
       { slug: "27-tools-mcp-connectors", title: "Tools, MCP and Connectors", part: "Advanced", partNumber: 3, chapterNumber: 27, description: "How tools, MCP, and connectors give AI access to data and actions" },
       { slug: "26-the-harnesses", title: "The Harnesses", part: "Advanced", partNumber: 3, chapterNumber: 28, description: "How harnesses connect models, prompts, skills, and tools" },
       { slug: "28-persistent-bots", title: "Always-On Bots: Agents That Keep Working", part: "Advanced", partNumber: 3, chapterNumber: 29, description: "How persistent bots use memory, routines, and approvals to keep working" },
+      { slug: "28a-software-development-with-ai", title: "Software Development with AI", part: "Advanced", partNumber: 3, chapterNumber: 31, description: "From tab completion to autonomous agents: vibe coding, agentic engineering, effort, and review" },
     ],
   },
   {
