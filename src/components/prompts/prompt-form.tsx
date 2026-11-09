@@ -412,6 +412,10 @@ function getBuilderData(): { content?: string; type?: string; format?: string } 
   }
 }
 
+/**
+ * Render the prompt create/edit form and coordinate AI-generated state updates.
+ * @param props Form data, available taxonomy, and AI generation settings.
+ */
 export function PromptForm({ categories, tags, initialData, initialContributors = [], promptId, mode = "create", aiGenerationEnabled = false, aiModelName, initialPromptRequest }: PromptFormProps) {
   const router = useRouter();
   const t = useTranslations("prompts");

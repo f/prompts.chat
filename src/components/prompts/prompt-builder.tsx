@@ -66,6 +66,11 @@ export interface PromptBuilderHandle {
   open: () => void;
 }
 
+/**
+ * Render the prompt-building chat and stream generated edits into the prompt form.
+ * @param props Prompt data, taxonomy options, and the state-change callback.
+ * @param ref Imperative controls for sending a message or opening the chat.
+ */
 export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>(function PromptBuilder({
   availableTags,
   availableCategories,
@@ -186,6 +191,10 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
 
       let pendingLine = "";
 
+      /**
+       * Parse one server-sent event line and update the in-flight assistant response.
+       * @param line A line read from the response stream.
+       */
       const processLine = (line: string) => {
         if (responseFinalized) return;
 

@@ -240,6 +240,17 @@ export const PROMPT_BUILDER_TOOLS = [
   }
 ];
 
+/**
+ * Execute one prompt-builder tool and return its result with the updated prompt state.
+ * @param toolName Name of the tool requested by the model.
+ * @param args Parsed arguments supplied for the tool call.
+ * @param currentState Prompt state before the tool runs.
+ * @param availableTags Tags that can be selected by the tool.
+ * @param availableCategories Categories that can be selected by the tool.
+ * @param signal Optional request cancellation signal, propagated to search operations.
+ * @returns The tool result and resulting prompt state.
+ * @throws If the request is aborted during prompt search.
+ */
 export async function executeToolCall(
   toolName: string,
   args: Record<string, unknown>,

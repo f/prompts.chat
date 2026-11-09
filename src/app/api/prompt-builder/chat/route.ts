@@ -120,6 +120,7 @@ export async function POST(request: NextRequest) {
     await writer.write(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
   };
 
+  /** Close the stream safely, including when the client disconnects first. */
   const close = async () => {
     try {
       await writer.close();
@@ -129,6 +130,7 @@ export async function POST(request: NextRequest) {
   };
 
   // The form represents structured input as TEXT plus a format selector.
+  /** Convert the server's structured type into the form's text-plus-format state. */
   const toClientState = (state: PromptBuilderState): PromptBuilderState => ({
     ...state,
     type: state.type === "STRUCTURED" ? "TEXT" : state.type,
@@ -140,12 +142,17 @@ export async function POST(request: NextRequest) {
     type: currentState.type,
     structuredFormat: currentState.structuredFormat,
   };
+  /**
+   * Create a recovery checkpoint while withholding an incomplete structured conversion.
+   * @param state Current server-side prompt state.
+   * @returns The client state safe to apply if streaming stops at this point.
+   */
   const toCheckpointState = (state: PromptBuilderState): PromptBuilderState => {
     if (!pendingStructuredConfiguration) return toClientState(state);
     return toClientState({ ...state, ...committedContentConfiguration });
   };
 
-  // Start processing in background
+  /** Process the model/tool loop and stream text, results, and recoverable state. */
   void (async () => {
 
     try {
