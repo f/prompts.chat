@@ -169,6 +169,7 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
       const toolCalls: ToolCall[] = [];
       const searchResults: Message["searchResults"] = [];
       let newState: PromptBuilderState | null = null;
+      let streamError: string | null = null;
 
       while (true) {
         const { done, value } = await reader.read();
@@ -198,6 +199,8 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
                 }
               } else if (parsed.type === "state") {
                 newState = parsed.state;
+              } else if (parsed.type === "error") {
+                streamError = parsed.error || t("errorMessage");
               } else if (parsed.type === "done") {
                 // Finalize the message
                 setMessages((prev) => [
@@ -221,6 +224,10 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
             }
           }
         }
+      }
+
+      if (streamError) {
+        throw new Error(streamError);
       }
     } catch (error) {
       console.error("Chat error:", error);
