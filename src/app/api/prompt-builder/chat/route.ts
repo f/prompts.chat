@@ -294,7 +294,7 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
             allToolCalls.push(toolCallResult);
 
             // Stream tool call result
-            await send({ type: "tool_call", toolCall: toolCallResult });
+            await send({ type: "tool_call", toolCall: toolCallResult, state });
           } catch (e) {
             console.error("Tool call error:", e);
           }

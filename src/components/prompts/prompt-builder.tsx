@@ -139,6 +139,11 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
     // Add a placeholder for streaming
     const assistantMessageId = crypto.randomUUID();
     let fullContent = "";
+    const toolCalls: ToolCall[] = [];
+    const searchResults: Message["searchResults"] = [];
+    let newState: PromptBuilderState | null = null;
+    let streamError: string | null = null;
+    let responseFinalized = false;
 
     try {
       const response = await fetch("/api/prompt-builder/chat", {
@@ -166,14 +171,11 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
         throw new Error("No response body");
       }
 
-      const toolCalls: ToolCall[] = [];
-      const searchResults: Message["searchResults"] = [];
-      let newState: PromptBuilderState | null = null;
-      let streamError: string | null = null;
-
       let pendingLine = "";
 
       const processLine = (line: string) => {
+        if (responseFinalized) return;
+
         const normalizedLine = line.endsWith("\r") ? line.slice(0, -1) : line;
         if (!normalizedLine.startsWith("data: ")) return;
 
@@ -199,6 +201,7 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
           setStreamingContent(fullContent);
         } else if (parsed.type === "tool_call" && parsed.toolCall) {
           toolCalls.push(parsed.toolCall);
+          newState = parsed.state ?? newState;
           // Extract search results
           const resultData = parsed.toolCall.result?.data as
             | { prompts?: NonNullable<Message["searchResults"]> }
@@ -213,6 +216,7 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
         } else if (parsed.type === "error") {
           streamError = parsed.error || t("errorMessage");
         } else if (parsed.type === "done") {
+          responseFinalized = true;
           // Finalize the message
           setMessages((prev) => [
             ...prev,
@@ -246,10 +250,10 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
 
         for (const line of lines) {
           processLine(line);
-          if (streamError) break;
+          if (streamError || responseFinalized) break;
         }
 
-        if (streamError) {
+        if (streamError || responseFinalized) {
           await reader.cancel().catch(() => undefined);
           break;
         }
@@ -258,8 +262,17 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
       if (streamError) {
         throw new Error(streamError);
       }
+
+      if (!responseFinalized) {
+        throw new Error("Prompt builder stream ended before completion");
+      }
     } catch (error) {
       console.error("Chat error:", error);
+      if (responseFinalized) return;
+
+      if (newState) {
+        onStateChange(newState);
+      }
       setStreamingContent("");
       setMessages((prev) => {
         const errorMessage: Message = {
@@ -268,13 +281,19 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
           content: t("errorMessage"),
         };
 
-        if (!fullContent) {
+        if (!fullContent && toolCalls.length === 0) {
           return [...prev, errorMessage];
         }
 
         return [
           ...prev,
-          { id: assistantMessageId, role: "assistant", content: fullContent },
+          {
+            id: assistantMessageId,
+            role: "assistant",
+            content: fullContent,
+            toolCalls: toolCalls.length > 0 ? toolCalls : undefined,
+            searchResults: searchResults.length > 0 ? searchResults : undefined,
+          },
           errorMessage,
         ];
       });
