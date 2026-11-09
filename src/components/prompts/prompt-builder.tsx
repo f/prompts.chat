@@ -138,6 +138,7 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
 
     // Add a placeholder for streaming
     const assistantMessageId = crypto.randomUUID();
+    let fullContent = "";
 
     try {
       const response = await fetch("/api/prompt-builder/chat", {
@@ -165,64 +166,92 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
         throw new Error("No response body");
       }
 
-      let fullContent = "";
       const toolCalls: ToolCall[] = [];
       const searchResults: Message["searchResults"] = [];
       let newState: PromptBuilderState | null = null;
       let streamError: string | null = null;
 
+      let pendingLine = "";
+
+      const processLine = (line: string) => {
+        const normalizedLine = line.endsWith("\r") ? line.slice(0, -1) : line;
+        if (!normalizedLine.startsWith("data: ")) return;
+
+        const data = normalizedLine.slice(6);
+        if (data === "[DONE]") return;
+
+        let parsed: {
+          type?: string;
+          content?: string;
+          toolCall?: ToolCall;
+          state?: PromptBuilderState;
+          error?: string;
+        };
+        try {
+          parsed = JSON.parse(data);
+        } catch {
+          // Ignore malformed events; complete lines are buffered before parsing.
+          return;
+        }
+
+        if (parsed.type === "text" && parsed.content) {
+          fullContent += parsed.content;
+          setStreamingContent(fullContent);
+        } else if (parsed.type === "tool_call" && parsed.toolCall) {
+          toolCalls.push(parsed.toolCall);
+          // Extract search results
+          const resultData = parsed.toolCall.result?.data as
+            | { prompts?: NonNullable<Message["searchResults"]> }
+            | undefined;
+          if (parsed.toolCall.name === "search_prompts" &&
+              parsed.toolCall.result?.success &&
+              resultData?.prompts) {
+            searchResults.push(...resultData.prompts);
+          }
+        } else if (parsed.type === "state") {
+          newState = parsed.state ?? null;
+        } else if (parsed.type === "error") {
+          streamError = parsed.error || t("errorMessage");
+        } else if (parsed.type === "done") {
+          // Finalize the message
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: assistantMessageId,
+              role: "assistant",
+              content: fullContent,
+              toolCalls: toolCalls.length > 0 ? toolCalls : undefined,
+              searchResults: searchResults.length > 0 ? searchResults : undefined,
+            },
+          ]);
+          setStreamingContent("");
+
+          if (newState) {
+            onStateChange(newState);
+          }
+        }
+      };
+
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done) {
+          pendingLine += decoder.decode();
+          if (pendingLine) processLine(pendingLine);
+          break;
+        }
 
-        const chunk = decoder.decode(value);
-        const lines = chunk.split("\n");
+        pendingLine += decoder.decode(value, { stream: true });
+        const lines = pendingLine.split("\n");
+        pendingLine = lines.pop() ?? "";
 
         for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            const data = line.slice(6);
-            if (data === "[DONE]") continue;
+          processLine(line);
+          if (streamError) break;
+        }
 
-            try {
-              const parsed = JSON.parse(data);
-
-              if (parsed.type === "text") {
-                fullContent += parsed.content;
-                setStreamingContent(fullContent);
-              } else if (parsed.type === "tool_call") {
-                toolCalls.push(parsed.toolCall);
-                // Extract search results
-                if (parsed.toolCall.name === "search_prompts" && 
-                    parsed.toolCall.result?.success && 
-                    parsed.toolCall.result?.data?.prompts) {
-                  searchResults.push(...parsed.toolCall.result.data.prompts);
-                }
-              } else if (parsed.type === "state") {
-                newState = parsed.state;
-              } else if (parsed.type === "error") {
-                streamError = parsed.error || t("errorMessage");
-              } else if (parsed.type === "done") {
-                // Finalize the message
-                setMessages((prev) => [
-                  ...prev,
-                  {
-                    id: assistantMessageId,
-                    role: "assistant",
-                    content: fullContent,
-                    toolCalls: toolCalls.length > 0 ? toolCalls : undefined,
-                    searchResults: searchResults.length > 0 ? searchResults : undefined,
-                  },
-                ]);
-                setStreamingContent("");
-
-                if (newState) {
-                  onStateChange(newState);
-                }
-              }
-            } catch {
-              // Skip invalid JSON
-            }
-          }
+        if (streamError) {
+          await reader.cancel().catch(() => undefined);
+          break;
         }
       }
 
@@ -232,14 +261,23 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
     } catch (error) {
       console.error("Chat error:", error);
       setStreamingContent("");
-      setMessages((prev) => [
-        ...prev,
-        {
+      setMessages((prev) => {
+        const errorMessage: Message = {
           id: crypto.randomUUID(),
           role: "assistant",
           content: t("errorMessage"),
-        },
-      ]);
+        };
+
+        if (!fullContent) {
+          return [...prev, errorMessage];
+        }
+
+        return [
+          ...prev,
+          { id: assistantMessageId, role: "assistant", content: fullContent },
+          errorMessage,
+        ];
+      });
     } finally {
       setIsLoading(false);
     }
