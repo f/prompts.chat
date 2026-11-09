@@ -41,6 +41,31 @@ function checkRateLimit(userId: string): { allowed: boolean; remaining: number; 
 
 const SYSTEM_PROMPT = getSystemPrompt(promptBuilderAgentPrompt);
 
+/**
+ * Check whether content can be committed with the requested structured format.
+ * @param content Content returned by the builder tool.
+ * @param format Structured format selected for the prompt.
+ * @returns Whether the content is valid JSON or a structured YAML value.
+ */
+function isStructuredContentCompatible(
+  content: unknown,
+  format?: "JSON" | "YAML"
+): boolean {
+  if (typeof content !== "string" || !format || !content.trim()) return false;
+
+  try {
+    if (format === "JSON") {
+      JSON.parse(content);
+      return true;
+    }
+
+    const parsedContent = parseYaml(content);
+    return typeof parsedContent === "object" && parsedContent !== null;
+  } catch {
+    return false;
+  }
+}
+
 interface ChatMessage {
   role: "user" | "assistant" | "system";
   content: string;
@@ -331,6 +356,19 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
             result = execution.result;
             nextState = execution.newState;
             toolCallSucceeded = execution.result.success;
+            if (
+              toolCall.name === "set_content" &&
+              toolCallSucceeded &&
+              nextState.structuredFormat &&
+              !isStructuredContentCompatible(nextState.content, nextState.structuredFormat)
+            ) {
+              result = {
+                success: false,
+                error: `Content must be valid ${nextState.structuredFormat}`,
+              };
+              nextState = state;
+              toolCallSucceeded = false;
+            }
           } catch (e) {
             if (request.signal.aborted) {
               await close();
@@ -363,21 +401,10 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
               (state.type === "STRUCTURED") !== (nextState.type === "STRUCTURED") ||
               state.structuredFormat !== nextState.structuredFormat;
             if (changesStructuredConfiguration) {
-              let isContentCompatibleWithFormat = false;
-              if (nextState.structuredFormat && state.content.trim()) {
-                try {
-                  if (nextState.structuredFormat === "JSON") {
-                    JSON.parse(state.content);
-                    isContentCompatibleWithFormat = true;
-                  } else {
-                    const parsedContent = parseYaml(state.content);
-                    isContentCompatibleWithFormat =
-                      typeof parsedContent === "object" && parsedContent !== null;
-                  }
-                } catch {
-                  // Keep the prior format checkpoint until compatible content arrives.
-                }
-              }
+              const isContentCompatibleWithFormat = isStructuredContentCompatible(
+                state.content,
+                nextState.structuredFormat
+              );
 
               if (isContentCompatibleWithFormat) {
                 committedContentConfiguration = {
