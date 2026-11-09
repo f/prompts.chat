@@ -1883,7 +1883,7 @@
     "interactiveBanner": {
       "badge": "İnteraktif Versiyon Mevcut",
       "title": "Daha Detaylı ve İnteraktif Bir Deneyim mi İstiyorsunuz?",
-      "description": "30 bölüm, uygulamalı alıştırmalar ve gerçek dünya örnekleri içeren kapsamlı interaktif rehberimizle AI prompt yazımında ustalaşın.",
+      "description": "31 bölüm, uygulamalı alıştırmalar ve gerçek dünya örnekleri içeren kapsamlı interaktif rehberimizle AI prompt yazımında ustalaşın.",
       "cta": "İnteraktif Kitabı Oku"
     },
     "generalTips": {
@@ -2353,7 +2353,7 @@
     "donate": "Projeyi destekle",
     "subtitle": "Net ve Etkili Promptlar Hazırlamak için İnteraktif Bir Rehber",
     "metaTitle": "Prompt Mühendisliği Rehberi: İnteraktif Prompt Yazma Kitabı",
-    "metaDescription": "Bu ücretsiz, interaktif rehber ile AI prompt mühendisliğinde ustalaşın. ChatGPT promptları, düşünce zinciri muhakemesi, az örnekli öğrenme ve gelişmiş teknikleri öğrenin. Gerçek örneklerle 30+ bölüm.",
+    "metaDescription": "Bu ücretsiz, interaktif rehber ile AI prompt mühendisliğinde ustalaşın. ChatGPT promptları, düşünce zinciri muhakemesi, az örnekli öğrenme ve gelişmiş teknikleri öğrenin. Gerçek örneklerle 31+ bölüm.",
     "interactiveGuideBy": "İnteraktif Rehber - Yazar:",
     "authorIntro": "Merhaba, ben <author>Fatih Kadir Akın</author>. GitHub'daki popüler <repoLink>Awesome ChatGPT Prompts</repoLink> deposunun ve <siteName>prompts.chat</siteName>'in küratörüyüm.",
     "bookDescription": "Bu kapsamlı ve interaktif rehberde, ilgi çekici ve etkili sohbetler sağlayan çarpıcı AI promptları oluşturmak için uzman stratejilerini keşfedeceksiniz. AI modellerinin nasıl çalıştığını anlamaktan prompt zincirleme ve ajantik sistemler gibi gelişmiş tekniklerde ustalaşmaya kadar, bu kitap AI etkileşimlerinizi bir üst seviyeye taşımak için ihtiyacınız olan araçları sağlar.",
@@ -2375,7 +2375,7 @@
       "part4": "Bölüm 4: En İyi Uygulamalar",
       "part5": "Bölüm 5: Kullanım Senaryoları",
       "part6": "Bölüm 6: Sonuç",
-      "chapters": "30 İnteraktif Bölüm"
+      "chapters": "31 İnteraktif Bölüm"
     },
     "startReading": "Okumaya Başla",
     "skipToChapter1": "1. Bölüme Atla",
@@ -2447,7 +2447,8 @@
       "24-future-of-prompting": "Promptingin Geleceği",
       "27-tools-mcp-connectors": "Araçlar, MCP ve Bağlayıcılar",
       "26-the-harnesses": "Harness’lar",
-      "28-persistent-bots": "Sürekli Çalışan Botlar: Çalışmaya Devam Eden Ajanlar"
+      "28-persistent-bots": "Sürekli Çalışan Botlar: Çalışmaya Devam Eden Ajanlar",
+      "28a-software-development-with-ai": "AI ile Yazılım Geliştirme"
     },
     "chapterDescriptions": {
       "00a-preface": "Yazardan kişisel bir not",
@@ -2482,7 +2483,8 @@
       "24-future-of-prompting": "Ortaya çıkan trendler ve ileriye bakış",
       "27-tools-mcp-connectors": "Araçlar, MCP ve bağlayıcılar AI’a verilere erişme ve işlem yapma olanağını nasıl sağlar",
       "26-the-harnesses": "Harness’lar modelleri, promptları, yetenekleri ve araçları nasıl bir araya getirir",
-      "28-persistent-bots": "Kalıcı botlar çalışmaya devam etmek için hafızayı, rutinleri ve onayları nasıl kullanır"
+      "28-persistent-bots": "Kalıcı botlar çalışmaya devam etmek için hafızayı, rutinleri ve onayları nasıl kullanır",
+      "28a-software-development-with-ai": "Tab ile tamamlamadan özerk ajanlara: vibe coding, ajan tabanlı mühendislik, çaba ve inceleme"
     },
     "interactive": {
       "tryIt": "Kendiniz Deneyin",
