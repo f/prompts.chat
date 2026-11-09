@@ -71,6 +71,12 @@ function containsNonEnglish(text: string): boolean {
   return /[^\x00-\x7F]/.test(text);
 }
 
+/**
+ * Generate a vector embedding for text using the configured OpenAI embedding model.
+ * @param text Text to embed.
+ * @param signal Optional cancellation signal for the API request.
+ * @returns The embedding vector.
+ */
 export async function generateEmbedding(text: string, signal?: AbortSignal): Promise<number[]> {
   const client = getOpenAIClient();
   
@@ -82,6 +88,11 @@ export async function generateEmbedding(text: string, signal?: AbortSignal): Pro
   return response.data[0].embedding;
 }
 
+/**
+ * Generate and store an embedding for a public prompt when AI Search is enabled.
+ * Private prompts, missing prompts, and disabled AI Search are skipped.
+ * @param promptId ID of the prompt to embed.
+ */
 export async function generatePromptEmbedding(promptId: string): Promise<void> {
   const config = await getConfig();
   if (!config.features.aiSearch) return;
@@ -116,6 +127,13 @@ function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+/**
+ * Generate embeddings for all eligible public prompts, reporting per-prompt progress.
+ * @param onProgress Optional callback invoked after each prompt with current totals.
+ * @param regenerate Whether to regenerate embeddings that already exist.
+ * @returns Counts of successful, failed, and total prompt embeddings.
+ * @throws If AI Search is disabled.
+ */
 export async function generateAllEmbeddings(
   onProgress?: (current: number, total: number, success: number, failed: number) => void,
   regenerate: boolean = false
@@ -176,6 +194,7 @@ function cosineSimilarity(a: number[], b: number[]): number {
   return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
 }
 
+/** A public prompt and its similarity score returned by semantic search. */
 export interface SemanticSearchResult {
   id: string;
   title: string;
@@ -305,6 +324,10 @@ export async function semanticSearch(
   return scoredPrompts.slice(0, limit).map(({ _count, embedding, ...rest }) => rest);
 }
 
+/**
+ * Check whether semantic search is available from both feature configuration and API setup.
+ * @returns `true` when AI Search is enabled and an OpenAI API key is configured.
+ */
 export async function isAISearchEnabled(): Promise<boolean> {
   const config = await getConfig();
   return config.features.aiSearch === true && !!process.env.OPENAI_API_KEY;
