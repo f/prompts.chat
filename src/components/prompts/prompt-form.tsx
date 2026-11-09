@@ -563,6 +563,11 @@ export function PromptForm({ categories, tags, initialData, initialContributors 
       valuesEqual(currentValues.structuredFormat, requestedState.structuredFormat);
     const hasNonBlankAgentContent =
       typeof newState.content === "string" && newState.content.trim().length > 0;
+    const bothContentValuesAreBlank =
+      typeof currentValues.content === "string" &&
+      currentValues.content.trim().length === 0 &&
+      typeof newState.content === "string" &&
+      newState.content.trim().length === 0;
     if (shouldApplyContentConfiguration && shouldApply("content") && hasNonBlankAgentContent) {
       form.setValue("content", newState.content, opts);
     }
@@ -570,7 +575,7 @@ export function PromptForm({ categories, tags, initialData, initialContributors 
     if (
       shouldApplyContentConfiguration &&
       shouldApply("structuredFormat") &&
-      (newState.structuredFormat === undefined || hasNonBlankAgentContent)
+      (newState.structuredFormat === undefined || hasNonBlankAgentContent || bothContentValuesAreBlank)
     ) {
       form.setValue("structuredFormat", newState.structuredFormat, opts);
     }

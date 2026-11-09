@@ -401,10 +401,10 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
               (state.type === "STRUCTURED") !== (nextState.type === "STRUCTURED") ||
               state.structuredFormat !== nextState.structuredFormat;
             if (changesStructuredConfiguration) {
-              const isContentCompatibleWithFormat = isStructuredContentCompatible(
-                state.content,
-                nextState.structuredFormat
-              );
+              const isContentCompatibleWithFormat =
+                !nextState.structuredFormat ||
+                !state.content.trim() ||
+                isStructuredContentCompatible(state.content, nextState.structuredFormat);
 
               if (isContentCompatibleWithFormat) {
                 committedContentConfiguration = {

@@ -505,6 +505,8 @@ export async function executeToolCall(
       newState.type = type;
       if (type === "STRUCTURED" && args.structuredFormat) {
         newState.structuredFormat = args.structuredFormat as "JSON" | "YAML";
+      } else if (type === "TEXT") {
+        newState.structuredFormat = undefined;
       }
       return {
         result: { success: true, data: { type, structuredFormat: newState.structuredFormat } },
@@ -601,10 +603,12 @@ export async function executeToolCall(
         (
           typeof args.mediaCount !== "number" ||
           !Number.isFinite(args.mediaCount) ||
-          !Number.isInteger(args.mediaCount)
+          !Number.isInteger(args.mediaCount) ||
+          args.mediaCount < 1 ||
+          args.mediaCount > 10
         )
       ) {
-        return invalidArguments("mediaCount must be an integer");
+        return invalidArguments("mediaCount must be an integer from 1 to 10");
       }
       newState.requiresMediaUpload = args.requiresMediaUpload as boolean;
       if (newState.requiresMediaUpload) {
