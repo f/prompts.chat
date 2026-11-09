@@ -317,6 +317,7 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
 
           let result: unknown;
           let nextState: PromptBuilderState;
+          let toolCallSucceeded = false;
           try {
             const args = JSON.parse(toolCall.arguments);
             const execution = await executeToolCall(
@@ -329,6 +330,7 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
             );
             result = execution.result;
             nextState = execution.newState;
+            toolCallSucceeded = execution.result.success;
           } catch (e) {
             if (request.signal.aborted) {
               await close();
@@ -398,7 +400,7 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
           }
 
           state = nextState;
-          if (toolCall.name === "set_content") {
+          if (toolCall.name === "set_content" && toolCallSucceeded) {
             committedContentConfiguration = {
               content: state.content,
               type: state.type,

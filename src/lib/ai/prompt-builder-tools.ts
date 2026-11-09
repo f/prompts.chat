@@ -260,6 +260,15 @@ export async function executeToolCall(
   signal?: AbortSignal
 ): Promise<{ result: ToolResult; newState: PromptBuilderState }> {
   const newState = { ...currentState };
+  /** Return a recoverable tool failure without changing the prompt state. */
+  const invalidArguments = (error: string) => ({
+    result: { success: false, error },
+    newState,
+  });
+
+  if (!args || typeof args !== "object" || Array.isArray(args)) {
+    return invalidArguments("Tool arguments must be an object");
+  }
 
   switch (toolName) {
     case "search_prompts": {
@@ -437,7 +446,10 @@ export async function executeToolCall(
     }
 
     case "set_title": {
-      const title = (args.title as string).substring(0, 200);
+      if (typeof args.title !== "string") {
+        return invalidArguments("Title must be a string");
+      }
+      const title = args.title.substring(0, 200);
       newState.title = title;
       return {
         result: { success: true, data: { title } },
@@ -446,7 +458,10 @@ export async function executeToolCall(
     }
 
     case "set_description": {
-      const description = (args.description as string).substring(0, 500);
+      if (typeof args.description !== "string") {
+        return invalidArguments("Description must be a string");
+      }
+      const description = args.description.substring(0, 500);
       newState.description = description;
       return {
         result: { success: true, data: { description } },
@@ -456,10 +471,7 @@ export async function executeToolCall(
 
     case "set_content": {
       if (typeof args.content !== "string") {
-        return {
-          result: { success: false, error: "Content must be a string" },
-          newState
-        };
+        return invalidArguments("Content must be a string");
       }
       newState.content = args.content;
       return {
@@ -469,6 +481,26 @@ export async function executeToolCall(
     }
 
     case "set_type": {
+      const validTypes: PromptBuilderState["type"][] = [
+        "TEXT",
+        "IMAGE",
+        "VIDEO",
+        "AUDIO",
+        "STRUCTURED",
+      ];
+      if (
+        typeof args.type !== "string" ||
+        !validTypes.includes(args.type as PromptBuilderState["type"])
+      ) {
+        return invalidArguments("Type must be one of TEXT, IMAGE, VIDEO, AUDIO, or STRUCTURED");
+      }
+      if (
+        args.structuredFormat !== undefined &&
+        args.structuredFormat !== "JSON" &&
+        args.structuredFormat !== "YAML"
+      ) {
+        return invalidArguments("Structured format must be JSON or YAML");
+      }
       const type = args.type as PromptBuilderState["type"];
       newState.type = type;
       if (type === "STRUCTURED" && args.structuredFormat) {
@@ -481,7 +513,14 @@ export async function executeToolCall(
     }
 
     case "set_tags": {
-      const tagNames = args.tagNames as string[];
+      const tagNamesArgument = args.tagNames;
+      if (
+        !Array.isArray(tagNamesArgument) ||
+        !tagNamesArgument.every((tagName: unknown) => typeof tagName === "string")
+      ) {
+        return invalidArguments("tagNames must be an array of strings");
+      }
+      const tagNames = tagNamesArgument as string[];
       const matchedTagIds: string[] = [];
       const matchedNames: string[] = [];
 
@@ -513,7 +552,10 @@ export async function executeToolCall(
     }
 
     case "set_category": {
-      const categoryName = args.categoryName as string;
+      if (typeof args.categoryName !== "string") {
+        return invalidArguments("Category name must be a string");
+      }
+      const categoryName = args.categoryName;
       const category = availableCategories.find(
         c => c.name.toLowerCase() === categoryName.toLowerCase() || c.slug === categoryName.toLowerCase()
       );
@@ -532,6 +574,9 @@ export async function executeToolCall(
     }
 
     case "set_privacy": {
+      if (typeof args.isPrivate !== "boolean") {
+        return invalidArguments("isPrivate must be a boolean");
+      }
       newState.isPrivate = args.isPrivate as boolean;
       return {
         result: { success: true, data: { isPrivate: newState.isPrivate } },
@@ -540,6 +585,27 @@ export async function executeToolCall(
     }
 
     case "set_media_requirements": {
+      if (typeof args.requiresMediaUpload !== "boolean") {
+        return invalidArguments("requiresMediaUpload must be a boolean");
+      }
+      if (
+        args.mediaType !== undefined &&
+        args.mediaType !== "IMAGE" &&
+        args.mediaType !== "VIDEO" &&
+        args.mediaType !== "DOCUMENT"
+      ) {
+        return invalidArguments("mediaType must be IMAGE, VIDEO, or DOCUMENT");
+      }
+      if (
+        args.mediaCount !== undefined &&
+        (
+          typeof args.mediaCount !== "number" ||
+          !Number.isFinite(args.mediaCount) ||
+          !Number.isInteger(args.mediaCount)
+        )
+      ) {
+        return invalidArguments("mediaCount must be an integer");
+      }
       newState.requiresMediaUpload = args.requiresMediaUpload as boolean;
       if (newState.requiresMediaUpload) {
         if (args.mediaType) {
