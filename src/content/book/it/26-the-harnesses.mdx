@@ -188,7 +188,7 @@ Lo schema non appartiene a un solo prodotto. La [guida alle buone pratiche di Cl
 
 Due avvertenze mantengono onesta l'idea. La prima: una revisione fatta nello stesso contesto non è una revisione indipendente, per quanto il prompt la chieda con fermezza. La [guida agli harness](https://github.com/google/elephant-goldfish-model/blob/main/docs/harnesses.md) di EGM collega "avvia un subagente" allo strumento per subagenti di ciascun harness, e quando un harness non ne ha, la revisione si ferma invece di proseguire in silenzio nella sessione dell'autore. La seconda: una conversazione nuova non è sempre un contesto vuoto, quindi l'isolamento va verificato, non dato per scontato. I file di istruzioni che un harness carica da sé possono seguire il revisore. L'[issue #237](https://github.com/google/elephant-goldfish-model/issues/237) segnala che i revisori di EGM in Codex e Antigravity non hanno mai visto la conversazione principale, ma hanno comunque ricevuto l'`AGENTS.md` del progetto, portando le ipotesi del team proprio dentro la revisione che doveva metterle in discussione. E ogni revisore in più costa token e tempo. Occhi nuovi vedono ciò che l'autore non riesce più a vedere; non sostituiscono i test né il tuo giudizio.
 
-Per provarlo, apri una nuova sessione o un subagente senza cronologia, dagli solo il documento e chiedi:
+Per provarlo, apri una nuova sessione o un subagente senza cronologia e con soli strumenti in sola lettura, impostati nell'harness e non semplicemente chiesti nel prompt. Dagli solo il documento e chiedi:
 
 <TryIt compact prompt={`Leggi questo piano come chi non l'ha mai visto prima. Usa solo il documento e i file a cui rimanda: \${document:docs/designs/webhook-delivery.md}
 

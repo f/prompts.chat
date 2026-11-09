@@ -188,9 +188,9 @@ The pattern is not tied to one product. Anthropic's [best-practices guide for Cl
 
 Two cautions keep the idea honest. First, a review run in the same context is not an independent review, however firmly the prompt asks for one. EGM's [harness guide](https://github.com/google/elephant-goldfish-model/blob/main/docs/harnesses.md) maps "spawn a subagent" to each harness's own subagent tool, and when a harness has none, the review stops instead of quietly running in the author's session. Second, a fresh conversation is not always an empty context, so isolation has to be checked rather than assumed. Instruction files that a harness loads on its own can follow the reviewer in. [Issue #237](https://github.com/google/elephant-goldfish-model/issues/237) reports that EGM reviewers in Codex and Antigravity never saw the parent conversation but still received the project's `AGENTS.md`, carrying the team's assumptions into the very review meant to question them. And every extra reviewer costs tokens and time. Fresh eyes find what the author can no longer see; they do not replace tests or your own judgment.
 
-To try it, open a new session or a subagent with no history, give it only the document, and ask:
+To try it, open a new session or a subagent with no history and only read-only tools, set in your harness rather than requested in the prompt. Give it just the document and ask:
 
-<TryIt compact prompt={`Read this plan as someone who has never seen it before. Use only the document and the files it links to: \${document:docs/designs/webhook-delivery.md}
+<TryIt compact prompt={`Read this plan as someone who has never seen it before. Use only the document and the files it mentions: \${document:docs/designs/webhook-delivery.md}
 
 1. Explain the plan back in your own words: what it builds, how the parts fit together, and how it will be checked.
 2. List every point where you had to guess, and what you guessed.

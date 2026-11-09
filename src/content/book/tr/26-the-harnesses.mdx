@@ -188,9 +188,9 @@ Bu yaklaşım tek bir ürüne özgü değil. Anthropic'in [Claude Code için en 
 
 Fikri dürüst tutan iki uyarı var. Birincisi, aynı bağlamda yapılan bir inceleme, prompt bunu ne kadar kesin bir dille isterse istesin, bağımsız bir inceleme değildir. EGM'nin [harness rehberi](https://github.com/google/elephant-goldfish-model/blob/main/docs/harnesses.md), "bir alt ajan başlat" ifadesini her harness'in kendi alt ajan aracına bağlıyor; harness'te böyle bir araç yoksa inceleme, yazarın oturumunda sessizce sürdürülmek yerine duruyor. İkincisi, taze bir sohbet her zaman boş bir bağlam anlamına gelmez; yalıtımın varsayılmaması, denetlenmesi gerekir. Harness'in kendiliğinden yüklediği talimat dosyaları inceleyicinin peşinden içeri girebilir. [GitHub'daki 237 numaralı issue](https://github.com/google/elephant-goldfish-model/issues/237), Codex ve Antigravity'deki EGM inceleyicilerinin ana sohbeti hiç görmediğini ama projenin `AGENTS.md` dosyasını yine de aldığını bildiriyor. Yani ekibin varsayımları, tam da onları sorgulamak için yapılan incelemenin içine taşınmış oluyor. Üstelik her ek inceleyici token ve zaman harcar. Taze gözler, yazarın artık göremediğini görür; ama testlerin ya da sizin muhakemenizin yerini tutmaz.
 
-Denemek için yeni bir oturum ya da geçmişi olmayan bir alt ajan açın, ona yalnızca belgeyi verin ve şunu sorun:
+Denemek için yeni bir oturum ya da geçmişi olmayan, yalnızca okuma araçlarına sahip bir alt ajan açın; bunu prompt'ta rica ederek değil, harness'in ayarlarından sağlayın. Sonra ona yalnızca belgeyi verin ve şunu sorun:
 
-<TryIt compact prompt={`Bu planı daha önce hiç görmemiş biri gibi oku. Yalnızca belgeyi ve belgenin bağlantı verdiği dosyaları kullan: \${document:docs/designs/webhook-delivery.md}
+<TryIt compact prompt={`Bu planı daha önce hiç görmemiş biri gibi oku. Yalnızca belgeyi ve belgenin adını andığı dosyaları kullan: \${document:docs/designs/webhook-delivery.md}
 
 1. Planı kendi sözlerinle anlat: neyi inşa ediyor, parçalar birbirine nasıl bağlanıyor ve nasıl kontrol edilecek.
 2. Tahmin yürütmek zorunda kaldığın her noktayı ve neyi tahmin ettiğini listele.

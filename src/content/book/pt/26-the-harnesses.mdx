@@ -188,7 +188,7 @@ O padrão não pertence a um único produto. O [guia de boas práticas do Claude
 
 Dois cuidados mantêm a ideia honesta. O primeiro: uma revisão feita no mesmo contexto não é uma revisão independente, por mais firme que seja o prompt. O [guia de harnesses](https://github.com/google/elephant-goldfish-model/blob/main/docs/harnesses.md) do EGM associa "inicie um subagente" à ferramenta de subagentes própria de cada harness, e, quando um harness não tem nenhuma, a revisão para em vez de seguir em silêncio dentro da sessão do autor. O segundo: uma conversa nova nem sempre é um contexto vazio, então o isolamento precisa ser verificado, não presumido. Arquivos de instruções que um harness carrega por conta própria podem entrar junto com o revisor. A [issue #237](https://github.com/google/elephant-goldfish-model/issues/237) relata que os revisores do EGM no Codex e no Antigravity nunca viram a conversa principal, mas mesmo assim receberam o `AGENTS.md` do projeto, levando as suposições da equipe justamente para a revisão que deveria questioná-las. E cada revisor a mais custa tokens e tempo. Olhos novos enxergam o que o autor já não consegue ver; não substituem os testes nem o seu próprio julgamento.
 
-Para experimentar, abra uma nova sessão ou um subagente sem histórico, entregue só o documento e peça:
+Para experimentar, abra uma nova sessão ou um subagente sem histórico e só com ferramentas de leitura, configuradas no harness e não apenas pedidas no prompt. Entregue só o documento e peça:
 
 <TryIt compact prompt={`Leia este plano como alguém que nunca o viu antes. Use apenas o documento e os arquivos a que ele remete: \${document:docs/designs/webhook-delivery.md}
 
