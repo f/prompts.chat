@@ -120,8 +120,22 @@ export async function POST(request: NextRequest) {
     await writer.write(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
   };
 
+  const close = async () => {
+    try {
+      await writer.close();
+    } catch {
+      // The client may have disconnected and closed the stream already.
+    }
+  };
+
+  // The form represents structured input as TEXT plus a format selector.
+  const toClientState = (state: PromptBuilderState): PromptBuilderState => ({
+    ...state,
+    type: state.type === "STRUCTURED" ? "TEXT" : state.type,
+  });
+
   // Start processing in background
-  (async () => {
+  void (async () => {
 
     try {
       const openai = new OpenAI({
@@ -207,7 +221,7 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
       const maxLoops = 10;
       const allToolCalls: Array<{ id: string; name: string; arguments: string; result: unknown }> = [];
 
-      while (loopCount < maxLoops) {
+      while (loopCount < maxLoops && !request.signal.aborted) {
         loopCount++;
 
         // Use streaming for the final response
@@ -219,12 +233,13 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
           temperature: 0.7,
           max_tokens: 2000,
           stream: true,
-        });
+        }, { signal: request.signal });
 
         let fullContent = "";
         const toolCallsAccumulator: Map<number, { id: string; name: string; arguments: string }> = new Map();
 
         for await (const chunk of response) {
+          if (request.signal.aborted) throw new Error("Request aborted");
           const delta = chunk.choices[0]?.delta;
 
           // Stream text content
@@ -261,10 +276,10 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
 
         // If no tool calls, we're done
         if (toolCalls.length === 0) {
-          await send({ type: "state", state });
+          await send({ type: "state", state: toClientState(state) });
           await send({ type: "done" });
           await writer.write(encoder.encode("data: [DONE]\n\n"));
-          await writer.close();
+          await close();
           return;
         }
 
@@ -299,7 +314,7 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
             allToolCalls.push(toolCallResult);
 
             // Stream tool call result
-            await send({ type: "tool_call", toolCall: toolCallResult, state });
+            await send({ type: "tool_call", toolCall: toolCallResult, state: toClientState(state) });
           } catch (e) {
             console.error("Tool call error:", e);
             throw e;
@@ -332,16 +347,28 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
 
       // Max loops reached
       await send({ type: "text", content: "I've made several changes. Let me know if you need anything else!" });
-      await send({ type: "state", state });
+      await send({ type: "state", state: toClientState(state) });
       await send({ type: "done" });
       await writer.write(encoder.encode("data: [DONE]\n\n"));
-      await writer.close();
+      await close();
     } catch (error) {
+      if (request.signal.aborted) {
+        await close();
+        return;
+      }
       console.error("Prompt builder chat error:", error);
-      await send({ type: "error", error: "Failed to process request" });
-      await writer.close();
+      try {
+        await send({ type: "error", error: "Failed to process request" });
+      } catch {
+        // Error reporting can also fail after the client disconnects.
+      }
+      await close();
     }
-  })();
+  })().catch(async (error) => {
+    // Keep unexpected failures from escaping the detached stream task.
+    console.error("Prompt builder stream task error:", error);
+    await close();
+  });
 
   return new Response(readable, {
     headers: {

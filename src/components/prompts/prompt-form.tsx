@@ -545,9 +545,18 @@ export function PromptForm({ categories, tags, initialData, initialContributors 
 
     if (shouldApply("title")) form.setValue("title", newState.title, opts);
     if (shouldApply("description")) form.setValue("description", newState.description, opts);
-    if (shouldApply("content")) form.setValue("content", newState.content, opts);
+    // Content and its editor format must remain a matched pair. If the user
+    // changed either one while generation ran, preserve both current values.
+    const shouldApplyContentPair =
+      valuesEqual(currentValues.content, requestedState.content) &&
+      valuesEqual(currentValues.structuredFormat, requestedState.structuredFormat);
+    if (shouldApplyContentPair && shouldApply("content")) {
+      form.setValue("content", newState.content, opts);
+    }
     if (shouldApply("type")) form.setValue("type", newState.type, opts);
-    if (shouldApply("structuredFormat")) form.setValue("structuredFormat", newState.structuredFormat, opts);
+    if (shouldApplyContentPair && shouldApply("structuredFormat")) {
+      form.setValue("structuredFormat", newState.structuredFormat, opts);
+    }
     if (shouldApply("categoryId")) form.setValue("categoryId", newState.categoryId || "", opts);
     if (shouldApply("tagIds")) form.setValue("tagIds", newState.tagIds, opts);
     if (shouldApply("isPrivate")) form.setValue("isPrivate", newState.isPrivate, opts);
