@@ -545,16 +545,20 @@ export function PromptForm({ categories, tags, initialData, initialContributors 
 
     if (shouldApply("title")) form.setValue("title", newState.title, opts);
     if (shouldApply("description")) form.setValue("description", newState.description, opts);
-    // Content and its editor format must remain a matched pair. If the user
-    // changed either one while generation ran, preserve both current values.
-    const shouldApplyContentPair =
+    // Type, content, and editor format form one configuration. Preserve the
+    // whole group if the user changed any part while generation ran.
+    const shouldApplyContentConfiguration =
+      valuesEqual(currentValues.type, requestedState.type) &&
       valuesEqual(currentValues.content, requestedState.content) &&
-      valuesEqual(currentValues.structuredFormat, requestedState.structuredFormat);
-    if (shouldApplyContentPair && shouldApply("content")) {
+      valuesEqual(currentValues.structuredFormat, requestedState.structuredFormat) &&
+      (!shouldApply("content") || newState.content.trim().length > 0);
+    if (shouldApplyContentConfiguration && shouldApply("content")) {
       form.setValue("content", newState.content, opts);
     }
-    if (shouldApply("type")) form.setValue("type", newState.type, opts);
-    if (shouldApplyContentPair && shouldApply("structuredFormat")) {
+    if (shouldApplyContentConfiguration && shouldApply("type")) {
+      form.setValue("type", newState.type, opts);
+    }
+    if (shouldApplyContentConfiguration && shouldApply("structuredFormat")) {
       form.setValue("structuredFormat", newState.structuredFormat, opts);
     }
     if (shouldApply("categoryId")) form.setValue("categoryId", newState.categoryId || "", opts);

@@ -224,6 +224,9 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
               resultData?.prompts) {
             searchResults.push(...resultData.prompts);
           }
+        } else if (parsed.type === "tool_error" && parsed.toolCall) {
+          toolCalls.push(parsed.toolCall);
+          newState = parsed.state ?? newState;
         } else if (parsed.type === "state") {
           newState = parsed.state ?? null;
         } else if (parsed.type === "error") {
@@ -380,6 +383,7 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
     }
 
     const toolLabel = toolCall.name.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+    if (!isSuccess) detail = t("errorMessage");
     
     return (
       <div

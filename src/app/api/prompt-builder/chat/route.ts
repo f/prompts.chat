@@ -285,40 +285,61 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
 
         // Process tool calls
         const toolResults: Array<{ id: string; name: string; result: unknown }> = [];
+        let toolExecutionFailed = false;
 
         for (const toolCall of toolCalls) {
+          let result: unknown;
+          let nextState: PromptBuilderState;
           try {
             const args = JSON.parse(toolCall.arguments);
-            const { result, newState } = await executeToolCall(
+            const execution = await executeToolCall(
               toolCall.name,
               args,
               state,
               availableTags,
               availableCategories
             );
-            state = newState;
-
-            const toolCallResult = {
+            result = execution.result;
+            nextState = execution.newState;
+          } catch (e) {
+            console.error(`Prompt builder tool ${toolCall.name} failed:`, e);
+            const failedToolCall = {
               id: toolCall.id,
               name: toolCall.name,
               arguments: toolCall.arguments,
-              result,
+              result: { success: false, error: "Tool execution failed" },
             };
-
-            toolResults.push({
-              id: toolCall.id,
-              name: toolCall.name,
-              result,
+            allToolCalls.push(failedToolCall);
+            await send({
+              type: "tool_error",
+              toolCall: failedToolCall,
+              state: toClientState(state),
             });
-
-            allToolCalls.push(toolCallResult);
-
-            // Stream tool call result
-            await send({ type: "tool_call", toolCall: toolCallResult, state: toClientState(state) });
-          } catch (e) {
-            console.error("Tool call error:", e);
-            throw e;
+            toolExecutionFailed = true;
+            break;
           }
+
+          state = nextState;
+          const toolCallResult = {
+            id: toolCall.id,
+            name: toolCall.name,
+            arguments: toolCall.arguments,
+            result,
+          };
+
+          toolResults.push({ id: toolCall.id, name: toolCall.name, result });
+          allToolCalls.push(toolCallResult);
+
+          // Stream each successful result as a recoverable state checkpoint.
+          await send({ type: "tool_call", toolCall: toolCallResult, state: toClientState(state) });
+        }
+
+        if (toolExecutionFailed) {
+          await send({ type: "state", state: toClientState(state) });
+          await send({ type: "done" });
+          await writer.write(encoder.encode("data: [DONE]\n\n"));
+          await close();
+          return;
         }
 
         // Add assistant message with tool calls to conversation
