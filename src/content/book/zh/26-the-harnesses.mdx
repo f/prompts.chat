@@ -188,7 +188,7 @@ Google 开源的 [Elephant-Goldfish Model](https://github.com/google/elephant-go
 
 有两点提醒能让这个想法保持诚实。第一，在同一上下文里进行的审阅不是独立审阅，无论提示词把要求写得多么坚决。EGM 的 [Harness 指南](https://github.com/google/elephant-goldfish-model/blob/main/docs/harnesses.md)把“启动一个子智能体”对应到每个 Harness 自己的子智能体工具上；如果某个 Harness 没有这种工具，审阅就会停下来，而不是在作者的会话里悄悄继续。第二，全新的对话并不总等于空白的上下文，所以隔离必须去检查，而不能想当然。Harness 自动加载的指令文件，可能会跟着审阅者一起溜进来。[Issue #237](https://github.com/google/elephant-goldfish-model/issues/237) 报告说，Codex 和 Antigravity 中的 EGM 审阅者从未看到父级对话，却仍然收到了项目的 `AGENTS.md`。团队的假设，就这样被带进了本该质疑这些假设的审阅里。此外，每多一个审阅者，就多花一份 token 和时间。旁观者能看到作者已经看不见的东西，却替代不了测试，也替代不了你自己的判断。
 
-想试一试，可以打开一个没有历史记录的新会话或子智能体，并只给它只读工具；这一点要在 Harness 的设置里限定，而不是在提示词里请求。然后只把文档交给它，这样问：
+想试一试，可以打开一个没有历史记录的新会话或子智能体，并只给它只读工具；这一点要在 Harness 的设置里限定，而不是在提示词里请求。然后把它指向文档本身，而不是产生这份文档的对话，这样问：
 
 <TryIt compact prompt={`请像第一次看到这份计划的人那样阅读它。只使用这份文档和它提到的文件：\${document:docs/designs/webhook-delivery.md}
 
