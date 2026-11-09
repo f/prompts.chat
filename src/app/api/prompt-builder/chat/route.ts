@@ -153,8 +153,11 @@ export async function POST(request: NextRequest) {
     return toClientState({ ...state, ...committedContentConfiguration });
   };
 
-  /** Process the model/tool loop and stream text, results, and recoverable state. */
-  void (async () => {
+  /**
+   * Process the model/tool loop and stream text, results, and recoverable state.
+   * @returns A promise that settles when the response stream is complete.
+   */
+  const processAgentStream = async (): Promise<void> => {
 
     try {
       const openai = new OpenAI({
@@ -478,7 +481,9 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
       }
       await close();
     }
-  })().catch(async (error) => {
+  };
+
+  void processAgentStream().catch(async (error) => {
     // Keep unexpected failures from escaping the detached stream task.
     console.error("Prompt builder stream task error:", error);
     await close();

@@ -66,19 +66,20 @@ export interface PromptBuilderHandle {
   open: () => void;
 }
 
-/**
- * Render the prompt-building chat and stream generated edits into the prompt form.
- * @param props Prompt data, taxonomy options, and the state-change callback.
- * @param ref Imperative controls for sending a message or opening the chat.
- */
-export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>(function PromptBuilder({
-  availableTags,
-  availableCategories,
-  currentState,
-  onStateChange,
-  modelName = "gpt-4o-mini",
-  initialPromptRequest,
-}, ref) {
+export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>(
+  /**
+   * Render the prompt-building chat and stream generated edits into the prompt form.
+   * @param props Prompt data, taxonomy options, and the state-change callback.
+   * @param ref Imperative controls for sending a message or opening the chat.
+   */
+  function PromptBuilder({
+    availableTags,
+    availableCategories,
+    currentState,
+    onStateChange,
+    modelName = "gpt-4o-mini",
+    initialPromptRequest,
+  }, ref) {
   const t = useTranslations("promptBuilder");
   // Default to closed on mobile (< 768px)
   const [isOpen, setIsOpen] = useState(() => {
