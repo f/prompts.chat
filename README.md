@@ -84,7 +84,7 @@ Teams are also available as JSON: `GET /api/teams?sort=newest` (also `oldest` or
 
 ## 📖 The Interactive Book of Prompting
 
-Learn prompt engineering with our **free, interactive guide** — 30+ chapters covering everything from basics to advanced techniques like chain-of-thought reasoning, few-shot learning, and AI agents. Newer chapters cover going **from prompt to team** (prompt, skill, agent, bot, team), always-on bots, agent teams, computer use, and who may give a bot work — available in 17 languages.
+Learn prompt engineering with our **free, interactive guide** — 31+ chapters covering everything from basics to advanced techniques like chain-of-thought reasoning, few-shot learning, and AI agents. Newer chapters cover going **from prompt to team** (prompt, skill, agent, bot, team), always-on bots, agent teams, computer use, who may give a bot work, and **software development with AI** (vibe coding vs. agentic engineering, effort settings, autonomous coding agents) — available in 17 languages.
 
 **[Start Reading →](https://fka.gumroad.com/l/art-of-chatgpt-prompting)** (Source: https://github.com/f/prompts.chat/tree/main/src/content/book)
 
