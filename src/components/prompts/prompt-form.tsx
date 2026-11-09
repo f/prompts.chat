@@ -543,30 +543,42 @@ export function PromptForm({ categories, tags, initialData, initialContributors 
       !valuesEqual(newState[field], requestedState[field]) &&
       valuesEqual(currentValues[field], requestedState[field]);
 
-    if (shouldApply("title")) form.setValue("title", newState.title, opts);
+    if (shouldApply("title") && newState.title.trim().length > 0) {
+      form.setValue("title", newState.title, opts);
+    }
     if (shouldApply("description")) form.setValue("description", newState.description, opts);
-    // Type, content, and editor format form one configuration. Preserve the
-    // whole group if the user changed any part while generation ran.
+    // Content and input format are linked. Output type is merged separately so
+    // a user can change TEXT/IMAGE/VIDEO/AUDIO while content generation runs.
     const shouldApplyContentConfiguration =
-      valuesEqual(currentValues.type, requestedState.type) &&
       valuesEqual(currentValues.content, requestedState.content) &&
-      valuesEqual(currentValues.structuredFormat, requestedState.structuredFormat) &&
-      (!shouldApply("content") || newState.content.trim().length > 0);
+      valuesEqual(currentValues.structuredFormat, requestedState.structuredFormat);
     if (shouldApplyContentConfiguration && shouldApply("content")) {
-      form.setValue("content", newState.content, opts);
+      if (newState.content.trim().length > 0) {
+        form.setValue("content", newState.content, opts);
+      }
     }
-    if (shouldApplyContentConfiguration && shouldApply("type")) {
-      form.setValue("type", newState.type, opts);
-    }
+    if (shouldApply("type")) form.setValue("type", newState.type, opts);
     if (shouldApplyContentConfiguration && shouldApply("structuredFormat")) {
       form.setValue("structuredFormat", newState.structuredFormat, opts);
     }
     if (shouldApply("categoryId")) form.setValue("categoryId", newState.categoryId || "", opts);
     if (shouldApply("tagIds")) form.setValue("tagIds", newState.tagIds, opts);
     if (shouldApply("isPrivate")) form.setValue("isPrivate", newState.isPrivate, opts);
-    if (shouldApply("requiresMediaUpload")) form.setValue("requiresMediaUpload", newState.requiresMediaUpload, opts);
-    if (shouldApply("requiredMediaType")) form.setValue("requiredMediaType", newState.requiredMediaType, opts);
-    if (shouldApply("requiredMediaCount")) form.setValue("requiredMediaCount", newState.requiredMediaCount, opts);
+    const shouldApplyMediaConfiguration =
+      valuesEqual(currentValues.requiresMediaUpload, requestedState.requiresMediaUpload) &&
+      valuesEqual(currentValues.requiredMediaType, requestedState.requiredMediaType) &&
+      valuesEqual(currentValues.requiredMediaCount, requestedState.requiredMediaCount);
+    if (shouldApplyMediaConfiguration) {
+      if (shouldApply("requiresMediaUpload")) {
+        form.setValue("requiresMediaUpload", newState.requiresMediaUpload, opts);
+      }
+      if (shouldApply("requiredMediaType")) {
+        form.setValue("requiredMediaType", newState.requiredMediaType, opts);
+      }
+      if (shouldApply("requiredMediaCount")) {
+        form.setValue("requiredMediaCount", newState.requiredMediaCount, opts);
+      }
+    }
   };
 
   // Current state for AI builder

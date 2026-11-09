@@ -232,6 +232,11 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
         } else if (parsed.type === "error") {
           streamError = parsed.error || t("errorMessage");
         } else if (parsed.type === "done") {
+          if (!fullContent.trim() && toolCalls.length === 0) {
+            streamError = t("errorMessage");
+            return;
+          }
+
           responseFinalized = true;
           // Finalize the message
           setMessages((prev) => [

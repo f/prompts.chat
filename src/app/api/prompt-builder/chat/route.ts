@@ -134,6 +134,17 @@ export async function POST(request: NextRequest) {
     type: state.type === "STRUCTURED" ? "TEXT" : state.type,
   });
 
+  let pendingStructuredConfiguration = false;
+  let committedContentConfiguration = {
+    content: currentState.content,
+    type: currentState.type,
+    structuredFormat: currentState.structuredFormat,
+  };
+  const toCheckpointState = (state: PromptBuilderState): PromptBuilderState => {
+    if (!pendingStructuredConfiguration) return toClientState(state);
+    return toClientState({ ...state, ...committedContentConfiguration });
+  };
+
   // Start processing in background
   void (async () => {
 
@@ -276,7 +287,7 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
 
         // If no tool calls, we're done
         if (toolCalls.length === 0) {
-          await send({ type: "state", state: toClientState(state) });
+          await send({ type: "state", state: toCheckpointState(state) });
           await send({ type: "done" });
           await writer.write(encoder.encode("data: [DONE]\n\n"));
           await close();
@@ -288,6 +299,11 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
         let toolExecutionFailed = false;
 
         for (const toolCall of toolCalls) {
+          if (request.signal.aborted) {
+            await close();
+            return;
+          }
+
           let result: unknown;
           let nextState: PromptBuilderState;
           try {
@@ -297,11 +313,16 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
               args,
               state,
               availableTags,
-              availableCategories
+              availableCategories,
+              request.signal
             );
             result = execution.result;
             nextState = execution.newState;
           } catch (e) {
+            if (request.signal.aborted) {
+              await close();
+              return;
+            }
             console.error(`Prompt builder tool ${toolCall.name} failed:`, e);
             const failedToolCall = {
               id: toolCall.id,
@@ -313,13 +334,42 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
             await send({
               type: "tool_error",
               toolCall: failedToolCall,
-              state: toClientState(state),
+              state: toCheckpointState(state),
             });
             toolExecutionFailed = true;
             break;
           }
 
+          if (request.signal.aborted) {
+            await close();
+            return;
+          }
+
+          if (toolCall.name === "set_type") {
+            const changesStructuredConfiguration =
+              (state.type === "STRUCTURED") !== (nextState.type === "STRUCTURED") ||
+              state.structuredFormat !== nextState.structuredFormat;
+            if (changesStructuredConfiguration) {
+              if (!pendingStructuredConfiguration) {
+                committedContentConfiguration = {
+                  content: state.content,
+                  type: state.type,
+                  structuredFormat: state.structuredFormat,
+                };
+              }
+              pendingStructuredConfiguration = true;
+            }
+          }
+
           state = nextState;
+          if (toolCall.name === "set_content") {
+            committedContentConfiguration = {
+              content: state.content,
+              type: state.type,
+              structuredFormat: state.structuredFormat,
+            };
+            pendingStructuredConfiguration = false;
+          }
           const toolCallResult = {
             id: toolCall.id,
             name: toolCall.name,
@@ -331,11 +381,16 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
           allToolCalls.push(toolCallResult);
 
           // Stream each successful result as a recoverable state checkpoint.
-          await send({ type: "tool_call", toolCall: toolCallResult, state: toClientState(state) });
+          await send({ type: "tool_call", toolCall: toolCallResult, state: toCheckpointState(state) });
+        }
+
+        if (request.signal.aborted) {
+          await close();
+          return;
         }
 
         if (toolExecutionFailed) {
-          await send({ type: "state", state: toClientState(state) });
+          await send({ type: "state", state: toCheckpointState(state) });
           await send({ type: "done" });
           await writer.write(encoder.encode("data: [DONE]\n\n"));
           await close();
@@ -366,9 +421,14 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
         }
       }
 
+      if (request.signal.aborted) {
+        await close();
+        return;
+      }
+
       // Max loops reached
       await send({ type: "text", content: "I've made several changes. Let me know if you need anything else!" });
-      await send({ type: "state", state: toClientState(state) });
+      await send({ type: "state", state: toCheckpointState(state) });
       await send({ type: "done" });
       await writer.write(encoder.encode("data: [DONE]\n\n"));
       await close();

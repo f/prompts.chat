@@ -30,10 +30,11 @@ const TRANSLATION_MODEL = process.env.OPENAI_TRANSLATION_MODEL || "gpt-4o-mini";
  * Translate a non-English search query to English keywords for better semantic search.
  * Uses a cheap model to extract and translate keywords.
  */
-export async function translateQueryToEnglish(query: string): Promise<string> {
+export async function translateQueryToEnglish(query: string, signal?: AbortSignal): Promise<string> {
   const client = getOpenAIClient();
   
   try {
+    signal?.throwIfAborted();
     const response = await client.chat.completions.create({
       model: TRANSLATION_MODEL,
       messages: [
@@ -48,11 +49,13 @@ export async function translateQueryToEnglish(query: string): Promise<string> {
       ],
       max_tokens: queryTranslatorPrompt.modelParameters?.maxTokens || 100,
       temperature: queryTranslatorPrompt.modelParameters?.temperature || 0,
-    });
+    }, { signal });
     
+    signal?.throwIfAborted();
     const translatedQuery = response.choices[0]?.message?.content?.trim();
     return translatedQuery || query;
   } catch (error) {
+    if (signal?.aborted) throw error;
     // If translation fails, return original query
     console.error("Query translation failed:", error);
     return query;
@@ -68,13 +71,13 @@ function containsNonEnglish(text: string): boolean {
   return /[^\x00-\x7F]/.test(text);
 }
 
-export async function generateEmbedding(text: string): Promise<number[]> {
+export async function generateEmbedding(text: string, signal?: AbortSignal): Promise<number[]> {
   const client = getOpenAIClient();
   
   const response = await client.embeddings.create({
     model: EMBEDDING_MODEL,
     input: text,
-  });
+  }, { signal });
   
   return response.data[0].embedding;
 }
@@ -214,9 +217,11 @@ export interface SemanticSearchResult {
 export async function semanticSearch(
   query: string,
   limit: number = 20,
-  { where = NON_BOT_PROMPTS }: { where?: Prisma.PromptWhereInput } = {}
+  { where = NON_BOT_PROMPTS, signal }: { where?: Prisma.PromptWhereInput; signal?: AbortSignal } = {}
 ): Promise<SemanticSearchResult[]> {
+  signal?.throwIfAborted();
   const config = await getConfig();
+  signal?.throwIfAborted();
   if (!config.features.aiSearch) {
     throw new Error("AI Search is not enabled");
   }
@@ -224,13 +229,15 @@ export async function semanticSearch(
   // Translate non-English queries to English for better semantic matching
   let searchQuery = query;
   if (containsNonEnglish(query)) {
-    searchQuery = await translateQueryToEnglish(query);
+    searchQuery = await translateQueryToEnglish(query, signal);
   }
 
   // Generate embedding for the query
-  const queryEmbedding = await generateEmbedding(searchQuery);
+  signal?.throwIfAborted();
+  const queryEmbedding = await generateEmbedding(searchQuery, signal);
 
   // Fetch all public prompts with embeddings (excluding soft-deleted)
+  signal?.throwIfAborted();
   const prompts = await db.prompt.findMany({
     where: {
       isPrivate: false,
@@ -277,6 +284,7 @@ export async function semanticSearch(
   });
 
   // Calculate similarity scores and filter by threshold
+  signal?.throwIfAborted();
   const SIMILARITY_THRESHOLD = 0.4; // Filter out results below this similarity
   
   const scoredPrompts = prompts

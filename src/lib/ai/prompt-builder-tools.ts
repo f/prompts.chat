@@ -245,7 +245,8 @@ export async function executeToolCall(
   args: Record<string, unknown>,
   currentState: PromptBuilderState,
   availableTags: Array<{ id: string; name: string; slug: string; color: string }>,
-  availableCategories: Array<{ id: string; name: string; slug: string; parentId: string | null }>
+  availableCategories: Array<{ id: string; name: string; slug: string; parentId: string | null }>,
+  signal?: AbortSignal
 ): Promise<{ result: ToolResult; newState: PromptBuilderState }> {
   const newState = { ...currentState };
 
@@ -257,8 +258,10 @@ export async function executeToolCall(
       const structuredFormat = args.structuredFormat as string | undefined;
       
       try {
+        signal?.throwIfAborted();
         // Run both full-text and semantic search in parallel
         const useSemanticSearch = await isAISearchEnabled();
+        signal?.throwIfAborted();
         
         // Full-text search
         const textSearchPromise = db.prompt.findMany({
@@ -294,13 +297,14 @@ export async function executeToolCall(
 
         // Semantic search (if enabled)
         const semanticSearchPromise = useSemanticSearch 
-          ? semanticSearch(query, limit)
+          ? semanticSearch(query, limit, { signal })
           : Promise.resolve([]);
 
         const [textResults, semanticResults] = await Promise.all([
           textSearchPromise,
           semanticSearchPromise
         ]);
+        signal?.throwIfAborted();
 
         // Combine and deduplicate results
         const seenIds = new Set<string>();
@@ -358,6 +362,7 @@ export async function executeToolCall(
 
         // If no results found, get random prompts to learn the style
         if (finalResults.length === 0) {
+          signal?.throwIfAborted();
           const randomPrompts = await db.prompt.findMany({
             where: {
               isPrivate: false,
@@ -412,6 +417,7 @@ export async function executeToolCall(
           newState
         };
       } catch (error) {
+        if (signal?.aborted) throw error;
         return {
           result: { success: false, error: "Failed to search prompts" },
           newState
@@ -472,7 +478,11 @@ export async function executeToolCall(
         }
       }
 
-      newState.tagIds = matchedTagIds;
+      // A nonempty list with no matches is likely an invalid suggestion, not a
+      // request to clear the existing selection. An explicit empty list clears it.
+      newState.tagIds = tagNames.length > 0 && matchedTagIds.length === 0
+        ? currentState.tagIds
+        : matchedTagIds;
       return {
         result: {
           success: true,
