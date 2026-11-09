@@ -173,6 +173,31 @@ Avant d'exécuter quoi que ce soit qui modifie des fichiers, résume-moi le prog
 
 Toutes les tâches n'ont pas besoin d'un programme. Quand chaque étape dépend d'un jugement sur le résultat précédent, un appel à la fois reste souvent plus clair. Le programme prend tout son sens quand la tâche est vaste, répétitive et facile à vérifier.
 
+### Un regard neuf : des relecteurs qui partent de zéro
+
+On présente d'habitude le contexte vide d'un sous-agent comme un moyen de gagner de la place : le travail bruyant se fait ailleurs, et seul un résumé revient. C'est pourtant aussi l'un des meilleurs outils de relecture qu'un harness puisse offrir. Un agent qui a passé une longue session sur un problème porte en lui chaque hypothèse faite en chemin. Quand il relit son propre plan, il comble chaque trou de mémoire et ne remarque même pas qu'il y avait un trou. Un relecteur lancé dans un contexte neuf n'a que le document et les fichiers auxquels il renvoie. Tout ce que l'auteur savait sans jamais l'écrire se manifeste alors sous forme de confusion, et une confusion sur le papier coûte bien moins cher à corriger qu'une confusion dans le code.
+
+Le plugin open source [Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model) (EGM) de Google, [présenté en octobre 2026](https://opensource.googleblog.com/2026/10/introducing-elephant-goldfish-model-plugin.html), repose sur ce partage des rôles. L'éléphant est la longue session qui garde le contexte du projet et rédige une spécification ; il n'écrit aucun code. Les poissons rouges sont des sous-agents sans mémoire qui ne voient que le brouillon et le code source qu'il cite. C'est vous qui tranchez les compromis et approuvez la conception. Avant toute critique, un poisson rouge doit reformuler le plan avec ses propres mots ; s'il n'y parvient pas, le document est ambigu et repart en rédaction. D'autres relecteurs endossent des rôles différents et cherchent les cas limites, les dépendances cachées et tout ce que la personne chargée de l'implémentation devrait encore décider seule. Leurs remarques sont classées en bloquantes, majeures ou mineures, puis renvoyées à l'éléphant. Google affirme que des milliers de ses ingénieurs utilisent le plugin. Ce n'est pas un produit officiellement pris en charge par Google, et aucune mesure de sa précision n'est publiée.
+
+<Compare
+  before={{ label: "L'auteur relit son propre plan", content: "« Réessayer les livraisons échouées avec des délais croissants. » La phrase semble complète, car l'auteur se souvient d'avoir décidé combien de tentatives autoriser et ce qui se passe quand le même événement arrive deux fois. Rien de tout cela n'est sur la page." }}
+  after={{ label: "Un relecteur neuf ne lit que le document", content: "« Combien de tentatives, et que se passe-t-il après la dernière ? Si le même événement arrive deux fois, est-il livré deux fois ? J'ai dû deviner les deux. » Les trous que l'auteur comblait de mémoire reviennent sous forme de questions." }}
+/>
+
+Ce schéma n'appartient pas à un seul produit. Le [guide des bonnes pratiques de Claude Code](https://code.claude.com/docs/en/best-practices), chez Anthropic, décrit `/code-review` comme une relecture menée dans un sous-agent neuf qui n'a jamais vu la conversation, et qui ne se laisse donc pas influencer par le raisonnement ayant produit le code. Le guide trace la même ligne que cette section : confier une tâche à un sous-agent ne rend pas la réponse meilleure, mais un relecteur qui n'a pas vu votre raisonnement aide vraiment. Il conseille de ne donner à ce relecteur que des outils en lecture seule et de lui demander de laisser le style de côté, car un relecteur chargé de trouver des problèmes en trouve toujours. Le harness open source [Code Copilot Team](https://github.com/gosha70/code-copilot-team) confie plutôt la relecture à un second modèle, qui examine les modifications dans un sandbox en lecture seule et répond PASS, FAIL ou INCONCLUSIVE. Une phase ne peut pas se terminer sur un FAIL.
+
+Deux mises en garde gardent l'idée honnête. D'abord, une relecture menée dans le même contexte n'est pas une relecture indépendante, quelle que soit la fermeté du prompt. Le [guide des harnesses](https://github.com/google/elephant-goldfish-model/blob/main/docs/harnesses.md) d'EGM associe « lancer un sous-agent » à l'outil de sous-agent propre à chaque harness, et lorsqu'un harness n'en a pas, la relecture s'arrête au lieu de se poursuivre en silence dans la session de l'auteur. Ensuite, une conversation neuve n'est pas toujours un contexte vide : l'isolement doit être vérifié, pas supposé. Les fichiers d'instructions qu'un harness charge de lui-même peuvent suivre le relecteur. L'[issue #237](https://github.com/google/elephant-goldfish-model/issues/237) signale que les relecteurs d'EGM dans Codex et Antigravity n'ont jamais vu la conversation principale, mais ont tout de même reçu le fichier `AGENTS.md` du projet, ce qui fait entrer les hypothèses de l'équipe dans la relecture même qui devait les interroger. Enfin, chaque relecteur supplémentaire coûte des tokens et du temps. Un regard neuf voit ce que l'auteur ne voit plus ; il ne remplace ni les tests ni votre propre jugement.
+
+Pour essayer, ouvrez une nouvelle session ou un sous-agent sans historique et doté uniquement d'outils en lecture seule, réglés dans le harness plutôt que simplement demandés dans le prompt. Indiquez-lui le document, pas la conversation qui l'a produit, et demandez :
+
+<TryIt compact prompt={`Lis ce plan comme quelqu'un qui ne l'a jamais vu. Utilise uniquement le document et les fichiers vers lesquels il renvoie : \${document:docs/designs/webhook-delivery.md}
+
+1. Reformule le plan avec tes propres mots : ce qu'il construit, comment les éléments s'articulent et comment il sera vérifié.
+2. Liste chaque point où tu as dû deviner, et ce que tu as deviné.
+3. Classe chaque manque comme bloquant, majeur ou mineur, et indique ce que l'auteur devrait ajouter.
+
+Ne fais aucun commentaire de style et ne modifie aucun fichier.`} />
+
 ## Pourquoi les prompts comptent dans un harness
 
 Un harness donne au modèle un moyen d'agir. Vos prompts expliquent quelles actions sont utiles. Sans objectif clair, un agent peut passer de nombreuses étapes à faire un travail dont vous n'avez pas besoin.

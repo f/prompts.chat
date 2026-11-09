@@ -173,6 +173,31 @@ Prima di eseguire qualcosa che modifica i file, riassumimi il programma e aspett
 
 Non tutte le attività hanno bisogno di un programma. Quando ogni mossa dipende dal valutare l'ultimo risultato, una chiamata alla volta è spesso più chiara. Il programma dà il meglio quando il lavoro è grande, ripetitivo e facile da verificare.
 
+### Occhi nuovi: revisori che partono da zero
+
+Il contesto vuoto di un subagente viene di solito presentato come un modo per risparmiare spazio: il lavoro rumoroso avviene altrove e torna indietro solo un riassunto. Ma è anche uno dei migliori strumenti di revisione che un harness possa offrire. Un agente che ha passato una lunga sessione su un problema si porta dietro ogni ipotesi fatta lungo la strada. Quando rilegge il proprio piano, riempie ogni lacuna con la memoria e non si accorge nemmeno che la lacuna c'era. Un revisore avviato in un contesto nuovo ha solo il documento e i file a cui rimanda. Tutto ciò che l'autore sapeva ma non ha mai scritto emerge come confusione, e una confusione sulla carta costa molto meno da sistemare di una confusione nel codice.
+
+Il plugin open source [Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model) (EGM) di Google, [presentato nell'ottobre 2026](https://opensource.googleblog.com/2026/10/introducing-elephant-goldfish-model-plugin.html), è costruito proprio su questa divisione. L'elefante è la lunga sessione che custodisce il contesto del progetto e redige una specifica; non scrive codice. I pesci rossi sono subagenti senza memoria che vedono solo la bozza e il codice sorgente a cui fa riferimento. Sei tu a sciogliere i compromessi e ad approvare il progetto. Prima di qualsiasi critica, un pesce rosso deve rispiegare il piano con parole sue; se non ci riesce, il documento è ambiguo e torna in stesura. Altri revisori assumono ruoli diversi e cercano casi limite, dipendenze nascoste e tutto ciò che chi implementa dovrebbe ancora decidere da solo. Le loro osservazioni vengono classificate come bloccanti, importanti o minori e rimandate all'elefante. Google dice che migliaia dei suoi ingegneri usano il plugin. Non è un prodotto supportato ufficialmente da Google e non pubblica alcuna misura della sua accuratezza.
+
+<Compare
+  before={{ label: "L'autore rilegge il proprio piano", content: "\"Riprova le consegne fallite con attese crescenti.\" La frase sembra completa, perché l'autore ricorda di aver deciso quanti tentativi concedere e cosa succede quando lo stesso evento arriva due volte. Niente di tutto questo è sulla pagina." }}
+  after={{ label: "Un revisore nuovo legge solo il documento", content: "\"Quanti tentativi, e cosa succede dopo l'ultimo? Se lo stesso evento arriva due volte, viene consegnato due volte? Ho dovuto tirare a indovinare su entrambe le cose.\" Le lacune che l'autore riempiva a memoria tornano indietro come domande." }}
+/>
+
+Lo schema non appartiene a un solo prodotto. La [guida alle buone pratiche di Claude Code](https://code.claude.com/docs/en/best-practices), di Anthropic, descrive `/code-review` come una revisione svolta in un subagente nuovo che non ha mai visto la conversazione, e che quindi non si lascia condizionare dal ragionamento da cui è nato il codice. La guida traccia la stessa linea di questa sezione: affidare un compito a un subagente non rende migliore la risposta, ma un revisore che non ha visto il tuo ragionamento aiuta davvero. Suggerisce anche di dare a quel revisore solo strumenti in sola lettura e di chiedergli di tralasciare lo stile, perché un revisore a cui si chiede di trovare problemi trova sempre qualcosa. L'harness open source [Code Copilot Team](https://github.com/gosha70/code-copilot-team) affida invece la revisione a un secondo modello, che esamina le modifiche in un sandbox in sola lettura e risponde PASS, FAIL o INCONCLUSIVE. Una fase non può concludersi con un FAIL.
+
+Due avvertenze mantengono onesta l'idea. La prima: una revisione fatta nello stesso contesto non è una revisione indipendente, per quanto il prompt la chieda con fermezza. La [guida agli harness](https://github.com/google/elephant-goldfish-model/blob/main/docs/harnesses.md) di EGM collega "avvia un subagente" allo strumento per subagenti di ciascun harness, e quando un harness non ne ha, la revisione si ferma invece di proseguire in silenzio nella sessione dell'autore. La seconda: una conversazione nuova non è sempre un contesto vuoto, quindi l'isolamento va verificato, non dato per scontato. I file di istruzioni che un harness carica da sé possono seguire il revisore. L'[issue #237](https://github.com/google/elephant-goldfish-model/issues/237) segnala che i revisori di EGM in Codex e Antigravity non hanno mai visto la conversazione principale, ma hanno comunque ricevuto l'`AGENTS.md` del progetto, portando le ipotesi del team proprio dentro la revisione che doveva metterle in discussione. E ogni revisore in più costa token e tempo. Occhi nuovi vedono ciò che l'autore non riesce più a vedere; non sostituiscono i test né il tuo giudizio.
+
+Per provarlo, apri una nuova sessione o un subagente senza cronologia e con soli strumenti in sola lettura, impostati nell'harness e non semplicemente chiesti nel prompt. Indicagli il documento, non la conversazione da cui è nato, e chiedi:
+
+<TryIt compact prompt={`Leggi questo piano come chi non l'ha mai visto prima. Usa solo il documento e i file a cui rimanda: \${document:docs/designs/webhook-delivery.md}
+
+1. Rispiega il piano con parole tue: cosa costruisce, come si collegano le parti e come verrà verificato.
+2. Elenca ogni punto in cui hai dovuto tirare a indovinare e cosa hai ipotizzato.
+3. Classifica ogni lacuna come bloccante, importante o minore, e di' cosa dovrebbe aggiungere l'autore.
+
+Non fare commenti sullo stile e non modificare alcun file.`} />
+
 ## Perché i prompt contano dentro un harness
 
 Un harness dà al modello un modo per agire. I tuoi prompt spiegano quali azioni sono utili. Senza un obiettivo chiaro, un agente può dedicare molti passaggi a un lavoro che non ti serve.

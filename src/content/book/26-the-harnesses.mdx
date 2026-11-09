@@ -173,6 +173,31 @@ Before running anything that changes files, summarize the program for me and wai
 
 Not every task needs a program. When each move depends on judging the last result, one call at a time is often clearer. A program shines when the job is large, repetitive, and easy to check.
 
+### Fresh Eyes: Reviewers That Start Empty
+
+A subagent's empty context is usually described as a way to save room: the noisy work happens somewhere else, and only a summary comes back. It is also one of the best review tools a harness can offer. An agent that has spent a long session on a problem carries every assumption it made along the way. When it re-reads its own plan, it fills each gap from memory and never notices that the gap was there. A reviewer started in a fresh context has only the document and the files it points to. Whatever the author knew but never wrote down shows up as confusion, and confusion on a page is far cheaper to fix than confusion in code.
+
+Google's open-source [Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model) plugin (EGM), [announced in October 2026](https://opensource.googleblog.com/2026/10/introducing-elephant-goldfish-model-plugin.html), is built around this split. The Elephant is the long session that holds the project's context and drafts a specification; it writes no code. The Goldfish are stateless subagents that see only the draft and the source it references. You resolve the trade-offs and approve the design. Before any critique, one Goldfish has to explain the plan back in its own words, and if it cannot, the document is ambiguous and goes back for another draft. Other reviewers take different roles, looking for edge cases, hidden dependencies, and anything an implementer would still have to decide alone. Their findings are ranked as blockers, major issues, or nits and sent back to the Elephant. Google says thousands of its engineers use the plugin. It is not an officially supported Google product, and it publishes no accuracy benchmark.
+
+<Compare
+  before={{ label: "The author re-reads its own plan", content: "\"Retry failed deliveries with backoff.\" The line feels complete, because the author remembers deciding how many retries to allow and what happens when the same event arrives twice. None of that is on the page." }}
+  after={{ label: "A fresh reviewer reads only the document", content: "\"How many retries, and what happens after the last one? If the same event arrives twice, is it delivered twice? I had to guess both.\" The gaps the author filled from memory come back as questions." }}
+/>
+
+The pattern is not tied to one product. Anthropic's [best-practices guide for Claude Code](https://code.claude.com/docs/en/best-practices) describes `/code-review` as a review run in a fresh subagent that never saw the conversation, so it "isn't swayed by the reasoning that produced the code." The guide draws the same line this section does: handing a task to a subagent does not make the answer better, but a reviewer that has not seen your reasoning does help. It suggests giving that reviewer read-only tools and telling it to skip style, because a reviewer asked to find problems will always find something. The open-source [Code Copilot Team](https://github.com/gosha70/code-copilot-team) harness hands the review to a second model instead, which checks the diff in a read-only sandbox and returns PASS, FAIL, or INCONCLUSIVE. A phase cannot complete on a FAIL.
+
+Two cautions keep the idea honest. First, a review run in the same context is not an independent review, however firmly the prompt asks for one. EGM's [harness guide](https://github.com/google/elephant-goldfish-model/blob/main/docs/harnesses.md) maps "spawn a subagent" to each harness's own subagent tool, and when a harness has none, the review stops instead of quietly running in the author's session. Second, a fresh conversation is not always an empty context, so isolation has to be checked rather than assumed. Instruction files that a harness loads on its own can follow the reviewer in. [Issue #237](https://github.com/google/elephant-goldfish-model/issues/237) reports that EGM reviewers in Codex and Antigravity never saw the parent conversation but still received the project's `AGENTS.md`, carrying the team's assumptions into the very review meant to question them. And every extra reviewer costs tokens and time. Fresh eyes find what the author can no longer see; they do not replace tests or your own judgment.
+
+To try it, open a new session or a subagent with no history and only read-only tools, set in your harness rather than requested in the prompt. Point it at the document, not the conversation that produced it, and ask:
+
+<TryIt compact prompt={`Read this plan as someone who has never seen it before. Use only the document and the files it mentions: \${document:docs/designs/webhook-delivery.md}
+
+1. Explain the plan back in your own words: what it builds, how the parts fit together, and how it will be checked.
+2. List every point where you had to guess, and what you guessed.
+3. Rank each gap as blocker, major, or nit, and say what the author should add.
+
+Skip style comments and do not edit any files.`} />
+
 ## Why Prompts Matter Inside a Harness
 
 A harness gives the model a way to act. Your prompts explain what useful action looks like. Without a clear goal, an agent can spend many steps doing work you did not need.

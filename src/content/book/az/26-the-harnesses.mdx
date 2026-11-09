@@ -173,6 +173,31 @@ Faylları dəyişən hər hansı bir şeyi işə salmazdan əvvəl proqramı mə
 
 Hər tapşırığa proqram lazım deyil. Hər addım əvvəlki nəticəni dəyərləndirməkdən asılıdırsa, çağırışları bir-bir etmək çox vaxt daha aydın olur. Proqram ən çox iş böyük, təkrarlanan və yoxlanması asan olduqda öz gücünü göstərir.
 
+### Təzə Baxış: Sıfırdan Başlayan Rəyçilər
+
+Subagentin boş konteksti adətən yer qənaəti üsulu kimi təqdim olunur: səs-küylü iş başqa yerdə görülür, geri yalnız qısa xülasə qayıdır. Amma bu boşluq həm də harness-in təklif edə biləcəyi ən yaxşı yoxlama vasitələrindən biridir. Bir problem üzərində uzun sessiya keçirmiş agent yol boyu etdiyi hər fərziyyəni özü ilə daşıyır. Öz planını yenidən oxuyanda hər boşluğu yaddaşından doldurur və orada boşluq olduğunu heç hiss etmir. Təzə kontekstlə başladılan rəyçinin əlində isə yalnız sənəd və sənədin göstərdiyi fayllar olur. Müəllifin bildiyi, amma heç yerə yazmadığı nə varsa, anlaşılmazlıq kimi üzə çıxır. Kağız üzərindəki anlaşılmazlığı aradan qaldırmaq isə koddakından qat-qat ucuz başa gəlir.
+
+Google-un açıq mənbəli [Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model) plagini (EGM), [2026-cı ilin oktyabrında təqdim olunub](https://opensource.googleblog.com/2026/10/introducing-elephant-goldfish-model-plugin.html) və məhz bu iş bölgüsü üzərində qurulub. "Fil" (Elephant) layihənin kontekstini saxlayan və texniki tapşırığı yazan uzun sessiyadır; kod yazmır. "Qızıl balıqlar" (Goldfish) isə yalnız qaralamanı və onun istinad etdiyi mənbə kodunu görən, yaddaşı olmayan subagentlərdir. Kompromisləri həll edən və dizaynı təsdiqləyən sizsiniz. Hər hansı tənqiddən əvvəl bir qızıl balıq planı öz sözləri ilə geri danışmalıdır; danışa bilmirsə, sənəd qeyri-müəyyəndir və yenidən yazılmağa qayıdır. Digər rəyçilər fərqli rollar götürür: sərhəd hallarını, gizli asılılıqları və planı həyata keçirəcək şəxsin hələ də təkbaşına qərar verməli olacağı hər şeyi axtarırlar. Onların tapıntıları bloklayıcı, ciddi və ya xırda kimi sıralanır və Fil-ə geri göndərilir. Google deyir ki, plagindən minlərlə mühəndisi istifadə edir. Bu, Google-un rəsmi dəstəklədiyi məhsul deyil və dəqiqliyinə dair heç bir ölçmə dərc olunmayıb.
+
+<Compare
+  before={{ label: "Müəllif öz planını yenidən oxuyur", content: "\"Uğursuz çatdırılmaları artan fasilələrlə yenidən sına.\" Cümlə tam görünür, çünki müəllif neçə cəhdə icazə verəcəyini və eyni hadisə iki dəfə gələndə nə olacağını artıq qərara aldığını xatırlayır. Bunların heç biri səhifədə yoxdur." }}
+  after={{ label: "Təzə rəyçi yalnız sənədi oxuyur", content: "\"Neçə cəhd olacaq, sonuncudan sonra nə baş verəcək? Eyni hadisə iki dəfə gəlsə, iki dəfə çatdırılacaq? Hər ikisini təxmin etməli oldum.\" Müəllifin yaddaşdan doldurduğu boşluqlar sual kimi geri qayıdır." }}
+/>
+
+Bu yanaşma tək bir məhsula aid deyil. Anthropic-in [Claude Code üçün ən yaxşı təcrübələr bələdçisi](https://code.claude.com/docs/en/best-practices) `/code-review` əmrini söhbəti heç görməmiş təzə subagentdə aparılan yoxlama kimi təsvir edir; belə rəyçi kodu yaradan mühakimənin təsirinə düşmür. Bələdçi bu bölmədəki fərqi eynilə qoyur: işi subagentə ötürmək cavabı yaxşılaşdırmır, amma sizin mühakimənizi görməmiş rəyçi həqiqətən kömək edir. O, həmçinin bu rəyçiyə yalnız oxuma alətləri verməyi və üsluba qarışmamağı tapşırmağı tövsiyə edir, çünki problem tapmaq tapşırılan rəyçi həmişə nəsə tapır. Açıq mənbəli [Code Copilot Team](https://github.com/gosha70/code-copilot-team) harness-i isə yoxlamanı ikinci modelə həvalə edir: həmin model dəyişiklikləri yalnız oxunan sandbox-da nəzərdən keçirir və PASS, FAIL və ya INCONCLUSIVE qərarı ilə qayıdır. FAIL alan mərhələ tamamlana bilmir.
+
+İdeyanı dürüst saxlayan iki xəbərdarlıq var. Birincisi, eyni kontekstdə aparılan yoxlama, prompt onu nə qədər qətiyyətlə istəsə də, müstəqil yoxlama deyil. EGM-in [harness bələdçisi](https://github.com/google/elephant-goldfish-model/blob/main/docs/harnesses.md) "subagent başlat" ifadəsini hər harness-in öz subagent alətinə bağlayır; harness-də belə alət yoxdursa, yoxlama müəllifin sessiyasında səssizcə davam etmək əvəzinə dayanır. İkincisi, təzə söhbət həmişə boş kontekst demək deyil, ona görə də izolyasiyanı fərz etmək yox, yoxlamaq lazımdır. Harness-in özbaşına yüklədiyi təlimat faylları rəyçinin ardınca içəri keçə bilər. [237 nömrəli issue](https://github.com/google/elephant-goldfish-model/issues/237) bildirir ki, Codex və Antigravity-dəki EGM rəyçiləri əsas söhbəti heç görməyib, amma layihənin `AGENTS.md` faylını yenə də alıblar. Beləcə komandanın fərziyyələri məhz onları sorğulamalı olan yoxlamanın içinə düşüb. Üstəlik hər əlavə rəyçi token və vaxt aparır. Təzə göz müəllifin artıq görə bilmədiyini görür, amma testləri və ya sizin öz mühakimənizi əvəz etmir.
+
+Sınamaq üçün yeni sessiya və ya tarixçəsi olmayan, yalnız oxuma alətləri olan bir subagent açın; bunu promptda xahiş etməyin, harness-in ayarlarında təyin edin. Sonra onu sənədə yönəldin, sənədi yaradan söhbətə yox, və soruşun:
+
+<TryIt compact prompt={`Bu planı onu əvvəllər heç görməmiş biri kimi oxu. Yalnız sənəddən və onun adını çəkdiyi fayllardan istifadə et: \${document:docs/designs/webhook-delivery.md}
+
+1. Planı öz sözlərinlə danış: nəyi qurur, hissələr bir-birinə necə bağlanır və necə yoxlanılacaq.
+2. Təxmin etməli olduğun hər məqamı və nəyi təxmin etdiyini sadala.
+3. Hər boşluğu bloklayıcı, ciddi və ya xırda kimi sırala və müəllifin nəyi əlavə etməli olduğunu de.
+
+Üslubla bağlı şərh yazma və heç bir faylı redaktə etmə.`} />
+
 ## Harness Daxilində Promptlar Niyə Vacibdir?
 
 Harness modelə hərəkət etmək üçün yol verir. Promptlarınız faydalı hərəkətin necə olmalı olduğunu izah edir. Aydın məqsəd olmadıqda agent ehtiyacınız olmayan işlərə çoxlu addım sərf edə bilər.

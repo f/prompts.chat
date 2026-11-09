@@ -173,6 +173,31 @@ Dosyaları değiştiren herhangi bir şeyi çalıştırmadan önce programı ban
 
 Her görev bir program gerektirmez. Her adım bir öncekinin sonucunu değerlendirmeye bağlıysa, tek tek çağrılar çoğu zaman daha anlaşılırdır. Program asıl gücünü iş büyük, tekrarlı ve kontrolü kolay olduğunda gösterir.
 
+### Taze Bir Bakış: Sıfırdan Başlayan İnceleyiciler
+
+Bir alt ajanın boş bağlamı genellikle yer kazanmanın bir yolu olarak anlatılır: Gürültülü iş başka bir yerde yapılır, geriye yalnızca bir özet döner. Oysa bu boşluk, bir harness'in sunabileceği en iyi inceleme araçlarından biridir. Bir sorun üzerinde uzun bir oturum geçirmiş ajan, yol boyunca yaptığı her varsayımı da yanında taşır. Kendi planını yeniden okurken her boşluğu hafızasından doldurur ve orada bir boşluk olduğunu fark etmez bile. Taze bir bağlamla başlatılan inceleyicinin elinde ise yalnızca belge ve belgenin gösterdiği dosyalar vardır. Yazarın bildiği ama hiçbir yere yazmadığı ne varsa, kafa karışıklığı olarak ortaya çıkar. Kâğıt üzerindeki bir kafa karışıklığını gidermek de koddakini gidermekten çok daha ucuzdur.
+
+Google'ın açık kaynaklı [Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model) eklentisi (EGM), [Ekim 2026'da duyurulan](https://opensource.googleblog.com/2026/10/introducing-elephant-goldfish-model-plugin.html) bu iş bölümü üzerine kurulu. "Fil" (Elephant), projenin bağlamını taşıyan ve şartnameyi yazan uzun oturumdur; tek satır kod yazmaz. "Japon balıkları" (Goldfish) ise yalnızca taslağı ve taslağın başvurduğu kaynak kodu gören, hafızasız alt ajanlardır. Ödünleşimleri çözen ve tasarımı onaylayan sizsiniz. Eleştiri başlamadan önce bir Japon balığı planı kendi sözleriyle geri anlatmak zorundadır; anlatamıyorsa belge muğlaktır ve yeniden yazılmaya döner. Diğer inceleyiciler farklı roller üstlenir: uç durumları, gizli bağımlılıkları ve uygulayacak kişinin hâlâ tek başına karar vermek zorunda kalacağı her noktayı ararlar. Buldukları şeyler engelleyici, önemli ya da küçük kusur diye sıralanır ve Fil'e geri gönderilir. Google, eklentiyi binlerce mühendisinin kullandığını söylüyor. Eklenti resmî olarak desteklenen bir Google ürünü değil ve yayımlanmış bir doğruluk ölçümü de yok.
+
+<Compare
+  before={{ label: "Yazar kendi planını yeniden okur", content: "\"Başarısız teslimatları artan bekleme süreleriyle yeniden dene.\" Cümle eksiksiz görünür, çünkü yazar kaç deneme yapılacağına ve aynı olay iki kez gelirse ne olacağına çoktan karar verdiğini hatırlar. Ama bunların hiçbiri sayfada yazmaz." }}
+  after={{ label: "Taze bir inceleyici yalnızca belgeyi okur", content: "\"Kaç deneme yapılacak, sonuncusu da başarısız olursa ne olacak? Aynı olay iki kez gelirse iki kez mi teslim edilecek? İkisini de tahmin etmek zorunda kaldım.\" Yazarın hafızasından doldurduğu boşluklar soru olarak geri döner." }}
+/>
+
+Bu yaklaşım tek bir ürüne özgü değil. Anthropic'in [Claude Code için en iyi uygulamalar rehberi](https://code.claude.com/docs/en/best-practices), `/code-review` komutunu sohbeti hiç görmemiş taze bir alt ajanda yapılan bir inceleme olarak tanımlıyor; böylece inceleyici, kodu ortaya çıkaran akıl yürütmenin etkisinde kalmıyor. Rehber, bu bölümdeki ayrımın aynısını yapıyor: Bir işi alt ajana devretmek cevabı daha iyi yapmaz, ama sizin akıl yürütmenizi görmemiş bir inceleyici gerçekten işe yarar. Rehber ayrıca bu inceleyiciye yalnızca okuma yetkisi olan araçlar verilmesini ve üsluba takılmamasının söylenmesini öneriyor; çünkü sorun bulması istenen bir inceleyici her zaman bir şey bulur. Açık kaynaklı [Code Copilot Team](https://github.com/gosha70/code-copilot-team) harness'i ise incelemeyi ikinci bir modele bırakıyor: Bu model, yalnızca okunabilen bir sandbox içinde değişiklikleri inceliyor ve PASS, FAIL ya da INCONCLUSIVE kararıyla dönüyor. FAIL alan bir aşama tamamlanamıyor.
+
+Fikri dürüst tutan iki uyarı var. Birincisi, aynı bağlamda yapılan bir inceleme, prompt bunu ne kadar kesin bir dille isterse istesin, bağımsız bir inceleme değildir. EGM'nin [harness rehberi](https://github.com/google/elephant-goldfish-model/blob/main/docs/harnesses.md), "bir alt ajan başlat" ifadesini her harness'in kendi alt ajan aracına bağlıyor; harness'te böyle bir araç yoksa inceleme, yazarın oturumunda sessizce sürdürülmek yerine duruyor. İkincisi, taze bir sohbet her zaman boş bir bağlam anlamına gelmez; yalıtımın varsayılmaması, denetlenmesi gerekir. Harness'in kendiliğinden yüklediği talimat dosyaları inceleyicinin peşinden içeri girebilir. [GitHub'daki 237 numaralı issue](https://github.com/google/elephant-goldfish-model/issues/237), Codex ve Antigravity'deki EGM inceleyicilerinin ana sohbeti hiç görmediğini ama projenin `AGENTS.md` dosyasını yine de aldığını bildiriyor. Yani ekibin varsayımları, tam da onları sorgulamak için yapılan incelemenin içine taşınmış oluyor. Üstelik her ek inceleyici token ve zaman harcar. Taze gözler, yazarın artık göremediğini görür; ama testlerin ya da sizin muhakemenizin yerini tutmaz.
+
+Denemek için yeni bir oturum ya da geçmişi olmayan, yalnızca okuma araçlarına sahip bir alt ajan açın; bunu prompt'ta rica ederek değil, harness'in ayarlarından sağlayın. Sonra onu belgeyi doğuran sohbete değil, belgenin kendisine yönlendirin ve şunu sorun:
+
+<TryIt compact prompt={`Bu planı daha önce hiç görmemiş biri gibi oku. Yalnızca belgeyi ve belgenin adını andığı dosyaları kullan: \${document:docs/designs/webhook-delivery.md}
+
+1. Planı kendi sözlerinle anlat: neyi inşa ediyor, parçalar birbirine nasıl bağlanıyor ve nasıl kontrol edilecek.
+2. Tahmin yürütmek zorunda kaldığın her noktayı ve neyi tahmin ettiğini listele.
+3. Her boşluğu engelleyici, önemli ya da küçük kusur olarak sırala ve yazarın neyi eklemesi gerektiğini söyle.
+
+Üslupla ilgili yorum yapma ve hiçbir dosyayı düzenleme.`} />
+
 ## Harness İçinde Promptlar Neden Önemlidir?
 
 Harness, modele işlem yapabileceği bir yol sağlar. Promptlarınız ise faydalı bir işlemin nasıl olması gerektiğini anlatır. Açık bir hedef olmadan ajan, ihtiyaç duymadığınız işler için birçok adım harcayabilir.

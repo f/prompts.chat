@@ -173,6 +173,31 @@ Bevor du etwas ausführst, das Dateien ändert, fasse mir das Programm kurz zusa
 
 Nicht jede Aufgabe braucht ein Programm. Wenn jeder Schritt davon abhängt, das letzte Ergebnis zu beurteilen, ist ein Aufruf nach dem anderen oft klarer. Ein Programm spielt seine Stärken aus, wenn die Aufgabe groß, gleichförmig und leicht zu überprüfen ist.
 
+### Ein frischer Blick: Prüfer, die bei null anfangen
+
+Der leere Kontext eines Subagents wird meist als Platzsparer beschrieben: Die laute Arbeit passiert woanders, und zurück kommt nur eine Zusammenfassung. Er ist aber auch eines der besten Prüfwerkzeuge, die ein Harness zu bieten hat. Ein Agent, der eine lange Sitzung mit einem Problem verbracht hat, trägt jede Annahme mit sich, die er unterwegs getroffen hat. Liest er seinen eigenen Plan noch einmal, füllt er jede Lücke aus dem Gedächtnis und merkt nicht einmal, dass dort eine war. Ein Prüfer, der in einem frischen Kontext startet, hat nur das Dokument und die Dateien, auf die es verweist. Was der Autor wusste, aber nie aufgeschrieben hat, zeigt sich als Verwirrung, und Verwirrung auf dem Papier ist weit billiger zu beheben als Verwirrung im Code.
+
+Googles quelloffenes Plugin [Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model) (EGM), [im Oktober 2026 vorgestellt](https://opensource.googleblog.com/2026/10/introducing-elephant-goldfish-model-plugin.html), ist um genau diese Aufteilung gebaut. Der Elefant ist die lange Sitzung, die den Kontext des Projekts hält und eine Spezifikation entwirft; Code schreibt er keinen. Die Goldfische sind zustandslose Subagents, die nur den Entwurf und den Quellcode sehen, auf den er verweist. Du wägst die Kompromisse ab und gibst den Entwurf frei. Bevor irgendjemand Kritik übt, muss ein Goldfisch den Plan in eigenen Worten zurückerzählen. Gelingt ihm das nicht, ist das Dokument mehrdeutig und geht zurück in die Überarbeitung. Andere Prüfer übernehmen unterschiedliche Rollen und suchen nach Randfällen, versteckten Abhängigkeiten und allem, was jemand bei der Umsetzung noch allein entscheiden müsste. Ihre Befunde werden als Blocker, gewichtig oder Kleinigkeit eingestuft und an den Elefanten zurückgegeben. Google sagt, dass Tausende seiner Ingenieurinnen und Ingenieure das Plugin nutzen. Es ist kein offiziell unterstütztes Google-Produkt, und eine Messung seiner Treffsicherheit ist nicht veröffentlicht.
+
+<Compare
+  before={{ label: "Der Autor liest seinen eigenen Plan", content: "\"Fehlgeschlagene Zustellungen mit wachsenden Wartezeiten wiederholen.\" Der Satz wirkt vollständig, denn der Autor erinnert sich, wie viele Versuche er erlauben wollte und was passiert, wenn dasselbe Ereignis zweimal eintrifft. Nichts davon steht auf der Seite." }}
+  after={{ label: "Ein frischer Prüfer liest nur das Dokument", content: "\"Wie viele Versuche, und was passiert nach dem letzten? Wenn dasselbe Ereignis zweimal eintrifft, wird es dann zweimal zugestellt? Beides musste ich raten.\" Die Lücken, die der Autor aus dem Gedächtnis gefüllt hat, kommen als Fragen zurück." }}
+/>
+
+Das Muster hängt nicht an einem einzelnen Produkt. Anthropics [Best-Practices-Leitfaden für Claude Code](https://code.claude.com/docs/en/best-practices) beschreibt `/code-review` als Prüfung in einem frischen Subagent, der das Gespräch nie gesehen hat und sich deshalb nicht von den Überlegungen leiten lässt, aus denen der Code entstanden ist. Der Leitfaden zieht dieselbe Linie wie dieser Abschnitt: Eine Aufgabe an einen Subagent abzugeben, macht die Antwort nicht besser, ein Prüfer, der deine Überlegungen nicht kennt, hilft dagegen wirklich. Er empfiehlt, diesem Prüfer nur lesende Werkzeuge zu geben und ihn Stilfragen auslassen zu lassen, denn ein Prüfer, der Probleme finden soll, findet immer etwas. Der quelloffene Harness [Code Copilot Team](https://github.com/gosha70/code-copilot-team) überlässt die Prüfung stattdessen einem zweiten Modell. Es sieht sich den Diff in einer schreibgeschützten Sandbox an und antwortet mit PASS, FAIL oder INCONCLUSIVE. Bei FAIL kann eine Phase nicht abgeschlossen werden.
+
+Zwei Vorbehalte halten die Idee ehrlich. Erstens ist eine Prüfung im selben Kontext keine unabhängige Prüfung, ganz gleich, wie nachdrücklich der Prompt darum bittet. Der [Harness-Leitfaden](https://github.com/google/elephant-goldfish-model/blob/main/docs/harnesses.md) von EGM ordnet „starte einen Subagent“ dem jeweiligen Subagent-Werkzeug jedes Harness zu. Hat ein Harness keines, bricht die Prüfung ab, statt still in der Sitzung des Autors weiterzulaufen. Zweitens ist ein frisches Gespräch nicht immer ein leerer Kontext, deshalb muss die Isolation geprüft und nicht bloß angenommen werden. Anweisungsdateien, die ein Harness von sich aus lädt, können dem Prüfer folgen. [Issue #237](https://github.com/google/elephant-goldfish-model/issues/237) berichtet, dass EGM-Prüfer in Codex und Antigravity das übergeordnete Gespräch zwar nie gesehen, die `AGENTS.md` des Projekts aber trotzdem erhalten haben. So wandern die Annahmen des Teams ausgerechnet in die Prüfung, die sie hinterfragen soll. Und jeder zusätzliche Prüfer kostet Tokens und Zeit. Ein frischer Blick findet, was der Autor nicht mehr sieht; Tests oder dein eigenes Urteil ersetzt er nicht.
+
+Probier es aus: Öffne eine neue Sitzung oder einen Subagent ohne Verlauf und nur mit lesenden Werkzeugen, eingestellt im Harness statt bloß im Prompt erbeten. Verweise ihn auf das Dokument, nicht auf das Gespräch, aus dem es entstanden ist, und frage:
+
+<TryIt compact prompt={`Lies diesen Plan, als hättest du ihn noch nie gesehen. Nutze nur das Dokument und die Dateien, die es erwähnt: \${document:docs/designs/webhook-delivery.md}
+
+1. Erzähle den Plan in eigenen Worten nach: was er baut, wie die Teile zusammenhängen und wie er überprüft wird.
+2. Nenne jede Stelle, an der du raten musstest, und was du geraten hast.
+3. Stufe jede Lücke als Blocker, gewichtig oder Kleinigkeit ein und sag, was der Autor ergänzen sollte.
+
+Lass Stilfragen weg und bearbeite keine Dateien.`} />
+
 ## Warum Prompts in einem Harness wichtig sind
 
 Ein Harness gibt dem Modell die Möglichkeit zu handeln. Deine Prompts erklären, welche Handlungen nützlich sind. Ohne ein klares Ziel kann ein Agent viele Schritte für Arbeit aufwenden, die du nicht brauchst.

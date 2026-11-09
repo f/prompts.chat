@@ -173,6 +173,31 @@ Vat het programma voor me samen en wacht op mijn goedkeuring voordat je iets uit
 
 Niet elke taak heeft een programma nodig. Als elke stap afhangt van een oordeel over het vorige resultaat, is één aanroep tegelijk vaak duidelijker. Een programma komt tot zijn recht als de klus groot, herhalend en makkelijk te controleren is.
 
+### Een frisse blik: reviewers die blanco beginnen
+
+De lege context van een subagent wordt meestal voorgesteld als een manier om ruimte te sparen: het rumoerige werk gebeurt ergens anders en er komt alleen een samenvatting terug. Maar het is ook een van de beste reviewmiddelen die een harness kan bieden. Een agent die een lange sessie met een probleem heeft doorgebracht, draagt elke aanname mee die hij onderweg heeft gemaakt. Als hij zijn eigen plan herleest, vult hij elk gat uit zijn geheugen en merkt hij niet eens dat er een gat zat. Een reviewer die in een frisse context start, heeft alleen het document en de bestanden waarnaar het verwijst. Alles wat de auteur wist maar nooit opschreef, komt naar boven als verwarring, en verwarring op papier is veel goedkoper op te lossen dan verwarring in code.
+
+Googles opensource-plugin [Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model) (EGM), [aangekondigd in oktober 2026](https://opensource.googleblog.com/2026/10/introducing-elephant-goldfish-model-plugin.html), is rond precies deze taakverdeling gebouwd. De olifant is de lange sessie die de context van het project vasthoudt en een specificatie opstelt; hij schrijft geen code. De goudvissen zijn geheugenloze subagents die alleen het concept zien en de broncode waarnaar het verwijst. Jij weegt de afwegingen en keurt het ontwerp goed. Voordat er kritiek komt, moet één goudvis het plan in eigen woorden navertellen; lukt dat niet, dan is het document dubbelzinnig en gaat het terug naar de tekentafel. Andere reviewers nemen verschillende rollen aan en zoeken naar randgevallen, verborgen afhankelijkheden en alles wat degene die het bouwt nog in zijn eentje zou moeten beslissen. Hun bevindingen worden ingedeeld als blokkerend, belangrijk of klein en teruggestuurd naar de olifant. Google zegt dat duizenden van zijn engineers de plugin gebruiken. Het is geen officieel ondersteund Google-product, en er is geen meting van de nauwkeurigheid gepubliceerd.
+
+<Compare
+  before={{ label: "De auteur herleest zijn eigen plan", content: "\"Mislukte leveringen opnieuw proberen met oplopende wachttijden.\" De zin voelt compleet, want de auteur weet nog hoeveel pogingen hij wilde toestaan en wat er gebeurt als hetzelfde event twee keer binnenkomt. Niets daarvan staat op de pagina." }}
+  after={{ label: "Een frisse reviewer leest alleen het document", content: "\"Hoeveel pogingen, en wat gebeurt er na de laatste? Als hetzelfde event twee keer binnenkomt, wordt het dan twee keer geleverd? Ik moest allebei raden.\" De gaten die de auteur uit zijn geheugen vulde, komen terug als vragen." }}
+/>
+
+Het patroon hoort niet bij één product. Anthropics [best-practicesgids voor Claude Code](https://code.claude.com/docs/en/best-practices) beschrijft `/code-review` als een review in een frisse subagent die het gesprek nooit heeft gezien en zich daardoor niet laat meeslepen door de redenering waaruit de code is ontstaan. De gids trekt dezelfde lijn als deze paragraaf: een taak aan een subagent overdragen maakt het antwoord niet beter, maar een reviewer die jouw redenering niet heeft gezien helpt wel degelijk. Hij raadt aan die reviewer alleen leestools te geven en hem stijl te laten overslaan, want een reviewer die problemen moet vinden, vindt altijd iets. De opensource-harness [Code Copilot Team](https://github.com/gosha70/code-copilot-team) legt de review juist bij een tweede model, dat de wijzigingen in een alleen-lezen sandbox bekijkt en antwoordt met PASS, FAIL of INCONCLUSIVE. Een fase kan niet worden afgerond met een FAIL.
+
+Twee kanttekeningen houden het idee eerlijk. Ten eerste is een review in dezelfde context geen onafhankelijke review, hoe stellig de prompt er ook om vraagt. De [harnessgids](https://github.com/google/elephant-goldfish-model/blob/main/docs/harnesses.md) van EGM koppelt "start een subagent" aan de eigen subagent-tool van elke harness, en als een harness er geen heeft, stopt de review in plaats van stilletjes door te gaan in de sessie van de auteur. Ten tweede is een fris gesprek niet altijd een lege context, dus isolatie moet je controleren in plaats van aannemen. Instructiebestanden die een harness uit zichzelf laadt, kunnen met de reviewer mee naar binnen glippen. [Issue #237](https://github.com/google/elephant-goldfish-model/issues/237) meldt dat EGM-reviewers in Codex en Antigravity het bovenliggende gesprek nooit zagen, maar toch de `AGENTS.md` van het project kregen. Zo belandden de aannames van het team precies in de review die ze ter discussie moest stellen. En elke extra reviewer kost tokens en tijd. Een frisse blik ziet wat de auteur niet meer ziet; tests of je eigen oordeel vervangt hij niet.
+
+Probeer het zelf: open een nieuwe sessie of een subagent zonder geschiedenis en met alleen leestools, ingesteld in de harness in plaats van alleen gevraagd in de prompt. Wijs hem op het document, niet op het gesprek waaruit het ontstond, en vraag:
+
+<TryIt compact prompt={`Lees dit plan alsof je het nog nooit hebt gezien. Gebruik alleen het document en de bestanden die het noemt: \${document:docs/designs/webhook-delivery.md}
+
+1. Vertel het plan in je eigen woorden na: wat het bouwt, hoe de onderdelen samenhangen en hoe het wordt gecontroleerd.
+2. Noem elk punt waarop je moest raden, en wat je hebt geraden.
+3. Deel elk gat in als blokkerend, belangrijk of klein, en zeg wat de auteur moet toevoegen.
+
+Geef geen opmerkingen over stijl en bewerk geen bestanden.`} />
+
 ## Waarom prompts belangrijk zijn binnen een harness
 
 Een harness geeft het model een manier om te handelen. Je prompts leggen uit welke acties nuttig zijn. Zonder duidelijk doel kan een agent veel stappen besteden aan werk dat je niet nodig had.
