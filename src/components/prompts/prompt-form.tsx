@@ -547,6 +547,10 @@ export function PromptForm({ categories, tags, initialData, initialContributors 
       !valuesEqual(newState[field], requestedState[field]) &&
       valuesEqual(currentValues[field], requestedState[field]);
 
+    const changedToOrFromSpecialInputType =
+      !valuesEqual(currentValues.type, requestedState.type) &&
+      ([currentValues.type, requestedState.type].some((type) => type === "SKILL" || type === "TASTE"));
+
     if (shouldApply("title") && newState.title.trim().length > 0) {
       form.setValue("title", newState.title, opts);
     }
@@ -554,15 +558,20 @@ export function PromptForm({ categories, tags, initialData, initialContributors 
     // Content and input format are linked. Output type is merged separately so
     // a user can change TEXT/IMAGE/VIDEO/AUDIO while content generation runs.
     const shouldApplyContentConfiguration =
+      !changedToOrFromSpecialInputType &&
       valuesEqual(currentValues.content, requestedState.content) &&
       valuesEqual(currentValues.structuredFormat, requestedState.structuredFormat);
-    if (shouldApplyContentConfiguration && shouldApply("content")) {
-      if (newState.content.trim().length > 0) {
-        form.setValue("content", newState.content, opts);
-      }
+    const hasNonBlankAgentContent =
+      typeof newState.content === "string" && newState.content.trim().length > 0;
+    if (shouldApplyContentConfiguration && shouldApply("content") && hasNonBlankAgentContent) {
+      form.setValue("content", newState.content, opts);
     }
     if (shouldApply("type")) form.setValue("type", newState.type, opts);
-    if (shouldApplyContentConfiguration && shouldApply("structuredFormat")) {
+    if (
+      shouldApplyContentConfiguration &&
+      shouldApply("structuredFormat") &&
+      (newState.structuredFormat === undefined || hasNonBlankAgentContent)
+    ) {
       form.setValue("structuredFormat", newState.structuredFormat, opts);
     }
     if (shouldApply("categoryId")) form.setValue("categoryId", newState.categoryId || "", opts);

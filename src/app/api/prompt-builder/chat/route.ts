@@ -8,6 +8,7 @@ import {
   type PromptBuilderState,
 } from "@/lib/ai/prompt-builder-tools";
 import { loadPrompt, getSystemPrompt } from "@/lib/ai/load-prompt";
+import { parse as parseYaml } from "yaml";
 
 const promptBuilderAgentPrompt = loadPrompt("src/app/api/prompt-builder/chat/prompt-builder-agent.prompt.yml");
 
@@ -357,14 +358,39 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
               (state.type === "STRUCTURED") !== (nextState.type === "STRUCTURED") ||
               state.structuredFormat !== nextState.structuredFormat;
             if (changesStructuredConfiguration) {
-              if (!pendingStructuredConfiguration) {
+              let isContentCompatibleWithFormat = false;
+              if (nextState.structuredFormat && state.content.trim()) {
+                try {
+                  if (nextState.structuredFormat === "JSON") {
+                    JSON.parse(state.content);
+                    isContentCompatibleWithFormat = true;
+                  } else {
+                    const parsedContent = parseYaml(state.content);
+                    isContentCompatibleWithFormat =
+                      typeof parsedContent === "object" && parsedContent !== null;
+                  }
+                } catch {
+                  // Keep the prior format checkpoint until compatible content arrives.
+                }
+              }
+
+              if (isContentCompatibleWithFormat) {
                 committedContentConfiguration = {
                   content: state.content,
-                  type: state.type,
-                  structuredFormat: state.structuredFormat,
+                  type: nextState.type,
+                  structuredFormat: nextState.structuredFormat,
                 };
+                pendingStructuredConfiguration = false;
+              } else {
+                if (!pendingStructuredConfiguration) {
+                  committedContentConfiguration = {
+                    content: state.content,
+                    type: state.type,
+                    structuredFormat: state.structuredFormat,
+                  };
+                }
+                pendingStructuredConfiguration = true;
               }
-              pendingStructuredConfiguration = true;
             }
           }
 

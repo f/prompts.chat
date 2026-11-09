@@ -455,7 +455,13 @@ export async function executeToolCall(
     }
 
     case "set_content": {
-      newState.content = args.content as string;
+      if (typeof args.content !== "string") {
+        return {
+          result: { success: false, error: "Content must be a string" },
+          newState
+        };
+      }
+      newState.content = args.content;
       return {
         result: { success: true, data: { content: newState.content } },
         newState
