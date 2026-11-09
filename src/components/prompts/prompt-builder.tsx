@@ -10,7 +10,9 @@ import { Badge } from "@/components/ui/badge";
 import { MiniPromptCard } from "./mini-prompt-card";
 import { cn } from "@/lib/utils";
 
-interface PromptBuilderState {
+const PROMPT_BUILDER_STREAM_TIMEOUT_MS = 120_000;
+
+export interface PromptBuilderState {
   title: string;
   description: string;
   content: string;
@@ -54,7 +56,7 @@ interface PromptBuilderProps {
   availableTags: Array<{ id: string; name: string; slug: string; color: string }>;
   availableCategories: Array<{ id: string; name: string; slug: string; parentId: string | null }>;
   currentState: PromptBuilderState;
-  onStateChange: (state: PromptBuilderState) => void;
+  onStateChange: (state: PromptBuilderState, requestedState: PromptBuilderState) => void;
   modelName?: string;
   initialPromptRequest?: string;
 }
@@ -122,6 +124,10 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
     }
   }, [initialPromptRequest]);
 
+  /**
+   * Sends a builder request and processes its streamed response, preserving partial output on failure.
+   * @param content User instruction for creating or updating the prompt.
+   */
   const sendMessageWithContent = async (content: string) => {
     if (!content.trim() || isLoading) return;
 
@@ -138,6 +144,12 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
 
     // Add a placeholder for streaming
     const assistantMessageId = crypto.randomUUID();
+    const requestedState = { ...currentState, tagIds: [...currentState.tagIds] };
+    const abortController = new AbortController();
+    const timeoutId = window.setTimeout(
+      () => abortController.abort(),
+      PROMPT_BUILDER_STREAM_TIMEOUT_MS
+    );
     let fullContent = "";
     const toolCalls: ToolCall[] = [];
     const searchResults: Message["searchResults"] = [];
@@ -149,12 +161,13 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
       const response = await fetch("/api/prompt-builder/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: abortController.signal,
         body: JSON.stringify({
           messages: [...messages, userMessage].map((m) => ({
             role: m.role,
             content: m.content,
           })),
-          currentState,
+          currentState: requestedState,
           availableTags,
           availableCategories,
         }),
@@ -231,7 +244,7 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
           setStreamingContent("");
 
           if (newState) {
-            onStateChange(newState);
+            onStateChange(newState, requestedState);
           }
         }
       };
@@ -271,7 +284,7 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
       if (responseFinalized) return;
 
       if (newState) {
-        onStateChange(newState);
+        onStateChange(newState, requestedState);
       }
       setStreamingContent("");
       setMessages((prev) => {
@@ -298,6 +311,7 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
         ];
       });
     } finally {
+      window.clearTimeout(timeoutId);
       setIsLoading(false);
     }
   };

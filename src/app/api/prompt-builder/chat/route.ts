@@ -61,6 +61,11 @@ interface RequestBody {
   availableCategories: Array<{ id: string; name: string; slug: string; parentId: string | null }>;
 }
 
+/**
+ * Authenticates a prompt-builder request and streams the model response and tool results.
+ * @param request Incoming conversation, prompt state, and available taxonomy data.
+ * @returns An authorization/configuration error response or a server-sent event stream.
+ */
 export async function POST(request: NextRequest) {
   const session = await auth();
   if (!session?.user) {
@@ -297,6 +302,7 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
             await send({ type: "tool_call", toolCall: toolCallResult, state });
           } catch (e) {
             console.error("Tool call error:", e);
+            throw e;
           }
         }
 

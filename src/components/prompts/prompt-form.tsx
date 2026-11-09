@@ -13,7 +13,7 @@ import { VariableWarning } from "./variable-warning";
 import { VariableHint } from "./variable-hint";
 import { StructuredFormatWarning } from "./structured-format-warning";
 import { ContributorSearch } from "./contributor-search";
-import { PromptBuilder, type PromptBuilderHandle } from "./prompt-builder";
+import { PromptBuilder, type PromptBuilderHandle, type PromptBuilderState } from "./prompt-builder";
 import { MediaGenerator } from "./media-generator";
 import { SkillEditor } from "./skill-editor";
 import { Button } from "@/components/ui/button";
@@ -523,31 +523,37 @@ export function PromptForm({ categories, tags, initialData, initialContributors 
   }, []);
 
   // Handler for AI builder state changes
-  const handleBuilderStateChange = (newState: {
-    title: string;
-    description: string;
-    content: string;
-    type: "TEXT" | "IMAGE" | "VIDEO" | "AUDIO" | "SKILL" | "TASTE";
-    structuredFormat?: "JSON" | "YAML";
-    categoryId?: string;
-    tagIds: string[];
-    isPrivate: boolean;
-    requiresMediaUpload: boolean;
-    requiredMediaType?: "IMAGE" | "VIDEO" | "DOCUMENT";
-    requiredMediaCount?: number;
-  }) => {
+  /**
+   * Applies agent changes only to fields the user has not edited during the request.
+   * @param newState State returned by the prompt-building agent.
+   * @param requestedState Form state captured when the agent request started.
+   */
+  const handleBuilderStateChange = (newState: PromptBuilderState, requestedState: PromptBuilderState) => {
+    const currentValues = form.getValues();
     const opts = { shouldDirty: true, shouldTouch: true };
-    if (newState.title) form.setValue("title", newState.title, opts);
-    if (newState.description) form.setValue("description", newState.description, opts);
-    if (newState.content) form.setValue("content", newState.content, opts);
-    if (newState.type) form.setValue("type", newState.type, opts);
-    if (newState.structuredFormat) form.setValue("structuredFormat", newState.structuredFormat, opts);
-    if (newState.categoryId) form.setValue("categoryId", newState.categoryId, opts);
-    if (newState.tagIds?.length) form.setValue("tagIds", newState.tagIds, opts);
-    form.setValue("isPrivate", newState.isPrivate, opts);
-    form.setValue("requiresMediaUpload", newState.requiresMediaUpload, opts);
-    if (newState.requiredMediaType) form.setValue("requiredMediaType", newState.requiredMediaType, opts);
-    if (newState.requiredMediaCount) form.setValue("requiredMediaCount", newState.requiredMediaCount, opts);
+    /** Compares scalar values and ordered tag selections for equality. */
+    const valuesEqual = (left: unknown, right: unknown) => {
+      if (Array.isArray(left) && Array.isArray(right)) {
+        return left.length === right.length && left.every((value, index) => value === right[index]);
+      }
+      return Object.is(left, right);
+    };
+    /** Checks that the agent changed a field and the user left it unchanged. */
+    const shouldApply = (field: keyof PromptBuilderState) =>
+      !valuesEqual(newState[field], requestedState[field]) &&
+      valuesEqual(currentValues[field], requestedState[field]);
+
+    if (shouldApply("title")) form.setValue("title", newState.title, opts);
+    if (shouldApply("description")) form.setValue("description", newState.description, opts);
+    if (shouldApply("content")) form.setValue("content", newState.content, opts);
+    if (shouldApply("type")) form.setValue("type", newState.type, opts);
+    if (shouldApply("structuredFormat")) form.setValue("structuredFormat", newState.structuredFormat, opts);
+    if (shouldApply("categoryId")) form.setValue("categoryId", newState.categoryId || "", opts);
+    if (shouldApply("tagIds")) form.setValue("tagIds", newState.tagIds, opts);
+    if (shouldApply("isPrivate")) form.setValue("isPrivate", newState.isPrivate, opts);
+    if (shouldApply("requiresMediaUpload")) form.setValue("requiresMediaUpload", newState.requiresMediaUpload, opts);
+    if (shouldApply("requiredMediaType")) form.setValue("requiredMediaType", newState.requiredMediaType, opts);
+    if (shouldApply("requiredMediaCount")) form.setValue("requiredMediaCount", newState.requiredMediaCount, opts);
   };
 
   // Current state for AI builder
