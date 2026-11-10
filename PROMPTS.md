@@ -237069,3 +237069,16 @@ Rules: no people, cars, boats, modern antennas, readable text, logos, or brand m
 
 </details>
 
+<details>
+<summary><strong>Turf-Roofed Faroese Village Above a Sea Gorge at Golden Hour</strong></summary>
+
+## Turf-Roofed Faroese Village Above a Sea Gorge at Golden Hour
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Photoreal wide landscape photograph of a tiny Faroese turf-roof village above a sea gorge at golden hour, 16:9. About ten small wooden houses with living grass-turf roofs sit on a left-center grassy terrace; most houses are black or very dark with white-framed multi-pane windows and chimneys, and ONE house near the center of the cluster is painted bright red with a turf roof. A few white sheep graze on the lower-left foreground grassy slope below the houses. On the RIGHT a tall, prominent waterfall plunges from the top of a dark basalt cliff into a deep teal inlet with white foam at the cliff foot. Golden sidelight from the LEFT rakes across the grass and roofs; the Atlantic in the left distance is paler under the sun, with a dark distant headland silhouetted on the far left horizon. Steep green-topped cliffs continue into the background center-right. Pale gold sky near the sun fading to clear blue on the right, light haze, a few high clouds. No people, no cars, no boats, no modern antennas, no readable signs.
+```
+
+</details>
+
