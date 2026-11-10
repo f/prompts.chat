@@ -1,16 +1,11 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-
-const SKILLS_DIR = path.join(
-  process.cwd(),
-  "plugins/claude/prompts.chat/skills"
-);
+import { readBundledText } from "@/lib/bundled-files";
+import { SKILLS_DIR } from "../skills-dir";
 
 export async function GET() {
   try {
-    const indexPath = path.join(SKILLS_DIR, "index.json");
-    const indexContent = fs.readFileSync(indexPath, "utf-8");
+    const indexContent = readBundledText(`${SKILLS_DIR}/index.json`);
+    if (indexContent === undefined) throw new Error(`${SKILLS_DIR}/index.json is not bundled`);
     const index = JSON.parse(indexContent);
 
     return NextResponse.json(index, {
