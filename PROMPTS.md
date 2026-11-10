@@ -237095,3 +237095,37 @@ Start from the step 2 image "Turf-Roofed Faroese Village Above a Sea Gorge at Go
 
 </details>
 
+<details>
+<summary><strong>Kafka Streaming taste</strong></summary>
+
+## Kafka Streaming taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Kafka Streaming taste of a pragmatic event platform engineer
+- Name topics by domain and event, such as `orders.order-placed.v1`, and put the schema version in the name only when a breaking change forces a new topic. Confidence: 0.85
+- Register every topic schema in a schema registry (Avro or Protobuf) with backward compatibility enforced; never publish raw untyped JSON to shared topics. Confidence: 0.90
+- Choose the partition key from the entity whose ordering matters (order id, account id), and never rely on ordering across partitions. Confidence: 0.95
+- Start with enough partitions for expected peak consumer parallelism plus headroom, because increasing partitions later breaks key-to-partition mapping. Confidence: 0.80
+- Run producers with `acks=all`, idempotence enabled and `min.insync.replicas=2` on a replication factor of 3 for anything business-critical. Confidence: 0.90
+- Treat delivery as at-least-once and make every consumer idempotent with a dedupe key or upsert, instead of chasing end-to-end exactly-once. Confidence: 0.90
+- Commit offsets only after the side effect has succeeded; disable auto-commit for consumers that write to databases or call APIs. Confidence: 0.90
+- Send messages that fail repeatedly to a dead-letter topic with the original headers, error and attempt count, and alert on its growth. Confidence: 0.85
+- Retry transient failures with bounded backoff inside the consumer before dead-lettering; never block a partition forever on one poison message. Confidence: 0.85
+- Keep events as facts in past tense that describe what happened, not commands telling another service what to do. Confidence: 0.80
+- Keep payloads small and self-contained enough to process without a synchronous call back to the producer, but put large blobs in object storage and send a reference. Confidence: 0.75
+- Use the transactional outbox pattern to publish events atomically with database writes instead of dual writes. Confidence: 0.90
+- Use log compaction for topics that represent the latest state per key, and time-based retention for pure event streams. Confidence: 0.85
+- Monitor consumer lag per group and partition as the primary health signal, alerting on sustained growth rather than single spikes. Confidence: 0.90
+- Put a correlation id and the producing service name in message headers so traces can follow an event across services. Confidence: 0.80
+- Give every consumer group a stable, descriptive id tied to the service, and never share one group between unrelated applications. Confidence: 0.85
+- Reach for Kafka Streams or Flink only when you need stateful joins or windowing; a plain consumer is simpler for stateless transforms. Confidence: 0.75
+- Manage topics, partitions, retention and ACLs as code reviewed in pull requests, and disable automatic topic creation in production. Confidence: 0.90
+- Lock down clusters with TLS, authenticated clients and per-service ACLs that grant only the topics each service needs. Confidence: 0.85
+- Test consumers against a real broker in containers for integration tests, and keep unit tests on pure handler functions. Confidence: 0.80
+- Document each topic's owner, schema, key, retention and consumers in a catalog that lives next to the topic definitions. Confidence: 0.70
+```
+
+</details>
+
