@@ -236980,3 +236980,16 @@ Background: Dark, almost black, with large white abstract geometric shapes (remi
 
 </details>
 
+<details>
+<summary><strong>Photoreal Mandarin Duck Pair on a Still Autumn Pond at First Light</strong></summary>
+
+## Photoreal Mandarin Duck Pair on a Still Autumn Pond at First Light
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A photorealistic wildlife photograph of a pair of mandarin ducks floating on a perfectly still autumn pond at first light, wide landscape 16:9. The male sits in the left-center foreground in full breeding plumage: orange sail-like tertial feathers raised on his back, a white crescent above the eye, a purple-green iridescent crest, a chestnut and orange chest with bold white stripes, a red bill, and a white belly, facing slightly right toward the female. The female floats to the right, mottled brown-grey with fine barring and a thin white eye-ring, facing left toward the male. Both birds rest on glassy water with clear, sharp reflections beneath them; many amber and gold maple leaves drift on the surface. Soft pink-gold first light and low mist hang over dark pines and autumn-colored trees on the far bank. Low water-level camera, shallow depth of field, peaceful dawn mood. No people, no text, no logos, no watermarks.
+```
+
+</details>
+
