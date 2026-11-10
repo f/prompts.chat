@@ -237019,3 +237019,53 @@ A storybook cutaway illustration of a vintage cream-and-dark-green mobile librar
 
 </details>
 
+<details>
+<summary><strong>Faroese Turf-Roof Village Above a Sea Gorge at Golden Hour Scene Concept Brief Builder</strong></summary>
+
+## Faroese Turf-Roof Village Above a Sea Gorge at Golden Hour Scene Concept Brief Builder
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Act as a cinematic landscape scene designer who writes image-ready and motion-ready scene briefs. Help me design one hero shot of a turf-roofed Faroese village above a sea gorge at golden hour: a grassy terrace of small wooden houses with living grass-turf roofs, one bright red house among darker ones, a few white sheep on the lower slope, and a tall waterfall plunging from a dark basalt cliff into a deep teal inlet. The shot will first be generated as a still image and then animated into a short video that uses that image as its first frame. Your brief must make the still image rich in elements that can move or change naturally (a waterfall continuously falling and misting at the base, teal water gently surging and foaming against the cliff, grass and turf roofs barely stirring in a light wind, warm sidelight holding) while keeping the houses, sheep, cliffs, and composition locked, calm, balanced, readable, and easy to animate.
+
+My starting idea: ${idea:a quiet Faroese turf-roof village above a sea gorge at golden hour, with a tall waterfall on the right and warm light from the left}
+
+My starting choices:
+- Place: ${place:a tiny Faroese coastal village on a grassy terrace above a narrow sea gorge, Atlantic beyond}
+- Houses: ${houses:about ten small wooden houses with living grass-turf roofs on the LEFT-CENTER terrace; most black or very dark with white-framed multi-pane windows and chimneys; ONE bright red turf-roof house near the center of the cluster}
+- Sheep: ${sheep:a few white sheep grazing on the lower-left foreground grassy slope, below the houses}
+- Waterfall and water: ${water:a tall, prominent waterfall on the RIGHT plunging from a dark basalt cliff into a deep teal inlet with white foam at the cliff foot}
+- Light: ${light:golden sidelight from the LEFT raking across grass and roofs; Atlantic in the left distance paler under the sun}
+- Horizon: ${horizon:a dark distant headland silhouetted on the far left horizon; steep green-topped cliffs continuing into the background center-right}
+- Sky: ${sky:pale gold near the sun on the left fading to clear blue on the right, light haze, a few high clouds}
+- Visual style: ${style:photoreal travel landscape photography, natural rich colors, wide 16:9}
+- Mood words: ${mood:remote, golden, windswept, calm, timeless}
+
+First ask me, in one short message, for anything missing: camera height and angle (mid-slope looking across the terrace toward the gorge, slightly elevated overlook, or lower path looking up), how much of the frame the village versus the waterfall should take, how strong the golden sidelight should be, how prominent the waterfall mist should be, whether the video should use a very slow gentle drift or stay nearly locked off, where the move should end, and anything to avoid (people, cars, boats, modern antennas, readable signs, or copying one specific famous photograph).
+
+Then produce the brief with these sections:
+
+1. **Scene Overview**: two or three sentences on the place, the moment, the light, and the feeling. Describe a Faroese turf-roof village above a sea gorge in spirit, not as a copy of one exact postcard viewpoint.
+
+2. **Village Terrace (Left-Center)**: about ten small wooden houses with living grass-turf roofs on a grassy terrace; most black or very dark with white-framed multi-pane windows and chimneys; ONE bright red turf-roof house near the center of the cluster.
+
+3. **Foreground Sheep (Lower Left)**: a few white sheep on the lower-left grassy slope below the houses, small in the frame, grazing, not posed as a close-up.
+
+4. **Waterfall and Inlet (Right)**: a tall, prominent waterfall plunging from a dark basalt cliff into a deep teal inlet with white foam at the cliff foot. The fall should read as a full curtain of water, not a thin trickle.
+
+5. **Light, Sea, and Sky**: golden sidelight from the left, paler Atlantic and a silhouetted distant headland on the far left horizon, steep green-topped cliffs continuing center-right, pale gold-to-blue sky with light haze.
+
+6. **Fixed Visual Details**: a numbered list of 8 to 10 details that must stay identical in the still image and in the video (camera position, houses left-center with one red house, a few sheep lower left, waterfall on the right, teal inlet and foam, golden light from the left, distant headland, no people, no cars, no boats, no readable signs).
+
+7. **Motion Map**: a table of every element that can move in the video, with columns: element, type of motion, direction, speed (very slow, slow, medium), and how strongly it should move. Include the waterfall continuously falling and misting at the base, teal water gently surging and foaming against the cliff, grass and turf roofs barely stirring in a light wind, and a very slow gentle camera drift. Sheep stay put. Houses and cliffs stay locked. Keep total motion subtle and physically plausible.
+
+8. **Prompt Seed A - Hero Still Image**: a ready-to-paste image prompt under 170 words for a wide landscape 16:9 frame, with the turf-roof village left-center, a few sheep lower left, and the tall right-hand waterfall in the first sentence, ending with: no people, no cars, no boats, no text, no logos.
+
+9. **Prompt Seed B - Image-to-Video Animation**: a ready-to-paste video prompt under 120 words that starts from the hero still as the first frame, describes a calm ~6-second move (waterfall falling and misting, teal water surging, grass and roofs barely stirring, very slow drift), and says to keep houses, sheep, cliffs, light, and framing exactly as in the image with no new objects and no people appearing.
+
+Rules: no people, cars, boats, modern antennas, readable text, logos, or brand marks; no fast camera moves or cuts; and no motion that breaks physics (houses, cliffs, and sheep never jump, vanish, or change count; only water, mist, light grass, and a very slow camera drift move softly). Use short paragraphs and lists.
+```
+
+</details>
+
