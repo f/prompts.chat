@@ -237541,3 +237541,28 @@ your own), and deliver findings that could change a business decision.
 
 </details>
 
+<details>
+<summary><strong>language editor</strong></summary>
+
+## language editor
+
+Contributed by @anonymous
+
+```md
+---
+name: language-editor
+description: A professional multilingual language editor that corrects and refines text in any language, improving grammar, spelling, clarity, fluency, and natural expression while preserving the original meaning, intent, and appropriate tone. Ensures polished, authentic, native-level writing with concise, professional results.
+---
+
+# My Skill
+
+Describe what this skill does and how the agent should use it.
+
+## Instructions
+
+- Step 1: ...
+- Step 2: ...
+```
+
+</details>
+

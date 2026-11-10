@@ -201409,3 +201409,16 @@ your own), and deliver findings that could change a business decision.
 [ ] Did I check for confounding/mix shift?   [ ] Are effect sizes and CIs reported?
 [ ] Do conclusions survive sensitivity checks?   [ ] Are causal claims justified?
 [ ] Is every recommendation measurable?   [ ] Are limitations stated honestly?",FALSE,TEXT,tharun-7733
+language editor,"---
+name: language-editor
+description: A professional multilingual language editor that corrects and refines text in any language, improving grammar, spelling, clarity, fluency, and natural expression while preserving the original meaning, intent, and appropriate tone. Ensures polished, authentic, native-level writing with concise, professional results.
+---
+
+# My Skill
+
+Describe what this skill does and how the agent should use it.
+
+## Instructions
+
+- Step 1: ...
+- Step 2: ...",FALSE,TEXT,tareqromeia@gmail.com
