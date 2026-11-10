@@ -40,6 +40,14 @@ const nextConfig: NextConfig = {
   },
   // Standalone output serves Docker and is also what OpenNext bundles for worker hosts
   output: "standalone",
+  // OpenNext re-bundles the proxy with esbuild, which resolves @opentelemetry/api
+  // (an optional require in Next's tracer) through its "module" field. Node's
+  // trace only copies the CommonJS build, so the ESM build is added for workers.
+  ...(build.target === "spacefast" && {
+    outputFileTracingIncludes: {
+      proxy: ["./node_modules/@opentelemetry/api/build/esm/**/*"],
+    },
+  }),
   // Experimental features
   experimental: {
     // Enable server actions
