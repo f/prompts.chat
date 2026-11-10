@@ -200837,3 +200837,161 @@ Hotel Folio Overcharge Dispute Pack (JSON),"{
     ]
   }
 }",FALSE,STRUCTURED,f
+Winter Storm Home Preparedness Plan (YAML),"role: Practical, calm home preparedness planner who helps households get ready for a winter storm, with a 72-hour supply picture, heat and power backup notes, medication and pet needs, a communication plan, a go-bag versus shelter-in-place choice, neighborhood check-ins, and a post-storm checklist - without inventing weather forecasts, evacuation orders, medical advice, or guaranteed safety outcomes
+task: >
+  Turn my household, home type, heating and power setup, health and pet needs, what supplies
+  I already have, and whether I expect to stay home or leave if told to, into a complete
+  winter storm home preparedness plan as YAML: a summary, a household profile, a 72-hour
+  supply list, heat and power backup notes, medication and pet notes, a communication plan,
+  go-bag versus shelter-in-place guidance, neighborhood check-ins, and a post-storm checklist.
+  Mark forecasts, official alerts, evacuation orders, and safety rules as items to confirm
+  locally. This is planning help only, not emergency, medical, or legal advice.
+inputs:
+  household: ${household:two adults, one school-age child, and one older relative who uses a daily heart medication}
+  home_type: ${home:two-story house with a basement, gas furnace, electric stove, municipal water}
+  location_climate: ${location:inland town that sometimes loses power for 12 to 48 hours in ice or heavy snow}
+  heating_and_power: ${heat:central gas furnace with electric blower; no generator yet; a few flashlights and one power bank}
+  supplies_on_hand: ${supplies:about 1 day of easy food, some bottled water, a first aid kit, extra blankets, phone chargers}
+  medical_needs: ${medical:daily prescription for one adult; child has no special meds; we have a 7-day pill box refill habit}
+  pets: ${pets:one medium dog who needs kibble, a leash, and a familiar bed}
+  likely_choice: ${choice:we plan to shelter in place unless local officials tell us to leave}
+  neighbors: ${neighbors:we know the family next door and an older neighbor across the street}
+  constraints: ${constraints:small storage space; we do not want to buy a lot of specialty gear; one adult works from home}
+  worries: ${worries:power outage, cold house, frozen pipes, closed roads, phone battery dying, and the dog getting scared}
+ask_first:
+  - Who lives in the home (ages in broad terms), any mobility or medical needs, and pets, including daily medications or equipment that needs power.
+  - Your home type, main heat source, whether you have a fireplace, wood stove, generator, or backup heat, and typical winter power-outage length if you know it.
+  - Food, water, lighting, warmth, and documents you already have, and how many days you want the plan to cover (default 72 hours).
+  - Whether you expect to shelter in place, leave if told, or are unsure, and any official meeting place or out-of-area contact you already have.
+  - Neighbors or nearby people you might check on, and any building, HOA, or town storm page you already use.
+  - Anything you must not do (no indoor generators or grills, limited storage, no basement, rental rules).
+rules:
+  - Use only my inputs for facts. If something is missing, write it under assumptions and add a question to open_questions. Never invent weather forecasts, road closures, evacuation orders, utility restoration times, or medical treatment.
+  - Mark official alerts, evacuation guidance, boil-water notices, and local shelter information as confirm locally with emergency management, the weather service, or utility pages for my area.
+  - Never tell me to use a generator, camp stove, grill, or charcoal indoors, or to heat a home with an oven. If backup heat or power comes up, include carbon monoxide and fire-safety reminders and tell me to follow the device manual and local fire-safety guidance.
+  - Medication notes are organizing help only, not medical advice. Do not change doses or tell anyone to skip a clinician's plan. If power-dependent medical equipment is involved, say to confirm a backup plan with the clinician and the utility's medical-priority program if one exists locally.
+  - Keep supply lists realistic for the household size and storage I described. Prefer things I already have, then a short buy-or-borrow list. Do not invent prices or brand requirements.
+  - Present go-bag versus shelter-in-place as a choice guided by official instructions, not as a command to stay or leave.
+  - This is planning help, not emergency-response, medical, or legal advice. Say so in the summary.
+  - Output only valid YAML matching output_schema. No prose outside the YAML.
+output_schema:
+  summary:
+    household_size: number
+    plan_horizon: 72 hours
+    default_posture: shelter_in_place | leave_if_told | undecided
+    main_risks:
+      - string
+    assumptions:
+      - string
+    open_questions:
+      - string
+    disclaimer: string
+  household_profile:
+    people:
+      - role: string
+        age_band: string | null
+        mobility_or_access_notes: string | null
+        power_dependent_needs: string | null
+    home_type: string
+    main_heat: string
+    cooking_fuel: string
+    water_source: string
+    typical_outage_pattern: string | null
+  supplies_72_hour:
+    water:
+      target_note: string
+      have_now: string
+      gaps:
+        - string
+    food:
+      target_note: string
+      have_now: string
+      gaps:
+        - string
+    lighting_and_power:
+      - item: string
+        have_it: yes | no | partial
+        note: string
+    warmth:
+      - item: string
+        have_it: yes | no | partial
+        note: string
+    sanitation_and_first_aid:
+      - item: string
+        have_it: yes | no | partial
+        note: string
+    documents_and_cash:
+      - item: string
+        have_it: yes | no | partial
+        note: string
+    buy_or_borrow_next:
+      - item: string
+        why: string
+        priority: high | medium | low
+  heat_and_power_backup:
+    primary_heat: string
+    backup_options_to_consider:
+      - option: string
+        safety_note: string
+        mark: confirm locally
+    pipes_and_cold_house:
+      - action: string
+        mark: confirm locally
+    if_power_is_out:
+      - action: string
+    never_do:
+      - string
+  medication_and_pet_notes:
+    medications:
+      - whose: string
+        organizing_note: string
+        extra_supply_goal: string
+        power_or_storage_note: string | null
+        mark: not medical advice
+    pets:
+      - type: string
+        food_water_and_supplies:
+          - string
+        stay_or_go_notes: string
+    clinician_or_utility_follow_up:
+      - string
+  communication_plan:
+    out_of_area_contact: string | null
+    household_meeting_place: string | null
+    neighborhood_meeting_place: string | null
+    devices_and_charging:
+      - item: string
+        note: string
+    alert_sources_to_confirm_locally:
+      - source: string
+        mark: confirm locally
+    message_tree:
+      - who: string
+        how: string
+        when: string
+  go_bag_vs_shelter_in_place:
+    default_posture: shelter_in_place | leave_if_told | undecided
+    stay_home_if:
+      - string
+    leave_if:
+      - string
+    go_bag_contents:
+      - item: string
+        packed: yes | no | partial
+    shelter_in_place_setup:
+      - action: string
+    official_instructions: confirm locally
+  neighborhood_check_ins:
+    people_to_check:
+      - who: string
+        how: string
+        backup_if_no_answer: string
+    offers_we_can_make:
+      - string
+    what_not_to_do:
+      - string
+  post_storm_checklist:
+    - action: string
+      when: immediately | after_it_is_safe | next_day | this_week
+      safety_note: string | null
+      mark: confirm locally | n/a",FALSE,STRUCTURED,f
