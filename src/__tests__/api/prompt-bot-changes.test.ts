@@ -65,7 +65,7 @@ describe("bot change requests", () => {
     vi.clearAllMocks();
     vi.mocked(db.prompt.findUnique).mockResolvedValue(botPrompt as never);
     vi.mocked(db.changeRequest.create).mockImplementation(((args: { data: unknown }) => Promise.resolve({ id: "cr-1", ...(args.data as object) })) as never);
-    vi.mocked(db.$transaction).mockImplementation(((operations: Promise<unknown>[]) => Promise.all(operations)) as never);
+    vi.mocked(db.$transaction).mockImplementation(((fn: (tx: typeof db) => unknown) => fn(db)) as never);
   });
 
   it("stores the current and proposed bot fields", async () => {
