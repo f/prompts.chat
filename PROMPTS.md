@@ -237857,3 +237857,24 @@ FINAL DIRECTIVE: Every fight movement must feel powerful, dangerous, fast, and c
 
 </details>
 
+<details>
+<summary><strong>Black-and-White Manga Ink Sketch: Messy-Bun Daydreamer Portrait (9:16 JSON)</strong></summary>
+
+## Black-and-White Manga Ink Sketch: Messy-Bun Daydreamer Portrait (9:16 JSON)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+{
+  "aspect_ratio": "9:16",
+  "style": "Black and white manga ink sketch, detailed hand-drawn illustration",
+
+  "prompt": "A beautiful young anime woman with large expressive eyes, long eyelashes, full lips and a dreamy sideways gaze. Extremely voluminous messy black hair tied in a loose high bun, with wispy bangs and wild flowing flyaway strands. Her head is slightly tilted, resting gently on one hand, with naturally curved fingers supporting her cheek. She wears an oversized black sweater with loose sleeves and detailed fabric folds. Medium close-up portrait, head and upper torso visible, centered composition. Intricate black ink linework, fine cross-hatching, delicate pencil shading on the face, dense black hair strokes with white highlights, expressive sketchy outlines. Pure white paper background with a tiny hand-drawn heart doodle in the upper right corner. Strong black and white contrast, authentic manga illustration, elegant, dreamy and playful.",
+
+  "negative_prompt": "Color, 3D, photorealism, watercolor, extra fingers, distorted face, messy background, text, watermark, blurry details"
+}
+
+```
+
+</details>
+
