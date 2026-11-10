@@ -237006,3 +237006,16 @@ A tall vertical Aubusson-style medieval tapestry of a white unicorn lying down i
 
 </details>
 
+<details>
+<summary><strong>Cutaway Illustration of a Vintage Mobile Library Bus Under Autumn Trees at Dusk</strong></summary>
+
+## Cutaway Illustration of a Vintage Mobile Library Bus Under Autumn Trees at Dusk
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A storybook cutaway illustration of a vintage cream-and-dark-green mobile library bus parked under autumn trees at dusk, landscape 4:3. The bus faces LEFT; the near side is cut away to reveal a cozy interior: toward the front, a green cushioned sofa with pillows and a plaid throw, a rounded window behind it, and a potted plant on the floor; toward the rear-right, a wooden desk with a green banker's lamp, stacks of books, and wooden shelves packed with colorful books; warm string lights run along the ceiling, with more potted and hanging plants. Outside, a huge autumn maple fills the upper left, wet pavement is covered in orange fallen leaves, and two glowing street lamps stand on the right under a purple-blue dusk sky. Inviting, detailed cutaway style. No readable book titles, no logos, no people, no watermarks.
+```
+
+</details>
+
