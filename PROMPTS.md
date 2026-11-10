@@ -237668,3 +237668,40 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Acropolis at Golden Sunrise: 15-Shot Historical Documentary with 1-Second Hard Cuts (15s Video)</strong></summary>
+
+## Acropolis at Golden Sunrise: 15-Shot Historical Documentary with 1-Second Hard Cuts (15s Video)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Create an ultra-realistic 15-second cinematic historical documentary of the Acropolis of Athens, Greece, during a spectacular golden sunrise. Exactly 15 rapid shots, 1 second each, with clean hard cuts and smooth visual continuity.
+
+Shot sequence:
+
+1. Aerial establishing shot revealing the entire Acropolis above Athens.
+2. Smooth drone glide toward the ancient Parthenon.
+3. Wide symmetrical view of the Parthenon glowing in sunrise light.
+4. Close-up of massive ancient Greek marble columns.
+5. Slow tilt-up revealing the magnificent temple architecture.
+6. Cinematic orbit around the Parthenon.
+7. Close-up of intricate ancient stone carvings and sculptures.
+8. Side-angle tracking shot along the majestic columns.
+9. Tracking shot across ancient marble pathways.
+10. Low-angle hero shot emphasizing the towering columns.
+11. Pan across the Erechtheion and its famous Caryatid statues.
+12. Golden sunlight illuminating weathered marble textures.
+13. Elevated aerial view showing Athens stretching toward the horizon.
+14. Close-up revealing ancient architectural details and stone textures.
+15. Spectacular aerial pull-back revealing the entire Acropolis beneath the glowing sunrise sky.
+
+Visual style: Photorealistic 4K HDR, premium historical documentary cinematography, authentic ancient Greek architecture, warm golden-pink sunrise, soft atmospheric haze, realistic marble textures, cinematic drone movements, natural shadows, stable geometry, no flickering or distortion.
+
+Audio: Epic orchestral soundtrack with subtle ancient Greek-inspired instrumental atmosphere.
+
+Consistency: Maintain historically accurate architecture, consistent sunrise direction, realistic geography, and smooth visual continuity across all 15 shots.
+```
+
+</details>
+
