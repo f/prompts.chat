@@ -4,7 +4,8 @@ import { BuiltWithLink } from "@/components/layout/sponsor-link";
 
 // Each label stays in the same no-wrap group as its logo so narrow screens
 // break between groups instead of orphaning words ("by" / "Cognition").
-export function BuiltWith() {
+// The hosting credit is set at build time with NEXT_PUBLIC_HOSTING_BADGE.
+export function BuiltWith({ hosting = process.env.NEXT_PUBLIC_HOSTING_BADGE === "vercel" }: { hosting?: boolean }) {
   return (
     <div
       data-testid="built-with"
@@ -56,33 +57,37 @@ export function BuiltWith() {
           </BuiltWithLink>
         </span>
       </span>
-      <span data-testid="built-with-separator" aria-hidden="true" className="hidden md:inline mx-0.5">
-        ·
-      </span>
-      <span data-testid="built-with-hosting" className="inline-flex max-w-full flex-wrap items-center justify-center gap-x-1.5 gap-y-2">
-        <span>hosted on</span>
-        <Link
-          href="https://vercel.com/oss"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex max-w-full items-center opacity-60 hover:opacity-100 transition-opacity"
-        >
-          <Image
-            src="/sponsors/vercel-oss.svg"
-            alt="Vercel OSS Program"
-            width={240}
-            height={24}
-            className="h-4.5 w-auto max-w-full shrink-0 dark:hidden"
-          />
-          <Image
-            src="/sponsors/vercel-oss-dark.svg"
-            alt="Vercel OSS Program"
-            width={240}
-            height={24}
-            className="h-4.5 w-auto max-w-full shrink-0 hidden dark:block"
-          />
-        </Link>
-      </span>
+      {hosting && (
+        <>
+          <span data-testid="built-with-separator" aria-hidden="true" className="hidden md:inline mx-0.5">
+            ·
+          </span>
+          <span data-testid="built-with-hosting" className="inline-flex max-w-full flex-wrap items-center justify-center gap-x-1.5 gap-y-2">
+            <span>hosted on</span>
+            <Link
+              href="https://vercel.com/oss"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex max-w-full items-center opacity-60 hover:opacity-100 transition-opacity"
+            >
+              <Image
+                src="/sponsors/vercel-oss.svg"
+                alt="Vercel OSS Program"
+                width={240}
+                height={24}
+                className="h-4.5 w-auto max-w-full shrink-0 dark:hidden"
+              />
+              <Image
+                src="/sponsors/vercel-oss-dark.svg"
+                alt="Vercel OSS Program"
+                width={240}
+                height={24}
+                className="h-4.5 w-auto max-w-full shrink-0 hidden dark:block"
+              />
+            </Link>
+          </span>
+        </>
+      )}
     </div>
   );
 }
