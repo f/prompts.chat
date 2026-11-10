@@ -237082,3 +237082,16 @@ Photoreal wide landscape photograph of a tiny Faroese turf-roof village above a 
 
 </details>
 
+<details>
+<summary><strong>Faroese Turf-Roof Village Above a Sea Gorge at Golden Hour (Image-to-Video Animation)</strong></summary>
+
+## Faroese Turf-Roof Village Above a Sea Gorge at Golden Hour (Image-to-Video Animation)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Start from the step 2 image "Turf-Roofed Faroese Village Above a Sea Gorge at Golden Hour" as the exact first frame, and animate it into a calm ${duration:6}-second cinematic shot. Keep the cluster of about ten turf-roof houses on the left-center terrace (most black or very dark, one bright red near the center), the a few white sheep on the lower-left foreground slope, the tall waterfall on the right plunging into the deep teal inlet, the golden sidelight from the left, the distant headland, the sky, and the style exactly as in the image. The waterfall continuously falls and mists at the base; teal water gently surges and foams against the cliff; grass and turf roofs barely stir in a light wind; the sheep stay put; warm light holds. Very slow gentle camera drift, no new objects, no people appearing, no cars, no boats, no cuts, no text, no logos. Natural, realistic motion and soft coastal ambience.
+```
+
+</details>
+
