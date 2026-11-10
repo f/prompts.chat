@@ -26,9 +26,25 @@ describe("getBaseUrl", () => {
     expect(getBaseUrl()).toBe("https://example.com");
   });
 
-  it("should fall back to https://prompts.chat", () => {
+  it("should fall back to the Vercel production domain", () => {
     delete process.env.NEXTAUTH_URL;
-    expect(getBaseUrl()).toBe("https://prompts.chat");
+    vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "prompts.chat");
+    try {
+      expect(getBaseUrl()).toBe("https://prompts.chat");
+    } finally {
+      vi.unstubAllEnvs();
+    }
+  });
+
+  it("should fall back to localhost off Vercel", () => {
+    delete process.env.NEXTAUTH_URL;
+    vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "");
+    vi.stubEnv("PORT", "");
+    try {
+      expect(getBaseUrl()).toBe("http://localhost:3000");
+    } finally {
+      vi.unstubAllEnvs();
+    }
   });
 });
 

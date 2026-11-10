@@ -40,7 +40,7 @@ import { getConfig } from "@/lib/config";
 import { JsonLd, breadcrumbSchema, promptHowToSchema, promptSchema } from "@/components/seo/structured-data";
 import { AI_MODELS } from "@/lib/works-best-with";
 import { getPromptUrl } from "@/lib/urls";
-import { buildPageMetadata, NOINDEX_ROBOTS, toMetaDescription } from "@/lib/seo";
+import { buildPageMetadata, getBaseUrl, NOINDEX_ROBOTS, toMetaDescription } from "@/lib/seo";
 
 interface PromptPageProps {
   params: Promise<{ id: string }>;
@@ -364,7 +364,7 @@ export default async function PromptPage({ params }: PromptPageProps) {
           description: prompt.description || `AI prompt: ${prompt.title}`,
           content: prompt.content,
           author: prompt.author.name || prompt.author.username,
-          authorUrl: `${process.env.NEXTAUTH_URL || "https://prompts.chat"}/@${prompt.author.username}`,
+          authorUrl: `${getBaseUrl()}/@${prompt.author.username}`,
           datePublished: prompt.createdAt.toISOString(),
           dateModified: prompt.updatedAt.toISOString(),
           category: prompt.category?.name,
