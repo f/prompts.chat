@@ -237705,3 +237705,155 @@ Consistency: Maintain historically accurate architecture, consistent sunrise dir
 
 </details>
 
+<details>
+<summary><strong>Quiet Waitress, Brutal Lesson: 30-Second Korean Restaurant & Kitchen Fight Sequence (Action Video)</strong></summary>
+
+## Quiet Waitress, Brutal Lesson: 30-Second Korean Restaurant & Kitchen Fight Sequence (Action Video)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Create an EXTREMELY INTENSE, ultra-realistic, high-budget 30-second Korean action movie sequence featuring brutal, lightning-fast hand-to-hand combat inside a traditional Korean restaurant and its industrial kitchen.
+
+ 60 FPS, realistic motion physics, high-speed combat, occasional 120 FPS slow-motion impact shots, seamless camera tracking, explosive sound design, authentic Korean dialogue.
+
+ACTION INTENSITY: 10/10 — MAXIMUM.
+The sequence must feel like a combination of elite Korean martial-arts choreography, gritty street fighting, and an explosive blockbuster action climax. Every second must contain suspense, danger, movement, or a powerful cinematic moment.
+
+MAIN FEMALE CHARACTER — IDENTITY LOCK (optional: attach your character reference as Image 1)
+A beautiful, athletic, 24-year-old Korean woman with a short, chin-length pastel-pink bob haircut, soft feathered layers, expressive dark eyes, natural Korean facial features, and a lean, powerful physique.
+
+Her pastel-pink hair must remain clearly visible throughout the action, even under dramatic lighting.
+Personality: Initially quiet, gentle, and respectful. When threatened, her expression transforms into an intimidating, ice-cold stare. Her fighting style is explosive, precise, aggressive, and extraordinarily fast.
+Maintain identical facial features, pastel-pink hair, costume, proportions, and hairstyle across every shot.
+
+ENVIRONMENT
+A busy traditional Korean restaurant at night, transitioning into a cramped industrial kitchen.
+Warm amber restaurant lighting contrasts with cold fluorescent kitchen lights. Stainless-steel counters, steaming pots, metal shelves, swinging kitchen doors, hanging utensils, stacks of plates, wet tiled floors, and narrow cooking aisles create a dangerous, highly interactive combat environment.
+
+Steam bursts from boiling pots. Metallic objects crash to the floor. Glass shatters. Overturned furniture and scattered ingredients intensify the chaos.
+
+SECOND-BY-SECOND ACTION SEQUENCE
+
+00:00–00:03 — THE THREAT
+Extreme cinematic close-up of a ruthless Korean crime boss slamming his palm against a restaurant table.
+BANG.
+An elderly restaurant owner flinches in terror.
+Three muscular bodyguards in black suits stand behind the boss.
+The crime boss grabs the elderly man's collar and threatens him in Korean.
+Camera whip-pans toward a young pastel-pink-haired waitress standing motionless beside the kitchen entrance.
+She slowly places her serving tray on the counter.
+Her eyes narrow.
+The restaurant becomes terrifyingly silent.
+00:03–00:06 — THE FIRST EXPLOSION
+One bodyguard aggressively approaches the waitress and reaches for her collar.
+WITHOUT WARNING—
+She explodes into motion.
+A lightning-fast wrist deflection.
+A vicious elbow strike into his padded upper torso.
+She grabs his jacket, pivots, and slams him backward onto an empty restaurant table.
+CRAAAAASH.
+Plates bounce, chopsticks scatter, and the table collapses.
+The camera rushes forward in a violent handheld tracking shot.
+A second bodyguard charges.
+She ducks beneath his punch and drives a powerful spinning kick into his chest.
+He stumbles through the swinging kitchen doors.
+00:06–00:10 — KITCHEN WARFARE
+The camera follows the waitress directly into the industrial kitchen in one seamless tracking movement.
+Two attackers rush her from opposite directions.
+She slides beneath the first man's swinging arm, plants one hand on a stainless-steel counter, and delivers a powerful sideways kick that sends him stumbling into stacked metal trays.
+CLANG! CLANG! CLANG!
+The second attacker lunges from behind.
+She turns sharply, catches his forearm, and uses his momentum to throw him across a preparation counter.
+Metal bowls scatter across the floor.
+Steam erupts from a nearby cooking station.
+The camera circles rapidly around her as she moves through the chaos.
+00:10–00:14 — THE STEAM ATTACK
+A massive cloud of white steam fills the narrow kitchen aisle.
+Visibility drops.
+A muscular attacker suddenly emerges from the steam, swinging a heavy metal serving tray toward her.
+She ducks at the final instant.
+WHOOSH.
+The tray smashes into a hanging rack behind her.
+She immediately counters with three lightning-fast movements:
+A palm strike.
+A spinning elbow.
+A powerful jumping knee into the attacker's guarded torso.
+He crashes backward against a stainless-steel refrigerator.
+BOOOOM.
+The camera briefly enters dramatic slow motion, capturing her pastel-pink hair whipping through the steam.
+Then instantly SNAP BACK TO REAL TIME.
+00:14–00:18 — THE RELENTLESS COMBO
+Two remaining attackers charge simultaneously.
+The waitress leaps onto a low kitchen platform, launches herself forward, and performs a spectacular cinematic flying kick against the first attacker.
+She lands, immediately pivots, and blocks the second man's punch.
+A rapid-fire exchange follows:
+BLOCK — ELBOW — DUCK — SPIN — KICK.
+Five perfectly choreographed movements in two seconds.
+The camera follows every strike with aggressive whip-pans and realistic impact shake.
+One attacker crashes into stacked plastic crates.
+The other tumbles across a stainless-steel counter, scattering vegetables and utensils.
+The entire kitchen erupts in metallic noise.
+00:18–00:22 — THE BIGGEST IMPACT
+The largest bodyguard emerges through the steam.
+He is nearly twice her size.
+He charges with enormous force.
+She dodges his first punch.
+The second punch narrowly misses her face.
+EXTREME CLOSE-UP: Her pastel-pink hair moves across her eyes.
+She grips the edge of the counter, swings her legs upward, and executes a devastating cinematic double-leg push kick against his upper body.
+120 FPS SLOW MOTION.
+The attacker flies backward a short, physically believable distance and crashes through the swinging kitchen doors.
+CRAAAAASH.
+The doors slam against the walls.
+A shower of loose utensils falls from a nearby shelf.
+Cut instantly to real-time speed.
+00:22–00:26 — THE FINAL BOSS
+The crime boss stands in the restaurant doorway, stunned.
+All his bodyguards are defeated.
+He angrily removes his suit jacket and charges toward her.
+The waitress remains completely motionless.
+At the last second, she steps sideways, redirects his arm, and delivers a stunning spinning back kick.
+BOOOOM.
+He crashes backward into an empty dining chair, which collapses beneath him.
+The camera pushes into an extreme close-up of her cold, emotionless face.
+Her breathing remains controlled.
+00:26–00:30 — THE SHOCKING REVEAL
+The kitchen falls silent.
+Steam drifts slowly through the air.
+The crime boss looks up at her in disbelief.
+He recognizes her.
+His expression changes from anger to absolute terror.
+He whispers in Korean:
+"설마... 너였어?"
+("No way... it was you?")
+The waitress slowly removes her burgundy apron and drops it onto the floor.
+CLOSE-UP: Her fearless eyes beneath her pastel-pink hair.
+She replies in a quiet, intimidating Korean voice:
+"이제 끝이야."
+("It's over now.")
+FINAL SHOT: A dramatic low-angle hero shot as she walks toward the camera through the steam-filled kitchen.
+Massive cinematic bass drop.
+HARD CUT TO BLACK.
+CINEMATOGRAPHY
+Extremely fast, aggressive Korean action cinematography.
+Continuous handheld tracking during combat.
+Rapid whip-pans synchronized with strikes.
+Extreme close-ups of eyes, fists, feet, and facial reactions.
+Dynamic low-angle shots emphasizing powerful kicks.
+120 FPS slow motion ONLY for the most spectacular impacts.
+Immediate speed ramp back into real-time combat.
+Realistic body momentum, grounded stunts, and believable collisions.
+Seamless camera movement through swinging doors and tight kitchen aisles.
+Natural motion blur and dramatic depth of field.
+SOUND DESIGN
+Explosive Korean cinematic percussion, aggressive bass pulses, rapid heartbeat-like rhythms, deep impact booms, sharp whooshes, metal tray crashes, shattering dishes, steam hissing, footsteps scraping wet tiles, heavy breathing, and realistic combat grunts.
+Music intensifies throughout the fight, then cuts into complete silence before the final dialogue.
+NEGATIVE PROMPT
+No cartoon physics, no exaggerated superhero powers, no floating characters, no unnatural body movements, no disconnected punches, no random teleportation, no distorted faces, no extra limbs, no changing hairstyles, no costume inconsistencies, no excessive blood, no gore, no blurry action, no unrealistic object interactions, no slow or weak choreography, no unnecessary pauses.
+FINAL DIRECTIVE: Every fight movement must feel powerful, dangerous, fast, and cinematic. Prioritize extraordinary choreography, realistic collisions, explosive kitchen destruction, perfect character consistency, and maximum Korean action-movie intensity.
+
+```
+
+</details>
+
