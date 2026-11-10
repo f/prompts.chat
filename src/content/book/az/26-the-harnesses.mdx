@@ -198,6 +198,35 @@ Sınamaq üçün yeni sessiya və ya tarixçəsi olmayan, yalnız oxuma alətlə
 
 Üslubla bağlı şərh yazma və heç bir faylı redaktə etmə.`} />
 
+### Bir Harness, Bir Neçə Model
+
+Hər çağırışa hansı modelin cavab verəcəyini harness həll edir və heç yerdə yazılmayıb ki, bu, hər dəfə eyni model olmalıdır. Uzun bir tapşırığın addımları bir-birinə bənzəmir. Bəziləri mühakimə tələb edir: yanaşma seçmək, planın yoldan çıxdığını görmək, işin həqiqətən bitib-bitmədiyinə qərar vermək. Digərləri isə sərhədləri bəlli olan və təkrarlanan işlərdir: bu faylları oxu, bu sahələri çıxar, bu modulu köçür və testlərini işə sal. Harness hər addımı ona uyğun gələn modellə tutuşdura bilər və bu yanaşma iki istiqamətdə görünür.
+
+<InfoGrid columns={2} items={[
+  { label: "Aşağıya həvalə etmək", description: "Böyük model planlayır və nəzarət edir. Çoxlu kiçik və ucuz model işin sərhədləri bəlli hissələrini paralel olaraq, hər biri öz tapşırığı ilə üzərinə götürür, geri qayıdanları isə böyük model yoxlayır.", color: "blue" },
+  { label: "Yuxarıya müraciət etmək", description: "Daha sürətli və ucuz model bütün tapşırığı aparır. Çətin anlarda daha güclü bir modeldən məsləhət alır. Güclü model gedişatın qeydini oxuyur və alətlərə özü toxunmadan plan ya da düzəliş qaytarır.", color: "purple" }
+]} />
+
+Meta-nın 9 noyabr 2026-cı ildə təqdim etdiyi Muse Ember birinci istiqamət üçün yaradılıb. Meta onu "agentlərin bütün günü təkrarladığı işlər, yəni alət çağırışları, kodlaşdırma alt tapşırıqları, yönləndirmə, məlumat çıxarma və uzun sənədlərin təhlili" üçün hazırlandığını deyərək [təqdim edir](https://research.meta.ai/blog/muse-ember) və daha böyük modellə birgə işini bir cümlə ilə ümumiləşdirir: "Muse Wonder planlayır, Muse Ember iş həcmini daşıyır." Şirkətin [tərtibatçılar üçün yazısı](https://dev.meta.ai/resources/blog/build-with-muse-ember) üç addımlı kodlaşdırma axını təsvir edir. Böyük model bütün repozitoriya üzrə dəyişikliyi planlayır. Ember işçilərinin hər biri öz faylları, məhdudiyyətləri və yoxlamaları olan, sərhədləri bəlli bir alt tapşırıq götürür. Sonra böyük model bir tərtibatçı ilə birlikdə birləşmiş nəticəni nəzərdən keçirir. Cookbook-dakı nümunədə 16 Ember agentinin hər biri Pygments sintaksis vurğulayıcısının bir lexer-ini Python-dan Rust-a köçürdü, hər biri repozitoriyanın öz nüsxəsində işlədi. Planlayıcı isə onların tapşırıqlarını yazdı, amma mənbə kodunu özü heç vaxt açmadı. Meta xatırladır ki, hər çağırış üçün modeli harness seçir və addımlar arasında konteksti də o daşıyır. Daha geniş asılılıq və ya aydın olmayan tələblə qarşılaşan işçi isə davam etməzdən əvvəl bunu planlayıcıya qaytarmalıdır. Meta-nın məlumatına görə, köçürülmüş 16 lexer-in hamısı testlərdə Python-dakı orijinalları ilə eyni nəticə verdi; şirkət nəticələrin bir işə salınmadan digərinə dəyişdiyini də qeyd edir.
+
+Anthropic-in [məsləhətçi strategiyası](https://claude.com/resources/articles/the-advisor-strategy) isə əks istiqamətdə işləyir və Anthropic özü onu bir orkestratorun çoxlu işçini idarə etdiyi adi sxemin tərsinə çevrilmiş forması kimi təsvir edir. İcraçı adlanan daha sürətli model (məsələn, Sonnet və ya Haiku) bütün tapşırığı aparır: alətləri çağırır, nəticələri oxuyur və irəliləyir. Tək başına ağlabatan şəkildə verə bilməyəcəyi bir qərarla qarşılaşanda məsləhətçi adlanan daha güclü bir modelə, məsələn Opus-a müraciət edir. [Claude Code sənədlərinə](https://code.claude.com/docs/en/advisor) görə, bu adətən bir yanaşmada qərarlaşmazdan əvvəl, eyni xəta təkrar-təkrar qayıdanda və tapşırığın bitdiyini elan etməzdən əvvəl baş verir. Məsləhətçi hər alət çağırışı və nəticəsi daxil olmaqla bütün söhbəti alır və plan, düzəliş və ya dayanmaq siqnalı qaytarır. [API sənədlərində](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool) təsvir olunduğu kimi, o, alətləri özü heç vaxt çağırmır və icraçıya yalnız onun məsləhəti çatır. Burada koordinasiya ediləsi işçi hovuzu yoxdur, güclü model isə yalnız həqiqətən lazım olan anlarda işə qoşulur. Məsləhət əmr də deyil. Claude Code-da icraçı adətən məsləhətə əməl edir, amma bir fayl və ya uğursuz addım ona zidd çıxanda kor-koranə tabe olmaq əvəzinə bu ziddiyyəti açıq deyir.
+
+Hər iki istiqamət prompta düşən yükü azaltmır, artırır. Aşağıya həvalə edəndə işçinin bütün dünyası ona verilən tapşırıqdır. Meta bu tapşırıqda nələrin olmalı olduğunu sadalayır: tapşırığın özü, lazımi kontekst, işçinin dəyişə biləcəyi fayllar, işin bitdiyini göstərən yoxlamalar və geri nəyin göndəriləcəyi. Qeyri-müəyyən tapşırıq almış kiçik model boşluqları doldurmaq üçün planlayıcının mühakiməsini borc ala bilməz; o, təxmin edəcək, həm də sürətlə və dəfələrlə. Yuxarıya müraciət edəndə isə köməyin nə vaxt istəniləcəyini sizin təlimatlarınız müəyyən edir. Anthropic qeyd edir ki, sistem promptunda yönləndirmə olmayanda icraçılar kodlaşdırma tapşırıqlarında məsləhətçiyə lazım olduğundan az müraciət edir və onlara nə vaxt soruşmalı olduqlarını deməyi tövsiyə edir.
+
+Bu bölgü ən yaxşı halda işi sərhədləri bəlli hissələrə ayırmaq və hər hissəni yoxlamaq mümkün olanda işləyir. Hər addım əvvəlkinin qiymətləndirilməsindən asılıdırsa və ya hər addıma onsuz da ən güclü model lazımdırsa, ötürmələr yalnız xərci və kontekstin itə biləcəyi yerləri artırır. Qənaət də zəmanətli deyil. Planlama, birləşdirmə və məsləhətçiyə hər müraciət token xərcləyir, Anthropic isə kiçik modelin öz bacarığı məsləhətçininkinə yaxınlaşdıqca faydanın azaldığını müşahidə edir. Ən dürüst sınaq sizin öz işinizdir: eyni tapşırıqları eyni yoxlamalarla əvvəlcə yalnız kiçik modellə, sonra cütlüklə, sonra da yalnız böyük modellə işə salıb müqayisə edin. Addımı hansı modelin götürəcəyini seçmək, həm də bir modelin nə qədər dərindən düşünəcəyindən fərqli bir tənzimləmədir; bu fərq [Süni İntellektlə Proqram Təminatı Hazırlamaq](/book/28a-software-development-with-ai) fəslinin "Səy Model Seçimi ilə Eyni Şey Deyil" bölməsində izah olunur.
+
+Birinci istiqaməti sınamaq üçün planlayıcının tək bir işçiyə verəcəyi tapşırığı yazın, sonra onu həmin işçinin gözü ilə oxuyun. Bacarıqlı, amma layihəyə kənar biri yalnız bu səhifəyə baxaraq işi bitirə bilərdimi?
+
+<TryIt compact prompt={`Sən daha böyük bir dəyişiklik üzərində çalışan bir neçə işçidən birisən. Yalnız bu tapşırığı yerinə yetir.
+
+Tapşırıq: \${task:faktura modulundakı tarix formatlamasını ortaq formatDate köməkçisinə keçir}
+Kontekst: \${context:köməkçi artıq src/lib/format.ts faylında var; digər işçilər sifariş və hesabat modullarını yeniləyir}
+Dəyişə biləcəyin fayllar: \${files:src/invoices/ və onun testləri}
+Yoxlamalar: \${checks:faktura testləri keçir və siyahından kənar heç bir fayl dəyişməyib}
+Geri qaytaracaqların: \${result:dəyişdiyin fayllar, işə saldığın hər yoxlama və onun çıxışının son sətri, bitirə bilmədiyin hər şey}
+
+Tapşırıq siyahında olmayan bir fayl tələb edirsə və ya bu tapşırıqdan böyük bir problem tapsan, onu yan keçmə; dayan və bu barədə xəbər ver.`} />
+
 ## Harness Daxilində Promptlar Niyə Vacibdir?
 
 Harness modelə hərəkət etmək üçün yol verir. Promptlarınız faydalı hərəkətin necə olmalı olduğunu izah edir. Aydın məqsəd olmadıqda agent ehtiyacınız olmayan işlərə çoxlu addım sərf edə bilər.
