@@ -236959,3 +236959,24 @@ output_schema:
 
 </details>
 
+<details>
+<summary><strong>Wide-Angle Fashion Portrait with a Giant Chess Queen</strong></summary>
+
+## Wide-Angle Fashion Portrait with a Giant Chess Queen
+
+Contributed by @anonymous
+
+```md
+Creative fashion photography with distorted perspective (wide-angle lens/fisheye effect).
+
+The frame features a young, handsome European-looking man with dark hair.
+
+He is seated at a table, resting his left hand on his head (a relaxed, pensive pose), and looking directly into the lens with a confident, slightly arrogant expression. Key element (foreground): His right arm is extended strongly forward toward the camera, palm facing down.
+
+In extreme close-up. He holds a large, glossy black chess piece (the Queen), making a move. Due to the perspective, the hand and piece appear enormous compared to the head. Setting: The table is a stylized chessboard: alternating glossy black squares and squares of textured gold leaf, with strong reflections on the surface. In the background, a black chess piece lies overturned on the table. Clothing: A loose white shirt with an open collar, a gold chain around the neck.
+
+Background: Dark, almost black, with large white abstract geometric shapes (reminiscent of the silhouettes of a chess rook's battlements) at the edges of the frame. Lighting and Style: Studio lighting, contrasting light, high detail in the leather texture and gold, glossy magazine style, unusual angle.
+```
+
+</details>
+
