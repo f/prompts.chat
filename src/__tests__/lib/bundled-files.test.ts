@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-// @ts-expect-error -- plain ESM build script without type declarations
 import { OUTPUT, renderBundledFiles } from "../../../scripts/generate-bundled-files.mjs";
 import { readBundledDataUri, readBundledText } from "@/lib/bundled-files";
 import { loadPrompt } from "@/lib/ai/load-prompt";

@@ -4,7 +4,9 @@ import { withPerTransactionClient } from "@/lib/db-transactions";
 function fakeClient(name: string) {
   return {
     name,
-    $transaction: vi.fn(async (fn: (tx: { name: string }) => unknown) => fn({ name: `${name}-tx` })),
+    $transaction: vi.fn<(fn: (tx: { name: string }) => unknown, options?: unknown) => Promise<unknown>>(
+      async (fn) => fn({ name: `${name}-tx` })
+    ),
     $disconnect: vi.fn(async () => {}),
     query: vi.fn(() => `${name}-query`),
   };
