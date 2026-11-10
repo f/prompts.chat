@@ -236993,3 +236993,16 @@ A photorealistic wildlife photograph of a pair of mandarin ducks floating on a p
 
 </details>
 
+<details>
+<summary><strong>Aubusson-Style Tapestry of a White Unicorn in a Walled Medieval Rose Garden</strong></summary>
+
+## Aubusson-Style Tapestry of a White Unicorn in a Walled Medieval Rose Garden
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A tall vertical Aubusson-style medieval tapestry of a white unicorn lying down in the center of a walled rose garden, portrait 3:4. The unicorn rests on a millefleurs meadow of tiny red, blue, pink, and white flowers, with a creamy flowing mane and tail, a slender spiral horn, and a red collar with a small gold bell, facing slightly left. On the LEFT a stylized pomegranate tree bears several ripe red fruits. On the RIGHT a rose-covered stone wall has an arched wooden door that is closed, not wide open, with climbing pink and crimson roses over the arch. Woven tapestry texture with slightly faded vegetable-dye reds, blues, and moss greens, and an ornate floral border on all four sides. No readable text, no people, no logos, no watermarks.
+```
+
+</details>
+
