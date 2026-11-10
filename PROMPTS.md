@@ -237566,3 +237566,38 @@ Describe what this skill does and how the agent should use it.
 
 </details>
 
+<details>
+<summary><strong>Database Schema Design taste</strong></summary>
+
+## Database Schema Design taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Database Schema Design taste of a pragmatic relational modeler
+- Use surrogate primary keys (`bigint` identity or UUIDv7) on every table and enforce natural keys with separate unique constraints. Confidence: 0.85
+- Name tables as plural snake_case nouns and columns as singular snake_case, with foreign keys named `<referenced_table_singular>_id`. Confidence: 0.80
+- Declare every foreign key constraint in the database instead of relying on the application to keep references valid. Confidence: 0.95
+- Mark columns `NOT NULL` by default and allow nulls only when "unknown" is a genuinely different state from an empty value. Confidence: 0.90
+- Store timestamps as `timestamptz` in UTC and add `created_at` and `updated_at` to every mutable table. Confidence: 0.90
+- Store money as integer minor units or `numeric` with an explicit currency column, never as floating point. Confidence: 0.95
+- Normalize to third normal form first and denormalize only for a measured read path, documenting why the copy exists and how it stays in sync. Confidence: 0.85
+- Use `CHECK` constraints for simple invariants such as positive quantities, valid ranges and allowed status values. Confidence: 0.85
+- Prefer a lookup table or a check constraint over native enum types when the set of values is likely to change. Confidence: 0.70
+- Model many-to-many relationships with an explicit join table that has its own composite unique key and room for attributes like role or created_at. Confidence: 0.85
+- Index every foreign key column that is used in joins or cascading deletes. Confidence: 0.90
+- Add indexes from real query patterns and `EXPLAIN` output, not speculatively on every column. Confidence: 0.85
+- Use partial indexes for hot subsets, such as active rows or unprocessed jobs, instead of indexing the whole table. Confidence: 0.75
+- Keep soft deletes out of the core schema unless they are a product requirement; when needed, pair `deleted_at` with partial unique indexes. Confidence: 0.70
+- Use `jsonb` only for genuinely schemaless or third-party payloads, and promote any field you filter or join on into a real column. Confidence: 0.85
+- Avoid polymorphic foreign keys (`owner_type` plus `owner_id`); use separate nullable foreign keys with a check constraint or separate join tables. Confidence: 0.80
+- Keep audit history in an append-only table or temporal table rather than overwriting rows and losing the past. Confidence: 0.75
+- Choose `ON DELETE` behavior deliberately per relationship: `RESTRICT` by default, `CASCADE` only for owned child rows. Confidence: 0.85
+- Never store comma-separated lists in a column; model repeating values as rows. Confidence: 0.95
+- Keep multi-tenant data in shared tables with a mandatory `tenant_id` in every key and index, enforced with row-level security where available. Confidence: 0.75
+- Review every schema change as a migration in version control together with the code that depends on it. Confidence: 0.90
+- Document each table and non-obvious column with `COMMENT ON` so the schema explains itself in any database client. Confidence: 0.65
+```
+
+</details>
+
