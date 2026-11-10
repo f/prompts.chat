@@ -201069,3 +201069,25 @@ Kafka Streaming taste,"# Kafka Streaming taste of a pragmatic event platform eng
 - Lock down clusters with TLS, authenticated clients and per-service ACLs that grant only the topics each service needs. Confidence: 0.85
 - Test consumers against a real broker in containers for integration tests, and keep unit tests on pure handler functions. Confidence: 0.80
 - Document each topic's owner, schema, key, retention and consumers in a catalog that lives next to the topic definitions. Confidence: 0.70",TRUE,TEXT,f
+Pandas Data Analysis taste,"# Pandas Data Analysis taste of a reproducible analytics practitioner
+- Keep analysis in version-controlled scripts or notebooks with outputs cleared before commit, and move reusable logic into an importable module. Confidence: 0.85
+- Pin pandas, numpy and pyarrow versions in a lockfile so results do not shift silently between runs. Confidence: 0.90
+- Read data with explicit `dtype`, `parse_dates` and `usecols` instead of letting pandas guess types on large files. Confidence: 0.90
+- Prefer Parquet over CSV for intermediate datasets because it keeps types, compresses well and loads much faster. Confidence: 0.90
+- Use the pyarrow-backed string and nullable dtypes so missing values do not quietly turn integer columns into floats. Confidence: 0.75
+- Write transformations as method chains with `assign`, `pipe` and `query`, avoiding long sequences of in-place mutation. Confidence: 0.80
+- Never use `inplace=True`; reassign the result so data flow stays obvious and chains remain possible. Confidence: 0.85
+- Select with `.loc` and `.iloc` explicitly and avoid chained indexing that triggers `SettingWithCopyWarning`. Confidence: 0.90
+- Vectorize with built-in column operations and `np.where` or `np.select`; reach for `apply` with Python functions only as a last resort. Confidence: 0.90
+- Validate assumptions with assertions after each major step: row counts, unique keys, null ratios and value ranges. Confidence: 0.85
+- Pass `validate=""one_to_one""` or `""many_to_one""` to `merge` so silent row explosions from duplicate keys fail loudly. Confidence: 0.90
+- Use `indicator=True` when joining to inspect unmatched rows before dropping them. Confidence: 0.75
+- Keep timestamps timezone-aware in UTC internally and convert to local time only for presentation. Confidence: 0.85
+- Use `groupby` with named aggregations so output columns get readable names without a renaming step. Confidence: 0.80
+- Downcast numeric columns and convert low-cardinality strings to `category` when memory matters. Confidence: 0.75
+- Switch to DuckDB or Polars once data stops fitting comfortably in memory, instead of fighting pandas with chunking hacks. Confidence: 0.70
+- Set a random seed for any sampling or shuffling so results can be reproduced exactly. Confidence: 0.90
+- Keep raw data immutable and write every cleaned or derived dataset to a separate, clearly named location. Confidence: 0.90
+- Use snake_case column names, normalized once right after loading. Confidence: 0.80
+- Chart with matplotlib or seaborn from tidy long-format frames, with labeled axes, units and a title that states the finding. Confidence: 0.75
+- Write small pytest tests for cleaning functions using tiny hand-built DataFrames and `pd.testing.assert_frame_equal`. Confidence: 0.80",TRUE,TEXT,f
