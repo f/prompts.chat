@@ -201445,3 +201445,25 @@ Database Schema Design taste,"# Database Schema Design taste of a pragmatic rela
 - Keep multi-tenant data in shared tables with a mandatory `tenant_id` in every key and index, enforced with row-level security where available. Confidence: 0.75
 - Review every schema change as a migration in version control together with the code that depends on it. Confidence: 0.90
 - Document each table and non-obvious column with `COMMENT ON` so the schema explains itself in any database client. Confidence: 0.65",TRUE,TEXT,f
+Linux Server Hardening taste,"# Linux Server Hardening taste of a careful operations engineer
+- Build servers from a minimal base image and install only the packages a role needs, removing compilers and debugging tools from production hosts. Confidence: 0.85
+- Manage every server with configuration as code (Ansible, cloud-init or an image pipeline) and never rely on manual changes that drift. Confidence: 0.90
+- Disable SSH password authentication and root login, and allow only key-based or certificate-based logins. Confidence: 0.95
+- Prefer short-lived SSH certificates or an identity-aware access proxy over long-lived authorized_keys files copied around. Confidence: 0.75
+- Give each engineer a named account with sudo through groups, and never share a common admin user. Confidence: 0.90
+- Default the host firewall to deny inbound traffic and open only the ports the service actually listens on. Confidence: 0.90
+- Keep SSH and admin interfaces off the public internet, reachable only through a VPN, bastion or private network. Confidence: 0.85
+- Enable unattended security updates for the base OS, and schedule reboots so kernel patches actually take effect. Confidence: 0.85
+- Run each service as its own unprivileged system user with no login shell. Confidence: 0.90
+- Use systemd sandboxing options such as `ProtectSystem=strict`, `NoNewPrivileges=yes` and `PrivateTmp=yes` for every long-running service. Confidence: 0.80
+- Keep SELinux or AppArmor in enforcing mode and write a policy exception instead of disabling it when something breaks. Confidence: 0.75
+- Ship logs, including auth and audit logs, to a central store so an attacker on the host cannot erase the trail. Confidence: 0.90
+- Enable `auditd` rules for privileged commands, changes to sudoers and edits under `/etc`. Confidence: 0.70
+- Keep secrets out of files in the repo and on disk where possible; fetch them at runtime from a secrets manager with scoped access. Confidence: 0.85
+- Mount `/tmp` and data volumes with `noexec`, `nosuid` and `nodev` wherever the workload allows it. Confidence: 0.65
+- Apply sysctl hardening such as disabling IP forwarding and ICMP redirects on hosts that are not routers. Confidence: 0.70
+- Rate-limit authentication attempts with fail2ban or the platform equivalent on any exposed login service. Confidence: 0.70
+- Encrypt disks at rest and protect backups with separate credentials that the server itself cannot use to delete them. Confidence: 0.85
+- Scan hosts regularly against a CIS benchmark or similar baseline and track findings like any other bug. Confidence: 0.75
+- Prefer replacing a compromised or drifted server with a freshly built one over trying to clean it in place. Confidence: 0.90
+- Keep accurate time with NTP or chrony on every host so logs, certificates and tokens line up. Confidence: 0.80",TRUE,TEXT,f
