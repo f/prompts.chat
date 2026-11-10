@@ -237163,3 +237163,37 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Solidity Smart Contract taste</strong></summary>
+
+## Solidity Smart Contract taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Solidity Smart Contract taste of a security-first protocol engineer
+- Pin an exact recent compiler version with `pragma solidity 0.8.x;` instead of a floating caret range. Confidence: 0.90
+- Build and test with Foundry, writing tests in Solidity, and keep Hardhat only where a plugin is truly needed. Confidence: 0.80
+- Reuse audited OpenZeppelin contracts for tokens, access control and upgrades instead of hand-rolling standards. Confidence: 0.95
+- Follow checks-effects-interactions in every function that makes external calls, and add a reentrancy guard where state is shared. Confidence: 0.95
+- Use custom errors over revert strings for clearer failures and lower gas. Confidence: 0.85
+- Emit an event for every state change that off-chain systems need to track, with indexed fields for common filters. Confidence: 0.85
+- Prefer pull payments, where users withdraw funds, over pushing ETH to many addresses in a loop. Confidence: 0.90
+- Never use `tx.origin` for authorization; check `msg.sender` against explicit roles. Confidence: 1.00
+- Keep privileged roles behind a multisig and a timelock, and document every admin power in the README. Confidence: 0.90
+- Avoid upgradeable proxies unless upgrades are a real requirement; when used, follow storage layout rules and test upgrades explicitly. Confidence: 0.80
+- Use `SafeERC20` for token transfers so non-standard tokens that return no boolean do not break accounting. Confidence: 0.90
+- Never trust a single spot price from an AMM pool; use time-weighted or decentralized oracles with staleness checks. Confidence: 0.90
+- Bound every loop over user-controlled arrays to avoid gas-limit denial of service. Confidence: 0.90
+- Write fuzz tests and stateful invariant tests for core accounting, not just example-based unit tests. Confidence: 0.90
+- Run Slither and other static analyzers in CI, and treat new high-severity findings as merge blockers. Confidence: 0.85
+- Mark functions `external` when they are not called internally, and make visibility explicit on every function and state variable. Confidence: 0.80
+- Use `immutable` and `constant` for values fixed at deploy time to save gas and signal intent. Confidence: 0.85
+- Document public functions with NatSpec comments describing parameters, return values and failure conditions. Confidence: 0.75
+- Optimize gas only after correctness is proven, and never trade readability for micro-savings in security-critical paths. Confidence: 0.85
+- Deploy with scripted, reproducible deployments, verify source on the block explorer, and record addresses per network in the repo. Confidence: 0.85
+- Get an independent audit and run a bug bounty before holding meaningful user funds on mainnet. Confidence: 0.90
+```
+
+</details>
+
