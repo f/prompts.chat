@@ -201787,3 +201787,6 @@ Vertical 9:16 format, 45-60 seconds, high-quality animation, no scary scenes, no
 Answer Buyer Objections Honestly,"List the 8 most likely reasons [audience] would hesitate to buy [offer], such as price, time, trust or ""will this work for me?"" For each, write an honest FAQ answer in 2 to 3 sentences using facts from my brief. Where you do not have enough information to answer, tell me what I need to add.
 
 Follow-up: Turn the top 3 objections into short social posts.",FALSE,TEXT,tuesdaywhite@gmail.com
+"Chase a Late Payment: 3 Reminders, Friendly to Final","Write 3 payment reminders for invoice [number] for $[amount], due on [date]: a friendly reminder (3 days late), a firm reminder (10 days late) and a final notice (21 days late) that mentions [late fee or next step, only if real]. Professional and respectful. Include where to pay: [payment link].
+
+Follow-up: Write a short phone call script for the final-notice stage.",FALSE,TEXT,tuesdaywhite@gmail.com

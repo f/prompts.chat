@@ -238096,3 +238096,18 @@ Follow-up: Turn the top 3 objections into short social posts.
 
 </details>
 
+<details>
+<summary><strong>Chase a Late Payment: 3 Reminders, Friendly to Final</strong></summary>
+
+## Chase a Late Payment: 3 Reminders, Friendly to Final
+
+Contributed by @anonymous
+
+```md
+Write 3 payment reminders for invoice [number] for $[amount], due on [date]: a friendly reminder (3 days late), a firm reminder (10 days late) and a final notice (21 days late) that mentions [late fee or next step, only if real]. Professional and respectful. Include where to pay: [payment link].
+
+Follow-up: Write a short phone call script for the final-notice stage.
+```
+
+</details>
+
