@@ -1,7 +1,7 @@
-JSON 和 YAML 等结构化数据格式对于构建以编程方式消费 AI 输出的应用程序至关重要。本章涵盖可靠结构化输出生成的技术。
+JSON 和 YAML 等结构化数据格式对于构建以编程方式使用 AI 输出的应用程序至关重要。本章涵盖可靠结构化输出生成的技术。
 
 <Callout type="info" title="从文本到数据">
-JSON 和 YAML 将 AI 输出从自由格式文本转换为代码可以直接消费的结构化、类型安全的数据。
+JSON 和 YAML 将 AI 输出从自由格式文本转换为代码可以直接使用的结构化、类型安全的数据。
 </Callout>
 
 ## 为什么需要结构化格式？
@@ -88,6 +88,10 @@ Ensure all strings are properly quoted and escaped.
 Numbers should not be quoted.
 ```
 
+<Callout type="tip" title="让 API 来强制执行 schema">
+通过 API 调用模型时，措辞并不是你唯一的工具。OpenAI、Anthropic 和 Google 都提供结构化输出（structured output）功能，它们接收一个 JSON Schema，并约束响应必须符合该 schema。这能消除本章所说的大部分解析失败，例如多余的 markdown 代码围栏、尾随逗号和缺失字段。较早的"JSON 模式"设置只保证输出是语法有效的 JSON，并不保证符合你的 schema；而且各家提供商支持的 JSON Schema 子集也略有不同。下面的技术依然重要，因为 schema 控制的是答案的形态，而不是其中的值是否正确。
+</Callout>
+
 ## YAML 提示基础
 
 YAML 比 JSON 更易于人类阅读，并支持注释。它是配置文件的标准，特别是在 DevOps 领域（Docker、Kubernetes、GitHub Actions）。
@@ -131,7 +135,7 @@ Generate a GitHub Actions workflow in YAML:
 Requirements:
 - Trigger on push to main and pull requests
 - Run on Ubuntu latest
-- Steps: checkout, setup Node 18, install dependencies, run tests
+- Steps: checkout, set up the current Node.js LTS release, install dependencies, run tests
 - Cache npm dependencies
 ```
 
@@ -141,7 +145,7 @@ Requirements:
 
 ### 使用类似 TypeScript 的类型
 
-TypeScript 接口对开发人员来说很熟悉，可以精确描述可选字段、联合类型和数组。prompts.chat 平台使用这种方法来处理结构化提示。
+TypeScript 接口对开发人员来说很熟悉，可以精确描述可选字段、联合类型和数组。
 
 <TryIt 
   title="TypeScript 接口提取"
@@ -203,7 +207,7 @@ Genres: Science Fiction, Political Fiction. Rated 4.8/5"
 
 ### 固定长度数组
 
-当你需要恰好 N 个项时，明确说明。模型将确保数组具有正确的长度。
+当你需要恰好 N 个项时，明确说明。模型通常会照做，但如果数量很重要，请在代码中核对项数。
 
 ```
 Extract exactly 3 key points as JSON:
@@ -391,7 +395,7 @@ Items: apple, carrot, bread, banana, broccoli, milk, orange, spinach
 
 ## YAML 用于配置生成
 
-YAML 在 DevOps 配置中表现出色。模型了解常见工具的标准模式，可以生成生产就绪的配置。
+YAML 在 DevOps 配置中表现出色。模型了解常见工具的标准模式，能生成可靠的初始配置，但在投入生产之前，你仍应仔细审查。
 
 ### 该做与不该做：YAML 配置
 
@@ -510,27 +514,14 @@ Error format:
   </div>
 </div>
 
-## Prompts.chat 结构化提示
+## 保存结构化提示
 
-在 prompts.chat 上，你可以创建具有结构化输出格式的提示：
-
-```
-When creating a prompt on prompts.chat, you can specify:
-
-Type: STRUCTURED
-Format: JSON or YAML
-
-The platform will:
-- Validate outputs against your schema
-- Provide syntax highlighting
-- Enable easy copying of structured output
-- Support template variables in your schema
-```
+当一个 JSON 或 YAML 提示效果良好时，把它保存在你能找到并重复使用的地方。一些提示库（包括 prompts.chat）允许你保存本身就是用 JSON 或 YAML 编写的提示，以语法高亮显示，并在复制前填入模板变量。请记住，这只是保存提示，并不会根据 schema 检查模型的回复。要做到这一点，请使用 API 的结构化输出功能，或在你自己的代码中验证响应。
 
 ## 常见陷阱
 
-<Callout type="warning" title="首先调试这些">
-这三个问题导致了大多数 JSON 解析失败。当你的代码无法解析 AI 输出时，检查它们。
+<Callout type="warning" title="优先排查这些问题">
+这三个问题导致了大多数 JSON 解析失败。当你的代码无法解析 AI 输出时，先检查它们。由 schema 强制执行的结构化输出基本可以避免这些问题，因此在仅依赖提示时，它们最值得关注。
 </Callout>
 
 ### 1. Markdown 代码块
@@ -568,7 +559,7 @@ Properly escape special characters in strings:
 ## 总结
 
 <Callout type="tip" title="关键技术">
-使用 TypeScript 接口或 JSON Schema 明确定义 schema。指定类型和约束，处理 null 和默认值，请求自我验证，并为你的用例选择正确的格式。
+使用 TypeScript 接口或 JSON Schema 明确定义 schema。指定类型和约束，处理 null 和默认值，请求自我验证，并为你的用例选择正确的格式。通过 API 工作时，让其结构化输出功能来强制执行 schema，同时继续验证其中的值。
 </Callout>
 
 <Quiz 

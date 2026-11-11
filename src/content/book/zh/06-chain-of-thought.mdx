@@ -27,6 +27,8 @@ Chain of Thought (CoT) 提示是一种能够显著提升 AI 在复杂推理任�
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Explain your thought process."</div>
 </div>
 
+这些短语对标准聊天模型最为重要。推理模型会先思考再作答，对这些短语的依赖要小得多；本章后面会再谈到它们。
+
 ### 明确的步骤请求
 
 <TryIt 
@@ -195,6 +197,7 @@ Clues:
 2. The engineer has a dog
 3. Bob is a teacher
 4. Carol doesn't have a fish
+5. The doctor doesn't have a cat
 
 Who has which pet and job? Reason through this systematically, testing hypotheses and verifying against all clues.`}
 />
@@ -204,12 +207,17 @@ Who has which pet and job? Reason through this systematically, testing hypothese
 From clue 3: Bob = teacher
 → Alice and Carol are engineer/doctor
 
-If Carol = engineer:
-- Carol has dog (clue 2)
-- Alice = doctor, has fish (clue 1)
+Hypothesis A: Alice = engineer
+- Alice has dog (clue 2), Carol = doctor
+- Carol can't have fish (clue 4), so Carol has cat
+- But the doctor can't have a cat (clue 5) ✗
+
+Hypothesis B: Carol = engineer
+- Carol has dog (clue 2), Alice = doctor
+- Alice can't have cat (clue 1), so Alice has fish
 - Bob has cat
 
-Verify: All 4 clues satisfied ✓
+Verify: All 5 clues satisfied ✓
 Answer: Alice (doctor, fish), Bob (teacher, cat), Carol (engineer, dog)
 ```
 
@@ -272,9 +280,11 @@ Approach 3 (Logic): 30 chickens = 60 legs, need 14 more → 7 cows
 All agree: 23 chickens, 7 cows
 ```
 
+在最初的研究中，自我一致性还要更进一步：把同一个提示作为独立的请求发送多次，然后采用出现次数最多的答案。像上面这样在一次回答中要求多种解法，是这一思路的轻量版本。它成本更低，但各次尝试并非真正独立，因为每一次都能看到其他几次。
+
 ## CoT 用于决策制定
 
-决策涉及在多个维度上权衡利弊。CoT 确保所有相关因素都被系统地考虑，而不是草率下结论。这种结构化方法也为将来的参考记录了推理过程。
+决策涉及在多个维度上权衡利弊。CoT 确保所有相关因素都被系统地考虑，而不是草率下结论。这种结构化方法还能把推理过程记录下来，供日后参考。
 
 <TryIt 
   compact
@@ -307,6 +317,21 @@ WEIGHING: 3 strong against, 1 weak for
 RECOMMENDATION: Stay monolith, use clear module 
 boundaries to ease future transition.
 ```
+
+## 推理模型：内置的 CoT
+
+Chain of Thought 最初是一种提示技巧，但如今它已经进入了模型内部。许多当前的模型经过训练，会先推理再回答：OpenAI 的推理模型、开启了 thinking 功能的 Anthropic Claude、Google 的 Gemini，以及 DeepSeek-R1 等开放权重模型，都会先在内部把问题想清楚，再给出答案。通常你只能看到答案，或是一段简短的思考摘要，但推理所用的 token 仍会计入你的用量。
+
+这并不会让本章过时，但确实会改变你运用它的方式：
+
+- **不必再用"魔法短语"。** OpenAI 的指南指出，让其推理模型"think step by step"是不必要的，有时甚至会起反作用。Anthropic 也提到，"think thoroughly"这类笼统的指令往往比手写的分步计划效果更好，因为模型自己的推理常常比你写的计划走得更远。
+- **描述目标，而不是路线。** 把笔墨花在问题本身、约束条件以及好答案应该是什么样子上，然后让模型自己找到路径。
+- **调节设置，而不是多写提示。** 这些 API 提供了推理强度（reasoning effort）或思考级别（thinking level）之类的设置。想要更深入的推理，调高这些设置通常比在提示中要求更长的解释更有效。
+- **需要查看推理过程时，保留结构。** 当你需要可阅读、可检查或可解析的推理，或者使用的是不会自行思考的模型时，BREAK 或 GIVEN/GOAL/STEPS 这样的模板仍然很有价值。有些厂商现在建议不要要求其始终开启思考的模型把推理过程写出来，所以请查看你所用模型的指南。
+
+<Callout type="warning" title="展示出来的推理并不是一扇窗">
+模型写出的推理，或它显示的思考摘要，并不能保证就是实际产生答案的过程。Anthropic 的研究发现，推理模型经常会略去对其产生了影响的因素。请把可见的步骤当作需要检查的对象，而不是证据。
+</Callout>
 
 ## 何时使用 CoT
 
@@ -345,7 +370,7 @@ boundaries to ease future transition.
 ## 总结
 
 <Callout type="tip" title="核心要点">
-CoT 通过将隐含步骤显式化，显著提升复杂推理能力。适用于数学、逻辑、分析和调试。权衡：以更多 token 换取更高准确性。
+CoT 通过将隐含步骤显式化，显著提升复杂推理能力。适用于数学、逻辑、分析和调试。权衡：以更多 token 换取更高准确性。对于在回答前就已经会思考的推理模型，应让提示专注于目标，并改为调节推理设置。
 </Callout>
 
 <Quiz 
