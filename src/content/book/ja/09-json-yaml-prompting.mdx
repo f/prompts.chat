@@ -46,7 +46,7 @@ Text: "Contact John Smith, 34 years old, at john@example.com"
 
 ### ネストしたJSON構造
 
-実世界のデータにはネストした関係性があることが多いです。各レベルのスキーマを明確に定義し、特にオブジェクトの配列には注意が必要です。
+実世界のデータにはネストした関係性があることが多いです。スキーマの各レベルを明確に定義してください。オブジェクトの配列では特に重要です。
 
 ```
 Parse this order into JSON:
@@ -88,9 +88,13 @@ Ensure all strings are properly quoted and escaped.
 Numbers should not be quoted.
 ```
 
+<Callout type="tip" title="スキーマの強制はAPIに任せる">
+APIを通じてモデルを呼び出す場合、頼れるのはプロンプトの言い回しだけではありません。OpenAI、Anthropic、Googleはいずれも、JSON Schemaを受け取り、応答がそれに一致するよう制約する構造化出力機能を提供しています。これにより、紛れ込んだマークダウンのコードフェンス、末尾のカンマ、欠けたフィールドなど、この章で扱うパース失敗の大半がなくなります。古い「JSONモード」の設定が保証するのは構文的に有効なJSONであることだけで、スキーマへの適合までは保証しません。また、サポートされるJSON Schemaの範囲はプロバイダーごとに少しずつ異なります。それでも以下のテクニックは引き続き重要です。スキーマが制御するのは答えの形であって、その中の値が正しいかどうかではないからです。
+</Callout>
+
 ## YAMLプロンプティングの基本
 
-YAMLはJSONよりも人間が読みやすく、コメントをサポートしています。DevOps（Docker、Kubernetes、GitHub Actions）の設定ファイルの標準フォーマットです。
+YAMLはJSONよりも人間が読みやすく、コメントをサポートしています。設定ファイルの標準的なフォーマットであり、特にDevOps（Docker、Kubernetes、GitHub Actions）で広く使われています。
 
 ### シンプルなYAML出力
 
@@ -131,7 +135,7 @@ Generate a GitHub Actions workflow in YAML:
 Requirements:
 - Trigger on push to main and pull requests
 - Run on Ubuntu latest
-- Steps: checkout, setup Node 18, install dependencies, run tests
+- Steps: checkout, set up the current Node.js LTS release, install dependencies, run tests
 - Cache npm dependencies
 ```
 
@@ -141,7 +145,7 @@ Requirements:
 
 ### TypeScript風の型を使用する
 
-TypeScriptのインターフェースは開発者に馴染みがあり、オプションフィールド、ユニオン型、配列を正確に記述できます。prompts.chatプラットフォームでは、構造化プロンプトにこのアプローチを使用しています。
+TypeScriptのインターフェースは開発者に馴染みがあり、オプションフィールド、ユニオン型、配列を正確に記述できます。
 
 <TryIt 
   title="TypeScriptインターフェースによる抽出"
@@ -203,7 +207,7 @@ Genres: Science Fiction, Political Fiction. Rated 4.8/5"
 
 ### 固定長配列
 
-正確にN個のアイテムが必要な場合は、明示的に指定してください。モデルは配列が正しい長さになるようにします。
+正確にN個のアイテムが必要な場合は、明示的に指定してください。モデルはたいていこれに従いますが、個数が重要な場合はコード側でも数を確認してください。
 
 ```
 Extract exactly 3 key points as JSON:
@@ -391,7 +395,7 @@ Items: apple, carrot, bread, banana, broccoli, milk, orange, spinach
 
 ## 設定生成のためのYAML
 
-YAMLはDevOps設定で威力を発揮します。モデルは一般的なツールの標準パターンを理解しており、本番環境で使用可能な設定を生成できます。
+YAMLはDevOps設定で威力を発揮します。モデルは一般的なツールの標準パターンを理解しており、出発点として十分にしっかりした設定を生成できます。ただし、本番環境に投入する前には必ずレビューしてください。
 
 ### すべきこと・避けるべきこと：YAML設定
 
@@ -510,27 +514,14 @@ Error format:
   </div>
 </div>
 
-## Prompts.chatの構造化プロンプト
+## 構造化プロンプトを保存する
 
-prompts.chatでは、構造化出力フォーマットを持つプロンプトを作成できます：
-
-```
-When creating a prompt on prompts.chat, you can specify:
-
-Type: STRUCTURED
-Format: JSON or YAML
-
-The platform will:
-- Validate outputs against your schema
-- Provide syntax highlighting
-- Enable easy copying of structured output
-- Support template variables in your schema
-```
+JSONやYAMLのプロンプトがうまく機能したら、見つけやすく再利用しやすい場所に保管しておきましょう。prompts.chatをはじめとする一部のプロンプトライブラリでは、JSONやYAMLで書かれたプロンプトそのものを保存し、シンタックスハイライト付きで表示し、コピーする前にテンプレート変数を埋めることができます。ただし、これはプロンプトを保存する機能であり、モデルの応答をスキーマと照合するものではない点に注意してください。応答の検証には、APIの構造化出力機能を使うか、自分のコードで応答を検証しましょう。
 
 ## よくある落とし穴
 
 <Callout type="warning" title="最初にデバッグすべきこと">
-これらの3つの問題がJSONパースの失敗の大半を占めています。コードがAI出力を解析できない場合は、まずこれらを確認してください。
+これらの3つの問題がJSONパースの失敗の大半を占めています。コードがAI出力を解析できない場合は、まずこれらを確認してください。スキーマを強制する構造化出力を使えば、これらの問題はほぼ防げます。そのため、これらが特に問題になるのは、プロンプトだけに頼っている場合です。
 </Callout>
 
 ### 1. マークダウンコードブロック
@@ -568,11 +559,11 @@ Properly escape special characters in strings:
 ## まとめ
 
 <Callout type="tip" title="主要なテクニック">
-TypeScriptインターフェースやJSON Schemaを使用してスキーマを明示的に定義してください。型と制約を指定し、nullとデフォルト値を処理し、自己検証をリクエストし、用途に適したフォーマットを選択してください。
+TypeScriptインターフェースやJSON Schemaを使用してスキーマを明示的に定義してください。型と制約を指定し、nullとデフォルト値を処理し、自己検証をリクエストし、用途に適したフォーマットを選択してください。APIを通じて使う場合は、構造化出力機能にスキーマを強制させ、値の検証も続けてください。
 </Callout>
 
 <Quiz 
-  question="AI出力でJSONよりYAMLを優先すべきなのはいつですか？"
+  question="AIの出力形式として、JSONよりYAMLを選ぶべきなのはどんなときですか？"
   options={[
     "REST APIを構築するとき",
     "出力が人間に読みやすく、コメントを含む可能性があるとき",

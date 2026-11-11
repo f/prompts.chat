@@ -27,6 +27,8 @@ AIモデルは、直接答えを出すよう求められると、複数のステ
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Explain your thought process."</div>
 </div>
 
+これらのフレーズが最も効果を発揮するのは、標準的なチャットモデルです。回答する前に考える推論モデルでは、こうしたフレーズの必要性はずっと小さくなります。推論モデルについては、この章の後半で改めて取り上げます。
+
 ### 明示的なステップ要求
 
 <TryIt 
@@ -117,7 +119,7 @@ A: Let's work through this:
 
 ### BREAK形式
 
-問題の理解から検証まで、完全な問題解決サイクルを通じてモデルをガイドする覚えやすい頭文字です。
+問題の理解から検証まで、完全な問題解決サイクルを通じてモデルをガイドする覚えやすい頭字語です。
 
 <BREAKFramework />
 
@@ -183,7 +185,7 @@ Total: $5,374,500
 
 ### 論理的推論
 
-論理パズルには体系的な消去法と仮説検証が必要です。CoTはモデルが制約を追跡し、可能性をテストし、すべての条件が満たされていることを検証するのに役立ちます。重要なのは推測ではなく、方法的な探索です。
+論理パズルには体系的な消去法と仮説検証が必要です。CoTはモデルが制約を追跡し、可能性をテストし、すべての条件が満たされていることを検証するのに役立ちます。重要なのは当て推量ではなく、系統立てて探索することです。
 
 <TryIt 
   compact
@@ -195,6 +197,7 @@ Clues:
 2. The engineer has a dog
 3. Bob is a teacher
 4. Carol doesn't have a fish
+5. The doctor doesn't have a cat
 
 Who has which pet and job? Reason through this systematically, testing hypotheses and verifying against all clues.`}
 />
@@ -204,18 +207,23 @@ Who has which pet and job? Reason through this systematically, testing hypothese
 From clue 3: Bob = teacher
 → Alice and Carol are engineer/doctor
 
-If Carol = engineer:
-- Carol has dog (clue 2)
-- Alice = doctor, has fish (clue 1)
+Hypothesis A: Alice = engineer
+- Alice has dog (clue 2), Carol = doctor
+- Carol can't have fish (clue 4), so Carol has cat
+- But the doctor can't have a cat (clue 5) ✗
+
+Hypothesis B: Carol = engineer
+- Carol has dog (clue 2), Alice = doctor
+- Alice can't have cat (clue 1), so Alice has fish
 - Bob has cat
 
-Verify: All 4 clues satisfied ✓
+Verify: All 5 clues satisfied ✓
 Answer: Alice (doctor, fish), Bob (teacher, cat), Carol (engineer, dog)
 ```
 
 ### コードデバッグ
 
-デバッグはCoTの恩恵を受けます。なぜなら、モデルにバグを推測するのではなく実行をトレースさせるからです。具体的な値でコードを追跡することで、実際の動作が可視化され、期待される動作との不一致が明らかになります。
+CoTを使うと、モデルはバグを当て推量するのではなく実行をトレースするようになるため、デバッグにも効果的です。具体的な値でコードを追跡することで、実際の動作が可視化され、期待される動作との不一致が明らかになります。
 
 <TryIt 
   compact
@@ -247,7 +255,7 @@ Fix: Change to "total += n"
 
 ## CoTとSelf-Consistency
 
-重要な問題では、単一の推論パスに頼らないでください。複数の独立した解決策を生成し、結果を比較します。異なるアプローチが同じ答えに収束すれば、信頼性が高いです。不一致は慎重なレビューが必要であることを示します。
+重要な問題では、単一の推論パスに頼らないでください。複数の独立した解決策を生成し、結果を比較します。異なるアプローチが同じ答えに収束すれば、その答えへの信頼度は高まります。不一致は慎重なレビューが必要であることを示します。
 
 <TryIt 
   compact
@@ -271,6 +279,8 @@ Approach 3 (Logic): 30 chickens = 60 legs, need 14 more → 7 cows
 
 All agree: 23 chickens, 7 cows
 ```
+
+本来の研究で示された形では、self-consistencyはさらに一歩踏み込みます。同じプロンプトを別々のリクエストとして何度か送り、最も多く現れた答えを採用するのです。上の例のように1回の応答の中で複数のアプローチを求めるのは、同じ考え方の軽量版です。コストは抑えられますが、各試行は互いを参照できるため、本当の意味で独立してはいません。
 
 ## 意思決定のためのCoT
 
@@ -307,6 +317,21 @@ WEIGHING: 3 strong against, 1 weak for
 RECOMMENDATION: Stay monolith, use clear module 
 boundaries to ease future transition.
 ```
+
+## 推論モデル：CoTを内蔵したモデル
+
+Chain of Thoughtはプロンプトの工夫として始まりましたが、今ではモデルそのものの内部に取り込まれています。現在の多くのモデルは、返答する前に推論するよう訓練されています。OpenAIの推論モデル、thinkingを有効にしたAnthropicのClaude、GoogleのGemini、そしてDeepSeek-R1のようなオープンウェイトモデルは、いずれも問題を内部で検討してから答えを出します。通常、目にするのは答えだけか、思考の短い要約だけですが、推論に使われたトークンも使用量にはカウントされます。
+
+だからといってこの章が時代遅れになるわけではありませんが、使い方は変わります。
+
+- **魔法のフレーズはやめる。** OpenAIのガイダンスによれば、同社の推論モデルに「ステップバイステップで考えて」と指示する必要はなく、かえって逆効果になることさえあります。Anthropicも、手書きのステップバイステップの計画より「じっくり考えて」のような大まかな指示のほうがうまくいくことが多いと述べています。モデル自身の推論のほうが、その計画よりも深いところまで進むことが多いからです。
+- **道筋ではなくゴールを伝える。** 言葉は、問題そのもの、制約、そして良い答えとはどういうものかを説明することに使い、道筋はモデル自身に見つけさせましょう。
+- **書き足すより、ダイヤルを回す。** これらのAPIには、reasoning effort（推論の労力）やthinking level（思考レベル）といった設定があります。より深い推論を引き出すには、プロンプトで長い説明を求めるより、これらの設定を上げるほうが通常は効果的です。
+- **過程を確認したいときは構造を残す。** BREAKやGIVEN/GOAL/STEPSのようなテンプレートは、読んだり、検証したり、プログラムで解析したりできる推論が欲しいとき、また自分では考えないモデルを使うときには、今も十分に役立ちます。一方で、常に思考するモデルには推論を書き出させないよう勧めるベンダーも出てきているので、使うモデルのガイダンスを確認してください。
+
+<Callout type="warning" title="表示された推論は内部をのぞく窓ではない">
+モデルが書き出す推論や、表示される思考の要約が、実際に答えを生み出した過程そのものである保証はありません。Anthropicの研究では、推論モデルは自らに影響を与えた要因に触れないことが多いとわかりました。目に見えるステップは、証拠ではなく、検証すべき対象として扱いましょう。
+</Callout>
 
 ## CoTを使うべき場面
 
@@ -345,7 +370,7 @@ boundaries to ease future transition.
 ## まとめ
 
 <Callout type="tip" title="重要なポイント">
-CoTは暗黙的なステップを明示的にすることで、複雑な推論を劇的に改善します。数学、論理、分析、デバッグに使用してください。トレードオフ：より多くのトークンでより高い精度。
+CoTは暗黙的なステップを明示的にすることで、複雑な推論を劇的に改善します。数学、論理、分析、デバッグに使用してください。トレードオフ：より多くのトークンでより高い精度。あらかじめ考えてから答える推論モデルでは、プロンプトはゴールに集中させ、代わりに推論の設定を調整しましょう。
 </Callout>
 
 <Quiz 
@@ -357,7 +382,7 @@ CoTは暗黙的なステップを明示的にすることで、複雑な推論�
     "ビジネスの意思決定の分析"
   ]}
   correctIndex={1}
-  explanation="Chain of Thoughtはシンプルなq&aには不要なオーバーヘッドを追加します。数学、論理パズル、コードデバッグ、分析のような、途中式を見せることで精度が向上する複雑な推論タスクに最適です。"
+  explanation="Chain of ThoughtはシンプルなQ&Aには不要なオーバーヘッドを追加します。数学、論理パズル、コードデバッグ、分析のような、途中式を見せることで精度が向上する複雑な推論タスクに最適です。"
 />
 
 次の章では、few-shot learning（例を通じてモデルに教える手法）を探求します。
