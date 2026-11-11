@@ -328,8 +328,8 @@ Response:`} />
 
 ### Negative Examples
 
-<Callout type="tip" title="Contrastive Learning">
-Showing "good" vs "bad" examples is called contrastive learning. It helps the model understand not just what you want, but what to avoid. This is especially useful for style and quality judgments.
+<Callout type="tip" title="Contrastive Examples">
+Placing "good" and "bad" examples side by side is often called using contrastive examples. (Don't confuse it with "contrastive learning", which is a method for training models.) It helps the model understand not just what you want, but what to avoid. This is especially useful for style and quality judgments.
 </Callout>
 
 Sometimes showing what *not* to do is as valuable as showing correct examples. Negative examples help the model understand boundaries and avoid common mistakes.
@@ -351,21 +351,21 @@ Subject:`} />
 
 ### Edge Case Examples
 
-Edge cases often determine whether a solution works in production. Including unusual inputs in your examples prevents the model from failing on real-world data that doesn't fit the "happy path."
+Edge cases often determine whether a solution works in production. Including unusual inputs in your examples prevents the model from failing on real-world data that doesn't fit the "happy path." Notice that every example below uses the same fields, filling in null when a part is missing. That consistency is part of what the model learns.
 
 <TryIt compact prompt={`Parse names into structured format.
 
 Input: "John Smith"
-Output: {"first": "John", "last": "Smith", "middle": null, "suffix": null}
+Output: {"prefix": null, "first": "John", "middle": null, "last": "Smith", "suffix": null}
 
 Input: "Mary Jane Watson-Parker"
-Output: {"first": "Mary", "middle": "Jane", "last": "Watson-Parker", "suffix": null}
+Output: {"prefix": null, "first": "Mary", "middle": "Jane", "last": "Watson-Parker", "suffix": null}
 
 Input: "Dr. Martin Luther King Jr."
 Output: {"prefix": "Dr.", "first": "Martin", "middle": "Luther", "last": "King", "suffix": "Jr."}
 
 Input: "Madonna"
-Output: {"first": "Madonna", "last": null, "middle": null, "suffix": null, "mononym": true}
+Output: {"prefix": null, "first": "Madonna", "middle": null, "last": null, "suffix": null}
 
 Now parse:
 Input: "Sir Patrick Stewart III"
@@ -395,6 +395,8 @@ Output:`} />
     <span className="text-muted-foreground">Alongside normal examples</span>
   </div>
 </div>
+
+These numbers are a starting point, not a ceiling. Models with long context windows can keep improving on some tasks with dozens or even hundreds of examples, an approach researchers call many-shot prompting. For most everyday prompts, though, a handful of well-chosen examples gets you most of the benefit at a fraction of the cost. Reasoning models often need fewer: OpenAI suggests trying them with no examples first, then adding a few only if needed and making sure they agree with your instructions.
 
 ## Example Quality Matters
 
@@ -472,7 +474,7 @@ Few-shot learning teaches through demonstration and is often more effective than
     "Examples aren't necessary if instructions are clear"
   ]}
   correctIndex={2}
-  explanation="2-5 diverse, correct examples typically work best. Too few may not capture the pattern, while too many waste tokens and may confuse the model. Quality and diversity matter more than quantity."
+  explanation="2-5 diverse, correct examples typically work best. Too few may not capture the pattern, while piling on more costs tokens and usually adds little for everyday tasks. Quality and diversity matter more than quantity."
 />
 
 In the next chapter, we'll explore iterative refinement: the art of improving prompts through successive attempts.

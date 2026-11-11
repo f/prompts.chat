@@ -88,6 +88,10 @@ Ensure all strings are properly quoted and escaped.
 Numbers should not be quoted.
 ```
 
+<Callout type="tip" title="Let the API Enforce the Schema">
+When you call a model through an API, wording isn't your only tool. OpenAI, Anthropic, and Google all offer structured output features that take a JSON Schema and constrain the response to match it. That removes most of the parsing failures in this chapter, such as stray markdown fences, trailing commas, and missing fields. Older "JSON mode" settings only guarantee syntactically valid JSON, not your schema, and each provider supports a slightly different subset of JSON Schema. The techniques below still matter, because a schema controls the shape of the answer, not whether the values inside it are right.
+</Callout>
+
 ## YAML Prompting Basics
 
 YAML is more human-readable than JSON and supports comments. It's the standard for configuration files, especially in DevOps (Docker, Kubernetes, GitHub Actions).
@@ -131,7 +135,7 @@ Generate a GitHub Actions workflow in YAML:
 Requirements:
 - Trigger on push to main and pull requests
 - Run on Ubuntu latest
-- Steps: checkout, setup Node 18, install dependencies, run tests
+- Steps: checkout, set up the current Node.js LTS release, install dependencies, run tests
 - Cache npm dependencies
 ```
 
@@ -141,7 +145,7 @@ Type definitions give the model a precise contract for output structure. They're
 
 ### Using TypeScript-like Types
 
-TypeScript interfaces are familiar to developers and precisely describe optional fields, union types, and arrays. The prompts.chat platform uses this approach for structured prompts.
+TypeScript interfaces are familiar to developers and precisely describe optional fields, union types, and arrays.
 
 <TryIt 
   title="TypeScript Interface Extraction"
@@ -203,7 +207,7 @@ Arrays require special attention. Specify whether you need a fixed number of ite
 
 ### Fixed-Length Arrays
 
-When you need exactly N items, state it explicitly. The model will ensure the array has the right length.
+When you need exactly N items, state it explicitly. Models usually follow this, but count the items in your code if the number matters.
 
 ```
 Extract exactly 3 key points as JSON:
@@ -391,7 +395,7 @@ Items: apple, carrot, bread, banana, broccoli, milk, orange, spinach
 
 ## YAML for Configuration Generation
 
-YAML shines for DevOps configurations. The model knows standard patterns for common tools and can generate production-ready configs.
+YAML shines for DevOps configurations. The model knows standard patterns for common tools and can produce solid starting configs, which you should still review before they reach production.
 
 ### Do's and Don'ts: YAML Configs
 
@@ -510,27 +514,14 @@ Error format:
   </div>
 </div>
 
-## Prompts.chat Structured Prompts
+## Saving Structured Prompts
 
-On prompts.chat, you can create prompts with structured output formats:
-
-```
-When creating a prompt on prompts.chat, you can specify:
-
-Type: STRUCTURED
-Format: JSON or YAML
-
-The platform will:
-- Validate outputs against your schema
-- Provide syntax highlighting
-- Enable easy copying of structured output
-- Support template variables in your schema
-```
+Once a JSON or YAML prompt works well, keep it somewhere you can find and reuse it. Some prompt libraries, prompts.chat among them, let you save a prompt that is itself written in JSON or YAML, show it with syntax highlighting, and fill in template variables before you copy it. Keep in mind that this stores the prompt; it doesn't check the model's reply against a schema. For that, use your API's structured output feature or validate the response in your own code.
 
 ## Common Pitfalls
 
 <Callout type="warning" title="Debug These First">
-These three issues cause most JSON parsing failures. Check for them when your code can't parse AI output.
+These three issues cause most JSON parsing failures. Check for them when your code can't parse AI output. Schema-enforced structured outputs largely prevent them, so they matter most when you rely on the prompt alone.
 </Callout>
 
 ### 1. Markdown Code Blocks
@@ -568,7 +559,7 @@ Properly escape special characters in strings:
 ## Summary
 
 <Callout type="tip" title="Key Techniques">
-Define schemas explicitly using TypeScript interfaces or JSON Schema. Specify types and constraints, handle nulls and defaults, request self-validation, and choose the right format for your use case.
+Define schemas explicitly using TypeScript interfaces or JSON Schema. Specify types and constraints, handle nulls and defaults, request self-validation, and choose the right format for your use case. When you work through an API, let its structured output feature enforce the schema, and keep validating the values.
 </Callout>
 
 <Quiz 
