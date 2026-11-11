@@ -1,25 +1,25 @@
-Gestructureerde dataformaten zoals JSON en YAML zijn essentieel voor het bouwen van applicaties die AI-outputs programmatisch verwerken. Dit hoofdstuk behandelt technieken voor betrouwbare gestructureerde outputgeneratie.
+Gestructureerde dataformaten zoals JSON en YAML zijn essentieel voor het bouwen van applicaties die AI-outputs programmatisch verwerken. Dit hoofdstuk behandelt technieken om betrouwbaar gestructureerde output te genereren.
 
-<Callout type="info" title="Van Tekst naar Data">
-JSON en YAML transformeren AI-outputs van vrije tekst naar gestructureerde, type-veilige data die code direct kan gebruiken.
+<Callout type="info" title="Van tekst naar data">
+JSON en YAML transformeren AI-outputs van vrije tekst naar gestructureerde, typeveilige data die code direct kan gebruiken.
 </Callout>
 
-## Waarom Gestructureerde Formaten?
+## Waarom gestructureerde formaten?
 
 <JsonYamlDemo />
 
-## JSON Prompting Basis
+## Basis van JSON-prompting
 
-JSON (JavaScript Object Notation) is het meest gebruikte formaat voor programmatische AI-outputs. De strikte syntax maakt het gemakkelijk te parsen, maar betekent ook dat kleine fouten je hele pipeline kunnen breken.
+JSON (JavaScript Object Notation) is het meest gebruikte formaat voor programmatische AI-outputs. De strikte syntax maakt het gemakkelijk te parsen, maar betekent ook dat kleine fouten je hele pipeline kunnen laten vastlopen.
 
-### Do's en Don'ts: JSON Opvragen
+### Do's en don'ts: JSON opvragen
 
 <Compare 
   before={{ label: "❌ Niet doen: Vaag verzoek", content: "Give me the user info as JSON." }}
   after={{ label: "✓ Wel doen: Toon het schema", content: "Extract user info as JSON matching this schema:\n\n{\n  \"name\": \"string\",\n  \"age\": number,\n  \"email\": \"string\"\n}\n\nReturn ONLY valid JSON, no markdown." }}
 />
 
-### Eenvoudige JSON Output
+### Eenvoudige JSON-output
 
 Begin met een schema dat de verwachte structuur toont. Het model vult waarden in op basis van de invoertekst.
 
@@ -44,9 +44,9 @@ Output:
 }
 ```
 
-### Geneste JSON Structuren
+### Geneste JSON-structuren
 
-Echte data heeft vaak geneste relaties. Definieer elk niveau van je schema duidelijk, vooral voor arrays van objecten.
+Echte data heeft vaak geneste relaties. Definieer elk niveau van je schema duidelijk, vooral bij arrays van objecten.
 
 ```
 Parse this order into JSON:
@@ -71,10 +71,10 @@ Order: "Order #12345 for Jane Doe (jane@email.com): 2x Widget ($10 each),
 1x Gadget ($25). Total: $45"
 ```
 
-### Geldige JSON Garanderen
+### Geldige JSON garanderen
 
-<Callout type="warning" title="Veelvoorkomend Faalmoment">
-Modellen verpakken JSON vaak in markdown codeblokken of voegen verklarende tekst toe. Wees expliciet dat je alleen ruwe JSON wilt.
+<Callout type="warning" title="Veelvoorkomend struikelpunt">
+Modellen verpakken JSON vaak in markdown-codeblokken of voegen verklarende tekst toe. Zeg expliciet dat je alleen kale JSON wilt.
 </Callout>
 
 Voeg expliciete instructies toe:
@@ -88,13 +88,17 @@ Ensure all strings are properly quoted and escaped.
 Numbers should not be quoted.
 ```
 
-## YAML Prompting Basis
+<Callout type="tip" title="Laat de API het schema afdwingen">
+Als je een model via een API aanroept, is je formulering niet je enige middel. OpenAI, Anthropic en Google bieden allemaal functies voor gestructureerde output (structured outputs) die een JSON Schema accepteren en het antwoord dwingen daaraan te voldoen. Daarmee verdwijnen de meeste parseerfouten uit dit hoofdstuk, zoals verdwaalde markdown-codeblokken, afsluitende komma's en ontbrekende velden. Oudere "JSON-modus"-instellingen garanderen alleen syntactisch geldige JSON, niet jouw schema, en elke aanbieder ondersteunt een iets andere subset van JSON Schema. De technieken hieronder blijven belangrijk, want een schema bepaalt de vorm van het antwoord, niet of de waarden erin kloppen.
+</Callout>
+
+## Basis van YAML-prompting
 
 YAML is leesbaarder voor mensen dan JSON en ondersteunt commentaar. Het is de standaard voor configuratiebestanden, vooral in DevOps (Docker, Kubernetes, GitHub Actions).
 
-### Eenvoudige YAML Output
+### Eenvoudige YAML-output
 
-YAML gebruikt inspringing in plaats van accolades. Geef een template die de verwachte structuur toont.
+YAML gebruikt inspringing in plaats van accolades. Geef een sjabloon dat de verwachte structuur toont.
 
 ```
 Generate a configuration file in YAML format:
@@ -121,9 +125,9 @@ database:
   connection_string: "postgresql://user:pass@localhost:5432/prod"
 ```
 
-### Complexe YAML Structuren
+### Complexe YAML-structuren
 
-Voor complexe configuraties, wees specifiek over de vereisten. Het model kent gangbare patronen voor tools zoals GitHub Actions, Docker Compose en Kubernetes.
+Wees bij complexe configuraties specifiek over de vereisten. Het model kent gangbare patronen voor tools zoals GitHub Actions, Docker Compose en Kubernetes.
 
 ```
 Generate a GitHub Actions workflow in YAML:
@@ -131,21 +135,21 @@ Generate a GitHub Actions workflow in YAML:
 Requirements:
 - Trigger on push to main and pull requests
 - Run on Ubuntu latest
-- Steps: checkout, setup Node 18, install dependencies, run tests
+- Steps: checkout, set up the current Node.js LTS release, install dependencies, run tests
 - Cache npm dependencies
 ```
 
-## Type Definities in Prompts
+## Typedefinities in prompts
 
-Type definities geven het model een precies contract voor outputstructuur. Ze zijn explicieter dan voorbeelden en gemakkelijker programmatisch te valideren.
+Typedefinities geven het model een precies contract voor de outputstructuur. Ze zijn explicieter dan voorbeelden en gemakkelijker programmatisch te valideren.
 
-### TypeScript-achtige Types Gebruiken
+### TypeScript-achtige types gebruiken
 
-TypeScript interfaces zijn bekend bij ontwikkelaars en beschrijven optionele velden, union types en arrays nauwkeurig. Het prompts.chat platform gebruikt deze aanpak voor gestructureerde prompts.
+TypeScript-interfaces zijn bekend bij ontwikkelaars en beschrijven optionele velden, union types en arrays nauwkeurig.
 
 <TryIt 
-  title="TypeScript Interface Extractie"
-  description="Gebruik een TypeScript interface om gestructureerde data te extraheren."
+  title="Extractie met een TypeScript-interface"
+  description="Gebruik een TypeScript-interface om gestructureerde data te extraheren."
   prompt={`Extract data according to this type definition:
 
 interface ChatPersona {
@@ -162,13 +166,13 @@ Return as JSON matching this interface.
 Description: "A senior software engineer named Alex who reviews code. They're analytical and thorough, with expertise in backend systems and databases. Professional but approachable tone."`}
 />
 
-### JSON Schema Definitie
+### Definitie met JSON Schema
 
 <Callout type="info" title="Industriestandaard">
-JSON Schema is een formele specificatie voor het beschrijven van JSON structuur. Het wordt ondersteund door veel validatiebibliotheken en API-tools.
+JSON Schema is een formele specificatie voor het beschrijven van de structuur van JSON. Het wordt ondersteund door veel validatiebibliotheken en API-tools.
 </Callout>
 
-JSON Schema biedt beperkingen zoals min/max waarden, verplichte velden en regex patronen:
+JSON Schema biedt beperkingen zoals min/max-waarden, verplichte velden en regex-patronen:
 
 ```
 Extract data according to this JSON Schema:
@@ -197,13 +201,13 @@ Book: "1984 by George Orwell (1949) - A dystopian masterpiece.
 Genres: Science Fiction, Political Fiction. Rated 4.8/5"
 ```
 
-## Omgaan met Arrays
+## Omgaan met arrays
 
 Arrays vereisen speciale aandacht. Specificeer of je een vast aantal items nodig hebt of een lijst met variabele lengte, en hoe lege gevallen behandeld moeten worden.
 
-### Arrays met Vaste Lengte
+### Arrays met vaste lengte
 
-Wanneer je exact N items nodig hebt, vermeld dit expliciet. Het model zorgt ervoor dat de array de juiste lengte heeft.
+Wanneer je exact N items nodig hebt, vermeld dit expliciet. Modellen houden zich daar meestal aan, maar tel de items in je code na als het aantal ertoe doet.
 
 ```
 Extract exactly 3 key points as JSON:
@@ -219,9 +223,9 @@ Extract exactly 3 key points as JSON:
 Article: [article text]
 ```
 
-### Arrays met Variabele Lengte
+### Arrays met variabele lengte
 
-Voor arrays met variabele lengte, specificeer wat te doen wanneer er nul items zijn. Het toevoegen van een count-veld helpt de volledigheid van extractie te verifiëren.
+Geef bij arrays met variabele lengte aan wat er moet gebeuren als er geen items zijn. Een count-veld helpt om te controleren of de extractie volledig is.
 
 ```
 Extract all mentioned people as JSON:
@@ -241,20 +245,20 @@ If no people are mentioned, return empty array.
 Text: [text]
 ```
 
-## Enum Waarden en Beperkingen
+## Enumwaarden en beperkingen
 
 Enums beperken waarden tot een voorgedefinieerde set. Dit is cruciaal voor classificatietaken en overal waar je consistente, voorspelbare outputs nodig hebt.
 
-### Do's en Don'ts: Enum Waarden
+### Do's en don'ts: enumwaarden
 
 <Compare 
   before={{ label: "❌ Niet doen: Open categorieën", content: "Classify this text into a category.\n\n{\n  \"category\": \"string\"\n}" }}
   after={{ label: "✓ Wel doen: Beperk tot geldige waarden", content: "Classify this text. Category MUST be exactly one of:\n- \"technical\"\n- \"business\"\n- \"creative\"\n- \"personal\"\n\n{\n  \"category\": \"one of the values above\"\n}" }}
 />
 
-### String Enums
+### String-enums
 
-Vermeld toegestane waarden expliciet. Gebruik "MUST be one of" taal om strikte matching af te dwingen.
+Vermeld toegestane waarden expliciet. Gebruik formuleringen als "MUST be one of" om een exacte match af te dwingen.
 
 ```
 Classify this text. The category MUST be one of these exact values:
@@ -273,7 +277,7 @@ Return JSON:
 Text: [text to classify]
 ```
 
-### Gevalideerde Getallen
+### Gevalideerde getallen
 
 Numerieke beperkingen voorkomen waarden buiten bereik. Specificeer het type (integer vs float) en het geldige bereik.
 
@@ -290,20 +294,20 @@ Rate these aspects. Each score MUST be an integer from 1 to 5.
 Review: [review text]
 ```
 
-## Omgaan met Ontbrekende Data
+## Omgaan met ontbrekende data
 
 Echte tekst mist vaak bepaalde informatie. Definieer hoe het model ontbrekende data moet behandelen om gehallucineerde waarden te voorkomen.
 
-### Do's en Don'ts: Ontbrekende Informatie
+### Do's en don'ts: ontbrekende informatie
 
 <Compare 
   before={{ label: "❌ Niet doen: AI laten raden", content: "Extract all company details as JSON:\n{\n  \"revenue\": number,\n  \"employees\": number\n}" }}
   after={{ label: "✓ Wel doen: Expliciet null toestaan", content: "Extract company details. Use null for any field NOT explicitly mentioned. Do NOT invent or estimate values.\n\n{\n  \"revenue\": \"number or null\",\n  \"employees\": \"number or null\"\n}" }}
 />
 
-### Null Waarden
+### Null-waarden
 
-Sta expliciet null toe en instrueer het model om geen informatie te verzinnen. Dit is veiliger dan het model laten raden.
+Sta expliciet null toe en instrueer het model om geen informatie te verzinnen. Dit is veiliger dan het model te laten raden.
 
 ```
 Extract information. Use null for any field that cannot be 
@@ -348,13 +352,13 @@ Extract settings with these defaults if not specified:
 User preferences: "I want dark mode and larger text (18px)"
 ```
 
-## Multi-Object Responses
+## Antwoorden met meerdere objecten
 
 Vaak moet je meerdere items uit één invoer extraheren. Definieer de arraystructuur en eventuele sorteer-/groeperingsvereisten.
 
-### Array van Objecten
+### Array van objecten
 
-Voor lijsten van vergelijkbare items, definieer het objectschema één keer en specificeer dat het een array is.
+Definieer bij lijsten van vergelijkbare items het objectschema één keer en geef aan dat het om een array gaat.
 
 ```
 Parse this list into JSON array:
@@ -373,7 +377,7 @@ Todo list:
 - Review PR #123 (medium, due Friday)
 ```
 
-### Gegroepeerde Objecten
+### Gegroepeerde objecten
 
 Groeperingstaken vereisen categorisatielogica. Het model sorteert items in de categorieën die je definieert.
 
@@ -389,11 +393,11 @@ Categorize these items into JSON:
 Items: apple, carrot, bread, banana, broccoli, milk, orange, spinach
 ```
 
-## YAML voor Configuratiegeneratie
+## YAML voor configuratiegeneratie
 
-YAML blinkt uit bij DevOps-configuraties. Het model kent standaardpatronen voor gangbare tools en kan productieklare configs genereren.
+YAML blinkt uit bij DevOps-configuraties. Het model kent standaardpatronen voor gangbare tools en kan degelijke startconfiguraties maken, die je wel nog moet controleren voordat ze in productie gaan.
 
-### Do's en Don'ts: YAML Configs
+### Do's en don'ts: YAML-configs
 
 <Compare 
   before={{ label: "❌ Niet doen: Vage vereisten", content: "Generate a docker-compose file for my app." }}
@@ -418,9 +422,9 @@ Include:
 - Network isolation
 ```
 
-### Kubernetes Manifests
+### Kubernetes-manifests
 
-Kubernetes manifests zijn uitgebreid maar volgen voorspelbare patronen. Geef de belangrijkste parameters en het model genereert conforme YAML.
+Kubernetes-manifests zijn uitgebreid, maar volgen voorspelbare patronen. Geef de belangrijkste parameters, dan genereert het model conforme YAML.
 
 ```
 Generate Kubernetes deployment YAML:
@@ -436,11 +440,11 @@ Deployment:
 Also generate matching Service (ClusterIP, port 8080)
 ```
 
-## Validatie en Foutafhandeling
+## Validatie en foutafhandeling
 
-Voor productiesystemen, bouw validatie in je prompts. Dit vangt fouten op voordat ze door je pipeline propageren.
+Bouw bij productiesystemen validatie in je prompts in. Zo vang je fouten op voordat ze zich door je pipeline verspreiden.
 
-### Zelf-Validatie Prompt
+### Prompt voor zelfvalidatie
 
 Vraag het model om zijn eigen output te valideren tegen regels die je specificeert. Dit vangt formaatfouten en ongeldige waarden op.
 
@@ -464,7 +468,7 @@ If validation fails, fix the issues before responding.
 Text: [contact information]
 ```
 
-### Fout Response Formaat
+### Formaat voor foutantwoorden
 
 Definieer aparte succes- en foutformaten. Dit maakt programmatische afhandeling veel gemakkelijker.
 
@@ -485,21 +489,21 @@ Error format:
 }
 ```
 
-## JSON vs YAML: Wanneer Welke Gebruiken
+## JSON of YAML: wanneer gebruik je wat?
 
 <div className="my-4 grid md:grid-cols-2 gap-4">
   <div className="p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
-    <div className="font-semibold text-amber-700 dark:text-amber-300 mb-2">Gebruik JSON Wanneer</div>
+    <div className="font-semibold text-amber-700 dark:text-amber-300 mb-2">Gebruik JSON wanneer</div>
     <div className="text-sm space-y-1">
       <p className="m-0!">Programmatisch parsen nodig is</p>
-      <p className="m-0!">API responses</p>
+      <p className="m-0!">API-responses</p>
       <p className="m-0!">Strikte type-eisen</p>
-      <p className="m-0!">JavaScript/Web integratie</p>
+      <p className="m-0!">JavaScript-/webintegratie</p>
       <p className="m-0!">Compacte representatie</p>
     </div>
   </div>
   <div className="p-4 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200 dark:border-purple-800">
-    <div className="font-semibold text-purple-700 dark:text-purple-300 mb-2">Gebruik YAML Wanneer</div>
+    <div className="font-semibold text-purple-700 dark:text-purple-300 mb-2">Gebruik YAML wanneer</div>
     <div className="text-sm space-y-1">
       <p className="m-0!">Leesbaarheid belangrijk is</p>
       <p className="m-0!">Configuratiebestanden</p>
@@ -510,32 +514,19 @@ Error format:
   </div>
 </div>
 
-## Prompts.chat Gestructureerde Prompts
+## Gestructureerde prompts opslaan
 
-Op prompts.chat kun je prompts maken met gestructureerde outputformaten:
+Zodra een JSON- of YAML-prompt goed werkt, bewaar je hem op een plek waar je hem kunt terugvinden en hergebruiken. Sommige promptbibliotheken, waaronder prompts.chat, laten je een prompt opslaan die zelf in JSON of YAML is geschreven, tonen die met syntax highlighting en laten je templatevariabelen invullen voordat je hem kopieert. Houd er wel rekening mee dat zo alleen de prompt wordt opgeslagen; het antwoord van het model wordt niet tegen een schema gecontroleerd. Gebruik daarvoor de functie voor gestructureerde output van je API, of valideer het antwoord in je eigen code.
 
-```
-When creating a prompt on prompts.chat, you can specify:
+## Veelvoorkomende valkuilen
 
-Type: STRUCTURED
-Format: JSON or YAML
-
-The platform will:
-- Validate outputs against your schema
-- Provide syntax highlighting
-- Enable easy copying of structured output
-- Support template variables in your schema
-```
-
-## Veelvoorkomende Valkuilen
-
-<Callout type="warning" title="Debug Deze Eerst">
-Deze drie problemen veroorzaken de meeste JSON parsing-fouten. Controleer hierop wanneer je code AI-output niet kan parsen.
+<Callout type="warning" title="Controleer deze eerst">
+Deze drie problemen veroorzaken de meeste JSON-parseerfouten. Controleer hierop wanneer je code AI-output niet kan parsen. Gestructureerde output met een afgedwongen schema voorkomt ze grotendeels, dus ze spelen vooral een rol als je alleen op de prompt vertrouwt.
 </Callout>
 
-### 1. Markdown Codeblokken
+### 1. Markdown-codeblokken
 
-**Probleem:** Model verpakt JSON in ```json blokken
+**Probleem:** Model verpakt JSON in ```json-blokken
 
 **Oplossing:** 
 ```
@@ -543,7 +534,7 @@ Return ONLY the JSON object. Do not wrap in markdown code blocks.
 Do not include ```json or ``` markers.
 ```
 
-### 2. Afsluitende Komma's
+### 2. Afsluitende komma's
 
 **Probleem:** Ongeldige JSON door afsluitende komma's
 
@@ -553,9 +544,9 @@ Ensure valid JSON syntax. No trailing commas after the last
 element in arrays or objects.
 ```
 
-### 3. Niet-geëscapete Strings
+### 3. Niet-geëscapete strings
 
-**Probleem:** Aanhalingstekens of speciale karakters breken JSON
+**Probleem:** Aanhalingstekens of speciale tekens maken JSON ongeldig
 
 **Oplossing:**
 ```
@@ -567,8 +558,8 @@ Properly escape special characters in strings:
 
 ## Samenvatting
 
-<Callout type="tip" title="Belangrijkste Technieken">
-Definieer schema's expliciet met TypeScript interfaces of JSON Schema. Specificeer types en beperkingen, handel nulls en standaardwaarden af, vraag om zelf-validatie, en kies het juiste formaat voor je use case.
+<Callout type="tip" title="Belangrijkste technieken">
+Definieer schema's expliciet met TypeScript-interfaces of JSON Schema. Specificeer types en beperkingen, handel null-waarden en standaardwaarden af, vraag om zelfvalidatie en kies het juiste formaat voor je toepassing. Werk je via een API, laat dan de functie voor gestructureerde output het schema afdwingen en blijf de waarden zelf controleren.
 </Callout>
 
 <Quiz 
@@ -580,7 +571,7 @@ Definieer schema's expliciet met TypeScript interfaces of JSON Schema. Specifice
     "Wanneer je de meest compacte representatie nodig hebt"
   ]}
   correctIndex={1}
-  explanation="YAML heeft de voorkeur wanneer leesbaarheid belangrijk is, zoals bij configuratiebestanden, DevOps manifests en documentatie. Het ondersteunt ook commentaar, in tegenstelling tot JSON."
+  explanation="YAML heeft de voorkeur wanneer leesbaarheid belangrijk is, zoals bij configuratiebestanden, DevOps-manifests en documentatie. Het ondersteunt ook commentaar, in tegenstelling tot JSON."
 />
 
 Dit sluit Deel II over technieken af. In Deel III verkennen we praktische toepassingen in verschillende domeinen.
