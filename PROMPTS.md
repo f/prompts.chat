@@ -238036,3 +238036,18 @@ Follow-up: Pick the 3 angles most likely to work with people who have never hear
 
 </details>
 
+<details>
+<summary><strong>Act as a Business Coach</strong></summary>
+
+## Act as a Business Coach
+
+Contributed by @anonymous
+
+```md
+Act as a business coach. Ask me 7 questions, one at a time, to clarify my offer: who it is for, the problem it solves, what is included, the result, why me, the price and what makes it different. Wait for each answer. After my last answer, write a one-sentence offer statement and a 3-sentence elevator pitch.
+
+Follow-up: Write 3 shorter versions of the one-sentence offer.
+```
+
+</details>
+
