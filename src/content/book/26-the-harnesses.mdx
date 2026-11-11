@@ -351,6 +351,23 @@ More autonomy is useful only when the system can check its work and recover from
 
 When comparing setups, try the same real tasks and inspect both the outcomes and the execution traces. Keep the model fixed when you want to study a harness change. Change one prompt, skill, or tool setting at a time, and repeat tasks because individual runs vary.
 
+### When a Harness Gets Smaller
+
+Harnesses tend to grow. Each new feature arrives with its own path, its own instructions, and its own idea of what "done" means, and each one made sense on the day it was added. As models get stronger, some teams are doing the opposite and taking pieces out. Apple researchers asked [How Much of a Harness Does a Strong Agent Need?](https://machinelearning.apple.com/research/harness-autonomous-ml-engineering) (October 2026) and found that on machine learning engineering tasks, with the same model and the same time budget, elaborate open-source harnesses did no better than a single coding-agent session with a minimal set of tools. Taking parts out is easy, though. Knowing that the smaller harness still does the job takes measurement.
+
+Pogl, where people build and edit games by talking with an AI, described one such rebuild in [We rebuilt our harness from scratch](https://about.pogl.com/blog/one-loop-harness) (November 11, 2026). Its old harness was built on the open-source coding agent OpenCode, and over time each new feature had been added as a new path around it, so the same problem had to be fixed separately on every path. The new harness sends every request through one loop whose core is 715 lines. Each project keeps one conversation history, and every step leaves one line in a log, so a worker that restarts rebuilds the conversation from the log and continues instead of starting over.
+
+<Compare
+  before={{ label: "The inherited harness", content: "16 paths for different kinds of requests, 3 ways of judging whether a job is done, 6 or 7 contract documents for the model, and a fixed prompt of about 14,000 tokens. The same problem has to be fixed on every path." }}
+  after={{ label: "One loop", content: "Every request goes through the same loop. 13 tools are registered in one place, and all their descriptions fit in about 3,000 tokens. Long reference material is read only when needed, and the fixed prompt is under 6,000 tokens." }}
+/>
+
+The measurement is the most instructive part. The two harnesses judged "done" by different standards, so their own verdicts could not be compared. Pogl re-ran 54 pairs of past requests and scored both harnesses with the same judge. Overall quality was similar: the new harness did better on 8 requests and the old one on 5. Per edit, Pogl reports that uncached input fell about 65% and output about 52%, and jobs that ran longer than 40 minutes disappeared. It is just as open about the other side. Most of the savings came from a few very large jobs on the old harness, and typical jobs on the new one re-read more from cache, wrote more output, and took longer. One rerun showed something no average would: the old harness had marked an unfixed item as done, while the new one reported it as not done. Pogl then turned the new harness on for half of its users, split by person so that no one switches harness in the middle of a task, with a single setting that sends everyone back to the old one within a minute.
+
+Framer reached a smaller loop from another direction in [Harness 2: executing agent code as it streams](https://www.framer.com/blog/harness-2/) (November 2, 2026). It builds on the programmatic tool calling from "When the Model Writes the Loop" earlier in this chapter: the agent can express a whole workflow as one JavaScript program. Framer runs that program in cells while the model is still writing it, so a failed assumption can stop the stream early instead of after the whole program has been generated. Framer reports 2x fewer tool steps and 39% fewer cached input tokens per message, with no measured drop in quality.
+
+These figures are each company's own reports, and your tasks will differ. The lessons still travel. Fewer paths means one place to fix: when every request runs through the same loop, a problem found once is fixed once. Two harnesses can be compared fairly only when the same judge scores both, because each harness's own sense of "done" is part of what you are testing. Averages hide the slow tail, the rare job that runs for forty minutes, and they hide a single false "done", so look at the longest runs and read a few traces. And a new harness is safest when it reaches people gradually, with a way back that takes a minute rather than a week.
+
 <InteractiveChecklist
   title="Try this on a task you already do"
   items={[
