@@ -198,6 +198,35 @@ Para experimentar, abra uma nova sessão ou um subagente sem histórico e só co
 
 Não faça comentários de estilo e não edite nenhum arquivo.`} />
 
+### Um harness, vários modelos
+
+É o harness que decide qual modelo responde a cada chamada, e nada diz que precise ser sempre o mesmo. As etapas de uma tarefa longa não se parecem. Algumas pedem discernimento: escolher uma abordagem, perceber que um plano saiu dos trilhos, decidir quando o trabalho está mesmo pronto. Outras são bem delimitadas e se repetem: ler estes arquivos, extrair estes campos, portar este módulo e rodar os testes dele. Um harness pode entregar cada etapa ao modelo que combina com ela, e esse padrão aparece em duas direções.
+
+<InfoGrid columns={2} items={[
+  { label: "Delegar para baixo", description: "Um modelo maior planeja e supervisiona. Muitos modelos pequenos e baratos assumem em paralelo partes bem delimitadas do trabalho, cada um com suas próprias instruções, e o modelo maior revisa o que volta.", color: "blue" },
+  { label: "Consultar para cima", description: "Um modelo mais rápido e barato conduz a tarefa inteira. Nos momentos difíceis, pede conselho a um modelo mais forte, que lê a transcrição e devolve um plano ou uma correção sem usar ele mesmo as ferramentas.", color: "purple" }
+]} />
+
+O Muse Ember, lançado pela Meta em 9 de novembro de 2026, foi feito para a primeira direção. A Meta [o descreve](https://research.meta.ai/blog/muse-ember) como pensado para "o trabalho que os agentes repetem o dia inteiro: chamadas de ferramentas, subtarefas de código, roteamento, extração e análise de documentos longos", e resume a parceria com um modelo maior em uma frase: "O Muse Wonder planeja, o Muse Ember dá conta do volume". O [post da empresa para desenvolvedores](https://dev.meta.ai/resources/blog/build-with-muse-ember) desenha um fluxo de programação em três etapas. O modelo maior planeja uma mudança no repositório inteiro. Cada worker do Ember pega uma subtarefa bem delimitada, com seus próprios arquivos, restrições e verificações. Depois, o modelo maior revisa o resultado combinado, junto com um desenvolvedor. No exemplo do cookbook, 16 agentes Ember portaram cada um um lexer do realçador de sintaxe Pygments de Python para Rust, cada um em sua própria cópia do repositório, enquanto o planejador escrevia as instruções deles sem nunca abrir o código-fonte. A Meta observa que é o harness que escolhe o modelo de cada chamada e leva o contexto de uma etapa para a outra, e que um worker que encontre uma dependência mais ampla ou um requisito pouco claro deve devolvê-lo ao planejador antes de continuar. Segundo a Meta, os 16 lexers portados bateram com os originais em Python nos testes, e a própria empresa avisa que os resultados variam de uma execução para outra.
+
+A [estratégia do conselheiro](https://claude.com/resources/articles/the-advisor-strategy) da Anthropic vai no sentido contrário, e a própria Anthropic a descreve como uma inversão do padrão comum de um orquestrador com muitos workers. Um modelo mais rápido, chamado executor (Sonnet ou Haiku, por exemplo), conduz a tarefa inteira: chama ferramentas, lê resultados e segue em frente. Quando chega a uma decisão que não consegue tomar sozinho de forma razoável, consulta um modelo mais forte, chamado conselheiro, como o Opus. Segundo a [documentação do Claude Code](https://code.claude.com/docs/en/advisor), isso costuma acontecer antes de se comprometer com uma abordagem, quando um erro volta sem parar e antes de declarar uma tarefa concluída. O conselheiro recebe a conversa inteira, com cada chamada de ferramenta e cada resultado, e devolve um plano, uma correção ou um sinal para parar. Como descreve a [documentação da API](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool), ele nunca chama ferramentas por conta própria, e só o conselho chega ao executor. Não há um grupo de workers para coordenar, e o modelo mais forte só entra nos momentos que pedem por ele. Conselho também não é ordem. No Claude Code, o executor costuma segui-lo, mas, quando um arquivo ou uma etapa que falhou o contradiz, aponta o conflito em vez de obedecer às cegas.
+
+As duas direções dão mais peso ao prompt, não menos. Ao delegar para baixo, as instruções são o mundo inteiro do worker. A Meta lista o que elas devem conter: a tarefa, o contexto relevante, os arquivos que o worker pode alterar, as verificações que mostram que terminou e o que ele deve devolver. Um modelo pequeno com instruções vagas não pode pegar emprestado o discernimento do planejador para preencher as lacunas: ele chuta, depressa e muitas vezes. Ao consultar para cima, são as suas instruções que definem quando se pede ajuda. A Anthropic observa que, sem orientação no prompt de sistema, os executores consultam o conselheiro raramente demais em tarefas de código, e sugere dizer a eles quando perguntar.
+
+A divisão funciona melhor quando o trabalho pode ser cortado em pedaços bem delimitados e cada pedaço pode ser verificado. Se cada etapa depende de avaliar a anterior, ou se cada etapa precisa de qualquer jeito do modelo mais forte, as passagens de bastão só acrescentam custo e mais pontos onde o contexto pode se perder. A economia também não é garantida. Planejar, juntar os resultados e cada chamada ao conselheiro gastam tokens, e a Anthropic observa que o ganho diminui à medida que a capacidade do modelo menor se aproxima da do conselheiro. O teste honesto é o seu próprio trabalho: rode as mesmas tarefas com as mesmas verificações só com o modelo pequeno, com a dupla e só com o modelo grande. Escolher qual modelo cuida de uma etapa é, aliás, um botão diferente de quanto um modelo pensa, uma distinção tratada em "Esforço não é o mesmo que escolher o modelo", no capítulo [Desenvolvimento de software com IA](/book/28a-software-development-with-ai).
+
+Para praticar a primeira direção, escreva as instruções que um planejador daria a um único worker e depois leia-as como esse worker leria. Alguém competente, mas de fora do projeto, conseguiria terminar o trabalho só com esta página?
+
+<TryIt compact prompt={`Você é um dos vários workers de uma mudança maior. Faça apenas esta tarefa.
+
+Tarefa: \${task:passar a formatação de datas do módulo de faturas para o helper compartilhado formatDate}
+Contexto: \${context:o helper já existe em src/lib/format.ts; outros workers estão atualizando os módulos de pedidos e relatórios}
+Arquivos que você pode alterar: \${files:src/invoices/ e os testes dele}
+Verificações: \${checks:os testes de faturas passam e nenhum arquivo fora da sua lista mudou}
+O que devolver: \${result:os arquivos que você alterou, cada verificação que rodou com a última linha de saída e tudo o que não conseguiu terminar}
+
+Se a tarefa precisar de um arquivo fora da sua lista, ou se você encontrar um problema maior do que esta tarefa, pare e relate em vez de contornar.`} />
+
 ## Por que os prompts importam dentro de um harness
 
 Um harness dá ao modelo uma forma de agir. Seus prompts explicam quais ações são úteis. Sem um objetivo claro, um agente pode gastar muitas etapas fazendo um trabalho de que você não precisava.

@@ -198,6 +198,35 @@ To try it, open a new session or a subagent with no history and only read-only t
 
 Skip style comments and do not edit any files.`} />
 
+### One Harness, Several Models
+
+A harness decides which model answers each call, and nothing says it has to be the same model every time. The steps of a long task are not alike. Some ask for judgment: choosing an approach, noticing that a plan has gone wrong, deciding when the work is really finished. Others are bounded and repeated: read these files, pull out these fields, port this one module and run its tests. A harness can match each step to the model that fits it, and the pattern shows up in two directions.
+
+<InfoGrid columns={2} items={[
+  { label: "Delegating down", description: "A larger model plans and supervises. Many small, inexpensive models take bounded pieces of the work in parallel, each with its own brief, and the larger model reviews what comes back.", color: "blue" },
+  { label: "Escalating up", description: "A faster, cheaper model runs the whole task. At hard moments it asks a stronger model for advice. The stronger model reads the transcript and returns a plan or a correction, without using the tools itself.", color: "purple" }
+]} />
+
+Meta's Muse Ember, released on November 9, 2026, is built for the first direction. Meta [describes it](https://research.meta.ai/blog/muse-ember) as made for "the work agents repeat all day: tool calls, coding subtasks, routing, extraction, and long document parsing," and sums up its pairing with a larger model in one line: "Muse Wonder plans, Muse Ember handles the volume." Its [developer post](https://dev.meta.ai/resources/blog/build-with-muse-ember) sketches a coding workflow in three steps. The larger model plans a change across a repository. Ember workers each take a bounded subtask with its own files, constraints, and checks. Then the larger model reviews the combined result, alongside a developer. In the cookbook example, 16 Ember agents each ported one lexer of the Pygments syntax highlighter from Python to Rust, each in its own copy of the repository, while the planner wrote their briefs and never opened the source itself. Meta notes that the harness chooses the model for each call and carries the context between steps, and that a worker who finds a broader dependency or an unclear requirement should send it back to the planner before going on. Meta reports that all 16 ports matched the Python originals on its tests, and adds that results vary from run to run.
+
+Anthropic's [advisor strategy](https://claude.com/resources/articles/the-advisor-strategy) runs the other way, and Anthropic itself calls it an inversion of the usual pattern of one orchestrator and many workers. A faster model called the executor (Sonnet or Haiku, for example) carries the whole task: it calls tools, reads results, and keeps going. When it reaches a decision it cannot reasonably make alone, it consults a stronger model called the advisor, such as Opus. The [Claude Code documentation](https://code.claude.com/docs/en/advisor) says this tends to happen before committing to an approach, when an error keeps coming back, and before declaring a task done. The advisor receives the full conversation, every tool call and result included, and returns a plan, a correction, or a signal to stop. It never calls tools itself, and only its advice reaches the executor, as the [API documentation](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool) describes. There is no pool of workers to coordinate, and the stronger model is brought in only at the moments that call for it. Advice is not an order, either. In Claude Code the executor generally follows it, but when a file or a failed step contradicts the advice, it raises the conflict instead of obeying blindly.
+
+Both directions put more weight on the prompt, not less. Going down, the handoff brief is the worker's whole world. Meta lists what it should hold: the task, the relevant context, the files the worker may change, the checks that show it is done, and what to send back. A small model given a vague brief cannot borrow the planner's judgment to fill the gaps; it will guess, quickly and many times over. Going up, your instructions shape when help is sought. Anthropic notes that without guidance in the system prompt, executors tend to call the advisor too rarely on coding tasks, and suggests telling them when to ask.
+
+The split works best when the work can be cut into bounded pieces and each piece can be checked. When every step depends on judging the last one, or every step needs the strongest model anyway, the handoffs only add cost and more places for context to get lost. The savings are not guaranteed either. Planning, merging, and every advisor call all spend tokens, and Anthropic observes that the benefit shrinks as the smaller model's own ability approaches the advisor's. The honest test is your own work: run the same tasks against the same checks with the small model alone, with the pair, and with the large model alone. Choosing which model takes a step is also a different dial from how hard one model thinks, a distinction covered in "Effort Is Not the Same as Model Choice" in [Software Development with AI](/book/28a-software-development-with-ai).
+
+To practice the first direction, write the brief a planner would give one worker, then read it as that worker would. Could a capable stranger finish the job from this page alone?
+
+<TryIt compact prompt={`You are one of several workers on a larger change. Do only this task.
+
+Task: \${task:move the date formatting in the invoice module to the shared formatDate helper}
+Context: \${context:the helper already exists in src/lib/format.ts; other workers are updating the orders and reports modules}
+Files you may change: \${files:src/invoices/ and its tests}
+Checks: \${checks:the invoice tests pass and no file outside your list has changed}
+Return: \${result:the files you changed, each check you ran with its last line of output, and anything you could not finish}
+
+If the task needs a file outside your list, or you find a problem bigger than this task, stop and report it instead of working around it.`} />
+
 ## Why Prompts Matter Inside a Harness
 
 A harness gives the model a way to act. Your prompts explain what useful action looks like. Without a clear goal, an agent can spend many steps doing work you did not need.
