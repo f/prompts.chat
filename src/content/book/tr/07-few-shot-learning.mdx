@@ -1,24 +1,24 @@
-Az örnekli öğrenme, en güçlü prompt tekniklerinden biridir. Ne istediğinize dair örnekler sağlayarak, modele herhangi bir ince ayar yapmadan karmaşık görevleri öğretebilirsiniz.
+Az örnekli öğrenme, en güçlü prompt tekniklerinden biridir. Ne istediğinizi örneklerle göstererek, hiçbir ince ayara (fine-tuning) gerek kalmadan modele karmaşık görevleri öğretebilirsiniz.
 
 <Callout type="info" title="Örnekle Öğren">
-Tıpkı insanların örnekleri görerek öğrenmesi gibi, yapay zeka modelleri de promptunuzda sağladığınız örneklerden kalıpları öğrenebilir.
+İnsanlar nasıl örnek görerek öğreniyorsa, yapay zeka modelleri de promptunuza koyduğunuz örneklerden kalıpları çıkarabilir.
 </Callout>
 
 ## Az Örnekli Öğrenme Nedir?
 
-Az örnekli öğrenme, aynı görevi gerçekleştirmesini istemeden önce modele girdi-çıktı çiftlerinin örneklerini gösterir. Model örneklerinizden kalıbı öğrenir ve yeni girdilere uygular.
+Az örnekli öğrenmede, modelden bir görevi yapmasını istemeden önce ona örnek girdi-çıktı çiftleri gösterirsiniz. Model örneklerinizdeki kalıbı kavrar ve yeni girdilere uygular.
 
 <Compare 
   before={{ 
-    label: "Sıfır Örnek (Örnek Yok)", 
+    label: "Sıfır Örnekli (Örneksiz)", 
     content: `Bu yorumu pozitif veya negatif olarak sınıflandır:
 
 "Pil ömrü harika ama ekran çok karanlık."
 
-→ Model uç durumlarda tutarsız olabilir` 
+→ Model uç durumlarda tutarsız davranabilir` 
   }}
   after={{ 
-    label: "Az Örnek (Örneklerle)", 
+    label: "Az Örnekli (Örneklerle)", 
     content: `"Bayıldım!" → Pozitif
 "Korkunç kalite" → Negatif  
 "İyi ama pahalı" → Karışık
@@ -26,26 +26,26 @@ Az örnekli öğrenme, aynı görevi gerçekleştirmesini istemeden önce modele
 Şimdi sınıflandır:
 "Pil ömrü harika ama ekran çok karanlık."
 
-→ Model tam olarak senin kategorilerini öğrenir` 
+→ Model tam olarak sizin kategorilerinizi öğrenir` 
   }}
 />
 
 <div className="my-4 grid grid-cols-2 md:grid-cols-4 gap-2">
   <div className="p-3 bg-muted/50 rounded-lg text-center">
     <div className="text-2xl font-bold">0</div>
-    <div className="text-xs text-muted-foreground">Sıfır örnek</div>
+    <div className="text-xs text-muted-foreground">Sıfır örnekli</div>
   </div>
   <div className="p-3 bg-muted/50 rounded-lg text-center">
     <div className="text-2xl font-bold">1</div>
-    <div className="text-xs text-muted-foreground">Tek örnek</div>
+    <div className="text-xs text-muted-foreground">Tek örnekli</div>
   </div>
   <div className="p-3 bg-primary/10 rounded-lg text-center border-2 border-primary">
     <div className="text-2xl font-bold">2-5</div>
-    <div className="text-xs text-muted-foreground">Az örnek</div>
+    <div className="text-xs text-muted-foreground">Az örnekli</div>
   </div>
   <div className="p-3 bg-muted/50 rounded-lg text-center">
     <div className="text-2xl font-bold">5+</div>
-    <div className="text-xs text-muted-foreground">Çok örnek</div>
+    <div className="text-xs text-muted-foreground">Çok örnekli</div>
   </div>
 </div>
 
@@ -53,15 +53,15 @@ Az örnekli öğrenme, aynı görevi gerçekleştirmesini istemeden önce modele
 
 <FewShotDemo />
 
-Örnekler şunları iletir:
+Örnekler modele şunları anlatır:
 - **Format**: Çıktının nasıl yapılandırılması gerektiği
-- **Stil**: Ton, uzunluk, kelime dağarcığı
-- **Mantık**: Takip edilecek muhakeme kalıbı
+- **Üslup**: Ton, uzunluk, kelime seçimi
+- **Mantık**: İzlenecek muhakeme kalıbı
 - **Uç durumlar**: Özel durumların nasıl ele alınacağı
 
-## Temel Az Örnek Kalıbı
+## Temel Az Örnekli Kalıp
 
-Az örnekli promptlamanın temel yapısı basit bir kalıp izler: örnekleri göster, sonra yeni görevi iste. Örnekler arasında formatlama tutarlılığı çok önemlidir. Model kurduğunuz kalıptan öğrenir.
+Az örnekli promptlamanın temel yapısı basit bir kalıba dayanır: önce örnekleri göster, sonra yeni görevi iste. Örneklerin hepsinde aynı biçimi korumak çok önemlidir, çünkü model sizin kurduğunuz kalıptan öğrenir.
 
 ```
 [Örnek 1]
@@ -81,89 +81,89 @@ Girdi: [yeni girdi]
 Çıktı:
 ```
 
-## Sınıflandırma için Az Örnek
+## Az Örnekli Sınıflandırma
 
-Sınıflandırma, az örnekli öğrenmenin en güçlü kullanım alanlarından biridir. Her kategoriden örnekler göstererek, sınıflar arasındaki sınırları yalnızca talimatların başarabileceğinden daha hassas bir şekilde tanımlarsınız.
+Sınıflandırma, az örnekli öğrenmenin en güçlü kullanım alanlarından biridir. Her kategoriden örnek gösterdiğinizde, sınıflar arasındaki sınırları tek başına talimatlarla çizebileceğinizden çok daha net çizersiniz.
 
 ### Duygu Analizi
 
 <Callout type="info" title="Duygu Analizi Nedir?">
-Duygu analizi, metni duygusal tonuna göre sınıflandırır: pozitif, negatif, nötr veya karışık. Müşteri geri bildirimi, sosyal medya izleme ve marka algısı takibi için yaygın olarak kullanılır.
+Duygu analizi, metni duygusal tonuna göre sınıflandırır: pozitif, negatif, nötr veya karışık. Müşteri geri bildirimlerinde, sosyal medya takibinde ve marka algısını izlemede yaygın olarak kullanılır.
 </Callout>
 
-Duygu sınıflandırması, her duygu türünden örnekler göstermekten faydalanır, özellikle belirsiz olabilecek "karışık" duygu gibi uç durumlar.
+Duygu sınıflandırmasında her duygu türünden örnek göstermek işe yarar; özellikle de "karışık" duygu gibi belirsiz kalabilecek uç durumlarda.
 
 <TryIt compact prompt={`Bu müşteri yorumlarının duygusunu sınıflandır.
 
 Yorum: "Bu ürün tüm beklentilerimi aştı! Tekrar alacağım."
 Duygu: Pozitif
 
-Yorum: "Kırık geldi ve müşteri hizmetleri yardımcı olmadı."
+Yorum: "Kırık geldi, müşteri hizmetleri de hiç yardımcı olmadı."
 Duygu: Negatif
 
-Yorum: "İşini görüyor, özel bir şey yok ama çalışıyor."
+Yorum: "İşini görüyor, özel bir yanı yok ama çalışıyor."
 Duygu: Nötr
 
 Yorum: "Kalite harika ama kargo çok uzun sürdü."
 Duygu: Karışık
 
 Şimdi sınıflandır:
-Yorum: "Tasarımı çok sevdim ama pil ömrü hayal kırıklığı."
+Yorum: "Tasarımına bayıldım ama pil ömrü tam bir hayal kırıklığı."
 Duygu:`} />
 
 ### Konu Sınıflandırma
 
-Çok sınıflı kategorilendirme için her kategoriden en az bir örnek ekleyin. Bu, modelin varsayılan anlayışından farklı olabilecek özel taksonominiziu anlamasına yardımcı olur.
+Çok sınıflı sınıflandırmada her kategoriden en az bir örnek ekleyin. Böylece model, kendi varsayılan anlayışından farklı olabilecek size özgü sınıflandırma düzenini (taksonominizi) kavrar.
 
-<TryIt compact prompt={`Bu destek biletlerini kategorilere ayır.
+<TryIt compact prompt={`Bu destek taleplerini kategorilere ayır.
 
-Bilet: "Hesabıma giriş yapamıyorum, şifre sıfırlama çalışmıyor"
+Talep: "Hesabıma giriş yapamıyorum, şifre sıfırlama çalışmıyor"
 Kategori: Kimlik Doğrulama
 
-Bilet: "Premium plana nasıl yükseltirim?"
+Talep: "Premium plana nasıl geçerim?"
 Kategori: Faturalandırma
 
-Bilet: "Veri dışa aktarmaya çalıştığımda uygulama çöküyor"
+Talep: "Veriyi dışa aktarmaya çalıştığımda uygulama çöküyor"
 Kategori: Hata Raporu
 
-Bilet: "Mobil uygulamaya karanlık mod ekleyebilir misiniz?"
+Talep: "Mobil uygulamaya karanlık mod ekleyebilir misiniz?"
 Kategori: Özellik İsteği
 
 Şimdi kategorilere ayır:
-Bilet: "Ödemem reddedildi ama kartımda ücret görüyorum"
+Talep: "Ödemem reddedildi ama kartımdan çekim yapılmış görünüyor"
 Kategori:`} />
 
-## Dönüştürme için Az Örnek
+## Az Örnekli Dönüştürme
 
-Dönüştürme görevleri, anlamı koruyarak girdiyi bir formdan diğerine dönüştürür. Örnekler burada esastır çünkü kullanım durumunuz için tam olarak "dönüştürme"nin ne anlama geldiğini tanımlarlar.
+Dönüştürme görevlerinde girdi, anlamı korunarak bir biçimden başka bir biçime aktarılır. Burada örnekler vazgeçilmezdir, çünkü sizin işinizde "dönüştürme"nin tam olarak ne anlama geldiğini onlar tanımlar.
 
-### Metin Yeniden Yazma
+### Metni Yeniden Yazma
 
-Stil dönüşümü, istediğiniz tam ton değişikliğini gösteren örnekler gerektirir. "Profesyonel yap" gibi soyut talimatlar farklı yorumlanır. Örnekler somut hale getirir.
+Üslup dönüşümü için, tonun tam olarak nasıl değişmesini istediğinizi gösteren örnekler gerekir. "Profesyonel yap" gibi soyut talimatlar herkesçe farklı yorumlanır; örnekler ise isteğinizi somutlaştırır.
 
-<TryIt compact prompt={`Bu cümleleri profesyonel tonda yeniden yaz.
+<TryIt compact prompt={`Bu cümleleri profesyonel bir tonla yeniden yaz.
 
 Günlük: "Selam, e-postamı aldın mı diye merak ettim?"
-Profesyonel: "Önceki e-postamla ilgili takip yapmak istedim."
+Profesyonel: "Önceki e-postama istinaden size tekrar ulaşmak istedim."
 
-Günlük: "Bu süper önemli ve hemen yapılması lazım!"
-Profesyonel: "Bu konu acil ilgi gerektirmekte ve hızlı eylem istemektedir."
+Günlük: "Bu süper önemli, hemen halledilmesi lazım!"
+Profesyonel: "Bu konu acil ilgi ve hızlı aksiyon gerektirmektedir."
 
-Günlük: "Geç cevap için özür, çok yoğundum!"
-Profesyonel: "Gecikmeli yanıt için özür dilerim. Özellikle yoğun bir dönemden geçtim."
+Günlük: "Geç cevap için kusura bakma, çok yoğundum!"
+Profesyonel: "Gecikmeli yanıtım için özür dilerim. Son günlerde oldukça yoğun bir dönemden geçiyordum."
 
 Şimdi yeniden yaz:
-Günlük: "Toplantıya gelemiyorum, bir şey çıktı."
+Günlük: "Toplantıya gelemiyorum, bir işim çıktı."
 Profesyonel:`} />
 
 ### Format Dönüşümü
 
-Format dönüşüm görevleri, uç durumları ve belirsiz girdileri gösteren örneklerden faydalanır. Model, zorlu durumları ele alma konusundaki özel konvansiyonlarınızı öğrenir.
+Format dönüşümünde, uç durumları ve belirsiz girdileri gösteren örnekler çok işe yarar. Model, çetrefil durumlarda sizin hangi kurallara göre davrandığınızı öğrenir.
 
-<TryIt compact prompt={`Bu doğal dil tarihlerini ISO formatına dönüştür.
+<TryIt compact prompt={`Bu doğal dildeki tarihleri ISO formatına dönüştür.
 
-Girdi: "gelecek Salı"
-Çıktı: 2024-01-16 (bugün 2024-01-11, Perşembe varsayarak)
+Girdi: "gelecek salı"
+Çıktı: 2024-01-16 (bugünün 2024-01-11, perşembe olduğu varsayılarak)
 
 Girdi: "yarından sonraki gün"
 Çıktı: 2024-01-13
@@ -175,27 +175,27 @@ Girdi: "iki hafta sonra"
 Çıktı: 2024-01-25
 
 Şimdi dönüştür:
-Girdi: "gelecek ayın ilk Pazartesi'si"
+Girdi: "gelecek ayın ilk pazartesisi"
 Çıktı:`} />
 
-## Üretim için Az Örnek
+## Az Örnekli İçerik Üretimi
 
-Üretim görevleri, öğrenilen bir kalıbı izleyerek yeni içerik oluşturur. Örnekler uzunluk, yapı, ton ve hangi detayların vurgulanacağını belirler. Bunlar tek başına talimatlarda belirtilmesi zordur.
+İçerik üretme görevlerinde model, örneklerden öğrendiği kalıba uyarak yeni içerik yazar. Uzunluğu, yapıyı, tonu ve hangi ayrıntıların öne çıkarılacağını örnekler belirler; bunları yalnızca talimatlarla tarif etmek zordur.
 
 ### Ürün Açıklamaları
 
-Pazarlama metni, soyut olarak tanımlanması zor marka sesi, özellik vurgusu ve ikna tekniklerini yakaladığı için örneklerden büyük ölçüde faydalanır.
+Pazarlama metinleri örneklerden çok fayda görür, çünkü örnekler marka sesini, özelliklerin nasıl vurgulanacağını ve ikna tekniklerini, yani soyut olarak tarif edilmesi zor şeyleri yakalar.
 
-<TryIt compact prompt={`Bu stilde ürün açıklamaları yaz:
+<TryIt compact prompt={`Bu üslupta ürün açıklamaları yaz:
 
 Ürün: Kablosuz Bluetooth Kulaklık
-Açıklama: Hafif kablosuz kulaklıklarımızla kristal netliğinde sese kendinizi kaptırın. 40 saatlik pil ömrü, aktif gürültü engelleme ve gün boyu konfor için yumuşak hafızalı köpük kulak yastıkları.
+Açıklama: Hafif kablosuz kulaklıklarımızla kristal netliğinde sese kendinizi bırakın. 40 saatlik pil ömrü, aktif gürültü engelleme ve gün boyu konfor sunan yumuşak hafızalı köpük kulak yastıkları.
 
 Ürün: Paslanmaz Çelik Su Şişesi
-Açıklama: Çift duvarlı yalıtımlı şişemizle şıklıkla hidrasyonunuzu koruyun. İçecekleri 24 saat soğuk veya 12 saat sıcak tutar. Sızdırmaz kapak ve standart araç bardaklıklarına sığar.
+Açıklama: Çift cidarlı yalıtımlı şişemizle şıklığınızdan ödün vermeden gün boyu susuz kalmayın. İçecekleri 24 saat soğuk, 12 saat sıcak tutar. Sızdırmaz kapağı sayesinde rahatça taşınır ve standart araç bardaklıklarına sığar.
 
 Ürün: Ergonomik Ofis Sandalyesi
-Açıklama: Ayarlanabilir ergonomik sandalyemizle çalışma alanınızı dönüştürün. Nefes alabilir file sırtlık, bel desteği ve 360° dönüş, uzun çalışma seanslarında konforlu kalmanızı sağlar.
+Açıklama: Ayarlanabilir ergonomik sandalyemizle çalışma alanınızı baştan yaratın. Hava alan file sırtlık, bel desteği ve 360° dönüş özelliği, uzun çalışma saatlerinde rahat etmenizi sağlar.
 
 Şimdi yaz:
 Ürün: Taşınabilir Telefon Şarj Cihazı
@@ -203,11 +203,11 @@ Açıklama:`} />
 
 ### Kod Dokümantasyonu
 
-<Callout type="info" title="Neden Kod Belgelenir?">
-İyi dokümantasyon kodun ne yaptığını, parametrelerini, dönüş değerlerini ve kullanım örneklerini açıklar. Tutarlı docstring'ler otomatik oluşturulan API belgelerini etkinleştirir ve IDE'lerin daha iyi kod tamamlama sağlamasına yardımcı olur.
+<Callout type="info" title="Kod Neden Belgelenir?">
+İyi bir dokümantasyon, kodun ne yaptığını, parametrelerini, dönüş değerlerini ve kullanım örneklerini açıklar. Tutarlı docstring'ler, API belgelerinin otomatik oluşturulmasını mümkün kılar ve IDE'lerin daha iyi kod tamamlama önermesine yardım eder.
 </Callout>
 
-Dokümantasyon stili projeler arasında büyük ölçüde değişir. Örnekler, özel formatınızı, neyin dahil edileceğini (args, returns, examples) ve beklenen detay seviyesini öğretir.
+Belgeleme üslubu projeden projeye çok değişir. Örnekler modele sizin formatınızı, nelerin yer alacağını (args, returns, examples) ve beklenen ayrıntı düzeyini öğretir.
 
 <TryIt compact prompt={`Bu fonksiyonlar için dokümantasyon yorumları yaz:
 
@@ -239,17 +239,17 @@ def palindrom_mu(metin):
 
 Dokümantasyon:`} />
 
-## Çıkarma için Az Örnek
+## Az Örnekli Bilgi Çıkarma
 
-Çıkarma görevleri, yapılandırılmamış metinden yapılandırılmış bilgi çeker. Örnekler hangi varlıkların önemli olduğunu, çıktının nasıl formatlanacağını ve bilginin eksik veya belirsiz olduğu durumların nasıl ele alınacağını tanımlar.
+Bilgi çıkarma görevleri, yapılandırılmamış metinden yapılandırılmış bilgi çeker. Hangi varlıkların önemli olduğunu, çıktının nasıl biçimlendirileceğini ve eksik ya da belirsiz bilginin nasıl ele alınacağını örnekler belirler.
 
 ### Varlık Çıkarma
 
-<Callout type="info" title="Named Entity Recognition Nedir?">
-Named Entity Recognition (NER), metindeki adlandırılmış varlıkları kişiler, organizasyonlar, konumlar, tarihler ve ürünler gibi kategorilere tanımlar ve sınıflandırır. Bilgi erişimi ve bilgi grafikleri için temeldir.
+<Callout type="info" title="Adlandırılmış Varlık Tanıma Nedir?">
+Adlandırılmış Varlık Tanıma (Named Entity Recognition, NER), metindeki adlandırılmış varlıkları bulur ve kişi, kuruluş, yer, tarih, ürün gibi kategorilere ayırır. Bilgi erişimi ve bilgi grafları için temel bir tekniktir.
 </Callout>
 
-NER, özel varlık türlerinizi ve birden fazla kategoriye sığabilecek varlıkların nasıl ele alınacağını gösteren örneklerden faydalanır.
+NER'de, size özgü varlık türlerini ve birden fazla kategoriye girebilecek varlıkların nasıl ele alınacağını gösteren örnekler çok işe yarar.
 
 <TryIt compact prompt={`Bu cümlelerden adlandırılmış varlıkları çıkar.
 
@@ -268,14 +268,14 @@ Varlıklar:
 - TARİH: 2018
 
 Şimdi şundan çıkar:
-Metin: "Elon Musk'ın SpaceX'i 3 Aralık'ta Cape Canaveral'dan 23 Starlink uydusu fırlattı."
+Metin: "Elon Musk'ın şirketi SpaceX, 3 Aralık'ta Cape Canaveral'dan 23 Starlink uydusu fırlattı."
 Varlıklar:`} />
 
 ### Yapılandırılmış Veri Çıkarma
 
-Doğal dilden yapılandırılmış veri çıkarmak, eksik alanları, örtük bilgileri ve değişen girdi formatlarını nasıl ele alacağınızı gösteren örnekler gerektirir.
+Doğal dilden yapılandırılmış veri çıkarmak için eksik alanların, örtük bilgilerin ve farklı girdi biçimlerinin nasıl ele alınacağını gösteren örnekler gerekir.
 
-<TryIt compact prompt={`E-postalardan toplantı detaylarını yapılandırılmış formata çıkar.
+<TryIt compact prompt={`E-postalardaki toplantı bilgilerini yapılandırılmış biçimde çıkar.
 
 E-posta: "Yarın saat 15:00'te Konferans Odası B'de Q4 bütçesini görüşmek için buluşalım. Lütfen dizüstü bilgisayarınızı getirin."
 
@@ -286,55 +286,55 @@ Toplantı:
 - Konu: Q4 bütçe görüşmesi
 - Gereksinimler: Dizüstü bilgisayar getir
 
-E-posta: "Ekip senkronizasyonu Cuma sabah 10'a taşındı, yerine Zoom kullanacağız. Link takvim davetinde. Maksimum 30 dakika."
+E-posta: "Ekip toplantısı cuma sabah 10'a alındı, bu sefer Zoom'dan yapacağız. Bağlantı takvim davetinde. En fazla 30 dakika sürecek."
 
 Toplantı:
 - Tarih: Cuma
 - Saat: 10:00
 - Konum: Zoom (sanal)
-- Konu: Ekip senkronizasyonu
+- Konu: Ekip toplantısı
 - Süre: 30 dakika
 
 Şimdi şundan çıkar:
-E-posta: "Pazartesi sabah 9:30 civarı müşteri sunumunu gözden geçirmek için kısa bir görüşme yapabilir miyiz? Teams linki göndereceğim."
+E-posta: "Pazartesi sabah 9:30 gibi müşteri sunumunun üzerinden geçmek için kısa bir görüşme yapabilir miyiz? Teams bağlantısını ben gönderirim."
 
 Toplantı:`} />
 
-## Gelişmiş Az Örnek Teknikleri
+## Gelişmiş Az Örnekli Teknikler
 
-Temel az örnekli öğrenmenin ötesinde, karmaşık görevler için sonuçları iyileştirebilecek birkaç teknik var.
+Temel az örnekli öğrenmenin ötesinde, karmaşık görevlerde sonuçları iyileştirebilecek birkaç teknik daha var.
 
 ### Çeşitli Örnekler
 
-Örneklerde çeşitlilik, miktardan daha değerlidir. Benzer örnekleri tekrar tekrar göstermek yerine farklı senaryoları, uç durumları ve potansiyel belirsizlikleri kapsayın.
+Örneklerde çeşitlilik, sayıdan daha değerlidir. Birbirine benzeyen örnekleri tekrar tekrar göstermek yerine farklı senaryolara, uç durumlara ve olası belirsizliklere yer verin.
 
 <TryIt compact prompt={`Müşteri şikayetlerine yanıt ver.
 
 Örnek 1 (Ürün Sorunu):
 Müşteri: "Siparişim hasarlı geldi."
-Yanıt: "Hasarlı teslimat için içtenlikle özür dilerim. Hemen ücretsiz bir değişim göndereceğim. Hasarlı ürünü iade etmenize gerek yok. Kargo adresinizi onaylayabilir miyim?"
+Yanıt: "Hasarlı teslimat için içtenlikle özür dilerim. Size hemen ücretsiz olarak yenisini gönderiyorum. Hasarlı ürünü iade etmenize gerek yok. Teslimat adresinizi teyit edebilir miyim?"
 
 Örnek 2 (Hizmet Sorunu):
 Müşteri: "2 saattir hatta bekliyorum!"
-Yanıt: "Uzun bekleme süresi için çok özür dilerim. Bu kabul edilemez. Şimdi buradayım ve sorununuzun çözüldüğünden şahsen emin olacağım. Size nasıl yardımcı olabilirim?"
+Yanıt: "Bu kadar uzun beklediğiniz için çok özür dilerim, bu kabul edilemez. Artık buradayım ve sorununuzun çözülmesiyle bizzat ilgileneceğim. Size nasıl yardımcı olabilirim?"
 
 Örnek 3 (Faturalandırma Sorunu):
-Müşteri: "Aynı sipariş için beni iki kez ücretlendirmişsiniz!"
-Yanıt: "Bu faturalandırma hatası için özür dilerim. Mükerrer ücreti doğruladım ve orijinal ödeme yönteminize XX TL iade başlattım. 3-5 iş günü içinde görmeniz gerekir."
+Müşteri: "Aynı sipariş için benden iki kez ücret almışsınız!"
+Yanıt: "Bu faturalandırma hatası için özür dilerim. Mükerrer çekimi doğruladım ve ödemeyi yaptığınız karta XX TL iade başlattım. Tutar 3-5 iş günü içinde hesabınıza yansır."
 
 Şimdi yanıt ver:
-Müşteri: "Ürün web sitesinde gösterilenle eşleşmiyor."
+Müşteri: "Ürün, web sitesinde gösterilenle aynı değil."
 Yanıt:`} />
 
 ### Negatif Örnekler
 
-<Callout type="tip" title="Karşıtlıklı Öğrenme">
-"İyi" vs "kötü" örnekler göstermek karşıtlıklı öğrenme olarak adlandırılır. Modelin sadece ne istediğinizi değil, nelerden kaçınması gerektiğini anlamasına yardımcı olur. Bu özellikle stil ve kalite yargıları için kullanışlıdır.
+<Callout type="tip" title="Karşıt Örnekler">
+"İyi" ve "kötü" örnekleri yan yana koymaya genellikle karşıt örnek (contrastive examples) kullanmak denir. (Bunu, model eğitmek için kullanılan bir yöntem olan karşıtlıklı öğrenmeyle, yani "contrastive learning" ile karıştırmayın.) Bu yaklaşım, modelin yalnızca ne istediğinizi değil, nelerden kaçınması gerektiğini de anlamasına yardım eder. Özellikle üslup ve kalite değerlendirmelerinde çok kullanışlıdır.
 </Callout>
 
 Bazen ne *yapılmaması* gerektiğini göstermek, doğru örnekler göstermek kadar değerlidir. Negatif örnekler modelin sınırları anlamasına ve yaygın hatalardan kaçınmasına yardımcı olur.
 
-<TryIt compact prompt={`Özlü e-posta konu satırları yaz.
+<TryIt compact prompt={`Kısa ve öz e-posta konu satırları yaz.
 
 İyi: "Q3 Raporu İncelemeye Hazır"
 Kötü: "Hey, hani şu konuştuğumuz rapor işini bitirdim"
@@ -345,27 +345,27 @@ Kötü: "Benim için bir şey yapmanı istiyorum lütfen bunu oku"
 İyi: "Toplantı Yeniden Planlandı: Proje Sync → Perşembe 14:00"
 Kötü: "Plan değişikliği!!!!!"
 
-Şimdi şunun için konu satırı yaz:
-E-posta hakkında: Teklif taslağı hakkında geri bildirim isteme
+Şimdi şunun için bir konu satırı yaz:
+E-postanın konusu: Teklif taslağı için geri bildirim istemek
 Konu:`} />
 
 ### Uç Durum Örnekleri
 
-Uç durumlar genellikle bir çözümün üretimde çalışıp çalışmadığını belirler. Örneklerinize olağandışı girdiler dahil etmek, modelin "mutlu yol"a uymayan gerçek dünya verilerinde başarısız olmasını önler.
+Bir çözümün canlı ortamda ayakta kalıp kalmayacağını çoğu zaman uç durumlar belirler. Örneklerinize sıra dışı girdiler de koyarsanız, model her şeyin yolunda gittiği ideal senaryoya uymayan gerçek dünya verileri karşısında çuvallamaz. Aşağıdaki örneklerin hepsinin aynı alanları kullandığına, eksik bir parça olduğunda da o alana null yazdığına dikkat edin. Bu tutarlılık da modelin öğrendiği şeyin bir parçasıdır.
 
 <TryIt compact prompt={`İsimleri yapılandırılmış formata ayrıştır.
 
 Girdi: "Ahmet Yılmaz"
-Çıktı: {"ad": "Ahmet", "soyad": "Yılmaz", "ortaAd": null, "sonEk": null}
+Çıktı: {"onEk": null, "ad": "Ahmet", "ortaAd": null, "soyad": "Yılmaz", "sonEk": null}
 
 Girdi: "Ayşe Fatma Demir-Kaya"
-Çıktı: {"ad": "Ayşe", "ortaAd": "Fatma", "soyad": "Demir-Kaya", "sonEk": null}
+Çıktı: {"onEk": null, "ad": "Ayşe", "ortaAd": "Fatma", "soyad": "Demir-Kaya", "sonEk": null}
 
 Girdi: "Prof. Dr. Mehmet Ali Öztürk"
 Çıktı: {"onEk": "Prof. Dr.", "ad": "Mehmet", "ortaAd": "Ali", "soyad": "Öztürk", "sonEk": null}
 
 Girdi: "Tarkan"
-Çıktı: {"ad": "Tarkan", "soyad": null, "ortaAd": null, "sonEk": null, "tekIsim": true}
+Çıktı: {"onEk": null, "ad": "Tarkan", "ortaAd": null, "soyad": null, "sonEk": null}
 
 Şimdi ayrıştır:
 Girdi: "Ord. Prof. Cahit Arf"
@@ -377,17 +377,17 @@ Girdi: "Ord. Prof. Cahit Arf"
   <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Basit sınıflandırma</span>
     <span className="text-primary font-mono">2-3</span>
-    <span className="text-muted-foreground">Kategori başına minimum bir</span>
+    <span className="text-muted-foreground">Kategori başına en az bir</span>
   </div>
   <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Karmaşık formatlama</span>
     <span className="text-primary font-mono">3-5</span>
-    <span className="text-muted-foreground">Varyasyonları göster</span>
+    <span className="text-muted-foreground">Farklı varyasyonları göster</span>
   </div>
   <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-40">İnce stil</span>
+    <span className="font-semibold min-w-40">İnce üslup farkları</span>
     <span className="text-primary font-mono">4-6</span>
-    <span className="text-muted-foreground">Tam yelpazesini yakala</span>
+    <span className="text-muted-foreground">Tüm yelpazeyi yakala</span>
   </div>
   <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Uç durumlar</span>
@@ -395,6 +395,8 @@ Girdi: "Ord. Prof. Cahit Arf"
     <span className="text-muted-foreground">Normal örneklerin yanında</span>
   </div>
 </div>
+
+Bu sayılar bir üst sınır değil, bir başlangıç noktasıdır. Uzun bağlam penceresine sahip modeller, bazı görevlerde onlarca hatta yüzlerce örnekle gelişmeyi sürdürebilir; araştırmacılar bu yaklaşıma çok örnekli (many-shot) promptlama diyor. Yine de gündelik promptların çoğunda, iyi seçilmiş bir avuç örnek faydanın büyük kısmını maliyetin çok küçük bir kısmına sağlar. Akıl yürütme modellerinin ise çoğu zaman daha az örneğe ihtiyacı olur: OpenAI, bu modelleri önce hiç örnek vermeden denemeyi, gerekirse ancak o zaman birkaç örnek eklemeyi ve bu örneklerin talimatlarınızla çelişmediğinden emin olmayı öneriyor.
 
 ## Örnek Kalitesi Önemlidir
 
@@ -405,7 +407,7 @@ Girdi: "Ord. Prof. Cahit Arf"
 "Güzel hizmet" → İyi
 "Güzel fiyat" → İyi
 
-✗ Hepsi çok benzer
+✗ Hepsi birbirine çok benziyor
 ✗ Aynı kelime tekrarlanıyor
 ✗ Uç durum yok` 
   }}
@@ -413,22 +415,22 @@ Girdi: "Ord. Prof. Cahit Arf"
     label: "İyi Örnekler", 
     content: `"Beklentileri aştı!" → Pozitif
 "Kırık geldi" → Negatif
-"İşini görüyor, özel bir şey yok" → Nötr
+"İşini görüyor, özel bir yanı yok" → Nötr
 "Harika kalite ama pahalı" → Karışık
 
 ✓ Çeşitli senaryolar
 ✓ Net sınırlar
-✓ Uç durumları kapsar` 
+✓ Uç durumları kapsıyor` 
   }}
 />
 
 ## Az Örnekli Öğrenmeyi Diğer Tekniklerle Birleştirme
 
-Az örnekli öğrenme, diğer prompt teknikleriyle güçlü bir şekilde birleşir. Örnekler "ne"yi sağlarken diğer teknikler bağlam, muhakeme veya yapı ekleyebilir.
+Az örnekli öğrenme, diğer prompt teknikleriyle birlikte kullanıldığında daha da güçlenir. Örnekler işin "ne"sini gösterirken diğer teknikler bağlam, muhakeme ya da yapı katabilir.
 
 ### Az Örnek + Rol
 
-Rol eklemek, modele görevi *neden* yaptığına dair bağlam sağlar, bu da kaliteyi ve tutarlılığı iyileştirebilir.
+Rol eklemek, modele görevi *neden* yaptığına dair bir bağlam verir; bu da kaliteyi ve tutarlılığı artırabilir.
 
 ```
 Sen bir hukuki sözleşme inceleyicisisin.
@@ -440,39 +442,39 @@ Sen bir hukuki sözleşme inceleyicisisin.
 
 ### Az Örnek + CoT
 
-Az örnekli öğrenmeyi Düşünce Zinciri ile birleştirmek, sadece *hangi* cevabın verileceğini değil, o cevaba *nasıl* ulaşılacağını gösterir. Bu, yargı gerektiren görevler için güçlüdür.
+Az örnekli öğrenmeyi Düşünce Zinciri ile birleştirdiğinizde modele yalnızca *hangi* cevabı vereceğini değil, o cevaba *nasıl* varacağını da gösterirsiniz. Bu, muhakeme ve değerlendirme gerektiren görevlerde çok etkilidir.
 
 ```
-Sınıflandır ve muhakemeyi açıkla.
+Sınıflandır ve gerekçeni açıkla.
 
 Yorum: "Harika özellikler ama pahalı"
 Düşünce: Yorum olumlu yönlerden ("harika özellikler") 
 ama aynı zamanda önemli bir olumsuzluktan ("pahalı") bahsediyor. 
-"Ama" bağlacına göre olumsuz, olumludan ağır basıyor gibi görünüyor.
+"Ama" bağlacı, olumsuz yanın ağır bastığını düşündürüyor.
 Sınıflandırma: Karışık-Negatif
 
-[muhakemeli daha fazla örnek]
+[gerekçeli başka örnekler]
 
-Şimdi muhakemeyle sınıflandır:
-Yorum: "Tam ihtiyacım olan, beklenenden hızlı geldi"
+Şimdi gerekçesiyle sınıflandır:
+Yorum: "Tam ihtiyacım olan şey, üstelik beklediğimden hızlı geldi"
 ```
 
 ## Özet
 
 <Callout type="tip" title="Ana Çıkarımlar">
-Az örnekli öğrenme gösterim yoluyla öğretir ve genellikle tek başına talimatlardan daha etkilidir. 2-5 çeşitli, doğru örnek kullanın ve en iyi sonuçlar için diğer tekniklerle birleştirin.
+Az örnekli öğrenme göstererek öğretir ve çoğu zaman tek başına talimatlardan daha etkilidir. Birbirinden farklı ve doğru 2-5 örnek kullanın; en iyi sonuç için bunu diğer tekniklerle birleştirin.
 </Callout>
 
 <Quiz 
-  question="Az örnekli öğrenmede genellikle kaç örnek sağlamalısınız?"
+  question="Az örnekli öğrenmede genellikle kaç örnek vermelisiniz?"
   options={[
-    "Mümkün olduğunca çok (10+)",
-    "Sadece 1 örnek her zaman yeterlidir",
-    "2-5 çeşitli, doğru örnek",
-    "Talimatlar netse örnekler gerekli değil"
+    "Olabildiğince çok (10+)",
+    "Tek bir örnek her zaman yeterlidir",
+    "Birbirinden farklı ve doğru 2-5 örnek",
+    "Talimatlar netse örneğe gerek yoktur"
   ]}
   correctIndex={2}
-  explanation="2-5 çeşitli, doğru örnek genellikle en iyi sonucu verir. Çok az kalıbı yakalayamayabilir, çok fazla ise token israfı yapar ve modeli karıştırabilir. Kalite ve çeşitlilik, miktardan daha önemlidir."
+  explanation="Birbirinden farklı ve doğru 2-5 örnek genellikle en iyi sonucu verir. Çok az örnek kalıbı yakalamaya yetmeyebilir; örnekleri yığmak ise token harcatır ve gündelik görevlerde çoğu zaman pek bir şey katmaz. Kalite ve çeşitlilik, sayıdan daha önemlidir."
 />
 
-Bir sonraki bölümde, yinelemeli iyileştirmeyi keşfedeceğiz: ardışık denemelerle promptları iyileştirme sanatı.
+Bir sonraki bölümde yinelemeli iyileştirmeyi ele alacağız: promptları deneme üstüne deneme yaparak geliştirme sanatını.
