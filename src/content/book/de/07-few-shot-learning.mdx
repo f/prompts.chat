@@ -1,4 +1,4 @@
-Few-Shot-Learning ist eine der mächtigsten Prompting-Techniken. Indem du Beispiele dessen lieferst, was du willst, kannst du dem Modell komplexe Aufgaben beibringen, ohne Feinabstimmung.
+Few-Shot-Learning ist eine der mächtigsten Prompting-Techniken. Indem du Beispiele für das lieferst, was du willst, kannst du dem Modell komplexe Aufgaben beibringen, ganz ohne Fine-Tuning.
 
 <Callout type="info" title="Lernen durch Beispiele">
 Genau wie Menschen durch Beispiele lernen, können KI-Modelle Muster aus den Beispielen lernen, die du in deinem Prompt lieferst.
@@ -19,7 +19,7 @@ Few-Shot-Learning zeigt dem Modell Beispiele von Eingabe-Ausgabe-Paaren, bevor d
   }}
   after={{ 
     label: "Few-Shot (Mit Beispielen)", 
-    content: `"Liebe es!" → Positiv
+    content: `"Absolut begeistert!" → Positiv
 "Schreckliche Qualität" → Negativ  
 "Gut, aber teuer" → Gemischt
 
@@ -108,7 +108,7 @@ Bewertung: "Die Qualität ist erstaunlich, aber der Versand hat ewig gedauert."
 Sentiment: Gemischt
 
 Jetzt klassifiziere:
-Bewertung: "Liebe das Design, aber die Akkulaufzeit ist enttäuschend."
+Bewertung: "Das Design ist toll, aber die Akkulaufzeit ist enttäuschend."
 Sentiment:`} />
 
 ### Themenklassifikation
@@ -135,7 +135,7 @@ Kategorie:`} />
 
 ## Few-Shot für Transformation
 
-Transformationsaufgaben konvertieren Eingabe von einer Form in eine andere, während die Bedeutung erhalten bleibt. Beispiele sind hier essenziell, weil sie genau definieren, was „Transformation" für deinen Anwendungsfall bedeutet.
+Transformationsaufgaben wandeln eine Eingabe von einer Form in eine andere um, wobei die Bedeutung erhalten bleibt. Beispiele sind hier essenziell, weil sie genau definieren, was „Transformation" für deinen Anwendungsfall bedeutet.
 
 ### Textumschreibung
 
@@ -180,11 +180,11 @@ Ausgabe:`} />
 
 ## Few-Shot für Generierung
 
-Generierungsaufgaben erstellen neue Inhalte nach einem gelernten Muster. Beispiele etablieren Länge, Struktur, Ton und welche Details hervorgehoben werden sollen. Diese sind schwer in Anweisungen allein zu spezifizieren.
+Generierungsaufgaben erstellen neue Inhalte nach einem gelernten Muster. Beispiele legen Länge, Struktur und Ton fest und zeigen, welche Details hervorgehoben werden sollen. All das lässt sich mit Anweisungen allein nur schwer festlegen.
 
 ### Produktbeschreibungen
 
-Marketingtexte profitieren enorm von Beispielen, weil sie Markenstimme, Feature-Betonung und überzeugende Techniken einfangen, die abstrakt schwer zu beschreiben sind.
+Marketingtexte profitieren enorm von Beispielen, weil sie Markenstimme, Feature-Betonung und Überzeugungstechniken einfangen, die abstrakt schwer zu beschreiben sind.
 
 <TryIt compact prompt={`Schreibe Produktbeschreibungen in diesem Stil:
 
@@ -195,7 +195,7 @@ Produkt: Edelstahl-Wasserflasche
 Beschreibung: Bleibe stilvoll hydriert mit unserer doppelwandigen isolierten Flasche. Hält Getränke 24 Stunden kalt oder 12 Stunden heiß. Mit auslaufsicherem Deckel und passend für Standard-Getränkehalter.
 
 Produkt: Ergonomischer Bürostuhl
-Beschreibung: Verwandle deinen Arbeitsplatz mit unserem verstellbaren ergonomischen Stuhl. Atmungsaktive Netzrückenlehne, Lordosenstütze und 360°-Drehung kombinieren sich für Komfort bei langen Arbeitssitzungen.
+Beschreibung: Verwandle deinen Arbeitsplatz mit unserem verstellbaren ergonomischen Stuhl. Atmungsaktive Netzrückenlehne, Lordosenstütze und 360°-Drehung sorgen gemeinsam für Komfort an langen Arbeitstagen.
 
 Jetzt schreibe:
 Produkt: Tragbares Handy-Ladegerät
@@ -207,7 +207,7 @@ Beschreibung:`} />
 Gute Dokumentation erklärt, was Code macht, seine Parameter, Rückgabewerte und Nutzungsbeispiele. Konsistente Docstrings ermöglichen automatisch generierte API-Dokumentation und helfen IDEs, bessere Code-Vervollständigung zu bieten.
 </Callout>
 
-Dokumentationsstil variiert stark zwischen Projekten. Beispiele lehren dein spezifisches Format, was enthalten sein soll (args, returns, Beispiele) und das erwartete Detailniveau.
+Dokumentationsstil variiert stark zwischen Projekten. Beispiele vermitteln dein Format, was enthalten sein soll (args, returns, Beispiele) und das erwartete Detailniveau.
 
 <TryIt compact prompt={`Schreibe Dokumentationskommentare für diese Funktionen:
 
@@ -253,10 +253,11 @@ NER profitiert von Beispielen, die deine spezifischen Entitätstypen zeigen und 
 
 <TryIt compact prompt={`Extrahiere benannte Entitäten aus diesen Sätzen.
 
-Text: "Der Siemens-CEO Roland Busch kündigte neue Produkte in München an."
+Text: "Siemens-CEO Roland Busch stellte in München die Plattform Siemens Xcelerator vor."
 Entitäten:
 - UNTERNEHMEN: Siemens
 - PERSON: Roland Busch
+- PRODUKT: Siemens Xcelerator
 - ORT: München
 
 Text: "Die Europäische Union verhängte gegen Google 2018 eine Strafe von 4,34 Milliarden Euro."
@@ -267,14 +268,14 @@ Entitäten:
 - DATUM: 2018
 
 Jetzt extrahiere aus:
-Text: "Elon Musks SpaceX startete 23 Starlink-Satelliten von Cape Canaveral am 3. Dezember."
+Text: "Elon Musks SpaceX startete am 3. Dezember 23 Starlink-Satelliten von Cape Canaveral."
 Entitäten:`} />
 
 ### Strukturierte Datenextraktion
 
 Das Extrahieren strukturierter Daten aus natürlicher Sprache erfordert Beispiele, die zeigen, wie fehlende Felder, implizite Informationen und variierende Eingabeformate behandelt werden.
 
-<TryIt compact prompt={`Extrahiere Meeting-Details in strukturiertes Format.
+<TryIt compact prompt={`Extrahiere Meeting-Details in ein strukturiertes Format.
 
 E-Mail: "Lass uns morgen um 15 Uhr im Konferenzraum B treffen, um das Q4-Budget zu besprechen. Bitte bring deinen Laptop mit."
 
@@ -285,7 +286,7 @@ Meeting:
 - Thema: Q4-Budget-Besprechung
 - Anforderungen: Laptop mitbringen
 
-E-Mail: "Team-Sync auf Freitag 10 Uhr verschoben, wir nutzen stattdessen Zoom. Link im Kalendereinladung. Maximal 30 Minuten."
+E-Mail: "Team-Sync auf Freitag 10 Uhr verschoben, wir nutzen stattdessen Zoom. Link in der Kalendereinladung. Maximal 30 Minuten."
 
 Meeting:
 - Datum: Freitag
@@ -303,9 +304,9 @@ Meeting:`} />
 
 Über grundlegendes Few-Shot hinaus können mehrere Techniken die Ergebnisse für komplexe Aufgaben verbessern.
 
-### Diverse Beispiele
+### Vielfältige Beispiele
 
-Diversität in Beispielen ist wertvoller als Quantität. Decke verschiedene Szenarien, Grenzfälle und potenzielle Mehrdeutigkeiten ab, statt ähnliche Beispiele wiederholt zu zeigen.
+Vielfalt in den Beispielen ist wertvoller als ihre Menge. Decke verschiedene Szenarien, Grenzfälle und potenzielle Mehrdeutigkeiten ab, statt ähnliche Beispiele wiederholt zu zeigen.
 
 <TryIt compact prompt={`Antworte auf Kundenbeschwerden.
 
@@ -315,10 +316,10 @@ Antwort: "Ich entschuldige mich aufrichtig für die beschädigte Lieferung. Ich 
 
 Beispiel 2 (Serviceproblem):
 Kunde: "Ich war 2 Stunden in der Warteschleife!"
-Antwort: "Es tut mir sehr leid für die lange Wartezeit. Das ist inakzeptabel. Ich bin jetzt hier und werde persönlich sicherstellen, dass Ihr Problem gelöst wird. Wie kann ich Ihnen heute helfen?"
+Antwort: "Die lange Wartezeit tut mir sehr leid. Das ist inakzeptabel. Ich bin jetzt hier und werde persönlich sicherstellen, dass Ihr Problem gelöst wird. Wie kann ich Ihnen heute helfen?"
 
 Beispiel 3 (Abrechnungsproblem):
-Kunde: "Ihr habt mir zweimal für dieselbe Bestellung abgebucht!"
+Kunde: "Ihr habt mir dieselbe Bestellung zweimal abgebucht!"
 Antwort: "Ich entschuldige mich für diesen Abrechnungsfehler. Ich habe die doppelte Abbuchung verifiziert und eine Rückerstattung von XX,XX€ auf Ihre ursprüngliche Zahlungsmethode veranlasst. Sie sollten sie innerhalb von 3-5 Werktagen sehen."
 
 Jetzt antworte auf:
@@ -327,46 +328,46 @@ Antwort:`} />
 
 ### Negative Beispiele
 
-<Callout type="tip" title="Kontrastives Lernen">
-Das Zeigen von „guten" vs. „schlechten" Beispielen nennt man kontrastives Lernen. Es hilft dem Modell zu verstehen, nicht nur was du willst, sondern was zu vermeiden ist. Das ist besonders nützlich für Stil- und Qualitätsurteile.
+<Callout type="tip" title="Kontrastive Beispiele">
+„Gute“ und „schlechte“ Beispiele nebeneinanderzustellen bezeichnet man oft als Arbeit mit kontrastiven Beispielen. (Nicht zu verwechseln mit „Contrastive Learning“, einer Methode zum Trainieren von Modellen.) So versteht das Modell nicht nur, was du willst, sondern auch, was es vermeiden soll. Das ist besonders nützlich für Stil- und Qualitätsurteile.
 </Callout>
 
-Manchmal ist das Zeigen, was *nicht* zu tun ist, genauso wertvoll wie das Zeigen korrekter Beispiele. Negative Beispiele helfen dem Modell, Grenzen zu verstehen und häufige Fehler zu vermeiden.
+Manchmal ist es genauso wertvoll zu zeigen, was man *nicht* tun soll, wie korrekte Beispiele zu zeigen. Negative Beispiele helfen dem Modell, Grenzen zu verstehen und häufige Fehler zu vermeiden.
 
 <TryIt compact prompt={`Schreibe prägnante E-Mail-Betreffzeilen.
 
 Gut: "Q3-Bericht bereit zur Überprüfung"
 Schlecht: "Hey, hab das Berichtsding fertig, über das wir gesprochen haben"
 
-Gut: "Aktion erforderlich: Urlaubsantrag bis Freitag genehmigen"
+Gut: "Handlungsbedarf: Urlaubsantrag bis Freitag genehmigen"
 Schlecht: "Ich brauch dass du was für mich machst bitte lies das"
 
 Gut: "Meeting verschoben: Projekt-Sync → Donnerstag 14 Uhr"
 Schlecht: "Planänderung!!!!!"
 
 Jetzt schreibe eine Betreffzeile für:
-E-Mail über: Feedback zu einem Entwurf eines Vorschlags anfordern
+E-Mail über: Feedback zu einem Vorschlagsentwurf einholen
 Betreff:`} />
 
 ### Grenzfall-Beispiele
 
-Grenzfälle bestimmen oft, ob eine Lösung in der Produktion funktioniert. Das Einbeziehen ungewöhnlicher Eingaben in deine Beispiele verhindert, dass das Modell bei realen Daten versagt, die nicht zum „Happy Path" passen.
+Grenzfälle bestimmen oft, ob eine Lösung in der Produktion funktioniert. Wenn du ungewöhnliche Eingaben in deine Beispiele aufnimmst, verhinderst du, dass das Modell an realen Daten scheitert, die nicht zum „Happy Path“ passen. Beachte, dass jedes Beispiel unten dieselben Felder verwendet und null einträgt, wenn ein Teil fehlt. Auch diese Einheitlichkeit lernt das Modell mit.
 
-<TryIt compact prompt={`Parse Namen in strukturiertes Format.
+<TryIt compact prompt={`Zerlege Namen in ein strukturiertes Format.
 
 Eingabe: "Hans Müller"
-Ausgabe: {"first": "Hans", "last": "Müller", "middle": null, "suffix": null}
+Ausgabe: {"prefix": null, "first": "Hans", "middle": null, "last": "Müller", "suffix": null}
 
 Eingabe: "Maria Anna Schmidt-Weber"
-Ausgabe: {"first": "Maria", "middle": "Anna", "last": "Schmidt-Weber", "suffix": null}
+Ausgabe: {"prefix": null, "first": "Maria", "middle": "Anna", "last": "Schmidt-Weber", "suffix": null}
 
 Eingabe: "Dr. Martin Luther King Jr."
 Ausgabe: {"prefix": "Dr.", "first": "Martin", "middle": "Luther", "last": "King", "suffix": "Jr."}
 
 Eingabe: "Madonna"
-Ausgabe: {"first": "Madonna", "last": null, "middle": null, "suffix": null, "mononym": true}
+Ausgabe: {"prefix": null, "first": "Madonna", "middle": null, "last": null, "suffix": null}
 
-Jetzt parse:
+Zerlege jetzt:
 Eingabe: "Prof. Dr. Angela Merkel"
 Ausgabe:`} />
 
@@ -395,6 +396,8 @@ Ausgabe:`} />
   </div>
 </div>
 
+Diese Zahlen sind ein Ausgangspunkt, keine Obergrenze. Modelle mit langen Kontextfenstern können sich bei manchen Aufgaben mit Dutzenden oder sogar Hunderten von Beispielen weiter verbessern; in der Forschung heißt dieser Ansatz Many-Shot-Prompting. Für die meisten alltäglichen Prompts bringt dir eine Handvoll gut gewählter Beispiele jedoch den Großteil des Nutzens zu einem Bruchteil der Kosten. Reasoning-Modelle brauchen oft weniger: OpenAI empfiehlt, sie zuerst ganz ohne Beispiele auszuprobieren, nur bei Bedarf ein paar hinzuzufügen und darauf zu achten, dass diese mit deinen Anweisungen übereinstimmen.
+
 ## Beispielqualität zählt
 
 <Compare 
@@ -415,7 +418,7 @@ Ausgabe:`} />
 "Funktioniert gut, nichts Besonderes" → Neutral
 "Tolle Qualität, aber überteuert" → Gemischt
 
-✓ Diverse Szenarien
+✓ Vielfältige Szenarien
 ✓ Klare Grenzen
 ✓ Deckt Grenzfälle ab` 
   }}
@@ -423,7 +426,7 @@ Ausgabe:`} />
 
 ## Few-Shot mit anderen Techniken kombinieren
 
-Few-Shot-Learning kombiniert sich kraftvoll mit anderen Prompting-Techniken. Die Beispiele liefern das „Was", während andere Techniken Kontext, Begründung oder Struktur hinzufügen können.
+Few-Shot-Learning lässt sich wirkungsvoll mit anderen Prompting-Techniken kombinieren. Die Beispiele liefern das „Was", während andere Techniken Kontext, Begründung oder Struktur hinzufügen können.
 
 ### Few-Shot + Rolle
 
@@ -439,15 +442,15 @@ Jetzt analysiere: [neue Klausel]
 
 ### Few-Shot + CoT
 
-Die Kombination von Few-Shot mit Chain of Thought zeigt nicht nur, *welche* Antwort zu geben ist, sondern *wie* man zur Antwort gelangt. Das ist mächtig für Aufgaben, die Urteilsvermögen erfordern.
+Die Kombination von Few-Shot mit Chain of Thought zeigt nicht nur, *welche* Antwort zu geben ist, sondern *wie* man zur Antwort gelangt. Das ist besonders wirkungsvoll bei Aufgaben, die Urteilsvermögen erfordern.
 
 ```
 Klassifiziere und erkläre die Begründung.
 
 Bewertung: "Tolle Features, aber überteuert"
-Denken: Die Bewertung erwähnt positive Aspekte ("tolle Features") 
-aber auch ein signifikantes Negativ ("überteuert"). Das Negative scheint 
-das Positive zu überwiegen, basierend auf der "aber"-Konjunktion.
+Denken: Die Bewertung erwähnt positive Aspekte ("tolle Features"), 
+aber auch einen deutlichen Kritikpunkt ("überteuert"). Wegen des "aber" 
+scheint das Negative das Positive zu überwiegen.
 Klassifikation: Gemischt-Negativ
 
 [weitere Beispiele mit Begründung]
@@ -459,7 +462,7 @@ Bewertung: "Genau was ich brauchte, kam schneller als erwartet an"
 ## Zusammenfassung
 
 <Callout type="tip" title="Kernpunkte">
-Few-Shot-Learning lehrt durch Demonstration und ist oft effektiver als Anweisungen allein. Verwende 2-5 diverse, korrekte Beispiele und kombiniere mit anderen Techniken für beste Ergebnisse.
+Few-Shot-Learning lehrt durch Demonstration und ist oft effektiver als Anweisungen allein. Verwende 2-5 vielfältige, korrekte Beispiele und kombiniere sie mit anderen Techniken, um die besten Ergebnisse zu erzielen.
 </Callout>
 
 <Quiz 
@@ -467,11 +470,11 @@ Few-Shot-Learning lehrt durch Demonstration und ist oft effektiver als Anweisung
   options={[
     "So viele wie möglich (10+)",
     "Nur 1 Beispiel reicht immer",
-    "2-5 diverse, korrekte Beispiele",
+    "2-5 vielfältige, korrekte Beispiele",
     "Beispiele sind nicht nötig, wenn Anweisungen klar sind"
   ]}
   correctIndex={2}
-  explanation="2-5 diverse, korrekte Beispiele funktionieren typischerweise am besten. Zu wenige erfassen möglicherweise das Muster nicht, während zu viele Tokens verschwenden und das Modell verwirren können. Qualität und Diversität zählen mehr als Quantität."
+  explanation="2-5 vielfältige, korrekte Beispiele funktionieren typischerweise am besten. Zu wenige erfassen das Muster womöglich nicht, während jedes weitere Beispiel Tokens kostet und bei alltäglichen Aufgaben meist wenig bringt. Qualität und Vielfalt zählen mehr als Menge."
 />
 
 Im nächsten Kapitel werden wir iterative Verfeinerung erkunden: die Kunst, Prompts durch aufeinanderfolgende Versuche zu verbessern.

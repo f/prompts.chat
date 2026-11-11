@@ -1,21 +1,21 @@
-Düşüncə Zənciri (Chain of Thought - CoT) prompting, modeldən işini addım-addım göstərməsini istəyərək mürəkkəb mühakimə tapşırıqlarında süni intellekt performansını dramatik şəkildə artıran bir texnikadır.
+Düşüncə Zənciri (Chain of Thought, CoT) prompting, modeldən işini addım-addım göstərməsini istəməklə mürəkkəb mühakimə tələb edən tapşırıqlarda süni intellektin nəticələrini xeyli yaxşılaşdıran bir texnikadır.
 
 <Callout type="info" title="İşini Göstər">
-Bir riyaziyyat müəlliminin tələbələrdən işlərini göstərmələrini istəməsi kimi, CoT prompting süni intellektdən mühakiməsini görünür etməsini istəyir.
+Riyaziyyat müəllimi şagirdlərdən həllin gedişini göstərməyi istədiyi kimi, CoT prompting də süni intellektdən mühakiməsini görünən etməsini istəyir.
 </Callout>
 
 ## CoT-un Həll Etdiyi Problem
 
-Süni intellekt modelləri, birbaşa cavaba atlamaları istənildikdə çox addımlı mühakimədə çətinlik çəkə bilər.
+Süni intellekt modellərindən dərhal cavab vermələri istənildikdə, onlar çox addımlı mühakimədə çətinlik çəkə bilər.
 
 <Compare 
   before={{ label: "Birbaşa Cavab (Adətən Yanlış)", content: "Sual: Bir mağaza almaları ədədi 2 AZN-ə satır. 5 və ya daha çox alsanız 20% endirim alırsınız. 7 alma neçə manat tutur?\n\nCavab: 14 AZN ❌" }}
-  after={{ label: "Düşüncə Zənciri (Doğru)", content: "Sual: Bir mağaza almaları ədədi 2 AZN-ə satır. 5 və ya daha çox alsanız 20% endirim alırsınız. 7 alma neçə manat tutur?\n\nBunu addım-addım həll edək:\n1. Alma başına normal qiymət: 2 AZN\n2. Alma sayı: 7\n3. 7 ≥ 5 olduğundan endirim tətbiq olunur\n4. Normal toplam: 7 × 2 AZN = 14 AZN\n5. Endirim: 14 AZN-in 20%-i = 2,80 AZN\n6. Son qiymət: 14 AZN - 2,80 AZN = 11,20 AZN\n\nCavab: 11,20 AZN ✓" }}
+  after={{ label: "Düşüncə Zənciri (Doğru)", content: "Sual: Bir mağaza almaları ədədi 2 AZN-ə satır. 5 və ya daha çox alsanız 20% endirim alırsınız. 7 alma neçə manat tutur?\n\nBunu addım-addım həll edək:\n1. Bir almanın adi qiyməti: 2 AZN\n2. Alma sayı: 7\n3. 7 ≥ 5 olduğundan endirim tətbiq olunur\n4. Adi qiymətlə cəmi: 7 × 2 AZN = 14 AZN\n5. Endirim: 14 AZN-in 20%-i = 2,80 AZN\n6. Son qiymət: 14 AZN - 2,80 AZN = 11,20 AZN\n\nCavab: 11,20 AZN ✓" }}
 />
 
 ## Əsas CoT Promptları
 
-### Sadə Tetikleyici İfadələr
+### Sadə Tətikləyici İfadələr
 
 Bunlardan birini promptlarınıza əlavə edin:
 
@@ -23,9 +23,11 @@ Bunlardan birini promptlarınıza əlavə edin:
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Addım-addım düşünək."</div>
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Bunu diqqətlə düşün."</div>
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Bu problemi metodik şəkildə həll et."</div>
-  <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Hər addımda mühakimənı göstər."</div>
+  <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Hər addımda mühakiməni göstər."</div>
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Düşüncə prosesini izah et."</div>
 </div>
+
+Bu ifadələr ən çox adi söhbət modelləri ilə işləyərkən önəm daşıyır. Cavab verməzdən əvvəl düşünən mühakimə modellərinin onlara ehtiyacı xeyli azdır; bu modellərə fəslin sonrakı hissəsində qayıdacağıq.
 
 ### Açıq Addım İstəyi
 
@@ -34,14 +36,14 @@ Bunlardan birini promptlarınıza əlavə edin:
   description="Süni intellektdən bir problemi addım-addım həll etməsini istəyin."
   prompt={`Bu problemi həll et:
 
-Bir avtomobil icarəsi gündəlik 40 AZN üstəgəl kilometr başına 0,25 AZN tutur. Birisi 3 gün avtomobil icarə edir və 200 kilometr sürürsə, toplam xərc nə olur?
+Avtomobil icarəsi gündə 40 AZN, üstəgəl hər kilometr üçün 0,25 AZN tutur. Kimsə avtomobili 3 günlük icarəyə götürür və 200 kilometr yol gedirsə, ümumi xərc nə qədər olar?
 
 Son cavabını verməzdən əvvəl:
 1. Verilən məlumatları müəyyən et
 2. Nəyi tapmamız lazım olduğunu təyin et
 3. Yanaşmanı planla
 4. Hər addımı işi göstərərək icra et
-5. Cavabını doğrula`}
+5. Cavabını yoxla`}
 />
 
 ## Sıfır Nümunə vs Bir Neçə Nümunə CoT
@@ -50,12 +52,12 @@ Düşüncə Zənciri prompting-ə iki əsas yanaşma var, hər biri sadəlik və
 
 ### Sıfır Nümunə CoT
 
-Ən sadə yanaşma—sadəcə bir tetikleyici ifadə əlavə edin və modelin necə mühakimə edəcəyini tapmasına icazə verin. Nümunə tələb olunmur. Bu, bir çox problem üçün təəccüblü dərəcədə yaxşı işləyir, lakin mühakimə formatı üzərində daha az nəzarətiniz olur.
+Ən sadə yanaşma budur: sadəcə bir tətikləyici ifadə əlavə edin və modelin necə mühakimə edəcəyini özü tapmasına imkan verin. Nümunə tələb olunmur. Bu, bir çox problem üçün təəccüblü dərəcədə yaxşı işləyir, lakin mühakimə formatı üzərində nəzarətiniz daha az olur.
 
 <TryIt 
   compact
   title="Sıfır Nümunə CoT"
-  prompt={`Əlinin 3 alması var və yarısını Aynurə verir, sonra 4 dənə daha alır. Neçə alması var?
+  prompt={`Əlinin 3 alması var və yarısını Aynura verir, sonra daha 4 alma alır. Onun neçə alması var?
 
 Addım-addım düşünək.`}
 />
@@ -63,38 +65,38 @@ Addım-addım düşünək.`}
 **Nümunə Çıxış:**
 ```
 Addım-addım düşünək.
-- Əli 3 alma ilə başlayır
-- 3-ün yarısı 1,5 amma almaları bölə bilmərik
-- Aşağı yuvarlasaq: Əli 1 alma verir, 2 saxlayır
-- 4 dənə daha aldıqdan sonra: 2 + 4 = 6 alma
+- Əlinin əvvəlcə 3 alması var
+- 3-ün yarısı 1,5-dir, amma almaları bölə bilmərik
+- Aşağı yuvarlaqlaşdırsaq: Əli 1 alma verir, 2 alma saxlayır
+- Daha 4 alma aldıqdan sonra: 2 + 4 = 6 alma
 
 Cavab: 6 alma
 ```
 
 ### Bir Neçə Nümunə CoT
 
-Daha ardıcıl nəticələr üçün, həll olunmuş nümunələr verərək modelə tam olaraq necə mühakimə etməsini istədiyinizi göstərin. Bu sizə mühakimə stili, formatı və detal səviyyəsi üzərində nəzarət təmin edir. Model göstərilən nümunəni təqlid edəcək.
+Daha ardıcıl nəticələr üçün, həll olunmuş nümunələr verərək modelə tam olaraq necə mühakimə etməsini istədiyinizi göstərin. Bu sizə mühakimə üslubu, formatı və təfərrüat səviyyəsi üzərində nəzarət verir. Model göstərdiyiniz nümunəni təqlid edəcək.
 
 <TryIt 
   compact
   title="Bir Neçə Nümunə CoT"
   prompt={`Nümunə 1:
-S: Bir şirniyyatçının 24 peçenyesi var. Bunları bərabər şəkildə 4 qutuya qoyur. Sonra bir qutudan 2 peçenye yeyir. Toplamda neçə peçenye qalır?
+S: Qənnadıçının 24 keksi var. O, keksləri 4 qutuya bərabər bölür. Sonra bir qutudan 2 keks yeyir. Cəmi neçə keks qalır?
 
 C: Bunu addım-addım həll edək:
-- Toplam peçenye: 24
-- Qutu başına peçenye: 24 ÷ 4 = 6
-- Bir qutudan 2 yedikdən sonra: 6 - 2 = 4 peçenye o qutuda
-- Qalan toplam: (3 qutu × 6) + 4 = 18 + 4 = 22 peçenye
+- Cəmi keks: 24
+- Hər qutuda keks: 24 ÷ 4 = 6
+- Bir qutudan 2 keks yedikdən sonra: həmin qutuda 6 - 2 = 4 keks
+- Qalan cəmi: (3 qutu × 6) + 4 = 18 + 4 = 22 keks
 
 Nümunə 2:
-S: Bir qatar 2 saat boyunca saatda 60 km sürətlə, sonra 3 saat boyunca saatda 40 km sürətlə gedir. Orta sürəti nədir?
+S: Qatar 2 saat ərzində saatda 60 km sürətlə, sonra 3 saat ərzində saatda 40 km sürətlə gedir. Onun orta sürəti nə qədərdir?
 
 C: Bunu addım-addım həll edək:
-- 60 km/saat ilə məsafə: 60 × 2 = 120 km
-- 40 km/saat ilə məsafə: 40 × 3 = 120 km
-- Toplam məsafə: 120 + 120 = 240 km
-- Toplam müddət: 2 + 3 = 5 saat
+- 60 km/saat sürətlə gedilən məsafə: 60 × 2 = 120 km
+- 40 km/saat sürətlə gedilən məsafə: 40 × 3 = 120 km
+- Ümumi məsafə: 120 + 120 = 240 km
+- Ümumi vaxt: 2 + 3 = 5 saat
 - Orta sürət: 240 ÷ 5 = 48 km/saat
 
 İndi həll et:
@@ -104,157 +106,163 @@ S: Bir mağaza dəftərləri ədədi 3 AZN-ə satır. 10 və ya daha çox alsan�
 **Nümunə Çıxış:**
 ```
 C: Bunu addım-addım həll edək:
-- Normal qiymət: 3 AZN, Miqdar: 12
+- Adi qiymət: 3 AZN, Say: 12
 - 12 ≥ 10 olduğundan 25% endirim tətbiq olunur
-- Normal toplam: 12 × 3 AZN = 36 AZN
+- Adi qiymətlə cəmi: 12 × 3 AZN = 36 AZN
 - Endirim: 36 AZN-in 25%-i = 9 AZN
 - Son qiymət: 36 AZN - 9 AZN = 27 AZN
 ```
 
 ## Strukturlaşdırılmış CoT Formatları
 
-Ardıcıl, təkrarlana bilən mühakimə üçün adlandırılmış addımlarla strukturlaşdırılmış formatlar istifadə edin. Bu çərçivələr modelin vacib mərhələləri atlamamasını təmin edir və çıxışları təhlil etməyi və doğrulamağı asanlaşdırır.
+Ardıcıl, təkrarlana bilən mühakimə üçün adlandırılmış addımları olan strukturlaşdırılmış formatlardan istifadə edin. Bu çərçivələr modelin vacib mərhələləri ötürməməsini təmin edir, çıxışları isə təhlil etməyi və yoxlamağı asanlaşdırır.
 
 ### BREAK Formatı
 
-Modeli anlama-dan doğrulama-ya tam bir problem həll döngüsündən keçirən yadda qalan bir qısaltma.
+Modeli problemi başa düşməkdən yoxlamaya qədər tam həll dövründən keçirən, yadda asan qalan bir abreviatura.
 
 <BREAKFramework />
 
 ### Mühakimə Şablonu
 
-Girişləri, hədəfləri və icralarını ayıran daha rəsmi bir struktur. Həll prosesinin aydın sənədləşdirilməsinə ehtiyac duyduğunuz texniki problemlər üçün mükəmməl.
+Giriş məlumatlarını, məqsədi və icranı bir-birindən ayıran daha rəsmi struktur. Həll prosesinin aydın sənədləşdirilməsi lazım olan texniki problemlər üçün əla seçimdir.
 
 <TryIt 
   compact
   title="Mühakimə Şablonu"
   prompt={`Problemi həll etmək üçün bu şablondan istifadə et:
 
-VERİLƏNLƏR: [Məlum məlumatları siyahıla]
-HƏDƏF: [Nəyi tapmamız lazımdır]
+VERİLƏNLƏR: [Məlum məlumatları sadala]
+HƏDƏF: [Nəyi tapmalıyıq]
 YANAŞMA: [İstifadə edəcəyimiz strategiya]
 ADDIMLAR:
-  1. [Mühakimə ilə birinci addım]
-  2. [Mühakimə ilə ikinci addım]
+  1. [Birinci addım və əsaslandırması]
+  2. [İkinci addım və əsaslandırması]
   ...
-DOĞRULAMA: [Cavabı yoxla]
+YOXLAMA: [Cavabı yoxla]
 CAVAB: [Son cavab]
 
-Problem: Bir avtomobil 100 km-də 8 litr yanacaq sərf edir. Çən 45 litr tutumundadırsa və yanacaq litri 35 AZN-dirsə, 300 km sürmək neçəyə başa gəlir?`}
+Problem: Avtomobil 100 km-ə 8 litr yanacaq sərf edir. Çənin tutumu 45 litrdirsə və yanacağın litri 1,50 AZN-dirsə, 300 km yol getmək neçəyə başa gəlir?`}
 />
 
 **Nümunə Çıxış:**
 ```
-VERİLƏNLƏR: 8L/100km, çən 45L, 35 AZN/L, 300km sürmək
-HƏDƏF: Yanacaq xərcini hesabla
-YANAŞMA: Lazım olan yanacaq × litr başına xərc
+VERİLƏNLƏR: 8L/100km, çən 45L, 1,50 AZN/L, 300km yol
+HƏDƏF: Yanacaq xərcini hesablamaq
+YANAŞMA: Lazım olan yanacaq × bir litrin qiyməti
 ADDIMLAR:
 1. Yanacaq = (300 ÷ 100) × 8 = 24 litr
-2. Xərc = 24 × 35 AZN = 840 AZN
-DOĞRULAMA: 24L < 45L çən ✓
-CAVAB: 840 AZN
+2. Xərc = 24 × 1,50 AZN = 36 AZN
+YOXLAMA: 24L < 45L çən ✓
+CAVAB: 36 AZN
 ```
 
 ## Fərqli Problem Növləri üçün CoT
 
-Fərqli problem növləri fərqli CoT yanaşmalarından faydalanır. Budur ümumi ssenarilər üçün optimallaşdırılmış nümunələr.
+Fərqli problem növləri üçün fərqli CoT yanaşmaları daha yaxşı işləyir. Aşağıda geniş yayılmış ssenarilər üçün uyğunlaşdırılmış nümunələr var.
 
 ### Riyazi Mühakimə
 
-Riyaziyyat problemləri CoT-dan ən çox faydalanır çünki hər addım əvvəlkinin üzərində qurulur. Səhvlər artır, buna görə işi göstərmək səhvləri erkən tutmağa kömək edir. Model hər hesablamanı aydın şəkildə etiketləməlidir.
+Riyaziyyat problemləri CoT-dan ən çox faydalanır, çünki hər addım əvvəlkinin üzərində qurulur. Səhvlər bir-birinin üstünə yığılır, buna görə işi göstərmək səhvləri erkən tutmağa kömək edir. Model hər hesablamanı aydın şəkildə işarələməlidir.
 
 <TryIt 
   compact
   title="CoT ilə Riyaziyyat"
-  prompt={`Bir şirkətin 1-ci rübdə gəliri 1,2 milyon AZN idi. 2-ci rübdə 15% böyüdü, 3-cü rübdə 10% düşdü və 4-cü rübdə 25% böyüdü. Toplam illik gəlir nə qədər idi?
+  prompt={`Şirkətin 1-ci rübdə gəliri 1,2 milyon AZN idi. 2-ci rübdə gəlir 15% artdı, 3-cü rübdə 10% azaldı, 4-cü rübdə isə 25% artdı. İllik ümumi gəlir nə qədər oldu?
 
-Hər rübü düşün, hesablamalarını aydın şəkildə göstər.`}
+Hər rübü ayrıca düşün, hesablamalarını aydın şəkildə göstər.`}
 />
 
 **Nümunə Çıxış:**
 ```
-R1: 1.200.000 AZN (verilmiş)
+R1: 1.200.000 AZN (verilib)
 R2: 1.200.000 AZN × 1,15 = 1.380.000 AZN
 R3: 1.380.000 AZN × 0,90 = 1.242.000 AZN
 R4: 1.242.000 AZN × 1,25 = 1.552.500 AZN
 
-Toplam: 5.374.500 AZN
+Cəmi: 5.374.500 AZN
 ```
 
 ### Məntiqi Mühakimə
 
-Məntiq tapmacaları sistematik aradan qaldırma və hipotez testi tələb edir. CoT modelin məhdudiyyətləri izləməsinə, ehtimalları test etməsinə və bütün şərtlərin yerinə yetirildiyini doğrulamasına kömək edir. Açar, təxmin etmək əvəzinə metodik kəşfdir.
+Məntiq tapmacaları variantların sistemli şəkildə aradan qaldırılmasını və fərziyyələrin yoxlanmasını tələb edir. CoT modelə məhdudiyyətləri izləməyə, ehtimalları sınamağa və bütün şərtlərin ödəndiyini yoxlamağa kömək edir. Əsas məsələ təxmin etmək deyil, metodik araşdırmadır.
 
 <TryIt 
   compact
   title="Məntiq Tapmacası"
-  prompt={`Üç dost—Aynur, Əli və Cəmilə—hər birinin fərqli ev heyvanları (pişik, it, balıq) və fərqli peşələri (müəllim, mühəndis, həkim) var.
+  prompt={`Üç dostun, Aynurun, Əlinin və Cəmilənin, hər birinin fərqli ev heyvanı (pişik, it, balıq) və fərqli peşəsi (müəllim, mühəndis, həkim) var.
 
-İpuçları:
+Şərtlər:
 1. Aynurun pişiyi yoxdur
 2. Mühəndisin iti var
 3. Əli müəllimdir
 4. Cəmilənin balığı yoxdur
+5. Həkimin pişiyi yoxdur
 
-Kimin hansı ev heyvanı və peşəsi var? Bunu sistematik şəkildə düşün, hipotezləri test et və bütün ipuçlarına qarşı doğrula.`}
+Kimin hansı ev heyvanı və peşəsi var? Sistemli şəkildə düşün, fərziyyələri sına və hər birini bütün şərtlərlə tutuşdur.`}
 />
 
 **Nümunə Çıxış:**
 ```
-İpucu 3-dən: Əli = müəllim
-→ Aynur və Cəmilə mühəndis/həkim
+3-cü şərtdən: Əli = müəllim
+→ Aynur və Cəmilə mühəndis/həkimdir
 
-Əgər Cəmilə = mühəndis isə:
-- Cəmilənin iti var (ipucu 2)
-- Aynur = həkim, balığı var (ipucu 1)
+Fərziyyə A: Aynur = mühəndis
+- Aynurun iti var (şərt 2), Cəmilə = həkim
+- Cəmilənin balığı ola bilməz (şərt 4), deməli, Cəmilənin pişiyi var
+- Amma həkimin pişiyi ola bilməz (şərt 5) ✗
+
+Fərziyyə B: Cəmilə = mühəndis
+- Cəmilənin iti var (şərt 2), Aynur = həkim
+- Aynurun pişiyi ola bilməz (şərt 1), deməli, Aynurun balığı var
 - Əlinin pişiyi var
 
-Doğrula: 4 ipucu da yerinə yetirildi ✓
+Yoxlama: 5 şərtin hamısı ödənir ✓
 Cavab: Aynur (həkim, balıq), Əli (müəllim, pişik), Cəmilə (mühəndis, it)
 ```
 
-### Kod Xəta Axtarışı
+### Kodda Xəta Axtarışı
 
-Xəta axtarışı CoT-dan faydalanır çünki modeli xəta təxmin etmək əvəzinə icraya izləməyə məcbur edir. Kodu konkret dəyərlərlə addım-addım keçərək, həqiqi davranış görünür olur və gözlənilən davranışla uyğunsuzluqlar ortaya çıxır.
+Xəta axtarışı CoT-dan faydalanır, çünki bu, modeli xətanı təxmin etmək əvəzinə icranı izləməyə məcbur edir. Kodu konkret dəyərlərlə addım-addım keçdikdə, onun həqiqi davranışı görünür və gözlənilən davranışdan fərqlər üzə çıxır.
 
 <TryIt 
   compact
   title="CoT ilə Xəta Axtarışı"
-  prompt={`Bu funksiya siyahıdakı cüt ədədlərin cəmini qaytarmalıdır amma yanlış dəyərlər qaytarır. [2, 3, 4, 6] girişi ilə addım-addım izləyərək xəta tap:
+  prompt={`Bu funksiya siyahıdakı cüt ədədlərin cəmini qaytarmalıdır, amma yanlış dəyərlər qaytarır. [2, 3, 4, 6] girişi ilə icranı addım-addım izləyərək xətanı tap:
 
-def cut_toplam(saylar):
-    toplam = 0
-    for n in saylar:
+def sum_evens(numbers):
+    total = 0
+    for n in numbers:
         if n % 2 == 0:
-            toplam += 1
-    return toplam
+            total += 1
+    return total
 
-Hər addımı izlə, xətanı tap və düzəlişi təmin et.`}
+Hər addımı izlə, xətanı tap və düzəlişi təklif et.`}
 />
 
 **Nümunə Çıxış:**
 ```
-[2, 3, 4, 6] izlə:
-n=2: toplam += 1 → 1 (dayan, n deyil 1 əlavə edilir!)
-n=3: atla (tək)
-n=4: toplam = 2
-n=6: toplam = 3
+[2, 3, 4, 6] üzrə izləmə:
+n=2: total += 1 → 1 (dayan, n yox, 1 əlavə olunur!)
+n=3: ötür (tək)
+n=4: total = 2
+n=6: total = 3
 
-XƏTA: "toplam += 1" əvəzinə "toplam += n" olmalıdır
-Gözlənilən: 12, Gələn: 3
-Düzəliş: "toplam += n" olaraq dəyişdir
+XƏTA: "total += 1" əvəzinə "total += n" olmalıdır
+Gözlənilən: 12, Alınan: 3
+Düzəliş: "total += n" olaraq dəyişdir
 ```
 
 ## CoT ilə Öz-Ardıcıllıq
 
-Kritik problemlər üçün tək bir mühakimə yoluna güvənməyin. Bir neçə müstəqil həll istehsal edin və nəticələri müqayisə edin. Fərqli yanaşmalar eyni cavaba gəlsə, əminlik yüksəkdir. Uyğunsuzluq diqqətli nəzərdən keçirmə ehtiyacını göstərir.
+Kritik problemlərdə tək bir mühakimə yoluna güvənməyin. Bir neçə müstəqil həll əldə edin və nəticələri müqayisə edin. Fərqli yanaşmalar eyni cavaba gəlirsə, əminlik yüksəkdir. Fikir ayrılığı isə diqqətli yoxlamanın lazım olduğunu göstərir.
 
 <TryIt 
   compact
   title="Öz-Ardıcıllıq"
   prompt={`Bu problemi 3 fərqli yolla həll et, sonra hansı həllin ən düzgün göründüyünə əsaslanaraq son cavabını ver:
 
-Problem: Bir fermerın toyuqları və inəkləri var. Toplamda 30 baş və 74 ayaq var. Fermerin neçə toyuğu və neçə inəyi var?
+Problem: Fermerin toyuqları və inəkləri var. Onların cəmi 30 başı və 74 ayağı var. Fermerin neçə toyuğu və neçə inəyi var?
 
 Yanaşma 1: Cəbr
 Yanaşma 2: Sınaq-səhv
@@ -266,47 +274,64 @@ Sonra müqayisə et və son cavabını ver.`}
 **Nümunə Çıxış:**
 ```
 Yanaşma 1 (Cəbr): t + i = 30, 2t + 4i = 74 → t=23, i=7
-Yanaşma 2 (Sınaq): 23/7 sına → 46 + 28 = 74 ✓
-Yanaşma 3 (Məntiq): 30 toyuq = 60 ayaq, 14 dənə daha lazım → 7 inək
+Yanaşma 2 (Sınaq): 23/7 yoxla → 46 + 28 = 74 ✓
+Yanaşma 3 (Məntiq): 30 toyuq = 60 ayaq, daha 14 ayaq lazımdır → 7 inək
 
-Hamısı eyni: 23 toyuq, 7 inək
+Hamısı eyni nəticəyə gəlir: 23 toyuq, 7 inək
 ```
+
+İlkin tədqiqat formasında öz-ardıcıllıq bir addım da irəli gedir: eyni promptu bir neçə dəfə ayrı-ayrı sorğular kimi göndərir və ən çox təkrarlanan cavabı saxlayırsınız. Yuxarıdakı kimi bir cavab daxilində bir neçə yanaşma istəmək eyni ideyanın yüngül variantıdır. Bu, daha ucuz başa gəlir, amma cəhdlər həqiqətən müstəqil deyil, çünki hər biri digərlərini görür.
 
 ## Qərar Vermə üçün CoT
 
-Qərarlar bir neçə ölçüdə güzəştləri ölçməyi əhatə edir. CoT bütün əlaqəli faktorların nəticələrə atlamaq əvəzinə sistematik şəkildə qiymətləndirilməsini təmin edir. Bu strukturlaşdırılmış yanaşma həmçinin gələcək istinad üçün mühakiməni sənədləşdirir.
+Qərar vermək bir neçə ölçü üzrə güzəştləri ölçüb-biçməyi tələb edir. CoT tələsik nəticə çıxarmaq əvəzinə bütün əlaqəli amillərin sistemli şəkildə nəzərə alınmasını təmin edir. Bu strukturlaşdırılmış yanaşma həm də mühakiməni qeydə alır ki, gələcəkdə ona qayıtmaq mümkün olsun.
 
 <TryIt 
   compact
   title="Qərar Analizi"
-  prompt={`Tətbiqimiz üçün mikroservis arxitekturasını qəbul etməliyikmi?
+  prompt={`Tətbiqimiz üçün mikroservis arxitekturasına keçməliyikmi?
 
 Kontekst:
 - 50.000 sətir kodlu monolit tətbiq
 - 5 nəfərlik tərtibatçı komanda
 - 100 gündəlik aktiv istifadəçi
-- 2 ildə 10 dəfə böyümə planlanır
+- 2 ildə 10 dəfə böyümə planlaşdırılır
 
-Bunu sistematik şəkildə düşün:
-1. Cari vəziyyəti siyahıla
-2. Qiymətləndiriləcək faktorları müəyyən et (komanda ölçüsü, miqyas, sürət, gələcək böyümə)
-3. Hər faktoru lehində/əleyhinə olaraq çək
-4. Mühakimə ilə tövsiyə ver`}
+Bunu sistemli şəkildə düşün:
+1. Cari vəziyyəti sadala
+2. Nəzərə alınacaq amilləri müəyyən et (komanda ölçüsü, miqyas, inkişaf sürəti, gələcək böyümə)
+3. Hər amili lehinə/əleyhinə olaraq qiymətləndir
+4. Əsaslandırılmış tövsiyə ver`}
 />
 
 **Nümunə Çıxış:**
 ```
-FAKTORLAR:
+AMİLLƏR:
 - Komanda ölçüsü (5): Mikroservislər üçün çox kiçik ❌
-- Miqyas (100 DAU): Miqyaslama ehtiyacı yox ❌  
+- Miqyas (100 DAU): Miqyaslamaya ehtiyac yoxdur ❌  
 - Sürət: Monolit = daha sürətli iterasiya ❌
-- Gələcək böyümə: Qeyri-müəyyən zaman cədvəli ⚠️
+- Gələcək böyümə: Vaxt çərçivəsi qeyri-müəyyəndir ⚠️
 
-ÇƏKMƏ: 3 güclü əleyhinə, 1 zəif lehində
+QİYMƏTLƏNDİRMƏ: 3 güclü əleyhinə, 1 zəif lehinə
 
-TÖVSİYƏ: Monolit olaraq qal, gələcək keçidi 
-asanlaşdırmaq üçün aydın modul sərhədləri istifadə et.
+TÖVSİYƏ: Monolitdə qal, gələcək keçidi 
+asanlaşdırmaq üçün aydın modul sərhədlərindən istifadə et.
 ```
+
+## Mühakimə Modelləri: Daxili CoT
+
+Düşüncə zənciri prompting fəndi kimi başladı, lakin o vaxtdan bəri modellərin özünün içinə köçüb. Bu gün bir çox model cavab verməzdən əvvəl mühakimə yürütmək üçün öyrədilir: OpenAI-ın mühakimə modelləri, düşünmə rejimi açıq olan Anthropic-in Claude modeli, Google-un Gemini modeli və DeepSeek-R1 kimi açıq çəkili modellər problemi əvvəlcə öz içində işləyib hazırlayır, sonra cavab verir. Adətən siz yalnız cavabı və ya düşüncənin qısa xülasəsini görürsünüz, mühakimə tokenləri isə yenə də istifadənizə daxil edilir.
+
+Bu, fəsli köhnəltmir, amma onu necə tətbiq etdiyinizi dəyişir:
+
+- **Sehrli ifadədən imtina edin.** OpenAI-ın tövsiyələrində deyilir ki, onun mühakimə modellərinə "addım-addım düşün" demək lazım deyil, hətta bəzən zərər də verə bilər. Anthropic qeyd edir ki, "hərtərəfli düşün" kimi ümumi göstəriş çox vaxt əllə yazılmış addım-addım plandan daha yaxşı işləyir, çünki modelin öz mühakiməsi çox zaman həmin plandan daha uzağa gedir.
+- **Marşrutu yox, məqsədi təsvir edin.** Sözlərinizi problemə, məhdudiyyətlərə və yaxşı cavabın necə görünməli olduğuna sərf edin, yolu isə modelin özünə tapmağa buraxın.
+- **Daha çox yazmaq əvəzinə tənzimləyicini çevirin.** Bu API-lər mühakimə səyi (reasoning effort) və ya düşünmə səviyyəsi kimi parametrlər təklif edir. Daha dərin mühakimə əldə etmək üçün bu parametrləri artırmaq, adətən, promptda daha uzun izahat istəməkdən daha yaxşı yoldur.
+- **İşi görmək lazım olanda strukturu saxlayın.** BREAK və ya VERİLƏNLƏR/HƏDƏF/ADDIMLAR kimi şablonlar oxuya, yoxlaya və ya proqramla təhlil edə biləcəyiniz mühakimə istədikdə, həmçinin özbaşına düşünməyən modellərlə işləyərkən hələ də öz yerini doğruldur. Bəzi şirkətlər artıq həmişə düşünən modellərindən mühakiməni yazılı şəkildə açmağı istəməyi tövsiyə etmir, ona görə istifadə etdiyiniz modelin tövsiyələrini yoxlayın.
+
+<Callout type="warning" title="Göstərilən Mühakimə Pəncərə Deyil">
+Modelin yazıb göstərdiyi mühakimənin və ya nümayiş etdirdiyi düşüncə xülasəsinin cavabı həqiqətən yaradan prosesin özü olduğuna zəmanət yoxdur. Anthropic-in apardığı tədqiqat göstərib ki, mühakimə modelləri çox vaxt onlara təsir edən amilləri qeyd etmir. Görünən addımlara sübut kimi yox, yoxlanılmalı bir şey kimi yanaşın.
+</Callout>
 
 ## CoT Nə Vaxt İstifadə Edilməlidir
 
@@ -314,50 +339,50 @@ asanlaşdırmaq üçün aydın modul sərhədləri istifadə et.
   <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
     <p className="text-sm font-semibold text-green-700 dark:text-green-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconCheck className="h-4 w-4" /> CoT İstifadə Et</p>
     <div className="text-sm p-4 pt-2 space-y-1">
-      <p className="m-0!">**Riyaziyyat problemləri** — Hesablama səhvlərini azaldır</p>
-      <p className="m-0!">**Məntiq tapmacaları** — Atlanan addımları önləyir</p>
-      <p className="m-0!">**Mürəkkəb analiz** — Düşüncəni təşkil edir</p>
-      <p className="m-0!">**Kod xəta axtarışı** — İcranı izləyir</p>
-      <p className="m-0!">**Qərar vermə** — Güzəştləri çəkir</p>
+      <p className="m-0!">**Riyaziyyat problemləri**: Hesablama səhvlərini azaldır</p>
+      <p className="m-0!">**Məntiq tapmacaları**: Addımların ötürülməsinin qarşısını alır</p>
+      <p className="m-0!">**Mürəkkəb analiz**: Düşüncəni təşkil edir</p>
+      <p className="m-0!">**Kodda xəta axtarışı**: İcranı izləyir</p>
+      <p className="m-0!">**Qərar vermə**: Güzəştləri ölçüb-biçir</p>
     </div>
   </div>
   <div className="border rounded-lg bg-red-50/50 dark:bg-red-950/20 border-red-200 dark:border-red-900">
-    <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> CoT Atla</p>
+    <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> CoT Lazım Deyil</p>
     <div className="text-sm p-4 pt-2 space-y-1">
-      <p className="m-0!">**Sadə S&C** — Lazımsız əlavə yük</p>
-      <p className="m-0!">**Yaradıcı yazı** — Yaradıcılığı məhdudlaşdıra bilər</p>
-      <p className="m-0!">**Fakt axtarışları** — Mühakimə tələb olunmur</p>
-      <p className="m-0!">**Tərcümə** — Birbaşa tapşırıq</p>
-      <p className="m-0!">**Xülasələmə** — Adətən sadədir</p>
+      <p className="m-0!">**Sadə sual-cavab**: Lazımsız əlavə yük</p>
+      <p className="m-0!">**Yaradıcı yazı**: Yaradıcılığı məhdudlaşdıra bilər</p>
+      <p className="m-0!">**Fakt axtarışı**: Mühakimə tələb olunmur</p>
+      <p className="m-0!">**Tərcümə**: Birbaşa tapşırıq</p>
+      <p className="m-0!">**Xülasə çıxarma**: Adətən sadədir</p>
     </div>
   </div>
 </div>
 
 ## CoT Məhdudiyyətləri
 
-Güclü olsa da, Düşüncə Zənciri hər dərdin dərmanı deyil. Məhdudiyyətlərini anlamaq onu uyğun şəkildə tətbiq etməyinizə kömək edir.
+Güclü olsa da, Düşüncə Zənciri hər dərdin dərmanı deyil. Məhdudiyyətlərini anlamaq onu yerində tətbiq etməyinizə kömək edir.
 
-1. **Artan token istifadəsi** — Daha çox çıxış daha yüksək xərc deməkdir
-2. **Həmişə lazım deyil** — Sadə tapşırıqlar faydalanmır
-3. **Uzun ola bilər** — Qısalıq istəməyiniz lazım ola bilər
-4. **Mühakimə səhv ola bilər** — CoT dəqiqliyi zəmanət etmir
+1. **Artan token istifadəsi**: Daha çox çıxış daha yüksək xərc deməkdir
+2. **Həmişə lazım deyil**: Sadə tapşırıqlar faydalanmır
+3. **Uzun ola bilər**: Qısalıq istəməyiniz lazım ola bilər
+4. **Mühakimə səhv ola bilər**: CoT düzgünlüyə zəmanət vermir
 
 ## Xülasə
 
 <Callout type="tip" title="Əsas Çıxarışlar">
-CoT, gizli addımları açıq edərək mürəkkəb mühakiməni dramatik şəkildə yaxşılaşdırır. Riyaziyyat, məntiq, analiz və xəta axtarışı üçün istifadə edin. Güzəşt: daha çox token üçün daha yaxşı dəqiqlik.
+CoT gizli addımları üzə çıxararaq mürəkkəb mühakiməni xeyli yaxşılaşdırır. Ondan riyaziyyat, məntiq, analiz və xəta axtarışı üçün istifadə edin. Güzəşt: daha çox token hesabına daha yüksək dəqiqlik. Cavab verməzdən əvvəl onsuz da düşünən mühakimə modelləri ilə isə promptu məqsəd üzərində cəmləyin və bunun əvəzinə mühakimə parametrlərini tənzimləyin.
 </Callout>
 
 <Quiz 
-  question="Düşüncə Zənciri prompting-i nə vaxt İSTİFADƏ ETMƏMƏLİSİNİZ?"
+  question="Düşüncə Zənciri prompting-dən nə vaxt İSTİFADƏ ETMƏMƏLİSİNİZ?"
   options={[
     "Bir neçə addım tələb edən riyaziyyat problemləri",
     "'Fransanın paytaxtı haradır?' kimi sadə faktiki suallar",
-    "Mürəkkəb məntiqli kod xəta axtarışı",
-    "Bir iş qərarını analiz etmə"
+    "Mürəkkəb məntiqli kodda xəta axtarışı",
+    "Biznes qərarının təhlili"
   ]}
   correctIndex={1}
-  explanation="Düşüncə Zənciri sadə S&C üçün lazımsız əlavə yük əlavə edir. İşi göstərməyin dəqiqliyi artırdığı riyaziyyat, məntiq tapmacaları, kod xəta axtarışı və analiz kimi mürəkkəb mühakimə tapşırıqları üçün ən yaxşıdır."
+  explanation="Düşüncə Zənciri sadə sual-cavab üçün lazımsız əlavə yük yaradır. Ondan ən yaxşı şəkildə, işi göstərməyin dəqiqliyi artırdığı riyaziyyat, məntiq tapmacaları, kodda xəta axtarışı və analiz kimi mürəkkəb mühakimə tapşırıqlarında istifadə etmək olar."
 />
 
 Növbəti fəsildə, az nümunəli öyrənməni—modelə nümunələrlə öyrətməyi—kəşf edəcəyik.

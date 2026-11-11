@@ -1,12 +1,12 @@
-Chain of Thought (CoT) Prompting ist eine Technik, die die KI-Leistung bei komplexen Denkaufgaben dramatisch verbessert, indem das Modell gebeten wird, seine Arbeit Schritt für Schritt zu zeigen.
+Chain-of-Thought-Prompting (CoT) ist eine Technik, die die KI-Leistung bei komplexen Denkaufgaben dramatisch verbessert, indem das Modell gebeten wird, seinen Lösungsweg Schritt für Schritt offenzulegen.
 
-<Callout type="info" title="Zeige deine Arbeit">
-Genau wie ein Mathelehrer, der Schüler bittet, ihre Arbeit zu zeigen, bittet CoT-Prompting die KI, ihr Denken sichtbar zu machen.
+<Callout type="info" title="Zeig deinen Rechenweg">
+Genau wie ein Mathelehrer, der von seinen Schülern verlangt, den Rechenweg zu zeigen, bittet CoT-Prompting die KI, ihr Denken sichtbar zu machen.
 </Callout>
 
 ## Das Problem, das CoT löst
 
-KI-Modelle können mit mehrstufigem Denken kämpfen, wenn sie gebeten werden, direkt zur Antwort zu springen.
+KI-Modelle tun sich mit mehrstufigem Denken oft schwer, wenn sie direkt zur Antwort springen sollen.
 
 <Compare 
   before={{ label: "Direkte Antwort (oft falsch)", content: "Frage: Ein Geschäft verkauft Äpfel für 2€ pro Stück. Wenn du 5 oder mehr kaufst, bekommst du 20% Rabatt. Wie viel kosten 7 Äpfel?\n\nAntwort: 14€ ❌" }}
@@ -27,6 +27,8 @@ Füge eine davon zu deinen Prompts hinzu:
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Erkläre deinen Denkprozess."</div>
 </div>
 
+Diese Phrasen wirken vor allem bei gewöhnlichen Chat-Modellen. Reasoning-Modelle, die nachdenken, bevor sie antworten, brauchen sie weit weniger; darauf kommen wir später in diesem Kapitel zurück.
+
 ### Explizite Schrittanfrage
 
 <TryIt 
@@ -46,7 +48,7 @@ Bevor du deine endgültige Antwort gibst:
 
 ## Zero-Shot vs Few-Shot CoT
 
-Es gibt zwei Hauptansätze für Chain of Thought Prompting, jeder mit unterschiedlichen Kompromissen zwischen Einfachheit und Kontrolle.
+Es gibt zwei Hauptansätze für Chain-of-Thought-Prompting, jeder mit unterschiedlichen Kompromissen zwischen Einfachheit und Kontrolle.
 
 ### Zero-Shot CoT
 
@@ -73,7 +75,7 @@ Antwort: 6 Äpfel
 
 ### Few-Shot CoT
 
-Für konsistentere Ergebnisse zeige dem Modell genau, wie du willst, dass es denkt, indem du durchgearbeitete Beispiele lieferst. Das gibt dir Kontrolle über den Denkstil, das Format und das Detailniveau. Das Modell wird dein demonstriertes Muster nachahmen.
+Für konsistentere Ergebnisse zeige dem Modell genau, wie es denken soll, indem du durchgearbeitete Beispiele lieferst. Das gibt dir Kontrolle über den Denkstil, das Format und das Detailniveau. Das Modell wird dein demonstriertes Muster nachahmen.
 
 <TryIt 
   compact
@@ -82,7 +84,7 @@ Für konsistentere Ergebnisse zeige dem Modell genau, wie du willst, dass es den
 F: Ein Bäcker hat 24 Cupcakes. Er verteilt sie gleichmäßig auf 4 Boxen. Dann isst er 2 Cupcakes aus einer Box. Wie viele Cupcakes bleiben insgesamt?
 
 A: Lass uns das durcharbeiten:
-- Gesamt Cupcakes: 24
+- Cupcakes insgesamt: 24
 - Cupcakes pro Box: 24 ÷ 4 = 6
 - Nach dem Essen von 2 aus einer Box: 6 - 2 = 4 Cupcakes in dieser Box
 - Gesamt verbleibend: (3 Boxen × 6) + 4 = 18 + 4 = 22 Cupcakes
@@ -97,7 +99,7 @@ A: Lass uns das durcharbeiten:
 - Gesamtzeit: 2 + 3 = 5 Stunden
 - Durchschnittsgeschwindigkeit: 240 ÷ 5 = 48 km/h
 
-Jetzt löse:
+Löse jetzt:
 F: Ein Geschäft verkauft Notizbücher für 3€ pro Stück. Wenn du 10 oder mehr kaufst, bekommst du 25% Rabatt. Wie viel kosten 12 Notizbücher?`}
 />
 
@@ -113,7 +115,7 @@ A: Lass uns das durcharbeiten:
 
 ## Strukturierte CoT-Formate
 
-Für konsistentes, reproduzierbares Denken verwende strukturierte Formate mit benannten Schritten. Diese Frameworks stellen sicher, dass das Modell keine wichtigen Stufen überspringt und machen Ausgaben einfacher zu parsen und verifizieren.
+Für konsistentes, reproduzierbares Denken verwende strukturierte Formate mit benannten Schritten. Diese Frameworks stellen sicher, dass das Modell keine wichtigen Stufen überspringt, und machen Ausgaben leichter zu parsen und zu überprüfen.
 
 ### Das BREAK-Format
 
@@ -161,14 +163,14 @@ Verschiedene Problemtypen profitieren von verschiedenen CoT-Ansätzen. Hier sind
 
 ### Mathematisches Denken
 
-Mathematische Probleme profitieren am meisten von CoT, weil jeder Schritt auf dem vorherigen aufbaut. Fehler potenzieren sich, also hilft das Zeigen der Arbeit, Fehler früh zu erkennen. Das Modell sollte jede Berechnung klar beschriften.
+Mathematische Probleme profitieren am meisten von CoT, weil jeder Schritt auf dem vorherigen aufbaut. Fehler pflanzen sich fort, deshalb hilft ein offengelegter Rechenweg, sie früh zu erkennen. Das Modell sollte jede Berechnung klar beschriften.
 
 <TryIt 
   compact
   title="Mathe mit CoT"
   prompt={`Der Umsatz eines Unternehmens betrug 1,2 Mio. € in Q1. Er wuchs um 15% in Q2, sank um 10% in Q3 und wuchs um 25% in Q4. Was war der gesamte Jahresumsatz?
 
-Denke durch jedes Quartal und zeige deine Berechnungen klar.`}
+Gehe jedes Quartal einzeln durch und zeige deine Berechnungen klar.`}
 />
 
 **Beispielausgabe:**
@@ -183,7 +185,7 @@ Gesamt: 5.374.500€
 
 ### Logisches Denken
 
-Logikrätsel erfordern systematische Elimination und Hypothesentests. CoT hilft dem Modell, Einschränkungen zu verfolgen, Möglichkeiten zu testen und zu verifizieren, dass alle Bedingungen erfüllt sind. Der Schlüssel ist methodische Erkundung statt Raten.
+Logikrätsel erfordern systematische Elimination und Hypothesentests. CoT hilft dem Modell, Bedingungen im Blick zu behalten, Möglichkeiten zu testen und zu verifizieren, dass alle Bedingungen erfüllt sind. Der Schlüssel ist methodische Erkundung statt Raten.
 
 <TryIt 
   compact
@@ -195,8 +197,9 @@ Hinweise:
 2. Der Ingenieur hat einen Hund
 3. Ben ist Lehrer
 4. Clara hat keinen Fisch
+5. Der Arzt hat keine Katze
 
-Wer hat welches Haustier und welchen Job? Denke systematisch durch, teste Hypothesen und verifiziere gegen alle Hinweise.`}
+Wer hat welches Haustier und welchen Job? Gehe systematisch vor, teste Hypothesen und prüfe sie gegen alle Hinweise.`}
 />
 
 **Beispielausgabe:**
@@ -204,18 +207,23 @@ Wer hat welches Haustier und welchen Job? Denke systematisch durch, teste Hypoth
 Aus Hinweis 3: Ben = Lehrer
 → Anna und Clara sind Ingenieur/Arzt
 
-Wenn Clara = Ingenieur:
-- Clara hat Hund (Hinweis 2)
-- Anna = Arzt, hat Fisch (Hinweis 1)
+Hypothese A: Anna = Ingenieur
+- Anna hat Hund (Hinweis 2), Clara = Arzt
+- Clara kann keinen Fisch haben (Hinweis 4), also hat Clara die Katze
+- Aber der Arzt hat keine Katze (Hinweis 5) ✗
+
+Hypothese B: Clara = Ingenieur
+- Clara hat Hund (Hinweis 2), Anna = Arzt
+- Anna kann keine Katze haben (Hinweis 1), also hat Anna den Fisch
 - Ben hat Katze
 
-Verifizieren: Alle 4 Hinweise erfüllt ✓
+Prüfen: Alle 5 Hinweise erfüllt ✓
 Antwort: Anna (Arzt, Fisch), Ben (Lehrer, Katze), Clara (Ingenieur, Hund)
 ```
 
 ### Code-Debugging
 
-Debugging profitiert von CoT, weil es das Modell zwingt, die Ausführung zu verfolgen, statt Bugs zu raten. Durch das Durchgehen des Codes mit konkreten Werten wird das tatsächliche Verhalten sichtbar und Diskrepanzen zum erwarteten Verhalten werden aufgedeckt.
+Debugging profitiert von CoT, weil es das Modell zwingt, die Ausführung nachzuvollziehen, statt bei Bugs zu raten. Durch das Durchgehen des Codes mit konkreten Werten wird das tatsächliche Verhalten sichtbar und Diskrepanzen zum erwarteten Verhalten werden aufgedeckt.
 
 <TryIt 
   compact
@@ -235,13 +243,13 @@ Verfolge jeden Schritt, finde den Bug und liefere den Fix.`}
 **Beispielausgabe:**
 ```
 Verfolge [2, 3, 4, 6]:
-n=2: total += 1 → 1 (Moment, addiert 1 nicht n!)
+n=2: total += 1 → 1 (Moment, addiert 1 statt n!)
 n=3: übersprungen (ungerade)
 n=4: total = 2
 n=6: total = 3
 
 BUG: "total += 1" sollte "total += n" sein
-Erwartet: 12, Bekommen: 3
+Erwartet: 12, Erhalten: 3
 Fix: Ändere zu "total += n"
 ```
 
@@ -252,7 +260,7 @@ Für kritische Probleme verlasse dich nicht auf einen einzelnen Denkpfad. Generi
 <TryIt 
   compact
   title="Selbstkonsistenz"
-  prompt={`Löse dieses Problem auf 3 verschiedene Arten, dann gib deine endgültige Antwort basierend darauf, welche Lösung am korrektesten erscheint:
+  prompt={`Löse dieses Problem auf 3 verschiedene Arten und gib dann deine endgültige Antwort, je nachdem, welche Lösung am ehesten korrekt erscheint:
 
 Problem: Ein Bauer hat Hühner und Kühe. Zusammen haben sie 30 Köpfe und 74 Beine. Wie viele Hühner und wie viele Kühe hat der Bauer?
 
@@ -272,14 +280,16 @@ Ansatz 3 (Logik): 30 Hühner = 60 Beine, brauche 14 mehr → 7 Kühe
 Alle stimmen überein: 23 Hühner, 7 Kühe
 ```
 
+In ihrer ursprünglichen Form aus der Forschung geht Selbstkonsistenz noch einen Schritt weiter: Du schickst denselben Prompt mehrmals als getrennte Anfragen und behältst die Antwort, die am häufigsten herauskommt. Mehrere Ansätze in einer einzigen Antwort anzufordern, wie oben, ist eine leichtere Variante derselben Idee. Sie ist günstiger, aber die Versuche sind nicht wirklich unabhängig, weil jeder die anderen sehen kann.
+
 ## CoT für Entscheidungsfindung
 
-Entscheidungen beinhalten das Abwägen von Kompromissen über mehrere Dimensionen. CoT stellt sicher, dass alle relevanten Faktoren systematisch berücksichtigt werden, statt zu voreiligen Schlüssen zu springen. Dieser strukturierte Ansatz dokumentiert auch die Begründung für zukünftige Referenz.
+Bei Entscheidungen müssen Vor- und Nachteile über mehrere Dimensionen hinweg abgewogen werden. CoT stellt sicher, dass alle relevanten Faktoren systematisch berücksichtigt werden, statt voreilige Schlüsse zu ziehen. Dieser strukturierte Ansatz hält außerdem die Begründung für später fest.
 
 <TryIt 
   compact
   title="Entscheidungsanalyse"
-  prompt={`Sollten wir Microservices-Architektur für unsere Anwendung einführen?
+  prompt={`Sollten wir eine Microservices-Architektur für unsere Anwendung einführen?
 
 Kontext:
 - Monolithische Anwendung mit 50.000 Zeilen Code
@@ -304,9 +314,24 @@ FAKTOREN:
 
 GEWICHTUNG: 3 stark dagegen, 1 schwach dafür
 
-EMPFEHLUNG: Beim Monolith bleiben, klare Modul-
-grenzen für einfachere zukünftige Transition nutzen.
+EMPFEHLUNG: Beim Monolithen bleiben, klare Modul-
+grenzen ziehen, um einen späteren Umstieg zu erleichtern.
 ```
+
+## Reasoning-Modelle: CoT eingebaut
+
+Chain of Thought begann als Prompting-Trick, ist inzwischen aber in die Modelle selbst gewandert. Viele aktuelle Modelle sind darauf trainiert, nachzudenken, bevor sie antworten: Die Reasoning-Modelle von OpenAI, Claude von Anthropic mit aktiviertem Denkmodus, Gemini von Google und Open-Weight-Modelle wie DeepSeek-R1 arbeiten ein Problem zunächst im Verborgenen durch und geben erst dann ihre Antwort. Meist siehst du nur die Antwort oder eine kurze Zusammenfassung der Überlegungen, die Reasoning Tokens werden aber trotzdem auf deine Nutzung angerechnet.
+
+Das macht dieses Kapitel nicht überflüssig, verändert aber, wie du es anwendest:
+
+- **Verzichte auf die Zauberformel.** Laut OpenAI ist es unnötig, die hauseigenen Reasoning-Modelle aufzufordern, „Schritt für Schritt zu denken“, und es kann manchmal sogar schaden. Anthropic merkt an, dass eine allgemeine Anweisung wie „denke gründlich nach“ oft besser funktioniert als ein von Hand geschriebener Schritt-für-Schritt-Plan, weil das Modell mit seinen eigenen Überlegungen häufig weiter kommt, als der Plan es vorsehen würde.
+- **Beschreibe das Ziel, nicht den Weg.** Verwende deine Worte auf das Problem, die Rahmenbedingungen und darauf, wie eine gute Antwort aussieht, und lass das Modell dann seinen eigenen Weg finden.
+- **Dreh am Regler, statt mehr zu schreiben.** Diese APIs bieten Einstellungen wie den Denkaufwand (*reasoning effort*) oder die Denkstufe (*thinking level*). Sie hochzusetzen führt meist besser zu gründlicheren Überlegungen, als im Prompt um längere Erklärungen zu bitten.
+- **Behalte die Struktur, wenn du den Lösungsweg sehen willst.** Vorlagen wie BREAK oder GEGEBEN/ZIEL/SCHRITTE haben weiterhin ihre Berechtigung, wenn du Überlegungen brauchst, die du lesen, prüfen oder parsen kannst, und bei Modellen, die nicht von sich aus nachdenken. Einige Anbieter raten inzwischen davon ab, ihre stets nachdenkenden Modelle ihre Überlegungen ausschreiben zu lassen. Sieh also nach, was der Anbieter für dein Modell empfiehlt.
+
+<Callout type="warning" title="Sichtbare Überlegungen sind kein Blick ins Innere">
+Überlegungen, die das Modell ausschreibt, oder eine angezeigte Zusammenfassung seines Nachdenkens geben nicht zwingend den Prozess wieder, der die Antwort tatsächlich hervorgebracht hat. Eine Studie von Anthropic ergab, dass Reasoning-Modelle Faktoren, die sie beeinflusst haben, oft unerwähnt lassen. Betrachte sichtbare Schritte als etwas, das du prüfen musst, nicht als Beweis.
+</Callout>
 
 ## Wann CoT verwenden
 
@@ -335,7 +360,7 @@ grenzen für einfachere zukünftige Transition nutzen.
 
 ## CoT-Einschränkungen
 
-Obwohl mächtig, ist Chain of Thought kein Allheilmittel. Das Verstehen seiner Einschränkungen hilft dir, es angemessen anzuwenden.
+So wirkungsvoll Chain of Thought auch ist, ein Allheilmittel ist es nicht. Wenn du seine Grenzen kennst, kannst du es gezielt einsetzen.
 
 1. **Erhöhte Token-Nutzung** — Mehr Ausgabe bedeutet höhere Kosten
 2. **Nicht immer nötig** — Einfache Aufgaben profitieren nicht
@@ -345,11 +370,11 @@ Obwohl mächtig, ist Chain of Thought kein Allheilmittel. Das Verstehen seiner E
 ## Zusammenfassung
 
 <Callout type="tip" title="Kernpunkte">
-CoT verbessert komplexes Denken dramatisch, indem es implizite Schritte explizit macht. Verwende es für Mathematik, Logik, Analyse und Debugging. Kompromiss: bessere Genauigkeit für mehr Tokens.
+CoT verbessert komplexes Denken dramatisch, indem es implizite Schritte explizit macht. Verwende es für Mathematik, Logik, Analyse und Debugging. Der Preis: mehr Genauigkeit für mehr Tokens. Bei Reasoning-Modellen, die ohnehin nachdenken, bevor sie antworten, richte den Prompt auf das Ziel aus und passe stattdessen die Reasoning-Einstellungen an.
 </Callout>
 
 <Quiz 
-  question="Wann solltest du Chain of Thought Prompting NICHT verwenden?"
+  question="Wann solltest du Chain-of-Thought-Prompting NICHT verwenden?"
   options={[
     "Mathematische Probleme, die mehrere Schritte erfordern",
     "Einfache Faktenfragen wie 'Was ist die Hauptstadt von Frankreich?'",
@@ -357,7 +382,7 @@ CoT verbessert komplexes Denken dramatisch, indem es implizite Schritte explizit
     "Analysieren einer Geschäftsentscheidung"
   ]}
   correctIndex={1}
-  explanation="Chain of Thought fügt bei einfachen Fragen unnötigen Overhead hinzu. Es ist am besten für komplexe Denkaufgaben wie Mathematik, Logikrätsel, Code-Debugging und Analysen reserviert, bei denen das Zeigen der Arbeit die Genauigkeit verbessert."
+  explanation="Chain of Thought fügt bei einfachen Fragen unnötigen Overhead hinzu. Es ist am besten für komplexe Denkaufgaben wie Mathematik, Logikrätsel, Code-Debugging und Analysen reserviert, bei denen ein offengelegter Lösungsweg die Genauigkeit verbessert."
 />
 
 Im nächsten Kapitel werden wir Few-Shot-Learning erkunden – das Lehren des Modells durch Beispiele.

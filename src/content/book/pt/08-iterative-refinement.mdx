@@ -1,4 +1,4 @@
-Engenharia de prompt raramente é um processo de uma tentativa só. Os melhores prompts emergem através de iteração—testar, observar e refinar até alcançar os resultados desejados.
+Engenharia de prompt raramente é um processo de uma tentativa só. Os melhores prompts surgem da iteração: testar, observar e refinar até alcançar os resultados desejados.
 
 <Callout type="info" title="Primeiro Rascunho, Não Final">
 Pense no seu primeiro prompt como um rascunho. Mesmo engenheiros de prompt experientes raramente acertam na primeira tentativa.
@@ -6,7 +6,7 @@ Pense no seu primeiro prompt como um rascunho. Mesmo engenheiros de prompt exper
 
 ## O Ciclo de Iteração
 
-Refinamento eficaz de prompt segue um ciclo previsível: escrever, testar, analisar e melhorar. Cada iteração te aproxima de um prompt que produz confiavelmente os resultados que você precisa.
+Refinamento eficaz de prompt segue um ciclo previsível: escrever, testar, analisar e melhorar. Cada iteração te aproxima de um prompt que produza de forma confiável os resultados de que você precisa.
 
 <IterativeRefinementDemo />
 
@@ -27,11 +27,11 @@ Um dos problemas mais comuns. Sem restrições explícitas, modelos tendem a ser
 
 ### Problema: Saída Muito Vaga
 
-Prompts vagos produzem saídas vagas. O modelo não consegue ler sua mente sobre o que "melhor" significa ou quais aspectos mais importam para você.
+Prompts vagos produzem saídas vagas. O modelo não consegue adivinhar o que você entende por "melhor" nem quais aspectos mais importam para você.
 
 <DiffView 
   before="Me dê dicas para apresentações melhores."
-  after={`Me dê 5 dicas específicas e acionáveis para melhorar apresentações técnicas para stakeholders não-técnicos. Para cada dica, inclua um exemplo concreto.`}
+  after={`Me dê 5 dicas específicas e práticas para melhorar apresentações técnicas para stakeholders sem formação técnica. Para cada dica, inclua um exemplo concreto.`}
   beforeLabel="Original"
   afterLabel="Refinado"
 />
@@ -42,18 +42,18 @@ Tom é subjetivo e varia por contexto. O que soa "profissional" para o modelo po
 
 <DiffView 
   before="Escreva um email de desculpas por perder um prazo."
-  after={`Escreva um email de desculpas profissional mas caloroso por perder um prazo de projeto. O tom deve ser responsável sem ser excessivamente apologético. Inclua um plano concreto para prevenir atrasos futuros.`}
+  after={`Escreva um email de desculpas profissional mas caloroso por perder um prazo de projeto. O tom deve assumir a responsabilidade sem se desculpar em excesso. Inclua um plano concreto para evitar atrasos futuros.`}
   beforeLabel="Original"
   afterLabel="Refinado"
 />
 
-### Problema: Faltando Informação Chave
+### Problema: Falta de Informação Essencial
 
-Requisições abertas obtêm respostas abertas. Se você precisa de tipos específicos de feedback, deve pedir explicitamente.
+Pedidos abertos geram respostas abertas. Se você precisa de tipos específicos de feedback, precisa pedi-los explicitamente.
 
 <DiffView 
   before="Revise este código."
-  after={`Revise este código Python para:
+  after={`Revise este código Python em busca de:
 1. Bugs e erros lógicos
 2. Problemas de performance
 3. Vulnerabilidades de segurança
@@ -68,11 +68,11 @@ Para cada problema encontrado, explique o problema e sugira uma correção.
 
 ### Problema: Formato Inconsistente
 
-Sem um template, o modelo vai estruturar cada resposta diferentemente, tornando comparação difícil e automação impossível.
+Sem um template, o modelo vai estruturar cada resposta de um jeito diferente, o que dificulta a comparação e impossibilita a automação.
 
 <DiffView 
   before="Analise estes três produtos."
-  after={`Analise estes três produtos usando este formato exato para cada:
+  after={`Analise estes três produtos usando este formato exato para cada um:
 
 ## [Nome do Produto]
 **Preço:** R$X
@@ -92,7 +92,7 @@ Mudanças aleatórias desperdiçam tempo. Uma abordagem sistemática ajuda a ide
 
 ### Passo 1: Diagnostique o Problema
 
-Antes de mudar qualquer coisa, identifique o que está realmente errado. Use esta tabela diagnóstica para mapear sintomas a soluções:
+Antes de mudar qualquer coisa, identifique o que está realmente errado. Use esta tabela de diagnóstico para relacionar sintomas e soluções:
 
 <div className="my-4 grid gap-2">
   <div className="grid grid-cols-3 gap-2 p-3 bg-muted/50 rounded-lg text-sm">
@@ -108,7 +108,7 @@ Antes de mudar qualquer coisa, identifique o que está realmente errado. Use est
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Muito curto</span>
     <span className="text-muted-foreground">Falta pedido de detalhe</span>
-    <span className="text-green-600 dark:text-green-400">Pedir elaboração</span>
+    <span className="text-green-600 dark:text-green-400">Pedir mais detalhes</span>
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Fora do tópico</span>
@@ -122,7 +122,7 @@ Antes de mudar qualquer coisa, identifique o que está realmente errado. Use est
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Tom errado</span>
-    <span className="text-muted-foreground">Público não claro</span>
+    <span className="text-muted-foreground">Público indefinido</span>
     <span className="text-green-600 dark:text-green-400">Especificar público/estilo</span>
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
@@ -145,7 +145,7 @@ Iteração 4: Refinar instruções de tom
 
 ### Passo 3: Documente O Que Funciona
 
-Conhecimento de engenharia de prompt é facilmente perdido. Mantenha um log do que você tentou e por quê. Isso economiza tempo quando você revisitar o prompt depois ou enfrentar desafios similares:
+Conhecimento de engenharia de prompt é facilmente perdido. Mantenha um registro do que você tentou e por quê. Isso economiza tempo quando você voltar ao prompt depois ou enfrentar desafios parecidos:
 
 ```markdown
 ## Prompt: Resposta de Email ao Cliente
@@ -169,7 +169,7 @@ Tom: Amigável, profissional, empático mas não servil."
 
 ## Exemplo Real de Iteração
 
-Vamos percorrer um ciclo completo de iteração para ver como cada refinamento constrói sobre o anterior. Note como cada versão aborda deficiências específicas da anterior.
+Vamos percorrer um ciclo completo de iteração para ver como cada refinamento parte do anterior. Note como cada versão aborda deficiências específicas da anterior.
 
 ### Tarefa: Gerar Nomes de Produto
 
@@ -181,13 +181,13 @@ Vamos percorrer um ciclo completo de iteração para ver como cada refinamento c
   },
   {
     label: "Versão 2",
-    content: `Gere nomes para um novo app de produtividade. O app usa IA para agendar automaticamente suas tarefas baseado em níveis de energia e disponibilidade no calendário.`,
+    content: `Gere nomes para um novo app de produtividade. O app usa IA para agendar automaticamente suas tarefas com base em níveis de energia e disponibilidade no calendário.`,
     note: "Contexto adicionado, ainda genérico"
   },
   {
     label: "Versão 3",
     content: `Gere 10 nomes únicos e memoráveis para um app de produtividade com estas características:
-- Usa IA para agendar tarefas baseado em níveis de energia
+- Usa IA para agendar tarefas com base em níveis de energia
 - Público-alvo: profissionais ocupados de 25-40 anos
 - Tom da marca: moderno, inteligente, levemente divertido
 - Evitar: palavras genéricas como "pro", "smart", "AI", "task"
@@ -200,18 +200,18 @@ Para cada nome, explique por que funciona.`,
     content: `Gere 10 nomes únicos e memoráveis para um app de produtividade.
 
 Contexto:
-- Usa IA para agendar tarefas baseado em níveis de energia
+- Usa IA para agendar tarefas com base em níveis de energia
 - Alvo: profissionais ocupados, 25-40
 - Tom: moderno, inteligente, levemente divertido
 
 Requisitos:
 - 2-3 sílabas no máximo
 - Fácil de soletrar e pronunciar
-- Disponível como domínio .com (verifique se plausível)
+- Disponível como domínio .com (verifique se é plausível)
 - Evitar: palavras genéricas (pro, smart, AI, task, flow)
 
 Formato:
-Nome | Pronúncia | Por Que Funciona | Disponibilidade de Domínio`,
+Nome | Pronúncia | Por Que Funciona | Palpite sobre Disponibilidade do Domínio`,
     note: "Formato estruturado, requisitos específicos"
   }
 ]} />
@@ -226,7 +226,7 @@ Geração de conteúdo frequentemente produz saída genérica, fora do alvo ou m
 
 <InfoGrid items={[
   { icon: "target", title: "Muito Genérico", description: "Adicionar restrições e contexto específicos", example: "\"Escreva sobre cães\" → \"Escreva sobre golden retrievers para donos de primeira viagem, focando em treinamento e necessidades de exercício\"" },
-  { icon: "scissors", title: "Muito Longo", description: "Definir limites de palavras/parágrafos", example: "Adicionar: \"Mantenha resposta abaixo de 150 palavras\" ou \"Máximo 3 parágrafos\"" },
+  { icon: "scissors", title: "Muito Longo", description: "Definir limites de palavras/parágrafos", example: "Adicionar: \"Mantenha a resposta com menos de 150 palavras\" ou \"Máximo 3 parágrafos\"" },
   { icon: "palette", title: "Estilo Errado", description: "Fornecer exemplos de estilo", example: "\"Escreva no estilo deste exemplo: [cole texto de amostra]\"" },
   { icon: "megaphone", title: "Fora da Marca", description: "Incluir diretrizes de voz da marca", example: "\"Use tom amigável e casual. Evite jargão. Dirija-se ao leitor como 'você'.\"" }
 ]} />
@@ -237,7 +237,7 @@ Saída de código pode falhar tecnicamente (erros de sintaxe, recursos de lingua
 
 <InfoGrid items={[
   { icon: "code", title: "Erros de Sintaxe", description: "Especificar versão da linguagem", example: "\"Use sintaxe Python 3.11+ com type hints\" ou \"JavaScript ES2022\"" },
-  { icon: "git-branch", title: "Abordagem Errada", description: "Descrever padrões preferidos", example: "\"Use abordagem funcional, evite classes\" ou \"Siga padrão repository\"" },
+  { icon: "git-branch", title: "Abordagem Errada", description: "Descrever padrões preferidos", example: "\"Use abordagem funcional, evite classes\" ou \"Siga o padrão Repository\"" },
   { icon: "shield", title: "Casos Limite Faltando", description: "Listar cenários para tratar", example: "\"Trate: entrada vazia, valores null, timeouts de rede, formatos inválidos\"" },
   { icon: "tag", title: "Nomenclatura Ruim", description: "Incluir convenções de nomenclatura", example: "\"Use camelCase para variáveis, PascalCase para classes, UPPER_SNAKE para constantes\"" }
 ]} />
@@ -249,24 +249,24 @@ Tarefas de análise frequentemente produzem resultados superficiais ou não estr
 <InfoGrid items={[
   { icon: "layers", title: "Muito Superficial", description: "Pedir frameworks específicos", example: "\"Analise usando framework SWOT\" ou \"Aplique Cinco Forças de Porter\"" },
   { icon: "scale", title: "Tendencioso", description: "Solicitar múltiplas perspectivas", example: "\"Apresente argumentos a favor e contra\" ou \"Inclua ponto de vista cético\"" },
-  { icon: "database", title: "Dados Faltando", description: "Especificar o que analisar", example: "\"Foque em: tamanho do mercado, taxa de crescimento, players principais, barreiras de entrada\"" },
+  { icon: "database", title: "Dados Faltando", description: "Especificar o que analisar", example: "\"Foque em: tamanho do mercado, taxa de crescimento, principais concorrentes, barreiras de entrada\"" },
   { icon: "layout", title: "Não Estruturado", description: "Fornecer template de análise", example: "\"Formate como: Resumo → Descobertas Principais → Implicações → Recomendações\"" }
 ]} />
 
 ### Para Perguntas e Respostas
 
-Perguntas e respostas podem ser muito breves ou muito prolixas, e podem carecer de indicadores de confiança ou fontes. Especifique o nível de detalhe que você precisa e se quer citações ou incerteza expressada.
+Perguntas e respostas podem ser muito breves ou muito prolixas, e podem carecer de indicadores de confiança ou fontes. Especifique o nível de detalhe de que você precisa e se quer citações ou que o modelo expresse seu grau de incerteza.
 
 <InfoGrid items={[
-  { icon: "plus", title: "Muito Curto", description: "Pedir elaboração", example: "\"Explique em detalhe com exemplos\" ou \"Elabore cada ponto\"" },
+  { icon: "plus", title: "Muito Curto", description: "Pedir mais detalhes", example: "\"Explique em detalhe com exemplos\" ou \"Desenvolva cada ponto\"" },
   { icon: "minus", title: "Muito Longo", description: "Solicitar resposta concisa", example: "\"Responda em 2-3 frases\" ou \"Me dê o resumo\"" },
-  { icon: "help-circle", title: "Incerto", description: "Pedir nível de confiança", example: "\"Avalie sua confiança de 1-10\" ou \"Note quaisquer suposições feitas\"" },
+  { icon: "help-circle", title: "Incerto", description: "Pedir nível de confiança", example: "\"Avalie sua confiança de 1 a 10\" ou \"Indique as suposições que você fez\"" },
   { icon: "link", title: "Sem Fontes", description: "Solicitar citações", example: "\"Cite fontes para afirmações\" ou \"Inclua referências quando possível\"" }
 ]} />
 
 ## A Técnica do Loop de Feedback
 
-Aqui está uma meta-técnica: use o próprio modelo para ajudar a melhorar seus prompts. Compartilhe o que você tentou, o que obteve e o que queria. O modelo frequentemente pode sugerir melhorias que você não tinha considerado.
+Aqui está uma metatécnica: use o próprio modelo para ajudar a melhorar seus prompts. Compartilhe o que você tentou, o que obteve e o que queria. O modelo frequentemente pode sugerir melhorias que você não tinha considerado.
 
 ```
 Eu usei este prompt:
@@ -289,14 +289,14 @@ Prompt B: "Extraia os 3 insights mais importantes deste artigo."
 Prompt C: "Quais são as principais conclusões deste artigo? Liste 3."
 ```
 
-Execute cada um múltiplas vezes, compare:
+Execute cada um várias vezes e compare:
 - Consistência da saída
 - Qualidade da informação
 - Relevância para suas necessidades
 
 ## Quando Parar de Iterar
 
-Perfeição é inimiga do bom o suficiente. Saiba quando seu prompt está pronto para uso e quando você está apenas polindo para retornos decrescentes.
+O ótimo é inimigo do bom. Saiba reconhecer quando seu prompt está pronto para uso e quando você está apenas polindo com retornos decrescentes.
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
   <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
@@ -324,17 +324,17 @@ Perfeição é inimiga do bom o suficiente. Saiba quando seu prompt está pronto
 Prompts são código. Para qualquer prompt usado em produção, trate com o mesmo rigor: controle de versão, changelogs e capacidade de reverter se algo quebrar.
 
 <Callout type="tip" title="Versionamento Integrado">
-prompts.chat inclui histórico de versão automático para seus prompts. Cada edição é salva, então você pode comparar versões e restaurar iterações anteriores com um clique.
+Muitas ferramentas de prompts mantêm um histórico de versões para você. No prompts.chat, por exemplo, cada edição do texto de um prompt é salva como uma nova versão, e você pode comparar quaisquer duas versões lado a lado.
 </Callout>
 
-Para prompts auto-gerenciados, use uma estrutura de pastas:
+Para prompts autogerenciados, use uma estrutura de pastas:
 
 ```
 prompts/
 ├── resposta-cliente/
 │   ├── v1.0.txt    # Versão inicial
 │   ├── v1.1.txt    # Problema de tom corrigido
-│   ├── v2.0.txt    # Reestruturação maior
+│   ├── v2.0.txt    # Grande reestruturação
 │   └── current.txt # Symlink para versão ativa
 └── changelog.md    # Documentar mudanças
 ```
@@ -342,7 +342,7 @@ prompts/
 ## Resumo
 
 <Callout type="tip" title="Principais Conclusões">
-Comece simples, observe cuidadosamente, mude uma coisa por vez, documente o que funciona e saiba quando parar. Os melhores prompts não são escritos—são descobertos através de iteração sistemática.
+Comece simples, observe cuidadosamente, mude uma coisa por vez, documente o que funciona e saiba quando parar. Os melhores prompts não são escritos: são descobertos por meio de iteração sistemática.
 </Callout>
 
 <Quiz 
@@ -364,7 +364,7 @@ Tente melhorar este prompt fraco você mesmo. Edite-o, depois use IA para compar
 <BeforeAfterEditor
   title="Refine Este Prompt de Email"
   badPrompt="Escreva um email."
-  idealPrompt={`Você é um redator de negócios profissional.
+  idealPrompt={`Você é um redator profissional de comunicação empresarial.
 
 Tarefa: Escreva um email de follow-up para um cliente potencial após uma reunião de vendas.
 
@@ -372,13 +372,13 @@ Contexto:
 - Reunião com Sarah Chen, VP de Marketing da TechCorp
 - Discutimos nossa plataforma de analytics
 - Ela expressou interesse nos recursos de relatórios
-- Reunião foi ontem
+- A reunião foi ontem
 
 Requisitos:
 - Tom profissional mas caloroso
-- Referencie pontos específicos da nossa reunião
+- Mencione pontos específicos da nossa reunião
 - Inclua próximo passo claro (agendar demo)
-- Mantenha abaixo de 150 palavras
+- Menos de 150 palavras
 
 Formato: Linha de assunto + corpo do email`}
   task="Transforme este prompt de email vago em algo que produzirá um resultado profissional e eficaz."

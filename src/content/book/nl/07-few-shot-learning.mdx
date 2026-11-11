@@ -1,30 +1,30 @@
-Few-shot learning is een van de krachtigste prompting-technieken. Door voorbeelden te geven van wat je wilt, kun je het model complexe taken leren zonder enige fine-tuning.
+Few-shot learning is een van de krachtigste prompting-technieken. Door voorbeelden te geven van wat je wilt, kun je het model complexe taken aanleren, zonder enige fine-tuning.
 
-<Callout type="info" title="Leren door Voorbeelden">
+<Callout type="info" title="Leren van voorbeelden">
 Net zoals mensen leren door voorbeelden te zien, kunnen AI-modellen patronen leren van de voorbeelden die je in je prompt geeft.
 </Callout>
 
-## Wat is Few-Shot Learning?
+## Wat is few-shot learning?
 
-Few-shot learning toont het model voorbeelden van input-output paren voordat je het vraagt dezelfde taak uit te voeren. Het model leert het patroon van je voorbeelden en past het toe op nieuwe invoer.
+Few-shot learning toont het model voorbeelden van input-outputparen voordat je het vraagt dezelfde taak uit te voeren. Het model leert het patroon van je voorbeelden en past het toe op nieuwe invoer.
 
 <Compare 
   before={{ 
-    label: "Zero-Shot (Geen Voorbeelden)", 
+    label: "Zero-shot (geen voorbeelden)", 
     content: `Classificeer deze review als positief of negatief:
 
-"De batterij gaat eeuwig mee maar het scherm is te donker."
+"De batterij gaat eeuwig mee, maar het scherm is te donker."
 
 → Model kan inconsistent zijn bij grensgevallen` 
   }}
   after={{ 
-    label: "Few-Shot (Met Voorbeelden)", 
+    label: "Few-shot (met voorbeelden)", 
     content: `"Geweldig!" → Positief
 "Verschrikkelijke kwaliteit" → Negatief  
 "Goed maar duur" → Gemengd
 
 Classificeer nu:
-"De batterij gaat eeuwig mee maar het scherm is te donker."
+"De batterij gaat eeuwig mee, maar het scherm is te donker."
 
 → Model leert jouw exacte categorieën` 
   }}
@@ -49,7 +49,7 @@ Classificeer nu:
   </div>
 </div>
 
-## Waarom Voorbeelden Werken
+## Waarom voorbeelden werken
 
 <FewShotDemo />
 
@@ -57,9 +57,9 @@ Voorbeelden communiceren:
 - **Formaat**: Hoe de output gestructureerd moet worden
 - **Stijl**: Toon, lengte, woordenschat
 - **Logica**: Het redeneerpatroon dat gevolgd moet worden
-- **Grensgevallen**: Hoe speciale situaties aan te pakken
+- **Grensgevallen**: Hoe je speciale situaties aanpakt
 
-## Basis Few-Shot Patroon
+## Basispatroon voor few-shot
 
 De fundamentele structuur van few-shot prompting volgt een eenvoudig patroon: toon voorbeelden en vraag dan om de nieuwe taak. Consistentie in opmaak tussen voorbeelden is cruciaal. Het model leert van het patroon dat je vaststelt.
 
@@ -81,14 +81,14 @@ Input: [nieuwe input]
 Output:
 ```
 
-## Few-Shot voor Classificatie
+## Few-shot voor classificatie
 
-Classificatie is een van de sterkste toepassingen voor few-shot learning. Door voorbeelden van elke categorie te tonen, definieer je de grenzen tussen klassen nauwkeuriger dan instructies alleen zouden kunnen bereiken.
+Classificatie is een van de sterkste toepassingen voor few-shot learning. Door voorbeelden van elke categorie te tonen, definieer je de grenzen tussen klassen nauwkeuriger dan met instructies alleen mogelijk is.
 
 ### Sentimentanalyse
 
-<Callout type="info" title="Wat is Sentimentanalyse?">
-Sentimentanalyse classificeert tekst op emotionele toon: positief, negatief, neutraal of gemengd. Het wordt veel gebruikt voor klantfeedback, social media monitoring en merkperceptie tracking.
+<Callout type="info" title="Wat is sentimentanalyse?">
+Sentimentanalyse classificeert tekst op emotionele toon: positief, negatief, neutraal of gemengd. Het wordt veel gebruikt voor klantfeedback, socialemediamonitoring en het volgen van merkperceptie.
 </Callout>
 
 Sentimentclassificatie profiteert van het tonen van voorbeelden van elk sentimenttype, vooral grensgevallen zoals "gemengd" sentiment dat dubbelzinnig kan zijn.
@@ -101,26 +101,26 @@ Sentiment: Positief
 Review: "Kapot aangekomen en klantenservice was niet behulpzaam."
 Sentiment: Negatief
 
-Review: "Het werkt prima, niets bijzonders maar doet wat het moet doen."
+Review: "Het werkt prima, niets bijzonders, maar doet wat het moet doen."
 Sentiment: Neutraal
 
-Review: "De kwaliteit is geweldig maar de verzending duurde eeuwig."
+Review: "De kwaliteit is geweldig, maar de verzending duurde eeuwig."
 Sentiment: Gemengd
 
 Classificeer nu:
-Review: "Hou van het design maar de batterijduur is teleurstellend."
+Review: "Het design is geweldig, maar de batterijduur is teleurstellend."
 Sentiment:`} />
 
 ### Onderwerpsclassificatie
 
-Voor classificatie met meerdere categorieën, neem minstens één voorbeeld per categorie op. Dit helpt het model je specifieke taxonomie te begrijpen, die kan verschillen van zijn standaardbegrip.
+Neem bij classificatie met meerdere categorieën minstens één voorbeeld per categorie op. Dit helpt het model je specifieke taxonomie te begrijpen, die kan verschillen van zijn standaardbegrip.
 
 <TryIt compact prompt={`Categoriseer deze supporttickets.
 
-Ticket: "Ik kan niet inloggen op mijn account, wachtwoord reset werkt niet"
+Ticket: "Ik kan niet inloggen op mijn account, wachtwoordreset werkt niet"
 Categorie: Authenticatie
 
-Ticket: "Hoe kan ik upgraden naar het premium abonnement?"
+Ticket: "Hoe kan ik upgraden naar het premiumabonnement?"
 Categorie: Facturering
 
 Ticket: "De app crasht wanneer ik data probeer te exporteren"
@@ -130,21 +130,21 @@ Ticket: "Kunnen jullie een donkere modus toevoegen aan de mobiele app?"
 Categorie: Functieverzoek
 
 Categoriseer nu:
-Ticket: "Mijn betaling werd geweigerd maar ik zie de afschrijving op mijn kaart"
+Ticket: "Mijn betaling werd geweigerd, maar ik zie de afschrijving op mijn kaart"
 Categorie:`} />
 
-## Few-Shot voor Transformatie
+## Few-shot voor transformatie
 
-Transformatietaken zetten input om van de ene vorm naar de andere terwijl de betekenis behouden blijft. Voorbeelden zijn hier essentieel omdat ze precies definiëren wat "transformatie" betekent voor jouw toepassing.
+Transformatietaken zetten invoer om van de ene vorm naar de andere, waarbij de betekenis behouden blijft. Voorbeelden zijn hier essentieel omdat ze precies definiëren wat "transformatie" betekent voor jouw toepassing.
 
-### Tekst Herschrijven
+### Tekst herschrijven
 
 Stijltransformatie vereist voorbeelden die de exacte toonverandering tonen die je wilt. Abstracte instructies zoals "maak het professioneel" worden verschillend geïnterpreteerd. Voorbeelden maken het concreet.
 
 <TryIt compact prompt={`Herschrijf deze zinnen in een professionele toon.
 
 Informeel: "Hé, wilde even checken of je mijn mail hebt ontvangen?"
-Professioneel: "Ik wilde graag opvolgen met betrekking tot mijn vorige e-mail."
+Professioneel: "Graag kom ik terug op mijn vorige e-mail."
 
 Informeel: "Dit is super belangrijk en moet zo snel mogelijk gedaan worden!"
 Professioneel: "Deze kwestie vereist dringende aandacht en snelle actie."
@@ -160,7 +160,7 @@ Professioneel:`} />
 
 Formaatconversietaken profiteren van voorbeelden die grensgevallen en dubbelzinnige invoer tonen. Het model leert jouw specifieke conventies voor het omgaan met lastige gevallen.
 
-<TryIt compact prompt={`Converteer deze natuurlijke taal datums naar ISO-formaat.
+<TryIt compact prompt={`Zet deze datums in natuurlijke taal om naar ISO-formaat.
 
 Input: "volgende dinsdag"
 Output: 2024-01-16 (aangenomen dat vandaag 2024-01-11 is, donderdag)
@@ -178,36 +178,36 @@ Converteer nu:
 Input: "de eerste maandag van volgende maand"
 Output:`} />
 
-## Few-Shot voor Generatie
+## Few-shot voor generatie
 
-Generatietaken creëren nieuwe content volgens een geleerd patroon. Voorbeelden bepalen lengte, structuur, toon en welke details benadrukt moeten worden. Deze zijn moeilijk alleen in instructies te specificeren.
+Generatietaken creëren nieuwe content volgens een geleerd patroon. Voorbeelden bepalen lengte, structuur, toon en welke details benadrukt moeten worden. Dat is met instructies alleen moeilijk vast te leggen.
 
 ### Productbeschrijvingen
 
-Marketingteksten profiteren enorm van voorbeelden omdat ze merkidentiteit, nadruk op functies en overtuigende technieken vastleggen die moeilijk abstract te beschrijven zijn.
+Marketingteksten profiteren enorm van voorbeelden omdat ze merkidentiteit, nadruk op functies en overtuigingstechnieken vastleggen die moeilijk abstract te beschrijven zijn.
 
 <TryIt compact prompt={`Schrijf productbeschrijvingen in deze stijl:
 
-Product: Draadloze Bluetooth Koptelefoon
-Beschrijving: Dompel jezelf onder in kristalhelder geluid met onze lichtgewicht draadloze koptelefoon. Met 40 uur batterijduur, actieve ruisonderdrukking en zachte memory foam oorkussens voor comfort de hele dag.
+Product: Draadloze bluetooth-koptelefoon
+Beschrijving: Dompel jezelf onder in kristalhelder geluid met onze lichtgewicht draadloze koptelefoon. Met 40 uur batterijduur, actieve ruisonderdrukking en zachte oorkussens van memory foam voor comfort de hele dag.
 
-Product: RVS Waterfles
+Product: RVS-waterfles
 Beschrijving: Blijf stijlvol gehydrateerd met onze dubbelwandige geïsoleerde fles. Houdt drankjes 24 uur koud of 12 uur warm. Met lekvrije dop en past in standaard bekerhouders.
 
-Product: Ergonomische Bureaustoel
-Beschrijving: Transformeer je werkplek met onze verstelbare ergonomische stoel. Ademende mesh rugleuning, lendensteun en 360° draaiing zorgen voor comfort tijdens lange werksessies.
+Product: Ergonomische bureaustoel
+Beschrijving: Transformeer je werkplek met onze verstelbare ergonomische stoel. Ademende mesh-rugleuning, lendensteun en 360° draaiing zorgen voor comfort tijdens lange werksessies.
 
 Schrijf nu:
-Product: Draagbare Telefoonoplader
+Product: Draagbare telefoonoplader
 Beschrijving:`} />
 
-### Code Documentatie
+### Codedocumentatie
 
-<Callout type="info" title="Waarom Code Documenteren?">
+<Callout type="info" title="Waarom code documenteren?">
 Goede documentatie legt uit wat code doet, de parameters, retourwaarden en gebruiksvoorbeelden. Consistente docstrings maken automatisch gegenereerde API-documentatie mogelijk en helpen IDE's betere code completion te bieden.
 </Callout>
 
-Documentatiestijl varieert sterk tussen projecten. Voorbeelden leren jouw specifieke formaat, wat op te nemen (argumenten, retourwaarden, voorbeelden) en het verwachte detailniveau.
+Documentatiestijl varieert sterk tussen projecten. Voorbeelden brengen het model jouw specifieke formaat bij, wat op te nemen (argumenten, retourwaarden, voorbeelden) en het verwachte detailniveau.
 
 <TryIt compact prompt={`Schrijf documentatie-opmerkingen voor deze functies:
 
@@ -239,9 +239,9 @@ def is_palindrome(text):
 
 Documentatie:`} />
 
-## Few-Shot voor Extractie
+## Few-shot voor extractie
 
-Extractietaken halen gestructureerde informatie uit ongestructureerde tekst. Voorbeelden definiëren welke entiteiten belangrijk zijn, hoe output te formatteren en hoe om te gaan met gevallen waar informatie ontbreekt of dubbelzinnig is.
+Extractietaken halen gestructureerde informatie uit ongestructureerde tekst. Voorbeelden definiëren welke entiteiten belangrijk zijn, hoe de output eruit moet zien en hoe het model moet omgaan met gevallen waarin informatie ontbreekt of dubbelzinnig is.
 
 ### Entiteitsextractie
 
@@ -253,14 +253,14 @@ NER profiteert van voorbeelden die jouw specifieke entiteitstypen tonen en hoe o
 
 <TryIt compact prompt={`Extraheer benoemde entiteiten uit deze zinnen.
 
-Tekst: "Apple CEO Tim Cook kondigde de iPhone 15 aan in Cupertino."
+Tekst: "Apple-CEO Tim Cook kondigde de iPhone 15 aan in Cupertino."
 Entiteiten:
 - BEDRIJF: Apple
 - PERSOON: Tim Cook
 - PRODUCT: iPhone 15
 - LOCATIE: Cupertino
 
-Tekst: "De Europese Unie beboette Google met €4,34 miljard in 2018."
+Tekst: "De Europese Unie beboette Google in 2018 met €4,34 miljard."
 Entiteiten:
 - ORGANISATIE: Europese Unie
 - BEDRIJF: Google
@@ -268,14 +268,14 @@ Entiteiten:
 - DATUM: 2018
 
 Extraheer nu uit:
-Tekst: "Elon Musk's SpaceX lanceerde 23 Starlink-satellieten vanaf Cape Canaveral op 3 december."
+Tekst: "Elon Musks SpaceX lanceerde op 3 december 23 Starlink-satellieten vanaf Cape Canaveral."
 Entiteiten:`} />
 
-### Gestructureerde Data-extractie
+### Gestructureerde data-extractie
 
 Het extraheren van gestructureerde data uit natuurlijke taal vereist voorbeelden die laten zien hoe om te gaan met ontbrekende velden, impliciete informatie en variërende invoerformaten.
 
-<TryIt compact prompt={`Extraheer vergaderdetails in gestructureerd formaat.
+<TryIt compact prompt={`Extraheer vergaderdetails in een gestructureerd formaat.
 
 E-mail: "Laten we morgen om 15:00 afspreken in Vergaderzaal B om het Q4-budget te bespreken. Neem je laptop mee."
 
@@ -286,7 +286,7 @@ Vergadering:
 - Onderwerp: Q4-budgetbespreking
 - Vereisten: Laptop meenemen
 
-E-mail: "Teamsync verplaatst naar vrijdag 10:00, we gebruiken Zoom in plaats daarvan. Link in agenda-uitnodiging. Maximaal 30 minuten."
+E-mail: "Teamsync verplaatst naar vrijdag 10:00, we gebruiken in plaats daarvan Zoom. Link in de agenda-uitnodiging. Maximaal 30 minuten."
 
 Vergadering:
 - Datum: Vrijdag
@@ -300,13 +300,13 @@ E-mail: "Kunnen we maandagochtend rond 9:30 kort bellen om de klantpresentatie d
 
 Vergadering:`} />
 
-## Geavanceerde Few-Shot Technieken
+## Geavanceerde few-shot-technieken
 
-Naast basis few-shot kunnen verschillende technieken de resultaten verbeteren voor complexe taken.
+Naast de basisvorm van few-shot kunnen verschillende technieken de resultaten bij complexe taken verbeteren.
 
-### Diverse Voorbeelden
+### Gevarieerde voorbeelden
 
-Diversiteit in voorbeelden is waardevoller dan hoeveelheid. Dek verschillende scenario's, grensgevallen en potentiële dubbelzinnigheden af in plaats van steeds vergelijkbare voorbeelden te tonen.
+Variatie in voorbeelden is waardevoller dan hoeveelheid. Dek verschillende scenario's, grensgevallen en potentiële dubbelzinnigheden af in plaats van steeds vergelijkbare voorbeelden te tonen.
 
 <TryIt compact prompt={`Reageer op klantklachten.
 
@@ -316,62 +316,62 @@ Reactie: "Mijn oprechte excuses voor de beschadigde levering. Ik stuur onmiddell
 
 Voorbeeld 2 (Serviceprobleem):
 Klant: "Ik heb al 2 uur in de wacht gestaan!"
-Reactie: "Het spijt me zeer voor de lange wachttijd. Dat is onaanvaardbaar. Ik ben er nu en zal persoonlijk zorgen dat uw probleem wordt opgelost. Waarmee kan ik u vandaag helpen?"
+Reactie: "Het spijt me zeer van de lange wachttijd. Dat is onaanvaardbaar. Ik ben er nu en zal persoonlijk zorgen dat uw probleem wordt opgelost. Waarmee kan ik u vandaag helpen?"
 
 Voorbeeld 3 (Factureringsprobleem):
 Klant: "Jullie hebben me twee keer voor dezelfde bestelling in rekening gebracht!"
-Reactie: "Mijn excuses voor deze factureringsfout. Ik heb de dubbele afschrijving geverifieerd en een terugbetaling van €XX,XX naar uw oorspronkelijke betaalmethode geïnitieerd. U zou dit binnen 3-5 werkdagen moeten zien."
+Reactie: "Mijn excuses voor deze factureringsfout. Ik heb de dubbele afschrijving geverifieerd en een terugbetaling van €XX,XX naar uw oorspronkelijke betaalmethode in gang gezet. U zou dit binnen 3-5 werkdagen moeten zien."
 
 Reageer nu op:
 Klant: "Het product komt niet overeen met wat op de website werd getoond."
 Reactie:`} />
 
-### Negatieve Voorbeelden
+### Negatieve voorbeelden
 
-<Callout type="tip" title="Contrastief Leren">
-Het tonen van "goede" vs "slechte" voorbeelden heet contrastief leren. Het helpt het model te begrijpen niet alleen wat je wilt, maar wat te vermijden. Dit is vooral nuttig voor stijl- en kwaliteitsbeoordelingen.
+<Callout type="tip" title="Contrastieve voorbeelden">
+"Goede" en "slechte" voorbeelden naast elkaar zetten noemt men vaak werken met contrastieve voorbeelden. (Niet te verwarren met "contrastive learning", een methode om modellen te trainen.) Zo begrijpt het model niet alleen wat je wilt, maar ook wat het moet vermijden. Dit is vooral nuttig bij oordelen over stijl en kwaliteit.
 </Callout>
 
-Soms is het tonen van wat je *niet* moet doen net zo waardevol als correcte voorbeelden tonen. Negatieve voorbeelden helpen het model grenzen te begrijpen en veelvoorkomende fouten te vermijden.
+Soms is laten zien wat je *niet* moet doen net zo waardevol als correcte voorbeelden geven. Negatieve voorbeelden helpen het model grenzen te begrijpen en veelvoorkomende fouten te vermijden.
 
 <TryIt compact prompt={`Schrijf beknopte e-mailonderwerpregels.
 
-Goed: "Q3 Rapport Klaar voor Beoordeling"
+Goed: "Q3-rapport klaar voor beoordeling"
 Slecht: "Hé, ik ben klaar met dat rapportding waar we het over hadden"
 
-Goed: "Actie Vereist: Keur Verlof Goed voor Vrijdag"
+Goed: "Actie vereist: verlof goedkeuren vóór vrijdag"
 Slecht: "Ik heb je nodig om iets voor me te doen lees dit alsjeblieft"
 
-Goed: "Vergadering Verzet: Project Sync → Donderdag 14:00"
+Goed: "Vergadering verzet: projectsync → donderdag 14:00"
 Slecht: "Plannen gewijzigd!!!!!"
 
 Schrijf nu een onderwerpregel voor:
 E-mail over: Verzoek om feedback op een voorstelconcept
 Onderwerp:`} />
 
-### Grensgevalvoorbeelden
+### Voorbeelden van grensgevallen
 
-Grensgevallen bepalen vaak of een oplossing werkt in productie. Het opnemen van ongebruikelijke invoer in je voorbeelden voorkomt dat het model faalt op echte data die niet past in het "happy path."
+Grensgevallen bepalen vaak of een oplossing in productie werkt. Door ongebruikelijke invoer in je voorbeelden op te nemen, voorkom je dat het model faalt op echte data die niet in het "happy path" past. Let op: elk voorbeeld hieronder gebruikt dezelfde velden en vult null in wanneer een deel ontbreekt. Ook die consistentie leert het model.
 
-<TryIt compact prompt={`Parseer namen naar gestructureerd formaat.
+<TryIt compact prompt={`Parseer namen naar een gestructureerd formaat.
 
 Input: "Jan Jansen"
-Output: {"first": "Jan", "last": "Jansen", "middle": null, "suffix": null}
+Output: {"prefix": null, "first": "Jan", "middle": null, "last": "Jansen", "suffix": null}
 
 Input: "Maria Anna de Vries-Bakker"
-Output: {"first": "Maria", "middle": "Anna", "last": "de Vries-Bakker", "suffix": null}
+Output: {"prefix": null, "first": "Maria", "middle": "Anna", "last": "de Vries-Bakker", "suffix": null}
 
 Input: "Dr. Martin Luther King Jr."
 Output: {"prefix": "Dr.", "first": "Martin", "middle": "Luther", "last": "King", "suffix": "Jr."}
 
 Input: "Madonna"
-Output: {"first": "Madonna", "last": null, "middle": null, "suffix": null, "mononym": true}
+Output: {"prefix": null, "first": "Madonna", "middle": null, "last": null, "suffix": null}
 
 Parseer nu:
 Input: "Sir Patrick Stewart III"
 Output:`} />
 
-## Hoeveel Voorbeelden?
+## Hoeveel voorbeelden?
 
 <div className="my-4 grid gap-2">
   <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
@@ -387,7 +387,7 @@ Output:`} />
   <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Genuanceerde stijl</span>
     <span className="text-primary font-mono">4-6</span>
-    <span className="text-muted-foreground">Vang volledig bereik</span>
+    <span className="text-muted-foreground">Dek het volledige bereik</span>
   </div>
   <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Grensgevallen</span>
@@ -396,37 +396,39 @@ Output:`} />
   </div>
 </div>
 
-## Kwaliteit van Voorbeelden Telt
+Deze aantallen zijn een startpunt, geen plafond. Modellen met lange contextvensters kunnen bij sommige taken blijven verbeteren met tientallen of zelfs honderden voorbeelden, een aanpak die onderzoekers many-shot prompting noemen. Voor de meeste alledaagse prompts levert een handvol goedgekozen voorbeelden je echter het grootste deel van het voordeel op, tegen een fractie van de kosten. Redeneermodellen hebben er vaak minder nodig: OpenAI raadt aan ze eerst zonder voorbeelden te proberen, er pas een paar toe te voegen als dat nodig is en erop te letten dat die met je instructies overeenstemmen.
+
+## De kwaliteit van voorbeelden telt
 
 <Compare 
   before={{ 
-    label: "Slechte Voorbeelden", 
+    label: "Slechte voorbeelden", 
     content: `"Leuk product" → Goed
 "Leuke service" → Goed
 "Leuke prijs" → Goed
 
-✗ Allemaal te vergelijkbaar
+✗ Lijken te veel op elkaar
 ✗ Zelfde woord herhaald
 ✗ Geen grensgevallen getoond` 
   }}
   after={{ 
-    label: "Goede Voorbeelden", 
-    content: `"Overtroffen verwachtingen!" → Positief
+    label: "Goede voorbeelden", 
+    content: `"Overtrof mijn verwachtingen!" → Positief
 "Kapot bij aankomst" → Negatief
 "Werkt prima, niets bijzonders" → Neutraal
-"Geweldige kwaliteit maar te duur" → Gemengd
+"Geweldige kwaliteit, maar te duur" → Gemengd
 
-✓ Diverse scenario's
+✓ Gevarieerde scenario's
 ✓ Duidelijke grenzen
 ✓ Dekt grensgevallen` 
   }}
 />
 
-## Few-Shot Combineren met Andere Technieken
+## Few-shot combineren met andere technieken
 
-Few-shot learning combineert krachtig met andere prompting-technieken. De voorbeelden bieden het "wat" terwijl andere technieken context, redenering of structuur kunnen toevoegen.
+Few-shot learning laat zich krachtig combineren met andere prompting-technieken. De voorbeelden leveren het "wat", terwijl andere technieken context, redenering of structuur kunnen toevoegen.
 
-### Few-Shot + Rol
+### Few-shot + rol
 
 Het toevoegen van een rol geeft het model context voor *waarom* het de taak uitvoert, wat de kwaliteit en consistentie kan verbeteren.
 
@@ -438,17 +440,17 @@ Je bent een juridisch contractbeoordelaar.
 Analyseer nu: [nieuwe clausule]
 ```
 
-### Few-Shot + CoT
+### Few-shot + CoT
 
-Het combineren van few-shot met Chain of Thought toont niet alleen *welk* antwoord te geven, maar *hoe* te redeneren naar dat antwoord. Dit is krachtig voor taken die oordeelsvermogen vereisen.
+Als je few-shot combineert met Chain of Thought, laat je niet alleen zien *welk* antwoord je wilt, maar ook *hoe* het model tot dat antwoord komt. Dit werkt vooral goed bij taken die oordeelsvermogen vereisen.
 
 ```
 Classificeer en leg de redenering uit.
 
-Review: "Geweldige functies maar te duur"
-Redenering: De review noemt positieve aspecten ("geweldige functies") 
-maar ook een significant negatief punt ("te duur"). Het negatieve lijkt 
-zwaarder te wegen dan het positieve op basis van het "maar" voegwoord.
+Review: "Geweldige functies, maar te duur"
+Redenering: De review noemt positieve aspecten ("geweldige functies"), 
+maar ook een duidelijk minpunt ("te duur"). Door het voegwoord "maar" 
+lijkt het negatieve zwaarder te wegen dan het positieve.
 Classificatie: Gemengd-Negatief
 
 [meer voorbeelden met redenering]
@@ -459,8 +461,8 @@ Review: "Precies wat ik nodig had, sneller geleverd dan verwacht"
 
 ## Samenvatting
 
-<Callout type="tip" title="Belangrijkste Inzichten">
-Few-shot learning leert door demonstratie en is vaak effectiever dan alleen instructies. Gebruik 2-5 diverse, correcte voorbeelden en combineer met andere technieken voor de beste resultaten.
+<Callout type="tip" title="Belangrijkste inzichten">
+Few-shot learning leert door demonstratie en is vaak effectiever dan alleen instructies. Gebruik 2-5 gevarieerde, correcte voorbeelden en combineer ze met andere technieken voor de beste resultaten.
 </Callout>
 
 <Quiz 
@@ -468,11 +470,11 @@ Few-shot learning leert door demonstratie en is vaak effectiever dan alleen inst
   options={[
     "Zoveel mogelijk (10+)",
     "Slechts 1 voorbeeld is altijd voldoende",
-    "2-5 diverse, correcte voorbeelden",
+    "2-5 gevarieerde, correcte voorbeelden",
     "Voorbeelden zijn niet nodig als instructies duidelijk zijn"
   ]}
   correctIndex={2}
-  explanation="2-5 diverse, correcte voorbeelden werken doorgaans het beste. Te weinig kan het patroon niet vangen, terwijl te veel tokens verspilt en het model kan verwarren. Kwaliteit en diversiteit zijn belangrijker dan hoeveelheid."
+  explanation="2-5 gevarieerde, correcte voorbeelden werken doorgaans het beste. Met te weinig voorbeelden vangt het model het patroon mogelijk niet, terwijl elk extra voorbeeld tokens kost en bij alledaagse taken meestal weinig toevoegt. Kwaliteit en variatie zijn belangrijker dan hoeveelheid."
 />
 
 In het volgende hoofdstuk verkennen we iteratieve verfijning: de kunst van het verbeteren van prompts door opeenvolgende pogingen.

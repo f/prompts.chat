@@ -27,6 +27,8 @@ Add one of these to your prompts:
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Explain your thought process."</div>
 </div>
 
+These phrases matter most with standard chat models. Reasoning models, which think before they answer, need them far less; we'll come back to them later in this chapter.
+
 ### Explicit Step Request
 
 <TryIt 
@@ -195,6 +197,7 @@ Clues:
 2. The engineer has a dog
 3. Bob is a teacher
 4. Carol doesn't have a fish
+5. The doctor doesn't have a cat
 
 Who has which pet and job? Reason through this systematically, testing hypotheses and verifying against all clues.`}
 />
@@ -204,12 +207,17 @@ Who has which pet and job? Reason through this systematically, testing hypothese
 From clue 3: Bob = teacher
 → Alice and Carol are engineer/doctor
 
-If Carol = engineer:
-- Carol has dog (clue 2)
-- Alice = doctor, has fish (clue 1)
+Hypothesis A: Alice = engineer
+- Alice has dog (clue 2), Carol = doctor
+- Carol can't have fish (clue 4), so Carol has cat
+- But the doctor can't have a cat (clue 5) ✗
+
+Hypothesis B: Carol = engineer
+- Carol has dog (clue 2), Alice = doctor
+- Alice can't have cat (clue 1), so Alice has fish
 - Bob has cat
 
-Verify: All 4 clues satisfied ✓
+Verify: All 5 clues satisfied ✓
 Answer: Alice (doctor, fish), Bob (teacher, cat), Carol (engineer, dog)
 ```
 
@@ -272,6 +280,8 @@ Approach 3 (Logic): 30 chickens = 60 legs, need 14 more → 7 cows
 All agree: 23 chickens, 7 cows
 ```
 
+In its original research form, self-consistency goes one step further: you send the same prompt several times as separate requests and keep the answer that comes up most often. Asking for several approaches in a single response, as above, is a lighter version of the same idea. It's cheaper, but the attempts aren't truly independent, because each one can see the others.
+
 ## CoT for Decision Making
 
 Decisions involve weighing trade-offs across multiple dimensions. CoT ensures all relevant factors are considered systematically rather than jumping to conclusions. This structured approach also documents the reasoning for future reference.
@@ -307,6 +317,21 @@ WEIGHING: 3 strong against, 1 weak for
 RECOMMENDATION: Stay monolith, use clear module 
 boundaries to ease future transition.
 ```
+
+## Reasoning Models: CoT Built In
+
+Chain of thought began as a prompting trick, but it has since moved inside the models themselves. Many current models are trained to reason before they reply: OpenAI's reasoning models, Anthropic's Claude with thinking turned on, Google's Gemini, and open-weight models such as DeepSeek-R1 all work through a problem privately and then give their answer. Usually you see only the answer, or a short summary of the thinking, while the reasoning tokens still count toward your usage.
+
+This doesn't make the chapter obsolete, but it does change how you apply it:
+
+- **Drop the magic phrase.** OpenAI's guidance says that telling its reasoning models to "think step by step" is unnecessary and can sometimes even hurt. Anthropic notes that a general instruction such as "think thoroughly" often works better than a hand-written step-by-step plan, because the model's own reasoning frequently goes further than the plan would.
+- **Describe the goal, not the route.** Spend your words on the problem, the constraints, and what a good answer looks like, then let the model find its own path.
+- **Turn the dial instead of writing more.** These APIs offer settings such as reasoning effort or thinking level. Raising them is usually a better way to get deeper reasoning than asking for longer explanations in the prompt.
+- **Keep structure when you need to see the work.** Templates like BREAK or GIVEN/GOAL/STEPS still earn their place when you want reasoning you can read, check, or parse, and with models that don't think on their own. Some vendors now advise against asking their always-thinking models to write their reasoning out, so check the guidance for the model you use.
+
+<Callout type="warning" title="Shown Reasoning Is Not a Window">
+Reasoning the model writes out, or a thinking summary it displays, is not guaranteed to be the process that actually produced the answer. Research from Anthropic found that reasoning models often leave out factors that influenced them. Treat visible steps as something to check, not as proof.
+</Callout>
 
 ## When to Use CoT
 
@@ -345,7 +370,7 @@ While powerful, Chain of Thought isn't a silver bullet. Understanding its limita
 ## Summary
 
 <Callout type="tip" title="Key Takeaways">
-CoT dramatically improves complex reasoning by making implicit steps explicit. Use it for math, logic, analysis, and debugging. Trade-off: better accuracy for more tokens.
+CoT dramatically improves complex reasoning by making implicit steps explicit. Use it for math, logic, analysis, and debugging. Trade-off: better accuracy for more tokens. With reasoning models, which already think before answering, keep the prompt focused on the goal and adjust the reasoning settings instead.
 </Callout>
 
 <Quiz 
