@@ -6,7 +6,7 @@ Proprio come un insegnante di matematica che chiede agli studenti di mostrare il
 
 ## Il Problema che CoT Risolve
 
-I modelli IA possono avere difficoltà con il ragionamento multi-step quando viene chiesto di saltare direttamente a una risposta.
+I modelli IA possono avere difficoltà con il ragionamento in più passaggi quando si chiede loro di saltare direttamente alla risposta.
 
 <Compare 
   before={{ label: "Risposta Diretta (Spesso Sbagliata)", content: "Domanda: Un negozio vende mele a 2€ ciascuna. Se ne compri 5 o più, ottieni il 20% di sconto. Quanto costano 7 mele?\n\nRisposta: 14€ ❌" }}
@@ -26,6 +26,8 @@ Aggiungi una di queste ai tuoi prompt:
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Mostra il tuo ragionamento ad ogni passo."</div>
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Spiega il tuo processo di pensiero."</div>
 </div>
+
+Queste frasi contano soprattutto con i modelli di chat tradizionali. I modelli di ragionamento, che pensano prima di rispondere, ne hanno molto meno bisogno; ci torneremo più avanti in questo capitolo.
 
 ### Richiesta di Passi Esplicita
 
@@ -66,14 +68,14 @@ Pensiamo passo dopo passo.
 - Giovanni inizia con 3 mele
 - Metà di 3 è 1,5, ma non possiamo dividere le mele
 - Se arrotondiamo per difetto: Giovanni dà 1 mela, tiene 2
-- Dopo aver comprato 4 altre: 2 + 4 = 6 mele
+- Dopo averne comprate altre 4: 2 + 4 = 6 mele
 
 Risposta: 6 mele
 ```
 
 ### CoT Few-Shot
 
-Per risultati più consistenti, mostra al modello esattamente come vuoi che ragioni fornendo esempi svolti. Questo ti dà controllo sullo stile di ragionamento, formato e livello di dettaglio. Il modello imiterà il pattern che hai dimostrato.
+Per risultati più coerenti, mostra al modello esattamente come vuoi che ragioni fornendo esempi svolti. Questo ti dà controllo sullo stile di ragionamento, formato e livello di dettaglio. Il modello imiterà il pattern che hai dimostrato.
 
 <TryIt 
   compact
@@ -113,7 +115,7 @@ R: Ragioniamo su questo:
 
 ## Formati CoT Strutturati
 
-Per ragionamento consistente e riproducibile, usa formati strutturati con passi nominati. Questi framework assicurano che il modello non salti fasi importanti e rendono gli output più facili da parsare e verificare.
+Per un ragionamento coerente e riproducibile, usa formati strutturati con passi ben definiti. Questi framework assicurano che il modello non salti fasi importanti e rendono gli output più facili da analizzare e verificare.
 
 ### Il Formato BREAK
 
@@ -161,7 +163,7 @@ Tipi di problema diversi beneficiano di approcci CoT diversi. Ecco pattern ottim
 
 ### Ragionamento Matematico
 
-I problemi matematici beneficiano maggiormente dal CoT perché ogni passo si costruisce sul precedente. Gli errori si accumulano, quindi mostrare il lavoro aiuta a catturare errori presto. Il modello dovrebbe etichettare chiaramente ogni calcolo.
+I problemi matematici sono quelli che traggono più vantaggio dal CoT, perché ogni passo poggia sul precedente. Gli errori si accumulano, quindi mostrare il lavoro aiuta a individuarli presto. Il modello dovrebbe etichettare chiaramente ogni calcolo.
 
 <TryIt 
   compact
@@ -183,7 +185,7 @@ Totale: 5.374.500€
 
 ### Ragionamento Logico
 
-I puzzle logici richiedono eliminazione sistematica e test di ipotesi. CoT aiuta il modello a tracciare i vincoli, testare possibilità e verificare che tutte le condizioni siano soddisfatte. La chiave è l'esplorazione metodica piuttosto che indovinare.
+I puzzle logici richiedono eliminazione sistematica e test di ipotesi. CoT aiuta il modello a tenere traccia dei vincoli, testare possibilità e verificare che tutte le condizioni siano soddisfatte. La chiave è l'esplorazione metodica piuttosto che indovinare.
 
 <TryIt 
   compact
@@ -195,8 +197,9 @@ Indizi:
 2. L'ingegnere ha un cane
 3. Bob è insegnante
 4. Carol non ha un pesce
+5. Il dottore non ha un gatto
 
-Chi ha quale animale e lavoro? Ragiona su questo sistematicamente, testando ipotesi e verificando contro tutti gli indizi.`}
+Chi ha quale animale e lavoro? Ragiona in modo sistematico, testando ipotesi e verificandole rispetto a tutti gli indizi.`}
 />
 
 **Output di Esempio:**
@@ -204,18 +207,23 @@ Chi ha quale animale e lavoro? Ragiona su questo sistematicamente, testando ipot
 Dall'indizio 3: Bob = insegnante
 → Alice e Carol sono ingegnere/dottore
 
-Se Carol = ingegnere:
-- Carol ha cane (indizio 2)
-- Alice = dottore, ha pesce (indizio 1)
+Ipotesi A: Alice = ingegnere
+- Alice ha cane (indizio 2), Carol = dottore
+- Carol non può avere pesce (indizio 4), quindi Carol ha gatto
+- Ma il dottore non può avere un gatto (indizio 5) ✗
+
+Ipotesi B: Carol = ingegnere
+- Carol ha cane (indizio 2), Alice = dottore
+- Alice non può avere gatto (indizio 1), quindi Alice ha pesce
 - Bob ha gatto
 
-Verifica: Tutti e 4 gli indizi soddisfatti ✓
+Verifica: Tutti e 5 gli indizi soddisfatti ✓
 Risposta: Alice (dottore, pesce), Bob (insegnante, gatto), Carol (ingegnere, cane)
 ```
 
 ### Debug del Codice
 
-Il debugging beneficia dal CoT perché forza il modello a tracciare l'esecuzione invece di indovinare i bug. Camminando attraverso il codice con valori concreti, il comportamento effettivo diventa visibile e le discrepanze con il comportamento atteso vengono esposte.
+Il debugging trae vantaggio dal CoT perché costringe il modello a seguire l'esecuzione invece di tirare a indovinare i bug. Percorrendo il codice con valori concreti, il comportamento effettivo diventa visibile e le discrepanze con il comportamento atteso vengono esposte.
 
 <TryIt 
   compact
@@ -247,7 +255,7 @@ Fix: Cambia in "total += n"
 
 ## Auto-Consistenza con CoT
 
-Per problemi critici, non affidarti a un singolo percorso di ragionamento. Genera molteplici soluzioni indipendenti e confronta i risultati. Se approcci diversi convergono sulla stessa risposta, la confidenza è alta. Il disaccordo segnala la necessità di revisione attenta.
+Per problemi critici, non affidarti a un singolo percorso di ragionamento. Genera molteplici soluzioni indipendenti e confronta i risultati. Se approcci diversi convergono sulla stessa risposta, puoi fidarti molto del risultato. Il disaccordo segnala la necessità di una revisione attenta.
 
 <TryIt 
   compact
@@ -271,6 +279,8 @@ Approccio 3 (Logica): 30 galline = 60 zampe, servono 14 in più → 7 mucche
 
 Tutti concordano: 23 galline, 7 mucche
 ```
+
+Nella sua forma originale, nata dalla ricerca, l'auto-consistenza fa un passo in più: invii lo stesso prompt più volte come richieste separate e tieni la risposta che compare più spesso. Chiedere più approcci in un'unica risposta, come sopra, è una versione più leggera della stessa idea. Costa meno, ma i tentativi non sono davvero indipendenti, perché ciascuno può vedere gli altri.
 
 ## CoT per il Processo Decisionale
 
@@ -308,6 +318,21 @@ RACCOMANDAZIONE: Restare monolite, usare confini di modulo
 chiari per facilitare transizione futura.
 ```
 
+## Modelli di Ragionamento: CoT Integrato
+
+La Chain of Thought è nata come un trucco di prompting, ma da allora si è trasferita all'interno dei modelli stessi. Molti modelli attuali sono addestrati a ragionare prima di rispondere: i modelli di ragionamento di OpenAI, Claude di Anthropic con il thinking attivato, Gemini di Google e modelli open-weight come DeepSeek-R1 elaborano il problema in privato e poi danno la loro risposta. Di solito vedi solo la risposta, o un breve riassunto del ragionamento, mentre i token di ragionamento vengono comunque conteggiati nel tuo consumo.
+
+Questo non rende obsoleto il capitolo, ma cambia il modo in cui lo applichi:
+
+- **Lascia perdere la frase magica.** Secondo le indicazioni di OpenAI, dire ai suoi modelli di ragionamento di "pensare passo dopo passo" è superfluo e a volte può persino peggiorare le cose. Anthropic osserva che un'istruzione generica come "rifletti a fondo" spesso funziona meglio di un piano passo per passo scritto a mano, perché il ragionamento del modello arriva spesso più lontano di quanto arriverebbe il piano.
+- **Descrivi la meta, non il percorso.** Spendi le parole sul problema, sui vincoli e su come dovrebbe essere una buona risposta, poi lascia che il modello trovi la sua strada.
+- **Gira la manopola invece di scrivere di più.** Queste API offrono impostazioni come il livello di impegno (reasoning effort) o il livello di thinking. Alzarle è di solito un modo migliore per ottenere un ragionamento più profondo che chiedere spiegazioni più lunghe nel prompt.
+- **Mantieni la struttura quando devi vedere il lavoro.** Template come BREAK o DATO/OBIETTIVO/PASSI restano utili quando vuoi un ragionamento da leggere, controllare o analizzare, e con i modelli che non ragionano da soli. Alcuni fornitori ora sconsigliano di chiedere ai loro modelli che ragionano sempre di scrivere il proprio ragionamento, quindi controlla le indicazioni per il modello che usi.
+
+<Callout type="warning" title="Il Ragionamento Mostrato Non È una Finestra">
+Il ragionamento che il modello scrive, o il riassunto del thinking che mostra, non è necessariamente il processo che ha davvero prodotto la risposta. Una ricerca di Anthropic ha rilevato che i modelli di ragionamento spesso tralasciano fattori che li hanno influenzati. Considera i passaggi visibili come qualcosa da verificare, non come una prova.
+</Callout>
+
 ## Quando Usare CoT
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
@@ -335,7 +360,7 @@ chiari per facilitare transizione futura.
 
 ## Limitazioni di CoT
 
-Sebbene potente, Chain of Thought non è una soluzione magica. Capire le sue limitazioni ti aiuta ad applicarlo appropriatamente.
+Sebbene potente, Chain of Thought non è una soluzione magica. Capire i suoi limiti ti aiuta ad applicarlo nel modo giusto.
 
 1. **Uso token aumentato** — Più output significa costi più alti
 2. **Non sempre necessario** — Compiti semplici non ne beneficiano
@@ -345,7 +370,7 @@ Sebbene potente, Chain of Thought non è una soluzione magica. Capire le sue lim
 ## Riepilogo
 
 <Callout type="tip" title="Punti Chiave">
-CoT migliora drasticamente il ragionamento complesso rendendo espliciti i passi impliciti. Usalo per matematica, logica, analisi e debug. Trade-off: migliore accuratezza per più token.
+CoT migliora drasticamente il ragionamento complesso rendendo espliciti i passi impliciti. Usalo per matematica, logica, analisi e debug. Il compromesso: più accuratezza in cambio di più token. Con i modelli di ragionamento, che pensano già prima di rispondere, concentra il prompt sull'obiettivo e regola invece le impostazioni di ragionamento.
 </Callout>
 
 <Quiz 
@@ -354,7 +379,7 @@ CoT migliora drasticamente il ragionamento complesso rendendo espliciti i passi 
     "Problemi matematici che richiedono molteplici passi",
     "Domande fattuali semplici come 'Qual è la capitale della Francia?'",
     "Debug di codice con logica complessa",
-    "Analizzare una decisione business"
+    "Analizzare una decisione aziendale"
   ]}
   correctIndex={1}
   explanation="Chain of Thought aggiunge overhead non necessario per Q&A semplice. È meglio riservarlo per compiti di ragionamento complesso come matematica, puzzle logici, debug del codice e analisi dove mostrare il lavoro migliora l'accuratezza."

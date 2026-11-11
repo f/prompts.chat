@@ -10,7 +10,7 @@ JSON e YAML trasformano gli output IA da testo libero in dati strutturati e type
 
 ## Basi del Prompting JSON
 
-JSON (JavaScript Object Notation) è il formato più comune per output IA programmatici. La sua sintassi rigorosa lo rende facile da parsare, ma significa anche che piccoli errori possono rompere l'intera pipeline.
+JSON (JavaScript Object Notation) è il formato più comune per output IA programmatici. La sua sintassi rigorosa lo rende facile da analizzare per il codice, ma significa anche che piccoli errori possono rompere l'intera pipeline.
 
 ### Cosa Fare e Non Fare: Richiedere JSON
 
@@ -49,7 +49,7 @@ Output:
 I dati del mondo reale spesso hanno relazioni annidate. Definisci ogni livello del tuo schema chiaramente, specialmente per array di oggetti.
 
 ```
-Parsa questo ordine in JSON:
+Converti questo ordine in JSON:
 
 {
   "order_id": "string",
@@ -84,9 +84,13 @@ CRITICO: Restituisci SOLO JSON valido. No markdown, no spiegazioni,
 nessun testo aggiuntivo prima o dopo l'oggetto JSON.
 
 Se un campo non può essere determinato, usa null.
-Assicurati che tutte le stringhe siano correttamente quotate e escapate.
-I numeri non devono essere quotati.
+Assicurati che tutte le stringhe siano tra virgolette e con l'escape corretto.
+I numeri non devono essere tra virgolette.
 ```
+
+<Callout type="tip" title="Lascia che Sia l'API a Imporre lo Schema">
+Quando chiami un modello tramite API, la formulazione non è il tuo unico strumento. OpenAI, Anthropic e Google offrono tutti funzionalità di output strutturato che accettano un JSON Schema e vincolano la risposta a rispettarlo. Questo elimina la maggior parte degli errori di parsing descritti in questo capitolo, come blocchi markdown di troppo, virgole finali e campi mancanti. Le vecchie opzioni "JSON mode" garantiscono solo un JSON sintatticamente valido, non il rispetto del tuo schema, e ogni fornitore supporta un sottoinsieme leggermente diverso di JSON Schema. Le tecniche che seguono restano comunque importanti, perché uno schema controlla la forma della risposta, non la correttezza dei valori che contiene.
+</Callout>
 
 ## Basi del Prompting YAML
 
@@ -131,7 +135,7 @@ Genera un workflow GitHub Actions in YAML:
 Requisiti:
 - Trigger su push a main e pull request
 - Esegui su Ubuntu latest
-- Step: checkout, setup Node 18, installa dipendenze, esegui test
+- Step: checkout, configura l'attuale release LTS di Node.js, installa dipendenze, esegui test
 - Cache delle dipendenze npm
 ```
 
@@ -141,7 +145,7 @@ Le definizioni di tipo danno al modello un contratto preciso per la struttura de
 
 ### Usare Tipi Stile TypeScript
 
-Le interfacce TypeScript sono familiari agli sviluppatori e descrivono precisamente campi opzionali, tipi union e array. La piattaforma prompts.chat usa questo approccio per prompt strutturati.
+Le interfacce TypeScript sono familiari agli sviluppatori e descrivono precisamente campi opzionali, tipi union e array.
 
 <TryIt 
   title="Estrazione con Interfaccia TypeScript"
@@ -159,7 +163,7 @@ interface ChatPersona {
 
 Restituisci come JSON corrispondente a questa interfaccia.
 
-Descrizione: "Un senior software engineer chiamato Alex che revisiona codice. È analitico e accurato, con expertise in sistemi backend e database. Tono professionale ma accessibile."`}
+Descrizione: "Un senior software engineer chiamato Alex che revisiona codice. È analitico e scrupoloso, esperto di sistemi backend e database. Tono professionale ma accessibile."`}
 />
 
 ### Definizione JSON Schema
@@ -203,7 +207,7 @@ Gli array richiedono attenzione speciale. Specifica se hai bisogno di un numero 
 
 ### Array a Lunghezza Fissa
 
-Quando hai bisogno di esattamente N elementi, dichiaralo esplicitamente. Il modello assicurerà che l'array abbia la lunghezza giusta.
+Quando hai bisogno di esattamente N elementi, dichiaralo esplicitamente. Di solito i modelli lo rispettano, ma se il numero conta, conta gli elementi nel tuo codice.
 
 ```
 Estrai esattamente 3 punti chiave come JSON:
@@ -243,7 +247,7 @@ Testo: [testo]
 
 ## Valori Enum e Vincoli
 
-Gli enum restringono i valori a un set predefinito. Questo è cruciale per compiti di classificazione e ovunque hai bisogno di output consistenti e prevedibili.
+Gli enum restringono i valori a un set predefinito. Questo è cruciale per compiti di classificazione e ovunque ti servano output coerenti e prevedibili.
 
 ### Cosa Fare e Non Fare: Valori Enum
 
@@ -254,7 +258,7 @@ Gli enum restringono i valori a un set predefinito. Questo è cruciale per compi
 
 ### Enum di Stringhe
 
-Elenca i valori permessi esplicitamente. Usa linguaggio "DEVE essere uno di" per imporre matching rigoroso.
+Elenca i valori permessi esplicitamente. Usa formulazioni come "DEVE essere uno di" per imporre una corrispondenza rigorosa.
 
 ```
 Classifica questo testo. La categoria DEVE essere uno di questi valori esatti:
@@ -275,7 +279,7 @@ Testo: [testo da classificare]
 
 ### Numeri Validati
 
-I vincoli numerici prevengono valori fuori range. Specifica il tipo (intero vs float) e range valido.
+I vincoli numerici evitano valori fuori intervallo. Specifica il tipo (intero o float) e l'intervallo valido.
 
 ```
 Valuta questi aspetti. Ogni punteggio DEVE essere un intero da 1 a 5.
@@ -292,7 +296,7 @@ Recensione: [testo recensione]
 
 ## Gestire Dati Mancanti
 
-Il testo del mondo reale spesso manca di alcune informazioni. Definisci come il modello dovrebbe gestire dati mancanti per evitare valori allucinati.
+Nei testi reali spesso mancano alcune informazioni. Definisci come il modello dovrebbe gestire dati mancanti per evitare valori allucinati.
 
 ### Cosa Fare e Non Fare: Informazioni Mancanti
 
@@ -357,7 +361,7 @@ Spesso hai bisogno di estrarre molteplici elementi da un singolo input. Definisc
 Per liste di elementi simili, definisci lo schema dell'oggetto una volta e specifica che è un array.
 
 ```
-Parsa questa lista in array JSON:
+Converti questa lista in un array JSON:
 
 [
   {
@@ -391,7 +395,7 @@ Elementi: mela, carota, pane, banana, broccoli, latte, arancia, spinaci
 
 ## YAML per Generazione di Configurazioni
 
-YAML brilla per configurazioni DevOps. Il modello conosce pattern standard per strumenti comuni e può generare config pronte per la produzione.
+YAML dà il meglio di sé nelle configurazioni DevOps. Il modello conosce i pattern standard degli strumenti più comuni e può produrre configurazioni di partenza solide, che dovresti comunque rivedere prima che arrivino in produzione.
 
 ### Cosa Fare e Non Fare: Config YAML
 
@@ -438,11 +442,11 @@ Genera anche Service corrispondente (ClusterIP, porta 8080)
 
 ## Validazione e Gestione Errori
 
-Per sistemi di produzione, integra la validazione nei tuoi prompt. Questo cattura errori prima che si propaghino attraverso la tua pipeline.
+Per sistemi di produzione, integra la validazione nei tuoi prompt. Così intercetti gli errori prima che si propaghino lungo la pipeline.
 
 ### Prompt di Auto-Validazione
 
-Chiedi al modello di validare il proprio output contro regole che specifichi. Questo cattura errori di formato e valori invalidi.
+Chiedi al modello di validare il proprio output rispetto a regole che specifichi tu. Così intercetti errori di formato e valori non validi.
 
 ```
 Estrai dati come JSON, poi valida il tuo output.
@@ -510,27 +514,14 @@ Formato errore:
   </div>
 </div>
 
-## Prompt Strutturati su Prompts.chat
+## Salvare i Prompt Strutturati
 
-Su prompts.chat, puoi creare prompt con formati di output strutturati:
-
-```
-Quando crei un prompt su prompts.chat, puoi specificare:
-
-Tipo: STRUCTURED
-Formato: JSON o YAML
-
-La piattaforma:
-- Validerà output contro il tuo schema
-- Fornirà syntax highlighting
-- Abiliterà copia facile dell'output strutturato
-- Supporterà variabili template nel tuo schema
-```
+Quando un prompt JSON o YAML funziona bene, conservalo in un posto dove puoi ritrovarlo e riutilizzarlo. Alcune librerie di prompt, tra cui prompts.chat, ti permettono di salvare un prompt scritto a sua volta in JSON o YAML, di visualizzarlo con l'evidenziazione della sintassi e di compilare le variabili del template prima di copiarlo. Tieni presente che così si conserva il prompt; non si verifica la risposta del modello rispetto a uno schema. Per quello, usa la funzionalità di output strutturato della tua API o valida la risposta nel tuo codice.
 
 ## Insidie Comuni
 
 <Callout type="warning" title="Debug Prima Queste">
-Questi tre problemi causano la maggior parte dei fallimenti di parsing JSON. Controllali quando il tuo codice non riesce a parsare l'output IA.
+Questi tre problemi causano la maggior parte dei fallimenti di parsing JSON. Controllali quando il tuo codice non riesce a fare il parsing dell'output IA. Gli output strutturati vincolati da uno schema li evitano in gran parte, quindi contano soprattutto quando ti affidi solo al prompt.
 </Callout>
 
 ### 1. Blocchi di Codice Markdown
@@ -568,7 +559,7 @@ Esegui correttamente l'escape dei caratteri speciali nelle stringhe:
 ## Riepilogo
 
 <Callout type="tip" title="Tecniche Chiave">
-Definisci schema esplicitamente usando interfacce TypeScript o JSON Schema. Specifica tipi e vincoli, gestisci null e default, richiedi auto-validazione e scegli il formato giusto per il tuo caso d'uso.
+Definisci schema esplicitamente usando interfacce TypeScript o JSON Schema. Specifica tipi e vincoli, gestisci null e default, richiedi auto-validazione e scegli il formato giusto per il tuo caso d'uso. Quando lavori tramite API, lascia che sia la sua funzionalità di output strutturato a imporre lo schema, e continua a validare i valori.
 </Callout>
 
 <Quiz 
@@ -583,4 +574,4 @@ Definisci schema esplicitamente usando interfacce TypeScript o JSON Schema. Spec
   explanation="YAML è preferito quando la leggibilità umana conta, come file di configurazione, manifest DevOps e documentazione. Supporta anche i commenti, a differenza di JSON."
 />
 
-Questo completa la Parte II sulle tecniche. Nella Parte III, esploreremo applicazioni pratiche attraverso diversi domini.
+Questo completa la Parte II sulle tecniche. Nella Parte III, esploreremo applicazioni pratiche in diversi ambiti.

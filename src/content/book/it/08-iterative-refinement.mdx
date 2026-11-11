@@ -1,7 +1,7 @@
 Il prompt engineering è raramente un processo one-shot. I migliori prompt emergono attraverso l'iterazione—testando, osservando e raffinando fino a raggiungere i risultati desiderati.
 
 <Callout type="info" title="Prima Bozza, Non Bozza Finale">
-Pensa al tuo primo prompt come una bozza grezza. Anche i prompt engineer esperti raramente centrano al primo tentativo.
+Pensa al tuo primo prompt come una bozza grezza. Anche i prompt engineer esperti raramente fanno centro al primo tentativo.
 </Callout>
 
 ## Il Ciclo di Iterazione
@@ -66,7 +66,7 @@ Per ogni problema trovato, spiega il problema e suggerisci un fix.
   afterLabel="Raffinato"
 />
 
-### Problema: Formato Inconsistente
+### Problema: Formato Incoerente
 
 Senza un template, il modello strutturerà ogni risposta diversamente, rendendo il confronto difficile e l'automazione impossibile.
 
@@ -108,7 +108,7 @@ Prima di cambiare qualsiasi cosa, identifica cosa c'è effettivamente di sbaglia
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Troppo corto</span>
     <span className="text-muted-foreground">Manca richiesta di dettagli</span>
-    <span className="text-green-600 dark:text-green-400">Chiedi elaborazione</span>
+    <span className="text-green-600 dark:text-green-400">Chiedi approfondimenti</span>
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Fuori tema</span>
@@ -126,7 +126,7 @@ Prima di cambiare qualsiasi cosa, identifica cosa c'è effettivamente di sbaglia
     <span className="text-green-600 dark:text-green-400">Specifica pubblico/stile</span>
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
-    <span>Inconsistente</span>
+    <span>Incoerente</span>
     <span className="text-muted-foreground">Nessun esempio fornito</span>
     <span className="text-green-600 dark:text-green-400">Aggiungi esempi few-shot</span>
   </div>
@@ -155,7 +155,7 @@ La conoscenza del prompt engineering si perde facilmente. Tieni un log di cosa h
 
 ### Versione 2 (tono migliore, manca ancora struttura)
 "Scrivi una risposta amichevole ma professionale a questo reclamo. 
-Mostra empatia prima."
+Mostra prima empatia."
 
 ### Versione 3 (finale - buoni risultati)
 "Scrivi una risposta a questo reclamo cliente. Struttura:
@@ -169,7 +169,7 @@ Tono: Amichevole, professionale, empatico ma non servile."
 
 ## Esempio di Iterazione del Mondo Reale
 
-Camminiamo attraverso un ciclo di iterazione completo per vedere come ogni raffinamento si costruisce sul precedente. Nota come ogni versione affronta carenze specifiche della precedente.
+Seguiamo un ciclo di iterazione completo per vedere come ogni raffinamento poggia sul precedente. Nota come ogni versione affronta carenze specifiche della precedente.
 
 ### Compito: Generare Nomi Prodotto
 
@@ -222,7 +222,7 @@ Compiti diversi falliscono in modi prevedibili. Conoscere le modalità di fallim
 
 ### Per la Generazione di Contenuti
 
-La generazione di contenuti spesso produce output generico, fuori target o mal formattato. Il fix di solito coinvolge essere più specifico sui vincoli, fornire esempi concreti o definire esplicitamente la voce del tuo brand.
+La generazione di contenuti spesso produce output generico, fuori target o mal formattato. La soluzione di solito consiste nell'essere più specifici sui vincoli, fornire esempi concreti o definire esplicitamente la voce del tuo brand.
 
 <InfoGrid items={[
   { icon: "target", title: "Troppo Generico", description: "Aggiungi vincoli specifici e contesto", example: "\"Scrivi sui cani\" → \"Scrivi sui golden retriever per proprietari alla prima esperienza, concentrandoti su addestramento e bisogni di esercizio\"" },
@@ -233,13 +233,13 @@ La generazione di contenuti spesso produce output generico, fuori target o mal f
 
 ### Per la Generazione di Codice
 
-L'output di codice può fallire tecnicamente (errori di sintassi, funzionalità di linguaggio sbagliate) o architetturalmente (pattern scarsi, casi mancanti). Problemi tecnici necessitano specifiche versione/ambiente; problemi architetturali necessitano guida al design.
+L'output di codice può fallire tecnicamente (errori di sintassi, funzionalità di linguaggio sbagliate) o architetturalmente (pattern inadeguati, casi mancanti). Problemi tecnici necessitano specifiche versione/ambiente; problemi architetturali necessitano guida al design.
 
 <InfoGrid items={[
   { icon: "code", title: "Errori di Sintassi", description: "Specifica versione linguaggio", example: "\"Usa sintassi Python 3.11+ con type hints\" o \"JavaScript ES2022\"" },
   { icon: "git-branch", title: "Approccio Sbagliato", description: "Descrivi pattern preferiti", example: "\"Usa approccio funzionale, evita classi\" o \"Segui pattern repository\"" },
   { icon: "shield", title: "Casi Limite Mancanti", description: "Elenca scenari da gestire", example: "\"Gestisci: input vuoto, valori null, timeout di rete, formati invalidi\"" },
-  { icon: "tag", title: "Naming Scarso", description: "Includi convenzioni di naming", example: "\"Usa camelCase per variabili, PascalCase per classi, UPPER_SNAKE per costanti\"" }
+  { icon: "tag", title: "Nomi Poco Chiari", description: "Includi convenzioni di naming", example: "\"Usa camelCase per variabili, PascalCase per classi, UPPER_SNAKE per costanti\"" }
 ]} />
 
 ### Per l'Analisi
@@ -255,12 +255,12 @@ I compiti di analisi spesso producono risultati superficiali o non strutturati. 
 
 ### Per Q&A
 
-Il question-answering può essere troppo conciso o troppo prolisso, e potrebbe mancare indicatori di confidenza o fonti. Specifica il livello di dettaglio di cui hai bisogno e se vuoi citazioni o incertezza espressa.
+Il question-answering può essere troppo conciso o troppo prolisso, e può non indicare quanto è sicuro o da quali fonti attinge. Specifica il livello di dettaglio di cui hai bisogno e se vuoi citazioni o che venga espresso il grado di incertezza.
 
 <InfoGrid items={[
-  { icon: "plus", title: "Troppo Corto", description: "Chiedi elaborazione", example: "\"Spiega in dettaglio con esempi\" o \"Elabora su ogni punto\"" },
+  { icon: "plus", title: "Troppo Corto", description: "Chiedi approfondimenti", example: "\"Spiega in dettaglio con esempi\" o \"Approfondisci ogni punto\"" },
   { icon: "minus", title: "Troppo Lungo", description: "Richiedi risposta concisa", example: "\"Rispondi in 2-3 frasi\" o \"Dammi il TL;DR\"" },
-  { icon: "help-circle", title: "Incerto", description: "Chiedi livello di confidenza", example: "\"Valuta la tua confidenza 1-10\" o \"Nota eventuali assunzioni fatte\"" },
+  { icon: "help-circle", title: "Incerto", description: "Chiedi il grado di sicurezza", example: "\"Valuta da 1 a 10 quanto sei sicuro\" o \"Nota eventuali assunzioni fatte\"" },
   { icon: "link", title: "Senza Fonti", description: "Richiedi citazioni", example: "\"Cita fonti per le affermazioni\" o \"Includi riferimenti dove possibile\"" }
 ]} />
 
@@ -290,19 +290,19 @@ Prompt C: "Quali sono i punti chiave di questo articolo? Elencane 3."
 ```
 
 Esegui ciascuno più volte, confronta:
-- Consistenza dell'output
+- Coerenza dell'output
 - Qualità delle informazioni
 - Rilevanza per le tue esigenze
 
 ## Quando Smettere di Iterare
 
-La perfezione è nemica del buono. Sappi quando il tuo prompt è pronto per l'uso e quando stai solo lucidando per rendimenti decrescenti.
+La perfezione è nemica del buono. Sappi quando il tuo prompt è pronto per l'uso e quando stai solo rifinendo dettagli con rendimenti decrescenti.
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
   <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
     <p className="text-sm font-semibold text-green-700 dark:text-green-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconCheck className="h-4 w-4" /> Pronto per il Rilascio</p>
     <div className="text-sm p-4 pt-2 space-y-1">
-      <p className="m-0!">L'output soddisfa consistentemente i requisiti</p>
+      <p className="m-0!">L'output soddisfa costantemente i requisiti</p>
       <p className="m-0!">I casi limite sono gestiti appropriatamente</p>
       <p className="m-0!">Il formato è affidabile e parsabile</p>
       <p className="m-0!">Ulteriori miglioramenti mostrano rendimenti decrescenti</p>
@@ -311,9 +311,9 @@ La perfezione è nemica del buono. Sappi quando il tuo prompt è pronto per l'us
   <div className="border rounded-lg bg-red-50/50 dark:bg-red-950/20 border-red-200 dark:border-red-900">
     <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> Continua a Iterare</p>
     <div className="text-sm p-4 pt-2 space-y-1">
-      <p className="m-0!">L'output è inconsistente tra le esecuzioni</p>
+      <p className="m-0!">L'output è incoerente tra un'esecuzione e l'altra</p>
       <p className="m-0!">I casi limite causano fallimenti</p>
-      <p className="m-0!">Requisiti critici vengono mancati</p>
+      <p className="m-0!">Requisiti critici non vengono soddisfatti</p>
       <p className="m-0!">Non hai testato abbastanza variazioni</p>
     </div>
   </div>
@@ -324,7 +324,7 @@ La perfezione è nemica del buono. Sappi quando il tuo prompt è pronto per l'us
 I prompt sono codice. Per qualsiasi prompt usato in produzione, trattalo con lo stesso rigore: controllo versione, changelog e la possibilità di rollback se qualcosa si rompe.
 
 <Callout type="tip" title="Versioning Integrato">
-prompts.chat include cronologia automatica delle versioni per i tuoi prompt. Ogni modifica viene salvata, così puoi confrontare versioni e ripristinare iterazioni precedenti con un click.
+Molti strumenti per i prompt tengono la cronologia delle versioni al posto tuo. Su prompts.chat, per esempio, ogni modifica al testo di un prompt viene salvata come nuova versione, e puoi confrontare due versioni qualsiasi una accanto all'altra.
 </Callout>
 
 Per prompt autogestiti, usa una struttura di cartelle:
@@ -364,7 +364,7 @@ Prova a migliorare questo prompt debole tu stesso. Modificalo, poi usa l'IA per 
 <BeforeAfterEditor
   title="Raffina Questo Prompt Email"
   badPrompt="Scrivi un'email."
-  idealPrompt={`Sei uno scrittore business professionale.
+  idealPrompt={`Sei un professionista della scrittura aziendale.
 
 Compito: Scrivi un'email di follow-up a un potenziale cliente dopo un incontro di vendita.
 
