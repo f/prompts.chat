@@ -1,7 +1,7 @@
-Prompt Engineering ist selten ein Ein-Schuss-Prozess. Die besten Prompts entstehen durch Iteration – testen, beobachten und verfeinern, bis du die gewünschten Ergebnisse erzielst.
+Prompt Engineering gelingt selten im ersten Anlauf. Die besten Prompts entstehen durch Iteration – testen, beobachten und verfeinern, bis du die gewünschten Ergebnisse erzielst.
 
 <Callout type="info" title="Erster Entwurf, nicht Endversion">
-Betrachte deinen ersten Prompt als Rohentwurf. Selbst erfahrene Prompt-Ingenieure treffen es selten beim ersten Versuch.
+Betrachte deinen ersten Prompt als Rohentwurf. Selbst erfahrene Prompt Engineers treffen selten auf Anhieb ins Schwarze.
 </Callout>
 
 ## Der Iterationszyklus
@@ -12,7 +12,7 @@ Effektive Prompt-Verfeinerung folgt einem vorhersehbaren Zyklus: schreiben, test
 
 ## Häufige Verfeinerungsmuster
 
-Die meisten Prompt-Fehler fallen in eine Handvoll Kategorien. Das Erkennen dieser Muster lässt dich Probleme schnell diagnostizieren und beheben, ohne von vorn anzufangen.
+Die meisten Prompt-Fehler fallen in eine Handvoll Kategorien. Wenn du diese Muster erkennst, kannst du Probleme schnell diagnostizieren und beheben, ohne von vorn anzufangen.
 
 ### Problem: Ausgabe zu lang
 
@@ -20,14 +20,14 @@ Eines der häufigsten Probleme. Ohne explizite Einschränkungen neigen Modelle d
 
 <DiffView 
   before="Erkläre, wie Photosynthese funktioniert."
-  after={`Erkläre, wie Photosynthese funktioniert, in 3-4 Sätzen, geeignet für einen 10-Jährigen.`}
+  after={`Erkläre in 3-4 Sätzen, wie Photosynthese funktioniert, sodass ein 10-jähriges Kind es versteht.`}
   beforeLabel="Original"
   afterLabel="Verfeinert"
 />
 
 ### Problem: Ausgabe zu vage
 
-Vage Prompts produzieren vage Ausgaben. Das Modell kann deine Gedanken nicht lesen, was „besser" bedeutet oder welche Aspekte dir am wichtigsten sind.
+Vage Prompts produzieren vage Ausgaben. Das Modell kann nicht erraten, was du unter „besser“ verstehst oder welche Aspekte dir am wichtigsten sind.
 
 <DiffView 
   before="Gib mir Tipps für bessere Präsentationen."
@@ -59,7 +59,7 @@ Offene Anfragen bekommen offene Antworten. Wenn du bestimmte Arten von Feedback 
 3. Sicherheitslücken
 4. Code-Stil (PEP 8)
 
-Erkläre für jedes gefundene Problem das Problem und schlage einen Fix vor.
+Erkläre bei jedem gefundenen Problem, worin es besteht, und schlage einen Fix vor.
 
 [code]`}
   beforeLabel="Original"
@@ -134,7 +134,7 @@ Bevor du etwas änderst, identifiziere, was tatsächlich falsch ist. Nutze diese
 
 ### Schritt 2: Gezielte Änderungen vornehmen
 
-Widerstehe dem Drang, alles neu zu schreiben. Mehrere Variablen gleichzeitig zu ändern macht es unmöglich zu wissen, was geholfen hat und was geschadet hat. Nimm eine Änderung vor, teste sie, dann fahre fort:
+Widerstehe dem Drang, alles neu zu schreiben. Wenn du mehrere Variablen gleichzeitig änderst, kannst du nicht mehr erkennen, was geholfen und was geschadet hat. Nimm eine Änderung vor, teste sie und mach dann weiter:
 
 ```
 Iteration 1: Längenbeschränkung hinzufügen
@@ -145,7 +145,7 @@ Iteration 4: Tonanweisungen verfeinern
 
 ### Schritt 3: Dokumentiere, was funktioniert
 
-Prompt-Engineering-Wissen geht leicht verloren. Führe ein Protokoll darüber, was du versucht hast und warum. Das spart Zeit, wenn du den Prompt später wieder besuchst oder ähnliche Herausforderungen hast:
+Prompt-Engineering-Wissen geht leicht verloren. Führe ein Protokoll darüber, was du versucht hast und warum. Das spart Zeit, wenn du später zu dem Prompt zurückkehrst oder vor ähnlichen Herausforderungen stehst:
 
 ```markdown
 ## Prompt: Kunden-E-Mail-Antwort
@@ -164,12 +164,12 @@ Zeige zuerst Empathie."
 3. Lösung erklären (2-3 Sätze)
 4. Zusätzliche Hilfe anbieten (1 Satz)
 
-Ton: Freundlich, professionell, empathisch aber nicht unterwürfig."
+Ton: Freundlich, professionell, empathisch, aber nicht unterwürfig."
 ```
 
 ## Praxis-Iterationsbeispiel
 
-Lass uns durch einen kompletten Iterationszyklus gehen, um zu sehen, wie jede Verfeinerung auf der vorherigen aufbaut. Beachte, wie jede Version spezifische Mängel der vorherigen adressiert.
+Gehen wir einen kompletten Iterationszyklus durch, um zu sehen, wie jede Verfeinerung auf der vorherigen aufbaut. Beachte, wie jede Version gezielt die Schwächen der vorherigen behebt.
 
 ### Aufgabe: Produktnamen generieren
 
@@ -218,11 +218,11 @@ Name | Aussprache | Warum er funktioniert | Domain-Verfügbarkeitsschätzung`,
 
 ## Verfeinerungsstrategien nach Aufgabentyp
 
-Verschiedene Aufgaben scheitern auf vorhersehbare Weise. Das Kennen der häufigen Fehlermodi hilft dir, Probleme schneller zu diagnostizieren und zu beheben.
+Verschiedene Aufgaben scheitern auf vorhersehbare Weise. Wenn du die typischen Fehlerbilder kennst, kannst du Probleme schneller diagnostizieren und beheben.
 
 ### Für Inhaltsgenerierung
 
-Inhaltsgenerierung produziert oft generische, zielverfehlte oder schlecht formatierte Ausgaben. Die Lösung beinhaltet normalerweise, spezifischer bei Einschränkungen zu sein, konkrete Beispiele zu liefern oder deine Markenstimme explizit zu definieren.
+Inhaltsgenerierung produziert oft generische, zielverfehlte oder schlecht formatierte Ausgaben. Abhilfe schaffst du meist, indem du Vorgaben genauer formulierst, konkrete Beispiele lieferst oder deine Markenstimme explizit definierst.
 
 <InfoGrid items={[
   { icon: "target", title: "Zu generisch", description: "Spezifische Einschränkungen und Kontext hinzufügen", example: "\"Schreibe über Hunde\" → \"Schreibe über Golden Retriever für Erstbesitzer, mit Fokus auf Training und Bewegungsbedürfnisse\"" },
@@ -233,7 +233,7 @@ Inhaltsgenerierung produziert oft generische, zielverfehlte oder schlecht format
 
 ### Für Code-Generierung
 
-Code-Ausgabe kann technisch scheitern (Syntaxfehler, falsche Sprachfeatures) oder architektonisch (schlechte Muster, fehlende Fälle). Technische Probleme brauchen Versions-/Umgebungsspezifika; architektonische Probleme brauchen Design-Anleitung.
+Code-Ausgabe kann technisch scheitern (Syntaxfehler, falsche Sprachfeatures) oder architektonisch (schlechte Muster, fehlende Fälle). Bei technischen Problemen helfen Angaben zu Version und Umgebung, bei architektonischen Problemen klare Designvorgaben.
 
 <InfoGrid items={[
   { icon: "code", title: "Syntaxfehler", description: "Sprachversion spezifizieren", example: "\"Verwende Python 3.11+ Syntax mit Type Hints\" oder \"ES2022 JavaScript\"" },
@@ -255,7 +255,7 @@ Analyseaufgaben produzieren oft oberflächliche oder unstrukturierte Ergebnisse.
 
 ### Für Frage-Antwort
 
-Frage-Antwort kann zu knapp oder zu ausführlich sein und kann Konfidenzindikatoren oder Quellen vermissen lassen. Spezifiziere das benötigte Detailniveau und ob du Zitate oder geäußerte Unsicherheit willst.
+Antworten auf Fragen fallen oft zu knapp oder zu ausführlich aus, und häufig fehlen Angaben zur Sicherheit oder Quellen. Lege fest, wie detailliert die Antwort sein soll und ob du Quellenangaben oder Hinweise auf Unsicherheiten möchtest.
 
 <InfoGrid items={[
   { icon: "plus", title: "Zu kurz", description: "Um Ausführlichkeit bitten", example: "\"Erkläre detailliert mit Beispielen\" oder \"Führe jeden Punkt aus\"" },
@@ -286,17 +286,17 @@ Für Prompts, die wiederholt oder in großem Maßstab verwendet werden, wähle n
 ```
 Prompt A: "Fasse diesen Artikel in 3 Stichpunkten zusammen."
 Prompt B: "Extrahiere die 3 wichtigsten Erkenntnisse aus diesem Artikel."
-Prompt C: "Was sind die wichtigsten Takeaways aus diesem Artikel? Liste 3 auf."
+Prompt C: "Was sind die wichtigsten Kernaussagen dieses Artikels? Nenne 3."
 ```
 
-Führe jeden mehrmals aus, vergleiche:
+Führe jeden mehrmals aus und vergleiche:
 - Konsistenz der Ausgabe
 - Qualität der Informationen
 - Relevanz für deine Bedürfnisse
 
 ## Wann mit dem Iterieren aufhören
 
-Perfektion ist der Feind von gut genug. Wisse, wann dein Prompt einsatzbereit ist und wann du nur noch für sinkende Erträge polierst.
+Das Perfekte ist der Feind des Guten. Erkenne, wann dein Prompt einsatzbereit ist und wann du nur noch an Details feilst, die kaum noch etwas bringen.
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
   <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
@@ -305,13 +305,13 @@ Perfektion ist der Feind von gut genug. Wisse, wann dein Prompt einsatzbereit is
       <p className="m-0!">Ausgabe erfüllt konsistent die Anforderungen</p>
       <p className="m-0!">Grenzfälle werden angemessen behandelt</p>
       <p className="m-0!">Format ist zuverlässig und parsebar</p>
-      <p className="m-0!">Weitere Verbesserungen zeigen sinkende Erträge</p>
+      <p className="m-0!">Weitere Verbesserungen bringen kaum noch etwas</p>
     </div>
   </div>
   <div className="border rounded-lg bg-red-50/50 dark:bg-red-950/20 border-red-200 dark:border-red-900">
     <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> Weiter iterieren</p>
     <div className="text-sm p-4 pt-2 space-y-1">
-      <p className="m-0!">Ausgabe ist inkonsistent über Durchläufe</p>
+      <p className="m-0!">Ausgabe schwankt zwischen Durchläufen</p>
       <p className="m-0!">Grenzfälle verursachen Fehler</p>
       <p className="m-0!">Kritische Anforderungen werden verfehlt</p>
       <p className="m-0!">Du hast nicht genug Variationen getestet</p>
@@ -321,10 +321,10 @@ Perfektion ist der Feind von gut genug. Wisse, wann dein Prompt einsatzbereit is
 
 ## Versionskontrolle für Prompts
 
-Prompts sind Code. Für jeden Prompt, der in Produktion verwendet wird, behandle ihn mit derselben Strenge: Versionskontrolle, Changelogs und die Möglichkeit, zurückzurollen, wenn etwas kaputt geht.
+Prompts sind Code. Behandle jeden Prompt, der in Produktion läuft, mit derselben Sorgfalt: Versionskontrolle, Changelogs und die Möglichkeit, Änderungen zurückzunehmen, wenn etwas kaputtgeht.
 
 <Callout type="tip" title="Eingebaute Versionierung">
-prompts.chat enthält automatische Versionshistorie für deine Prompts. Jede Bearbeitung wird gespeichert, sodass du Versionen vergleichen und vorherige Iterationen mit einem Klick wiederherstellen kannst.
+Viele Prompt-Tools führen für dich eine Versionshistorie. Auf prompts.chat zum Beispiel wird jede Änderung am Text eines Prompts als neue Version gespeichert, und du kannst zwei beliebige Versionen direkt nebeneinander vergleichen.
 </Callout>
 
 Für selbstverwaltete Prompts verwende eine Ordnerstruktur:
@@ -342,7 +342,7 @@ prompts/
 ## Zusammenfassung
 
 <Callout type="tip" title="Kernpunkte">
-Beginne einfach, beobachte sorgfältig, ändere eine Sache nach der anderen, dokumentiere was funktioniert und wisse, wann aufhören. Die besten Prompts werden nicht geschrieben – sie werden durch systematische Iteration entdeckt.
+Beginne einfach, beobachte sorgfältig, ändere eine Sache nach der anderen, dokumentiere, was funktioniert, und erkenne, wann es Zeit ist aufzuhören. Die besten Prompts werden nicht geschrieben, sondern durch systematische Iteration entdeckt.
 </Callout>
 
 <Quiz 
@@ -354,17 +354,17 @@ Beginne einfach, beobachte sorgfältig, ändere eine Sache nach der anderen, dok
     "Den Prompt so lang wie möglich machen"
   ]}
   correctIndex={2}
-  explanation="Eine Sache nach der anderen zu ändern lässt dich isolieren, was funktioniert und was nicht. Wenn du mehrere Dinge gleichzeitig änderst, weißt du nicht, welche Änderung das Problem behoben hat oder welche es verschlimmert hat."
+  explanation="Wenn du immer nur eine Sache änderst, kannst du genau eingrenzen, was funktioniert und was nicht. Wenn du mehrere Dinge gleichzeitig änderst, weißt du nicht, welche Änderung das Problem behoben hat oder welche es verschlimmert hat."
 />
 
 ## Übung: Verbessere diesen Prompt
 
-Versuche, diesen schwachen Prompt selbst zu verbessern. Bearbeite ihn, dann nutze KI, um deine Version mit dem Original zu vergleichen:
+Versuche, diesen schwachen Prompt selbst zu verbessern. Bearbeite ihn und nutze dann KI, um deine Version mit dem Original zu vergleichen:
 
 <BeforeAfterEditor
   title="Verfeinere diesen E-Mail-Prompt"
   badPrompt="Schreibe eine E-Mail."
-  idealPrompt={`Du bist ein professioneller Geschäftsschreiber.
+  idealPrompt={`Du bist ein professioneller Texter für Geschäftskorrespondenz.
 
 Aufgabe: Schreibe eine Nachfass-E-Mail an einen potenziellen Kunden nach einem Verkaufsgespräch.
 
@@ -381,7 +381,7 @@ Anforderungen:
 - Unter 150 Wörtern halten
 
 Format: Betreffzeile + E-Mail-Text`}
-  task="Verwandle diesen vagen E-Mail-Prompt in etwas, das ein professionelles, effektives Ergebnis produziert."
+  task="Verwandle diesen vagen E-Mail-Prompt in einen, der ein professionelles, wirkungsvolles Ergebnis liefert."
 />
 
 Im nächsten Kapitel werden wir JSON- und YAML-Prompting für strukturierte Datenanwendungen erkunden.
