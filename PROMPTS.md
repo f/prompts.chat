@@ -238051,3 +238051,33 @@ Follow-up: Write 3 shorter versions of the one-sentence offer.
 
 </details>
 
+<details>
+<summary><strong>Anam</strong></summary>
+
+## Anam
+
+Contributed by @anonymous
+
+```md
+ Create a highly engaging 3D animated children’s video for YouTube Shorts, featuring an adorable baby bunny with big sparkling eyes exploring a magical colorful world.
+
+The video starts with a surprising colorful rainbow explosion and cheerful music in the first 2 seconds.
+
+The bunny discovers 5 magical colorful eggs. Each egg opens to reveal a cute baby animal and a different bright color.
+
+Include:
+
+* Cute characters with expressive faces.
+* Bright, vibrant colors.
+* Smooth Pixar-inspired 3D animation.
+* Funny movements and playful surprises.
+* Cheerful original background music.
+* Simple visual storytelling that toddlers can understand.
+* Fast-paced scene changes to maintain attention.
+* A happy, surprising ending that encourages children to watch again.
+
+Vertical 9:16 format, 45-60 seconds, high-quality animation, no scary scenes, no violence, no flashing effects, no copyrighted characters, no logos.  تعرف تعمل فيديو قصير ؟
+```
+
+</details>
+
