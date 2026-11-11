@@ -1,21 +1,21 @@
 La Chaîne de Pensée (Chain of Thought ou CoT) est une technique qui améliore considérablement les performances de l'IA sur les tâches de raisonnement complexe en demandant au modèle de montrer son travail étape par étape.
 
-<Callout type="info" title="Montre Ton Travail">
+<Callout type="info" title="Montre ton travail">
 Tout comme un professeur de mathématiques demande aux élèves de montrer leur travail, le prompting CoT demande à l'IA de rendre son raisonnement visible.
 </Callout>
 
-## Le Problème Que CoT Résout
+## Le problème que CoT résout
 
-Les modèles d'IA peuvent avoir du mal avec le raisonnement multi-étapes quand on leur demande de sauter directement à une réponse.
+Les modèles d'IA peuvent avoir du mal avec le raisonnement en plusieurs étapes quand on leur demande de donner directement la réponse.
 
 <Compare 
-  before={{ label: "Réponse Directe (Souvent Fausse)", content: "Question : Un magasin vend des pommes à 2€ pièce. Si vous en achetez 5 ou plus, vous avez 20% de réduction. Combien coûtent 7 pommes ?\n\nRéponse : 14€ ❌" }}
-  after={{ label: "Chaîne de Pensée (Correcte)", content: "Question : Un magasin vend des pommes à 2€ pièce. Si vous en achetez 5 ou plus, vous avez 20% de réduction. Combien coûtent 7 pommes ?\n\nProcédons étape par étape :\n1. Prix normal par pomme : 2€\n2. Nombre de pommes : 7\n3. Comme 7 ≥ 5, la réduction s'applique\n4. Total normal : 7 × 2€ = 14€\n5. Réduction : 20% de 14€ = 2,80€\n6. Prix final : 14€ - 2,80€ = 11,20€\n\nRéponse : 11,20€ ✓" }}
+  before={{ label: "Réponse directe (souvent fausse)", content: "Question : Un magasin vend des pommes à 2€ pièce. Si vous en achetez 5 ou plus, vous avez 20% de réduction. Combien coûtent 7 pommes ?\n\nRéponse : 14€ ❌" }}
+  after={{ label: "Chaîne de pensée (correcte)", content: "Question : Un magasin vend des pommes à 2€ pièce. Si vous en achetez 5 ou plus, vous avez 20% de réduction. Combien coûtent 7 pommes ?\n\nProcédons étape par étape :\n1. Prix normal par pomme : 2€\n2. Nombre de pommes : 7\n3. Comme 7 ≥ 5, la réduction s'applique\n4. Total normal : 7 × 2€ = 14€\n5. Réduction : 20% de 14€ = 2,80€\n6. Prix final : 14€ - 2,80€ = 11,20€\n\nRéponse : 11,20€ ✓" }}
 />
 
-## Prompts CoT Basiques
+## Prompts CoT de base
 
-### Phrases Déclencheuses Simples
+### Phrases déclencheuses simples
 
 Ajoutez l'une de ces phrases à vos prompts :
 
@@ -27,10 +27,12 @@ Ajoutez l'une de ces phrases à vos prompts :
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Explique ton processus de réflexion."</div>
 </div>
 
-### Demande d'Étapes Explicite
+Ces phrases comptent surtout avec les modèles de chat classiques. Les modèles de raisonnement, qui réfléchissent avant de répondre, en ont beaucoup moins besoin ; nous y reviendrons plus loin dans ce chapitre.
+
+### Demande explicite d'étapes
 
 <TryIt 
-  title="Essaie la Chaîne de Pensée"
+  title="Essaie la chaîne de pensée"
   description="Demande à l'IA de résoudre un problème étape par étape."
   prompt={`Résous ce problème :
 
@@ -46,11 +48,11 @@ Avant de donner ta réponse finale :
 
 ## Zero-Shot vs Few-Shot CoT
 
-Il existe deux approches principales du prompting Chaîne de Pensée, chacune avec différents compromis entre simplicité et contrôle.
+Il existe deux grandes approches du prompting par chaîne de pensée, chacune offrant un compromis différent entre simplicité et contrôle.
 
 ### Zero-Shot CoT
 
-L'approche la plus simple—ajoutez juste une phrase déclencheuse et laissez le modèle déterminer comment raisonner. Pas d'exemples nécessaires. Cela fonctionne étonnamment bien pour de nombreux problèmes, bien que vous ayez moins de contrôle sur le format du raisonnement.
+L'approche la plus simple : ajoutez une phrase déclencheuse et laissez le modèle décider comment raisonner. Aucun exemple n'est nécessaire. Cela fonctionne étonnamment bien pour de nombreux problèmes, bien que vous ayez moins de contrôle sur le format du raisonnement.
 
 <TryIt 
   compact
@@ -60,7 +62,7 @@ L'approche la plus simple—ajoutez juste une phrase déclencheuse et laissez le
 Réfléchissons étape par étape.`}
 />
 
-**Exemple de Sortie :**
+**Exemple de sortie :**
 ```
 Réfléchissons étape par étape.
 - Jean commence avec 3 pommes
@@ -73,13 +75,13 @@ Réponse : 6 pommes
 
 ### Few-Shot CoT
 
-Pour des résultats plus cohérents, montrez au modèle exactement comment vous voulez qu'il raisonne en fournissant des exemples travaillés. Cela vous donne le contrôle sur le style de raisonnement, le format et le niveau de détail. Le modèle imitera votre pattern démontré.
+Pour des résultats plus cohérents, montrez au modèle exactement comment vous voulez qu'il raisonne en fournissant des exemples résolus. Cela vous donne le contrôle sur le style de raisonnement, le format et le niveau de détail. Le modèle reproduira le schéma que vous lui montrez.
 
 <TryIt 
   compact
   title="Few-Shot CoT"
   prompt={`Exemple 1 :
-Q : Un boulanger a 24 cupcakes. Il les met également dans 4 boîtes. Puis il mange 2 cupcakes d'une boîte. Combien de cupcakes restent-il au total ?
+Q : Un boulanger a 24 cupcakes. Il les répartit équitablement dans 4 boîtes. Puis il mange 2 cupcakes d'une boîte. Combien de cupcakes reste-t-il au total ?
 
 R : Procédons :
 - Total de cupcakes : 24
@@ -88,7 +90,7 @@ R : Procédons :
 - Total restant : (3 boîtes × 6) + 4 = 18 + 4 = 22 cupcakes
 
 Exemple 2 :
-Q : Un train voyage à 60 km/h pendant 2 heures, puis à 40 km/h pendant 3 heures. Quelle est sa vitesse moyenne ?
+Q : Un train roule à 60 km/h pendant 2 heures, puis à 40 km/h pendant 3 heures. Quelle est sa vitesse moyenne ?
 
 R : Procédons :
 - Distance à 60 km/h : 60 × 2 = 120 km
@@ -97,11 +99,11 @@ R : Procédons :
 - Temps total : 2 + 3 = 5 heures
 - Vitesse moyenne : 240 ÷ 5 = 48 km/h
 
-Maintenant résous :
+Maintenant, résous :
 Q : Un magasin vend des cahiers à 3€ pièce. Si vous en achetez 10 ou plus, vous avez 25% de réduction. Combien coûtent 12 cahiers ?`}
 />
 
-**Exemple de Sortie :**
+**Exemple de sortie :**
 ```
 R : Procédons :
 - Prix normal : 3€, Quantité : 12
@@ -111,23 +113,23 @@ R : Procédons :
 - Prix final : 36€ - 9€ = 27€
 ```
 
-## Formats CoT Structurés
+## Formats CoT structurés
 
-Pour un raisonnement cohérent et reproductible, utilisez des formats structurés avec des étapes nommées. Ces frameworks assurent que le modèle ne saute pas d'étapes importantes et rendent les sorties plus faciles à analyser et vérifier.
+Pour un raisonnement cohérent et reproductible, utilisez des formats structurés avec des étapes nommées. Ces cadres garantissent que le modèle ne saute pas d'étapes importantes, et ils rendent les sorties plus faciles à analyser et à vérifier.
 
-### Le Format BREAK
+### Le format BREAK
 
 Un acronyme mémorable qui guide le modèle à travers un cycle complet de résolution de problèmes, de la compréhension à la vérification.
 
 <BREAKFramework />
 
-### Le Template de Raisonnement
+### Le template de raisonnement
 
-Une structure plus formelle qui sépare les entrées, objectifs et exécution. Excellent pour les problèmes techniques où vous avez besoin d'une documentation claire du processus de solution.
+Une structure plus formelle qui sépare les données, les objectifs et l'exécution. Idéale pour les problèmes techniques qui exigent une trace claire du processus de résolution.
 
 <TryIt 
   compact
-  title="Template de Raisonnement"
+  title="Template de raisonnement"
   prompt={`Utilise ce template pour résoudre le problème :
 
 DONNÉ : [Liste des informations connues]
@@ -140,12 +142,12 @@ APPROCHE : [Stratégie que nous utiliserons]
 VÉRIFICATION : [Vérifier la réponse]
 RÉPONSE : [Réponse finale]
 
-Problème : Une voiture consomme 8 litres d'essence pour 100 km. Si le réservoir contient 45 litres et l'essence coûte 1,50€ par litre, combien coûte parcourir 300 km ?`}
+Problème : Une voiture consomme 8 litres d'essence pour 100 km. Si le réservoir contient 45 litres et que l'essence coûte 1,50€ le litre, combien coûte un trajet de 300 km ?`}
 />
 
-**Exemple de Sortie :**
+**Exemple de sortie :**
 ```
-DONNÉ : 8L/100km, réservoir 45L, 1,50€/L, parcourir 300km
+DONNÉ : 8L/100km, réservoir 45L, 1,50€/L, trajet 300km
 OBJECTIF : Calculer le coût d'essence
 APPROCHE : Essence nécessaire × coût par litre
 ÉTAPES :
@@ -155,13 +157,13 @@ VÉRIFICATION : 24L < 45L réservoir ✓
 RÉPONSE : 36€
 ```
 
-## CoT pour Différents Types de Problèmes
+## CoT pour différents types de problèmes
 
-Différents types de problèmes bénéficient de différentes approches CoT. Voici des patterns optimisés pour des scénarios courants.
+Différents types de problèmes bénéficient de différentes approches CoT. Voici des schémas adaptés aux scénarios courants.
 
-### Raisonnement Mathématique
+### Raisonnement mathématique
 
-Les problèmes mathématiques bénéficient le plus de CoT parce que chaque étape s'appuie sur la précédente. Les erreurs se composent, donc montrer son travail aide à attraper les erreurs tôt. Le modèle devrait clairement étiqueter chaque calcul.
+Les problèmes mathématiques bénéficient le plus de CoT parce que chaque étape s'appuie sur la précédente. Les erreurs s'accumulent : détailler son travail aide à les repérer tôt. Le modèle devrait clairement étiqueter chaque calcul.
 
 <TryIt 
   compact
@@ -171,7 +173,7 @@ Les problèmes mathématiques bénéficient le plus de CoT parce que chaque éta
 Réfléchis à chaque trimestre en montrant clairement tes calculs.`}
 />
 
-**Exemple de Sortie :**
+**Exemple de sortie :**
 ```
 T1 : 1 200 000€ (donné)
 T2 : 1 200 000€ × 1,15 = 1 380 000€
@@ -181,13 +183,13 @@ T4 : 1 242 000€ × 1,25 = 1 552 500€
 Total : 5 374 500€
 ```
 
-### Raisonnement Logique
+### Raisonnement logique
 
-Les puzzles logiques nécessitent une élimination systématique et un test d'hypothèses. CoT aide le modèle à suivre les contraintes, tester les possibilités et vérifier que toutes les conditions sont satisfaites. La clé est l'exploration méthodique plutôt que de deviner.
+Les puzzles logiques nécessitent une élimination systématique et un test d'hypothèses. CoT aide le modèle à suivre les contraintes, tester les possibilités et vérifier que toutes les conditions sont satisfaites. La clé : explorer méthodiquement plutôt que deviner.
 
 <TryIt 
   compact
-  title="Puzzle Logique"
+  title="Puzzle logique"
   prompt={`Trois amis—Alice, Bob et Carol—ont chacun différents animaux (chat, chien, poisson) et différents métiers (enseignant, ingénieur, médecin).
 
 Indices :
@@ -195,27 +197,33 @@ Indices :
 2. L'ingénieur a un chien
 3. Bob est enseignant
 4. Carol n'a pas de poisson
+5. Le médecin n'a pas de chat
 
 Qui a quel animal et quel métier ? Raisonne systématiquement, en testant les hypothèses et en vérifiant par rapport à tous les indices.`}
 />
 
-**Exemple de Sortie :**
+**Exemple de sortie :**
 ```
 De l'indice 3 : Bob = enseignant
 → Alice et Carol sont ingénieur/médecin
 
-Si Carol = ingénieur :
-- Carol a un chien (indice 2)
-- Alice = médecin, a un poisson (indice 1)
+Hypothèse A : Alice = ingénieur
+- Alice a un chien (indice 2), Carol = médecin
+- Carol ne peut pas avoir de poisson (indice 4), donc Carol a un chat
+- Mais le médecin ne peut pas avoir de chat (indice 5) ✗
+
+Hypothèse B : Carol = ingénieur
+- Carol a un chien (indice 2), Alice = médecin
+- Alice ne peut pas avoir de chat (indice 1), donc Alice a un poisson
 - Bob a un chat
 
-Vérification : Tous les 4 indices satisfaits ✓
+Vérification : les 5 indices sont satisfaits ✓
 Réponse : Alice (médecin, poisson), Bob (enseignant, chat), Carol (ingénieur, chien)
 ```
 
-### Débogage de Code
+### Débogage de code
 
-Le débogage bénéficie de CoT car cela force le modèle à tracer l'exécution plutôt que deviner les bugs. En parcourant le code avec des valeurs concrètes, le comportement réel devient visible et les écarts avec le comportement attendu sont exposés.
+Le débogage bénéficie de CoT, car il oblige le modèle à suivre l'exécution pas à pas plutôt qu'à deviner où se trouvent les bugs. En parcourant le code avec des valeurs concrètes, le comportement réel devient visible et les écarts avec le comportement attendu sont exposés.
 
 <TryIt 
   compact
@@ -232,7 +240,7 @@ def sum_evens(numbers):
 Trace chaque étape, trouve le bug et fournis la correction.`}
 />
 
-**Exemple de Sortie :**
+**Exemple de sortie :**
 ```
 Trace [2, 3, 4, 6] :
 n=2 : total += 1 → 1 (attends, on ajoute 1 pas n !)
@@ -245,16 +253,16 @@ Attendu : 12, Obtenu : 3
 Correction : Changer en "total += n"
 ```
 
-## Auto-Cohérence avec CoT
+## Auto-cohérence avec CoT
 
 Pour les problèmes critiques, ne vous fiez pas à un seul chemin de raisonnement. Générez plusieurs solutions indépendantes et comparez les résultats. Si différentes approches convergent vers la même réponse, la confiance est élevée. Un désaccord signale le besoin d'une révision soigneuse.
 
 <TryIt 
   compact
-  title="Auto-Cohérence"
-  prompt={`Résous ce problème de 3 façons différentes, puis donne ta réponse finale basée sur quelle solution semble la plus correcte :
+  title="Auto-cohérence"
+  prompt={`Résous ce problème de 3 façons différentes, puis donne ta réponse finale en t'appuyant sur la solution qui te semble la plus juste :
 
-Problème : Un fermier a des poules et des vaches. Ensemble elles ont 30 têtes et 74 pattes. Combien de poules et combien de vaches le fermier a-t-il ?
+Problème : Un fermier a des poules et des vaches. Ensemble, elles ont 30 têtes et 74 pattes. Combien de poules et combien de vaches le fermier a-t-il ?
 
 Approche 1 : Algèbre
 Approche 2 : Essais et erreurs
@@ -263,7 +271,7 @@ Approche 3 : Raisonnement logique
 Puis compare et donne ta réponse finale.`}
 />
 
-**Exemple de Sortie :**
+**Exemple de sortie :**
 ```
 Approche 1 (Algèbre) : p + v = 30, 2p + 4v = 74 → p=23, v=7
 Approche 2 (Essais) : Essayer 23/7 → 46 + 28 = 74 ✓
@@ -272,33 +280,35 @@ Approche 3 (Logique) : 30 poules = 60 pattes, besoin de 14 de plus → 7 vaches
 Toutes concordent : 23 poules, 7 vaches
 ```
 
-## CoT pour la Prise de Décision
+Dans sa forme d'origine, issue de la recherche, l'auto-cohérence va un cran plus loin : on envoie le même prompt plusieurs fois, sous forme de requêtes distinctes, et l'on retient la réponse qui revient le plus souvent. Demander plusieurs approches dans une seule réponse, comme ci-dessus, en est une version allégée. C'est moins coûteux, mais les tentatives ne sont pas vraiment indépendantes, puisque chacune voit les autres.
 
-Les décisions impliquent de peser des compromis à travers plusieurs dimensions. CoT assure que tous les facteurs pertinents sont considérés systématiquement plutôt que de sauter aux conclusions. Cette approche structurée documente aussi le raisonnement pour référence future.
+## CoT pour la prise de décision
+
+Prendre une décision, c'est peser des compromis sur plusieurs dimensions. CoT garantit que tous les facteurs pertinents sont examinés méthodiquement, au lieu de tirer des conclusions hâtives. Cette approche structurée garde aussi une trace du raisonnement pour s'y référer plus tard.
 
 <TryIt 
   compact
-  title="Analyse de Décision"
+  title="Analyse de décision"
   prompt={`Devrions-nous adopter une architecture microservices pour notre application ?
 
 Contexte :
 - Application monolithique de 50 000 lignes de code
 - Équipe de 5 développeurs
 - 100 utilisateurs actifs quotidiens
-- Planification d'une croissance 10x en 2 ans
+- Croissance x10 prévue d'ici 2 ans
 
 Réfléchis à cela systématiquement :
 1. Liste l'état actuel
 2. Identifie les facteurs à considérer (taille de l'équipe, échelle, vélocité, croissance future)
-3. Pèse chaque facteur comme pour/contre
+3. Classe chaque facteur en pour ou contre
 4. Donne une recommandation avec raisonnement`}
 />
 
-**Exemple de Sortie :**
+**Exemple de sortie :**
 ```
 FACTEURS :
 - Taille équipe (5) : Trop petite pour microservices ❌
-- Échelle (100 DAU) : Pas de besoin de scaling ❌  
+- Échelle (100 DAU) : Aucun besoin de montée en charge ❌  
 - Vélocité : Monolithe = itération plus rapide ❌
 - Croissance future : Délai incertain ⚠️
 
@@ -308,11 +318,26 @@ RECOMMANDATION : Rester sur le monolithe, utiliser des
 frontières de modules claires pour faciliter la transition future.
 ```
 
-## Quand Utiliser CoT
+## Modèles de raisonnement : le CoT intégré
+
+La chaîne de pensée est née comme une astuce de prompting, mais elle s'est depuis installée à l'intérieur même des modèles. Beaucoup de modèles actuels sont entraînés à raisonner avant de répondre : les modèles de raisonnement d'OpenAI, Claude d'Anthropic avec la réflexion activée, Gemini de Google et des modèles à poids ouverts comme DeepSeek-R1 travaillent tous le problème en privé avant de donner leur réponse. En général, vous ne voyez que la réponse, ou un bref résumé de la réflexion, alors que les tokens de raisonnement sont tout de même décomptés de votre consommation.
+
+Ce chapitre n'est pas obsolète pour autant, mais la façon de l'appliquer change :
+
+- **Oubliez la formule magique.** D'après les recommandations d'OpenAI, demander à ses modèles de raisonnement de « réfléchir étape par étape » est inutile et peut même parfois nuire. Anthropic note qu'une consigne générale comme « réfléchis en profondeur » fonctionne souvent mieux qu'un plan détaillé écrit à la main, car le raisonnement du modèle va fréquemment plus loin que ce plan.
+- **Décrivez l'objectif, pas le chemin.** Consacrez vos mots au problème, aux contraintes et à ce qu'est une bonne réponse, puis laissez le modèle trouver sa propre voie.
+- **Tournez le bouton plutôt que d'écrire davantage.** Ces API proposent des réglages comme l'effort de raisonnement ou le niveau de réflexion. Les augmenter est généralement un meilleur moyen d'obtenir un raisonnement plus poussé que de réclamer de plus longues explications dans le prompt.
+- **Gardez une structure quand vous devez voir le travail.** Des templates comme BREAK ou DONNÉ/OBJECTIF/ÉTAPES restent utiles quand vous voulez un raisonnement que vous pouvez lire, vérifier ou analyser, ainsi qu'avec les modèles qui ne réfléchissent pas d'eux-mêmes. Certains fournisseurs déconseillent désormais de demander à leurs modèles qui réfléchissent en permanence d'écrire leur raisonnement : vérifiez les recommandations propres au modèle que vous utilisez.
+
+<Callout type="warning" title="Le raisonnement affiché n'est pas un reflet fidèle">
+Le raisonnement que le modèle écrit, ou le résumé de réflexion qu'il affiche, n'est pas forcément le processus qui a réellement produit la réponse. Des recherches d'Anthropic ont montré que les modèles de raisonnement omettent souvent des facteurs qui les ont influencés. Considérez les étapes visibles comme une chose à vérifier, pas comme une preuve.
+</Callout>
+
+## Quand utiliser CoT
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
   <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
-    <p className="text-sm font-semibold text-green-700 dark:text-green-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconCheck className="h-4 w-4" /> Utiliser CoT Pour</p>
+    <p className="text-sm font-semibold text-green-700 dark:text-green-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconCheck className="h-4 w-4" /> Utiliser CoT pour</p>
     <div className="text-sm p-4 pt-2 space-y-1">
       <p className="m-0!">**Problèmes mathématiques** — Réduit les erreurs de calcul</p>
       <p className="m-0!">**Puzzles logiques** — Empêche les étapes sautées</p>
@@ -322,7 +347,7 @@ frontières de modules claires pour faciliter la transition future.
     </div>
   </div>
   <div className="border rounded-lg bg-red-50/50 dark:bg-red-950/20 border-red-200 dark:border-red-900">
-    <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> Éviter CoT Pour</p>
+    <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> Éviter CoT pour</p>
     <div className="text-sm p-4 pt-2 space-y-1">
       <p className="m-0!">**Q&R simples** — Surcharge inutile</p>
       <p className="m-0!">**Écriture créative** — Peut contraindre la créativité</p>
@@ -344,8 +369,8 @@ Bien que puissante, la Chaîne de Pensée n'est pas une solution miracle. Compre
 
 ## Résumé
 
-<Callout type="tip" title="Points Clés à Retenir">
-CoT améliore considérablement le raisonnement complexe en rendant explicites les étapes implicites. Utilisez-le pour les maths, la logique, l'analyse et le débogage. Compromis : meilleure précision pour plus de tokens.
+<Callout type="tip" title="Points clés à retenir">
+CoT améliore considérablement le raisonnement complexe en rendant explicites les étapes implicites. Utilisez-le pour les maths, la logique, l'analyse et le débogage. Compromis : meilleure précision pour plus de tokens. Avec les modèles de raisonnement, qui réfléchissent déjà avant de répondre, concentrez plutôt le prompt sur l'objectif et ajustez les réglages de raisonnement.
 </Callout>
 
 <Quiz 
@@ -357,7 +382,7 @@ CoT améliore considérablement le raisonnement complexe en rendant explicites l
     "Analyse d'une décision commerciale"
   ]}
   correctIndex={1}
-  explanation="La Chaîne de Pensée ajoute une surcharge inutile pour les Q&R simples. Elle est mieux réservée aux tâches de raisonnement complexe comme les maths, puzzles logiques, débogage de code et analyse où montrer son travail améliore la précision."
+  explanation="La Chaîne de Pensée ajoute une surcharge inutile pour les Q&R simples. Mieux vaut la réserver aux tâches de raisonnement complexe comme les maths, les puzzles logiques, le débogage de code et l'analyse, où détailler son travail améliore la précision."
 />
 
 Dans le prochain chapitre, nous explorerons l'apprentissage few-shot—enseigner au modèle par des exemples.

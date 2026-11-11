@@ -1,32 +1,32 @@
 L'apprentissage few-shot est l'une des techniques de prompting les plus puissantes. En fournissant des exemples de ce que vous voulez, vous pouvez enseigner au modèle des tâches complexes sans aucun fine-tuning.
 
-<Callout type="info" title="Apprendre par l'Exemple">
-Tout comme les humains apprennent en voyant des exemples, les modèles d'IA peuvent apprendre des patterns à partir des exemples que vous fournissez dans votre prompt.
+<Callout type="info" title="Apprendre par l'exemple">
+Tout comme les humains apprennent en voyant des exemples, les modèles d'IA peuvent repérer des schémas dans les exemples que vous fournissez dans votre prompt.
 </Callout>
 
-## Qu'est-ce que l'Apprentissage Few-Shot ?
+## Qu'est-ce que l'apprentissage few-shot ?
 
-L'apprentissage few-shot montre au modèle des paires entrée-sortie avant de lui demander d'effectuer la même tâche. Le modèle apprend le pattern de vos exemples et l'applique aux nouvelles entrées.
+L'apprentissage few-shot montre au modèle des paires entrée-sortie avant de lui demander d'effectuer la même tâche. Le modèle dégage le schéma de vos exemples et l'applique aux nouvelles entrées.
 
 <Compare 
   before={{ 
-    label: "Zero-Shot (Sans Exemples)", 
+    label: "Zero-Shot (sans exemples)", 
     content: `Classe cet avis comme positif ou négatif :
 
 "La batterie dure une éternité mais l'écran est trop sombre."
 
-→ Le modèle peut être incohérent avec les cas limites` 
+→ Le modèle peut manquer de cohérence sur les cas limites` 
   }}
   after={{ 
-    label: "Few-Shot (Avec Exemples)", 
+    label: "Few-Shot (avec exemples)", 
     content: `"Je l'adore !" → Positif
-"Terrible qualité" → Négatif  
+"Qualité exécrable" → Négatif  
 "Bien mais cher" → Mixte
 
-Maintenant classe :
+Maintenant, classe :
 "La batterie dure une éternité mais l'écran est trop sombre."
 
-→ Le modèle apprend vos catégories exactes` 
+→ Le modèle apprend exactement vos catégories` 
   }}
 />
 
@@ -49,19 +49,19 @@ Maintenant classe :
   </div>
 </div>
 
-## Pourquoi les Exemples Fonctionnent
+## Pourquoi les exemples fonctionnent
 
 <FewShotDemo />
 
 Les exemples communiquent :
-- **Format** : Comment la sortie doit être structurée
-- **Style** : Ton, longueur, vocabulaire
-- **Logique** : Le pattern de raisonnement à suivre
-- **Cas limites** : Comment gérer les situations spéciales
+- **Le format** : comment la sortie doit être structurée
+- **Le style** : ton, longueur, vocabulaire
+- **La logique** : le raisonnement à suivre
+- **Les cas limites** : comment gérer les situations particulières
 
-## Pattern Few-Shot Basique
+## Schéma few-shot de base
 
-La structure fondamentale du prompting few-shot suit un pattern simple : montrez des exemples, puis demandez la nouvelle tâche. La cohérence du formatage entre les exemples est cruciale.
+La structure fondamentale du prompting few-shot suit un schéma simple : montrez des exemples, puis demandez la nouvelle tâche. La cohérence du formatage entre les exemples est cruciale. Le modèle apprend à partir du schéma que vous établissez.
 
 ```
 [Exemple 1]
@@ -72,107 +72,142 @@ Sortie : [sortie 1]
 Entrée : [entrée 2]
 Sortie : [sortie 2]
 
-Maintenant fais celui-ci :
+[Exemple 3]
+Entrée : [entrée 3]
+Sortie : [sortie 3]
+
+Maintenant, fais celui-ci :
 Entrée : [nouvelle entrée]
 Sortie :
 ```
 
-## Few-Shot pour la Classification
+## Few-Shot pour la classification
 
-La classification est l'un des cas d'usage les plus forts pour l'apprentissage few-shot.
+La classification est l'un des meilleurs cas d'usage de l'apprentissage few-shot. En montrant des exemples de chaque catégorie, vous définissez les frontières entre les classes plus précisément que des instructions seules ne le pourraient.
 
-### Analyse de Sentiment
+### Analyse de sentiment
 
-<Callout type="info" title="Qu'est-ce que l'Analyse de Sentiment ?">
-L'analyse de sentiment classe le texte par ton émotionnel : positif, négatif, neutre ou mixte.
+<Callout type="info" title="Qu'est-ce que l'analyse de sentiment ?">
+L'analyse de sentiment classe un texte selon sa tonalité émotionnelle : positive, négative, neutre ou mixte. Elle est très utilisée pour les retours clients, la veille des réseaux sociaux et le suivi de l'image de marque.
 </Callout>
+
+La classification de sentiment gagne à montrer des exemples de chaque type de sentiment, en particulier les cas limites comme le sentiment « mixte », qui peut être ambigu.
 
 <TryIt compact prompt={`Classe le sentiment de ces avis clients.
 
-Avis : "Ce produit a dépassé toutes mes attentes !"
+Avis : "Ce produit a dépassé toutes mes attentes ! J'en rachèterai."
 Sentiment : Positif
 
-Avis : "Arrivé cassé et le service client était inutile."
+Avis : "Arrivé cassé, et le service client ne m'a été d'aucune aide."
 Sentiment : Négatif
 
-Avis : "Ça fonctionne bien, rien de spécial."
+Avis : "Ça fonctionne bien, rien d'exceptionnel mais ça fait le travail."
 Sentiment : Neutre
 
 Avis : "La qualité est incroyable mais la livraison a pris une éternité."
 Sentiment : Mixte
 
-Maintenant classe :
+Maintenant, classe :
 Avis : "J'adore le design mais l'autonomie de la batterie est décevante."
 Sentiment :`} />
 
-### Classification par Sujet
+### Classification par sujet
+
+Pour une catégorisation à plusieurs classes, incluez au moins un exemple par catégorie. Cela aide le modèle à comprendre votre taxonomie propre, qui peut différer de celle qu'il adopterait par défaut.
 
 <TryIt compact prompt={`Catégorise ces tickets de support.
 
-Ticket : "Je ne peux pas me connecter à mon compte"
+Ticket : "Je n'arrive pas à me connecter à mon compte, la réinitialisation du mot de passe ne marche pas"
 Catégorie : Authentification
 
-Ticket : "Comment passer au plan premium ?"
+Ticket : "Comment passer à l'offre premium ?"
 Catégorie : Facturation
 
-Ticket : "L'application plante quand j'exporte des données"
-Catégorie : Rapport de Bug
+Ticket : "L'application plante quand j'essaie d'exporter des données"
+Catégorie : Signalement de bug
 
-Maintenant catégorise :
-Ticket : "Mon paiement a été refusé mais je vois la charge sur ma carte"
+Ticket : "Pourriez-vous ajouter un mode sombre à l'application mobile ?"
+Catégorie : Demande de fonctionnalité
+
+Maintenant, catégorise :
+Ticket : "Mon paiement a été refusé mais je vois le débit sur ma carte"
 Catégorie :`} />
 
-## Few-Shot pour la Transformation
+## Few-Shot pour la transformation
 
-Les tâches de transformation convertissent l'entrée d'une forme à une autre tout en préservant le sens.
+Les tâches de transformation convertissent une entrée d'une forme à une autre tout en préservant le sens. Les exemples sont ici essentiels, car ils définissent exactement ce que « transformer » signifie dans votre cas.
 
-### Réécriture de Texte
+### Réécriture de texte
+
+Changer de style exige des exemples qui montrent précisément le changement de ton voulu. Des instructions abstraites comme « rends-le professionnel » sont interprétées de façons très diverses. Les exemples les rendent concrètes.
 
 <TryIt compact prompt={`Réécris ces phrases dans un ton professionnel.
 
 Familier : "Salut, je voulais juste vérifier si tu avais reçu mon email ?"
-Professionnel : "Je souhaitais faire un suivi concernant mon précédent email."
+Professionnel : "Je me permets de revenir vers vous au sujet de mon précédent email."
 
-Familier : "C'est super important et doit être fait ASAP !"
-Professionnel : "Cette question nécessite une attention urgente et une action rapide."
+Familier : "C'est super important et faut que ce soit fait ASAP !"
+Professionnel : "Ce dossier requiert une attention urgente et une action rapide."
 
-Maintenant réécris :
-Familier : "Je peux pas venir à la réunion, un truc est arrivé."
+Familier : "Désolé pour la réponse tardive, j'ai été débordé !"
+Professionnel : "Je vous prie de m'excuser pour ce délai de réponse. Mon emploi du temps a été particulièrement chargé."
+
+Maintenant, réécris :
+Familier : "Je peux pas venir à la réunion, j'ai un imprévu."
 Professionnel :`} />
 
-### Conversion de Format
+### Conversion de format
 
-<TryIt compact prompt={`Convertis ces dates en langage naturel en format ISO.
+Les tâches de conversion de format profitent d'exemples qui montrent des cas limites et des entrées ambiguës. Le modèle apprend vos conventions pour traiter les cas délicats.
+
+<TryIt compact prompt={`Convertis ces dates en langage naturel au format ISO.
 
 Entrée : "mardi prochain"
-Sortie : 2024-01-16 (en supposant qu'aujourd'hui est le 2024-01-11)
+Sortie : 2024-01-16 (en supposant qu'aujourd'hui est le jeudi 2024-01-11)
 
 Entrée : "après-demain"
 Sortie : 2024-01-13
 
-Maintenant convertis :
+Entrée : "le dernier jour de ce mois"
+Sortie : 2024-01-31
+
+Entrée : "dans deux semaines"
+Sortie : 2024-01-25
+
+Maintenant, convertis :
 Entrée : "le premier lundi du mois prochain"
 Sortie :`} />
 
-## Few-Shot pour la Génération
+## Few-Shot pour la génération
 
-Les tâches de génération créent du nouveau contenu suivant un pattern appris.
+Les tâches de génération créent du contenu nouveau en suivant un schéma appris. Les exemples fixent la longueur, la structure, le ton et les détails à mettre en avant, autant d'éléments difficiles à préciser par de simples instructions.
 
-### Descriptions de Produits
+### Descriptions de produits
+
+Les textes marketing tirent énormément parti des exemples, car ceux-ci capturent la voix de la marque, les caractéristiques à mettre en avant et les techniques de persuasion, toutes choses difficiles à décrire dans l'abstrait.
 
 <TryIt compact prompt={`Écris des descriptions de produits dans ce style :
 
-Produit : Casque Bluetooth Sans Fil
-Description : Plongez dans un son cristallin avec notre casque sans fil léger. Avec 40 heures d'autonomie et réduction active du bruit pour un confort toute la journée.
+Produit : Casque Bluetooth sans fil
+Description : Plongez dans un son cristallin avec notre casque sans fil ultraléger. Avec 40 heures d'autonomie, la réduction active du bruit et des coussinets moelleux en mousse à mémoire de forme, il vous accompagne confortablement toute la journée.
 
-Produit : Gourde en Acier Inoxydable
-Description : Restez hydraté avec style avec notre bouteille isotherme à double paroi. Garde les boissons froides 24 heures ou chaudes 12 heures.
+Produit : Gourde en acier inoxydable
+Description : Restez hydraté avec style grâce à notre gourde isotherme à double paroi. Elle garde vos boissons fraîches 24 heures ou chaudes 12 heures. Son bouchon étanche et son format compatible avec les porte-gobelets standard la rendent idéale au quotidien.
 
-Maintenant écris :
-Produit : Chargeur Portable de Téléphone
+Produit : Chaise de bureau ergonomique
+Description : Transformez votre espace de travail avec notre chaise ergonomique réglable. Dossier en filet respirant, soutien lombaire et rotation à 360° se combinent pour vous garder à l'aise pendant les longues journées de travail.
+
+Maintenant, écris :
+Produit : Batterie externe pour téléphone
 Description :`} />
 
-### Documentation de Code
+### Documentation de code
+
+<Callout type="info" title="Pourquoi documenter le code ?">
+Une bonne documentation explique ce que fait le code, ses paramètres, ses valeurs de retour, et donne des exemples d'utilisation. Des docstrings cohérentes permettent de générer automatiquement la documentation d'API et aident les IDE à proposer une meilleure autocomplétion.
+</Callout>
+
+Le style de documentation varie beaucoup d'un projet à l'autre. Les exemples enseignent votre format précis, ce qu'il faut inclure (arguments, valeurs de retour, exemples) et le niveau de détail attendu.
 
 <TryIt compact prompt={`Écris des commentaires de documentation pour ces fonctions :
 
@@ -182,17 +217,21 @@ def calculate_bmi(weight_kg, height_m):
 
 Documentation :
 """
-Calcule l'Indice de Masse Corporelle (IMC).
+Calcule l'indice de masse corporelle (IMC) à partir du poids et de la taille.
 
 Args:
     weight_kg (float): Poids en kilogrammes
     height_m (float): Taille en mètres
 
 Returns:
-    float: Valeur de l'IMC
+    float: Valeur de l'IMC (poids/taille²)
+
+Example:
+    >>> calculate_bmi(70, 1.75)
+    22.86
 """
 
-Maintenant documente :
+Maintenant, documente :
 Fonction :
 def is_palindrome(text):
     cleaned = ''.join(c.lower() for c in text if c.isalnum())
@@ -200,11 +239,17 @@ def is_palindrome(text):
 
 Documentation :`} />
 
-## Few-Shot pour l'Extraction
+## Few-Shot pour l'extraction
 
-Les tâches d'extraction tirent des informations structurées de texte non structuré.
+Les tâches d'extraction tirent des informations structurées d'un texte non structuré. Les exemples définissent quelles entités comptent, comment formater la sortie et comment traiter les cas où l'information est absente ou ambiguë.
 
-### Extraction d'Entités
+### Extraction d'entités
+
+<Callout type="info" title="Qu'est-ce que la reconnaissance d'entités nommées ?">
+La reconnaissance d'entités nommées (NER, pour Named Entity Recognition) repère les entités nommées d'un texte et les classe dans des catégories comme les personnes, les organisations, les lieux, les dates et les produits. C'est une brique fondamentale de la recherche d'information et des graphes de connaissances.
+</Callout>
+
+La NER profite d'exemples qui montrent vos types d'entités et la manière de traiter celles qui pourraient relever de plusieurs catégories.
 
 <TryIt compact prompt={`Extrais les entités nommées de ces phrases.
 
@@ -215,151 +260,221 @@ Entités :
 - PRODUIT : iPhone 15
 - LIEU : Cupertino
 
-Maintenant extrais de :
-Texte : "SpaceX d'Elon Musk a lancé 23 satellites Starlink depuis Cap Canaveral le 3 décembre."
+Texte : "L'Union européenne a infligé à Google une amende de 4,34 milliards d'euros en 2018."
+Entités :
+- ORGANISATION : Union européenne
+- ENTREPRISE : Google
+- MONTANT : 4,34 milliards d'euros
+- DATE : 2018
+
+Maintenant, extrais de :
+Texte : "SpaceX, la société d'Elon Musk, a lancé 23 satellites Starlink depuis Cap Canaveral le 3 décembre."
 Entités :`} />
 
-## Techniques Few-Shot Avancées
+### Extraction de données structurées
 
-### Exemples Diversifiés
+Extraire des données structurées du langage naturel demande des exemples qui montrent comment gérer les champs manquants, les informations implicites et la variété des formats d'entrée.
 
-La diversité dans les exemples est plus précieuse que la quantité. Couvrez différents scénarios et cas limites.
+<TryIt compact prompt={`Extrais les détails des réunions dans un format structuré.
 
-<TryIt compact prompt={`Réponds aux plaintes clients.
+Email : "Retrouvons-nous demain à 15 h en salle de réunion B pour parler du budget du T4. Pensez à apporter votre ordinateur portable."
 
-Exemple 1 (Problème de Produit) :
+Réunion :
+- Date : [date de demain]
+- Heure : 15 h 00
+- Lieu : Salle de réunion B
+- Sujet : Discussion sur le budget du T4
+- À prévoir : Apporter son ordinateur portable
+
+Email : "Le point d'équipe est déplacé à vendredi 10 h, on passera par Zoom. Lien dans l'invitation du calendrier. 30 minutes maximum."
+
+Réunion :
+- Date : Vendredi
+- Heure : 10 h 00
+- Lieu : Zoom (en ligne)
+- Sujet : Point d'équipe
+- Durée : 30 minutes
+
+Maintenant, extrais de :
+Email : "On peut faire un appel rapide lundi matin vers 9 h 30 pour passer en revue la présentation client ? J'enverrai un lien Teams."
+
+Réunion :`} />
+
+## Techniques few-shot avancées
+
+Au-delà du few-shot de base, plusieurs techniques peuvent améliorer les résultats sur des tâches complexes.
+
+### Exemples diversifiés
+
+La diversité des exemples compte davantage que leur nombre. Couvrez différents scénarios, cas limites et ambiguïtés potentielles plutôt que de répéter des exemples similaires.
+
+<TryIt compact prompt={`Réponds aux réclamations des clients.
+
+Exemple 1 (problème de produit) :
 Client : "Ma commande est arrivée endommagée."
-Réponse : "Je m'excuse sincèrement. Je vais immédiatement envoyer un remplacement sans frais."
+Réponse : "Je vous présente toutes mes excuses pour cette livraison endommagée. Je vous envoie immédiatement un produit de remplacement, sans frais. Vous n'avez pas besoin de renvoyer l'article abîmé. Puis-je confirmer votre adresse de livraison ?"
 
-Exemple 2 (Problème de Service) :
-Client : "J'attends depuis 2 heures !"
-Réponse : "Je suis vraiment désolé pour ce temps d'attente. Je suis là maintenant pour vous aider."
+Exemple 2 (problème de service) :
+Client : "Ça fait 2 heures que j'attends au téléphone !"
+Réponse : "Je suis vraiment désolé pour cette longue attente. C'est inacceptable. Je suis là maintenant et je veillerai personnellement à ce que votre problème soit résolu. Que puis-je faire pour vous aujourd'hui ?"
 
-Maintenant réponds à :
+Exemple 3 (problème de facturation) :
+Client : "Vous m'avez facturé deux fois la même commande !"
+Réponse : "Je vous prie de m'excuser pour cette erreur de facturation. J'ai vérifié le double prélèvement et lancé un remboursement de XX,XX € sur votre moyen de paiement d'origine. Il devrait apparaître sous 3 à 5 jours ouvrés."
+
+Maintenant, réponds à :
 Client : "Le produit ne correspond pas à ce qui était montré sur le site."
 Réponse :`} />
 
-### Exemples Négatifs
+### Exemples négatifs
 
-<Callout type="tip" title="Apprentissage Contrastif">
-Montrer des exemples « bons » vs « mauvais » aide le modèle à comprendre ce qu'il faut éviter.
+<Callout type="tip" title="Exemples contrastés">
+Placer côte à côte de « bons » et de « mauvais » exemples, c'est ce qu'on appelle souvent utiliser des exemples contrastés. (À ne pas confondre avec l'« apprentissage contrastif », qui est une méthode d'entraînement des modèles.) Cela aide le modèle à comprendre non seulement ce que vous voulez, mais aussi ce qu'il faut éviter. C'est particulièrement utile pour les jugements de style et de qualité.
 </Callout>
+
+Montrer ce qu'il ne *faut pas* faire est parfois aussi précieux que montrer des exemples corrects. Les exemples négatifs aident le modèle à cerner les limites et à éviter les erreurs courantes.
 
 <TryIt compact prompt={`Écris des objets d'email concis.
 
-Bon : "Rapport T3 Prêt pour Révision"
-Mauvais : "Salut, j'ai fini ce truc de rapport dont on a parlé"
+Bon : "Rapport T3 prêt pour relecture"
+Mauvais : "Salut, j'ai fini le truc de rapport dont on avait parlé"
 
-Bon : "Action Requise : Approuver les Congés avant Vendredi"
-Mauvais : "J'ai besoin que tu fasses quelque chose stp lis ça"
+Bon : "Action requise : valider les congés avant vendredi"
+Mauvais : "J'ai besoin que tu fasses un truc pour moi stp lis ça"
 
-Maintenant écris un objet pour :
-Email concernant : Demande de feedback sur un brouillon de proposition
+Bon : "Réunion déplacée : point projet → jeudi 14 h"
+Mauvais : "Changement de programme !!!!!"
+
+Maintenant, écris un objet pour :
+Email concernant : une demande de retour sur un brouillon de proposition
 Objet :`} />
 
-### Exemples de Cas Limites
+### Exemples de cas limites
 
-<TryIt compact prompt={`Analyse les noms en format structuré.
+Les cas limites déterminent souvent si une solution tient en production. Inclure des entrées inhabituelles dans vos exemples évite que le modèle échoue sur des données réelles qui sortent du « cas idéal ». Remarquez que chaque exemple ci-dessous utilise les mêmes champs, avec null quand une partie manque. Cette cohérence fait partie de ce que le modèle apprend.
+
+<TryIt compact prompt={`Analyse ces noms et structure-les.
 
 Entrée : "Jean Dupont"
-Sortie : {"prenom": "Jean", "nom": "Dupont", "deuxieme_prenom": null}
+Sortie : {"prefixe": null, "prenom": "Jean", "deuxieme_prenom": null, "nom": "Dupont", "suffixe": null}
 
 Entrée : "Marie Jeanne Martin-Duval"
-Sortie : {"prenom": "Marie", "deuxieme_prenom": "Jeanne", "nom": "Martin-Duval"}
+Sortie : {"prefixe": null, "prenom": "Marie", "deuxieme_prenom": "Jeanne", "nom": "Martin-Duval", "suffixe": null}
 
-Entrée : "Dr. Pierre Louis Bernard Jr."
-Sortie : {"prefixe": "Dr.", "prenom": "Pierre", "deuxieme_prenom": "Louis", "nom": "Bernard", "suffixe": "Jr."}
+Entrée : "Dr. Martin Luther King Jr."
+Sortie : {"prefixe": "Dr.", "prenom": "Martin", "deuxieme_prenom": "Luther", "nom": "King", "suffixe": "Jr."}
 
-Maintenant analyse :
-Entrée : "Professeur Jacques Henri Lefèvre III"
+Entrée : "Madonna"
+Sortie : {"prefixe": null, "prenom": "Madonna", "deuxieme_prenom": null, "nom": null, "suffixe": null}
+
+Maintenant, analyse :
+Entrée : "Sir Patrick Stewart III"
 Sortie :`} />
 
-## Combien d'Exemples ?
+## Combien d'exemples ?
 
 <div className="my-4 grid gap-2">
   <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Classification simple</span>
     <span className="text-primary font-mono">2-3</span>
-    <span className="text-muted-foreground">Un par catégorie minimum</span>
+    <span className="text-muted-foreground">Au moins un par catégorie</span>
   </div>
   <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Formatage complexe</span>
     <span className="text-primary font-mono">3-5</span>
-    <span className="text-muted-foreground">Montrer les variations</span>
+    <span className="text-muted-foreground">Montrer les variantes</span>
   </div>
   <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Style nuancé</span>
     <span className="text-primary font-mono">4-6</span>
-    <span className="text-muted-foreground">Capturer toute la gamme</span>
+    <span className="text-muted-foreground">Couvrir toute la palette</span>
+  </div>
+  <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-40">Cas limites</span>
+    <span className="text-primary font-mono">1-2</span>
+    <span className="text-muted-foreground">En plus des exemples ordinaires</span>
   </div>
 </div>
 
-## Qualité des Exemples
+Ces chiffres sont un point de départ, pas un plafond. Les modèles dotés de longues fenêtres de contexte peuvent continuer à progresser sur certaines tâches avec des dizaines, voire des centaines d'exemples, une approche que les chercheurs appellent le many-shot prompting. Pour la plupart des prompts du quotidien, toutefois, une poignée d'exemples bien choisis apporte l'essentiel du bénéfice pour une fraction du coût. Les modèles de raisonnement en demandent souvent moins : OpenAI suggère de les essayer d'abord sans exemples, puis d'en ajouter quelques-uns seulement si nécessaire, en veillant à ce qu'ils concordent avec vos instructions.
+
+## La qualité des exemples compte
 
 <Compare 
   before={{ 
-    label: "Mauvais Exemples", 
-    content: `"Bon produit" → Bon
-"Bon service" → Bon
-"Bon prix" → Bon
+    label: "Mauvais exemples", 
+    content: `"Bon produit" → Bien
+"Bon service" → Bien
+"Bon prix" → Bien
 
 ✗ Tous trop similaires
-✗ Même mot répété` 
+✗ Même mot répété
+✗ Aucun cas limite` 
   }}
   after={{ 
-    label: "Bons Exemples", 
+    label: "Bons exemples", 
     content: `"A dépassé mes attentes !" → Positif
 "Cassé à l'arrivée" → Négatif
-"Fait le travail" → Neutre
+"Ça marche, sans plus" → Neutre
 "Super qualité mais trop cher" → Mixte
 
-✓ Scénarios diversifiés
-✓ Frontières claires` 
+✓ Scénarios variés
+✓ Frontières claires
+✓ Cas limites couverts` 
   }}
 />
 
-## Combiner Few-Shot avec d'Autres Techniques
+## Combiner le few-shot avec d'autres techniques
 
-### Few-Shot + Rôle
+L'apprentissage few-shot se combine très bien avec d'autres techniques de prompting. Les exemples fournissent le « quoi », tandis que les autres techniques peuvent ajouter du contexte, du raisonnement ou de la structure.
+
+### Few-Shot + rôle
+
+Ajouter un rôle donne au modèle le contexte qui explique *pourquoi* il accomplit la tâche, ce qui peut améliorer la qualité et la cohérence.
 
 ```
-Tu es un réviseur de contrats juridiques.
+Tu es un juriste spécialisé dans la relecture de contrats.
 
-[exemples d'analyse de clauses]
+[exemples d'analyse de clauses contractuelles]
 
-Maintenant analyse : [nouvelle clause]
+Maintenant, analyse : [nouvelle clause]
 ```
 
 ### Few-Shot + CoT
 
-```
-Classe et explique le raisonnement.
+Combiner le few-shot avec la chaîne de pensée montre non seulement *quelle* réponse donner, mais aussi *comment* raisonner pour y parvenir. C'est très efficace pour les tâches qui demandent du jugement.
 
-Avis : "Bonnes fonctionnalités mais trop cher"
-Réflexion : L'avis mentionne des aspects positifs mais aussi un 
-négatif significatif. Le "mais" suggère que le négatif l'emporte.
+```
+Classe et explique ton raisonnement.
+
+Avis : "Super fonctionnalités mais trop cher"
+Réflexion : L'avis mentionne des aspects positifs ("super fonctionnalités") 
+mais aussi un point négatif important ("trop cher"). Le "mais" laisse 
+penser que le négatif l'emporte sur le positif.
 Classification : Mixte-Négatif
 
-Maintenant classe avec raisonnement :
+[autres exemples avec raisonnement]
+
+Maintenant, classe en expliquant ton raisonnement :
 Avis : "Exactement ce qu'il me fallait, arrivé plus vite que prévu"
 ```
 
 ## Résumé
 
-<Callout type="tip" title="Points Clés à Retenir">
-L'apprentissage few-shot enseigne par la démonstration et est souvent plus efficace que les instructions seules. Utilisez 2-5 exemples diversifiés et corrects, et combinez avec d'autres techniques pour de meilleurs résultats.
+<Callout type="tip" title="Points clés à retenir">
+L'apprentissage few-shot enseigne par la démonstration et se révèle souvent plus efficace que des instructions seules. Utilisez 2 à 5 exemples variés et corrects, et combinez-les avec d'autres techniques pour obtenir les meilleurs résultats.
 </Callout>
 
 <Quiz 
-  question="Combien d'exemples devriez-vous généralement fournir en apprentissage few-shot ?"
+  question="Combien d'exemples faut-il généralement fournir en apprentissage few-shot ?"
   options={[
     "Autant que possible (10+)",
-    "Juste 1 exemple suffit toujours",
-    "2-5 exemples diversifiés et corrects",
-    "Les exemples ne sont pas nécessaires si les instructions sont claires"
+    "Un seul exemple suffit toujours",
+    "2 à 5 exemples variés et corrects",
+    "Les exemples sont inutiles si les instructions sont claires"
   ]}
   correctIndex={2}
-  explanation="2-5 exemples diversifiés et corrects fonctionnent généralement le mieux. Trop peu peuvent ne pas capturer le pattern, tandis que trop nombreux gaspillent des tokens. La qualité et la diversité comptent plus que la quantité."
+  explanation="2 à 5 exemples variés et corrects donnent généralement les meilleurs résultats. Trop peu risquent de ne pas faire ressortir le schéma, tandis qu'en ajouter davantage coûte des tokens et apporte en général peu pour les tâches courantes. La qualité et la diversité comptent plus que la quantité."
 />
 
 Dans le prochain chapitre, nous explorerons l'affinement itératif : l'art d'améliorer les prompts par des tentatives successives.
