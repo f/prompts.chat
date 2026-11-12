@@ -202109,3 +202109,17 @@ Step 2 — Video (Gemini Omni 1.2 Flash): use the Step 1 image as the reference
 
 Using the attached reference photo, create a sequential layer style animation where each section of the product pieces together smoothly with an Exploded View. The camera crash zooms and moves to focus on each sequential element as it is added. The final shot reveals the full product.
 ",FALSE,TEXT,f
+Fashion Showcase,"---
+name: fashion-showcase
+description: create humanize movement for fashion outfit showcase
+---
+
+# My Skill
+
+Describe what this skill does and how the agent should use it.
+
+## Instructions
+
+- Step 1: ...
+- Step 2: ...
+",FALSE,TEXT,knirawx@gmail.com
