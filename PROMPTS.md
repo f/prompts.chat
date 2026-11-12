@@ -238271,3 +238271,26 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>AAA Game-Engine 3D Environment: Photoreal Real-Time-Render Scene Template with 4 Fantasy Examples (16:9 4K)</strong></summary>
+
+## AAA Game-Engine 3D Environment: Photoreal Real-Time-Render Scene Template with 4 Fantasy Examples (16:9 4K)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Aspect ratio 16:9, 4K. Generate a photorealistic AAA image with a high-end real-time engine look. Emphasize indirect illumination, varied roughness, contact shadows and depth separation. Show only the clean rendered scene in full frame. Scene: [DESCRIBE YOUR SCENE]. All identities and designs are original.
+
+Example scenes (replace [DESCRIBE YOUR SCENE] with one of these):
+
+1. The Valley of Flowers Beneath Two Moons: A rose-gold moon and a violet moon rise over a vast valley of glowing magenta and turquoise flowers, as a white crystal river winds toward floating mountains wrapped in soft pink mist.
+
+2. The Sunken Palace: Rippling sunlight falls through deep turquoise water onto a sunken marble palace wrapped in coral, as small fish drift past its broken columns.
+
+3. The Giant Mushroom Swamp: Soft teal light from glowing giant mushrooms reflects on a misty swamp at night, where a wooden boardwalk winds between twisted roots.
+
+4. The World Tree Above the Cloud Sea: A colossal world tree with glowing cyan veins rises above a sea of peach and lavender sunrise clouds, as waterfalls of light pour from its branches and tiny cities shine along its roots.
+```
+
+</details>
+
