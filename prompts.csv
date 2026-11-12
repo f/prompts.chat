@@ -201845,3 +201845,24 @@ Once the user selects their chosen quote(s), format each selected item into the 
 | **Book Character** | Character Name (*Author Name*, *Book Title*) |
 | **Movie / TV Character** | Character Name (*Played by Actor*, *Title*) |
 | **Interview / Article** | Speaker Name (*Publication / Outlet*) |",FALSE,TEXT,panda667
+Tokio Async Rust taste,"# Tokio Async Rust taste of a production service engineer
+- Use `#[tokio::main]` only in the binary and keep library crates runtime-agnostic where practical, taking futures and handles as inputs. Confidence: 0.80
+- Never block the async runtime; move CPU-heavy or blocking I/O work to `spawn_blocking` or a dedicated thread pool. Confidence: 0.95
+- Use `tokio::sync::Mutex` only when a lock must be held across an `.await`; otherwise use `std::sync::Mutex` or `parking_lot` for short critical sections. Confidence: 0.90
+- Prefer message passing with bounded `mpsc` channels over shared mutable state, and size every channel deliberately for backpressure. Confidence: 0.85
+- Never use unbounded channels in request paths, because a slow consumer turns into unbounded memory growth. Confidence: 0.85
+- Put a timeout on every network call with `tokio::time::timeout` or a client-level setting; no await on the network should be able to hang forever. Confidence: 0.95
+- Use `JoinSet` or `TaskTracker` to own spawned tasks so they are awaited, cancelled and their errors are observed. Confidence: 0.85
+- Treat every `.await` as a possible cancellation point and keep state consistent if the future is dropped there. Confidence: 0.85
+- Use `select!` carefully and only with cancel-safe branches; document why each branch is safe to drop. Confidence: 0.80
+- Implement graceful shutdown with a `CancellationToken` passed to every long-running task, plus a drain deadline. Confidence: 0.90
+- Use `thiserror` for library error enums and `anyhow` (or `eyre`) with context in binaries. Confidence: 0.85
+- Instrument with `tracing`, using `#[instrument(skip_all, fields(...))]` on handlers and structured fields instead of formatted strings. Confidence: 0.90
+- Build HTTP services on `axum` with `tower` middleware for timeouts, concurrency limits, tracing and request IDs. Confidence: 0.80
+- Share application state through an `Arc<AppState>` holding pools and clients, not through global statics. Confidence: 0.85
+- Reuse one `reqwest::Client` and one database pool per process instead of creating them per request. Confidence: 0.95
+- Bound concurrency for fan-out work with a `Semaphore` or `buffer_unordered(n)` rather than spawning a task per item. Confidence: 0.85
+- Avoid holding guards or non-`Send` values across `.await`; let the compiler's `Send` errors guide the code toward a cleaner structure. Confidence: 0.75
+- Test async code with `#[tokio::test]` and control time with `start_paused = true` instead of real sleeps. Confidence: 0.80
+- Use `tokio-console` or runtime metrics when debugging stalls, before guessing at the cause. Confidence: 0.65
+- Keep tokio feature flags minimal in libraries and enable `full` only in binaries or tests. Confidence: 0.70",TRUE,TEXT,f
