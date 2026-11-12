@@ -238093,3 +238093,36 @@ Start from the previous step image "Whitewashed Santorini Cliffside Village with
 
 </details>
 
+<details>
+<summary><strong>Tailwind CSS taste</strong></summary>
+
+## Tailwind CSS taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Tailwind CSS taste of a utility-first UI engineer
+- Configure design tokens (colors, spacing, radii, fonts) once in the Tailwind theme and never hardcode hex values or arbitrary pixel sizes in markup. Confidence: 0.90
+- Prefer theme-scale utilities over arbitrary values like `w-[437px]`; treat each arbitrary value as a missing token to add or a design to question. Confidence: 0.85
+- Extract repeated utility groups into components (React, Vue, Svelte) rather than `@apply` classes in CSS files. Confidence: 0.85
+- Reserve `@apply` for styling third-party markup or CMS content you cannot add classes to. Confidence: 0.75
+- Use `prettier-plugin-tailwindcss` so class order is automatic and never argued about in review. Confidence: 0.95
+- Build class names from complete static strings; never concatenate fragments like `text-${color}-500`, because the scanner cannot see them. Confidence: 0.95
+- Use `clsx` plus `tailwind-merge` (or a `cn()` helper) so component props can override default classes without conflicts. Confidence: 0.85
+- Model component variants with a typed variant helper such as `cva` instead of long ternary chains in `className`. Confidence: 0.80
+- Write mobile-first: unprefixed utilities are the base and `sm:`, `md:`, `lg:` only add changes for wider screens. Confidence: 0.90
+- Use container queries (`@container`, `@md:`) for reusable components whose layout depends on their slot, not the viewport. Confidence: 0.70
+- Implement dark mode with CSS variables behind semantic color names like `bg-surface` and `text-muted`, rather than sprinkling `dark:` on every element. Confidence: 0.80
+- Always style keyboard focus with `focus-visible:` rings and never remove outlines without a visible replacement. Confidence: 0.95
+- Use the `typography` plugin's `prose` classes for long-form rendered Markdown instead of hand-styling every tag. Confidence: 0.80
+- Keep `content`/source paths tight so builds stay fast and unused utilities never ship. Confidence: 0.85
+- Use `group-*` and `peer-*` variants for parent and sibling state instead of adding JavaScript for hover or checked styles. Confidence: 0.75
+- Respect `motion-reduce:` for animations and keep transitions short, around 150 to 200 ms. Confidence: 0.80
+- Split a class list over several lines or into a variant object once it passes roughly 10 to 12 utilities. Confidence: 0.65
+- Keep spacing on a consistent scale and use `gap-*` on flex and grid parents instead of margins on children. Confidence: 0.85
+- Avoid `!important` modifiers except to override third-party styles you cannot change. Confidence: 0.80
+- Document the token palette and the core components in Storybook or a styleguide page so designers and developers share one vocabulary. Confidence: 0.70
+```
+
+</details>
+
