@@ -238238,3 +238238,36 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Secrets Management taste</strong></summary>
+
+## Secrets Management taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Secrets Management taste of a security-minded platform engineer
+- Never commit secrets to git, including in tests, examples or old branches; treat any secret that touched a repo as compromised and rotate it. Confidence: 1.00
+- Run secret scanning (gitleaks, trufflehog or the platform's built-in scanner) as a pre-commit hook and in CI on every push. Confidence: 0.90
+- Keep a committed `.env.example` with names and dummy values, and gitignore every real `.env` file. Confidence: 0.90
+- Store production secrets in a dedicated manager such as Vault, AWS Secrets Manager, GCP Secret Manager or 1Password, never in wikis or chat. Confidence: 0.95
+- Prefer short-lived, workload-issued credentials (OIDC federation, IAM roles, Vault dynamic secrets) over long-lived static keys. Confidence: 0.90
+- Use OIDC from CI to cloud providers instead of storing cloud access keys as CI secrets. Confidence: 0.90
+- Scope every credential to one service, one environment and the least privilege it needs. Confidence: 0.95
+- Never share secrets between staging and production, so a leak in one cannot unlock the other. Confidence: 0.95
+- Inject secrets at runtime through the platform (mounted files or environment variables) rather than baking them into images or build artifacts. Confidence: 0.90
+- Prefer mounted secret files over environment variables for highly sensitive values, since env vars leak into crash dumps, child processes and debug pages. Confidence: 0.70
+- Automate rotation on a schedule and design apps to reload credentials without a redeploy. Confidence: 0.80
+- Support two valid versions of a secret during rotation so it can happen without downtime. Confidence: 0.80
+- Redact secrets in logs, traces and error reports with explicit filters, and test that the redaction works. Confidence: 0.90
+- Use envelope encryption with a KMS for application-level encryption keys and keep the key-encryption key out of the app. Confidence: 0.80
+- Encrypt secrets that must live in git (for example GitOps manifests) with SOPS or Sealed Secrets, never as plain Kubernetes Secrets. Confidence: 0.85
+- Audit-log every secret read and alert on unusual access patterns. Confidence: 0.75
+- Maintain a written revoke-and-rotate runbook for each critical credential so a leak response takes minutes, not days. Confidence: 0.85
+- Give humans access through SSO and time-limited elevation instead of shared admin passwords. Confidence: 0.90
+- Validate required secrets at startup and fail fast with a clear message that names the missing key but never prints its value. Confidence: 0.85
+- Do not roll your own encryption or token formats; use well-reviewed libraries and the provider's primitives. Confidence: 0.95
+```
+
+</details>
+
