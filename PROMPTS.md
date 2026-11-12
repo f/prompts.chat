@@ -238041,3 +238041,16 @@ Follow-up: Write a short phone call script for the final-notice stage.
 
 </details>
 
+<details>
+<summary><strong>Linocut Print of a Crowded European Christmas Market at Night</strong></summary>
+
+## Linocut Print of a Crowded European Christmas Market at Night
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A traditional black-and-cream linocut print of a crowded European Christmas market at night, tall portrait 3:4. A narrow cobblestone lane runs between wooden market stalls with peaked snow-covered roofs; a dense crowd in heavy winter coats and hats walks between the stalls. In the background a tall ornate Gothic cathedral spire rises into a solid black sky filled with falling cream snow dots. Three strings of round festival lights swoop across the upper third with soft white halos. Left stall shows jars and hanging ornaments; right stall sends a plume of steam from a tray of roasted chestnuts. High-contrast hand-carved hatching, block-print woodgrain feel, ink-black and cream paper only, lively winter-night mood. No readable shop names, no logos, no watermarks, no modern brand marks.
+```
+
+</details>
+
