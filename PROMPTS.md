@@ -238738,3 +238738,30 @@ Avoid: people, animals, text, signs, buildings, lens flare streaks.
 
 </details>
 
+<details>
+<summary><strong>Erupting Geyser in a Snowy Volcanic Valley at Sunrise (Image-to-Video Animation)</strong></summary>
+
+## Erupting Geyser in a Snowy Volcanic Valley at Sunrise (Image-to-Video Animation)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Use the attached still (step 1: a geyser erupting in a snowy volcanic valley at sunrise) as the exact first frame and animate it into a 6-second, 16:9 cinematic shot. Keep every element where it is in the still: the tall thin geyser column right of center rising from the broad snow-covered white sinter mound, the low sun on the horizon at the right with the gold-orange glow and pale overcast sky above, the wooden boardwalk with railings on the left running toward the middle distance, the snowy rolling hills behind on the left, the turquoise steaming pool in the bottom center and right foreground, the frosted dry grass tufts and the low ground mist.
+
+Motion (0-6 s):
+- 0-2 s: the geyser column surges higher in a powerful pulse, boiling water spraying up and falling back in droplets that sparkle gold against the sun.
+- 2-4 s: the column holds near its peak; thick white steam billows out from the top and drifts from right to left in a light breeze, glowing where the sun backlights it.
+- 4-6 s: the eruption slowly subsides to a lower column while the steam cloud keeps spreading left over the hills.
+- Throughout: the turquoise pool ripples softly and releases thin curls of steam; low mist slides slowly across the ground; the frosted grass tufts tremble very slightly.
+
+Camera: a slow, steady push-in from the boardwalk side (left), easing gently toward the geyser, no shake, no cuts, no zoom jumps.
+
+Lighting and mood: warm sunrise light stays constant, the sun stays low at the right, cool blue-white snow, calm and awe-inspiring.
+
+Audio (if supported): a deep rushing roar of the eruption, hissing steam, a soft breeze, no music, no voices.
+
+Avoid: people, animals, text, new buildings or objects, sudden lighting changes, the sun moving, the boardwalk changing shape, morphing terrain.
+```
+
+</details>
+
