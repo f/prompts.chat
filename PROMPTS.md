@@ -238696,3 +238696,24 @@ Avoid: people, hands, text, labels, logos, packaging, oversaturated colors.
 
 </details>
 
+<details>
+<summary><strong>Pyrography Wood-Burned Panel of a Red Funicular Climbing a Hillside Town</strong></summary>
+
+## Pyrography Wood-Burned Panel of a Red Funicular Climbing a Hillside Town
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A small red funicular railway car climbing a steep single track up a hillside town of stacked terracotta-roofed houses, cypress trees and a church bell tower at the summit, rendered as pyrography wood-burning art on a pale birch plywood panel.
+
+Technique: every line is burned into the wood in warm sepia and deep chocolate browns. Use fine parallel hatching for the roof tiles, stippled dots for the cypress trees and foliage, darker scorched tones for doorways and shadows, and leave the light natural wood grain bare for the sky and soft clouds. Only the funicular car carries a soft hand-applied wash of red stain, so it is the single color accent.
+
+Details: the track runs diagonally from the lower left to the bell tower at the upper right, with a small station platform at the bottom and narrow stairways between the houses beside the track. Slightly uneven handmade line quality, subtle char marks along the panel edges, visible birch grain throughout.
+
+Presentation: 3:4 portrait framing of the whole panel, viewed straight on under flat, even studio lighting, no glare.
+
+Avoid: text, signatures, people, photographic realism, digital gradients.
+```
+
+</details>
+
