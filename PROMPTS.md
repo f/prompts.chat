@@ -238717,3 +238717,24 @@ Avoid: text, signatures, people, photographic realism, digital gradients.
 
 </details>
 
+<details>
+<summary><strong>Erupting Geyser in a Snowy Volcanic Valley at Sunrise</strong></summary>
+
+## Erupting Geyser in a Snowy Volcanic Valley at Sunrise
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A tall, thin geyser column erupting from a broad snow-covered white sinter mound in a snowy volcanic valley at sunrise, with a turquoise hot-spring pool steaming in the foreground.
+
+Scene: the geyser rises slightly right of center into an open sky. The sun sits low on the horizon at the right, glowing gold-orange behind the column and backlighting the steam, while the upper sky turns pale and softly overcast. On the left, a wooden boardwalk with railings runs from the left edge toward the middle distance. Snowy rolling hills rise behind it on the left. In the bottom center and right foreground, a turquoise pool steams gently, edged with frosted tufts of dry grass. Thin mist drifts low across the ground.
+
+Style: photorealistic wide landscape, cinematic 16:9 composition, crisp detail in the snow, sinter crust and frost, natural colors with warm gold light against cool blue-white snow.
+
+Purpose: this still is the first frame for an image-to-video step, so keep the geyser column, boardwalk, pool and sun position clear and uncluttered.
+
+Avoid: people, animals, text, signs, buildings, lens flare streaks.
+```
+
+</details>
+
