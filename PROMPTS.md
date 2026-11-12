@@ -238765,3 +238765,37 @@ Avoid: people, animals, text, new buildings or objects, sudden lighting changes,
 
 </details>
 
+<details>
+<summary><strong>Python Type Hints taste</strong></summary>
+
+## Python Type Hints taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Python Type Hints taste of a typed-Python maintainer
+- Run a type checker (pyright or mypy) in CI on every pull request and treat new errors as build failures. Confidence: 0.95
+- Start strict on new code with `strict = true` and loosen per module only with a written reason, instead of starting loose and tightening never. Confidence: 0.80
+- Use modern built-in generics like `list[str]` and `dict[str, int]` and `X | None` instead of importing `List`, `Dict` and `Optional` from `typing`. Confidence: 0.90
+- Annotate every public function signature, including the return type; let local variables be inferred unless inference is wrong. Confidence: 0.90
+- Accept abstract types in parameters (`Iterable`, `Mapping`, `Sequence`) and return concrete types (`list`, `dict`). Confidence: 0.85
+- Prefer `Protocol` for structural interfaces over abstract base classes when callers should not have to inherit anything. Confidence: 0.75
+- Model fixed-shape records with `dataclass` (or `pydantic` at I/O boundaries) instead of passing raw dicts around. Confidence: 0.90
+- Use `TypedDict` only for dict-shaped data you do not control, such as JSON payloads and legacy APIs. Confidence: 0.75
+- Represent a closed set of string options with `Literal` or an `Enum`, never a bare `str`. Confidence: 0.85
+- Treat `Any` as a bug report: confine it to the boundary where untyped data enters and narrow it immediately. Confidence: 0.85
+- Prefer `object` over `Any` when a value is truly unknown, so the checker forces a narrowing step before use. Confidence: 0.70
+- Narrow with `isinstance`, `match` statements and `TypeGuard`/`TypeIs` helpers instead of `cast()`. Confidence: 0.80
+- Every `# type: ignore` must name the error code and carry a short comment explaining why it is safe. Confidence: 0.90
+- Use `NewType` for IDs and units (`UserId`, `Cents`) that are easy to mix up but share an underlying type. Confidence: 0.70
+- Ship a `py.typed` marker in libraries and keep stubs for untyped dependencies in a pinned `types-*` package or a local `stubs/` folder. Confidence: 0.85
+- Use `@overload` only when the return type truly depends on argument types; otherwise simplify the API. Confidence: 0.70
+- Prefer PEP 695 syntax (`def first[T](xs: list[T]) -> T`) on Python 3.12+ instead of module-level `TypeVar` declarations. Confidence: 0.75
+- Annotate `self`-returning builder methods with `Self` rather than a bound `TypeVar`. Confidence: 0.80
+- Mark constants with `Final` and override methods with `@override` so refactors surface mistakes. Confidence: 0.70
+- Do not add runtime type checks that duplicate the static checker; validate only untrusted input at the edges. Confidence: 0.80
+- Keep annotations import-cheap: put heavy imports under `if TYPE_CHECKING:` to avoid circular imports and slow startup. Confidence: 0.75
+```
+
+</details>
+
