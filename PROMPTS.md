@@ -238673,3 +238673,26 @@ Keep strings short and practical. If my product list is empty, return the schema
 
 </details>
 
+<details>
+<summary><strong>Photoreal Saffron Crocus Harvest Basket on a Limestone Wall at Dawn</strong></summary>
+
+## Photoreal Saffron Crocus Harvest Basket on a Limestone Wall at Dawn
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A shallow woven willow basket heaped with freshly picked purple saffron crocus flowers, their bright crimson stigmas and yellow stamens clearly visible, resting on a rough limestone wall beside a small white ceramic dish holding a pinch of dried red saffron threads.
+
+Photorealistic macro still life at dawn. Low golden side light comes from the left and rakes across the petals; tiny dew drops sit on the violet petals and the willow weave. Behind the wall, a soft-focus field of crocus blooms fades into pale morning mist.
+
+Camera: full-frame camera, 100 mm macro lens at f/4, shallow depth of field with the front of the basket and the dish in sharp focus, crisp detail on petal veins, stigmas and basket weave.
+
+Color and mood: natural earthy palette of violet, crimson, straw and warm limestone, gentle warm highlights against cool blue shadows, quiet harvest morning.
+
+Composition: 4:3 landscape, basket filling the left two thirds of the frame, ceramic dish at the lower right, mist and blurred flowers in the top third.
+
+Avoid: people, hands, text, labels, logos, packaging, oversaturated colors.
+```
+
+</details>
+
