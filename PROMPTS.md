@@ -238832,3 +238832,36 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Internationalization taste</strong></summary>
+
+## Internationalization taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Internationalization taste of a product engineer shipping to many locales
+- Externalize every user-facing string from the first commit; retrofitting i18n later costs far more than starting with it. Confidence: 0.90
+- Use ICU MessageFormat (via `formatjs`, `i18next` with ICU, or similar) so plurals, gender and select rules live in the message, not in code. Confidence: 0.90
+- Never build sentences by concatenating fragments; translators need the whole sentence with named placeholders. Confidence: 0.95
+- Use semantic message keys like `checkout.payButton` instead of using the English text as the key. Confidence: 0.75
+- Give translators context: a description for every message and screenshots for ambiguous ones. Confidence: 0.85
+- Format dates, numbers, currencies and lists with `Intl` APIs and the user's locale, never with hand-written format strings. Confidence: 0.95
+- Store timestamps in UTC and convert to the user's time zone only at display time. Confidence: 0.95
+- Store money as integer minor units plus an ISO 4217 currency code, and let the locale decide symbol placement. Confidence: 0.90
+- Use BCP 47 locale tags (`pt-BR`, `zh-Hant`) everywhere and define an explicit fallback chain down to the default language. Confidence: 0.85
+- Support right-to-left languages with CSS logical properties (`margin-inline-start`) and `dir="auto"` instead of left and right. Confidence: 0.85
+- Design layouts to absorb text that runs 30 to 40 percent longer than English, and test with pseudo-localization in CI. Confidence: 0.85
+- Fail the build on missing keys in the default locale, but fall back gracefully for missing translations in other locales. Confidence: 0.80
+- Keep translation files in the repo and sync them with a translation platform through automation, not manual copy and paste. Confidence: 0.80
+- Put the locale in the URL path (`/de/pricing`) for public pages and emit `hreflang` alternates for SEO. Confidence: 0.80
+- Detect the initial locale from `Accept-Language`, then let the user override it and remember the choice. Confidence: 0.85
+- Sort and compare user-visible strings with `Intl.Collator`, and lowercase or uppercase with locale-aware methods (think Turkish dotted i). Confidence: 0.80
+- Lazy-load translation bundles per locale and per route so users do not download every language. Confidence: 0.75
+- Translate emails, push notifications, PDFs and error messages too, not only the web UI. Confidence: 0.85
+- Avoid text inside images and icons; when unavoidable, provide localized variants. Confidence: 0.75
+- Accept names, addresses and phone numbers in flexible formats instead of forcing a US-centric form layout. Confidence: 0.80
+```
+
+</details>
+
