@@ -238799,3 +238799,36 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>API Rate Limiting taste</strong></summary>
+
+## API Rate Limiting taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# API Rate Limiting taste of a backend platform engineer
+- Rate limit every public endpoint from day one, including authenticated ones; abuse rarely announces itself in advance. Confidence: 0.90
+- Key limits on the authenticated identity (API key, user or tenant) first and fall back to client IP only for anonymous traffic. Confidence: 0.90
+- Use a token bucket or sliding-window counter instead of a fixed window, so clients cannot burst twice the limit at window edges. Confidence: 0.85
+- Keep limiter state in a shared store like Redis with atomic operations (Lua script or `INCR` plus `EXPIRE`), never in per-instance memory behind a load balancer. Confidence: 0.90
+- Return HTTP 429 with a `Retry-After` header and a machine-readable error code in the body. Confidence: 0.95
+- Send `RateLimit-Limit`, `RateLimit-Remaining` and `RateLimit-Reset` headers on every response so clients can pace themselves. Confidence: 0.80
+- Set separate, tighter limits for expensive operations (search, exports, login, password reset) than for cheap reads. Confidence: 0.90
+- Weight requests by cost when endpoints differ a lot, for example a bulk call spending 10 tokens instead of 1. Confidence: 0.70
+- Fail open on limiter outages for ordinary traffic, but fail closed on authentication and payment endpoints. Confidence: 0.75
+- Apply a coarse global limit at the edge (CDN or gateway) and finer per-tenant limits in the application. Confidence: 0.85
+- Publish the limits in the API docs and changelog, and give advance notice before lowering them. Confidence: 0.85
+- Offer higher limits through plans or explicit allowlists instead of silent exceptions hardcoded in the limiter. Confidence: 0.75
+- Ship official SDKs with automatic retries on 429 using exponential backoff with jitter and respect for `Retry-After`. Confidence: 0.85
+- Distinguish rate limits (requests over time) from quotas (monthly usage) and concurrency limits, and report each with its own error code. Confidence: 0.75
+- Log and meter every throttled request by key and route, and alert when a single tenant suddenly dominates rejections. Confidence: 0.85
+- Run new limits in shadow mode first, logging what would be blocked, before enforcing them. Confidence: 0.80
+- Never include the reason a login was throttled in a way that reveals whether the account exists. Confidence: 0.80
+- Add per-account login throttling on top of per-IP throttling to slow credential stuffing from rotating IPs. Confidence: 0.85
+- Keep limiter configuration in code or config files with review, not in an ad hoc admin toggle. Confidence: 0.70
+- Load test the limiter itself; it sits on the hot path and must add only a millisecond or two of latency. Confidence: 0.75
+```
+
+</details>
+
