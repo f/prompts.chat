@@ -238080,3 +238080,16 @@ High-angle wide view of a whitewashed Santorini cliffside village with blue dome
 
 </details>
 
+<details>
+<summary><strong>Santorini Caldera Blue-Dome Village at Golden Hour (Image-to-Video Animation)</strong></summary>
+
+## Santorini Caldera Blue-Dome Village at Golden Hour (Image-to-Video Animation)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Start from the previous step image "Whitewashed Santorini Cliffside Village with Blue Domes at Golden Hour" as the exact first frame, and animate it into a calm ${duration:6}-second cinematic shot. Keep the sea on the left with the sun and gold path, the whitewashed village on the right, the two blue domes (larger center-right, one slightly lower), volcanic cliff rock, warm golden-hour light, haze, and style exactly as in the image. The camera makes a slow gentle push-in toward the larger blue dome. Subtle sun glitter shimmers on the sea; very light atmospheric haze drifts softly. Architecture stays locked. Natural, realistic motion, no large crowds, no close faces, no cuts, no text, no logos. Soft evening ambience, distant quiet air.
+```
+
+</details>
+
