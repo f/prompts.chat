@@ -202609,3 +202609,24 @@ Compare the CFD results for diamond aerofoil (Cl and CD values, pressure downstr
 What happens if you change of angle of attack for supersonic flow over diamond aerofoil.
 so in total there is 8 topics subdivided into 3 subtopics and you should write about theory answer the question and also leave space for results (basically sticking screenshots)about ansys 
 ",FALSE,TEXT,tilakgowda1817@gmail.com
+Dependency Management taste,"# Dependency Management taste of a maintainer who hates surprise breakages
+- Commit the lockfile for every application and CI job, and install with the frozen mode (`npm ci`, `pnpm install --frozen-lockfile`, `uv sync --locked`). Confidence: 0.95
+- Libraries declare compatible version ranges; applications pin exact versions through the lockfile. Confidence: 0.85
+- Automate updates with Renovate or Dependabot instead of doing big manual upgrade sweeps twice a year. Confidence: 0.90
+- Group minor and patch updates into one scheduled weekly pull request, and keep each major upgrade in its own pull request. Confidence: 0.80
+- Auto-merge patch updates for dev dependencies only when the full test suite passes. Confidence: 0.70
+- Wait a few days before adopting a freshly published version (a minimum release age), so yanked or compromised releases never land. Confidence: 0.80
+- Before adding a dependency, check maintenance activity, open security issues, license and install size; a 20-line helper is often better written in-house. Confidence: 0.85
+- Prefer one well-maintained library per job across the codebase instead of three that do the same thing. Confidence: 0.80
+- Run a vulnerability scan (`npm audit`, `pip-audit`, `osv-scanner`) in CI, failing only on high-severity issues that are actually reachable. Confidence: 0.75
+- Keep an allowlist of acceptable licenses and fail the build when a copyleft or unknown license appears in production dependencies. Confidence: 0.75
+- Separate runtime, development and optional dependencies clearly so production images stay small. Confidence: 0.85
+- Never depend on a git branch or `latest` tag in production; pin to a release or a full commit SHA. Confidence: 0.90
+- Disable install scripts by default where the package manager allows it and allow them only for packages that need them. Confidence: 0.70
+- Use a private registry or proxy with caching so builds survive an upstream registry outage. Confidence: 0.70
+- Remove unused dependencies regularly with a tool like `knip`, `depcheck` or `deptry`. Confidence: 0.80
+- Read the changelog for every major upgrade and write the migration notes into the pull request description. Confidence: 0.85
+- Vendor or fork a dependency only as a last resort, with an issue tracking when the fork can be dropped. Confidence: 0.75
+- Keep the language runtime version pinned in one file (`.nvmrc`, `.python-version`, `rust-toolchain.toml`) that CI and local dev both read. Confidence: 0.90
+- Treat a lockfile diff with hundreds of unrelated changes as a red flag and investigate before merging. Confidence: 0.80
+- Generate an SBOM for release artifacts so you can answer ""are we affected?"" within minutes when a new CVE drops. Confidence: 0.65",TRUE,TEXT,f
