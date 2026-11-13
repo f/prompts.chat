@@ -3047,6 +3047,7 @@
     "tokenPlaceholder": "Pega el token de conexión",
     "connect": "Conectar",
     "disconnect": "Desconectar",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "localOnly": "Solo puede conectarse un puente WebMCP en este equipo (localhost)"
   }
 }

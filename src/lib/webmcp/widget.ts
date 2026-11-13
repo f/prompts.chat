@@ -47,6 +47,72 @@ export interface WidgetLabels {
   connect: string;
   disconnect: string;
   close: string;
+  /** Shown when a token names a bridge that is not on this computer */
+  localOnly: string;
+}
+
+/** The widget's sessionStorage entry for the current connection, which it reconnects to on load */
+export const WIDGET_SESSION_KEY = "webmcp_token";
+
+const LOOPBACK_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);
+
+/** Whether a bridge URL points at this computer; the bridge only ever listens on localhost */
+export function isLocalBridgeUrl(server: unknown): boolean {
+  if (typeof server !== "string") return false;
+  try {
+    const url = new URL(server);
+    return (url.protocol === "ws:" || url.protocol === "wss:") && LOOPBACK_HOSTS.has(url.hostname) && !url.username && !url.password;
+  } catch {
+    return false;
+  }
+}
+
+/** The bridge URL inside a connection token (base64 JSON `{ server, token }`), or null */
+export function connectionTokenServer(token: unknown): string | null {
+  if (typeof token !== "string") return null;
+  try {
+    const data: unknown = JSON.parse(atob(token.trim()));
+    return data && typeof data === "object" && typeof (data as { server?: unknown }).server === "string"
+      ? (data as { server: string }).server
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Drops a stored connection to a bridge that is not local, so the widget cannot reconnect to it on load */
+export function clearForeignConnection(storage: Pick<Storage, "getItem" | "removeItem">): void {
+  const stored = storage.getItem(WIDGET_SESSION_KEY);
+  if (!stored) return;
+  try {
+    if (isLocalBridgeUrl((JSON.parse(stored) as { server?: unknown }).server)) return;
+  } catch {
+    // unreadable: the widget would discard it too
+  }
+  storage.removeItem(WIDGET_SESSION_KEY);
+}
+
+/** The widget's connection methods (connect is public; _updateStatus only shows a status line) */
+export interface ConnectableWidget {
+  connect(token: string): unknown;
+  _updateStatus?(status: string, message: string): void;
+}
+
+/**
+ * Lets the widget connect only to a bridge on this computer. The token names the WebSocket server
+ * to connect to, and whoever is connected can call every tool, including the signed-in user's
+ * upvotes and collection, so a token for a remote server (say, one a stranger asked the user to
+ * paste) must not be accepted.
+ */
+export function restrictToLocalBridge(widget: ConnectableWidget, message: string): void {
+  const connect = widget.connect.bind(widget);
+  widget.connect = (token: string) => {
+    if (!isLocalBridgeUrl(connectionTokenServer(token))) {
+      widget._updateStatus?.("disconnected", message);
+      return Promise.resolve();
+    }
+    return connect(token);
+  };
 }
 
 /**

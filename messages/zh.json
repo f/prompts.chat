@@ -3032,6 +3032,7 @@
     "tokenPlaceholder": "粘贴连接令牌",
     "connect": "连接",
     "disconnect": "断开连接",
-    "close": "关闭"
+    "close": "关闭",
+    "localOnly": "只能连接到本机 (localhost) 上的 WebMCP 桥接程序"
   }
 }

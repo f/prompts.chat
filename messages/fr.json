@@ -3047,6 +3047,7 @@
     "tokenPlaceholder": "Collez le jeton de connexion",
     "connect": "Connecter",
     "disconnect": "Déconnecter",
-    "close": "Fermer"
+    "close": "Fermer",
+    "localOnly": "Seul un pont WebMCP sur cet ordinateur (localhost) peut se connecter"
   }
 }

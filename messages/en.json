@@ -3048,6 +3048,7 @@
     "tokenPlaceholder": "Paste connection token",
     "connect": "Connect",
     "disconnect": "Disconnect",
-    "close": "Close"
+    "close": "Close",
+    "localOnly": "Only a WebMCP bridge on this computer (localhost) can connect"
   }
 }

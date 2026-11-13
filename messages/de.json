@@ -3044,6 +3044,7 @@
     "tokenPlaceholder": "Verbindungstoken einfügen",
     "connect": "Verbinden",
     "disconnect": "Trennen",
-    "close": "Schließen"
+    "close": "Schließen",
+    "localOnly": "Nur eine WebMCP-Bridge auf diesem Computer (localhost) kann sich verbinden"
   }
 }

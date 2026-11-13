@@ -3035,6 +3035,7 @@
     "tokenPlaceholder": "Plak het verbindingstoken",
     "connect": "Verbinden",
     "disconnect": "Verbinding verbreken",
-    "close": "Sluiten"
+    "close": "Sluiten",
+    "localOnly": "Alleen een WebMCP-bridge op deze computer (localhost) kan verbinden"
   }
 }

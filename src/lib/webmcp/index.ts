@@ -1,9 +1,16 @@
-import { getModelContext, registerWithModelContext, registerWithWidget } from "./adapters";
+import { getModelContext, registerWithModelContext, registerWithWidget, type WebMcpWidget } from "./adapters";
 import { createPrompts } from "./prompts";
 import { createResources } from "./resources";
 import { createTools } from "./tools";
 import type { WebMcpEnv } from "./types";
-import { enhanceWidget, loadWidgetScript, type WidgetLabels } from "./widget";
+import {
+  clearForeignConnection,
+  enhanceWidget,
+  loadWidgetScript,
+  restrictToLocalBridge,
+  type ConnectableWidget,
+  type WidgetLabels,
+} from "./widget";
 
 export type { WebMcpEnv } from "./types";
 export type { WidgetLabels } from "./widget";
@@ -55,6 +62,8 @@ export function startWebMcp(env: WebMcpEnv, options: StartOptions): Promise<void
 
     const WebMCP = await loadWidgetScript();
     if (document.querySelector("[data-webmcp-widget]")) return;
+    // The constructor reconnects to a stored connection before restrictToLocalBridge can wrap connect()
+    clearForeignConnection(sessionStorage);
     const widget = new WebMCP({
       color: options.color,
       position: "bottom-left",
@@ -63,6 +72,7 @@ export function startWebMcp(env: WebMcpEnv, options: StartOptions): Promise<void
       // Disconnects after this long without user input; agent tool calls do not count as activity
       inactivityTimeout: 30 * 60 * 1000,
     });
+    restrictToLocalBridge(widget as WebMcpWidget & ConnectableWidget, options.labels.localOnly);
     enhanceWidget(options.labels);
     registerWithWidget(widget, { tools, prompts: createPrompts(env), resources: createResources(env) });
   })().catch((error) => {

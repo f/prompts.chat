@@ -3043,6 +3043,7 @@
     "tokenPlaceholder": "Bağlantı belirtecini yapıştırın",
     "connect": "Bağlan",
     "disconnect": "Bağlantıyı kes",
-    "close": "Kapat"
+    "close": "Kapat",
+    "localOnly": "Yalnızca bu bilgisayardaki bir WebMCP köprüsü (localhost) bağlanabilir"
   }
 }

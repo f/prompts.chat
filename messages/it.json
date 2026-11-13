@@ -3050,6 +3050,7 @@
     "tokenPlaceholder": "Incolla il token di connessione",
     "connect": "Connetti",
     "disconnect": "Disconnetti",
-    "close": "Chiudi"
+    "close": "Chiudi",
+    "localOnly": "Può connettersi solo un bridge WebMCP su questo computer (localhost)"
   }
 }

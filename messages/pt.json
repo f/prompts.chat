@@ -3046,6 +3046,7 @@
     "tokenPlaceholder": "Cole o token de conexão",
     "connect": "Conectar",
     "disconnect": "Desconectar",
-    "close": "Fechar"
+    "close": "Fechar",
+    "localOnly": "Só é possível conectar a uma ponte WebMCP neste computador (localhost)"
   }
 }

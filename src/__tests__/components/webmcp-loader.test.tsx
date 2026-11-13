@@ -45,7 +45,7 @@ describe("WebMcpLoader", () => {
     ];
     expect(options).toEqual({
       color: "#6366f1",
-      labels: { open: "open", tokenPlaceholder: "tokenPlaceholder", connect: "connect", disconnect: "disconnect", close: "close" },
+      labels: { open: "open", tokenPlaceholder: "tokenPlaceholder", connect: "connect", disconnect: "disconnect", close: "close", localOnly: "localOnly" },
     });
     expect(env.locales).toEqual(["en", "de"]);
 

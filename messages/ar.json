@@ -3030,6 +3030,7 @@
     "tokenPlaceholder": "الصق رمز الاتصال",
     "connect": "اتصال",
     "disconnect": "قطع الاتصال",
-    "close": "إغلاق"
+    "close": "إغلاق",
+    "localOnly": "يمكن الاتصال فقط بجسر WebMCP على هذا الكمبيوتر (localhost)"
   }
 }

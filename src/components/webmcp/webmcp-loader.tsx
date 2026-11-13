@@ -19,7 +19,7 @@ export function WebMcpLoader({ color, locales }: WebMcpLoaderProps) {
   const t = useTranslations("webmcp");
   const router = useRouter();
   const routerRef = useRef(router);
-  const labelsRef = useRef({ open: t("open"), tokenPlaceholder: t("tokenPlaceholder"), connect: t("connect"), disconnect: t("disconnect"), close: t("close") });
+  const labelsRef = useRef({ open: t("open"), tokenPlaceholder: t("tokenPlaceholder"), connect: t("connect"), disconnect: t("disconnect"), close: t("close"), localOnly: t("localOnly") });
 
   useEffect(() => {
     routerRef.current = router;

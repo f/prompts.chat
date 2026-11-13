@@ -1,7 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { getModelContext, registerWithModelContext, registerWithWidget, type ModelContext, type WebMcpWidget } from "@/lib/webmcp/adapters";
 import { waitForPath, waitUntil } from "@/lib/webmcp";
-import { enhanceWidget, loadWidgetScript, WEBMCP_WIDGET_SRC, WEBMCP_WIDGET_VERSION } from "@/lib/webmcp/widget";
+import {
+  clearForeignConnection,
+  connectionTokenServer,
+  enhanceWidget,
+  isLocalBridgeUrl,
+  loadWidgetScript,
+  restrictToLocalBridge,
+  WEBMCP_WIDGET_SRC,
+  WEBMCP_WIDGET_VERSION,
+  WIDGET_SESSION_KEY,
+} from "@/lib/webmcp/widget";
 import type { WebMcpPrompt, WebMcpResource, WebMcpTool } from "@/lib/webmcp/types";
 
 function tool(name: string): WebMcpTool {
@@ -146,7 +156,7 @@ describe("widget", () => {
         </div>
         <div class="webmcp-trigger"></div>
       </div>`;
-    const container = enhanceWidget({ open: "KI-Agenten verbinden", tokenPlaceholder: "Token einfügen", connect: "Verbinden", disconnect: "Trennen", close: "Schließen" });
+    const container = enhanceWidget({ open: "KI-Agenten verbinden", tokenPlaceholder: "Token einfügen", connect: "Verbinden", disconnect: "Trennen", close: "Schließen", localOnly: "Nur lokal" });
 
     expect(container?.getAttribute("translate")).toBe("no");
     const trigger = document.querySelector<HTMLElement>(".webmcp-trigger")!;
@@ -166,7 +176,7 @@ describe("widget", () => {
 
   it("marks the trigger while the widget is connected", async () => {
     document.body.innerHTML = '<div data-webmcp-widget="true"><div class="webmcp-trigger"></div></div>';
-    enhanceWidget({ open: "", tokenPlaceholder: "", connect: "", disconnect: "", close: "" });
+    enhanceWidget({ open: "", tokenPlaceholder: "", connect: "", disconnect: "", close: "", localOnly: "" });
     const trigger = document.querySelector<HTMLElement>(".webmcp-trigger")!;
     expect(trigger.hasAttribute("data-connected")).toBe(false);
 
@@ -180,7 +190,58 @@ describe("widget", () => {
   });
 
   it("is a no-op without the widget", () => {
-    expect(enhanceWidget({ open: "", tokenPlaceholder: "", connect: "", disconnect: "", close: "" })).toBeNull();
+    expect(enhanceWidget({ open: "", tokenPlaceholder: "", connect: "", disconnect: "", close: "", localOnly: "" })).toBeNull();
+  });
+});
+
+describe("local bridge only", () => {
+  const token = (server: string) => btoa(JSON.stringify({ server, token: "abc" }));
+
+  it.each(["ws://localhost:4797", "ws://127.0.0.1:4797", "wss://localhost:4797", "ws://[::1]:4797/"])("accepts %s", (server) => {
+    expect(isLocalBridgeUrl(server)).toBe(true);
+  });
+
+  it.each([
+    "wss://evil.example:4797",
+    "ws://localhost.evil.example:4797",
+    "ws://user:pass@localhost:4797",
+    "http://localhost:4797",
+    "ws://192.168.1.10:4797",
+    "",
+    undefined,
+  ])("refuses %s", (server) => {
+    expect(isLocalBridgeUrl(server)).toBe(false);
+  });
+
+  it("reads the server from a connection token", () => {
+    expect(connectionTokenServer(` ${token("ws://localhost:4797")}\n`)).toBe("ws://localhost:4797");
+    expect(connectionTokenServer("not a token")).toBeNull();
+    expect(connectionTokenServer(btoa("{}"))).toBeNull();
+  });
+
+  it("only lets tokens for a local bridge through to the widget", async () => {
+    const connect = vi.fn<(token: string) => Promise<void>>(async () => undefined);
+    const widget = { connect, _updateStatus: vi.fn() };
+    restrictToLocalBridge(widget, "Local only");
+
+    await widget.connect(token("wss://evil.example:4797"));
+    expect(connect).not.toHaveBeenCalled();
+    expect(widget._updateStatus).toHaveBeenCalledWith("disconnected", "Local only");
+
+    await widget.connect(token("ws://localhost:4797"));
+    expect(connect).toHaveBeenCalledWith(token("ws://localhost:4797"));
+  });
+
+  it("forgets a stored connection to a remote bridge before the widget reconnects to it", () => {
+    sessionStorage.setItem(WIDGET_SESSION_KEY, JSON.stringify({ server: "wss://evil.example:4797", token: "t" }));
+    clearForeignConnection(sessionStorage);
+    expect(sessionStorage.getItem(WIDGET_SESSION_KEY)).toBeNull();
+
+    const local = JSON.stringify({ server: "ws://localhost:4797", token: "t" });
+    sessionStorage.setItem(WIDGET_SESSION_KEY, local);
+    clearForeignConnection(sessionStorage);
+    expect(sessionStorage.getItem(WIDGET_SESSION_KEY)).toBe(local);
+    sessionStorage.clear();
   });
 });
 

@@ -3028,6 +3028,7 @@
     "tokenPlaceholder": "הדביקו את אסימון החיבור",
     "connect": "התחברות",
     "disconnect": "התנתקות",
-    "close": "סגירה"
+    "close": "סגירה",
+    "localOnly": "רק גשר WebMCP במחשב הזה (localhost) יכול להתחבר"
   }
 }

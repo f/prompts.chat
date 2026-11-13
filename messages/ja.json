@@ -3032,6 +3032,7 @@
     "tokenPlaceholder": "接続トークンを貼り付け",
     "connect": "接続",
     "disconnect": "切断",
-    "close": "閉じる"
+    "close": "閉じる",
+    "localOnly": "このコンピューター上の WebMCP ブリッジ (localhost) にのみ接続できます"
   }
 }

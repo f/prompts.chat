@@ -3028,6 +3028,7 @@
     "tokenPlaceholder": "توکن اتصال را جای‌گذاری کنید",
     "connect": "اتصال",
     "disconnect": "قطع اتصال",
-    "close": "بستن"
+    "close": "بستن",
+    "localOnly": "فقط پل WebMCP روی همین رایانه (localhost) می‌تواند متصل شود"
   }
 }
