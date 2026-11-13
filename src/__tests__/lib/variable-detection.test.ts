@@ -397,6 +397,14 @@ describe("Markdown link preservation", () => {
     expect(convertAllVariables("Hello [NAME] (optional)")).toBe("Hello ${name} (optional)");
   });
 
+  it("should convert a single-bracket placeholder right after a double-bracket one", () => {
+    expect(convertAllVariables("[[FIRST]][LAST]")).toBe("${first}${last}");
+  });
+
+  it("should match shortcut reference labels with collapsed internal whitespace", () => {
+    expect(convertAllVariables("Read [My Docs].\n\n[My  Docs]: https://example.com")).toBe("Read [My Docs].\n\n[My  Docs]: https://example.com");
+  });
+
   it("should not detect Markdown link text as a variable", () => {
     expect(detectVariables("[documentation](https://example.com)")).toHaveLength(0);
   });

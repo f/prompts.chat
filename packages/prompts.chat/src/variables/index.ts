@@ -110,6 +110,14 @@ function isInsideJsonString(text: string, index: number): boolean {
 }
 
 /**
+ * Normalize a Markdown reference label for matching: collapse internal
+ * whitespace, trim, and lowercase (per CommonMark label matching)
+ */
+function normalizeReferenceLabel(label: string): string {
+  return label.replace(/\s+/g, " ").trim().toLowerCase();
+}
+
+/**
  * Check if a single-bracket match is part of Markdown link/image syntax:
  * inline links/images `[text](url)`, `![alt](src)`, full/collapsed reference
  * links `[text][ref]`, `[text][]`, reference definitions `[ref]: url`, and
@@ -126,7 +134,9 @@ function isMarkdownLinkSyntax(
   const after = text[endIndex] ?? "";
 
   // Image `![alt]` or second part of a reference link `[text][ref]`
-  if (before === "!" || before === "]") return true;
+  // (a `]]` before the match closes a double-bracket placeholder, not link text)
+  if (before === "!") return true;
+  if (before === "]" && text[startIndex - 2] !== "]") return true;
   // Inline link `[text](url)` or reference link `[text][ref]` / `[text][]`
   if (after === "(" || after === "[") return true;
   // Reference definition `[ref]: url` at the start of a line
@@ -135,7 +145,7 @@ function isMarkdownLinkSyntax(
     if (/^ {0,3}$/.test(text.slice(lineStart, startIndex))) return true;
   }
   // Shortcut reference `[ref]` with a matching definition
-  return referenceLabels.has(label.trim().toLowerCase());
+  return referenceLabels.has(normalizeReferenceLabel(label));
 }
 
 /**
@@ -146,7 +156,7 @@ function getMarkdownReferenceLabels(text: string): Set<string> {
   const definitionPattern = /^ {0,3}\[([^\]\n]+)\]:[ \t]*\S/gm;
   let match: RegExpExecArray | null;
   while ((match = definitionPattern.exec(text)) !== null) {
-    labels.add(match[1].trim().toLowerCase());
+    labels.add(normalizeReferenceLabel(match[1]));
   }
   return labels;
 }
