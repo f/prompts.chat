@@ -143,6 +143,8 @@
     "delete": "حذف پرامپت",
     "noPrompts": "پرامپتی یافت نشد",
     "noPromptsDescription": "معیارهای جستجو یا فیلتر خود را تنظیم کنید.",
+    "searchSkillsPlaceholder": "جستجوی مهارت‌ها...",
+    "noSkills": "مهارتی یافت نشد",
     "noMorePrompts": "به انتها رسیدید",
     "loadMore": "بارگذاری بیشتر",
     "loading": "در حال بارگذاری...",

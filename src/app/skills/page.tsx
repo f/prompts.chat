@@ -5,9 +5,12 @@ import { unstable_cache } from "next/cache";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InfinitePromptList } from "@/components/prompts/infinite-prompt-list";
+import { PromptFilters } from "@/components/prompts/prompt-filters";
+import { FilterProvider } from "@/components/prompts/filter-context";
 import { HFDataStudioDropdown } from "@/components/prompts/hf-data-studio-dropdown";
 import { McpServerPopup } from "@/components/mcp/mcp-server-popup";
 import { db } from "@/lib/db";
+import { skillListWhere } from "@/lib/prompt-list";
 import { buildPageMetadata } from "@/lib/seo";
 import { isAIGenerationEnabled } from "@/lib/ai/generation";
 import config from "@/../prompts.config";
@@ -24,20 +27,7 @@ function getCachedSkills(
   
   return unstable_cache(
     async () => {
-      const where: Record<string, unknown> = {
-        type: "SKILL",
-        isPrivate: false,
-        isUnlisted: false,
-        deletedAt: null,
-      };
-
-      if (searchQuery) {
-        where.OR = [
-          { title: { contains: searchQuery, mode: "insensitive" } },
-          { content: { contains: searchQuery, mode: "insensitive" } },
-          { description: { contains: searchQuery, mode: "insensitive" } },
-        ];
-      }
+      const where = skillListWhere(searchQuery);
 
       const [skillsRaw, totalCount] = await Promise.all([
         db.prompt.findMany({
@@ -128,6 +118,7 @@ export default async function SkillsPage({ searchParams }: SkillsPageProps) {
   const tSeo = await getTranslations("seo.skills");
   const tSearch = await getTranslations("search");
   const params = await searchParams;
+  const q = params.q?.trim() || undefined;
   
   const perPage = 24;
 
@@ -141,7 +132,7 @@ export default async function SkillsPage({ searchParams }: SkillsPageProps) {
   }
 
   const [result, aiGenerationAvailable] = await Promise.all([
-    getCachedSkills(orderBy, perPage, params.q),
+    getCachedSkills(orderBy, perPage, q),
     isAIGenerationEnabled(),
   ]);
   const skills = result.skills;
@@ -149,7 +140,7 @@ export default async function SkillsPage({ searchParams }: SkillsPageProps) {
 
   return (
     <div className="container py-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
         <div className="flex items-baseline gap-2">
           <h1 className="text-lg font-semibold">{tSeo("heading")}</h1>
           <span className="text-xs text-muted-foreground">{tSearch("found", { count: total })}</span>
@@ -170,19 +161,36 @@ export default async function SkillsPage({ searchParams }: SkillsPageProps) {
         </div>
       </div>
       
-      <p className="text-sm text-muted-foreground mb-6">
+      <p className="text-sm text-muted-foreground mb-4">
         {t("skillsDescription")}
       </p>
 
-      <InfinitePromptList
-        initialPrompts={skills}
-        initialTotal={total}
-        filters={{
-          q: params.q,
-          type: "SKILL",
-          sort: params.sort,
-        }}
-      />
+      <FilterProvider>
+        <div className="flex flex-col lg:flex-row gap-6">
+          <aside className="w-full lg:w-56 shrink-0 lg:sticky lg:top-16 lg:self-start lg:max-h-[calc(100vh-5rem)] lg:overflow-y-auto">
+            <PromptFilters
+              categories={[]}
+              tags={[]}
+              currentFilters={{ q, sort: params.sort }}
+              basePath="/skills"
+              primaryFilter={null}
+              searchPlaceholder={t("searchSkillsPlaceholder")}
+            />
+          </aside>
+          <main className="flex-1 min-w-0">
+            <InfinitePromptList
+              initialPrompts={skills}
+              initialTotal={total}
+              filters={{
+                q,
+                type: "SKILL",
+                sort: params.sort,
+              }}
+              emptyTitle={t("noSkills")}
+            />
+          </main>
+        </div>
+      </FilterProvider>
     </div>
   );
 }

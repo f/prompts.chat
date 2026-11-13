@@ -143,6 +143,8 @@
     "delete": "プロンプトを削除",
     "noPrompts": "プロンプトが見つかりません",
     "noPromptsDescription": "検索条件やフィルターを調整してみてください。",
+    "searchSkillsPlaceholder": "スキルを検索...",
+    "noSkills": "スキルが見つかりません",
     "promptTitle": "タイトル",
     "promptContent": "内容",
     "promptDescription": "説明",

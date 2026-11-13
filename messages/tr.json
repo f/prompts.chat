@@ -143,6 +143,8 @@
     "delete": "Prompt Sil",
     "noPrompts": "Prompt bulunamadı",
     "noPromptsDescription": "Aradığınızı bulmak için arama veya filtre kriterlerinizi değiştirmeyi deneyin.",
+    "searchSkillsPlaceholder": "Yetenek ara...",
+    "noSkills": "Yetenek bulunamadı",
     "noMorePrompts": "Sona ulaştınız",
     "loadMore": "Daha Fazla Yükle",
     "loading": "Yükleniyor...",

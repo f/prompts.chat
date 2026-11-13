@@ -4,6 +4,8 @@ import Link from "next/link";
 import { FlaskConical, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ClassifierCatalog } from "@/components/classifiers/classifier-catalog";
+import { ClassifierFilters } from "@/components/classifiers/classifier-filters";
+import { FilterProvider } from "@/components/prompts/filter-context";
 import { CLASSIFIER_CATEGORIES, type ClassifierCategoryId } from "@/lib/classifiers";
 import { getClassifierCatalog, getClassifierVotes, listedClassifiers } from "@/lib/classifiers/store";
 import { auth } from "@/lib/auth";
@@ -35,6 +37,12 @@ export default async function ClassifiersPage({ searchParams }: ClassifiersPageP
   const [catalog, session] = await Promise.all([getClassifierCatalog(), auth()]);
   const listed = listedClassifiers(catalog);
   const votes = await getClassifierVotes(listed.map((c) => c.id), session?.user?.id);
+  const query = params.q?.trim() ?? "";
+  const category = parseCategory(params.category);
+  const categoryCounts: Partial<Record<ClassifierCategoryId, number>> = {};
+  for (const classifier of listed) {
+    categoryCounts[classifier.category] = (categoryCounts[classifier.category] ?? 0) + 1;
+  }
 
   return (
     <div className="container py-6">
@@ -57,13 +65,25 @@ export default async function ClassifiersPage({ searchParams }: ClassifiersPageP
         </div>
       </div>
 
-      <ClassifierCatalog
-        classifiers={listed.map((c) => ({ ...c, voteCount: votes.counts.get(c.id) ?? 0, voted: votes.voted.has(c.id) }))}
-        stepClassifiers={catalog.classifiers}
-        chains={catalog.chains}
-        initialQuery={params.q ?? ""}
-        initialCategory={parseCategory(params.category)}
-      />
+      <FilterProvider>
+        <div className="flex flex-col lg:flex-row gap-6">
+          <aside className="w-full lg:w-56 shrink-0 lg:sticky lg:top-16 lg:self-start lg:max-h-[calc(100vh-5rem)] lg:overflow-y-auto">
+            <ClassifierFilters
+              categoryCounts={categoryCounts}
+              currentFilters={{ q: query || undefined, category: category ?? undefined }}
+            />
+          </aside>
+          <main className="flex-1 min-w-0">
+            <ClassifierCatalog
+              classifiers={listed.map((c) => ({ ...c, voteCount: votes.counts.get(c.id) ?? 0, voted: votes.voted.has(c.id) }))}
+              stepClassifiers={catalog.classifiers}
+              chains={catalog.chains}
+              query={query}
+              category={category}
+            />
+          </main>
+        </div>
+      </FilterProvider>
     </div>
   );
 }

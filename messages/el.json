@@ -143,6 +143,8 @@
     "delete": "Διαγραφή Prompt",
     "noPrompts": "Δεν βρέθηκαν prompts",
     "noPromptsDescription": "Δοκιμάστε να προσαρμόσετε την αναζήτηση ή τα φίλτρα σας.",
+    "searchSkillsPlaceholder": "Αναζήτηση δεξιοτήτων...",
+    "noSkills": "Δεν βρέθηκαν δεξιότητες",
     "noMorePrompts": "Φτάσατε στο τέλος",
     "loadMore": "Φόρτωση περισσότερων",
     "loading": "Φόρτωση...",
