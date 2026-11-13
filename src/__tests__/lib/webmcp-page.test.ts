@@ -41,7 +41,16 @@ describe("toSameOriginPath", () => {
     expect(toSameOriginPath(input, ORIGIN)).toBe(expected);
   });
 
-  it.each(["https://evil.example/", "//evil.example/x", "", "   ", "http://prompts.chat/"])("refuses %s", (input) => {
+  it.each([
+    "https://evil.example/",
+    "//evil.example/x",
+    "",
+    "   ",
+    "http://prompts.chat/",
+    "https://prompts.chat//evil.example/",
+    "https://prompts.chat///evil.example/x",
+    "/.//evil.example/",
+  ])("refuses %s", (input) => {
     expect(toSameOriginPath(input, ORIGIN)).toBeNull();
   });
 
@@ -84,6 +93,22 @@ describe("page extraction", () => {
     expect(text).not.toContain("Copy");
     expect(text).not.toContain("decoration");
     expect(text).not.toMatch(/\n{3,}/);
+  });
+
+  it("keeps preformatted text verbatim", () => {
+    const main = document.createElement("main");
+    main.innerHTML = "<p>Run   this:</p><pre>def f():\n    return  1\n\n\nprint(f())</pre>";
+    expect(extractText(main)).toBe("Run this:\n\n```\ndef f():\n    return  1\n\n\nprint(f())\n```");
+  });
+
+  it("reads CodeView's numbered lines as source lines", () => {
+    // Markup as rendered by src/components/ui/code-view.tsx
+    const main = document.createElement("main");
+    const lines = ["name: x", "steps:", "", "  - run: echo ```"]
+      .map((line, i) => `<div class="flex"><span class="select-none">${i + 1}</span><span class="flex-1"><span>${line}</span></span></div>`)
+      .join("");
+    main.innerHTML = `<pre><div class="language-yaml block">${lines}</div></pre>`;
+    expect(extractText(main)).toBe("````\nname: x\nsteps:\n\n  - run: echo ```\n````");
   });
 
   it("collects same-origin links once each", () => {

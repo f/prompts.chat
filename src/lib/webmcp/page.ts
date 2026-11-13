@@ -119,7 +119,33 @@ function isHidden(element: Element): boolean {
   );
 }
 
-function walk(node: Node, out: string[]): void {
+/**
+ * The text of a <pre> as the reader would copy it: decorations the page marks unselectable (CodeView's
+ * line numbers) are left out, and line elements (CodeView renders a <div> per line) become newlines.
+ */
+export function preformattedText(pre: Element): string {
+  const out: string[] = [];
+  const visit = (node: Node) => {
+    if (node.nodeType === 3) {
+      out.push(node.textContent ?? "");
+      return;
+    }
+    if (node.nodeType !== 1) return;
+    const element = node as Element;
+    if (element.classList.contains("select-none") || isHidden(element)) return;
+    const tag = element.tagName.toUpperCase();
+    if (tag === "BR") {
+      out.push("\n");
+      return;
+    }
+    if ((tag === "DIV" || tag === "P") && element.previousElementSibling) out.push("\n");
+    for (const child of Array.from(element.childNodes)) visit(child);
+  };
+  for (const child of Array.from(pre.childNodes)) visit(child);
+  return out.join("").replace(/^\n+|\n+$/g, "");
+}
+
+function walk(node: Node, out: string[], blocks: string[]): void {
   if (node.nodeType === 3) {
     out.push(node.textContent ?? "");
     return;
@@ -133,7 +159,9 @@ function walk(node: Node, out: string[]): void {
   if (heading) {
     out.push(`\n\n${"#".repeat(Number(heading[1]))} `);
   } else if (tag === "PRE") {
-    out.push(`\n\`\`\`\n${element.textContent ?? ""}\n\`\`\`\n`);
+    // Kept out of the prose normalization in extractText, so indentation and blank lines survive
+    blocks.push(preformattedText(element));
+    out.push(`\n${PRE_PLACEHOLDER}${blocks.length - 1}${PRE_PLACEHOLDER}\n`);
     return;
   } else if (tag === "LI") {
     out.push("\n- ");
@@ -146,16 +174,19 @@ function walk(node: Node, out: string[]): void {
     out.push("\n");
   }
 
-  for (const child of Array.from(element.childNodes)) walk(child, out);
+  for (const child of Array.from(element.childNodes)) walk(child, out, blocks);
 
   if (heading) out.push("\n\n");
   else if (BLOCK_TAGS.has(tag)) out.push("\n");
 }
 
+const PRE_PLACEHOLDER = "\u0000";
+
 /** The readable text of an element as light Markdown: headings, list items and code blocks */
 export function extractText(root: Element): string {
   const out: string[] = [];
-  walk(root, out);
+  const blocks: string[] = [];
+  walk(root, out, blocks);
   return out
     .join("")
     .split("\n")
@@ -163,7 +194,12 @@ export function extractText(root: Element): string {
     .join("\n")
     .replace(/^(- |\| )+$/gm, "")
     .replace(/\n{3,}/g, "\n\n")
-    .trim();
+    .trim()
+    .replace(new RegExp(`${PRE_PLACEHOLDER}(\\d+)${PRE_PLACEHOLDER}`, "g"), (_, index: string) => {
+      const code = blocks[Number(index)];
+      const fence = code.includes("```") ? "````" : "```";
+      return `${fence}\n${code}\n${fence}`;
+    });
 }
 
 const MAX_LINKS = 60;
@@ -236,6 +272,7 @@ export function toSameOriginPath(target: string, origin: string): string | null 
   } catch {
     return null;
   }
-  if (url.origin !== origin) return null;
+  // A pathname such as "//example.org/" would be read as a protocol-relative URL by the router
+  if (url.origin !== origin || url.pathname.startsWith("//")) return null;
   return `${url.pathname}${url.search}${url.hash}`;
 }
