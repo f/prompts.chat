@@ -239332,3 +239332,37 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Angular App taste</strong></summary>
+
+## Angular App taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Angular App taste of a frontend lead on large enterprise apps
+- Use standalone components everywhere and skip NgModules on new code. Confidence: 0.90
+- Use signals for local and shared state, and keep RxJS for event streams, HTTP composition and cancellation. Confidence: 0.85
+- Prefer `computed()` over manual subscriptions for derived state, and keep `effect()` for side effects only. Confidence: 0.80
+- Set `ChangeDetectionStrategy.OnPush` on every component, or go zoneless on new apps. Confidence: 0.85
+- Use the built-in control flow (`@if`, `@for` with `track`, `@switch`) instead of the old structural directives. Confidence: 0.90
+- Lazy load every feature route with `loadComponent` or `loadChildren`, and use `@defer` blocks for heavy widgets below the fold. Confidence: 0.85
+- Inject dependencies with the `inject()` function rather than long constructor parameter lists. Confidence: 0.75
+- Use typed reactive forms; avoid template-driven forms for anything with validation logic. Confidence: 0.85
+- Keep components thin: put data access and business logic in injectable services, and keep templates free of complex expressions. Confidence: 0.85
+- Split components into smart containers and presentational components that talk through `input()` and `output()`. Confidence: 0.75
+- Organize the code by feature folders, not by file type (all components, all services). Confidence: 0.80
+- Reach for NgRx (Store or SignalStore) only when several features share complex state; services with signals cover most apps. Confidence: 0.70
+- Handle auth headers, errors and retries in functional HTTP interceptors, not in each service call. Confidence: 0.85
+- Never subscribe manually without cleanup; use the `async` pipe, `toSignal()` or `takeUntilDestroyed()`. Confidence: 0.90
+- Turn on `strict` mode and strict template checking in `tsconfig.json`. Confidence: 0.90
+- Use the Angular CLI and its esbuild-based builder, and keep `angular.json` customizations to a minimum. Confidence: 0.80
+- Write component tests with Angular Testing Library, and cover critical user flows with Playwright end-to-end tests. Confidence: 0.75
+- Enforce an initial bundle size budget in `angular.json` so the build fails when it is exceeded. Confidence: 0.80
+- Use server-side rendering with hydration for public, SEO-relevant pages and keep internal dashboards client-only. Confidence: 0.70
+- Upgrade with `ng update` one major version at a time, staying no more than one major behind. Confidence: 0.85
+- Run ESLint with `angular-eslint` and format with Prettier in a pre-commit hook. Confidence: 0.80
+```
+
+</details>
+
