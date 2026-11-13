@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { analyticsPrompt } from "@/lib/analytics";
 import { UpvoteCount, UpvoteIcon } from "@/components/prompts/upvote-count";
+import { usePromptStateChanges } from "@/lib/prompt-state";
 
 type UpvoteTarget =
   | { promptId: string; voteUrl?: never }
@@ -51,13 +52,17 @@ export function UpvoteButton({
   const tCommon = useTranslations("common");
   const [isVoted, setIsVoted] = useState(initialVoted);
   const [voteCount, setVoteCount] = useState(initialCount);
-  // Votes made elsewhere (another tab, an agent through WebMCP) arrive as new props after router.refresh()
+  // Votes made elsewhere arrive as new props after router.refresh(), or as events from WebMCP tools
   const [serverVote, setServerVote] = useState({ initialVoted, initialCount });
   if (serverVote.initialVoted !== initialVoted || serverVote.initialCount !== initialCount) {
     setServerVote({ initialVoted, initialCount });
     setIsVoted(initialVoted);
     setVoteCount(initialCount);
   }
+  usePromptStateChanges(promptId, (change) => {
+    if (change.voted !== undefined) setIsVoted(change.voted);
+    if (change.voteCount !== undefined) setVoteCount(change.voteCount);
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
 

@@ -6,6 +6,7 @@ import { Bookmark, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { analyticsCollection } from "@/lib/analytics";
+import { usePromptStateChanges } from "@/lib/prompt-state";
 
 interface AddToCollectionButtonProps {
   promptId: string;
@@ -20,12 +21,15 @@ export function AddToCollectionButton({
 }: AddToCollectionButtonProps) {
   const t = useTranslations("collection");
   const [inCollection, setInCollection] = useState(initialInCollection);
-  // Changes made elsewhere (another tab, an agent through WebMCP) arrive as new props after router.refresh()
+  // Changes made elsewhere arrive as new props after router.refresh(), or as events from WebMCP tools
   const [serverInCollection, setServerInCollection] = useState(initialInCollection);
   if (serverInCollection !== initialInCollection) {
     setServerInCollection(initialInCollection);
     setInCollection(initialInCollection);
   }
+  usePromptStateChanges(promptId, (change) => {
+    if (change.inCollection !== undefined) setInCollection(change.inCollection);
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 

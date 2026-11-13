@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { PROMPT_STATE_EVENT } from "@/lib/prompt-state";
 import { createPrompts } from "@/lib/webmcp/prompts";
 import { createResources, CURRENT_ITEM_RESOURCE_URI, PAGE_RESOURCE_URI } from "@/lib/webmcp/resources";
 import { McpRequestError, mcpRequest, toolData, type ServerTool } from "@/lib/webmcp/server-client";
@@ -341,10 +342,15 @@ describe("page tools", () => {
       expect(site.env.refresh).toHaveBeenCalled();
     });
 
-    it("removes an upvote", async () => {
+    it("removes an upvote and tells the page's buttons", async () => {
       const site = fakeSite("/");
+      const changes: unknown[] = [];
+      const listener = (event: Event) => changes.push((event as CustomEvent).detail);
+      document.addEventListener(PROMPT_STATE_EVENT, listener);
       site.routes["DELETE /api/prompts/p1/vote"] = () => json({ voted: false, voteCount: 2 });
       expect((await run(site, "upvote_prompt", { id: "p1", upvote: false })).data).toEqual({ id: "p1", upvoted: false, voteCount: 2 });
+      document.removeEventListener(PROMPT_STATE_EVENT, listener);
+      expect(changes).toEqual([{ promptId: "p1", voted: false, voteCount: 2 }]);
     });
 
     it("resolves a classifier page to its prompt id", async () => {
@@ -385,10 +391,15 @@ describe("page tools", () => {
       expect(site.env.refresh).toHaveBeenCalled();
     });
 
-    it("removes a prompt", async () => {
+    it("removes a prompt and tells the page's buttons", async () => {
       const site = fakeSite("/");
+      const changes: unknown[] = [];
+      const listener = (event: Event) => changes.push((event as CustomEvent).detail);
+      document.addEventListener(PROMPT_STATE_EVENT, listener);
       site.routes["DELETE /api/collection?promptId=p2"] = () => json({ removed: true });
       expect((await run(site, "save_prompt_to_collection", { id: "p2", save: false })).data).toEqual({ id: "p2", saved: false });
+      document.removeEventListener(PROMPT_STATE_EVENT, listener);
+      expect(changes).toEqual([{ promptId: "p2", inCollection: false }]);
     });
 
     it("treats an existing entry as saved and requires sign-in", async () => {

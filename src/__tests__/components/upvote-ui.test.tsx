@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { act, render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { publishPromptState } from "@/lib/prompt-state";
 import { UpvoteCount } from "@/components/prompts/upvote-count";
 import { UpvoteButton } from "@/components/prompts/upvote-button";
 
@@ -109,6 +110,24 @@ describe("UpvoteButton", () => {
     fireEvent.click(screen.getByRole("button"));
     await waitFor(() => expect(screen.getByRole("button", { pressed: false })).toHaveTextContent("7"));
     expect(fetchMock).toHaveBeenCalledWith("/api/prompts/p1/vote", { method: "DELETE" });
+
+    vi.unstubAllGlobals();
+  });
+
+  it("follows a WebMCP vote change back to the value it was rendered with", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ voted: true, voteCount: 8 }) });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { rerender } = render(<UpvoteButton promptId="p1" initialVoted={false} initialCount={7} isLoggedIn size="circular" />);
+    fireEvent.click(screen.getByRole("button"));
+    await waitFor(() => expect(screen.getByRole("button", { pressed: true })).toHaveTextContent("8"));
+
+    act(() => publishPromptState(document, { promptId: "p1", voted: false, voteCount: 7 }));
+    rerender(<UpvoteButton promptId="p1" initialVoted={false} initialCount={7} isLoggedIn size="circular" />);
+    expect(screen.getByRole("button", { pressed: false })).toHaveTextContent("7");
+
+    fireEvent.click(screen.getByRole("button"));
+    await waitFor(() => expect(fetchMock).toHaveBeenLastCalledWith("/api/prompts/p1/vote", { method: "POST" }));
 
     vi.unstubAllGlobals();
   });

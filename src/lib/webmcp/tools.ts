@@ -1,3 +1,4 @@
+import { publishPromptState } from "@/lib/prompt-state";
 import { parseRoute, snapshotPage, toSameOriginPath, type PageRoute } from "./page";
 import { callServerTool, listServerTools, toolData, type ServerTool } from "./server-client";
 import type { CallToolResult, JsonSchemaObject, WebMcpEnv, WebMcpTool } from "./types";
@@ -281,8 +282,16 @@ export function pageTools(env: WebMcpEnv): WebMcpTool[] {
         const response = await env.fetch(`/api/prompts/${encodeURIComponent(id)}/vote`, { method: upvote ? "POST" : "DELETE" });
         const body = await readJson(response);
         if (response.status === 401) return errorResult("unauthorized", SIGN_IN_MESSAGE);
-        if (response.status === 400 && body.error === "already_voted") return result({ id, upvoted: true, alreadyUpvoted: true });
+        if (response.status === 400 && body.error === "already_voted") {
+          publishPromptState(env.document(), { promptId: id, voted: true });
+          return result({ id, upvoted: true, alreadyUpvoted: true });
+        }
         if (!response.ok) return errorResult(String(body.error ?? "failed"), String(body.message ?? `Vote failed (${response.status})`));
+        publishPromptState(env.document(), {
+          promptId: id,
+          voted: body.voted === true,
+          ...(typeof body.voteCount === "number" && { voteCount: body.voteCount }),
+        });
         env.refresh();
         return result({ id, upvoted: body.voted === true, voteCount: body.voteCount });
       }, "Failed to vote"),
@@ -310,8 +319,12 @@ export function pageTools(env: WebMcpEnv): WebMcpTool[] {
           : await env.fetch(`/api/collection?${new URLSearchParams({ promptId: id })}`, { method: "DELETE" });
         const body = await readJson(response);
         if (response.status === 401) return errorResult("unauthorized", SIGN_IN_MESSAGE);
-        if (save && response.status === 400 && body.error === "Already in collection") return result({ id, saved: true, alreadySaved: true });
+        if (save && response.status === 400 && body.error === "Already in collection") {
+          publishPromptState(env.document(), { promptId: id, inCollection: true });
+          return result({ id, saved: true, alreadySaved: true });
+        }
         if (!response.ok) return errorResult("failed", String(body.error ?? `Request failed (${response.status})`));
+        publishPromptState(env.document(), { promptId: id, inCollection: save });
         env.refresh();
         return result({ id, saved: save });
       }, "Failed to update the collection"),
@@ -319,13 +332,13 @@ export function pageTools(env: WebMcpEnv): WebMcpTool[] {
   ];
 }
 
+/** How long to wait for /api/mcp's tool list before starting with the page tools alone */
+export const SERVER_DISCOVERY_TIMEOUT_MS = 8000;
+
 /**
  * Every tool the page offers: the page tools, plus the server's read tools when /api/mcp answers
  * (it is off when features.mcp is disabled, and the page tools still work without it)
  */
-/** How long to wait for /api/mcp's tool list before starting with the page tools alone */
-export const SERVER_DISCOVERY_TIMEOUT_MS = 8000;
-
 export async function createTools(env: WebMcpEnv, discoveryTimeout = SERVER_DISCOVERY_TIMEOUT_MS): Promise<WebMcpTool[]> {
   let serverTools: WebMcpTool[] = [];
   const controller = new AbortController();
