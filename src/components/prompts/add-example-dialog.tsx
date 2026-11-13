@@ -17,6 +17,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { MAX_UPLOAD_BYTES, MAX_UPLOAD_MB } from "@/lib/upload-limits";
 
 interface AddExampleDialogProps {
   promptId: string;
@@ -65,9 +66,8 @@ export function AddExampleDialog({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const maxSize = 4 * 1024 * 1024; // 4MB
-    if (file.size > maxSize) {
-      setError(t("fileTooLarge"));
+    if (file.size > MAX_UPLOAD_BYTES) {
+      setError(t("fileTooLarge", { size: MAX_UPLOAD_MB }));
       return;
     }
 
@@ -256,7 +256,7 @@ export function AddExampleDialog({
                       {isUploading ? t("uploading") : t(isVideoType ? "clickToUploadVideo" : "clickToUpload")}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {t("maxFileSize")}
+                      {t("maxFileSize", { size: MAX_UPLOAD_MB })}
                     </p>
                   </div>
                   <input

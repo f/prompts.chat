@@ -2,6 +2,9 @@ import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 import createMDX from "@next/mdx";
+import { resolveBuildConfig } from "./src/lib/build-config";
+
+const build = resolveBuildConfig();
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 const withMDX = createMDX({
@@ -15,6 +18,18 @@ const withMDX = createMDX({
 const nextConfig: NextConfig = {
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   reactCompiler: true,
+  // Inlined at build time into server and browser code, so dead branches
+  // (e.g. server Sentry on worker hosts) are dropped from the bundle
+  env: {
+    NEXT_PUBLIC_SENTRY_DSN: build.sentryDsn,
+    PCHAT_SENTRY_SERVER: build.sentryServer ? "1" : "0",
+    NEXT_PUBLIC_MAX_UPLOAD_MB: String(build.maxUploadMb),
+    NEXT_PUBLIC_HOSTING_BADGE: build.hostingBadge,
+  },
+  // Test files are type-checked by the editor and vitest, not by the production build
+  typescript: {
+    tsconfigPath: "tsconfig.build.json",
+  },
   // Configure webpack for raw imports
   webpack: (config) => {
     config.module.rules.push({
@@ -23,8 +38,16 @@ const nextConfig: NextConfig = {
     });
     return config;
   },
-  // Enable standalone output for Docker
+  // Standalone output serves Docker and is also what OpenNext bundles for worker hosts
   output: "standalone",
+  // OpenNext re-bundles the proxy with esbuild, which resolves @opentelemetry/api
+  // (an optional require in Next's tracer) through its "module" field. Node's
+  // trace only copies the CommonJS build, so the ESM build is added for workers.
+  ...(build.target === "spacefast" && {
+    outputFileTracingIncludes: {
+      proxy: ["./node_modules/@opentelemetry/api/build/esm/**/*"],
+    },
+  }),
   // Experimental features
   experimental: {
     // Enable server actions
@@ -37,14 +60,14 @@ const nextConfig: NextConfig = {
   // crawlers; they would otherwise find the title, canonical and robots tags in <body>.
   htmlLimitedBots:
     /bot|crawler|spider|slurp|google-|-google|googleother|bingpreview|lighthouse|facebookexternalhit|facebookcatalog|externalagent|perplexity|whatsapp|ia_archiver|vkshare|quora link preview|skypeuripreview|yeti|tumblr|yandex|sogou|googleweblight/i,
-  // Image optimization
+  // Image optimization. Worker hosts have no image optimizer, so images are
+  // served as-is there unless PCHAT_IMAGE_OPTIMIZATION=on.
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "**",
-      },
-    ],
+    unoptimized: !build.imageOptimization,
+    remotePatterns: build.imageRemoteHosts.map((hostname) => ({
+      protocol: "https" as const,
+      hostname,
+    })),
   },
   // Raw dataset exports duplicate the prompt pages, so keep them out of search results
   async headers() {
@@ -94,7 +117,7 @@ const nextConfig: NextConfig = {
         destination: "/docs/self-hosting",
         permanent: true,
       },
-      // Redirect book PDF downloads to GitHub raw to save Vercel edge bandwidth
+      // Redirect book PDF downloads to GitHub raw to save hosting bandwidth
       {
         source: "/book-pdf/:filename",
         destination: "https://raw.githubusercontent.com/f/prompts.chat/refs/heads/main/public/book-pdf/:filename",
@@ -104,13 +127,17 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withSentryConfig(withMDX(withNextIntl(nextConfig)), {
+const appConfig = withMDX(withNextIntl(nextConfig));
+
+// The Sentry build plugin wraps server code with the Node SDK, so it only runs
+// when server-side Sentry is on. Browser reporting works without it.
+export default !build.sentryServer ? appConfig : withSentryConfig(appConfig, {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
-  org: "promptschat",
+  org: process.env.SENTRY_ORG || "promptschat",
 
-  project: "prompts-chat",
+  project: process.env.SENTRY_PROJECT || "prompts-chat",
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,
@@ -131,7 +158,7 @@ export default withSentryConfig(withMDX(withNextIntl(nextConfig)), {
     // See the following for more information:
     // https://docs.sentry.io/product/crons/
     // https://vercel.com/docs/cron-jobs
-    automaticVercelMonitors: true,
+    automaticVercelMonitors: build.target === "vercel",
 
     // Tree-shaking options for reducing bundle size
     treeshake: {

@@ -147,6 +147,7 @@ describe("GET /api/prompts/[id]/versions", () => {
 describe("POST /api/prompts/[id]/versions", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(db.$transaction).mockImplementation(((fn: (tx: typeof db) => unknown) => fn(db)) as never);
   });
 
   it("should return 401 if not authenticated", async () => {
@@ -271,16 +272,14 @@ describe("POST /api/prompts/[id]/versions", () => {
     vi.mocked(db.promptVersion.findFirst).mockResolvedValue({
       version: 2,
     } as never);
-    vi.mocked(db.$transaction).mockResolvedValue([
-      {
-        id: "v3",
-        version: 3,
-        content: "New content",
-        changeNote: "Version 3",
-        createdAt: new Date(),
-        author: { name: "User", username: "user" },
-      },
-    ] as never);
+    vi.mocked(db.promptVersion.create).mockResolvedValue({
+      id: "v3",
+      version: 3,
+      content: "New content",
+      changeNote: "Version 3",
+      createdAt: new Date(),
+      author: { name: "User", username: "user" },
+    } as never);
 
     const request = new Request("http://localhost:3000/api/prompts/123/versions", {
       method: "POST",
@@ -302,19 +301,14 @@ describe("POST /api/prompts/[id]/versions", () => {
       content: "Original content",
     } as never);
     vi.mocked(db.promptVersion.findFirst).mockResolvedValue(null);
-    vi.mocked(db.$transaction).mockImplementation(async (ops) => {
-      // Capture the create call to verify changeNote
-      return [
-        {
-          id: "v1",
-          version: 1,
-          content: "New content",
-          changeNote: "Version 1",
-          createdAt: new Date(),
-          author: { name: "User", username: "user" },
-        },
-      ];
-    });
+    vi.mocked(db.promptVersion.create).mockResolvedValue({
+      id: "v1",
+      version: 1,
+      content: "New content",
+      changeNote: "Version 1",
+      createdAt: new Date(),
+      author: { name: "User", username: "user" },
+    } as never);
 
     const request = new Request("http://localhost:3000/api/prompts/123/versions", {
       method: "POST",
@@ -327,6 +321,12 @@ describe("POST /api/prompts/[id]/versions", () => {
 
     expect(response.status).toBe(201);
     expect(data.changeNote).toBe("Version 1");
+    expect(db.promptVersion.create).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ changeNote: "Version 1" }) })
+    );
+    expect(db.prompt.update).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { id: "123" }, data: { content: "New content" } })
+    );
   });
 
   it("should use custom changeNote when provided", async () => {
@@ -336,16 +336,14 @@ describe("POST /api/prompts/[id]/versions", () => {
       content: "Original content",
     } as never);
     vi.mocked(db.promptVersion.findFirst).mockResolvedValue(null);
-    vi.mocked(db.$transaction).mockResolvedValue([
-      {
-        id: "v1",
-        version: 1,
-        content: "New content",
-        changeNote: "Fixed typo in instructions",
-        createdAt: new Date(),
-        author: { name: "User", username: "user" },
-      },
-    ] as never);
+    vi.mocked(db.promptVersion.create).mockResolvedValue({
+      id: "v1",
+      version: 1,
+      content: "New content",
+      changeNote: "Fixed typo in instructions",
+      createdAt: new Date(),
+      author: { name: "User", username: "user" },
+    } as never);
 
     const request = new Request("http://localhost:3000/api/prompts/123/versions", {
       method: "POST",
@@ -370,16 +368,14 @@ describe("POST /api/prompts/[id]/versions", () => {
       content: "Original content",
     } as never);
     vi.mocked(db.promptVersion.findFirst).mockResolvedValue(null);
-    vi.mocked(db.$transaction).mockResolvedValue([
-      {
-        id: "v1",
-        version: 1,
-        content: "New content",
-        changeNote: "Version 1",
-        createdAt: new Date(),
-        author: { name: "User", username: "user" },
-      },
-    ] as never);
+    vi.mocked(db.promptVersion.create).mockResolvedValue({
+      id: "v1",
+      version: 1,
+      content: "New content",
+      changeNote: "Version 1",
+      createdAt: new Date(),
+      author: { name: "User", username: "user" },
+    } as never);
 
     const request = new Request("http://localhost:3000/api/prompts/123/versions", {
       method: "POST",
@@ -401,16 +397,14 @@ describe("POST /api/prompts/[id]/versions", () => {
       content: "Original content",
     } as never);
     vi.mocked(db.promptVersion.findFirst).mockResolvedValue(null);
-    vi.mocked(db.$transaction).mockResolvedValue([
-      {
-        id: "v1",
-        version: 1,
-        content: "New content",
-        changeNote: "Version 1",
-        createdAt: new Date(),
-        author: { name: "Test User", username: "testuser" },
-      },
-    ] as never);
+    vi.mocked(db.promptVersion.create).mockResolvedValue({
+      id: "v1",
+      version: 1,
+      content: "New content",
+      changeNote: "Version 1",
+      createdAt: new Date(),
+      author: { name: "Test User", username: "testuser" },
+    } as never);
 
     const request = new Request("http://localhost:3000/api/prompts/123/versions", {
       method: "POST",

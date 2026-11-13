@@ -160,9 +160,9 @@ export async function PATCH(
       }
 
       // Update prompt and create version in transaction
-      await db.$transaction([
+      await db.$transaction(async (tx) => {
         // Create version record with the NEW content (the approved change)
-        db.promptVersion.create({
+        await tx.promptVersion.create({
           data: {
             prompt: { connect: { id: promptId } },
             content: proposedContent,
@@ -172,9 +172,9 @@ export async function PATCH(
             ...(proposedBot && { botSnapshot: versionBotSnapshot(newTitle, proposedBot) }),
             ...(proposedClassifier && { classifierSnapshot: classifierJson(versionClassifierSnapshot(newTitle, proposedClassifier)) }),
           },
-        }),
+        });
         // Update prompt with proposed changes and add contributor
-        db.prompt.update({
+        await tx.prompt.update({
           where: { id: promptId },
           data: {
             content: proposedContent,
@@ -188,13 +188,13 @@ export async function PATCH(
               connect: { id: changeRequest.authorId },
             },
           },
-        }),
+        });
         // Update change request status
-        db.changeRequest.update({
+        await tx.changeRequest.update({
           where: { id: changeId },
           data: { status, reviewNote },
-        }),
-      ]);
+        });
+      });
       if (isClassifier) revalidateClassifiers();
     } else {
       // Just update the change request status

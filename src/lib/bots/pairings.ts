@@ -60,10 +60,10 @@ export async function findInvalidPairingTargets(botIds: string[]): Promise<strin
 
 /** Replaces every pairing that involves botId, in both directions */
 export async function replaceBotPairings(botId: string, rows: BotPairingRow[]) {
-  await db.$transaction([
-    db.botPairing.deleteMany({ where: { OR: [{ fromId: botId }, { toId: botId }] } }),
-    db.botPairing.createMany({ data: rows, skipDuplicates: true }),
-  ]);
+  await db.$transaction(async (tx) => {
+    await tx.botPairing.deleteMany({ where: { OR: [{ fromId: botId }, { toId: botId }] } });
+    await tx.botPairing.createMany({ data: rows, skipDuplicates: true });
+  });
 }
 
 export interface BotPairingView {

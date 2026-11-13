@@ -75,8 +75,8 @@ export async function POST(
     const newVersionNumber = (latestVersion?.version || 0) + 1;
 
     // Create new version and update prompt content in a transaction
-    const [version] = await db.$transaction([
-      db.promptVersion.create({
+    const version = await db.$transaction(async (tx) => {
+      const created = await tx.promptVersion.create({
         data: {
           promptId,
           version: newVersionNumber,
@@ -92,12 +92,13 @@ export async function POST(
             },
           },
         },
-      }),
-      db.prompt.update({
+      });
+      await tx.prompt.update({
         where: { id: promptId },
         data: { content },
-      }),
-    ]);
+      });
+      return created;
+    });
 
     return NextResponse.json(version, { status: 201 });
   } catch (error) {

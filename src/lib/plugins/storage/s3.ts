@@ -1,4 +1,5 @@
 import type { StoragePlugin, UploadResult, UploadOptions } from "../types";
+import { deleteObject, putObject, type S3Credentials } from "./s3-fetch";
 
 /**
  * S3 Storage Plugin
@@ -16,17 +17,32 @@ import type { StoragePlugin, UploadResult, UploadOptions } from "../types";
  * npm install @aws-sdk/client-s3
  */
 
-// Helper to dynamically load AWS SDK
+// Helper to dynamically load AWS SDK. Null where it cannot load (worker hosts),
+// in which case requests are signed and sent with fetch instead.
 async function getS3Client() {
   try {
     // Use webpackIgnore to prevent bundling this optional dependency
     const s3Module = await import(/* webpackIgnore: true */ "@aws-sdk/client-s3");
     return s3Module;
   } catch {
-    throw new Error(
-      "S3 storage requires @aws-sdk/client-s3. Install it with: npm install @aws-sdk/client-s3"
-    );
+    return null;
   }
+}
+
+function fetchCredentials(): S3Credentials {
+  return {
+    region: process.env.S3_REGION!,
+    accessKeyId: process.env.S3_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
+  };
+}
+
+/** Path-style under S3_ENDPOINT (as forcePathStyle), else AWS's virtual-hosted style */
+function objectUrl(key: string): URL {
+  const bucket = process.env.S3_BUCKET!;
+  return process.env.S3_ENDPOINT
+    ? new URL(`${process.env.S3_ENDPOINT.replace(/\/+$/, "")}/${bucket}/${key}`)
+    : new URL(`https://${bucket}.s3.${process.env.S3_REGION}.amazonaws.com/${key}`);
 }
 
 export const s3StoragePlugin: StoragePlugin = {
@@ -51,17 +67,7 @@ export const s3StoragePlugin: StoragePlugin = {
     }
 
     // Dynamic import to avoid bundling issues when S3 is not used
-    const { S3Client, PutObjectCommand } = await getS3Client();
-    
-    const client = new S3Client({
-      region: process.env.S3_REGION!,
-      endpoint: process.env.S3_ENDPOINT,
-      credentials: {
-        accessKeyId: process.env.S3_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
-      },
-      forcePathStyle: !!process.env.S3_ENDPOINT, // Required for S3-compatible services
-    });
+    const sdk = await getS3Client();
 
     // Generate unique key
     const timestamp = Date.now();
@@ -84,14 +90,27 @@ export const s3StoragePlugin: StoragePlugin = {
     }
 
     // Upload to S3
-    await client.send(
-      new PutObjectCommand({
-        Bucket: process.env.S3_BUCKET!,
-        Key: key,
-        Body: buffer,
-        ContentType: contentType,
-      })
-    );
+    if (sdk) {
+      const client = new sdk.S3Client({
+        region: process.env.S3_REGION!,
+        endpoint: process.env.S3_ENDPOINT,
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID!,
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
+        },
+        forcePathStyle: !!process.env.S3_ENDPOINT, // Required for S3-compatible services
+      });
+      await client.send(
+        new sdk.PutObjectCommand({
+          Bucket: process.env.S3_BUCKET!,
+          Key: key,
+          Body: buffer,
+          ContentType: contentType,
+        })
+      );
+    } else {
+      await putObject(objectUrl(key), new Uint8Array(buffer), fetchCredentials(), { contentType });
+    }
 
     // Construct URL
     const endpoint = process.env.S3_ENDPOINT || `https://s3.${process.env.S3_REGION}.amazonaws.com`;
@@ -110,17 +129,7 @@ export const s3StoragePlugin: StoragePlugin = {
       throw new Error("S3 storage is not configured.");
     }
 
-    const { S3Client, DeleteObjectCommand } = await getS3Client();
-    
-    const client = new S3Client({
-      region: process.env.S3_REGION!,
-      endpoint: process.env.S3_ENDPOINT,
-      credentials: {
-        accessKeyId: process.env.S3_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
-      },
-      forcePathStyle: !!process.env.S3_ENDPOINT,
-    });
+    const sdk = await getS3Client();
 
     // Extract key from URL if needed
     let key = keyOrUrl;
@@ -133,8 +142,23 @@ export const s3StoragePlugin: StoragePlugin = {
       }
     }
 
+    if (!sdk) {
+      await deleteObject(objectUrl(key), fetchCredentials());
+      return;
+    }
+
+    const client = new sdk.S3Client({
+      region: process.env.S3_REGION!,
+      endpoint: process.env.S3_ENDPOINT,
+      credentials: {
+        accessKeyId: process.env.S3_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
+      },
+      forcePathStyle: !!process.env.S3_ENDPOINT,
+    });
+
     await client.send(
-      new DeleteObjectCommand({
+      new sdk.DeleteObjectCommand({
         Bucket: process.env.S3_BUCKET!,
         Key: key,
       })

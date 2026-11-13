@@ -17,6 +17,12 @@
 /.next/
 /out/
 
+# Spacefast / OpenNext (sf publish)
+/.open-next/
+/.spacefast/
+/.spacefast-open-next-cache.mjs
+/.wrangler/
+
 # production
 /build
 

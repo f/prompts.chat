@@ -8,7 +8,7 @@
 
 ### Tech Stack
 
-- **Framework:** Next.js 16.0.7 (App Router) with React 19.2
+- **Framework:** Next.js 16.3 (App Router) with React 19.2
 - **Language:** TypeScript 5
 - **Database:** PostgreSQL with Prisma ORM 6.19
 - **Authentication:** NextAuth.js 5 (beta) with pluggable providers (credentials, GitHub, Google, Azure)

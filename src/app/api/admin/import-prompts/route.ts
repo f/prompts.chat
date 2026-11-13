@@ -100,6 +100,22 @@ function mapCsvTypeToPromptType(csvType: string): { type: "TEXT" | "IMAGE" | "VI
   return { type: "TEXT", structuredFormat: null };
 }
 
+/**
+ * prompts.csv from the project root. Worker hosts have no project filesystem,
+ * so there it is fetched from PCHAT_PROMPTS_CSV_URL instead.
+ */
+async function readPromptsCsv(): Promise<string> {
+  try {
+    return await fs.readFile(path.join(process.cwd(), "prompts.csv"), "utf-8");
+  } catch (error) {
+    const url = process.env.PCHAT_PROMPTS_CSV_URL;
+    if (!url) throw error;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Fetching ${url} failed with ${response.status}`);
+    return await response.text();
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const session = await auth();
@@ -107,9 +123,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Read the prompts.csv file from the project root
-    const csvPath = path.join(process.cwd(), "prompts.csv");
-    const csvContent = await fs.readFile(csvPath, "utf-8");
+    const csvContent = await readPromptsCsv();
     
     const rows = parseCSV(csvContent);
     
@@ -271,8 +285,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Read CSV to get the titles of community prompts
-    const csvPath = path.join(process.cwd(), "prompts.csv");
-    const csvContent = await fs.readFile(csvPath, "utf-8");
+    const csvContent = await readPromptsCsv();
     const rows = parseCSV(csvContent);
     
     const titles = rows.map(row => row.act);
