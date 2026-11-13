@@ -10,7 +10,9 @@ import { Badge } from "@/components/ui/badge";
 import { MiniPromptCard } from "./mini-prompt-card";
 import { cn } from "@/lib/utils";
 
-interface PromptBuilderState {
+const PROMPT_BUILDER_STREAM_TIMEOUT_MS = 120_000;
+
+export interface PromptBuilderState {
   title: string;
   description: string;
   content: string;
@@ -54,7 +56,7 @@ interface PromptBuilderProps {
   availableTags: Array<{ id: string; name: string; slug: string; color: string }>;
   availableCategories: Array<{ id: string; name: string; slug: string; parentId: string | null }>;
   currentState: PromptBuilderState;
-  onStateChange: (state: PromptBuilderState) => void;
+  onStateChange: (state: PromptBuilderState, requestedState: PromptBuilderState) => void;
   modelName?: string;
   initialPromptRequest?: string;
 }
@@ -64,14 +66,20 @@ export interface PromptBuilderHandle {
   open: () => void;
 }
 
-export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>(function PromptBuilder({
-  availableTags,
-  availableCategories,
-  currentState,
-  onStateChange,
-  modelName = "gpt-4o-mini",
-  initialPromptRequest,
-}, ref) {
+export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>(
+  /**
+   * Render the prompt-building chat and stream generated edits into the prompt form.
+   * @param props Prompt data, taxonomy options, and the state-change callback.
+   * @param ref Imperative controls for sending a message or opening the chat.
+   */
+  function PromptBuilder({
+    availableTags,
+    availableCategories,
+    currentState,
+    onStateChange,
+    modelName = "gpt-4o-mini",
+    initialPromptRequest,
+  }, ref) {
   const t = useTranslations("promptBuilder");
   // Default to closed on mobile (< 768px)
   const [isOpen, setIsOpen] = useState(() => {
@@ -122,6 +130,10 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
     }
   }, [initialPromptRequest]);
 
+  /**
+   * Sends a builder request and processes its streamed response, preserving partial output on failure.
+   * @param content User instruction for creating or updating the prompt.
+   */
   const sendMessageWithContent = async (content: string) => {
     if (!content.trim() || isLoading) return;
 
@@ -138,17 +150,30 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
 
     // Add a placeholder for streaming
     const assistantMessageId = crypto.randomUUID();
+    const requestedState = { ...currentState, tagIds: [...currentState.tagIds] };
+    const abortController = new AbortController();
+    const timeoutId = window.setTimeout(
+      () => abortController.abort(),
+      PROMPT_BUILDER_STREAM_TIMEOUT_MS
+    );
+    let fullContent = "";
+    const toolCalls: ToolCall[] = [];
+    const searchResults: Message["searchResults"] = [];
+    let newState: PromptBuilderState | null = null;
+    let streamError: string | null = null;
+    let responseFinalized = false;
 
     try {
       const response = await fetch("/api/prompt-builder/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: abortController.signal,
         body: JSON.stringify({
           messages: [...messages, userMessage].map((m) => ({
             role: m.role,
             content: m.content,
           })),
-          currentState,
+          currentState: requestedState,
           availableTags,
           availableCategories,
         }),
@@ -165,75 +190,146 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
         throw new Error("No response body");
       }
 
-      let fullContent = "";
-      const toolCalls: ToolCall[] = [];
-      const searchResults: Message["searchResults"] = [];
-      let newState: PromptBuilderState | null = null;
+      let pendingLine = "";
+
+      /**
+       * Parse one server-sent event line and update the in-flight assistant response.
+       * @param line A line read from the response stream.
+       */
+      const processLine = (line: string) => {
+        if (responseFinalized) return;
+
+        const normalizedLine = line.endsWith("\r") ? line.slice(0, -1) : line;
+        if (!normalizedLine.startsWith("data: ")) return;
+
+        const data = normalizedLine.slice(6);
+        if (data === "[DONE]") return;
+
+        let parsed: {
+          type?: string;
+          content?: string;
+          toolCall?: ToolCall;
+          state?: PromptBuilderState;
+          error?: string;
+        };
+        try {
+          parsed = JSON.parse(data);
+        } catch {
+          // Ignore malformed events; complete lines are buffered before parsing.
+          return;
+        }
+
+        if (parsed.type === "text" && parsed.content) {
+          fullContent += parsed.content;
+          setStreamingContent(fullContent);
+        } else if (parsed.type === "tool_call" && parsed.toolCall) {
+          toolCalls.push(parsed.toolCall);
+          newState = parsed.state ?? newState;
+          // Extract search results
+          const resultData = parsed.toolCall.result?.data as
+            | { prompts?: NonNullable<Message["searchResults"]> }
+            | undefined;
+          if (parsed.toolCall.name === "search_prompts" &&
+              parsed.toolCall.result?.success &&
+              resultData?.prompts) {
+            searchResults.push(...resultData.prompts);
+          }
+        } else if (parsed.type === "tool_error" && parsed.toolCall) {
+          toolCalls.push(parsed.toolCall);
+          newState = parsed.state ?? newState;
+        } else if (parsed.type === "state") {
+          newState = parsed.state ?? null;
+        } else if (parsed.type === "error") {
+          streamError = parsed.error || t("errorMessage");
+        } else if (parsed.type === "done") {
+          if (!fullContent.trim() && toolCalls.length === 0) {
+            streamError = t("errorMessage");
+            return;
+          }
+
+          responseFinalized = true;
+          // Finalize the message
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: assistantMessageId,
+              role: "assistant",
+              content: fullContent,
+              toolCalls: toolCalls.length > 0 ? toolCalls : undefined,
+              searchResults: searchResults.length > 0 ? searchResults : undefined,
+            },
+          ]);
+          setStreamingContent("");
+
+          if (newState) {
+            onStateChange(newState, requestedState);
+          }
+        }
+      };
 
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done) {
+          pendingLine += decoder.decode();
+          if (pendingLine) processLine(pendingLine);
+          break;
+        }
 
-        const chunk = decoder.decode(value);
-        const lines = chunk.split("\n");
+        pendingLine += decoder.decode(value, { stream: true });
+        const lines = pendingLine.split("\n");
+        pendingLine = lines.pop() ?? "";
 
         for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            const data = line.slice(6);
-            if (data === "[DONE]") continue;
-
-            try {
-              const parsed = JSON.parse(data);
-
-              if (parsed.type === "text") {
-                fullContent += parsed.content;
-                setStreamingContent(fullContent);
-              } else if (parsed.type === "tool_call") {
-                toolCalls.push(parsed.toolCall);
-                // Extract search results
-                if (parsed.toolCall.name === "search_prompts" && 
-                    parsed.toolCall.result?.success && 
-                    parsed.toolCall.result?.data?.prompts) {
-                  searchResults.push(...parsed.toolCall.result.data.prompts);
-                }
-              } else if (parsed.type === "state") {
-                newState = parsed.state;
-              } else if (parsed.type === "done") {
-                // Finalize the message
-                setMessages((prev) => [
-                  ...prev,
-                  {
-                    id: assistantMessageId,
-                    role: "assistant",
-                    content: fullContent,
-                    toolCalls: toolCalls.length > 0 ? toolCalls : undefined,
-                    searchResults: searchResults.length > 0 ? searchResults : undefined,
-                  },
-                ]);
-                setStreamingContent("");
-
-                if (newState) {
-                  onStateChange(newState);
-                }
-              }
-            } catch {
-              // Skip invalid JSON
-            }
-          }
+          processLine(line);
+          if (streamError || responseFinalized) break;
         }
+
+        if (streamError || responseFinalized) {
+          await reader.cancel().catch(() => undefined);
+          break;
+        }
+      }
+
+      if (streamError) {
+        throw new Error(streamError);
+      }
+
+      if (!responseFinalized) {
+        throw new Error("Prompt builder stream ended before completion");
       }
     } catch (error) {
       console.error("Chat error:", error);
+      if (responseFinalized) return;
+
+      if (newState) {
+        onStateChange(newState, requestedState);
+      }
       setStreamingContent("");
-      setMessages((prev) => [
-        ...prev,
-        {
+      setMessages((prev) => {
+        const errorMessage: Message = {
           id: crypto.randomUUID(),
           role: "assistant",
           content: t("errorMessage"),
-        },
-      ]);
+        };
+
+        if (!fullContent && toolCalls.length === 0) {
+          return [...prev, errorMessage];
+        }
+
+        return [
+          ...prev,
+          {
+            id: assistantMessageId,
+            role: "assistant",
+            content: fullContent,
+            toolCalls: toolCalls.length > 0 ? toolCalls : undefined,
+            searchResults: searchResults.length > 0 ? searchResults : undefined,
+          },
+          errorMessage,
+        ];
+      });
     } finally {
+      window.clearTimeout(timeoutId);
       setIsLoading(false);
     }
   };
@@ -302,6 +398,7 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
     }
 
     const toolLabel = toolCall.name.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+    if (!isSuccess) detail = t("errorMessage");
     
     return (
       <div

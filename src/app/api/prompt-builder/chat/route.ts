@@ -8,6 +8,7 @@ import {
   type PromptBuilderState,
 } from "@/lib/ai/prompt-builder-tools";
 import { loadPrompt, getSystemPrompt } from "@/lib/ai/load-prompt";
+import { parse as parseYaml } from "yaml";
 
 const promptBuilderAgentPrompt = loadPrompt("src/app/api/prompt-builder/chat/prompt-builder-agent.prompt.yml");
 
@@ -40,6 +41,31 @@ function checkRateLimit(userId: string): { allowed: boolean; remaining: number; 
 
 const SYSTEM_PROMPT = getSystemPrompt(promptBuilderAgentPrompt);
 
+/**
+ * Check whether content can be committed with the requested structured format.
+ * @param content Content returned by the builder tool.
+ * @param format Structured format selected for the prompt.
+ * @returns Whether the content is valid JSON or a structured YAML value.
+ */
+function isStructuredContentCompatible(
+  content: unknown,
+  format?: "JSON" | "YAML"
+): boolean {
+  if (typeof content !== "string" || !format || !content.trim()) return false;
+
+  try {
+    if (format === "JSON") {
+      JSON.parse(content);
+      return true;
+    }
+
+    const parsedContent = parseYaml(content);
+    return typeof parsedContent === "object" && parsedContent !== null;
+  } catch {
+    return false;
+  }
+}
+
 interface ChatMessage {
   role: "user" | "assistant" | "system";
   content: string;
@@ -61,6 +87,11 @@ interface RequestBody {
   availableCategories: Array<{ id: string; name: string; slug: string; parentId: string | null }>;
 }
 
+/**
+ * Authenticates a prompt-builder request and streams the model response and tool results.
+ * @param request Incoming conversation, prompt state, and available taxonomy data.
+ * @returns An authorization/configuration error response or a server-sent event stream.
+ */
 export async function POST(request: NextRequest) {
   const session = await auth();
   if (!session?.user) {
@@ -115,8 +146,43 @@ export async function POST(request: NextRequest) {
     await writer.write(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
   };
 
-  // Start processing in background
-  (async () => {
+  /** Close the stream safely, including when the client disconnects first. */
+  const close = async () => {
+    try {
+      await writer.close();
+    } catch {
+      // The client may have disconnected and closed the stream already.
+    }
+  };
+
+  // The form represents structured input as TEXT plus a format selector.
+  /** Convert the server's structured type into the form's text-plus-format state. */
+  const toClientState = (state: PromptBuilderState): PromptBuilderState => ({
+    ...state,
+    type: state.type === "STRUCTURED" ? "TEXT" : state.type,
+  });
+
+  let pendingStructuredConfiguration = false;
+  let committedContentConfiguration = {
+    content: currentState.content,
+    type: currentState.type,
+    structuredFormat: currentState.structuredFormat,
+  };
+  /**
+   * Create a recovery checkpoint while withholding an incomplete structured conversion.
+   * @param state Current server-side prompt state.
+   * @returns The client state safe to apply if streaming stops at this point.
+   */
+  const toCheckpointState = (state: PromptBuilderState): PromptBuilderState => {
+    if (!pendingStructuredConfiguration) return toClientState(state);
+    return toClientState({ ...state, ...committedContentConfiguration });
+  };
+
+  /**
+   * Process the model/tool loop and stream text, results, and recoverable state.
+   * @returns A promise that settles when the response stream is complete.
+   */
+  const processAgentStream = async (): Promise<void> => {
 
     try {
       const openai = new OpenAI({
@@ -202,7 +268,7 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
       const maxLoops = 10;
       const allToolCalls: Array<{ id: string; name: string; arguments: string; result: unknown }> = [];
 
-      while (loopCount < maxLoops) {
+      while (loopCount < maxLoops && !request.signal.aborted) {
         loopCount++;
 
         // Use streaming for the final response
@@ -214,12 +280,13 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
           temperature: 0.7,
           max_tokens: 2000,
           stream: true,
-        });
+        }, { signal: request.signal });
 
         let fullContent = "";
         const toolCallsAccumulator: Map<number, { id: string; name: string; arguments: string }> = new Map();
 
         for await (const chunk of response) {
+          if (request.signal.aborted) throw new Error("Request aborted");
           const delta = chunk.choices[0]?.delta;
 
           // Stream text content
@@ -256,48 +323,143 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
 
         // If no tool calls, we're done
         if (toolCalls.length === 0) {
-          await send({ type: "state", state });
+          await send({ type: "state", state: toCheckpointState(state) });
           await send({ type: "done" });
           await writer.write(encoder.encode("data: [DONE]\n\n"));
-          await writer.close();
+          await close();
           return;
         }
 
         // Process tool calls
         const toolResults: Array<{ id: string; name: string; result: unknown }> = [];
+        let toolExecutionFailed = false;
 
         for (const toolCall of toolCalls) {
+          if (request.signal.aborted) {
+            await close();
+            return;
+          }
+
+          let result: unknown;
+          let nextState: PromptBuilderState;
+          let toolCallSucceeded = false;
           try {
             const args = JSON.parse(toolCall.arguments);
-            const { result, newState } = await executeToolCall(
+            const execution = await executeToolCall(
               toolCall.name,
               args,
               state,
               availableTags,
-              availableCategories
+              availableCategories,
+              request.signal
             );
-            state = newState;
-
-            const toolCallResult = {
+            result = execution.result;
+            nextState = execution.newState;
+            toolCallSucceeded = execution.result.success;
+            if (
+              toolCall.name === "set_content" &&
+              toolCallSucceeded &&
+              nextState.structuredFormat &&
+              !isStructuredContentCompatible(nextState.content, nextState.structuredFormat)
+            ) {
+              result = {
+                success: false,
+                error: `Content must be valid ${nextState.structuredFormat}`,
+              };
+              nextState = state;
+              toolCallSucceeded = false;
+            }
+          } catch (e) {
+            if (request.signal.aborted) {
+              await close();
+              return;
+            }
+            console.error(`Prompt builder tool ${toolCall.name} failed:`, e);
+            const failedToolCall = {
               id: toolCall.id,
               name: toolCall.name,
               arguments: toolCall.arguments,
-              result,
+              result: { success: false, error: "Tool execution failed" },
             };
-
-            toolResults.push({
-              id: toolCall.id,
-              name: toolCall.name,
-              result,
+            allToolCalls.push(failedToolCall);
+            await send({
+              type: "tool_error",
+              toolCall: failedToolCall,
+              state: toCheckpointState(state),
             });
-
-            allToolCalls.push(toolCallResult);
-
-            // Stream tool call result
-            await send({ type: "tool_call", toolCall: toolCallResult });
-          } catch (e) {
-            console.error("Tool call error:", e);
+            toolExecutionFailed = true;
+            break;
           }
+
+          if (request.signal.aborted) {
+            await close();
+            return;
+          }
+
+          if (toolCall.name === "set_type") {
+            const changesStructuredConfiguration =
+              (state.type === "STRUCTURED") !== (nextState.type === "STRUCTURED") ||
+              state.structuredFormat !== nextState.structuredFormat;
+            if (changesStructuredConfiguration) {
+              const isContentCompatibleWithFormat =
+                !nextState.structuredFormat ||
+                !state.content.trim() ||
+                isStructuredContentCompatible(state.content, nextState.structuredFormat);
+
+              if (isContentCompatibleWithFormat) {
+                committedContentConfiguration = {
+                  content: state.content,
+                  type: nextState.type,
+                  structuredFormat: nextState.structuredFormat,
+                };
+                pendingStructuredConfiguration = false;
+              } else {
+                if (!pendingStructuredConfiguration) {
+                  committedContentConfiguration = {
+                    content: state.content,
+                    type: state.type,
+                    structuredFormat: state.structuredFormat,
+                  };
+                }
+                pendingStructuredConfiguration = true;
+              }
+            }
+          }
+
+          state = nextState;
+          if (toolCall.name === "set_content" && toolCallSucceeded) {
+            committedContentConfiguration = {
+              content: state.content,
+              type: state.type,
+              structuredFormat: state.structuredFormat,
+            };
+            pendingStructuredConfiguration = false;
+          }
+          const toolCallResult = {
+            id: toolCall.id,
+            name: toolCall.name,
+            arguments: toolCall.arguments,
+            result,
+          };
+
+          toolResults.push({ id: toolCall.id, name: toolCall.name, result });
+          allToolCalls.push(toolCallResult);
+
+          // Stream each successful result as a recoverable state checkpoint.
+          await send({ type: "tool_call", toolCall: toolCallResult, state: toCheckpointState(state) });
+        }
+
+        if (request.signal.aborted) {
+          await close();
+          return;
+        }
+
+        if (toolExecutionFailed) {
+          await send({ type: "state", state: toCheckpointState(state) });
+          await send({ type: "done" });
+          await writer.write(encoder.encode("data: [DONE]\n\n"));
+          await close();
+          return;
         }
 
         // Add assistant message with tool calls to conversation
@@ -324,18 +486,37 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
         }
       }
 
+      if (request.signal.aborted) {
+        await close();
+        return;
+      }
+
       // Max loops reached
       await send({ type: "text", content: "I've made several changes. Let me know if you need anything else!" });
-      await send({ type: "state", state });
+      await send({ type: "state", state: toCheckpointState(state) });
       await send({ type: "done" });
       await writer.write(encoder.encode("data: [DONE]\n\n"));
-      await writer.close();
+      await close();
     } catch (error) {
+      if (request.signal.aborted) {
+        await close();
+        return;
+      }
       console.error("Prompt builder chat error:", error);
-      await send({ type: "error", error: "Failed to process request" });
-      await writer.close();
+      try {
+        await send({ type: "error", error: "Failed to process request" });
+      } catch {
+        // Error reporting can also fail after the client disconnects.
+      }
+      await close();
     }
-  })();
+  };
+
+  void processAgentStream().catch(async (error) => {
+    // Keep unexpected failures from escaping the detached stream task.
+    console.error("Prompt builder stream task error:", error);
+    await close();
+  });
 
   return new Response(readable, {
     headers: {

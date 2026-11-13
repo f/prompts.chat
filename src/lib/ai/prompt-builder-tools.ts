@@ -240,14 +240,35 @@ export const PROMPT_BUILDER_TOOLS = [
   }
 ];
 
+/**
+ * Execute one prompt-builder tool and return its result with the updated prompt state.
+ * @param toolName Name of the tool requested by the model.
+ * @param args Parsed arguments supplied for the tool call.
+ * @param currentState Prompt state before the tool runs.
+ * @param availableTags Tags that can be selected by the tool.
+ * @param availableCategories Categories that can be selected by the tool.
+ * @param signal Optional request cancellation signal, propagated to search operations.
+ * @returns The tool result and resulting prompt state.
+ * @throws If the request is aborted during prompt search.
+ */
 export async function executeToolCall(
   toolName: string,
   args: Record<string, unknown>,
   currentState: PromptBuilderState,
   availableTags: Array<{ id: string; name: string; slug: string; color: string }>,
-  availableCategories: Array<{ id: string; name: string; slug: string; parentId: string | null }>
+  availableCategories: Array<{ id: string; name: string; slug: string; parentId: string | null }>,
+  signal?: AbortSignal
 ): Promise<{ result: ToolResult; newState: PromptBuilderState }> {
   const newState = { ...currentState };
+  /** Return a recoverable tool failure without changing the prompt state. */
+  const invalidArguments = (error: string) => ({
+    result: { success: false, error },
+    newState,
+  });
+
+  if (!args || typeof args !== "object" || Array.isArray(args)) {
+    return invalidArguments("Tool arguments must be an object");
+  }
 
   switch (toolName) {
     case "search_prompts": {
@@ -257,8 +278,10 @@ export async function executeToolCall(
       const structuredFormat = args.structuredFormat as string | undefined;
       
       try {
+        signal?.throwIfAborted();
         // Run both full-text and semantic search in parallel
         const useSemanticSearch = await isAISearchEnabled();
+        signal?.throwIfAborted();
         
         // Full-text search
         const textSearchPromise = db.prompt.findMany({
@@ -294,13 +317,14 @@ export async function executeToolCall(
 
         // Semantic search (if enabled)
         const semanticSearchPromise = useSemanticSearch 
-          ? semanticSearch(query, limit)
+          ? semanticSearch(query, limit, { signal })
           : Promise.resolve([]);
 
         const [textResults, semanticResults] = await Promise.all([
           textSearchPromise,
           semanticSearchPromise
         ]);
+        signal?.throwIfAborted();
 
         // Combine and deduplicate results
         const seenIds = new Set<string>();
@@ -358,6 +382,7 @@ export async function executeToolCall(
 
         // If no results found, get random prompts to learn the style
         if (finalResults.length === 0) {
+          signal?.throwIfAborted();
           const randomPrompts = await db.prompt.findMany({
             where: {
               isPrivate: false,
@@ -412,6 +437,7 @@ export async function executeToolCall(
           newState
         };
       } catch (error) {
+        if (signal?.aborted) throw error;
         return {
           result: { success: false, error: "Failed to search prompts" },
           newState
@@ -420,7 +446,10 @@ export async function executeToolCall(
     }
 
     case "set_title": {
-      const title = (args.title as string).substring(0, 200);
+      if (typeof args.title !== "string") {
+        return invalidArguments("Title must be a string");
+      }
+      const title = args.title.substring(0, 200);
       newState.title = title;
       return {
         result: { success: true, data: { title } },
@@ -429,7 +458,10 @@ export async function executeToolCall(
     }
 
     case "set_description": {
-      const description = (args.description as string).substring(0, 500);
+      if (typeof args.description !== "string") {
+        return invalidArguments("Description must be a string");
+      }
+      const description = args.description.substring(0, 500);
       newState.description = description;
       return {
         result: { success: true, data: { description } },
@@ -438,7 +470,10 @@ export async function executeToolCall(
     }
 
     case "set_content": {
-      newState.content = args.content as string;
+      if (typeof args.content !== "string") {
+        return invalidArguments("Content must be a string");
+      }
+      newState.content = args.content;
       return {
         result: { success: true, data: { content: newState.content } },
         newState
@@ -446,10 +481,32 @@ export async function executeToolCall(
     }
 
     case "set_type": {
+      const validTypes: PromptBuilderState["type"][] = [
+        "TEXT",
+        "IMAGE",
+        "VIDEO",
+        "AUDIO",
+        "STRUCTURED",
+      ];
+      if (
+        typeof args.type !== "string" ||
+        !validTypes.includes(args.type as PromptBuilderState["type"])
+      ) {
+        return invalidArguments("Type must be one of TEXT, IMAGE, VIDEO, AUDIO, or STRUCTURED");
+      }
+      if (
+        args.structuredFormat !== undefined &&
+        args.structuredFormat !== "JSON" &&
+        args.structuredFormat !== "YAML"
+      ) {
+        return invalidArguments("Structured format must be JSON or YAML");
+      }
       const type = args.type as PromptBuilderState["type"];
       newState.type = type;
       if (type === "STRUCTURED" && args.structuredFormat) {
         newState.structuredFormat = args.structuredFormat as "JSON" | "YAML";
+      } else if (type === "TEXT") {
+        newState.structuredFormat = undefined;
       }
       return {
         result: { success: true, data: { type, structuredFormat: newState.structuredFormat } },
@@ -458,7 +515,14 @@ export async function executeToolCall(
     }
 
     case "set_tags": {
-      const tagNames = args.tagNames as string[];
+      const tagNamesArgument = args.tagNames;
+      if (
+        !Array.isArray(tagNamesArgument) ||
+        !tagNamesArgument.every((tagName: unknown) => typeof tagName === "string")
+      ) {
+        return invalidArguments("tagNames must be an array of strings");
+      }
+      const tagNames = tagNamesArgument as string[];
       const matchedTagIds: string[] = [];
       const matchedNames: string[] = [];
 
@@ -472,7 +536,11 @@ export async function executeToolCall(
         }
       }
 
-      newState.tagIds = matchedTagIds;
+      // A nonempty list with no matches is likely an invalid suggestion, not a
+      // request to clear the existing selection. An explicit empty list clears it.
+      newState.tagIds = tagNames.length > 0 && matchedTagIds.length === 0
+        ? currentState.tagIds
+        : matchedTagIds;
       return {
         result: {
           success: true,
@@ -486,7 +554,10 @@ export async function executeToolCall(
     }
 
     case "set_category": {
-      const categoryName = args.categoryName as string;
+      if (typeof args.categoryName !== "string") {
+        return invalidArguments("Category name must be a string");
+      }
+      const categoryName = args.categoryName;
       const category = availableCategories.find(
         c => c.name.toLowerCase() === categoryName.toLowerCase() || c.slug === categoryName.toLowerCase()
       );
@@ -505,6 +576,9 @@ export async function executeToolCall(
     }
 
     case "set_privacy": {
+      if (typeof args.isPrivate !== "boolean") {
+        return invalidArguments("isPrivate must be a boolean");
+      }
       newState.isPrivate = args.isPrivate as boolean;
       return {
         result: { success: true, data: { isPrivate: newState.isPrivate } },
@@ -513,6 +587,29 @@ export async function executeToolCall(
     }
 
     case "set_media_requirements": {
+      if (typeof args.requiresMediaUpload !== "boolean") {
+        return invalidArguments("requiresMediaUpload must be a boolean");
+      }
+      if (
+        args.mediaType !== undefined &&
+        args.mediaType !== "IMAGE" &&
+        args.mediaType !== "VIDEO" &&
+        args.mediaType !== "DOCUMENT"
+      ) {
+        return invalidArguments("mediaType must be IMAGE, VIDEO, or DOCUMENT");
+      }
+      if (
+        args.mediaCount !== undefined &&
+        (
+          typeof args.mediaCount !== "number" ||
+          !Number.isFinite(args.mediaCount) ||
+          !Number.isInteger(args.mediaCount) ||
+          args.mediaCount < 1 ||
+          args.mediaCount > 10
+        )
+      ) {
+        return invalidArguments("mediaCount must be an integer from 1 to 10");
+      }
       newState.requiresMediaUpload = args.requiresMediaUpload as boolean;
       if (newState.requiresMediaUpload) {
         if (args.mediaType) {
