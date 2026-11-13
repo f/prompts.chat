@@ -170,6 +170,21 @@ describe("createTools", () => {
     expect(tools).toHaveLength(pageTools(site.env).length);
   });
 
+  it("stops waiting for a stalled /api/mcp and cancels the request", async () => {
+    const site = fakeSite();
+    let signal: AbortSignal | undefined;
+    site.fetch.mockImplementationOnce(
+      (_input: string, init: RequestInit) =>
+        new Promise((_resolve, reject) => {
+          signal = init.signal ?? undefined;
+          signal?.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")));
+        })
+    );
+    const tools = await createTools(site.env, 20);
+    expect(tools).toHaveLength(pageTools(site.env).length);
+    expect(signal?.aborted).toBe(true);
+  });
+
   it("describes every tool with an object schema and annotations", async () => {
     for (const tool of await createTools(fakeSite().env)) {
       expect(tool.description.length).toBeGreaterThan(20);
@@ -266,6 +281,17 @@ describe("page tools", () => {
       const { data } = await run(site, "navigate", { path: "https://evil.example/" });
       expect(data).toMatchObject({ code: "invalid_path" });
       expect(site.env.navigate).not.toHaveBeenCalled();
+    });
+
+    it("reports an error when the page did not open in time", async () => {
+      const site = fakeSite("/tags/x");
+      vi.mocked(site.env.navigate).mockResolvedValue(undefined);
+      const { result, data } = await run(site, "navigate", { path: "/bots" });
+      expect(result.isError).toBe(true);
+      expect(data).toMatchObject({ code: "navigation_incomplete", requested: "/bots", currentPath: "/tags/x" });
+
+      const search = await run(site, "show_search_results", { query: "x" });
+      expect(search.data).toMatchObject({ code: "navigation_incomplete", requested: "/prompts?q=x" });
     });
   });
 

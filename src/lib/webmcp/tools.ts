@@ -128,6 +128,22 @@ async function readJson(response: Response): Promise<Record<string, unknown>> {
 const SIGN_IN_MESSAGE = "Sign in to prompts.chat in this browser first; this tool acts as the signed-in user.";
 
 /** Tools that read or act on the open page, so they run in the browser */
+/** Navigates and reports whether the browser actually arrived; env.navigate gives up after a timeout */
+async function navigateTo(env: WebMcpEnv, path: string): Promise<boolean> {
+  await env.navigate(path);
+  const target = new URL(path, env.location().origin);
+  const url = env.location();
+  return url.pathname === target.pathname && url.search === target.search;
+}
+
+function navigationIncomplete(env: WebMcpEnv, path: string): CallToolResult {
+  const url = env.location();
+  return errorResult("navigation_incomplete", "The page did not finish opening; it may still be loading.", {
+    requested: path,
+    currentPath: `${url.pathname}${url.search}`,
+  });
+}
+
 export function pageTools(env: WebMcpEnv): WebMcpTool[] {
   async function promptIdArg(args: Record<string, unknown>): Promise<string | CallToolResult> {
     const id = stringArg(args, "id") ?? (await currentPromptId(env));
@@ -193,7 +209,7 @@ export function pageTools(env: WebMcpEnv): WebMcpTool[] {
         const target = stringArg(args, "path");
         const path = target ? toSameOriginPath(target, env.location().origin) : null;
         if (!path) return errorResult("invalid_path", "Pass a path on this site, such as /prompts or /bots/teams.");
-        await env.navigate(path);
+        if (!(await navigateTo(env, path))) return navigationIncomplete(env, path);
         const url = env.location();
         return result({ navigatedTo: `${url.pathname}${url.search}`, title: env.document().title, route: parseRoute(url) });
       }, "Failed to navigate"),
@@ -216,7 +232,7 @@ export function pageTools(env: WebMcpEnv): WebMcpTool[] {
         if (!query) return errorResult("invalid_query", "Pass a search query.");
         const section = SEARCH_SECTIONS.find((s) => s === args.section) ?? "prompts";
         const path = `/${section}?${new URLSearchParams({ q: query })}`;
-        await env.navigate(path);
+        if (!(await navigateTo(env, path))) return navigationIncomplete(env, path);
         return result({ navigatedTo: path, title: env.document().title });
       }, "Failed to open the search"),
     },
@@ -307,12 +323,19 @@ export function pageTools(env: WebMcpEnv): WebMcpTool[] {
  * Every tool the page offers: the page tools, plus the server's read tools when /api/mcp answers
  * (it is off when features.mcp is disabled, and the page tools still work without it)
  */
-export async function createTools(env: WebMcpEnv): Promise<WebMcpTool[]> {
+/** How long to wait for /api/mcp's tool list before starting with the page tools alone */
+export const SERVER_DISCOVERY_TIMEOUT_MS = 8000;
+
+export async function createTools(env: WebMcpEnv, discoveryTimeout = SERVER_DISCOVERY_TIMEOUT_MS): Promise<WebMcpTool[]> {
   let serverTools: WebMcpTool[] = [];
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), discoveryTimeout);
   try {
-    serverTools = mirrorServerTools(env, await listServerTools(env));
+    serverTools = mirrorServerTools(env, await listServerTools(env, controller.signal));
   } catch {
     // Page tools only
+  } finally {
+    clearTimeout(timer);
   }
   return [...pageTools(env), ...serverTools];
 }

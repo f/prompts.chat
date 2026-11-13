@@ -27,11 +27,17 @@ let requestId = 0;
  * same rate limits as any other client; it authenticates by API key only, so browser calls are
  * anonymous and see public content.
  */
-export async function mcpRequest<T>(env: WebMcpEnv, method: string, params?: Record<string, unknown>): Promise<T> {
+export async function mcpRequest<T>(
+  env: WebMcpEnv,
+  method: string,
+  params?: Record<string, unknown>,
+  signal?: AbortSignal
+): Promise<T> {
   const response = await env.fetch(MCP_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json, text/event-stream" },
     body: JSON.stringify({ jsonrpc: "2.0", id: ++requestId, method, ...(params && { params }) }),
+    signal,
   });
 
   let body: { result?: T; error?: { message?: string } } | null = null;
@@ -47,8 +53,8 @@ export async function mcpRequest<T>(env: WebMcpEnv, method: string, params?: Rec
   return body.result;
 }
 
-export async function listServerTools(env: WebMcpEnv): Promise<ServerTool[]> {
-  const { tools } = await mcpRequest<{ tools: ServerTool[] }>(env, "tools/list");
+export async function listServerTools(env: WebMcpEnv, signal?: AbortSignal): Promise<ServerTool[]> {
+  const { tools } = await mcpRequest<{ tools: ServerTool[] }>(env, "tools/list", undefined, signal);
   return tools;
 }
 

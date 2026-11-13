@@ -30,12 +30,13 @@ export function loadWidgetScript(src: string = WEBMCP_WIDGET_SRC): Promise<Widge
     script.src = src;
     script.async = true;
     script.dataset.webmcpScript = "";
-    script.onload = () => (window.WebMCP ? resolve(window.WebMCP) : reject(new Error("WebMCP did not load")));
-    script.onerror = () => {
+    const fail = (message: string) => {
       loading = null;
       script.remove();
-      reject(new Error(`Failed to load ${src}`));
+      reject(new Error(message));
     };
+    script.onload = () => (window.WebMCP ? resolve(window.WebMCP) : fail("WebMCP did not load"));
+    script.onerror = () => fail(`Failed to load ${src}`);
     document.head.appendChild(script);
   });
   return loading;

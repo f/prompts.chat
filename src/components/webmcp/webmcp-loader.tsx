@@ -31,6 +31,7 @@ export function WebMcpLoader({ color, locales }: WebMcpLoaderProps) {
       if (cancelled) return;
       try {
         const { startWebMcp, waitForPath, waitUntil } = await import("@/lib/webmcp");
+        if (cancelled) return;
         const location = () => new URL(window.location.href);
         await startWebMcp(
           {

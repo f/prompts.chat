@@ -145,6 +145,22 @@ describe("widget", () => {
     expect(await loadWidgetScript("/other.js")).toBe(FakeWidget);
   });
 
+  it("can try again when the script loads without defining the widget", async () => {
+    vi.resetModules();
+    const { loadWidgetScript } = await import("@/lib/webmcp/widget");
+    const first = loadWidgetScript("/broken.js");
+    const script = document.head.querySelector("script[data-webmcp-script]")!;
+    script.dispatchEvent(new Event("load"));
+    await expect(first).rejects.toThrow("WebMCP did not load");
+    expect(document.head.querySelector("script[data-webmcp-script]")).toBeNull();
+
+    const retry = loadWidgetScript("/w.js");
+    class FakeWidget {}
+    window.WebMCP = FakeWidget as never;
+    document.head.querySelector("script[data-webmcp-script]")!.dispatchEvent(new Event("load"));
+    expect(await retry).toBe(FakeWidget);
+  });
+
   it("translates the widget and makes its trigger an accessible button", () => {
     document.body.innerHTML = `
       <div data-webmcp-widget="true">
