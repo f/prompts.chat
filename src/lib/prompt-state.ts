@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 
 /**
  * Vote and collection changes made outside a prompt's own buttons (an agent through WebMCP).
@@ -18,9 +18,17 @@ export function publishPromptState(target: EventTarget, change: PromptStateChang
   target.dispatchEvent(new CustomEvent<PromptStateChange>(PROMPT_STATE_EVENT, { detail: change }));
 }
 
-/** Calls `onChange` with changes to `promptId` published on the document */
-export function usePromptStateChanges(promptId: string | undefined, onChange: (change: PromptStateChange) => void): void {
+/**
+ * Calls `onChange` with changes to `promptId` published on the document.
+ * Returns the number of changes received so far: a request that started before a change
+ * must not overwrite it when its response arrives later.
+ */
+export function usePromptStateChanges(
+  promptId: string | undefined,
+  onChange: (change: PromptStateChange) => void,
+): RefObject<number> {
   const onChangeRef = useRef(onChange);
+  const revision = useRef(0);
   useEffect(() => {
     onChangeRef.current = onChange;
   });
@@ -29,9 +37,13 @@ export function usePromptStateChanges(promptId: string | undefined, onChange: (c
     if (!promptId) return;
     const listener = (event: Event) => {
       const change = (event as CustomEvent<PromptStateChange>).detail;
-      if (change?.promptId === promptId) onChangeRef.current(change);
+      if (change?.promptId !== promptId) return;
+      revision.current += 1;
+      onChangeRef.current(change);
     };
     document.addEventListener(PROMPT_STATE_EVENT, listener);
     return () => document.removeEventListener(PROMPT_STATE_EVENT, listener);
   }, [promptId]);
+
+  return revision;
 }

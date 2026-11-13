@@ -59,7 +59,7 @@ export function UpvoteButton({
     setIsVoted(initialVoted);
     setVoteCount(initialCount);
   }
-  usePromptStateChanges(promptId, (change) => {
+  const externalChanges = usePromptStateChanges(promptId, (change) => {
     if (change.voted !== undefined) setIsVoted(change.voted);
     if (change.voteCount !== undefined) setVoteCount(change.voteCount);
   });
@@ -73,6 +73,7 @@ export function UpvoteButton({
     }
 
     setIsLoading(true);
+    const startedAt = externalChanges.current;
 
     try {
       const method = isVoted ? "DELETE" : "POST";
@@ -85,8 +86,10 @@ export function UpvoteButton({
       }
 
       const data = await response.json();
-      setIsVoted(data.voted);
-      setVoteCount(data.voteCount);
+      if (externalChanges.current === startedAt) {
+        setIsVoted(data.voted);
+        setVoteCount(data.voteCount);
+      }
       if (refreshAfterVote) router.refresh();
       
       if (promptId && data.voted) {

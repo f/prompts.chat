@@ -27,7 +27,7 @@ export function AddToCollectionButton({
     setServerInCollection(initialInCollection);
     setInCollection(initialInCollection);
   }
-  usePromptStateChanges(promptId, (change) => {
+  const externalChanges = usePromptStateChanges(promptId, (change) => {
     if (change.inCollection !== undefined) setInCollection(change.inCollection);
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -40,6 +40,10 @@ export function AddToCollectionButton({
     }
 
     setIsLoading(true);
+    const startedAt = externalChanges.current;
+    const applyResult = (value: boolean) => {
+      if (externalChanges.current === startedAt) setInCollection(value);
+    };
 
     try {
       if (inCollection) {
@@ -48,7 +52,7 @@ export function AddToCollectionButton({
         });
 
         if (res.ok) {
-          setInCollection(false);
+          applyResult(false);
           analyticsCollection.remove(promptId);
           setShowTooltip(true);
           setTimeout(() => setShowTooltip(false), 2000);
@@ -61,7 +65,7 @@ export function AddToCollectionButton({
         });
 
         if (res.ok) {
-          setInCollection(true);
+          applyResult(true);
           analyticsCollection.add(promptId);
           setShowTooltip(true);
           setTimeout(() => setShowTooltip(false), 2000);
