@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 
@@ -22,7 +23,7 @@ export async function POST(
     // Check if prompt exists and is deleted
     const prompt = await db.prompt.findUnique({
       where: { id },
-      select: { id: true, deletedAt: true },
+      select: { id: true, deletedAt: true, type: true },
     });
 
     if (!prompt) {
@@ -38,6 +39,13 @@ export async function POST(
       where: { id },
       data: { deletedAt: null },
     });
+
+    // Revalidate caches (prompts, categories, tags, flow counts change)
+    revalidateTag("prompts", "max");
+    revalidateTag("categories", "max");
+    revalidateTag("tags", "max");
+    revalidateTag("prompt-flow", "max");
+    if (prompt.type === "CLASSIFIER") revalidateTag("classifiers", "max");
 
     return NextResponse.json({ success: true });
   } catch (error) {
