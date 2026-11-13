@@ -239299,3 +239299,36 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>SQLite taste</strong></summary>
+
+## SQLite taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# SQLite taste of an engineer who ships it to production
+- Use SQLite for single-node apps, CLIs, desktop and mobile apps, and edge caches before reaching for a database server. Confidence: 0.85
+- Turn on WAL mode (`PRAGMA journal_mode = WAL`) so readers never block the writer. Confidence: 0.95
+- Set `PRAGMA foreign_keys = ON` on every connection, since it is off by default. Confidence: 0.95
+- Set a `busy_timeout` of a few seconds instead of letting writes fail immediately with `SQLITE_BUSY`. Confidence: 0.90
+- Use `PRAGMA synchronous = NORMAL` with WAL for a good balance of durability and speed. Confidence: 0.75
+- Funnel all writes through a single connection or queue, and use a pool of read-only connections for reads. Confidence: 0.80
+- Start write transactions with `BEGIN IMMEDIATE` to avoid deadlocks when a read transaction tries to upgrade. Confidence: 0.80
+- Declare tables `STRICT` on new schemas so type affinity does not silently store text in integer columns. Confidence: 0.80
+- Store timestamps as ISO 8601 text or Unix epoch integers consistently, and pick one convention per database. Confidence: 0.85
+- Use `INTEGER PRIMARY KEY` for row ids unless you need globally unique ids, then add a separate UUID or ULID column. Confidence: 0.75
+- Batch many inserts inside one transaction; thousands of autocommit inserts are slow. Confidence: 0.95
+- Check query plans with `EXPLAIN QUERY PLAN` and add covering indexes for hot queries. Confidence: 0.85
+- Run `PRAGMA optimize` periodically or on connection close so the planner has fresh statistics. Confidence: 0.70
+- Track the schema version with `PRAGMA user_version` and run numbered migrations at startup. Confidence: 0.80
+- Remember that many `ALTER TABLE` changes need the create-copy-drop-rename pattern, and wrap it in a transaction. Confidence: 0.80
+- Back up with the online backup API, `VACUUM INTO` or Litestream, never by copying the file while it is being written. Confidence: 0.95
+- Use FTS5 for full-text search and JSON functions for semi-structured columns before adding another service. Confidence: 0.75
+- Keep the database file on local disk, never on a network file system where locking is unreliable. Confidence: 0.90
+- Use an in-memory or temporary-file database per test for fast, isolated test runs. Confidence: 0.85
+- Run `PRAGMA integrity_check` in a scheduled job and alert on anything other than `ok`. Confidence: 0.65
+```
+
+</details>
+
