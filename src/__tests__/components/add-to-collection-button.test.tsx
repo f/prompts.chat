@@ -59,6 +59,18 @@ describe("AddToCollectionButton", () => {
     expect(screen.getByRole("button")).toHaveTextContent("addToCollection");
   });
 
+  it("still applies its own result when only a vote changed meanwhile", async () => {
+    let respond!: (value: { ok: boolean }) => void;
+    vi.stubGlobal("fetch", vi.fn(() => new Promise((resolve) => { respond = resolve; })));
+
+    render(<AddToCollectionButton promptId="p1" initialInCollection={false} isLoggedIn />);
+    fireEvent.click(screen.getByRole("button"));
+    act(() => publishPromptState(document, { promptId: "p1", voted: true, voteCount: 3 }));
+    await act(async () => respond({ ok: true }));
+
+    await waitFor(() => expect(screen.getByRole("button")).toHaveTextContent("inCollection"));
+  });
+
   it("keeps its own state while the props stay the same", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true }));
 

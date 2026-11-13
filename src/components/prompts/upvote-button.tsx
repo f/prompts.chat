@@ -62,6 +62,7 @@ export function UpvoteButton({
   const externalChanges = usePromptStateChanges(promptId, (change) => {
     if (change.voted !== undefined) setIsVoted(change.voted);
     if (change.voteCount !== undefined) setVoteCount(change.voteCount);
+    return change.voted !== undefined || change.voteCount !== undefined;
   });
   const [isLoading, setIsLoading] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);

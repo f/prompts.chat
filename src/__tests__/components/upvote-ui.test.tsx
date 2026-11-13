@@ -147,6 +147,20 @@ describe("UpvoteButton", () => {
     vi.unstubAllGlobals();
   });
 
+  it("still applies its own vote when only the collection changed meanwhile", async () => {
+    let respond!: (value: unknown) => void;
+    vi.stubGlobal("fetch", vi.fn(() => new Promise((resolve) => { respond = resolve; })));
+
+    render(<UpvoteButton promptId="p1" initialVoted={false} initialCount={7} isLoggedIn size="circular" />);
+    fireEvent.click(screen.getByRole("button"));
+    act(() => publishPromptState(document, { promptId: "p1", inCollection: true }));
+    await act(async () => respond({ ok: true, json: async () => ({ voted: true, voteCount: 8 }) }));
+
+    await waitFor(() => expect(screen.getByRole("button", { pressed: true })).toHaveTextContent("8"));
+
+    vi.unstubAllGlobals();
+  });
+
   it("asks signed-out visitors to log in without voting or refreshing", () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);

@@ -19,13 +19,13 @@ export function publishPromptState(target: EventTarget, change: PromptStateChang
 }
 
 /**
- * Calls `onChange` with changes to `promptId` published on the document.
- * Returns the number of changes received so far: a request that started before a change
- * must not overwrite it when its response arrives later.
+ * Calls `onChange` with changes to `promptId` published on the document; it returns whether it
+ * applied anything. Returns the number of applied changes so far: a request that started before
+ * one must not overwrite it when its response arrives later.
  */
 export function usePromptStateChanges(
   promptId: string | undefined,
-  onChange: (change: PromptStateChange) => void,
+  onChange: (change: PromptStateChange) => boolean,
 ): RefObject<number> {
   const onChangeRef = useRef(onChange);
   const revision = useRef(0);
@@ -38,8 +38,7 @@ export function usePromptStateChanges(
     const listener = (event: Event) => {
       const change = (event as CustomEvent<PromptStateChange>).detail;
       if (change?.promptId !== promptId) return;
-      revision.current += 1;
-      onChangeRef.current(change);
+      if (onChangeRef.current(change)) revision.current += 1;
     };
     document.addEventListener(PROMPT_STATE_EVENT, listener);
     return () => document.removeEventListener(PROMPT_STATE_EVENT, listener);

@@ -28,7 +28,9 @@ export function AddToCollectionButton({
     setInCollection(initialInCollection);
   }
   const externalChanges = usePromptStateChanges(promptId, (change) => {
-    if (change.inCollection !== undefined) setInCollection(change.inCollection);
+    if (change.inCollection === undefined) return false;
+    setInCollection(change.inCollection);
+    return true;
   });
   const [isLoading, setIsLoading] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
