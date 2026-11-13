@@ -95,7 +95,7 @@ Data tools are mirrored from the remote MCP server. Their names, descriptions an
 - Data tools run **anonymously**. `/api/mcp` authenticates with API keys, not cookies, so the browser cannot send your session there. Mirrored tools, `get_current_item` and `fill_prompt_variables` only see public content, even when you are signed in. A private prompt you can open is only readable through `get_current_page`, which reads what the page shows.
 - `upvote_prompt` and `save_prompt_to_collection` call the same endpoints as the buttons on the page, with your session cookie, so the same permission checks apply. When you are signed out they return `unauthorized`. Upvoting team votes is not supported.
 - `get_current_page` never includes form fields, scripts, hidden elements or the widget itself.
-- Nothing is sent anywhere until you connect. The widget talks only to the bridge on `localhost`, and native WebMCP only to your browser.
+- Nothing is sent anywhere until you connect. The widget talks only to the bridge on `localhost`, and native WebMCP only to your browser. Tokens that name any other server are refused, so a token someone else gives you cannot connect the tab to their machine.
 
 ## Configuration
 
