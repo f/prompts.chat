@@ -111,6 +111,17 @@ describe("page extraction", () => {
     expect(extractText(main)).toBe("````\nname: x\nsteps:\n\n  - run: echo ```\n````");
   });
 
+  it("resolves relative links against the page and keeps fragments", () => {
+    const main = document.createElement("main");
+    main.innerHTML =
+      '<a href="chapter-2">Next</a><a href="/book#variables">Variables</a><a href="/book#examples">Examples</a><a href="//evil.example/">Away</a>';
+    expect(extractLinks(main, new URL("/book/chapter-1", ORIGIN))).toEqual([
+      { text: "Next", path: "/book/chapter-2" },
+      { text: "Variables", path: "/book#variables" },
+      { text: "Examples", path: "/book#examples" },
+    ]);
+  });
+
   it("collects same-origin links once each", () => {
     expect(extractLinks(document.querySelector("main")!, ORIGIN)).toEqual([{ text: "Poetry", path: "/tags/poetry" }]);
   });

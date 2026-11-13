@@ -205,19 +205,20 @@ export function extractText(root: Element): string {
 const MAX_LINKS = 60;
 
 /** Same-origin links in the main content, deduplicated, so an agent can pick where to go next */
-export function extractLinks(root: Element, origin: string): PageLink[] {
+export function extractLinks(root: Element, pageUrl: string | URL): PageLink[] {
+  const base = new URL(pageUrl);
   const links: PageLink[] = [];
   const seen = new Set<string>();
   for (const anchor of Array.from(root.querySelectorAll("a[href]"))) {
     if (isHidden(anchor) || anchor.closest("[data-webmcp-widget]")) continue;
     let url: URL;
     try {
-      url = new URL(anchor.getAttribute("href") ?? "", origin);
+      url = new URL(anchor.getAttribute("href") ?? "", base);
     } catch {
       continue;
     }
-    if (url.origin !== origin) continue;
-    const path = `${url.pathname}${url.search}`;
+    if (url.origin !== base.origin) continue;
+    const path = `${url.pathname}${url.search}${url.hash}`;
     const text = (anchor.textContent ?? "").replace(/\s+/g, " ").trim() || anchor.getAttribute("aria-label") || "";
     if (!text || seen.has(path)) continue;
     seen.add(path);
@@ -245,7 +246,7 @@ export function snapshotPage(document: Document, url: URL, maxLength: number): P
           .filter(Boolean)
           .slice(0, 40)
       : [],
-    links: main ? extractLinks(main, url.origin) : [],
+    links: main ? extractLinks(main, url) : [],
     text: truncated ? `${fullText.slice(0, maxLength)}…` : fullText,
     truncated,
   };
