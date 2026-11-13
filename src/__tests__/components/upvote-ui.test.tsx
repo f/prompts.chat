@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { act, render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { publishPromptState } from "@/lib/prompt-state";
 import { UpvoteCount } from "@/components/prompts/upvote-count";
 import { UpvoteButton } from "@/components/prompts/upvote-button";
 
@@ -94,6 +95,68 @@ describe("UpvoteButton", () => {
 
     await waitFor(() => expect(screen.getByRole("button", { pressed: false })).toHaveTextContent("6"));
     expect(refresh).toHaveBeenCalledTimes(1);
+
+    vi.unstubAllGlobals();
+  });
+
+  it("shows votes made elsewhere once the page refreshes, so the next click undoes them", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ voted: false, voteCount: 7 }) });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { rerender } = render(<UpvoteButton promptId="p1" initialVoted={false} initialCount={7} isLoggedIn size="circular" />);
+    rerender(<UpvoteButton promptId="p1" initialVoted initialCount={8} isLoggedIn size="circular" />);
+    expect(screen.getByRole("button", { pressed: true })).toHaveTextContent("8");
+
+    fireEvent.click(screen.getByRole("button"));
+    await waitFor(() => expect(screen.getByRole("button", { pressed: false })).toHaveTextContent("7"));
+    expect(fetchMock).toHaveBeenCalledWith("/api/prompts/p1/vote", { method: "DELETE" });
+
+    vi.unstubAllGlobals();
+  });
+
+  it("follows a WebMCP vote change back to the value it was rendered with", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ voted: true, voteCount: 8 }) });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { rerender } = render(<UpvoteButton promptId="p1" initialVoted={false} initialCount={7} isLoggedIn size="circular" />);
+    fireEvent.click(screen.getByRole("button"));
+    await waitFor(() => expect(screen.getByRole("button", { pressed: true })).toHaveTextContent("8"));
+
+    act(() => publishPromptState(document, { promptId: "p1", voted: false, voteCount: 7 }));
+    rerender(<UpvoteButton promptId="p1" initialVoted={false} initialCount={7} isLoggedIn size="circular" />);
+    expect(screen.getByRole("button", { pressed: false })).toHaveTextContent("7");
+
+    fireEvent.click(screen.getByRole("button"));
+    await waitFor(() => expect(fetchMock).toHaveBeenLastCalledWith("/api/prompts/p1/vote", { method: "POST" }));
+
+    vi.unstubAllGlobals();
+  });
+
+  it("keeps a WebMCP vote change that lands while its own request is pending", async () => {
+    let respond!: (value: unknown) => void;
+    vi.stubGlobal("fetch", vi.fn(() => new Promise((resolve) => { respond = resolve; })));
+
+    render(<UpvoteButton promptId="p1" initialVoted={false} initialCount={7} isLoggedIn size="circular" />);
+    fireEvent.click(screen.getByRole("button"));
+    act(() => publishPromptState(document, { promptId: "p1", voted: false, voteCount: 7 }));
+    await act(async () => respond({ ok: true, json: async () => ({ voted: true, voteCount: 8 }) }));
+
+    await waitFor(() => expect(screen.getByRole("button")).not.toBeDisabled());
+    expect(screen.getByRole("button", { pressed: false })).toHaveTextContent("7");
+
+    vi.unstubAllGlobals();
+  });
+
+  it("still applies its own vote when only the collection changed meanwhile", async () => {
+    let respond!: (value: unknown) => void;
+    vi.stubGlobal("fetch", vi.fn(() => new Promise((resolve) => { respond = resolve; })));
+
+    render(<UpvoteButton promptId="p1" initialVoted={false} initialCount={7} isLoggedIn size="circular" />);
+    fireEvent.click(screen.getByRole("button"));
+    act(() => publishPromptState(document, { promptId: "p1", inCollection: true }));
+    await act(async () => respond({ ok: true, json: async () => ({ voted: true, voteCount: 8 }) }));
+
+    await waitFor(() => expect(screen.getByRole("button", { pressed: true })).toHaveTextContent("8"));
 
     vi.unstubAllGlobals();
   });

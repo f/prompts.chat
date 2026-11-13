@@ -186,9 +186,14 @@ Use prompts.chat as an MCP server in your AI tools.
 }
 ```
 
-Tools cover prompts and skills, plus bots (`search_bots`, `get_bot`, `save_bot`, `list_my_bots`, `get_my_bot`) and bot teams (`list_teams`, `get_team`, `save_team`).
+Tools cover prompts and skills, plus bots (`search_bots`, `get_bot`, `save_bot`, `list_my_bots`, `get_my_bot`), bot teams (`list_teams`, `get_team`, `save_team`), classifiers (`search_classifiers`, `get_classifier`) and taxonomy (`list_categories`, `list_tags`).
 
 📖 [MCP Documentation](https://prompts.chat/docs/api)
+
+### WebMCP (in the browser)
+Every page of prompts.chat also registers tools, prompts and resources in the browser, so an agent can read the page you are on, navigate, fill prompt variables and, with your session, upvote or save prompts. Connect through the [webmcp.dev](https://webmcp.dev/) widget in the bottom-left corner, or through a browser with built-in WebMCP support.
+
+📖 [WebMCP Documentation](WEBMCP.md)
 
 ---
 

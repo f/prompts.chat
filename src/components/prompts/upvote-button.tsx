@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { analyticsPrompt } from "@/lib/analytics";
 import { UpvoteCount, UpvoteIcon } from "@/components/prompts/upvote-count";
+import { usePromptStateChanges } from "@/lib/prompt-state";
 
 type UpvoteTarget =
   | { promptId: string; voteUrl?: never }
@@ -51,6 +52,18 @@ export function UpvoteButton({
   const tCommon = useTranslations("common");
   const [isVoted, setIsVoted] = useState(initialVoted);
   const [voteCount, setVoteCount] = useState(initialCount);
+  // Votes made elsewhere arrive as new props after router.refresh(), or as events from WebMCP tools
+  const [serverVote, setServerVote] = useState({ initialVoted, initialCount });
+  if (serverVote.initialVoted !== initialVoted || serverVote.initialCount !== initialCount) {
+    setServerVote({ initialVoted, initialCount });
+    setIsVoted(initialVoted);
+    setVoteCount(initialCount);
+  }
+  const externalChanges = usePromptStateChanges(promptId, (change) => {
+    if (change.voted !== undefined) setIsVoted(change.voted);
+    if (change.voteCount !== undefined) setVoteCount(change.voteCount);
+    return change.voted !== undefined || change.voteCount !== undefined;
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
@@ -61,6 +74,7 @@ export function UpvoteButton({
     }
 
     setIsLoading(true);
+    const startedAt = externalChanges.current;
 
     try {
       const method = isVoted ? "DELETE" : "POST";
@@ -73,8 +87,10 @@ export function UpvoteButton({
       }
 
       const data = await response.json();
-      setIsVoted(data.voted);
-      setVoteCount(data.voteCount);
+      if (externalChanges.current === startedAt) {
+        setIsVoted(data.voted);
+        setVoteCount(data.voteCount);
+      }
       if (refreshAfterVote) router.refresh();
       
       if (promptId && data.voted) {

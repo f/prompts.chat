@@ -3042,5 +3042,13 @@
         "versionHistory": "Version history"
       }
     }
+  },
+  "webmcp": {
+    "open": "Connect an AI agent (WebMCP)",
+    "tokenPlaceholder": "Paste connection token",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "close": "Close",
+    "localOnly": "Only a WebMCP bridge on this computer (localhost) can connect"
   }
 }

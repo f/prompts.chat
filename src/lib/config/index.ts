@@ -46,6 +46,7 @@ export interface FeaturesConfig {
   mcp?: boolean;
   comments?: boolean;
   promptEnhancer?: boolean;
+  webmcp?: boolean;
 }
 
 export interface Sponsor {
@@ -175,6 +176,7 @@ function applyEnvOverrides(config: PromptsConfig): PromptsConfig {
       mcp: envBool('PCHAT_FEATURE_MCP', config.features.mcp ?? false),
       comments: envBool('PCHAT_FEATURE_COMMENTS', config.features.comments ?? true),
       promptEnhancer: envBool('PCHAT_FEATURE_PROMPT_ENHANCER', config.features.promptEnhancer ?? true),
+      webmcp: envBool('PCHAT_FEATURE_WEBMCP', config.features.webmcp ?? true),
     },
     homepage: env.PCHAT_NAME ? {
       // If custom branding via env, use clone branding mode

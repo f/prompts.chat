@@ -6,6 +6,7 @@ import { Bookmark, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { analyticsCollection } from "@/lib/analytics";
+import { usePromptStateChanges } from "@/lib/prompt-state";
 
 interface AddToCollectionButtonProps {
   promptId: string;
@@ -20,6 +21,17 @@ export function AddToCollectionButton({
 }: AddToCollectionButtonProps) {
   const t = useTranslations("collection");
   const [inCollection, setInCollection] = useState(initialInCollection);
+  // Changes made elsewhere arrive as new props after router.refresh(), or as events from WebMCP tools
+  const [serverInCollection, setServerInCollection] = useState(initialInCollection);
+  if (serverInCollection !== initialInCollection) {
+    setServerInCollection(initialInCollection);
+    setInCollection(initialInCollection);
+  }
+  const externalChanges = usePromptStateChanges(promptId, (change) => {
+    if (change.inCollection === undefined) return false;
+    setInCollection(change.inCollection);
+    return true;
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -30,6 +42,10 @@ export function AddToCollectionButton({
     }
 
     setIsLoading(true);
+    const startedAt = externalChanges.current;
+    const applyResult = (value: boolean) => {
+      if (externalChanges.current === startedAt) setInCollection(value);
+    };
 
     try {
       if (inCollection) {
@@ -38,7 +54,7 @@ export function AddToCollectionButton({
         });
 
         if (res.ok) {
-          setInCollection(false);
+          applyResult(false);
           analyticsCollection.remove(promptId);
           setShowTooltip(true);
           setTimeout(() => setShowTooltip(false), 2000);
@@ -51,7 +67,7 @@ export function AddToCollectionButton({
         });
 
         if (res.ok) {
-          setInCollection(true);
+          applyResult(true);
           analyticsCollection.add(promptId);
           setShowTooltip(true);
           setTimeout(() => setShowTooltip(false), 2000);

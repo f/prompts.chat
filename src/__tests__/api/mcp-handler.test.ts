@@ -154,6 +154,10 @@ describe("MCP route", () => {
         "list_teams",
         "get_team",
         "save_team",
+        "search_classifiers",
+        "get_classifier",
+        "list_categories",
+        "list_tags",
       ]);
     });
 

@@ -3038,5 +3038,13 @@
         "versionHistory": "Versiya tarixçəsi"
       }
     }
+  },
+  "webmcp": {
+    "open": "Süni intellekt agentini qoşun (WebMCP)",
+    "tokenPlaceholder": "Qoşulma tokenini yapışdırın",
+    "connect": "Qoşul",
+    "disconnect": "Bağlantını kəs",
+    "close": "Bağla",
+    "localOnly": "Yalnız bu kompüterdəki WebMCP körpüsü (localhost) qoşula bilər"
   }
 }

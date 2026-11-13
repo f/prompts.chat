@@ -802,3 +802,143 @@
   padding: 0;
 }
 
+
+/*
+ * WebMCP widget (public/vendor/webmcp, loaded by components/webmcp/webmcp-loader.tsx).
+ * The widget sets inline styles, so overrides need !important. Bottom-left keeps it clear of the
+ * toasts and the prompt builder button at the bottom right; z-index 40 keeps it under dialogs,
+ * sheets and the cookie banner (z-50).
+ */
+[data-webmcp-widget] {
+  z-index: 40 !important;
+  left: max(1rem, env(safe-area-inset-left)) !important;
+  bottom: max(1rem, env(safe-area-inset-bottom)) !important;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif !important;
+  color: var(--popover-foreground);
+}
+
+[data-webmcp-widget] .webmcp-trigger {
+  position: relative;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  border-radius: 9999px !important;
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.18) !important;
+  font-size: 0 !important;
+  opacity: 0.85;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+[data-webmcp-widget] .webmcp-trigger:hover,
+[data-webmcp-widget] .webmcp-trigger:focus-visible {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+[data-webmcp-widget] .webmcp-trigger:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+[data-webmcp-widget] .webmcp-trigger::before {
+  content: "";
+  width: 1.25rem;
+  height: 1.25rem;
+  background-color: currentColor;
+  mask: url("/mcp.svg") center / contain no-repeat;
+  -webkit-mask: url("/mcp.svg") center / contain no-repeat;
+}
+
+[data-webmcp-widget] .webmcp-trigger[data-connected]::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 9999px;
+  background-color: #22c55e;
+  box-shadow: 0 0 0 2px var(--background);
+}
+
+[data-webmcp-widget] .webmcp-content {
+  bottom: 3.25rem !important;
+  left: 0;
+  width: min(20rem, calc(100vw - 2rem)) !important;
+  max-height: min(28rem, calc(100dvh - 6rem));
+  overflow: auto !important;
+  background-color: var(--popover) !important;
+  color: var(--popover-foreground) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.15) !important;
+}
+
+[data-webmcp-widget] .webmcp-close {
+  color: var(--muted-foreground) !important;
+}
+
+[data-webmcp-widget] .webmcp-token-input {
+  min-width: 0;
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--input) !important;
+  border-radius: calc(var(--radius) - 2px) 0 0 calc(var(--radius) - 2px) !important;
+}
+
+[data-webmcp-widget] .webmcp-connect-btn {
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border-radius: 0 calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0 !important;
+}
+
+[data-webmcp-widget] .webmcp-disconnect-btn {
+  background-color: var(--destructive) !important;
+  border-radius: calc(var(--radius) - 2px) !important;
+}
+
+[data-webmcp-widget] .webmcp-status {
+  background-color: var(--muted) !important;
+  color: var(--muted-foreground) !important;
+  border-radius: calc(var(--radius) - 2px) !important;
+}
+
+[data-webmcp-widget] .webmcp-registered-items,
+[data-webmcp-widget] .webmcp-tools-list,
+[data-webmcp-widget] .webmcp-prompts-list,
+[data-webmcp-widget] li {
+  border-color: var(--border) !important;
+}
+
+[data-webmcp-widget] li div {
+  color: var(--muted-foreground) !important;
+}
+
+[dir="rtl"] [data-webmcp-widget] .webmcp-token-input {
+  border-radius: 0 calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0 !important;
+}
+
+[dir="rtl"] [data-webmcp-widget] .webmcp-connect-btn {
+  border-radius: calc(var(--radius) - 2px) 0 0 calc(var(--radius) - 2px) !important;
+}
+
+@media (max-width: 640px) {
+  /* 16px stops iOS from zooming into the field */
+  [data-webmcp-widget] .webmcp-token-input {
+    font-size: 16px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-webmcp-widget],
+  [data-webmcp-widget] .webmcp-trigger {
+    transition: none !important;
+  }
+}
+
+@media print {
+  [data-webmcp-widget] {
+    display: none !important;
+  }
+}
