@@ -3040,5 +3040,12 @@
         "versionHistory": "Histórico de versões"
       }
     }
+  },
+  "webmcp": {
+    "open": "Conectar um agente de IA (WebMCP)",
+    "tokenPlaceholder": "Cole o token de conexão",
+    "connect": "Conectar",
+    "disconnect": "Desconectar",
+    "close": "Fechar"
   }
 }

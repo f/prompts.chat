@@ -3029,5 +3029,12 @@
         "versionHistory": "Versiegeschiedenis"
       }
     }
+  },
+  "webmcp": {
+    "open": "Een AI-agent verbinden (WebMCP)",
+    "tokenPlaceholder": "Plak het verbindingstoken",
+    "connect": "Verbinden",
+    "disconnect": "Verbinding verbreken",
+    "close": "Sluiten"
   }
 }

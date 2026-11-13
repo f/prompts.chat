@@ -3022,5 +3022,12 @@
         "versionHistory": "تاریخچه نسخه‌ها"
       }
     }
+  },
+  "webmcp": {
+    "open": "اتصال یک عامل هوش مصنوعی (WebMCP)",
+    "tokenPlaceholder": "توکن اتصال را جای‌گذاری کنید",
+    "connect": "اتصال",
+    "disconnect": "قطع اتصال",
+    "close": "بستن"
   }
 }

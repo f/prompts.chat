@@ -3022,5 +3022,12 @@
         "versionHistory": "היסטוריית גרסאות"
       }
     }
+  },
+  "webmcp": {
+    "open": "חיבור סוכן בינה מלאכותית (WebMCP)",
+    "tokenPlaceholder": "הדביקו את אסימון החיבור",
+    "connect": "התחברות",
+    "disconnect": "התנתקות",
+    "close": "סגירה"
   }
 }

@@ -3038,5 +3038,12 @@
         "versionHistory": "Versionsverlauf"
       }
     }
+  },
+  "webmcp": {
+    "open": "KI-Agenten verbinden (WebMCP)",
+    "tokenPlaceholder": "Verbindungstoken einfügen",
+    "connect": "Verbinden",
+    "disconnect": "Trennen",
+    "close": "Schließen"
   }
 }

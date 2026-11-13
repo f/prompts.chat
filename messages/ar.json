@@ -3024,5 +3024,12 @@
         "versionHistory": "سجل الإصدارات"
       }
     }
+  },
+  "webmcp": {
+    "open": "ربط وكيل ذكاء اصطناعي (WebMCP)",
+    "tokenPlaceholder": "الصق رمز الاتصال",
+    "connect": "اتصال",
+    "disconnect": "قطع الاتصال",
+    "close": "إغلاق"
   }
 }

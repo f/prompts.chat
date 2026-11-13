@@ -3037,5 +3037,12 @@
         "versionHistory": "Sürüm geçmişi"
       }
     }
+  },
+  "webmcp": {
+    "open": "Bir yapay zeka ajanı bağlayın (WebMCP)",
+    "tokenPlaceholder": "Bağlantı belirtecini yapıştırın",
+    "connect": "Bağlan",
+    "disconnect": "Bağlantıyı kes",
+    "close": "Kapat"
   }
 }

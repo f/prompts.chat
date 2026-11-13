@@ -3026,5 +3026,12 @@
         "versionHistory": "버전 기록"
       }
     }
+  },
+  "webmcp": {
+    "open": "AI 에이전트 연결 (WebMCP)",
+    "tokenPlaceholder": "연결 토큰 붙여넣기",
+    "connect": "연결",
+    "disconnect": "연결 해제",
+    "close": "닫기"
   }
 }

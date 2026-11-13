@@ -3026,5 +3026,12 @@
         "versionHistory": "版本历史"
       }
     }
+  },
+  "webmcp": {
+    "open": "连接 AI 智能体 (WebMCP)",
+    "tokenPlaceholder": "粘贴连接令牌",
+    "connect": "连接",
+    "disconnect": "断开连接",
+    "close": "关闭"
   }
 }
