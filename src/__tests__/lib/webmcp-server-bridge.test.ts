@@ -32,7 +32,9 @@ vi.mock("@/lib/seo", () => ({ getBaseUrl: () => "https://prompts.chat" }));
 function env(path: string): WebMcpEnv {
   const url = new URL(path, "https://prompts.chat");
   return {
-    fetch: ((input: string, init?: RequestInit) => handleMcpRequest(new Request(new URL(input, url), init))) as typeof fetch,
+    // jsdom's AbortSignal is not one Node's Request accepts (Node 24 rejects it), so it stays out of the server side
+    fetch: ((input: string, init?: RequestInit) =>
+      handleMcpRequest(new Request(new URL(input, url), { ...init, signal: undefined }))) as typeof fetch,
     location: () => url,
     document: () => document,
     navigate: vi.fn(),
