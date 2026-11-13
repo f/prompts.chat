@@ -32,9 +32,9 @@ function classifier(slug: string, overrides: Partial<ClassifierRecord> = {}): Cl
     summary: `Summary of ${slug}`,
     problem: "A problem",
     goal: "A goal",
-    input: { fields: [{ name: "ticket", description: "The ticket text" }] },
+    input: { summary: "A support ticket", fields: [{ name: "ticket", description: "The ticket text" }] },
     question: { key: "route", type: "choice", instructions: "Pick a queue", options: [{ key: "billing", description: "Billing" }] },
-    outcomes: [{ id: "billing", label: "Send to billing", when: "route is billing" }],
+    outcomes: [{ id: "billing", label: "Send to billing", when: "route is billing", tone: "proceed" }],
     guidance: [],
     scenarios: [],
     betterTogether: [],
@@ -47,7 +47,7 @@ function classifier(slug: string, overrides: Partial<ClassifierRecord> = {}): Cl
     createdAt: new Date("2026-01-01T00:00:00Z"),
     updatedAt: new Date("2026-01-01T00:00:00Z"),
     ...overrides,
-  } as unknown as ClassifierRecord;
+  };
 }
 
 let client: Client;
