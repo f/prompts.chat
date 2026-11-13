@@ -20,6 +20,12 @@ export function AddToCollectionButton({
 }: AddToCollectionButtonProps) {
   const t = useTranslations("collection");
   const [inCollection, setInCollection] = useState(initialInCollection);
+  // Changes made elsewhere (another tab, an agent through WebMCP) arrive as new props after router.refresh()
+  const [serverInCollection, setServerInCollection] = useState(initialInCollection);
+  if (serverInCollection !== initialInCollection) {
+    setServerInCollection(initialInCollection);
+    setInCollection(initialInCollection);
+  }
   const [isLoading, setIsLoading] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 

@@ -98,6 +98,21 @@ describe("UpvoteButton", () => {
     vi.unstubAllGlobals();
   });
 
+  it("shows votes made elsewhere once the page refreshes, so the next click undoes them", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ voted: false, voteCount: 7 }) });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { rerender } = render(<UpvoteButton promptId="p1" initialVoted={false} initialCount={7} isLoggedIn size="circular" />);
+    rerender(<UpvoteButton promptId="p1" initialVoted initialCount={8} isLoggedIn size="circular" />);
+    expect(screen.getByRole("button", { pressed: true })).toHaveTextContent("8");
+
+    fireEvent.click(screen.getByRole("button"));
+    await waitFor(() => expect(screen.getByRole("button", { pressed: false })).toHaveTextContent("7"));
+    expect(fetchMock).toHaveBeenCalledWith("/api/prompts/p1/vote", { method: "DELETE" });
+
+    vi.unstubAllGlobals();
+  });
+
   it("asks signed-out visitors to log in without voting or refreshing", () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);

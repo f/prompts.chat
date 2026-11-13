@@ -51,6 +51,13 @@ export function UpvoteButton({
   const tCommon = useTranslations("common");
   const [isVoted, setIsVoted] = useState(initialVoted);
   const [voteCount, setVoteCount] = useState(initialCount);
+  // Votes made elsewhere (another tab, an agent through WebMCP) arrive as new props after router.refresh()
+  const [serverVote, setServerVote] = useState({ initialVoted, initialCount });
+  if (serverVote.initialVoted !== initialVoted || serverVote.initialCount !== initialCount) {
+    setServerVote({ initialVoted, initialCount });
+    setIsVoted(initialVoted);
+    setVoteCount(initialCount);
+  }
   const [isLoading, setIsLoading] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
