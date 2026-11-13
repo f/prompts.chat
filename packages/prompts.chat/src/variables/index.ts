@@ -110,6 +110,48 @@ function isInsideJsonString(text: string, index: number): boolean {
 }
 
 /**
+ * Check if a single-bracket match is part of Markdown link/image syntax:
+ * inline links/images `[text](url)`, `![alt](src)`, full/collapsed reference
+ * links `[text][ref]`, `[text][]`, reference definitions `[ref]: url`, and
+ * shortcut references `[ref]` that have a matching definition in the text.
+ */
+function isMarkdownLinkSyntax(
+  text: string,
+  startIndex: number,
+  endIndex: number,
+  label: string,
+  referenceLabels: Set<string>
+): boolean {
+  const before = startIndex > 0 ? text[startIndex - 1] : "";
+  const after = text[endIndex] ?? "";
+
+  // Image `![alt]` or second part of a reference link `[text][ref]`
+  if (before === "!" || before === "]") return true;
+  // Inline link `[text](url)` or reference link `[text][ref]` / `[text][]`
+  if (after === "(" || after === "[") return true;
+  // Reference definition `[ref]: url` at the start of a line
+  if (after === ":") {
+    const lineStart = text.lastIndexOf("\n", startIndex - 1) + 1;
+    if (/^ {0,3}$/.test(text.slice(lineStart, startIndex))) return true;
+  }
+  // Shortcut reference `[ref]` with a matching definition
+  return referenceLabels.has(label.trim().toLowerCase());
+}
+
+/**
+ * Collect labels of Markdown reference definitions (`[ref]: url`)
+ */
+function getMarkdownReferenceLabels(text: string): Set<string> {
+  const labels = new Set<string>();
+  const definitionPattern = /^ {0,3}\[([^\]\n]+)\]:[ \t]*\S/gm;
+  let match: RegExpExecArray | null;
+  while ((match = definitionPattern.exec(text)) !== null) {
+    labels.add(match[1].trim().toLowerCase());
+  }
+  return labels;
+}
+
+/**
  * Detect variable-like patterns in text
  * Returns detected variables that are NOT in our supported format
  */
@@ -121,6 +163,7 @@ export function detectVariables(text: string): DetectedVariable[] {
   const supportedVars = new Set<string>();
   const dollarCurlyPattern = /\$\{([a-zA-Z_][a-zA-Z0-9_\s]*?)(?::([^}]*))?\}/g;
   let match: RegExpExecArray | null;
+  const referenceLabels = getMarkdownReferenceLabels(text);
   
   while ((match = dollarCurlyPattern.exec(text)) !== null) {
     seenRanges.push([match.index, match.index + match[0].length]);
@@ -154,6 +197,14 @@ export function detectVariables(text: string): DetectedVariable[] {
       
       // Skip very short names (likely not variables)
       if (name.length < 2) continue;
+      
+      // Preserve Markdown links and images like [text](url) or ![alt](src)
+      if (
+        config.pattern === "single_bracket" &&
+        isMarkdownLinkSyntax(text, startIndex, endIndex, match[1], referenceLabels)
+      ) {
+        continue;
+      }
       
       // For angle brackets, be more strict
       if (config.pattern === "angle_bracket") {
