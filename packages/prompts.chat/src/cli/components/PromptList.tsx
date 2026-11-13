@@ -214,7 +214,7 @@ export function PromptList({
     ? categories.filter(c => c.name.toLowerCase().includes(categorySearchQuery.toLowerCase()))
     : categories;
 
-  const maxTitleLength = terminalWidth - 30;
+  const maxTitleLength = terminalWidth - 42;
 
   if (error) {
     return (
@@ -345,6 +345,9 @@ export function PromptList({
                   {prompt.title.slice(0, maxTitleLength)}
                   {prompt.title.length > maxTitleLength ? '…' : ''}
                 </Text>
+                {prompt.type !== 'TEXT' && (
+                  <Text color="magenta"> [{prompt.type.toLowerCase()}]</Text>
+                )}
                 <Text dimColor> @{prompt.author.username}</Text>
                 {prompt.voteCount > 0 && (
                   <Text color="yellow"> ⬆ {prompt.voteCount}</Text>
