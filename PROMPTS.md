@@ -239383,3 +239383,16 @@ cartoon, anime, illustration-only subject, 3D character, plastic skin, artificia
 
 </details>
 
+<details>
+<summary><strong>Cute Mouse and Cat Village House 3D Cartoon Scene</strong></summary>
+
+## Cute Mouse and Cat Village House 3D Cartoon Scene
+
+Contributed by @anonymous
+
+```md
+A beautiful small village house, cute little grey mouse Montu with big ears and pink nose standing outside, orange and white cat Sheru with green eyes nearby, green garden, sunny day, colorful flowers, 3D cartoon animation style, cinematic lighting, high detail, 16:9.
+```
+
+</details>
+
