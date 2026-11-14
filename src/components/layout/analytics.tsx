@@ -15,6 +15,8 @@ export function Analytics({ gaId }: AnalyticsProps) {
     setHasConsent(getCookieConsent() === "accepted");
   }, []);
 
+  if (!hasConsent) return null;
+
   return (
     <>
       <Script
