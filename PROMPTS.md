@@ -239319,3 +239319,67 @@ Cinematic ultra-realistic quiet emotional drama short film, 16:9, 30 seconds, 24
 
 </details>
 
+<details>
+<summary><strong>Experimental Japanese Editorial Fashion Poster: Forced-Perspective Reach, Bird Collage and "PERCEIVE IT." Type (2:3)</strong></summary>
+
+## Experimental Japanese Editorial Fashion Poster: Forced-Perspective Reach, Bird Collage and "PERCEIVE IT." Type (2:3)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Create a high-end experimental Japanese editorial fashion poster with a contemporary avant-garde graphic design aesthetic, vertical 2:3 composition.
+
+MAIN SUBJECT & POSE:
+A young East Asian woman with shoulder-length, naturally wavy, slightly messy dark brown-black hair, wearing a dark charcoal oversized sleeveless denim vest over a black top and loose-fitting washed charcoal-grey denim jeans. She has delicate facial features, a calm yet confident expression, slightly parted lips, and a direct gaze toward the camera. Her body is positioned at a slight angle, with her upper body leaning forward. One arm is dramatically extended directly toward the camera, with her hand reaching into the foreground. Use extreme forced perspective and exaggerated foreshortening, making the hand appear significantly larger than her face and body. Fingers are naturally spread and softly blurred due to shallow depth of field. The subject should feel dynamic, mysterious, artistic, and editorial.
+POSE & CAMERA:
+Low-angle fashion photography, close-up perspective, wide-angle lens aesthetic, approximately 24mm lens. The subject occupies most of the central frame. Her face remains relatively sharp while the outstretched hand dominates the foreground with strong perspective distortion. Natural body proportions, realistic skin texture, authentic photographic details.
+
+BACKGROUND & COMPOSITION:
+Warm ivory/off-white textured paper background with a subtle fine-grain printed canvas texture. Create an asymmetrical mixed-media collage composition with overlapping geometric shapes, abstract cutouts, vintage illustrations, and monochromatic photographic fragments.
+Place a tall, vivid coral-red rectangular panel vertically behind the subject, slightly right of center, extending from near the top edge to the bottom edge. The rectangle partially overlaps the subject and creates a strong vertical visual division.
+
+Add large burnt-orange circular shapes on the left-middle and bottom-right portions of the composition. Include smaller orange circular dots around these shapes.
+Incorporate black-and-white vintage bird photographs and hand-drawn ornithological illustrations, partially cropped and layered behind the subject. Include abstract sketchbook-style bird drawings, feather details, and fragmented photographic elements. Add overlapping black and grey geometric paper cutouts, irregular triangular shapes, and diagonal collage fragments.
+
+TYPOGRAPHY & JAPANESE DESIGN ELEMENTS:
+At the upper-right area, incorporate large Japanese typography reading "知覚する" (Perceive). The first two Japanese characters, "知覚", should sit prominently over the coral-red rectangular panel in dark black calligraphic serif typography. The remaining characters, "する", extend toward the upper-right over the ivory background.
+
+Across the lower-middle section, overlay bold uppercase white sans-serif typography reading:
+
+"PERCEIVE"
+
+Use a heavy condensed modern grotesk font, with selected letters featuring a thin outlined treatment to create a layered typographic effect.
+Below it, aligned toward the left, place the word:
+
+"IT."
+
+Use oversized white uppercase typography with a partially outlined letter treatment.
+
+Add small abstract decorative details, including a black diagonal striped square in the upper-left corner, tiny ornamental line drawings, geometric symbols, and a small black double-arrow symbol in the bottom-right corner.
+
+COLOR PALETTE:
+
+Warm ivory: #F1EEE5
+
+Vivid coral red: #EF5558
+
+Burnt orange: #E98A16
+
+Charcoal black: #252323
+Washed denim grey: #666665
+Pure white: #FFFFFF
+Maintain a strong contrast between warm orange and coral-red accents, monochromatic photography, and the neutral paper background.
+LIGHTING & PHOTOGRAPHIC TREATMENT:
+Warm directional sunlight hitting the woman's face and hand from the left side, creating rich amber highlights and deep cinematic shadows. Subtle film grain, slightly desaturated editorial photography, realistic skin tones, soft motion blur in the foreground, and high-contrast photographic details.
+ART DIRECTION:
+Japanese contemporary editorial magazine design meets avant-garde streetwear fashion photography. Experimental Swiss-inspired typography, vintage natural-history illustration, modern brutalist graphic design, analogue paper collage, layered cut-and-paste artwork, and sophisticated fashion magazine art direction.
+FINAL QUALITY:
+Ultra-detailed photorealistic fashion photography combined with professionally designed graphic collage elements. Sophisticated visual hierarchy, intentional asymmetrical balance, crisp typography, tactile paper texture, intricate details, and premium art-direction quality.
+
+Vertical 2:3 poster, full-bleed composition, no borders, no mockup, no watermark.
+
+cartoon, anime, illustration-only subject, 3D character, plastic skin, artificial face, distorted facial features, extra fingers, missing fingers, malformed hands, duplicate arms, unnatural anatomy, flat perspective, weak foreshortening, excessive background clutter, symmetrical composition, neon colors, oversaturated skin, glossy digital background, low resolution, blurry face, unreadable typography, random letters, misspelled Japanese characters, incorrect text placement, watermark, logo, poster mockup, frame, border.
+```
+
+</details>
+
