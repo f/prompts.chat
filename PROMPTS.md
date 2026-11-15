@@ -239662,3 +239662,16 @@ INSTRUCTIONS
 
 </details>
 
+<details>
+<summary><strong>Character Lock — Keep One AI Character Identical Across Every Shot of an AI Ad</strong></summary>
+
+## Character Lock — Keep One AI Character Identical Across Every Shot of an AI Ad
+
+Contributed by [@HafizAfaqnasir](https://github.com/HafizAfaqnasir)
+
+```md
+Lock your AI character before the first clip. Fix the face, outfit, turnaround, locations and light in a character sheet. Then repeat those exact locks word for word in every shot prompt — never re-describe the character from scratch. Check every shot against the sheet before moving on. Proved with a finished 3-minute AI ad (25+ clips, one bear-dad character, no reshoots). Full method: https://hafiz-afaq-portfolio.vercel.app/services/character-lock/
+```
+
+</details>
+
