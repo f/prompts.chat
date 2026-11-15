@@ -203012,3 +203012,26 @@ Lighting and mood: the warm evening light and sky stay constant; dramatic but na
 Audio (if supported): a deep crack and thunderous rumble, a heavy splash, then lapping water and distant bird calls; no music, no voices.
 
 Avoid: people, boats, text, new objects, the whole glacier collapsing, sudden lighting changes, morphing mountains, unrealistic water.",FALSE,TEXT,f
+Makefile taste,"# Makefile taste of a developer who uses make as the project's front door
+- Treat the Makefile as a thin task runner that calls real scripts and tools, not as a place to hide hundreds of lines of shell logic. Confidence: 0.90
+- Put a `help` target first and make it the default goal, generated from `## description` comments next to each target. Confidence: 0.85
+- Declare every non-file target in `.PHONY` so a stray file named `test` or `build` never silently skips a task. Confidence: 0.95
+- Set `SHELL := bash` and `.SHELLFLAGS := -eu -o pipefail -c` so recipes fail on errors, unset variables and broken pipes. Confidence: 0.85
+- Add `.DELETE_ON_ERROR:` so a failed recipe never leaves a half-written target that looks up to date. Confidence: 0.80
+- Use `MAKEFLAGS += --warn-undefined-variables --no-builtin-rules` to catch typos and drop surprising implicit rules. Confidence: 0.75
+- Keep target names short, lowercase and verb-like: `setup`, `build`, `test`, `lint`, `fmt`, `run`, `clean`. Confidence: 0.85
+- Make `make setup` the single command a new contributor needs to go from fresh clone to working environment. Confidence: 0.90
+- Use `?=` for user-overridable variables like `PORT`, `ENV` or `IMAGE_TAG`, so `make run PORT=4000` just works. Confidence: 0.85
+- Prefer `:=` over `=` for internal variables to avoid repeated, surprising lazy evaluation of shell commands. Confidence: 0.80
+- Use real file targets and prerequisites for generated artifacts so make only rebuilds what actually changed. Confidence: 0.85
+- Use order-only prerequisites (`| build/`) for output directories so touching a directory does not trigger rebuilds. Confidence: 0.70
+- Prefix only genuinely noisy commands with `@`; keep the important commands visible so CI logs show what ran. Confidence: 0.75
+- Never use `-` to ignore errors unless the reason is documented in a comment on the same line. Confidence: 0.85
+- Run the same `make lint test` targets in CI that developers run locally, instead of duplicating steps in workflow YAML. Confidence: 0.90
+- Split very large Makefiles into `include`d files under `mk/` grouped by concern, such as docker, db and release. Confidence: 0.65
+- Use tabs for recipe lines and set `.editorconfig` accordingly so editors never turn them into spaces. Confidence: 0.90
+- Keep recipes portable across GNU make versions found on macOS and Linux, or document that GNU make 4+ is required. Confidence: 0.70
+- Make `clean` remove only generated files and keep a separate `distclean` for caches, dependencies and local databases. Confidence: 0.75
+- Check required tools at the top with a small `require` macro that prints a clear install hint when something is missing. Confidence: 0.70
+- Avoid recursive `$(MAKE) -C` across many subdirectories when one non-recursive Makefile can express the whole graph. Confidence: 0.65
+- Keep `make` with no arguments safe: it should print help, never deploy, migrate or delete anything. Confidence: 0.95",TRUE,TEXT,f
