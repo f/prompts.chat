@@ -202785,3 +202785,25 @@ Electron App taste,"# Electron App taste of a desktop developer who takes securi
 - Watch bundle size and startup time, lazy-load heavy modules and avoid shipping dev dependencies in the app archive. Confidence: 0.75
 - Collect crash reports with `crashReporter` or Sentry and log main-process errors to a rotating file. Confidence: 0.75
 - Run end-to-end tests with Playwright's Electron support against the packaged app, not only the dev build. Confidence: 0.70",TRUE,TEXT,f
+Nginx Config taste,"# Nginx Config taste of an ops engineer who maintains many virtual hosts
+- Keep one server block per file under `sites-available` or `conf.d`, named after the domain it serves. Confidence: 0.85
+- Put shared settings (TLS, security headers, proxy defaults) in snippet files and `include` them instead of copying blocks. Confidence: 0.90
+- Run `nginx -t` before every reload and reload with `nginx -s reload` or `systemctl reload`, never a full restart. Confidence: 0.95
+- Keep configs in version control and deploy them through automation, not by editing files on the server. Confidence: 0.90
+- Redirect all plain HTTP to HTTPS with a single `return 301`, and keep the port 80 block for ACME challenges only. Confidence: 0.90
+- Allow only TLS 1.2 and 1.3 with a modern cipher list, and enable OCSP stapling. Confidence: 0.90
+- Automate certificates with Certbot or acme.sh and alert well before expiry. Confidence: 0.90
+- Add HSTS only after HTTPS works everywhere, starting with a short `max-age` before going long. Confidence: 0.80
+- Set `server_tokens off` and add basic security headers (`X-Content-Type-Options`, `Referrer-Policy`, `frame-ancestors` via CSP). Confidence: 0.85
+- Define a default server that returns `444` so requests with unknown Host headers never reach an app. Confidence: 0.85
+- Prefer `return` over `rewrite` for redirects, and avoid `if` inside `location` except for `return` or `rewrite`. Confidence: 0.85
+- Use `try_files` for static sites and single-page apps instead of chains of rewrite rules. Confidence: 0.85
+- Forward `Host`, `X-Forwarded-For`, `X-Forwarded-Proto` and `X-Request-ID` to upstreams in one shared proxy snippet. Confidence: 0.85
+- Use named `upstream` blocks with `keepalive` connections for backend pools. Confidence: 0.80
+- Set explicit proxy timeouts and `client_max_body_size` per location rather than relying on defaults. Confidence: 0.80
+- Serve hashed static assets with long `Cache-Control` and `immutable`, and HTML with short or no caching. Confidence: 0.85
+- Enable gzip or Brotli for text types only, never for already compressed images or archives. Confidence: 0.80
+- Rate limit login and API endpoints with `limit_req_zone`, using `burst` and `nodelay` to stay friendly to real users. Confidence: 0.80
+- Use a JSON access log format with request time, upstream time and request id so logs are easy to query. Confidence: 0.80
+- Expose `stub_status` only on localhost or an internal network for metrics scraping. Confidence: 0.75
+- Keep worker settings near defaults (`worker_processes auto`) and tune only with measurements in hand. Confidence: 0.70",TRUE,TEXT,f
