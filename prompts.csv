@@ -202763,3 +202763,25 @@ Pytest taste,"# Pytest taste of a Python developer who wants fast, honest test s
 - Never let tests hit real external services by default; block network access and opt in explicitly. Confidence: 0.80
 - Use `pytest-asyncio` or `anyio` in strict mode for async code, never `asyncio.run` inside tests. Confidence: 0.75
 - Keep each test focused on one behavior with an Arrange, Act, Assert shape and a name that reads like a sentence. Confidence: 0.85",TRUE,TEXT,f
+Electron App taste,"# Electron App taste of a desktop developer who takes security seriously
+- Keep `contextIsolation: true` and `nodeIntegration: false` on every `BrowserWindow`; these are non-negotiable defaults. Confidence: 0.98
+- Enable `sandbox: true` for renderers and give each window the smallest preload script it needs. Confidence: 0.90
+- Expose a narrow, typed API from the preload with `contextBridge.exposeInMainWorld` instead of passing `ipcRenderer` through. Confidence: 0.95
+- Use `ipcMain.handle` and `ipcRenderer.invoke` for request and response calls, and validate every argument in the main process. Confidence: 0.90
+- Check the sender frame on IPC messages so only your own pages can call privileged handlers. Confidence: 0.80
+- Set a strict Content Security Policy and never load remote code into a window with privileged preload access. Confidence: 0.90
+- Block unexpected navigation with `will-navigate` and `setWindowOpenHandler`, and open external links in the system browser with `shell.openExternal` after allowlisting the URL. Confidence: 0.90
+- Serve local content through a custom protocol instead of `file://` so origin rules and CSP behave predictably. Confidence: 0.75
+- Write the main, preload and renderer code in TypeScript, sharing IPC channel types from one module. Confidence: 0.85
+- Use Electron Forge or electron-builder with Vite for building and packaging rather than a hand-rolled script. Confidence: 0.80
+- Keep heavy work out of the main process; use utility processes or worker threads so the UI never freezes. Confidence: 0.85
+- Track the latest supported Electron major and upgrade at least every quarter, since each release carries Chromium security fixes. Confidence: 0.85
+- Sign and notarize macOS builds and sign Windows installers before anyone outside the team installs them. Confidence: 0.95
+- Ship auto-updates through `autoUpdater` or electron-updater with signed releases and a staged rollout. Confidence: 0.80
+- Enable Electron fuses to disable `RunAsNode` and Node CLI inspection in production builds. Confidence: 0.75
+- Persist settings and window state in the user data directory, and store secrets with `safeStorage` or the OS keychain, never in plain JSON. Confidence: 0.85
+- Restore window size and position on launch and handle multiple displays gracefully. Confidence: 0.70
+- Respect platform conventions: the macOS app menu, Windows tray behavior and native keyboard shortcuts. Confidence: 0.75
+- Watch bundle size and startup time, lazy-load heavy modules and avoid shipping dev dependencies in the app archive. Confidence: 0.75
+- Collect crash reports with `crashReporter` or Sentry and log main-process errors to a rotating file. Confidence: 0.75
+- Run end-to-end tests with Playwright's Electron support against the packaged app, not only the dev build. Confidence: 0.70",TRUE,TEXT,f
