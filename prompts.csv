@@ -202740,3 +202740,26 @@ Cute Mouse and Cat Village House 3D Cartoon Scene,"A beautiful small village hou
 10-Second 3D Cartoon Story Generator,"Create an original and captivating 10-second 3D cartoon story with a surprising beginning, exciting action, and a heartwarming or unexpected ending. Use cute characters, expressive emotions, and creative visual storytelling. Keep the story short, clear, and easy to turn into an animated video. Write only the story events in chronological order. Do not generate images or image prompts.",FALSE,TEXT,dinna3947@gmail.com
 Flappy Bird game,A flappy bird game looks technologically and also look like in the future. When you reach the goal there’ll be a celebration,FALSE,TEXT,kienvan103027@gmail.com
 add or poster for well control training ,i want to make a poster for IADC wellsharp classroom/online telling about black friday and significant discoun,FALSE,TEXT,ahmed.dcf1980@gmail.com
+Pytest taste,"# Pytest taste of a Python developer who wants fast, honest test suites
+- Use plain `assert` statements and let pytest's assertion rewriting explain failures instead of `unittest`-style assert methods. Confidence: 0.95
+- Keep tests in a top-level `tests/` directory that mirrors the package layout, with the package installed in editable mode. Confidence: 0.85
+- Configure pytest in `pyproject.toml` under `[tool.pytest.ini_options]` rather than a separate `pytest.ini` or `setup.cfg`. Confidence: 0.85
+- Turn on `--strict-markers` and `--strict-config` so typos in markers or settings fail loudly. Confidence: 0.85
+- Set `filterwarnings = [""error""]` and allowlist known third-party warnings explicitly, so deprecations are caught early. Confidence: 0.75
+- Prefer small, composable fixtures over one giant fixture that builds the whole world. Confidence: 0.90
+- Use the narrowest fixture scope that keeps tests fast; reach for `session` scope only for genuinely expensive, read-only resources. Confidence: 0.80
+- Put shared fixtures in the nearest `conftest.py`, not one root conftest that every test imports implicitly. Confidence: 0.75
+- Use `@pytest.mark.parametrize` with readable `ids` instead of loops inside a single test. Confidence: 0.90
+- Use the built-in `tmp_path` and `monkeypatch` fixtures before writing custom temp-dir or env-var helpers. Confidence: 0.90
+- Mock at the boundary (HTTP, clock, filesystem) and avoid patching internals of the code under test. Confidence: 0.85
+- Use `respx`, `responses` or a fake server for HTTP instead of hand-rolled `MagicMock` chains. Confidence: 0.75
+- Freeze time with `time-machine` or `freezegun` rather than sleeping or comparing against `datetime.now()`. Confidence: 0.80
+- Assert on exceptions with `pytest.raises(..., match=...)` so the message is checked, not just the type. Confidence: 0.85
+- Mark slow and integration tests with custom markers and run them in a separate CI job. Confidence: 0.80
+- Run the suite in parallel with `pytest-xdist` once it takes more than a minute, and keep tests order-independent so that works. Confidence: 0.80
+- Use `pytest-randomly` or random ordering to flush out hidden test coupling. Confidence: 0.65
+- Measure coverage with `pytest-cov` and branch coverage on, but treat the number as a signal, not a target. Confidence: 0.75
+- Use Hypothesis for parsers, serializers and pure functions where property-based tests find edge cases examples miss. Confidence: 0.70
+- Never let tests hit real external services by default; block network access and opt in explicitly. Confidence: 0.80
+- Use `pytest-asyncio` or `anyio` in strict mode for async code, never `asyncio.run` inside tests. Confidence: 0.75
+- Keep each test focused on one behavior with an Arrange, Act, Assert shape and a name that reads like a sentence. Confidence: 0.85",TRUE,TEXT,f
