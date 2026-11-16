@@ -240636,3 +240636,55 @@ The final result should feel like a sophisticated, minimal, culturally meaningfu
 
 </details>
 
+<details>
+<summary><strong>Korean Hanji Paper-Art Miniature Diorama: Fill-in Template for Any Subject, City or Scene</strong></summary>
+
+## Korean Hanji Paper-Art Miniature Diorama: Fill-in Template for Any Subject, City or Scene
+
+Contributed by [@f](https://github.com/f)
+
+```md
+KOREAN HANJI PAPER ART | WHIMSICAL 3D MINIATURE DIORAMA
+
+Create a beautiful, highly detailed, handcrafted 3D paper-art illustration featuring [TYPE YOUR SUBJECT / OBJECT / CITY / SCENE], reimagined through the traditional Korean Hanji paper-art aesthetic.
+
+ART DIRECTION & VISUAL STYLE
+
+Transform the entire scene into an imaginative miniature world made from layered Korean Hanji paper. Use authentic handmade paper textures, visible delicate fibres, subtle wrinkles, torn edges, embossed details and carefully cut paper elements.
+
+Combine traditional Korean visual heritage with contemporary lifestyle, architecture and modern objects. The result should feel like a sophisticated fusion of Korean folk art, paper sculpture and playful contemporary design.
+
+COMPOSITION & STORYTELLING
+
+Build a rich, three-dimensional miniature environment around the main subject. Make the primary subject instantly recognizable and visually dominant.
+
+Surround it with thoughtfully selected supporting elements that complement the subject. Incorporate traditional Korean architectural details, colourful urban surroundings, decorative patterns, miniature props and unexpected creative combinations wherever appropriate.
+
+Create a visually engaging composition with convincing depth, overlapping paper layers, realistic miniature proportions and carefully arranged foreground, middle ground and background.
+
+MATERIALS & TEXTURES
+
+- Traditional Korean Hanji paper with visible natural fibres.
+- Layered and sculpted paper architecture.
+- Intricate cut-paper ornaments and embossed details.
+- Soft handmade imperfections and tactile surfaces.
+- Rich paper-cut textures with dimensional shadows.
+- Handmade miniature objects with convincing physical construction.
+
+COLOUR & LIGHTING
+
+Use a vibrant yet harmonious palette of warm terracotta, turquoise, cobalt blue, mustard yellow, coral, cream and earthy browns.
+
+Introduce beautiful atmospheric lighting, soft directional sunlight, gentle shadows and subtle highlights that emphasize the layered paper construction.
+
+FINAL AESTHETIC
+
+The finished artwork should resemble an exceptionally crafted miniature paper sculpture photographed in a professional studio. Blend whimsical storytelling, Korean cultural identity, contemporary creativity and premium editorial illustration.
+
+Ultra-detailed, tactile, colourful, imaginative, visually balanced, handcrafted 3D paper diorama. Every element must appear constructed from real Hanji paper rather than digitally painted or rendered plastic.
+
+FORMAT: Square 1:1 composition. No text, captions, typography, watermarks or logos.
+```
+
+</details>
+
