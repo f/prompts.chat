@@ -203804,3 +203804,6 @@ Depending on organizational maturity and regulatory exposure, teams should calib
 
 ### OUTPUT FORMAT
 Output **only** the raw, valid Markdown document enclosed in a single `markdown` code block, starting with `---` (YAML frontmatter) and ending with a **Stage-Gate Exit & RACI Sign-Off Table**. Do not include conversational filler before or after the code block.",FALSE,TEXT,clicklynx2-dspy
+Minutes of meeting ,"Minutes of meeting held at department of Chemical Sciences FUK 
+
+",FALSE,TEXT,zabdu70@gmail.com
