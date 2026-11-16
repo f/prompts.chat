@@ -202993,3 +202993,25 @@ Makefile taste,"# Makefile taste of a developer who uses make as the project's f
 - Check required tools at the top with a small `require` macro that prints a clear install hint when something is missing. Confidence: 0.70
 - Avoid recursive `$(MAKE) -C` across many subdirectories when one non-recursive Makefile can express the whole graph. Confidence: 0.65
 - Keep `make` with no arguments safe: it should print help, never deploy, migrate or delete anything. Confidence: 0.95",TRUE,TEXT,f
+RAG Pipeline taste,"# RAG Pipeline taste of an engineer who ships retrieval systems that stay accurate
+- Build an evaluation set of real user questions with expected sources before tuning chunking, embeddings or prompts. Confidence: 0.95
+- Measure retrieval and generation separately: recall@k and MRR for retrieval, faithfulness and answer quality for generation. Confidence: 0.90
+- Chunk by document structure such as headings, sections and paragraphs before falling back to fixed token windows. Confidence: 0.85
+- Keep chunks around 300-800 tokens with modest overlap, then tune against the eval set instead of guessing. Confidence: 0.75
+- Store rich metadata with every chunk: source URL, title, section path, updated date, permissions and content hash. Confidence: 0.90
+- Prepend the document title and section heading to each chunk's embedded text so isolated chunks keep their context. Confidence: 0.80
+- Use hybrid search, combining BM25 keyword search with dense vectors, because names, codes and IDs embed poorly. Confidence: 0.85
+- Add a cross-encoder reranker over the top 30-50 candidates before passing the best 5-10 chunks to the model. Confidence: 0.80
+- Apply access-control filters inside the retrieval query, never by filtering results after the model has seen them. Confidence: 0.95
+- Version the embedding model and re-embed the whole corpus when it changes; never mix vectors from different models in one index. Confidence: 0.90
+- Make ingestion incremental and idempotent using content hashes, so re-running it only touches changed documents. Confidence: 0.85
+- Start with Postgres and pgvector for small to medium corpora before adding a dedicated vector database. Confidence: 0.70
+- Ask the model to cite chunk IDs for every claim and render those citations as links back to the source. Confidence: 0.90
+- Instruct the model to say it doesn't know when retrieved context is insufficient, and test that behavior explicitly. Confidence: 0.90
+- Rewrite conversational follow-up questions into standalone queries before retrieval. Confidence: 0.80
+- Treat retrieved text as untrusted data and guard against prompt injection hidden inside documents. Confidence: 0.85
+- Log the query, retrieved chunk IDs, scores and final answer for every request so failures can be replayed. Confidence: 0.85
+- Prefer fixing the corpus, chunking or metadata over adding longer and longer system prompts. Confidence: 0.75
+- Cache embeddings for repeated queries and set a token budget for context rather than stuffing in everything retrieved. Confidence: 0.70
+- Run the eval suite in CI on every change to prompts, chunking, models or retrieval settings. Confidence: 0.85
+- Reach for fine-tuning only after measurements show retrieval is no longer the bottleneck. Confidence: 0.65",TRUE,TEXT,f
