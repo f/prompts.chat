@@ -239949,3 +239949,37 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Location-Locked Talking Video: Seedance 2.5 JSON Prompt That Uses a Top-Down Map to Keep Every Shot on the Same Set (30s, 8 Shots)</strong></summary>
+
+## Location-Locked Talking Video: Seedance 2.5 JSON Prompt That Uses a Top-Down Map to Keep Every Shot on the Same Set (30s, 8 Shots)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+{
+  "refs": {
+    " @/img1 ": "LOCATION MAP. 90 degree top-down view, north is up. Treat it as a floor plan; every element keeps its position in all shots.",
+    " @/img2 ": "CHARACTER. Match face, freckles, hair and outfit exactly."
+  },
+  "set_layout": "Round teal pond with lily pads at center. Wooden jetty on the WEST shore. Bench with a red scarf just SOUTH of the pond, slightly west. Dirt path enters from the SOUTH and curves past the bench to the jetty. White heron in the shallows on the SOUTH-EAST shore. Reeds on the NW, NE, E and S shores. Birches and bushes ring the meadow.",
+  "character": "Young woman, long platinum blonde hair, freckles, blue eyes, white tee, grey denim overalls, white sneakers, gold necklaces.",
+  "performance": "Sassy, relaxed, talks like a friend spilling a secret. Natural pauses, breaths, a half laugh. Accurate lip sync. Eyebrow raises, eye rolls, smirks, glances off camera. Loose expressive hands matching the words.",
+  "look": "Photoreal cinematic, 35mm anamorphic, golden morning sun from the east, soft haze, natural skin texture, 16:9, 30s",
+  "shots": [
+    {"t": "0-4s", "cam": "Low wide from the south end of the path looking north, slow push in", "act": "Walks up the path, tucks hair behind her ear, rolls her eyes on 'total mess', flicks her hand", "line": "Okay so... AI video and keeping a location consistent? Total mess. Until now."},
+    {"t": "4-8s", "cam": "Wide from the east shore looking west across the pond, slow lateral track", "act": "Strolls the path, holds up one finger, draws a flat square in the air", "line": "One top-down shot of your set. Straight down, ninety degrees."},
+    {"t": "8-11s", "cam": "Wide from the north shore looking south, reeds in foreground", "act": "Reaches the bench, heron at frame left, points in four quick directions, tilts her head", "line": "North, east, south, west. The model reads it like a map."},
+    {"t": "11-16s", "cam": "Over the shoulder from behind the bench looking north at the pond", "act": "Sits, flicks the red scarf over her shoulder, gestures left to the jetty, right to the heron", "line": "Jetty stays west. Bench stays south. And that heron? Hasn't moved. Not once."},
+    {"t": "16-20s", "cam": "Medium close up from the pond edge looking south at her on the bench", "act": "Leans back, slow smirk, small laugh, points at camera", "line": "Cut from anywhere you want. Same pond. Same set. I'm kind of obsessed."},
+    {"t": "20-24s", "cam": "Extreme low angle from far at the north-east meadow edge, lens in the grass looking south-west, blurred wildflowers in front, towering birches, jetty right, heron left, she small on the bench", "act": "Spreads both arms along the bench backrest, then raises one finger high", "line": "And no, I didn't build a 3D scene. One image. That's the whole trick."},
+    {"t": "24-27s", "cam": "Wide profile from the end of the jetty looking east", "act": "Crosses her legs, shrugs with open palms, mock humble face", "line": "Location consistency, darling. It's not that deep."},
+    {"t": "27-30s", "cam": "Smooth crane rising to a 90 degree overhead view matching image_1", "act": "Looks up, waves, blows a playful kiss", "line": "You're welcome."}
+  ],
+  "audio": "Diegetic only: her voice (distant in the far shot), footsteps on dirt, birdsong, water lapping, reeds rustling, bench creak",
+  "continuity": "Pond, jetty, bench, heron and birches stay where image_1 places them. Same outfit and light throughout."
+}
+```
+
+</details>
+
