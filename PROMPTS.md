@@ -239803,3 +239803,20 @@ Hand-painted azulejo tile mural in traditional blue and white: a small wooden sa
 
 </details>
 
+<details>
+<summary><strong>Glacier Calving into a Turquoise Arctic Fjord</strong></summary>
+
+## Glacier Calving into a Turquoise Arctic Fjord
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Photorealistic wide landscape of a tidewater glacier meeting a calm turquoise fjord in the soft light of an Arctic summer evening. A tall, jagged glacier front of white and deep-blue ice with vertical crevasses and seracs fills the middle of the frame from left to right, its face about forty meters high, with one large leaning ice tower near the center that looks ready to fall. Dark rocky mountains with patches of snow rise behind the glacier under a pale pink and gold sky with thin high clouds. In the foreground, still glassy water reflects the ice wall, with a scatter of small floating icebergs and brash ice; a few seabirds rest on a floe on the right. Golden low sun from the right rims the ice in warm light while the shadows stay cool blue.
+
+Camera: shot from a small boat at water level, 35 mm lens, f/8, deep focus, cinematic 16:9 composition with the glacier front across the middle third and open water in the lower third. Crisp ice texture, natural colors, subtle haze over the mountains.
+
+Avoid: people, boats in frame, buildings, text, watermarks, oversaturated colors.
+```
+
+</details>
+
