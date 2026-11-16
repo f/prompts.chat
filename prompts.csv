@@ -203364,3 +203364,26 @@ Lighting and mood: constant warm golden-hour light and flare; peaceful, dreamy, 
 Audio (if supported): a soft breeze, rustling grass and distant birdsong; no music, no voices.
 
 Avoid: people, hands, blowing mouths, insects, text, the whole seed head exploding at once, sudden lighting changes, morphing flowers, unnatural fast motion.",FALSE,TEXT,f
+MongoDB taste,"# MongoDB taste of a backend engineer who models documents around queries
+- Design each collection around the application's read patterns first, then decide what to embed and what to reference. Confidence: 0.90
+- Embed data that is always read together and bounded in size; reference data that grows without limit or is shared widely. Confidence: 0.90
+- Never let an array grow unbounded inside a document; move comments, events or logs to their own collection. Confidence: 0.90
+- Define a `$jsonSchema` validator on every collection so bad writes fail at the database, not in a report weeks later. Confidence: 0.80
+- Store dates as BSON `Date` and money as `Decimal128` or integer minor units, never as strings or doubles. Confidence: 0.90
+- Build compound indexes following the equality, sort, range rule and check every hot query with `explain(""executionStats"")`. Confidence: 0.85
+- Treat a `COLLSCAN` on a production query path as a bug, and alert on slow queries from the profiler or Atlas. Confidence: 0.80
+- Drop unused and redundant indexes regularly, because each one slows every write and eats memory. Confidence: 0.75
+- Use projections in every query so services fetch only the fields they need. Confidence: 0.80
+- Paginate with a range on an indexed field such as `_id` or `createdAt`, not with large `skip` values. Confidence: 0.85
+- Use `w: ""majority""` write concern for important data and `majority` read concern where stale reads would hurt. Confidence: 0.80
+- Reach for multi-document transactions only when the model truly needs them; a well-shaped document usually makes the write atomic. Confidence: 0.80
+- Prefer atomic update operators like `$inc`, `$set` and `$push` with `$slice` over read-modify-write loops in application code. Confidence: 0.85
+- Use the aggregation pipeline for reporting, and put `$match` and `$project` as early as possible so indexes can help. Confidence: 0.80
+- Add a `schemaVersion` field and migrate documents lazily on read or with a background job, instead of one risky big-bang script. Confidence: 0.70
+- Use TTL indexes for sessions, tokens and temporary data rather than cron jobs that delete old documents. Confidence: 0.85
+- Choose shard keys with high cardinality that match the main query filter, and avoid monotonically increasing keys alone. Confidence: 0.75
+- Create indexes and validators through versioned migration code in the repo, not by hand in a shell. Confidence: 0.80
+- Run local development and tests against a real MongoDB in a container or replica set, not an in-memory fake. Confidence: 0.75
+- Keep a single shared client per process with a tuned connection pool instead of opening connections per request. Confidence: 0.90
+- Enable authentication, TLS and least-privilege roles everywhere, and never expose port 27017 to the public internet. Confidence: 0.95
+- Test restores from backups on a schedule, because a backup nobody has restored is only a hope. Confidence: 0.85",TRUE,TEXT,f
