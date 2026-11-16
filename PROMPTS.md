@@ -240397,3 +240397,16 @@ An encaustic hot wax painting of a wild red poppy field under a dark summer stor
 
 </details>
 
+<details>
+<summary><strong>Wet Plate Collodion Tintype of a Village Cobbler at His Workbench</strong></summary>
+
+## Wet Plate Collodion Tintype of a Village Cobbler at His Workbench
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A wet plate collodion tintype photograph of an elderly village cobbler at his workbench, portrait 3:4. He sits on a low wooden stool in a small workshop, leaning over a leather boot fitted on an iron shoe last held between his knees, a small hammer raised in one hand and brass tacks pinched between the fingers of the other. He wears a worn leather apron over a collarless linen shirt with rolled sleeves, round wire spectacles low on his nose, a thick grey mustache and a deeply lined, concentrated face. Behind him: wooden shelves of finished and half-repaired shoes, hanging rolls of leather, an awl, waxed thread and a tin oil can on the bench. Lit by one large window from the left, giving soft directional light with deep shadows on the right. Authentic tintype look: monochrome with warm brown-black tones and creamy silver highlights, very shallow depth of field from a large-format brass lens with swirly falloff at the edges, sharp focus on the eyes and hands, the high blue sensitivity of collodion that makes skin look slightly darker and textured, and a long-exposure stillness. Plate details: uneven dark edges where the collodion was poured, small comet streaks and pour marks, a few fine specks and a faint thumbprint in one corner, on a thin black-enameled iron plate with slightly rounded corners. No text, no logos, no color, no modern objects.
+```
+
+</details>
+
