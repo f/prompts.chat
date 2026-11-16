@@ -239790,3 +239790,16 @@ Traditional Turkish ebru paper marbling artwork: a bouquet of three red-and-whit
 
 </details>
 
+<details>
+<summary><strong>Azulejo Blue-and-White Tile Mural of a Sardine Fishing Boat at Dawn</strong></summary>
+
+## Azulejo Blue-and-White Tile Mural of a Sardine Fishing Boat at Dawn
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Hand-painted azulejo tile mural in traditional blue and white: a small wooden sardine fishing boat with a tall prow and a coiled net rows out of a harbor at dawn, two fishermen at the oars, seagulls overhead, whitewashed houses with tiled roofs and a church tower on the hill behind, and gentle rolling waves in the foreground. Painted in cobalt blue glaze on a white tin-glazed ceramic ground, composed across a visible grid of square tiles with thin grout lines, slight glaze pooling, tiny crazing cracks, hand-brushed line work and soft wash shading, framed by an ornate blue baroque scroll border with acanthus leaves. Glossy ceramic sheen with a soft reflected highlight, viewed straight on in even daylight as a wall mural, landscape 4:3. No text, no lettering, no signature, no modern objects.
+```
+
+</details>
+
