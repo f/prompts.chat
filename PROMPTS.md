@@ -240688,3 +240688,16 @@ FORMAT: Square 1:1 composition. No text, captions, typography, watermarks or log
 
 </details>
 
+<details>
+<summary><strong>Speech and Logo Shape Design Template</strong></summary>
+
+## Speech and Logo Shape Design Template
+
+Contributed by @anonymous
+
+```md
+Create a template to create two great shape designs by inserting speech or a special logo
+```
+
+</details>
+
