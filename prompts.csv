@@ -203409,3 +203409,25 @@ Gradle Build taste,"# Gradle Build taste of a JVM developer who wants fast and b
 - Avoid running shell scripts from the build when a typed Gradle task or plugin can do the job. Confidence: 0.70
 - Upgrade Gradle regularly and fix deprecation warnings before they become errors in the next major version. Confidence: 0.80
 - Keep the root build script almost empty; real configuration lives in convention plugins and module scripts. Confidence: 0.75",TRUE,TEXT,f
+Jupyter Notebook taste,"# Jupyter Notebook taste of a data scientist who wants notebooks that rerun cleanly
+- Make every notebook run top to bottom with ""Restart and Run All"" before sharing or committing it. Confidence: 0.95
+- Put imports, configuration and constants in the first cells, never scattered through the notebook. Confidence: 0.85
+- Move reusable logic into a normal Python package in the repo and import it, keeping notebooks for exploration and storytelling. Confidence: 0.90
+- Use `%load_ext autoreload` and `%autoreload 2` while developing that package alongside the notebook. Confidence: 0.75
+- Pin the environment with a lock file such as `uv.lock`, `poetry.lock` or a conda lock, and name the kernel after the project. Confidence: 0.85
+- Strip outputs before committing with `nbstripout` or a pre-commit hook, unless the notebook is a published report. Confidence: 0.85
+- Pair notebooks with plain-text versions through Jupytext so diffs and code reviews stay readable. Confidence: 0.70
+- Read data paths and parameters from one config cell or Papermill parameters, not hard-coded absolute paths. Confidence: 0.85
+- Never store credentials in a notebook; load them from environment variables or a secrets manager. Confidence: 0.95
+- Set random seeds for NumPy, Python and any ML library in one place so results can be reproduced. Confidence: 0.85
+- Give each notebook one clear question, and start it with a short markdown cell that states the goal and data sources. Confidence: 0.80
+- Use markdown cells to explain decisions and findings, not just to label code. Confidence: 0.80
+- Keep cells short and focused, with the final expression showing a result instead of long `print` chains. Confidence: 0.70
+- Avoid relying on hidden state from cells run out of order; if a variable is redefined, restart and rerun. Confidence: 0.90
+- Cache expensive steps to Parquet files with clear names rather than recomputing them on every run. Confidence: 0.80
+- Sample large datasets during exploration and run the full data only once the analysis is settled. Confidence: 0.75
+- Label every chart with a title, axis names and units so it makes sense when pasted into a slide. Confidence: 0.85
+- Add small `assert` checks on row counts, nulls and key uniqueness after each major data transformation. Confidence: 0.80
+- Name notebooks with a number and topic like `03-churn-features.ipynb` so the order of work is obvious. Confidence: 0.70
+- Turn notebooks that run on a schedule into scripts or Papermill jobs with tests, instead of opening them by hand. Confidence: 0.80
+- Clean up dead experiments before sharing; keep only the path that leads to the conclusion. Confidence: 0.75",TRUE,TEXT,f
