@@ -240410,3 +240410,16 @@ A wet plate collodion tintype photograph of an elderly village cobbler at his wo
 
 </details>
 
+<details>
+<summary><strong>Dandelion Seed Head Scattering in a Summer Breeze</strong></summary>
+
+## Dandelion Seed Head Scattering in a Summer Breeze
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Photorealistic macro photograph of a single ripe dandelion seed head in a summer meadow at golden hour, landscape 16:9. The perfect round white seed head (a "clock") sits slightly left of center on a thin hollow green stem rising from the bottom of the frame, every seed's fine silky parachute (pappus) sharp and backlit, forming a glowing sphere of delicate white filaments. A few seeds are already missing on the right side, revealing the small brown seed bed. Behind it, a soft out-of-focus meadow of green grasses, a few yellow dandelion flowers and warm golden bokeh circles from the low sun on the right; the sky at the top fades from warm gold to pale blue. Low backlight rims the parachutes with gold and creates a soft glow and gentle lens flare at the upper right. 100 mm macro lens at f/2.8, shallow depth of field, crisp detail on the seed head, natural colors, calm and still air. No people, no hands, no insects, no text.
+```
+
+</details>
+
