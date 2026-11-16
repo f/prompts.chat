@@ -3026,5 +3026,24 @@
         "versionHistory": "版本历史"
       }
     }
+  },
+  "dangerZone": {
+    "title": "危险区域",
+    "description": "针对您的账户和数据的不可逆操作",
+    "exportTitle": "导出账户数据",
+    "exportDescription": "将您的历史提示词库、版本和使用生成记录下载为格式化的 JSON 文件。",
+    "exportButton": "下载我的数据",
+    "exporting": "正在导出...",
+    "exportSuccess": "您的提示词库已成功下载",
+    "exportFailed": "数据导出失败",
+    "deleteTitle": "删除账户",
+    "deleteDescription": "永久删除您的账户、API 密钥以及所有创建的提示词。此操作无法撤消。",
+    "deleteButton": "删除账户",
+    "dialogTitle": "您确定要继续吗？",
+    "dialogDescription": "此操作无法撤回。这将永久删除您的个人资料、API 密钥以及您创建的所有提示词（包括公开、私有和未列出的提示词）。",
+    "confirmPrompt": "如需确认，请输入您的用户名 \"{username}\"：",
+    "deleting": "正在删除账户...",
+    "deleteSuccess": "账户已成功删除",
+    "deleteFailed": "删除账户失败"
   }
 }

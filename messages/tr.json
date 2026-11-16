@@ -3037,5 +3037,24 @@
         "versionHistory": "Sürüm geçmişi"
       }
     }
+  },
+  "dangerZone": {
+    "title": "Tehlikeli Bölge",
+    "description": "Hesabınız ve verileriniz için geri alınamaz işlemler",
+    "exportTitle": "Hesap Verilerini Dışa Aktar",
+    "exportDescription": "Geçmiş istem kitaplığınızı, sürümlerinizi ve kullanım çıktılarınızı biçimlendirilmiş bir JSON belgesi olarak indirin.",
+    "exportButton": "Verilerimi İndir",
+    "exporting": "Dışa aktarılıyor...",
+    "exportSuccess": "İstem kitaplığınız indirildi",
+    "exportFailed": "Veriler dışa aktarılamadı",
+    "deleteTitle": "Hesabı Sil",
+    "deleteDescription": "Hesabınızı, API anahtarlarınızı ve yazdığınız tüm istemleri kalıcı olarak silin. Bu işlem geri alınamaz.",
+    "deleteButton": "Hesabı Sil",
+    "dialogTitle": "Kesinlikle emin misiniz?",
+    "dialogDescription": "Bu işlem geri alınamaz. Bu işlem hesap profilinizi, API anahtarlarınızı ve yazdığınız tüm istemleri (herkese açık, özel ve liste dışı olanlar dahil) kalıcı olarak silecektir.",
+    "confirmPrompt": "Onaylamak için lütfen kullanıcı adınızı \"{username}\" yazın:",
+    "deleting": "Hesap siliniyor...",
+    "deleteSuccess": "Hesap başarıyla silindi",
+    "deleteFailed": "Hesap silinemedi"
   }
 }

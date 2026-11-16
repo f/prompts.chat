@@ -3038,5 +3038,24 @@
         "versionHistory": "Versionsverlauf"
       }
     }
+  },
+  "dangerZone": {
+    "title": "Gefahrenbereich",
+    "description": "Unwiderrufliche Aktionen für Ihr Konto und Ihre Daten",
+    "exportTitle": "Kontodaten exportieren",
+    "exportDescription": "Laden Sie Ihre historische Prompt-Bibliothek, Versionen und Artefakte als formatierte JSON-Datei herunter.",
+    "exportButton": "Meine Daten herunterladen",
+    "exporting": "Exportieren...",
+    "exportSuccess": "Ihre Prompt-Bibliothek wurde heruntergeladen",
+    "exportFailed": "Export der Daten fehlgeschlagen",
+    "deleteTitle": "Konto löschen",
+    "deleteDescription": "Löschen Sie Ihr Konto, Ihre API-Schlüssel und alle erstellten Prompts dauerhaft. Diese Aktion kann nicht rückgängig gemacht werden.",
+    "deleteButton": "Konto löschen",
+    "dialogTitle": "Sind Sie absolut sicher?",
+    "dialogDescription": "Diese Aktion kann nicht rückgängig gemacht werden. Dadurch werden Ihr Kontoprofil, Ihre API-Schlüssel und alle von Ihnen verfassten Prompts (einschließlich öffentlicher, privater und nicht gelisteter Prompts) dauerhaft gelöscht.",
+    "confirmPrompt": "Zur Bestätigung geben Sie bitte Ihren Benutzernamen \"{username}\" ein:",
+    "deleting": "Konto wird gelöscht...",
+    "deleteSuccess": "Konto erfolgreich gelöscht",
+    "deleteFailed": "Konto konnte nicht gelöscht werden"
   }
 }

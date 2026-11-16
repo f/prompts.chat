@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import config from "@/../prompts.config";
 import { ProfileForm } from "@/components/settings/profile-form";
 import { ApiKeySettings } from "@/components/settings/api-key-settings";
+import { DangerZone } from "@/components/settings/danger-zone";
 import type { CustomLink } from "@/components/user/profile-links";
 import type { Metadata } from "next";
 import { NOINDEX_ROBOTS } from "@/lib/seo";
@@ -66,6 +67,8 @@ export default async function SettingsPage() {
             initialPublicByDefault={user.mcpPromptsPublicByDefault}
           />
         )}
+
+        <DangerZone username={user.username} />
       </div>
     </div>
   );
