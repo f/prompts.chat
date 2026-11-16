@@ -203544,3 +203544,263 @@ Ultra-detailed, tactile, colourful, imaginative, visually balanced, handcrafted 
 
 FORMAT: Square 1:1 composition. No text, captions, typography, watermarks or logos.",FALSE,TEXT,f
 Speech and Logo Shape Design Template,Create a template to create two great shape designs by inserting speech or a special logo,FALSE,TEXT,mzbodi128@gmail.com
+ALDC RAG Lifecycle Doc Generator (.md),"---
+You are a Principal Technical Product Manager, Data & BI Solutions Architect, and Technical Writer. Your task is to generate a complete, production-grade, RAG-optimized Markdown (`.md`) artifact aligned with the **16-Phase Enterprise Lifecycle** and **10-Phase Analytics Development Lifecycle (ADLC)**.
+
+---
+
+### INPUT PARAMETERS
+* **Target Phase (01–16):** {{PHASE}}
+* **Document Filename:** {{FILENAME}}
+* **Project / Product Name:** {{PROJECT_NAME}}
+* **Domain & Tech Stack:** {{DOMAIN_AND_STACK}}
+* **Target Audience:** {{TARGET_AUDIENCE}}
+* **Raw Context / Requirements / Notes:** {{RAW_CONTEXT}}
+
+---
+
+### MANDATORY RAG & MARKDOWN ARCHITECTURE RULES
+1. **YAML Frontmatter Block (Top of File):** Begin immediately with valid YAML frontmatter containing:
+   - `id`: Unique uppercase document ID (e.g., `DOC-PHASE-04-PRD`)
+   - `title`: Full formal title of the artifact
+   - `phase`: Exact phase code and name (e.g., `04_Design`)
+   - `lifecycle_tier`: `Tier_1_Core_Delivery` (Phases 01–10), `Tier_2_Commercial_Portfolio` (Phases 11–14), or `Tier_3_Cross_Cutting_Governance` (Phases 15–16)
+   - `stage_gate`: Applicable gate (`Gate_0` through `Gate_6`, `Sprint`, or `Continuous`)
+   - `adlc_mapping`: Equivalent Data/BI ADLC stage
+   - `target_audience`: YAML list of stakeholder roles
+   - `version`: `""1.0.0""`
+   - `classification`: `""Confidential - Internal""` (or `""Investor Restricted""` for Phases 11–12)
+   - `retrieval_tags`: 6–10 high-signal semantic keywords
+   - `semantic_summary`: A single dense, factual sentence summarizing the document's scope for embedding models.
+2. **Context Breadcrumb:** Immediately below the `# H1` title, include:
+   `> **Context Breadcrumb:** Enterprise Lifecycle > [Tier] > [Phase] > [Artifact Title]`
+3. **Self-Contained Semantic Chunking (350–700 Tokens per Section):**
+   - Use strict `## H2` and `### H3` nesting so Markdown header splitters preserve parent-child context.
+   - **Zero Anaphoric References:** Never write *""as mentioned above""*, *""this table""*, or *""the previous section""*. Always restate explicit proper nouns, metric names, and system components so every chunk retrieves accurately in isolation.
+4. **Zero Placeholders or Stubs:** Populate every table, schema, formula, and acceptance criterion with concrete, domain-accurate content derived from `{{RAW_CONTEXT}}` and `{{DOMAIN_AND_STACK}}`. Never output `[Insert X]`, `TBD`, or filler text.
+5. **Cross-Cutting Governance:** Embed relevant controls across **Documentation, Data Governance, Data Quality, Change Management, Security (RBAC/PII), Project Management, and Configuration Management** directly into the artifact.
+
+---
+
+### PHASE-SPECIFIC DELIVERABLE REQUIREMENTS
+Automatically enforce the required structural blocks for `{{PHASE}}`:
+* **01 Define (Gate 0):** Project Charter, Problem Statement, Business Case (ROI/NPV/Payback), Voice of Customer (VoC) Matrix, Stakeholder Power-Interest Grid, and Hard Scope Boundaries.
+* **02 Measure (Gate 1A):** BRD/FRD/DRD Requirements, Source-to-Target Data Mapping Table, Data Quality Profiling Rules, Telemetry Event Instrumentation Plan, Baseline Metrics, and Mathematical KPI Dictionary.
+* **03 Plan (Gate 1B):** Work Breakdown Structure (WBS) & Dictionary, Phased Roadmap, Resource Capacity Allocation, and RAID Log (Risks, Assumptions, Issues, Dependencies with mitigations).
+* **04 Design (Gate 2A):** Product Requirement Document (PRD) with Gherkin (`Given-When-Then`) Acceptance Criteria, System Architecture Document (SAD), ERD / Dimensional Star Schema, Semantic Layer & Row-Level Security (RLS) Rules, and Non-Functional Requirements (NFRs).
+* **05 Implement (Sprint):** Sprint Backlog Breakdown, OpenAPI 3.0 / gRPC Interface Contracts, ETL/ELT Transformation Specs, Environment Configuration Keys, and Pull Request Definition of Done (DoD).
+* **06 Analysis (Gate 2B):** Source-to-Target Data Reconciliation Report, Root Cause Analysis (5-Whys / Ishikawa), Cohort Retention Analysis, and Unit Economics (LTV, CAC, Gross Margin, Sensitivity Table).
+* **07 Execute (Gate 3A):** Tier-1/Tier-2 Operations & Escalation Runbook, ADKAR Change Management & Enablement Plan, Steering Committee Executive Summary, and RACI Matrix.
+* **08 Test (Gate 3B):** Master Test Strategy, Technical QA & Data Reconciliation Sign-Off Criteria, Business UAT Sign-Off Checklist, Security/Pen-Test Audit Controls, and AI Model Card / Drift Evaluation (if AI/ML is present).
+* **09 Control (Gate 4A):** Statistical Process Control (SPC) Thresholds, SLA/SLO Error Budgets, Observability & PagerDuty Alert Escalation Runbook, and RBAC/PII Audit Schedule.
+* **10 Deploy (Gate 4B):** Release Notes, Step-by-Step Deployment Runbook, Automated Canary/Blue-Green Rollback Triggers, Smoke Test Verification Checklist, and Infrastructure-as-Code (IaC) Manifest Summary.
+* **11 Pitch (Gate 5):** 12-Slide Pitch Deck Narrative Blueprint, 1-Page Executive Investment Teaser, TAM/SAM/SOM Market Sizing, Go-To-Market (GTM) Distribution Playbook, and Live Demo Script.
+* **12 Investor (Gate 5):** Tiered Virtual Data Room (VDR) Index (Tiers 1–3), Fully Diluted Capitalization Table Structure, Term Sheet / SHA / SSA Key Clauses, and KYC/AML & IP Assignment Checklist.
+* **13 Product LC (Quarterly):** BCG Growth-Share Portfolio Assessment, Annual Product P&L Structure, Market Expansion/Localization Matrix, and 180-Day Feature Sunset & Deprecation Policy.
+* **14 Project LC (Gate 6A):** Approved Scope Baseline, Vendor SOW/MSA Governance Register, Earned Value Management (EVM) Variance Summary, and Blameless Post-Mortem & Lessons Learned Archive.
+* **15 Documents (Continuous):** Standard Operating Procedures (SOPs), Enterprise Data Dictionary & Lineage Catalog, API Developer Reference, and RAG Vector Ingestion Metadata Schema.
+* **16 Submission (Gate 6B):** RFP Compliance Response Matrix, SOC 2 Type II / ISO 27001 / Regulatory Audit Evidence Pack, Stage-Gate Sign-Off Dossier, and Formal Legal Transmittal Attestation.
+
+---
+
+### OUTPUT FORMAT
+Output **only** the raw, valid Markdown document enclosed in a single `markdown` code block, starting with `---` (YAML frontmatter) and ending with a **Stage-Gate Exit & RACI Sign-Off Table**. Do not include conversational filler before or after the code block.
+---
+
+# Unified Enterprise SDLC, ADLC & 16-Phase Lifecycle Guidance Document
+
+## 1. Purpose & Architectural Scope
+
+This guidance document establishes a single, end-to-end delivery and governance standard for Data Engineering, Business Intelligence (BI), ThoughtSpot Centers of Excellence (COE), and production SaaS product organizations[cite: 2, 5]. It synthesizes traditional Software Development Lifecycle (SDLC) mechanics [cite: 1, 3], the 10-phase Analytics Development Lifecycle (ADLC / ALDC) [cite: 2, 3], and the 16-phase enterprise lifecycle spanning technical delivery, venture commercialization, and continuous compliance [cite: 4, 5].
+
+*   **Terminology Standard (ADLC vs. ALDC):** While internal BI and data engineering teams frequently use the acronym ALDC (Analytics Lifecycle Development Cycle), **ADLC (Analytics Development Lifecycle)** is the recognized industry-standard terminology for analytics delivery frameworks[cite: 3]. Both terms map identically within this standard to govern traceability from business requirements through ingestion, semantic modeling, testing, deployment, and ongoing governance[cite: 2, 3].
+*   **Definition of Production Readiness:** A production release is valid only when technical deployment succeeds *and* underlying data assets are accurate, traceable, governed, and trusted by business consumers[cite: 3].
+
+---
+
+## 2. Cross-Attachment Audit & Breaking-Point Reconciliation
+
+Before executing against this standard, teams must account for structural contradictions and visual anomalies across the four baseline artifacts so legacy defects are not propagated into production workflows:
+
+| Source Artifact | Structural Contribution | Identified Breaking Points & Visual Anomalies | Canonical Resolution Enforced in This Guide |
+| :--- | :--- | :--- | :--- |
+| **`SDLC_Roadmap_Infographic.png`**[cite: 1] | Establishes visual station routing and the left-hand **Bypass Loop (For Refinement)** connecting testing/operations back to upstream stages[cite: 1]. | **1. Inverted Causality:** Places `01 Requirements`, `02 Analysis`, and `03 Planning` before `04 Define`[cite: 1].<br>**2. Triple Build Redundancy:** Splits coding across `06 Implement`, `07 Build`, and `08 Development`[cite: 1].<br>**3. Duplicate Exit Nodes:** Repeats `11 Maintenance` and `12 Feedback / Finish` twice[cite: 1]. | Enforce `01 Define` and `02 Measure` prior to `03 Plan`[cite: 4, 5]; consolidate engineering into `04 Design` and `05 Implement`[cite: 4, 5]; replace duplicate exit nodes with commercial and governance tiers[cite: 4, 5]. |
+| **` List ALDC Phases.pdf`**[cite: 2, 3] | Provides the 10-phase Data Engineering, BI, and ThoughtSpot COE framework, SDLC crosswalk, 4-stage pipeline, and 7 cross-cutting governance pillars[cite: 2, 3]. | **1. Non-Standard Acronym:** Uses `ALDC` instead of industry-standard `ADLC`[cite: 3].<br>**2. Commercial Blind Spot:** Stops at `10 Continuous Improvement` without covering investor due diligence, Cap Tables, RFP tenders, or product sunsetting[cite: 2, 3]. | Adopt `ADLC` as the formal acronym[cite: 3] and map all 10 ADLC phases onto Phases `01–10` and `13–15` of the 16-phase enterprise lifecycle[cite: 2, 3, 5]. |
+| **`5ff82eb8.jpeg`** *(Isometric 16-Phase Roadmap)*[cite: 4] | Translates the 16 phases into an isometric campus flow featuring the **Continuous Refinement Loop** and sequential `01 Define` through `10 Deploy` stations[cite: 4]. | **1. Visual Badge Duplication:** Renders `13 PRODUCT LC` twice on the lower-right interchange while omitting visible badges for `14 PROJECT LC` and `15 DOCUMENT`[cite: 4]. | Use `5ff82eb8.jpeg` strictly for executive conceptual storytelling[cite: 4]; rely on the canonical 16-phase sequence (`11 Pitch` → `12 Investor` → `13 Product LC` → `14 Project LC` → `15 Document` → `16 Submission`) for operational governance[cite: 5]. |
+| **`fd218dcf.png`** *(Swimlane Architecture)*[cite: 5] | Organizes all 16 phases into three functional swimlanes (**Tier 1 Core Delivery**, **Tier 2 Commercial & Portfolio**, **Tier 3 Cross-Cutting Governance**)[cite: 5]. | **1. Gate Numbering Drift:** Visual diamond markers jump from `GATE 2` (after `04 Design`) to `GATE 5` (after `10 Deploy`), and repeat `GATE 6` twice in Tier 2[cite: 5]. | Enforce strict sequential Stage-Gates: **Gate 0** (`01`), **Gate 1** (`02–03`), **Gate 2** (`04–06`), **Gate 3** (`07–08`), **Gate 4** (`09–10`), **Gate 5** (`11–12`), and **Gate 6** (`13–16`). |
+
+---
+
+## 3. Master Multi-Framework Crosswalk Matrix
+
+This crosswalk unifies the **16-Phase Lifecycle**[cite: 4, 5], the **10-Phase ADLC / BI COE Framework**[cite: 2, 3], **Traditional SDLC**[cite: 1, 2, 3], and **dbt Labs' 8-Stage ADLC**[cite: 3]:
+
+| 16-Phase Lifecycle Station | Swimlane Tier & Canonical Gate | 10-Phase ADLC / BI COE Equivalent[cite: 2, 3] | Traditional SDLC Equivalent[cite: 1, 2] | dbt Labs 8-Stage ADLC Equivalent[cite: 3] | Primary Output Artifacts[cite: 2, 3] |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **01. Define** | **Tier 1** • Gate 0[cite: 5] | **1. Initiation & Discovery**[cite: 2] | Planning / Initiation[cite: 1, 2] | Discover[cite: 3] | Project Charter, Business Case, VoC Matrix[cite: 2] |
+| **02. Measure** | **Tier 1** • Gate 1[cite: 5] | **2. Requirements Gathering & 3. Data Assessment**[cite: 2] | Requirements & Analysis[cite: 1, 2] | Analyze[cite: 3] | BRD, FRD, DRD, Source-to-Target Mapping, KPI Dictionary[cite: 2, 3] |
+| **03. Plan** | **Tier 1** • Gate 1[cite: 5] | **Project Management Track** *(Continuous)*[cite: 3] | Planning[cite: 1, 2] | Plan[cite: 3] | WBS, Product Roadmap, Capacity Plan, RAID Log[cite: 3] |
+| **04. Design** | **Tier 1** • Gate 2[cite: 5] | **4. Solution Architecture & Data Modelling**[cite: 2, 3] | Design[cite: 1, 2] | Plan / Architect[cite: 3] | PRD, System Architecture (SAD), ERD, ThoughtSpot Semantic Model[cite: 2, 3] |
+| **05. Implement** | **Tier 1** • Sprint[cite: 5] | **5. Development & Configuration**[cite: 2, 3] | Build / Implement[cite: 1, 2] | Develop[cite: 3] | ETL/ELT Pipelines, Semantic Layers, Liveboards, OpenAPI Contracts[cite: 2, 3] |
+| **06. Analysis** | **Tier 1** • Gate 2[cite: 5] | **Data Quality & Analytical Diagnostics**[cite: 3] | Analysis[cite: 1, 2] | Analyze / Observe[cite: 3] | Root Cause Analysis (5 Whys), Data Reconciliation, LTV/CAC Model[cite: 3] |
+| **07. ** Execute** | **Tier 1** • Gate 3[cite: 5] | **10. Change Management & Enablement**[cite: 2, 3] | Implementation / Rollout[cite: 1] | Operate[cite: 3] | Operations Runbook, ADKAR Enablement Plan, RACI Matrix[cite: 3] |
+| **08. Test** | **Tier 1** • Gate 3[cite: 5] | **6. Quality Assurance & 7. Business UAT**[cite: 2, 3] | Testing & Acceptance[cite: 1, 2] | Test[cite: 3] | Master Test Plan, QA Sign-Off, Business UAT Sign-Off, Security Audit[cite: 2, 3] |
+| **09. ** Control** | **Tier 1** • Gate 4[cite: 5] | **9. Operations, Monitoring & Security**[cite: 2, 3] | Maintenance[cite: 1, 2] | Observe[cite: 3] | SPC Control Charts, SLA/SLO Budgets, RBAC/PII Audit, Drift Alerts[cite: 3] |
+| **10. Deploy** | **Tier 1** • Gate 4[cite: 5] | **8. Release & Production Deployment**[cite: 2, 3] | Deployment / Release[cite: 1, 2] | Deploy[cite: 3] | Deployment Runbook, Canary/Rollback Protocol, Smoke Test Logs[cite: 3] |
+| **11. Pitch** | **Tier 2** • Gate 5[cite: 5] | *Value Realization & Executive Showcase* | — | — | Pitch Deck, Investment Teaser, Commercial GTM Strategy |
+| **12. Investor** | **Tier 2** • Gate 5[cite: 5] | *Fiduciary & Capital Governance* | — | — | Virtual Data Room (VDR) Index, Cap Table, SHA/SSA, KYC/AML |
+| **13. Product LC** | **Tier 2** • Quarterly[cite: 5] | **10. Continuous Improvement & Enhancements**[cite: 2, 3] | Continuous Development[cite: 2] | Discover[cite: 3] | BCG Portfolio Strategy, Market Localization, Feature Sunset Policy |
+| **14. ** Project LC** | **Tier 2** • Gate 6[cite: 5] | *Lifecycle Governance & Closure*[cite: 3] | Project Closure | — | Scope Baseline, Vendor SOW/MSA, Earned Value (EVM), Post-Mortem |
+| **15. Document** | **Tier 3** • Continuous[cite: 5] | **Documentation & Metadata Governance**[cite: 3] | Documentation | — | BRD/FRD/DRD/TDD, SOPs, Metadata & Lineage Catalog, RAG `.md` Files[cite: 3] |
+| **16. Submission** | **Tier 3** • Gate 6[cite: 5] | *Regulatory Compliance & Audit Attestation*[cite: 3] | Governance Audit | — | RFP Tender Dossier, SOC 2 / ISO 27001 Filing, Gate Sign-Off Pack |
+
+---
+
+## 4. Operational Guidance by Tier & Phase
+
+### Tier 1: Core Delivery & ADLC Pipeline (`01 Define` → `10 Deploy`)[cite: 5]
+
+#### Phase 01: Define *(ADLC Phase 1 — Initiation & Discovery)*[cite: 2, 5]
+*   **Objective:** Identify core business problems, commercial objectives, executive sponsors, technical feasibility, and measurable outcomes before committing build capacity[cite: 2].
+*   **Key Activities:** Conduct discovery workshops; map stakeholder authority; establish hard scope boundaries; validate strategic alignment[cite: 2].
+*   **Mandatory Documents:** `01_define_charter_business_case.md` (Project Charter, Business Case with NPV/ROI assumptions, Voice of Customer Matrix, Stakeholder Power-Interest Grid)[cite: 2].
+*   **Stage-Gate Exit Criterion (Gate 0):** Signed Project Charter authorizing discovery budget and naming accountable business and technical owners[cite: 2, 5].
+
+#### Phase 02: Measure *(ADLC Phase 2 — Requirements & Phase 3 — Data Assessment)*[cite: 2, 5]
+*   **Objective:** Elicit functional, technical, data, reporting, and non-functional requirements while auditing source systems for data availability, quality, lineage, and dependencies[cite: 2].
+*   **Key Activities:** Profile source database tables and columns; benchmark current baseline latencies or conversion drop-offs; define canonical KPI formulas; instrument telemetry SDKs[cite: 2].
+*   **Mandatory Documents:** `02_measure_telemetry_kpi_dictionary.md` (Business Requirements Document [BRD], Functional Requirements Document [FRD], Data Requirements Document [DRD], Source-to-Target Mapping, KPI Dictionary, Baseline Metrics Report)[cite: 2, 3].
+*   **Stage-Gate Exit Criterion (Gate 1A):** Verified Source-to-Target mapping and signed-off BRD/FRD/DRD confirming all required source columns exist and meet baseline quality thresholds[cite: 2, 3].
+
+#### Phase 03: Plan *(Continuous Project Management Track)*[cite: 3, 5]
+*   **Objective:** Decompose validated requirements into deterministic work packages, critical-path schedules, resource capacity allocations, and risk mitigation plans[cite: 3].
+*   **Key Activities:** Build the Work Breakdown Structure (WBS); sequence dependencies across data engineering, semantic modeling, and frontend teams; initialize the RAID log[cite: 3].
+*   **Mandatory Documents:** `03_plan_wbs_roadmap_raid_log.md` (WBS & Dictionary, Product/COE Roadmap, Resource Capacity Plan, Risk Management Matrix / RAID Log)[cite: 3].
+*   **Stage-Gate Exit Criterion (Gate 1B):** Approved scope baseline, sprint schedule, and resource allocation plan[cite: 3, 5].
+
+#### Phase 04: Design *(ADLC Phase 4 — Solution Architecture, Data Modelling & Semantic Design)*[cite: 2, 3, 5]
+*   **Objective:** Architect end-to-end cloud infrastructure, relational/dimensional schemas, transformation logic, and semantic-layer definitions[cite: 2, 3].
+*   **Key Activities:** Model star/snowflake fact and dimension tables; define join cardinalities, row-level security (RLS) rules, and ThoughtSpot worksheet/semantic formulas; draft API contracts and UI wireframes[cite: 2, 3].
+*   **Mandatory Documents:** `04_design_prd_system_architecture.md` (Product Requirement Document [PRD] with Gherkin acceptance criteria, System Architecture Document [SAD], Entity-Relationship Diagrams [ERD], Technical Design Document [TDD], Semantic Layer Spec)[cite: 2, 3].
+*   **Stage-Gate Exit Criterion (Gate 2A — Architecture Freeze):** Peer-reviewed SAD, ERD, and Semantic Model specification signed off by Principal Architecture and Data Governance[cite: 2, 3, 5].
+
+#### Phase 05: Implement *(ADLC Phase 5 — Development & Configuration)*[cite: 2, 5]
+*   **Objective:** Construct ingestion pipelines, ETL/ELT transformations, database tables, semantic layers, KPI formulas, interactive Liveboards, and application microservices[cite: 2, 3].
+*   **Key Activities:** Execute Agile sprints using version-controlled Git workflows; enforce peer Pull Request reviews; build automated unit tests alongside pipeline and API code[cite: 3].
+*   **Mandatory Documents:** `05_implement_sprint_api_contract.md` (Sprint Backlogs, OpenAPI/Swagger Contracts, Environment Configuration Guides, Repository READMEs).
+*   **Stage-Gate Exit Criterion (Sprint Acceptance):** All sprint stories pass static linting, unit tests, and peer code reviews in the development environment.
+
+#### Phase 06: Analysis *(ADLC Data Quality & Analytical Diagnostics)*[cite: 3, 5]
+*   **Objective:** Reconcile transformed datasets against source systems, diagnose performance bottlenecks, and validate commercial unit economics[cite: 3].
+*   **Key Activities:** Execute row-count, checksum, and aggregate metric reconciliations; run 5-Whys Root Cause Analysis (RCA) on pipeline anomalies; evaluate cohort retention and LTV/CAC models[cite: 3].
+*   **Mandatory Documents:** `06_analysis_rca_cohort_economics.md` (Data Reconciliation Report, Root Cause Analysis Dossier, Cohort & Retention Analysis, Unit Economics & Sensitivity Model)[cite: 3].
+*   **Stage-Gate Exit Criterion (Gate 2B — Viability Sign-Off):** Zero unexplained data variance between source systems and target semantic models, plus validated commercial unit economics[cite: 3, 5].
+
+#### Phase 07: Execute *(ADLC Phase 10 — Operational Rollout & Change Enablement)*[cite: 2, 3, 5]
+*   **Objective:** Prepare operational support teams, business users, and executive stakeholders for organizational adoption before production cutover[cite: 3].
+*   **Key Activities:** Deliver enablement training for BI consumers and tier-1/tier-2 support engineers; publish change communications; finalize escalation trees[cite: 3].
+*   **Mandatory Documents:** `07_execute_operations_change_mgmt.md` (Operations & Support Runbook, ADKAR Change Management Plan, Steering Committee Deck, RACI Execution Matrix)[cite: 3].
+*   **Stage-Gate Exit Criterion (Gate 3A — Operational Readiness):** Support runbooks published and user enablement sessions completed.
+
+#### Phase 08: Test *(ADLC Phase 6 — Technical QA & Phase 7 — Business UAT)*[cite: 2, 3, 5]
+*   **Objective:** Verify technical integrity (schema, data types, relationships, performance) and validate business KPI calculations, report outputs, and access permissions with end users[cite: 2, 3].
+*   **Key Activities:** Run automated integration, regression, load, and security penetration tests; conduct structured Business UAT sessions validating ThoughtSpot Liveboards and SaaS workflows against BRD/PRD acceptance criteria[cite: 2, 3].
+*   **Mandatory Documents:** `08_test_strategy_uat_security_audit.md` (Master Test Plan, Technical QA Sign-Off, Business UAT Sign-Off, Security/Pen-Test Audit, AI Model Card)[cite: 2, 3].
+*   **Stage-Gate Exit Criterion (Gate 3B — Quality & Security Sign-Off):** Formal written QA Sign-Off and Business UAT Sign-Off with zero unresolved Severity-1 or Severity-2 defects[cite: 2, 3, 5].
+
+#### Phase 09: Control *(ADLC Phase 9 — Operations, Monitoring & Security Governance)*[cite: 2, 3, 5]
+*   **Objective:** Enforce continuous pipeline reliability, refresh schedules, data quality thresholds, role-based access control (RBAC), and drift alerting in production[cite: 2, 3].
+*   **Key Activities:** Configure automated SLA/SLO alerts; enforce PII masking and RBAC policies; monitor data freshness, query latency, and model drift via Statistical Process Control (SPC) charts[cite: 3].
+*   **Mandatory Documents:** `09_control_spc_slo_drift_runbook.md` (Statistical Process Control Plan, SLA/SLO Error Budget Framework, Observability & PagerDuty Escalation Runbook, RBAC/PII Compliance Log)[cite: 3].
+*   **Stage-Gate Exit Criterion (Gate 4A — Stability Check):** Automated monitoring dashboards and synthetic alerts verified active in staging/pre-prod[cite: 3].
+
+#### Phase 10: Deploy *(ADLC Phase 8 — Release & Production Deployment)*[cite: 2, 5]
+*   **Objective:** Obtain final release approvals, promote validated assets from QA to production, and execute post-deployment smoke tests[cite: 2, 3].
+*   **Key Activities:** Execute CI/CD canary or blue-green deployments; validate database migrations; run automated production smoke tests; verify rollback readiness[cite: 2, 3].
+*   **Mandatory Documents:** `10_deploy_release_rollback_iac.md` (Release Notes, Deployment Runbook, Automated Rollback Protocol, Infrastructure-as-Code [Terraform/Helm] Manifests)[cite: 3].
+*   **Stage-Gate Exit Criterion (Gate 4B — Production Release Sign-Off):** Verified production smoke tests passing 100%, and release approval logged[cite: 2, 3, 5].
+
+---
+
+### Tier 2: Commercial, Venture & Portfolio Lifecycle (`11 Pitch` → `14 Project LC`)[cite: 5]
+
+#### Phase 11: Pitch *(Commercialization & Value Realization)*[cite: 5]
+*   **Objective:** Package verified production traction, unit economics, and technical differentiation into persuasive commercial and investor narratives.
+*   **Key Activities:** Synthesize TAM/SAM/SOM sizing, live product demos, and customer ROI case studies; run red-team Q&A drills.
+*   **Mandatory Documents:** `11_pitch_deck_gtm_commercial.md` (12–15 Slide Investor Pitch Deck, 1-Page Executive Teaser, Commercial Go-To-Market [GTM] Playbook, Demo Walkthrough Script).
+
+#### Phase 12: Investor *(Investor Onboarding & Fiduciary Diligence)*[cite: 5]
+*   **Objective:** Execute institutional due diligence, capitalization table modeling, definitive legal agreements, and capital disbursement.
+*   **Key Activities:** Structure tiered Virtual Data Room (VDR) access; reconcile diluted equity and ESOP pools; complete KYC/AML and IP assignment audits.
+*   **Mandatory Documents:** `12_investor_vdr_cap_table_term_sheet.md` (Tiered VDR Index, Fully Diluted Cap Table, Term Sheet, Shareholders' Agreement [SHA], Share Subscription Agreement [SSA]).
+*   **Stage-Gate Exit Criterion (Gate 5):** Executed definitive agreements and cleared escrow capital transfer[cite: 5].
+
+#### Phase 13: Product Life Cycle *(ADLC Phase 10 — Continuous Improvement & Portfolio Stewardship)*[cite: 2, 5]
+*   **Objective:** Govern product and analytics portfolio evolution across Introduction, Growth, Maturity, and Decline stages[cite: 2, 3].
+*   **Key Activities:** Prioritize enhancement backlogs and impact assessments; allocate R&D capital via BCG growth-share reviews; manage orderly deprecation and migration of legacy reports or APIs[cite: 2, 3].
+*   **Mandatory Documents:** `13_plc_portfolio_sunset_strategy.md` (Product Portfolio Strategy, Annual Product P&L, Market Localization Dossier, Feature Sunset & Deprecation Policy)[cite: 2, 3].
+
+#### Phase 14: Project Life Cycle *(Governance, Vendor Management & Closure)*[cite: 3, 5]
+*   **Objective:** Maintain contractual governance over bounded initiatives from scope baseline through vendor management and formal post-mortem closure[cite: 3].
+*   **Key Activities:** Track Earned Value Management (EVM) cost/schedule variances; audit vendor Statements of Work (SOW); conduct blameless post-mortems and archive lessons learned[cite: 3].
+*   **Mandatory Documents:** `14_project_lifecycle_sow_closure.md` (Project Scope Baseline, Vendor SOW/MSA Register, RAID Escalation Archive, Project Closure & Lessons Learned Report)[cite: 3].
+*   **Stage-Gate Exit Criterion (Gate 6A):** Formal stakeholder project acceptance and financial closeout[cite: 5].
+
+---
+
+### Tier 3: Cross-Cutting Governance & Compliance Foundation (`15 Document` & `16 Submission`)[cite: 3, 5]
+
+Rather than executing solely at the end of a project, Tier 3 operates continuously beneath Tiers 1 and 2 to enforce institutional memory and regulatory compliance[cite: 3, 5]:
+
+#### Phase 15: Document *(Continuous Knowledge & Metadata Governance)*[cite: 3, 5]
+*   **Objective:** Maintain living, version-controlled technical documentation, data lineage catalogs, Standard Operating Procedures (SOPs), and RAG-ready Markdown knowledge bases[cite: 3].
+*   **Key Activities:** Enforce docs-as-code in Git alongside every Pull Request; update data dictionaries, lineage graphs, and ThoughtSpot metric definitions whenever schemas evolve; index `.md` files with YAML frontmatter into enterprise vector stores[cite: 3].
+*   **Mandatory Documents:** `15_document_sop_api_data_catalog.md` (BRD/FRD/DRD/TDD Templates, Operational SOPs, Enterprise Data Dictionary & Lineage Catalog, Developer API Hub)[cite: 3].
+
+#### Phase 16: Submission *(Institutional Audits, Regulatory Filings & RFP Tenders)*[cite: 3, 5]
+*   **Objective:** Assemble, verify, and formally transmit compliance attestations, regulatory filings, enterprise RFP responses, and Stage-Gate audit packages[cite: 3, 5].
+*   **Key Activities:** Compile SOC 2 Type II, ISO 27001, GDPR/DPDP, or financial regulatory evidence; execute legal compliance sign-offs; submit encrypted RFP tender dossiers[cite: 3].
+*   **Mandatory Documents:** `16_submission_rfp_compliance_gate.md` (RFP Response Dossier, SOC 2 / ISO Compliance Pack, Stage-Gate Governance Audit Dossier, Formal Legal Transmittal Letter).
+*   **Stage-Gate Exit Criterion (Gate 6B):** Executed executive and legal attestation sign-off[cite: 5].
+
+---
+
+## 5. Cross-Cutting Governance Matrix (7 Core Pillars)
+
+Per the BI & Data Engineering COE governance standard, these seven disciplines execute continuously across all 16 phases[cite: 3]:
+
+| Governance Pillar[cite: 3] | Operational Mandate[cite: 3] | Primary Enforcing Phases | Core Control Artifacts[cite: 3] |
+| :--- | :--- | :--- | :--- |
+| **1. Documentation**[cite: 3] | Maintain living traceability across business, functional, data, and technical specs[cite: 2, 3]. | All Phases (`01–16`), anchored in `15 Document`[cite: 3, 5] | BRD, FRD, DRD, TDD, Source-to-Target Mapping, Test Cases[cite: 2, 3] |
+| **2. Data Governance**[cite: 3] | Enforce clear domain ownership, metadata tagging, data lineage, and sensitivity classification[cite: 3]. | `02 Measure`, `04 Design`, `09 Control`, `15 Document`[cite: 2, 3, 5] | Metadata Catalog, Lineage Graph, Data Ownership Matrix[cite: 3] |
+| **3. Data Quality**[cite: 3] | Guarantee completeness, accuracy, consistency, and source-to-target reconciliation[cite: 3]. | `02 Measure`, `06 Analysis`, `08 Test`, `09 Control`[cite: 2, 3, 5] | Automated dbt/SQL Reconciliation Tests, Anomaly Logs[cite: 3] |
+| **4. Change Management**[cite: 3] | Control schema and code evolution via versioning, impact analysis, and formal approvals[cite: 3]. | `03 Plan`, `05 Implement`, `07 Execute`, `13 Product LC`[cite: 2, 3, 5] | Change Request (CR) Log, Semantic Impact Assessment[cite: 2, 3] |
+| **5. Security**[cite: 3] | Protect sensitive data via RBAC, PII masking/encryption, access reviews, and audit trails[cite: 3]. | `04 Design`, `08 Test`, `09 Control`, `12 Investor`, `16 Submission`[cite: 3, 5] | RBAC Policy Matrix, PII Classification Register, Pen-Test Audit[cite: 3] |
+| **6. Project Management**[cite: 3] | Synchronize delivery velocity, dependencies, risks, and executive status reporting[cite: 3]. | `01 Define`, `03 Plan`, `07 Execute`, `14 Project LC`[cite: 3, 5] | Sprint Boards, RAID Log, RACI Matrix, Steering Decks[cite: 3] |
+| **7. Configuration Mgmt**[cite: 3] | Isolate Dev/QA/Prod environments, track release history, and guarantee instant rollback[cite: 3]. | `05 Implement`, `09 Control`, `10 Deploy`[cite: 3, 5] | Git Branching Policy, IaC State Files, Rollback Runbooks[cite: 3] |
+
+---
+
+## 6. Alternative Paradigms & Failure-Mode Playbook
+
+### Paradigm Selection Matrix
+Depending on organizational maturity and regulatory exposure, teams should calibrate gate strictness using one of three operating modes:
+
+1.  **Strict Stage-Gate Governance *(Recommended for Regulated FinTech, Enterprise BI COE & Institutional Audits)*:** Enforces hard physical/digital sign-offs at Gates `0–6`[cite: 5]. Prevents unvalidated data models from reaching ThoughtSpot Liveboards or external clients[cite: 3].
+2.  **Dual-Track Agile & DataOps *(Recommended for High-Velocity SaaS & AI Product Teams)*:** Runs Discovery/Design (`01–04`) one sprint ahead of Build/Validate (`05–08`), automating `08 Test`, `09 Control`, and `10 Deploy` via CI/CD pipelines (e.g., dbt + GitHub Actions)[cite: 3, 5].
+3.  **Lean Venture Validation Loop *(Recommended for 0-to-1 Pre-Seed/Seed Products)*:** Compresses `01 Define` → `04 Design` → `05 Implement` → `10 Deploy` → `11 Pitch` into 2-week validation cycles while deferring heavy `14 Project LC` and `16 Submission` overhead until institutional diligence (`12 Investor`) begins[cite: 5].
+
+### Critical Failure Modes & Red-Team Mitigations
+
+*   **Failure Mode 1 — Skipping Phase `02 Measure` (Data Assessment) to Accelerate `05 Implement`:**
+    *   *Symptom:* Engineers build ETL pipelines and semantic models only to discover missing historical columns, broken foreign keys, or conflicting business KPI definitions during UAT[cite: 2, 3].
+    *   *Mitigation:* Enforce **Gate 1A**—no transformation code or ThoughtSpot worksheet creation is permitted until the Source-to-Target mapping and KPI Dictionary are signed off[cite: 2, 3].
+*   **Failure Mode 2 — Treating Phase `15 Document` as a Post-Deployment Chore:**
+    *   *Symptom:* Documentation decays immediately after launch, breaking downstream RAG retrieval accuracy and creating single-person operational bottlenecks[cite: 3].
+    *   *Mitigation:* Embed `.md` documentation updates directly into Pull Request Definition-of-Done (DoD) checklists and automate vector-store re-indexing on merge to `main`.
+*   **Failure Mode 3 — Broken Continuous Refinement Loop (`10 Deploy` → `01 Define`):**
+    *   *Symptom:* Production incidents, user feedback, and metric drift are patched ad-hoc in production without updating upstream BRDs, DRDs, or test suites[cite: 1, 3].
+    *   *Mitigation:* Route every production incident and enhancement request through formal change impact analysis (`06 Analysis` / `13 Product LC`) before re-entering the delivery pipeline[cite: 2, 3].
+
+### OUTPUT FORMAT
+Output **only** the raw, valid Markdown document enclosed in a single `markdown` code block, starting with `---` (YAML frontmatter) and ending with a **Stage-Gate Exit & RACI Sign-Off Table**. Do not include conversational filler before or after the code block.",FALSE,TEXT,clicklynx2-dspy
