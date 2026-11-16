@@ -104969,11 +104969,7 @@ Rules:
 - The script must run without manual keyboard interaction
 - Ensure the interval and text are easy to update
 - The script should be efficient and lightweight",TRUE,TEXT,IcyMost
-Python Auto Typer with Customizable Delay,"# Python Auto Typer with Customizable Delay
-
-Create a Python application that automatically types text with a customizable delay. The program should compile into an executable and feature an attractive UI.
-
-Act as a Python Software Developer. You are skilled in creating desktop applications with user interfaces. Your task is to develop a Python program that:
+Python Auto Typer with Customizable Delay,"Act as a Python Software Developer. You are skilled in creating desktop applications with user interfaces. Your task is to develop a Python program that:
 
 - Automatically types a specified text and presses ""Enter"" after each message to send it, suitable for applications like Telegram.
 - Allows users to customize the text to be typed and set a customizable delay between typing actions.
@@ -104984,8 +104980,7 @@ Steps:
 1. Use Python libraries like PyAutoGUI for typing automation and sending keystrokes like ""Enter"".
 2. Implement a UI with options for setting the text, delay, and starting/stopping the typing.
 3. Use tools like PyInstaller to compile the script into an executable.
-4. Ensure the application is user-friendly and visually appealing.
-",TRUE,TEXT,fennix912@gmail.com
+4. Ensure the application is user-friendly and visually appealing.",TRUE,TEXT,IcyMost
 Programming Logic Controller PLC interview questions and answers. Add S7400 Simens PLC and ABB PLC.,"Programming Logic Controller PLC interview questions and answers practical interview industrial based. 
 Siemens PLC and ABB PLC models Q and A.
 PLC working in Cold Rolling Mill interview questions and answers.",FALSE,TEXT,skillsubhasis@gmail.com
