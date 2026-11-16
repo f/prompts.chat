@@ -240423,3 +240423,29 @@ Photorealistic macro photograph of a single ripe dandelion seed head in a summer
 
 </details>
 
+<details>
+<summary><strong>Dandelion Seed Head Scattering in a Summer Breeze (Image-to-Video Animation)</strong></summary>
+
+## Dandelion Seed Head Scattering in a Summer Breeze (Image-to-Video Animation)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Use the attached still (step 1: a macro photograph of a single white dandelion seed head backlit by the golden-hour sun in a summer meadow) as the exact first frame and animate it into a 6-second, 16:9 cinematic shot. Keep every element where it is in the still: the round seed head slightly left of center on its thin green stem, the few missing seeds on the right side, the soft green and golden bokeh meadow behind, the low warm sun and lens flare at the upper right.
+
+Motion (0-6 s):
+- 0-1.5 s: almost still; the stem sways very slightly and the fine parachutes shimmer in the backlight.
+- 1.5-4 s: a gentle breeze arrives from the left; the stem bends to the right and a growing stream of seeds lifts off the head one by one and in small clusters, their parachutes opening and catching the golden light.
+- 4-6 s: the seeds drift up and to the right across the frame, slowly turning and glowing against the bokeh, while about half of the seed head remains and the stem settles back upright.
+
+Camera: locked-off macro framing with a very slow, slight push-in; focus stays on the seed head while the drifting seeds soften as they leave the focal plane; no cuts.
+
+Lighting and mood: constant warm golden-hour light and flare; peaceful, dreamy, natural.
+
+Audio (if supported): a soft breeze, rustling grass and distant birdsong; no music, no voices.
+
+Avoid: people, hands, blowing mouths, insects, text, the whole seed head exploding at once, sudden lighting changes, morphing flowers, unnatural fast motion.
+```
+
+</details>
+
