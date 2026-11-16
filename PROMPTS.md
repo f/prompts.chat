@@ -240024,3 +240024,90 @@ A vertical medium shot casual photograph of a young man in his late teens with a
 
 </details>
 
+<details>
+<summary><strong>AI VIDEO GENERATION PROMPT</strong></summary>
+
+## AI VIDEO GENERATION PROMPT
+
+Contributed by @anonymous
+
+```md
+AI VIDEO GENERATION PROMPT
+
+Reference Image: Use the attached photograph as the primary facial and identity reference.
+
+VIDEO STYLE: Ultra-realistic cinematic lifestyle photography, luxury aesthetic, artistic double-exposure cinematography.
+
+FORMAT: Vertical 9:16, 4K resolution, approximately 4 seconds, 24 FPS.
+
+MAIN SUBJECT AND IDENTITY PRESERVATION
+
+Create an ultra-realistic cinematic portrait video featuring the exact same Black African man from the uploaded reference photograph.
+
+Preserve 100% of his recognizable real identity, natural facial structure, dark skin tone, forehead, eyes, nose, lips, ears, short black hairstyle, full natural black beard and mustache, face shape, and overall masculine appearance.
+
+Do not feminize, beautify, reshape, or artificially modify his face. Maintain his authentic facial proportions, natural skin texture, beard details, and realistic appearance throughout the video.
+
+He is an elegant, confident young African man with a calm, thoughtful expression.
+
+He is wearing a luxurious oversized beige-brown knitted sweater with a comfortable high neckline and long sleeves.
+
+He holds a simple white ceramic coffee mug with both hands, gently bringing it close to his lips as he takes a slow, natural sip of coffee. After drinking, he gradually lowers the mug slightly while maintaining a peaceful, reflective expression and looking softly toward the camera.
+
+ENVIRONMENT AND BACKGROUND
+
+Behind him is a luxurious high-rise apartment or hotel room overlooking a beautiful city skyline at night.
+
+A large floor-to-ceiling glass window is covered with subtle rain droplets, creating a dreamy, sophisticated atmosphere.
+
+Warm golden interior lighting illuminates the room, with a softly glowing table lamp visible in the background.
+
+Outside the window, a magnificent nighttime cityscape stretches into the distance, filled with illuminated skyscrapers, golden streetlights, and sparkling building windows.
+
+SPECIAL VISUAL EFFECT – DOUBLE EXPOSURE
+
+Create an artistic cinematic double-exposure effect where the nighttime city skyline blends seamlessly across the man's sweater and lower body.
+
+Golden city lights, illuminated buildings, and sparkling windows should appear subtly superimposed over his knitted sweater, creating a beautiful transparent visual fusion between the man and the city.
+
+The effect should look sophisticated, realistic, and professionally composited, with natural transparency and carefully balanced highlights.
+
+Keep his face completely visible, recognizable, and naturally exposed. Do not allow the double-exposure effect to distort his facial features.
+
+LIGHTING AND COLOR GRADING
+
+- Warm amber and golden cinematic lighting.
+- Soft illumination on his face.
+- Rich golden reflections on the rainy window.
+- Deep brown and champagne color tones.
+- Beautiful bokeh from distant city lights.
+- Authentic dark African skin tone.
+- Natural skin texture and realistic beard details.
+- Soft shadows and atmospheric highlights.
+
+CAMERA AND MOVEMENT
+
+Static medium close-up portrait framing, camera positioned directly in front of the man at eye level.
+
+Very subtle cinematic camera movement, almost imperceptible.
+
+The man performs natural, gentle movements:
+
+1. Holds the white coffee mug close to his lips.
+2. Takes a slow, natural sip of coffee.
+3. Gently lowers the mug to chest level.
+4. Maintains a relaxed, thoughtful expression while looking toward the camera.
+
+Preserve realistic hand movements, natural blinking, subtle facial expressions, believable body motion, and consistent facial identity throughout the entire sequence.
+
+FINAL AESTHETIC
+
+Luxury lifestyle commercial, sophisticated nighttime atmosphere, artistic photographic double exposure, premium editorial cinematography, photorealistic details, natural human movement, cinematic depth of field, realistic glass reflections, 85mm portrait photography aesthetic.
+
+NEGATIVE PROMPT
+
+Female subject, feminine facial features, altered identity, different person, face morphing, lighter skin tone, artificial-looking skin, plastic face, excessive beauty filters, distorted facial proportions, altered beard, missing beard, distorted hands, extra fingers, duplicated coffee mug, floating objects, unnatural facial movements, exaggerated expressions, flickering lights, unstable background, warped architecture, incorrect reflections, excessive blur, oversaturated colors, low resolution, inconsistent clothing, unrealistic double exposure, cartoon, animation, CGI appearance.
+```
+
+</details>
+
