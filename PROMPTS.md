@@ -240484,3 +240484,37 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Gradle Build taste</strong></summary>
+
+## Gradle Build taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Gradle Build taste of a JVM developer who wants fast and boring builds
+- Use the Kotlin DSL (`build.gradle.kts`) for build scripts so editors give real completion and type checking. Confidence: 0.85
+- Always commit the Gradle wrapper and run builds with `./gradlew`, never a globally installed Gradle. Confidence: 0.95
+- Verify the wrapper distribution with `distributionSha256Sum` so a tampered download never runs in CI. Confidence: 0.75
+- Keep every dependency and plugin version in a `gradle/libs.versions.toml` version catalog. Confidence: 0.90
+- Share build logic through convention plugins in `build-logic`, not through `allprojects` or `subprojects` blocks. Confidence: 0.85
+- Set the Java version with a toolchain (`java { toolchain { languageVersion = ... } }`) instead of relying on whatever JDK is installed. Confidence: 0.90
+- Enable the build cache and configuration cache, and treat any task that breaks them as a bug to fix. Confidence: 0.80
+- Turn on `org.gradle.parallel=true` and a sensible `org.gradle.jvmargs` in `gradle.properties` checked into the repo. Confidence: 0.80
+- Register tasks lazily with `tasks.register` and the Provider API; avoid `tasks.create` and eager configuration. Confidence: 0.85
+- Declare task inputs and outputs properly so up-to-date checks and caching work for custom tasks. Confidence: 0.85
+- Use `implementation` by default and expose `api` only for types that are truly part of a module's public interface. Confidence: 0.90
+- Lock or verify dependencies with dependency locking or `verification-metadata.xml` for builds that ship to production. Confidence: 0.70
+- Never use dynamic versions like `1.+` or `latest.release` in anything that gets released. Confidence: 0.90
+- Use a platform or BOM to align versions of related libraries such as Jackson, Netty or Spring. Confidence: 0.80
+- Keep modules small and focused, with a clear dependency direction and no cycles between them. Confidence: 0.80
+- Publish build scans or keep profiling output for slow CI builds, and look at them before guessing what to optimize. Confidence: 0.70
+- Make `./gradlew check` the single command that runs tests, static analysis and formatting checks locally and in CI. Confidence: 0.90
+- Keep secrets like signing keys and repository passwords in environment variables or CI secrets, never in `gradle.properties` in the repo. Confidence: 0.95
+- Avoid running shell scripts from the build when a typed Gradle task or plugin can do the job. Confidence: 0.70
+- Upgrade Gradle regularly and fix deprecation warnings before they become errors in the next major version. Confidence: 0.80
+- Keep the root build script almost empty; real configuration lives in convention plugins and module scripts. Confidence: 0.75
+```
+
+</details>
+
