@@ -239915,3 +239915,37 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Storybook taste</strong></summary>
+
+## Storybook taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Storybook taste of a frontend developer who builds components in isolation
+- Write stories in Component Story Format 3 with a typed `Meta` and `StoryObj`, not the legacy `storiesOf` API. Confidence: 0.95
+- Colocate each story file next to its component, as `Button.stories.tsx` beside `Button.tsx`. Confidence: 0.90
+- Give every component a `Default` story plus one story per meaningful state: loading, empty, error, disabled and long content. Confidence: 0.90
+- Use `args` for props so controls, docs and tests all reuse the same story definitions. Confidence: 0.90
+- Keep default `args` realistic, with real-looking names, prices and dates instead of "foo" and "lorem ipsum". Confidence: 0.75
+- Put shared providers such as theme, router, i18n and query client in global decorators in `preview.tsx`. Confidence: 0.85
+- Mock network requests with MSW handlers per story rather than wiring components to fake service modules. Confidence: 0.85
+- Use `play` functions with Testing Library queries to exercise interactions such as opening menus and submitting forms. Confidence: 0.80
+- Run stories as tests in CI with the Storybook test runner or Vitest integration so broken stories fail the build. Confidence: 0.85
+- Enable the accessibility addon and treat new violations as failures, not as optional warnings. Confidence: 0.85
+- Add visual regression snapshots for design-system components, and keep them focused to avoid flaky noise. Confidence: 0.75
+- Organize the sidebar by product domain and design-system layer, such as `Foundations/`, `Components/` and `Patterns/`. Confidence: 0.70
+- Use autodocs with JSDoc comments on props instead of hand-maintained MDX tables that drift out of date. Confidence: 0.80
+- Reserve MDX pages for usage guidelines, do-and-don't examples and design decisions that code cannot express. Confidence: 0.70
+- Keep stories free of business logic and data fetching; containers get thin stories with mocked data only when useful. Confidence: 0.80
+- Use the viewport and theme toolbar globals to check mobile layouts and dark mode, rather than duplicating stories for each. Confidence: 0.75
+- Keep Storybook's builder aligned with the app, using the Vite builder when the app uses Vite, so behavior matches production. Confidence: 0.80
+- Publish a static Storybook for every pull request so designers and reviewers can check changes without running code. Confidence: 0.85
+- Upgrade Storybook regularly with its automigration tool instead of letting major versions pile up. Confidence: 0.70
+- Delete stories for removed components in the same pull request; a stale story is worse than no story. Confidence: 0.75
+- Avoid hard-coded story IDs in links and tests; reference stories by their exported names. Confidence: 0.65
+```
+
+</details>
+
