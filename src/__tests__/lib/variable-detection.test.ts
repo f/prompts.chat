@@ -371,3 +371,41 @@ describe("getPatternDescription", () => {
     expect(getPatternDescription("dollar_curly")).toBe("${...}");
   });
 });
+
+describe("Markdown link preservation", () => {
+  it("should preserve inline Markdown links", () => {
+    expect(convertAllVariables("See the [documentation](https://example.com) for details.")).toBe("See the [documentation](https://example.com) for details.");
+  });
+
+  it("should preserve Markdown images", () => {
+    expect(convertAllVariables("![Screenshot](https://example.com/a.png)")).toBe("![Screenshot](https://example.com/a.png)");
+  });
+
+  it("should preserve full and collapsed reference links", () => {
+    expect(convertAllVariables("Read [the guide][guide] and [Docs][].\n\n[guide]: https://example.com/guide")).toBe("Read [the guide][guide] and [Docs][].\n\n[guide]: https://example.com/guide");
+  });
+
+  it("should preserve shortcut reference links with a definition", () => {
+    expect(convertAllVariables("Check [Docs] first.\n\n[Docs]: https://example.com")).toBe("Check [Docs] first.\n\n[Docs]: https://example.com");
+  });
+
+  it("should convert placeholders mixed with Markdown links", () => {
+    expect(convertAllVariables("Hi [USERNAME], read the [documentation](https://example.com) and [Your Name].")).toBe("Hi ${username}, read the [documentation](https://example.com) and ${your_name}.");
+  });
+
+  it("should still convert bracket placeholders followed by a space and parenthesis", () => {
+    expect(convertAllVariables("Hello [NAME] (optional)")).toBe("Hello ${name} (optional)");
+  });
+
+  it("should convert a single-bracket placeholder right after a double-bracket one", () => {
+    expect(convertAllVariables("[[FIRST]][LAST]")).toBe("${first}${last}");
+  });
+
+  it("should match shortcut reference labels with collapsed internal whitespace", () => {
+    expect(convertAllVariables("Read [My Docs].\n\n[My  Docs]: https://example.com")).toBe("Read [My Docs].\n\n[My  Docs]: https://example.com");
+  });
+
+  it("should not detect Markdown link text as a variable", () => {
+    expect(detectVariables("[documentation](https://example.com)")).toHaveLength(0);
+  });
+});
