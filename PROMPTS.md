@@ -240418,3 +240418,16 @@ Rules:
 
 </details>
 
+<details>
+<summary><strong>Encaustic Hot Wax Painting of a Poppy Field Under a Summer Storm Sky</strong></summary>
+
+## Encaustic Hot Wax Painting of a Poppy Field Under a Summer Storm Sky
+
+Contributed by [@f](https://github.com/f)
+
+```md
+An encaustic hot wax painting of a wild red poppy field under a dark summer storm sky, landscape 4:3. Built up in many translucent layers of pigmented beeswax fused with heat on a wooden panel: in the foreground, dozens of scarlet poppies with black centers and thin bending green stems sway through tall golden grasses and a few blue cornflowers; in the middle ground the field rolls over a gentle hill toward a lone farmhouse with a red roof and a single tall cypress tree; above, heavy slate-blue and violet storm clouds gather, with one bright break of warm yellow light falling across the field. Encaustic technique details: glossy, semi-translucent wax with visible depth between layers, soft melted edges where colors flow into each other, scraped and incised lines in the grasses, small drips and raised textured ridges of wax, a buffed satin sheen with soft reflections, and a slightly uneven hand-made surface where the wooden panel edge shows at the borders. Rich, saturated colors: scarlet, ochre, sage green, slate blue, violet, warm cream. Viewed straight on as a flat artwork in soft even daylight. No text, no signature, no frame, no people.
+```
+
+</details>
+
