@@ -240586,3 +240586,87 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Photo-to-Poster Visual DNA: Split Editorial Photo Over an Abstract Swiss-Design Symbol (3:4)</strong></summary>
+
+## Photo-to-Poster Visual DNA: Split Editorial Photo Over an Abstract Swiss-Design Symbol (3:4)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Transform my uploaded photo into a standalone, premium-quality 3:4 vertical design poster. Divide the entire canvas into two perfectly equal horizontal sections: the top half (50%) and the bottom half (50%). The upper section should feature realistic photography, while the lower section should present an abstract visual symbol derived from the core identity of the subject.
+
+TOP HALF – REALISTIC PHOTOGRAPHY
+
+Preserve the original subject's structure, realistic textures, natural lighting, shadows, and original color atmosphere. Apply only subtle, sophisticated color grading to achieve the aesthetic of fine-art photography and independent editorial publications.
+
+The background may be naturally extended to fit the canvas, but never stretch, distort, or alter the original subject.
+
+BOTTOM HALF – ABSTRACT VISUAL IDENTITY
+
+Extract the photograph's essential visual characteristics: the subject's silhouette, structure, posture, and narrative relationships. Do not recreate the entire object. Instead, reduce it into a recognizable abstract visual symbol.
+
+Use geometric deconstruction, modular shapes, structured lines, negative space, and symbolic elements to create a central visual identity inspired by premium branding and experimental design systems.
+
+Focus on the subject's core character rather than minor details. Even with minimal geometric elements, the abstract symbol must remain visually connected to the original photograph.
+
+VISUAL STYLE & DESIGN LANGUAGE
+
+Post-digital graphic design, deconstructed Swiss design, generative symbol systems, and diagrammatic abstraction.
+
+Build a systematic visual language using geometric modules, fine lines, circular trajectories, grids, micro-symbols, numerical indexing, and abstract nodes.
+
+Create visual tension between:
+- Order × Imperfection
+- Precision × Handmade Traces
+- Digital × Analog
+- Rationality × Emotion
+
+Achieve strong visual recognition using the fewest possible elements. Keep everything minimal and avoid unnecessary complexity.
+
+COMPOSITION & LAYOUT
+
+Maintain a highly restrained composition. The abstract symbol must be the sole visual focal point, positioned centrally or slightly off-center, surrounded by generous negative space.
+
+Avoid excessive icons, decorative elements, or infographic-style layouts.
+
+The overall aesthetic should resemble the core visual identity of contemporary art institutions, architectural studios, experimental creative labels, and premium design brands.
+
+TYPOGRAPHY & DETAILS
+
+Typography should function only as a supporting system component, never as a dominant headline.
+
+You may incorporate extremely small numbers, letters, or short phrases that interact with the abstract symbol through indexing and reference relationships.
+
+Use refined, restrained typography with the subtle annotation aesthetic of archival documents and experimental art publications.
+
+COLOR SYSTEM
+
+Extract the signature colors from the original photograph and reinterpret them as a cohesive brand color system.
+
+Introduce a small number of distinctive accent colors as functional visual codes, such as teal, blue, magenta, or orange, combined with gray-white or warm-white backgrounds for contrast.
+
+Colors should function as systematic identifiers rather than decoration.
+
+Avoid chaotic color combinations, cheap neon effects, and generic commercial gradients.
+
+PRINT TEXTURE & MATERIALITY
+
+Incorporate subtle material effects inspired by:
+- Xerox texture
+- Risograph grain
+- Print registration errors
+- Scanner noise
+- Subtle paper texture
+
+Add delicate printing misalignment, fine grain, scanning noise, and slightly imperfect edges to give the digital symbols the tactile quality of physical print.
+
+FINAL OBJECTIVE
+
+Extract an independent and self-contained visual DNA from the original photograph.
+
+The final result should feel like a sophisticated, minimal, culturally meaningful abstract logo with a strong visual identity and systematic design language.
+```
+
+</details>
+
