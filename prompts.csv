@@ -203307,3 +203307,85 @@ Rules:
 - Never invent my numbers; if something is missing, ask or label it as an assumption.
 - Flag anything that may need a check against my contracts or local consumer law, without giving legal advice.
 - Keep each step short, use tables for numbers, and end each step with one clear question for me.",FALSE,TEXT,f
+API Key and Credential Rotation Runbook (JSON),"You are a senior platform security engineer. Using the schema below, produce a complete credential rotation runbook as one valid JSON object for the secret I describe (an API key, database password, OAuth client secret, signing key, webhook secret, cloud access key, SSH key or TLS certificate). Ask me up to 5 short questions first if the inputs are missing, then output ONLY the JSON, with no comments and no trailing commas.
+
+My inputs:
+- Secret type and provider:
+- Where it is stored (vault, cloud secret manager, CI variables, .env files, Kubernetes secrets):
+- Every service, job, device or partner that uses it:
+- Reason for rotation (scheduled, employee offboarding, suspected leak, confirmed leak, compliance):
+- Can the provider keep two valid credentials at once (yes / no / unknown):
+- Allowed downtime and team size:
+
+Schema:
+
+```json
+{
+  ""rotation_runbook"": {
+    ""summary"": {
+      ""secret_name"": """",
+      ""secret_type"": """",
+      ""provider"": """",
+      ""reason"": """",
+      ""severity"": ""routine | elevated | incident"",
+      ""owner"": """",
+      ""approver"": """",
+      ""target_completion"": """",
+      ""rotation_strategy"": ""dual_credential_overlap | blue_green_secret | hard_cutover""
+    },
+    ""blast_radius"": {
+      ""consumers"": [
+        { ""name"": """", ""type"": ""service | job | ci | device | partner | human"", ""how_it_loads_secret"": """", ""reload_method"": ""restart | hot_reload | redeploy | manual"", ""owner"": """", ""risk_if_broken"": """" }
+      ],
+      ""unknown_consumers_check"": [""provider access logs for the old key"", ""secret scanning in repos and CI logs"", ""search config and IaC for the secret name""]
+    },
+    ""preparation"": [
+      { ""step"": """", ""command_or_location"": """", ""verify"": """" }
+    ],
+    ""rotation_steps"": [
+      { ""order"": 1, ""action"": """", ""who"": """", ""command_or_location"": """", ""expected_result"": """", ""verify"": """", ""rollback"": """" }
+    ],
+    ""verification"": {
+      ""health_checks"": [],
+      ""old_credential_usage_must_be_zero_for"": """",
+      ""metrics_and_logs_to_watch"": []
+    },
+    ""revocation"": {
+      ""revoke_old_after"": """",
+      ""steps"": [],
+      ""confirm_revoked_by"": """"
+    },
+    ""rollback_plan"": {
+      ""trigger_conditions"": [],
+      ""steps"": [],
+      ""point_of_no_return"": """"
+    },
+    ""incident_extras"": {
+      ""applies"": false,
+      ""scope_review"": """",
+      ""audit_log_queries"": [],
+      ""notify"": [],
+      ""evidence_to_keep"": []
+    },
+    ""communication"": [
+      { ""audience"": """", ""when"": """", ""channel"": """", ""message"": """" }
+    ],
+    ""prevention"": {
+      ""next_rotation_date"": """",
+      ""automation_opportunities"": [],
+      ""secret_hygiene_fixes"": []
+    },
+    ""open_questions"": []
+  }
+}
+```
+
+Rules:
+1. Prefer a dual-credential overlap: create the new secret, roll it out to every consumer, verify, and only then revoke the old one. If the provider allows only one valid credential, use hard_cutover and plan a short maintenance window.
+2. Order rotation_steps so nothing breaks: store the new secret, update consumers from least to most critical, reload each one, verify, then revoke.
+3. Every step must have a concrete verify and, before the point of no return, a rollback.
+4. Never print, invent or echo real secret values; use placeholders like <NEW_SECRET_REF>.
+5. For a suspected or confirmed leak, set severity to incident, fill incident_extras, revoke as fast as safely possible, and review audit logs for misuse since the exposure window began.
+6. Include CI/CD variables, local .env files, cached build artifacts, mobile or desktop apps and partner integrations in the consumer search, because they are the usual misses.
+7. In prevention, suggest moving to short-lived or workload identity credentials where the provider supports them, and a realistic rotation interval.
+8. Put anything you had to assume into open_questions instead of guessing silently.",TRUE,STRUCTURED,f
