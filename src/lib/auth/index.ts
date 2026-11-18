@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { isUniqueConstraintViolation } from "@/lib/db-errors";
 import { getConfig } from "@/lib/config";
 import { initializePlugins, getAuthPlugin } from "@/lib/plugins";
+import { getAnalyticsUserId } from "@/lib/analytics-user";
 import type { Adapter, AdapterUser } from "next-auth/adapters";
 
 // Initialize plugins before use
@@ -208,6 +209,8 @@ async function buildAuthConfig() {
           session.user.locale = token.locale as string;
           session.user.name = token.name ?? null;
           session.user.image = token.picture ?? null;
+          const analyticsId = getAnalyticsUserId(token.id as string);
+          if (analyticsId) session.user.analyticsId = analyticsId;
         }
         return session;
       },
@@ -231,6 +234,7 @@ declare module "next-auth" {
       role: string;
       username: string;
       locale: string;
+      analyticsId?: string;
     };
   }
 }
