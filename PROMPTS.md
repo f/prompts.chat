@@ -241431,3 +241431,66 @@ I want to create a prompt to analyse football games that will play GG+2 that is 
 
 </details>
 
+<details>
+<summary><strong>mbappe steals Harry kane balon d,or</strong></summary>
+
+## mbappe steals Harry kane balon d,or
+
+Contributed by @anonymous
+
+```md
+**Setting:** The 2026 Ballon d’Or Ceremony. Grand stage in Paris. Golden trophy sits centre on a pedestal. Audience claps. Host stands at microphone. Harry Kane sits front row, dressed sharp, smiling, ready to go up. Kylian Mbappé sits nearby. Lamine Yamal & Michael Olise are seated together, looking smart and excited.
+
+---
+
+## Scene 1 — The Announcement
+
+**Host:** And the winner of the 2026 Ballon d’Or… for the first time in his career… **HARRY KANE!**
+
+*(Applause erupts. Harry grins, stands up, shakes hands, walks toward the stage. Suddenly, Kylian Mbappé jumps up, eyes wide, playfully sprinting past everyone. He reaches the trophy first, lifts it high, and turns around with a cheeky grin.)*
+
+**Mbappé:** *(holding trophy above head)* MINE! 😜 I WON IT!
+
+*(Audience laughs. Harry stops, hands on hips, shaking his head with a smile.)*
+
+**Kane:** Kylian… put it down. They called **my** name.
+
+**Mbappé:** *(backing away, trophy still in hands)* Are you sure? Maybe I misheard! It sounded like *Kylian*!
+
+---
+
+## Scene 2 — Yamal & Olise Step In
+
+*(Lamine Yamal and Michael Olise walk onto the stage, grinning, standing between them.)*
+
+**Yamal:** Guys, calm down — everyone saw the envelope! It says **Harry Kane**.
+
+**Olise:** Yeah, Kylian, don’t be greedy! You’ve got enough already! Hand it over, mate.
+
+**Mbappé:** *(pulling trophy slightly away)* Just let me hold it for one photo! Please? I promise I’ll give it back after the picture!
+
+**Kane:** *(laughing)* One photo. That’s it. Then I get it. Deal?
+
+**Mbappé:** Deal! *(grins big)*
+
+---
+
+## Scene 3 — The Selfie & The Handover
+
+*(Mbappé holds the trophy high. Yamal pulls out his phone. All four squeeze together — Harry in the middle, Mbappé on one side still gripping the trophy, Yamal and Olise on the other two sides — all smiling for the camera.)*
+
+**Yamal:** Say CHEESE! And… got it!
+
+*(Mbappé sighs, smiles, and gently passes the trophy into Harry’s hands.)*
+
+**Mbappé:** Okay… it looks better on you anyway. Congratulations, Harry. You deserve it.
+
+**Kane:** Thank you, Kylian. And thanks, guys — for coming to save me from this one. *(laughs)*
+
+**Olise:** No problem! Now go give your speech — before he tries to run off with it again!
+
+*(Everyone laughs. Mbappé raises his hands in surrender. Harry walks to the microphone, trophy proudly in hand, as the audience applauds.)*
+```
+
+</details>
+
