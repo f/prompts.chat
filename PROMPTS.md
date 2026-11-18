@@ -241145,3 +241145,29 @@ Photorealistic low-angle wildlife photograph of newly hatched loggerhead sea tur
 
 </details>
 
+<details>
+<summary><strong>Loggerhead Sea Turtle Hatchlings Racing to the Surf at Sunrise (Image-to-Video Animation)</strong></summary>
+
+## Loggerhead Sea Turtle Hatchlings Racing to the Surf at Sunrise (Image-to-Video Animation)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Use the attached still (step 1: a low photograph of ten loggerhead sea turtle hatchlings crawling across wet sand toward the sea at sunrise) as the exact first frame and animate it into a 6-second, 16:9 cinematic shot. Keep every element where it is in the still: the ten hatchlings and their positions on the sand, the open nest hollow at the lower left, the foamy wave edge from the top center to the right, the low sun on the horizon at the right and the pink and orange sky.
+
+Motion (0-6 s):
+- 0-1.5 s: the hatchlings begin to move, flippers pushing in small alternating strokes as they crawl diagonally toward the upper right; light glints on the wet sand.
+- 1.5-4 s: the hatchlings keep scrambling toward the water at a natural, slightly clumsy pace, leaving fresh flipper tracks, while a foamy wave rolls up the beach from the right and spreads over the sand toward them.
+- 4-6 s: the wave's foam edge reaches the leading hatchlings and washes around their flippers, then slowly recedes, leaving a glossy reflective sheen and small bubbles on the sand as the group keeps crawling seaward.
+
+Camera: locked-off low framing just above the sand with a very slow, slight push-in; focus stays on the nearest hatchlings; no cuts.
+
+Lighting and mood: constant soft sunrise light, warm pink and orange reflections and a sun glint on the water; hopeful, calm, natural.
+
+Audio (if supported): gentle surf, the soft hiss of foam on the sand, a light breeze; no music, no voices.
+
+Avoid: people, hands, birds, extra or duplicated turtles appearing, turtles morphing or walking upright, sudden lighting changes, unnatural fast motion, text.
+```
+
+</details>
+
