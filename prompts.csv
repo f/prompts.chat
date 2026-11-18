@@ -203959,3 +203959,24 @@ Lighting and mood: constant soft sunrise light, warm pink and orange reflections
 Audio (if supported): gentle surf, the soft hiss of foam on the sand, a light breeze; no music, no voices.
 
 Avoid: people, hands, birds, extra or duplicated turtles appearing, turtles morphing or walking upright, sudden lighting changes, unnatural fast motion, text.",FALSE,TEXT,f
+Docker Compose taste,"# Docker Compose taste of a developer who wants one-command local environments
+- Make `docker compose up` the only command a new teammate needs to start the full local stack. Confidence: 0.90
+- Name the file `compose.yaml` and drop the obsolete top-level `version:` key. Confidence: 0.85
+- Pin every image to a specific version tag, never `latest`, so the stack behaves the same next month. Confidence: 0.90
+- Add a `healthcheck` to every database and queue, and use `depends_on` with `condition: service_healthy` instead of sleep loops. Confidence: 0.90
+- Keep secrets and machine-specific values in a gitignored `.env` file, and commit a `.env.example` with safe defaults. Confidence: 0.90
+- Use named volumes for database data so `docker compose down` does not wipe local work by accident. Confidence: 0.85
+- Bind ports to `127.0.0.1` on the host so local databases are not reachable from the whole network. Confidence: 0.80
+- Mount source code only for services you edit live, and use `develop.watch` or a bind mount with clear sync rules. Confidence: 0.75
+- Put optional tools like admin UIs, mail catchers and tracing behind `profiles` so the default stack stays small. Confidence: 0.80
+- Use `compose.override.yaml` for personal tweaks and keep it out of git. Confidence: 0.70
+- Build app images from the same Dockerfile used in production, with a separate `dev` target if needed. Confidence: 0.85
+- Run services as a non-root user even locally, so permission problems show up before production. Confidence: 0.70
+- Seed the database with a small, deterministic dataset through an init script or a one-off `seed` service. Confidence: 0.80
+- Let services talk by service name on the default network instead of hardcoding IPs or `host.docker.internal`. Confidence: 0.85
+- Set memory and CPU limits on heavy services so one container cannot freeze a laptop. Confidence: 0.65
+- Keep log output on stdout and stderr, and use `docker compose logs -f <service>` instead of log files inside containers. Confidence: 0.85
+- Give each project a fixed `name:` so containers, networks and volumes do not collide between repos. Confidence: 0.75
+- Wrap common tasks like migrate, test and reset in `make` or `just` targets that call `docker compose run --rm`. Confidence: 0.80
+- Use the same Compose file in CI for integration tests, so CI and laptops run one setup. Confidence: 0.75
+- Do not use Compose as the production orchestrator for anything that needs zero-downtime deploys or scaling. Confidence: 0.80",TRUE,TEXT,f
