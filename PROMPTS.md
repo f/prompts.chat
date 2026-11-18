@@ -241364,3 +241364,16 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>A story of a boy who wants to become cricket player </strong></summary>
+
+## A story of a boy who wants to become cricket player 
+
+Contributed by @anonymous
+
+```md
+A boy's story about becoming a cricket player just like virat kohli 
+```
+
+</details>
+
