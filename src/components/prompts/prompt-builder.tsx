@@ -2,13 +2,14 @@
 
 import { useState, useRef, useEffect, useImperativeHandle, forwardRef } from "react";
 import { useTranslations } from "next-intl";
-import { ArrowUp, Loader2, Sparkles, X, ChevronRight, Bot } from "lucide-react";
+import { ArrowUp, Loader2, Sparkles, X, ChevronRight, Bot, Search, Zap } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { MiniPromptCard } from "./mini-prompt-card";
 import { cn } from "@/lib/utils";
+import { CHAT_MODE_CONFIG, DEFAULT_CHAT_MODE, type ChatMode } from "@/lib/ai/chat-modes";
 
 interface PromptBuilderState {
   title: string;
@@ -79,6 +80,7 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
     return window.innerWidth >= 768;
   });
   const [messages, setMessages] = useState<Message[]>([]);
+  const [chatMode, setChatMode] = useState<ChatMode>(DEFAULT_CHAT_MODE);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [streamingContent, setStreamingContent] = useState("");
@@ -151,6 +153,7 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
           currentState,
           availableTags,
           availableCategories,
+          mode: chatMode,
         }),
       });
 
@@ -560,9 +563,33 @@ export const PromptBuilder = forwardRef<PromptBuilderHandle, PromptBuilderProps>
             disabled={isLoading}
           />
           <div className="flex items-center justify-between mt-1.5">
-            <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-              <Bot className="h-2.5 w-2.5" />
-              <span>{modelName}</span>
+            <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-0.5 rounded-full bg-background border p-0.5">
+                {(Object.keys(CHAT_MODE_CONFIG) as ChatMode[]).map((m) => {
+                  const active = chatMode === m;
+                  const Icon = m === "pro" ? Zap : Search;
+                  return (
+                    <button
+                      key={m}
+                      type="button"
+                      onClick={() => setChatMode(m)}
+                      disabled={isLoading}
+                      title={m === "pro" ? "Pro — extra compute & more sources" : "Search — fast, search-enabled"}
+                      className={cn(
+                        "flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] transition-colors",
+                        active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      <Icon className="h-2.5 w-2.5" />
+                      <span>{CHAT_MODE_CONFIG[m].label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                <Bot className="h-2.5 w-2.5" />
+                <span>{modelName}</span>
+              </div>
             </div>
             <Button
               size="icon"

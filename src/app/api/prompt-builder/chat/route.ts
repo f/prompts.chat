@@ -8,10 +8,15 @@ import {
   type PromptBuilderState,
 } from "@/lib/ai/prompt-builder-tools";
 import { loadPrompt, getSystemPrompt } from "@/lib/ai/load-prompt";
+import {
+  getChatModeConfig,
+  resolveChatMode,
+  resolveModel,
+  buildSearchContext,
+} from "@/lib/ai/chat-modes";
+import { semanticSearch } from "@/lib/ai/embeddings";
 
 const promptBuilderAgentPrompt = loadPrompt("src/app/api/prompt-builder/chat/prompt-builder-agent.prompt.yml");
-
-const GENERATIVE_MODEL = process.env.OPENAI_GENERATIVE_MODEL || "gpt-4o-mini";
 
 // Rate limiting configuration
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
@@ -59,6 +64,8 @@ interface RequestBody {
   currentState: PromptBuilderState;
   availableTags: Array<{ id: string; name: string; slug: string; color: string }>;
   availableCategories: Array<{ id: string; name: string; slug: string; parentId: string | null }>;
+  /** Perplexity-style chat mode: "search" (fast) or "pro" (extra compute). */
+  mode?: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -105,6 +112,9 @@ export async function POST(request: NextRequest) {
 
   const body: RequestBody = await request.json();
   const { messages, currentState, availableTags, availableCategories } = body;
+  const mode = resolveChatMode(body.mode);
+  const modeConfig = getChatModeConfig(mode);
+  const model = resolveModel(mode);
 
   // Create a streaming response using TransformStream for better Node.js compatibility
   const encoder = new TextEncoder();
@@ -136,6 +146,24 @@ ${tagNames || "(none)"}
 AVAILABLE CATEGORIES (use exact names with set_category):
 ${categoryNames || "(none)"}`;
 
+      // Perplexity-style grounding: in search/pro modes, retrieve relevant
+      // prompts for the latest user message and inject them as cite-able sources.
+      let searchContext = "";
+      if (modeConfig.searchEnabled) {
+        const lastUserMessage = [...messages].reverse().find((m) => m.role === "user");
+        const query = lastUserMessage?.content?.trim();
+        if (query) {
+          try {
+            const results = await semanticSearch(query, modeConfig.searchLimit);
+            searchContext = buildSearchContext(
+              results.map((r) => ({ title: r.title, content: r.content, similarity: r.similarity }))
+            );
+          } catch (e) {
+            console.error("Search grounding failed:", e);
+          }
+        }
+      }
+
       // Build system message with current state context
       const hasContent = currentState.title || currentState.content || currentState.description;
       const selectedTagNames = currentState.tagIds
@@ -160,7 +188,7 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
 
       // Convert messages to OpenAI format
       const openaiMessages: OpenAI.Chat.ChatCompletionMessageParam[] = [
-        { role: "system", content: SYSTEM_PROMPT + availableContext + stateContext },
+        { role: "system", content: SYSTEM_PROMPT + availableContext + searchContext + stateContext },
       ];
 
       for (const msg of messages) {
@@ -199,7 +227,7 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
       // Agentic loop with streaming
       let state = { ...currentState };
       let loopCount = 0;
-      const maxLoops = 10;
+      const maxLoops = modeConfig.maxLoops;
       const allToolCalls: Array<{ id: string; name: string; arguments: string; result: unknown }> = [];
 
       while (loopCount < maxLoops) {
@@ -207,12 +235,12 @@ CRITICAL: When editing content, you MUST preserve the FULL content above. Do NOT
 
         // Use streaming for the final response
         const response = await openai.chat.completions.create({
-          model: GENERATIVE_MODEL,
+          model,
           messages: openaiMessages,
           tools: PROMPT_BUILDER_TOOLS,
           tool_choice: "auto",
-          temperature: 0.7,
-          max_tokens: 2000,
+          temperature: modeConfig.temperature,
+          max_tokens: modeConfig.maxTokens,
           stream: true,
         });
 

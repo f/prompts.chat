@@ -3,91 +3,10 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import fs from "fs/promises";
 import path from "path";
+import { parsePromptsCsv, type CsvRow } from "@/lib/csv/parse-prompts";
 
-interface CsvRow {
-  act: string;
-  prompt: string;
-  for_devs: string;
-  type: string;
-  contributor: string;
-}
-
-// Unescape literal escape sequences like \n, \t, etc.
-function unescapeString(str: string): string {
-  return str
-    .replace(/\\n/g, '\n')
-    .replace(/\\r/g, '\r')
-    .replace(/\\t/g, '\t')
-    .replace(/\\\\/g, '\\');
-}
-
-function parseCSV(content: string): CsvRow[] {
-  const rows: CsvRow[] = [];
-  const values: string[] = [];
-  let current = "";
-  let inQuotes = false;
-  let isFirstRow = true;
-  
-  // Parse character by character to handle multi-line quoted fields
-  for (let i = 0; i < content.length; i++) {
-    const char = content[i];
-    const nextChar = content[i + 1];
-    
-    if (char === '"' && !inQuotes) {
-      inQuotes = true;
-    } else if (char === '"' && inQuotes) {
-      if (nextChar === '"') {
-        // Escaped quote ""
-        current += '"';
-        i++;
-      } else {
-        inQuotes = false;
-      }
-    } else if (char === ',' && !inQuotes) {
-      values.push(current);
-      current = "";
-    } else if ((char === '\n' || (char === '\r' && nextChar === '\n')) && !inQuotes) {
-      // End of row (not inside quotes)
-      if (char === '\r') i++; // Skip \r in \r\n
-      
-      values.push(current);
-      current = "";
-      
-      if (isFirstRow) {
-        // Skip header row
-        isFirstRow = false;
-      } else if (values.some(v => v.trim())) {
-        // Only add non-empty rows
-        rows.push({
-          act: values[0]?.trim() || "",
-          prompt: unescapeString(values[1] || ""),
-          for_devs: values[2]?.trim() || "",
-          type: values[3]?.trim() || "",
-          contributor: values[4]?.trim() || "",
-        });
-      }
-      values.length = 0; // Clear array
-    } else {
-      current += char;
-    }
-  }
-  
-  // Handle last row if file doesn't end with newline
-  if (current || values.length > 0) {
-    values.push(current);
-    if (!isFirstRow && values.some(v => v.trim())) {
-      rows.push({
-        act: values[0]?.trim() || "",
-        prompt: unescapeString(values[1] || ""),
-        for_devs: values[2]?.trim() || "",
-        type: values[3]?.trim() || "",
-        contributor: values[4]?.trim() || "",
-      });
-    }
-  }
-  
-  return rows;
-}
+// Backwards-compatible local alias for the shared parser.
+const parseCSV = (content: string): CsvRow[] => parsePromptsCsv(content);
 
 function mapCsvTypeToPromptType(csvType: string): { type: "TEXT" | "IMAGE" | "VIDEO" | "AUDIO" | "STRUCTURED"; structuredFormat: "JSON" | "YAML" | null } {
   const type = csvType.toUpperCase();
