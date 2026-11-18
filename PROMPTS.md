@@ -241547,3 +241547,22 @@ I need a prompt for formatting an Arabic Word document, covering aspects such as
 
 </details>
 
+<details>
+<summary><strong>Crear póster </strong></summary>
+
+## Crear póster 
+
+Contributed by @anonymous
+
+```md
+Con la siguiente imagen créame un póster super moderno con las siguientes descripciones, tomate el tiempo necesario y eficaz , pero hazlo con la máxima calidad posible:Concepto del Póster: Invitación Partido de Fútbol *Título principal Resaltado en HD 4k en tipografía grande, Elegante y deportiva (Negrita, Montserrat o Sans Serif):*
+🔥"GRANDIOSO PARTIDO DE FUTBOL"🔥
+ "*Los Amigos de Beto Vs Coronado FC⚡"* 
+*Fecha, Hora y Lugar destacadas en letra grande Montserrat o Sans Serif:* *📆 Fecha:* Sábado 21 de Noviembre de 2026 *⏰Hora:* 1:30 PM *📍Lugar:* Cancha del Polideportivo de Coronado 
+Composición visual y elegante de linea continua escrita a mano: Fondo principal: Un estadio de fútbol ultra moderno iluminado con gradas llenas de aficionados con camisetas rojas y con banderas alentando a los equipos,Jugadores de ambos equipos pateando un balón....Cielo azul degradado con iluminación tipo atardecer (para calidez y emoción). Zona central: Equipo: "*Los Amigos de Beto"*..camiseta Roja brillante con rombos blancos a los costados , pantalón negro encendido y medias negras. La palabra "*Los Amigos de Beto"* debe estar resaltada e incrustada en HD 4k en la camiseta en letra blanco marfil brillante y en las medias negras también debe ir resaltada en HD 4k la palabra"Los Amigos de Beto" en letra blanca marfil brillante.
+Equipo:*"Coronado FC⚡* ... camiseta verde brillante con cuadros amarillos pequeños, pantalón amarillo claro y medias amarillas. La palabra "Coronado FC⚡" debe estar resaltada e incrustada en HD 4k en la camiseta en letra blanco brillante. 📐 UsaTipografía super Legible y sutil grande del póster: Título: Sans serif o Montserrat moderna en HD gruesa y en mayúsculas. En la parte superior usa un título grande resaltado y en la parte de abajo del póster en letra mediana verdana moderna debe ir la siguiente descripción,con la máxima calidad posible..*"¡Las rodillas pueden quejarse, pero el corazón sigue pidiendo balón!*”...*"¡Corremos despacio para que el partido dure más!”* *"Viejos en años, jóvenes en ganas"*"🤣😂🫣🤪❤️."
+Tamaño sugerido: A3 (310 x 420 mm) o tamaño personalizado.. Comprueba que no falte ningún punto o detalle importante...
+```
+
+</details>
+
