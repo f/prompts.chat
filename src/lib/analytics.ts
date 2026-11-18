@@ -7,11 +7,51 @@
 
 declare global {
   interface Window {
+    dataLayer?: unknown[];
     gtag?: (
-      command: "event" | "config" | "js",
-      action: string,
+      command: "event" | "config" | "js" | "set",
+      target: string | Date | Record<string, unknown>,
       params?: Record<string, unknown>
     ) => void;
+  }
+}
+
+export const GA_LOGGED_IN_PROPERTY = "logged_in";
+
+export interface AnalyticsAuthState {
+  loggedIn: boolean;
+  /** Pseudonymous id from `getAnalyticsUserId`, or null to send no `user_id`. */
+  userId: string | null;
+}
+
+/**
+ * Applies the signed-in state to every subsequent GA hit on the page via
+ * `gtag('set')`. Only called when GA is configured, so the stub it may create
+ * is drained once gtag.js loads, keeping command order intact.
+ */
+export function applyAnalyticsAuthState(
+  state: AnalyticsAuthState,
+  previous?: AnalyticsAuthState | null
+) {
+  if (typeof window === "undefined") return;
+
+  if (!window.gtag) {
+    const dataLayer = (window.dataLayer = window.dataLayer || []);
+    window.gtag = function gtag() {
+      // gtag.js only processes Arguments objects, not arrays
+      // eslint-disable-next-line prefer-rest-params
+      dataLayer.push(arguments);
+    };
+  }
+
+  window.gtag("set", "user_properties", {
+    [GA_LOGGED_IN_PROPERTY]: state.loggedIn ? "true" : "false",
+  });
+
+  if (state.userId) {
+    window.gtag("set", { user_id: state.userId });
+  } else if (previous?.userId) {
+    window.gtag("set", { user_id: null });
   }
 }
 
