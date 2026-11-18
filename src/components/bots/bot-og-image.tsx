@@ -1,11 +1,10 @@
 /* eslint-disable @next/next/no-img-element -- satori renders plain <img>, next/image does not apply */
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from "react";
 import { BOT_ICON_COMPONENTS } from "@/components/bots/bot-avatar";
 import { GrokLogo } from "@/components/bots/bot-platform-icon";
 import { getConfig } from "@/lib/config";
+import { readBundledDataUri } from "@/lib/bundled-files";
 import { BOT_PLATFORM_INFO, BOT_PLATFORMS, type BotColor, type BotIconName, type BotPlatform } from "@/lib/bots/schema";
 
 export const BOT_OG_SIZE = { width: 1200, height: 630 };
@@ -55,8 +54,9 @@ function expandIcon(node: ReactNode): ReactNode {
 }
 
 async function publicFileDataUri(file: string, mime: string): Promise<string> {
-  const data = await readFile(join(process.cwd(), "public", file));
-  return `data:${mime};base64,${data.toString("base64")}`;
+  const dataUri = readBundledDataUri(`public/${file}`, mime);
+  if (!dataUri) throw new Error(`public/${file} is not bundled. Add it to scripts/generate-bundled-files.mjs.`);
+  return dataUri;
 }
 
 const LOGO_SIZE = 32;

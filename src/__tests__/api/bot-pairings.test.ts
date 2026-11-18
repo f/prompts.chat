@@ -157,7 +157,7 @@ describe("PATCH /api/prompts/[id] with pairings", () => {
     vi.clearAllMocks();
     vi.mocked(db.prompt.findUnique).mockResolvedValue({ authorId: "owner", content: "Triage", type: "BOT" } as never);
     vi.mocked(db.prompt.update).mockResolvedValue({ id: "m-bot", isPrivate: false, isUnlisted: false } as never);
-    vi.mocked(db.$transaction).mockResolvedValue([] as never);
+    vi.mocked(db.$transaction).mockImplementation(((fn: (tx: typeof db) => unknown) => fn(db)) as never);
     targetsExist("a-bot", "z-bot");
   });
 

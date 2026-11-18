@@ -1,4 +1,5 @@
 import type { StoragePlugin, UploadResult, UploadOptions } from "../types";
+import { deleteObject, putObject, type S3Credentials } from "./s3-fetch";
 
 /**
  * DigitalOcean Spaces Storage Plugin
@@ -25,10 +26,21 @@ async function getS3Client() {
     const s3Module = await import(/* webpackIgnore: true */ "@aws-sdk/client-s3");
     return s3Module;
   } catch {
-    throw new Error(
-      "DigitalOcean Spaces storage requires @aws-sdk/client-s3. Install it with: npm install @aws-sdk/client-s3"
-    );
+    // Worker hosts cannot load the SDK; requests are signed and sent with fetch instead
+    return null;
   }
+}
+
+function fetchCredentials(): S3Credentials {
+  return {
+    region: process.env.DO_SPACES_REGION!,
+    accessKeyId: process.env.DO_SPACES_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.DO_SPACES_SECRET_ACCESS_KEY!,
+  };
+}
+
+function objectUrl(key: string): URL {
+  return new URL(`https://${process.env.DO_SPACES_BUCKET}.${process.env.DO_SPACES_REGION}.digitaloceanspaces.com/${key}`);
 }
 
 function getEndpoint(): string {
@@ -71,17 +83,7 @@ export const doSpacesStoragePlugin: StoragePlugin = {
     }
 
     // Dynamic import to avoid bundling issues when not used
-    const { S3Client, PutObjectCommand } = await getS3Client();
-    
-    const client = new S3Client({
-      region: process.env.DO_SPACES_REGION!,
-      endpoint: getEndpoint(),
-      credentials: {
-        accessKeyId: process.env.DO_SPACES_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.DO_SPACES_SECRET_ACCESS_KEY!,
-      },
-      forcePathStyle: false, // DO Spaces uses virtual-hosted style URLs
-    });
+    const sdk = await getS3Client();
 
     // Generate unique key
     const timestamp = Date.now();
@@ -104,15 +106,28 @@ export const doSpacesStoragePlugin: StoragePlugin = {
     }
 
     // Upload to DigitalOcean Spaces
-    await client.send(
-      new PutObjectCommand({
-        Bucket: process.env.DO_SPACES_BUCKET!,
-        Key: key,
-        Body: buffer,
-        ContentType: contentType,
-        ACL: "public-read", // Make files publicly accessible
-      })
-    );
+    if (sdk) {
+      const client = new sdk.S3Client({
+        region: process.env.DO_SPACES_REGION!,
+        endpoint: getEndpoint(),
+        credentials: {
+          accessKeyId: process.env.DO_SPACES_ACCESS_KEY_ID!,
+          secretAccessKey: process.env.DO_SPACES_SECRET_ACCESS_KEY!,
+        },
+        forcePathStyle: false, // DO Spaces uses virtual-hosted style URLs
+      });
+      await client.send(
+        new sdk.PutObjectCommand({
+          Bucket: process.env.DO_SPACES_BUCKET!,
+          Key: key,
+          Body: buffer,
+          ContentType: contentType,
+          ACL: "public-read", // Make files publicly accessible
+        })
+      );
+    } else {
+      await putObject(objectUrl(key), new Uint8Array(buffer), fetchCredentials(), { contentType, acl: "public-read" });
+    }
 
     // Construct URL
     const url = getFileUrl(key);
@@ -130,9 +145,21 @@ export const doSpacesStoragePlugin: StoragePlugin = {
       throw new Error("DigitalOcean Spaces storage is not configured.");
     }
 
-    const { S3Client, DeleteObjectCommand } = await getS3Client();
-    
-    const client = new S3Client({
+    const sdk = await getS3Client();
+
+    // Extract key from URL if needed
+    let key = keyOrUrl;
+    if (keyOrUrl.startsWith("http")) {
+      const url = new URL(keyOrUrl);
+      key = url.pathname.substring(1); // Remove leading slash
+    }
+
+    if (!sdk) {
+      await deleteObject(objectUrl(key), fetchCredentials());
+      return;
+    }
+
+    const client = new sdk.S3Client({
       region: process.env.DO_SPACES_REGION!,
       endpoint: getEndpoint(),
       credentials: {
@@ -142,15 +169,8 @@ export const doSpacesStoragePlugin: StoragePlugin = {
       forcePathStyle: false,
     });
 
-    // Extract key from URL if needed
-    let key = keyOrUrl;
-    if (keyOrUrl.startsWith("http")) {
-      const url = new URL(keyOrUrl);
-      key = url.pathname.substring(1); // Remove leading slash
-    }
-
     await client.send(
-      new DeleteObjectCommand({
+      new sdk.DeleteObjectCommand({
         Bucket: process.env.DO_SPACES_BUCKET!,
         Key: key,
       })

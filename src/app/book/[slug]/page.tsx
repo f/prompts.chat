@@ -7,7 +7,7 @@ import { MobileTOCButton } from "@/components/book/sidebar";
 import type { Metadata } from "next";
 import { getTranslations, getLocale } from "next-intl/server";
 import { JsonLd, breadcrumbSchema } from "@/components/seo/structured-data";
-import { absoluteUrl, NOINDEX_ROBOTS } from "@/lib/seo";
+import { absoluteUrl, getBaseUrl, NOINDEX_ROBOTS } from "@/lib/seo";
 
 interface ChapterPageProps {
   params: Promise<{ slug: string }>;
@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: ChapterPageProps): Promise<Me
       siteName: "prompts.chat",
       images: [
         {
-          url: "https://prompts.chat/book-cover-photo.jpg",
+          url: absoluteUrl("/book-cover-photo.jpg"),
           width: 1200,
           height: 630,
           alt: `${chapter.title} - Prompt Engineering Guide`,
@@ -67,7 +67,7 @@ export async function generateMetadata({ params }: ChapterPageProps): Promise<Me
       card: "summary_large_image",
       title,
       description,
-      images: ["https://prompts.chat/book-cover-photo.jpg"],
+      images: [absoluteUrl("/book-cover-photo.jpg")],
     },
     alternates: {
       canonical: `/book/${slug}`,
@@ -180,7 +180,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
             url: absoluteUrl(`/book/${slug}`),
             inLanguage: "en",
             author: { "@type": "Person", name: "Fatih Kadir Akın", url: "https://github.com/f" },
-            publisher: { "@type": "Organization", name: "prompts.chat", url: absoluteUrl("/") },
+            publisher: { "@type": "Organization", name: "prompts.chat", url: getBaseUrl() },
             image: absoluteUrl("/book-cover-photo.jpg"),
             isAccessibleForFree: true,
             license: "https://creativecommons.org/publicdomain/zero/1.0/",

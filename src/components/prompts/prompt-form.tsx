@@ -57,10 +57,11 @@ import { prettifyJson } from "@/lib/format";
 import { analyticsPrompt } from "@/lib/analytics";
 import { getPromptUrl } from "@/lib/urls";
 import { AI_MODELS, getModelsByProvider } from "@/lib/works-best-with";
+import { MAX_UPLOAD_BYTES, MAX_UPLOAD_MB } from "@/lib/upload-limits";
 
 interface MediaFieldProps {
   form: ReturnType<typeof useForm<PromptFormValues>>;
-  t: (key: string) => string;
+  t: (key: string, values?: Record<string, string | number>) => string;
   promptType?: string;
   promptContent?: string;
 }
@@ -99,10 +100,8 @@ function MediaField({ form, t, promptType, promptContent }: MediaFieldProps) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file size (4MB for both - Vercel serverless limit)
-    const maxSize = 4 * 1024 * 1024;
-    if (file.size > maxSize) {
-      setUploadError(t(isVideoType ? "videoTooLarge" : "fileTooLarge"));
+    if (file.size > MAX_UPLOAD_BYTES) {
+      setUploadError(t(isVideoType ? "videoTooLarge" : "fileTooLarge", { size: MAX_UPLOAD_MB }));
       return;
     }
 
@@ -316,7 +315,7 @@ function MediaField({ form, t, promptType, promptContent }: MediaFieldProps) {
                         {isUploading ? t("uploading") : t(isVideoType ? "clickToUploadVideo" : isAudioType ? "clickToUploadAudio" : "clickToUpload")}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {t(isVideoType ? "maxVideoSize" : isAudioType ? "maxAudioSize" : "maxFileSize")}
+                        {t(isVideoType ? "maxVideoSize" : isAudioType ? "maxAudioSize" : "maxFileSize", { size: MAX_UPLOAD_MB })}
                       </p>
                     </div>
                   )}

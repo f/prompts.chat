@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "node_modules",
+    "packages",
+    "src/__tests__",
+    "tests",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "vitest.config.ts",
+    "vitest.db.config.ts",
+    "vitest.db.global-setup.ts",
+    "vitest.setup.ts"
+  ]
+}
