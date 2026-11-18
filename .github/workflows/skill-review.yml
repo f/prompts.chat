@@ -1,0 +1,14 @@
+name: Skill Review
+on:
+  pull_request:
+    paths: ['**/SKILL.md']
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: tesslio/skill-review@14b47c8420ff9ac9a12c30ed4b89ce0e9d0355ae # main
