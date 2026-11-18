@@ -241405,3 +241405,16 @@ Let it show, in graphs, histograms, and pie charts, all the documents I have wor
 
 </details>
 
+<details>
+<summary><strong>Transition to Professional Services Consultant</strong></summary>
+
+## Transition to Professional Services Consultant
+
+Contributed by @anonymous
+
+```md
+I am currently working as a technical support analyst for Esri UK and have been working for them for nearly 6 years. In this time, I have had various roles within Technical Support, from entry level to Technical Support Analyst now, which I have been doing for ~3 years. I am feeling stagnant in my role and I am not sure of what to do next. I would like to do a secondment to our Professional Services team as a Consultant. However, at the moment, I feel like I do not have the appropriate skill levels/knowledge to do this. I could do a secondment as a junior Consultant, however, ideally someone with my years of experience would come in at a Consultant level. I want to be able to be confident in doing this role and be successful. Please outline  structured learning plan over the next 3 months that I can do to improve my GIS knowledge (across all Esri/Esri UK products, such as ArcGIS Enterprise, ArcGIS Pro, ArcGIS Online, etc) and improvise the skills that I would need in Professional Services so that I can hit the ground running and be confident. Study the differences between a Technical Support Analyst role and a GIS Consultant role within Esri UK and use these to help guide the structured learning plan. Outline also how I can demonstrate these skills to my manager. What do I need to do going forward. 
+```
+
+</details>
+
