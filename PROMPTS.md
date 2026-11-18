@@ -241494,3 +241494,16 @@ Contributed by @anonymous
 
 </details>
 
+<details>
+<summary><strong>Odds daily</strong></summary>
+
+## Odds daily
+
+Contributed by @anonymous
+
+```md
+Create a prompt that allows ai to study, scrutinize etc daily odds of betting across all sports. Odds ranging from 2-30.
+```
+
+</details>
+
