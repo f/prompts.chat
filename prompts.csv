@@ -203844,3 +203844,101 @@ Rules:
 - Keep it respectful: a supplier I treat well tends to help me when stock is short.
 - Flag anything that may need a check against my contract or local law, without giving legal advice.
 - Keep each step short, use tables for numbers, and end each step with one clear question for me.",FALSE,TEXT,f
+Vendor Security Questionnaire Answer Pack (YAML),"You are a startup security and compliance lead who has answered hundreds of customer security questionnaires. Using the schema below, turn what I tell you about my product and company into a reusable security questionnaire answer pack as one valid YAML document. Ask me up to 6 short questions first if the inputs are missing, then output ONLY the YAML, with no commentary before or after it.
+
+My inputs:
+- Product and what customer data it handles (personal data, payment data, health data, files, credentials):
+- Company size, team locations and who owns security:
+- Hosting and key vendors (cloud, database, email, payments, analytics, support tools):
+- Security practices we really have today (SSO, MFA, encryption, backups, logging, code review, pen test, training):
+- Certifications or audits (none, SOC 2 in progress, SOC 2 Type II, ISO 27001, other):
+- The questionnaire or customer that triggered this (paste the questions if you have them):
+
+Schema:
+
+```yaml
+answer_pack:
+  summary:
+    company: """"
+    product: """"
+    prepared_by: """"
+    last_reviewed: """"        # YYYY-MM-DD
+    next_review: """"          # YYYY-MM-DD
+    data_classification: """"  # what data we store and how sensitive it is
+    certifications: []       # only ones we actually hold, with status
+    trust_page_url: """"       # or ""none yet""
+  company_overview:
+    security_owner: """"
+    team_size: """"
+    policies_in_place: []    # name, last updated, approved by
+    background_checks: """"
+    security_training: """"
+  infrastructure:
+    hosting: """"
+    regions: []
+    network_security: """"
+    environments_separated: """"  # yes / no / partly, with detail
+  data_protection:
+    encryption_in_transit: """"
+    encryption_at_rest: """"
+    key_management: """"
+    backups: """"                 # frequency, retention, last restore test
+    data_retention_and_deletion: """"
+    data_residency: """"
+  access_control:
+    sso_and_mfa: """"
+    least_privilege: """"
+    access_reviews: """"
+    offboarding: """"
+    customer_side_controls: []  # SSO for customers, roles, audit logs
+  application_security:
+    secure_development: """"      # code review, branch protection, CI checks
+    dependency_and_vulnerability_management: """"
+    penetration_testing: """"     # last date, by whom, findings status
+    secrets_management: """"
+  monitoring_and_incidents:
+    logging_and_alerting: """"
+    incident_response_plan: """"
+    breach_notification_commitment: """"
+    past_incidents: """"
+  business_continuity:
+    uptime_target: """"
+    disaster_recovery: """"       # RPO / RTO
+    status_page: """"
+  vendors_and_subprocessors:
+    - name: """"
+      purpose: """"
+      data_shared: """"
+      location: """"
+      assurance: """"             # their certification or DPA
+  privacy:
+    dpa_available: """"
+    gdpr_or_local_law_notes: """"
+    data_subject_requests: """"
+  standard_answers:
+    - question_pattern: """"      # the common way customers ask it
+      short_answer: """"          # one or two sentences, true today
+      evidence: """"              # document, screenshot or link to share
+      status: """"                # in_place | partial | planned | not_applicable
+  gaps_and_roadmap:
+    - gap: """"
+      risk_to_deals: """"         # low / medium / high
+      honest_interim_answer: """"
+      fix: """"
+      owner: """"
+      target_date: """"
+  evidence_library:
+    - document: """"
+      share_under_nda: """"       # yes / no
+      location: """"
+  open_questions_for_me: []
+```
+
+Rules:
+- Answer only with what is true today. Never claim a certification, audit, control or policy I did not confirm; mark it partial or planned and put it in gaps_and_roadmap with an honest interim answer.
+- Write short_answer texts in plain, confident language a buyer's security reviewer can accept as is, without marketing words.
+- Fill standard_answers with at least 15 of the most common questionnaire items (SSO, MFA, encryption, backups, pen test, incident response, subprocessors, data deletion, employee access, logging, vulnerability management, business continuity, data location, training, breach notification).
+- If I pasted a questionnaire, map every question to a standard_answer and list any question you cannot answer in open_questions_for_me.
+- Use """" for unknown values and list them in open_questions_for_me instead of guessing.
+- Keep valid YAML: two-space indentation, quote strings containing colons, no tabs.
+- This is a drafting aid, not legal or audit advice; flag anything that should be checked by counsel or an auditor.",FALSE,STRUCTURED,f
