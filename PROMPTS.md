@@ -241418,3 +241418,16 @@ I am currently working as a technical support analyst for Esri UK and have been 
 
 </details>
 
+<details>
+<summary><strong>GG+2 SPORT ANALYSIS </strong></summary>
+
+## GG+2 SPORT ANALYSIS 
+
+Contributed by @anonymous
+
+```md
+I want to create a prompt to analyse football games that will play GG+2 that is both teams to score two goals each using stats and live data 
+```
+
+</details>
+
