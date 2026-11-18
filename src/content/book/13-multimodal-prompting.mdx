@@ -34,18 +34,18 @@ When you look at an image, you instantly know what's important based on your con
 
 ## The Multimodal Landscape
 
-Different models have different capabilities. Here's what's available in 2025:
+Different models have different capabilities. Here's a snapshot of the landscape as of late 2026:
 
 ### Understanding Models (Input → Analysis)
 
 These models accept various media types and produce text analysis or responses.
 
 <InfoGrid items={[
-  { label: "GPT-4o / GPT-5", description: "Text + Images + Audio → Text. OpenAI's flagship with 128K context, strong creative and reasoning abilities, reduced hallucination rates.", color: "green" },
-  { label: "Claude 4 Sonnet/Opus", description: "Text + Images → Text. Anthropic's safety-focused model with advanced reasoning, excellent for coding and complex multi-step tasks.", color: "purple" },
-  { label: "Gemini 2.5", description: "Text + Images + Audio + Video → Text. Google's model with 1M token context, self-fact-checking, fast processing for coding and research.", color: "blue" },
-  { label: "LLaMA 4 Scout", description: "Text + Images + Video → Text. Meta's open-source model with massive 10M token context for long documents and codebases.", color: "cyan" },
-  { label: "Grok 4", description: "Text + Images → Text. xAI's model with real-time data access and social media integration for up-to-date responses.", color: "red" }
+  { label: "GPT-6.2", description: "Text + Images → Text. OpenAI's current flagship family, with a context window of about one million tokens and strong reasoning, coding, and visual skills. Voice and transcription are handled by separate, dedicated models.", color: "green" },
+  { label: "Claude Opus / Sonnet 5.5", description: "Text + Images → Text. Anthropic's current family, with a one-million-token context window, known for careful reasoning, coding, and long multi-step tasks.", color: "purple" },
+  { label: "Gemini 4", description: "Text + Images + Audio + Video + PDF → Text. Google's current family, with a one-million-token context window and native understanding of audio and video.", color: "blue" },
+  { label: "Llama 4 Scout", description: "Text + Images → Text. Meta's open-weight model with a 10-million-token context window, which you can download and run on your own hardware.", color: "cyan" },
+  { label: "Grok 4.7", description: "Text + Images → Text. The current Grok model, with a 500K-token context window. It sees live web and X posts only when its search tools are switched on.", color: "red" }
 ]} />
 
 ### Generation Models (Text → Media)
@@ -53,10 +53,10 @@ These models accept various media types and produce text analysis or responses.
 These models create images, audio, or video from text descriptions.
 
 <InfoGrid items={[
-  { label: "DALL-E 3", description: "Text → Images. OpenAI's image generator with high accuracy to prompt descriptions.", color: "amber" },
+  { label: "GPT Image", description: "Text + Images → Images. OpenAI's image generation and editing models, which replaced DALL-E 3 after it was retired in 2026.", color: "amber" },
   { label: "Midjourney", description: "Text + Images → Images. Known for artistic quality, style control, and aesthetic outputs.", color: "pink" },
-  { label: "Sora", description: "Text → Video. OpenAI's video generation model for creating clips from descriptions.", color: "red" },
-  { label: "Whisper", description: "Audio → Text. OpenAI's speech-to-text with high accuracy across languages.", color: "cyan" }
+  { label: "Video Generators", description: "Text + Images → Video. Models such as Google's Gemini Omni Flash and xAI's Grok Imagine turn a prompt or a still image into clips of up to about 15 seconds. OpenAI retired its Sora 2 API in September 2026.", color: "red" },
+  { label: "Speech-to-Text", description: "Audio → Text. Dedicated transcription models such as OpenAI's GPT-Transcribe (the successor to Whisper) and Google's Gemini 3.5 Transcribe, with support for many languages and speaker labels.", color: "cyan" }
 ]} />
 
 <Callout type="info" title="Rapid Evolution">
