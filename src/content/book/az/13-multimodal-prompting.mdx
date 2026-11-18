@@ -1,122 +1,122 @@
-Tarixin böyük hissəsində, kompüterlər eyni anda tək tip məlumatla işlədi: bir proqramda mətn, digərində şəkillər, başqa bir yerdə səs. Amma insanlar dünyanı bu şəkildə təcrübə etmir. Eyni anda görür, eşidir, oxuyur və danışırıq, ətrafımızı anlamaq üçün bütün bu girişləri birləşdiririk.
+Tarixin böyük bir hissəsində kompüterlər eyni anda yalnız bir növ data ilə işləyib: mətn bir proqramda, şəkillər başqasında, səs isə tamam başqa yerdə. Amma insanlar dünyanı belə qavramır. Biz eyni anda görür, eşidir, oxuyur və danışırıq, ətrafımızı anlamaq üçün bütün bu girişləri birləşdiririk.
 
-**Çoxrejimli Süni İntellekt** hər şeyi dəyişdirir. Bu modellər bir neçə məlumat növünü birlikdə işləyə bilər—haqqında sualınızı oxuyarkən bir şəkli təhlil etmək və ya mətn təsvirlərinizdən şəkillər istehsal etmək. Bu bölmə sizə bu güclü sistemlərlə effektiv ünsiyyət qurmağı öyrədir.
+**Multimodal süni intellekt** hər şeyi dəyişir. Bu modellər müxtəlif növ məlumatları birlikdə emal edə bilir: məsələn, şəkil haqqında sualınızı oxuyarkən həmin şəkli təhlil edir və ya mətn təsvirlərinizə əsasən şəkillər yaradır. Bu fəsil sizə bu güclü sistemlərlə effektiv ünsiyyət qurmağı öyrədir.
 
-<Callout type="info" title="Çoxrejimli Nə Deməkdir?">
-"Çox" bir neçə mənasına gəlir və "rejimli" məlumat rejimlərinə və ya növlərinə istinad edir. Çoxrejimli bir model bir neçə modalitə ilə işləyə bilər: mətn, şəkillər, səs, video və ya hətta kod. Hər növ üçün ayrı alətlər əvəzinə, tək bir model hamısını birlikdə anlayır.
+<Callout type="info" title="Multimodal Nə Deməkdir?">
+"Multi" çox, "modal" isə rejim, yəni data növü deməkdir. Multimodal model bir neçə modallıqla işləyə bilir: mətn, şəkil, səs, video və hətta kod. Hər növ üçün ayrı alət əvəzinə tək bir model hamısını birlikdə başa düşür.
 </Callout>
 
-## Çoxrejimli Niyə Vacibdir
+## Multimodallıq Niyə Vacibdir
 
-Ənənəvi süni intellekt hər şeyi sözlərlə təsvir etmənizi tələb edirdi. Bir şəkil haqqında soruşmaq mı istəyirsiniz? Əvvəlcə təsvir etməlisiniz. Bir sənədi təhlil etmək mi istəyirsiniz? Əl ilə transkript etməlisiniz. Çoxrejimli modellər bu maneələri aradan qaldırır.
+Ənənəvi süni intellekt hər şeyi sözlərlə təsvir etməyinizi tələb edirdi. Şəkil haqqında soruşmaq istəyirsiniz? Əvvəlcə onu təsvir etməli idiniz. Sənədi təhlil etmək istəyirsiniz? Onu əl ilə köçürməli idiniz. Multimodal modellər bu maneələri aradan qaldırır.
 
 <InfoGrid items={[
-  { label: "Gör və Anla", description: "Bir şəkil yüklə və birbaşa suallar soruş—təsvir lazım deyil", example: "\"Bu dövrə sxemasında nə səhvdir?\"", color: "blue" },
-  { label: "Sözlərdən Yarat", description: "Nə istədiyini təsvir et və şəkillər, səs və ya video istehsal et", example: "\"Suluboya stilində dağların üzərində gün batımı\"", color: "purple" },
-  { label: "Hər Şeyi Birləşdir", description: "Tək bir söhbətdə mətn, şəkillər və digər medianı qarışdır", example: "\"Bu iki dizaynı müqayisə et və mobil üçün hansının daha yaxşı olduğunu söylə\"", color: "green" },
-  { label: "Sənədləri Təhlil Et", description: "Sənəd, qəbz və ya ekran görüntüsü fotoğraflarından məlumat çıxar", example: "\"Bu faktura fotoğrafından bütün sətir elementlərini çıxar\"", color: "amber" }
+  { label: "Gör və Anla", description: "Şəkli yüklə və birbaşa onun haqqında soruş, təsvirə ehtiyac yoxdur", example: "\"Bu elektrik sxemində nə səhvdir?\"", color: "blue" },
+  { label: "Sözlərdən Yarat", description: "Nə istədiyini təsvir et və şəkil, səs və ya video yarat", example: "\"Akvarel üslubunda dağların üzərində gün batımı\"", color: "purple" },
+  { label: "Hər Şeyi Birləşdir", description: "Bir söhbətdə mətni, şəkilləri və digər medianı birlikdə istifadə et", example: "\"Bu iki dizaynı müqayisə et və mobil cihazlar üçün hansının daha yaxşı olduğunu de\"", color: "green" },
+  { label: "Sənədləri Təhlil Et", description: "Sənədlərin, qəbzlərin və ya ekran görüntülərinin fotolarından məlumat çıxar", example: "\"Bu faktura fotosundakı bütün mövqeləri çıxar\"", color: "amber" }
 ]} />
 
-## Çoxrejimli Üçün Prompting Niyə Daha da Vacibdir
+## Multimodal Modellərdə Prompting Niyə Daha da Vacibdir
 
-Yalnız mətn modelləri ilə, süni intellekt tam olaraq yazdığınızı alır. Amma çoxrejimli modellərlə, süni intellekt vizual və ya səs məlumatını şərh etməlidir—və şərh rəhbərlik tələb edir.
+Yalnız mətnlə işləyən modellər tam olaraq yazdığınızı alır. Multimodal modellər isə vizual və ya səs məlumatını şərh etməli olur, şərh etmək isə istiqamət tələb edir.
 
 <Compare 
-  before={{ label: "Qeyri-müəyyən çoxrejimli prompt", content: "Bu şəkildə nə görürsən?\n\n[mürəkkəb bir dashboard şəkli]" }}
-  after={{ label: "Yönləndirilmiş çoxrejimli prompt", content: "Bu analitik dashboard-umuzun ekran görüntüsüdür. Bunlara fokuslan:\n1. Sağ üstdəki konversiya dərəcəsi qrafiki\n2. Hər hansı bir xəta göstəricisi və ya xəbərdarlıq\n3. Məlumatın normal mi anormal mi göründüyü\n\n[mürəkkəb bir dashboard şəkli]" }}
+  before={{ label: "Qeyri-müəyyən multimodal prompt", content: "Bu şəkildə nə görürsən?\n\n[mürəkkəb idarə panelinin şəkli]" }}
+  after={{ label: "İstiqamət verilmiş multimodal prompt", content: "Bu, analitika panelimizin ekran görüntüsüdür. Bunlara fokuslan:\n1. Sağ yuxarıdakı konversiya əmsalı qrafiki\n2. İstənilən xəta göstəricisi və ya xəbərdarlıq\n3. Dataların normal, yoxsa anomal göründüyü\n\n[mürəkkəb idarə panelinin şəkli]" }}
 />
 
-**Rəhbərlik olmadan**, model rəngləri, düzeni və ya əlaqəsiz detalları təsvir edə bilər. **Rəhbərliklə**, sizin üçün həqiqətən vacib olan şeylərə fokuslanır.
+**İstiqamət verilmədikdə** model rəngləri, tərtibatı və ya lazımsız detalları təsvir edə bilər. **İstiqamət verildikdə** isə sizin üçün həqiqətən vacib olana fokuslanır.
 
 <Callout type="warning" title="Şərh Boşluğu">
-Bir şəkilə baxdığınızda, kontekstiniz və hədəflərinizə görə nəyin vacib olduğunu dərhal bilirsiz. Süni intellekt siz təmin etməyincə bu kontekstə sahib deyil. Divardakı çatın fotoğrafı ola bilər: bir struktur mühəndislik narahatlığı, bədii bir toxunuş və ya əlaqəsiz arxa plan. Promptunuz süni intellektin necə şərh edəcəyini müəyyən edir.
+Şəklə baxdığınız anda kontekstinizə və məqsədinizə əsasən nəyin vacib olduğunu dərhal bilirsiniz. Siz bu konteksti verməsəniz, süni intellektin ondan xəbəri olmur. Divardakı çatın fotosu konstruksiya mühəndisliyi baxımından narahatlıq, bədii faktura və ya sadəcə əhəmiyyətsiz fon ola bilər. Süni intellektin onu necə şərh edəcəyini promptunuz müəyyən edir.
 </Callout>
 
-## Çoxrejimli Mənzərə
+## Multimodal Mənzərə
 
-Fərqli modellərin fərqli bacarıqları var. Budur 2025-də mövcud olanlar:
+Müxtəlif modellərin imkanları müxtəlifdir. 2026-cı ilin sonuna olan mənzərənin qısa icmalı:
 
 ### Anlama Modelləri (Giriş → Təhlil)
 
-Bu modellər müxtəlif media növlərini qəbul edir və mətn təhlili və ya cavablar istehsal edir.
+Bu modellər müxtəlif media növlərini qəbul edir və mətn şəklində təhlil və ya cavab verir.
 
 <InfoGrid items={[
-  { label: "GPT-4o / GPT-5", description: "Mətn + Şəkillər + Səs → Mətn. OpenAI-nin 128K kontekstli amiral gəmisi, güclü yaradıcı və mühakimə bacarıqları.", color: "green" },
-  { label: "Claude 4 Sonnet/Opus", description: "Mətn + Şəkillər → Mətn. Anthropic-in qabaqcıl mühakiməli təhlükəsizlik fokuslu modeli, kodlaşdırma və mürəkkəb tapşırıqlar üçün mükəmməl.", color: "purple" },
-  { label: "Gemini 2.5", description: "Mətn + Şəkillər + Səs + Video → Mətn. Google-un 1M token kontekstli modeli, kodlaşdırma və araşdırma üçün sürətli işləmə.", color: "blue" },
-  { label: "LLaMA 4 Scout", description: "Mətn + Şəkillər + Video → Mətn. Meta-nın uzun sənədlər üçün nəhəng 10M token kontekstli açıq mənbə modeli.", color: "cyan" },
-  { label: "Grok 4", description: "Mətn + Şəkillər → Mətn. xAI-nin aktual cavablar üçün real vaxt məlumat girişli modeli.", color: "red" }
+  { label: "GPT-6.2", description: "Mətn + Şəkillər → Mətn. OpenAI-ın hazırkı flaqman model ailəsi: təxminən bir milyon tokenlik kontekst pəncərəsi, güclü mühakimə, kodlaşdırma və vizual bacarıqlar. Səs və transkripsiya ayrıca, xüsusi modellər tərəfindən həyata keçirilir.", color: "green" },
+  { label: "Claude Opus / Sonnet 5.5", description: "Mətn + Şəkillər → Mətn. Anthropic-in hazırkı model ailəsi: bir milyon tokenlik kontekst pəncərəsi, diqqətli mühakimə, kodlaşdırma və uzun çoxaddımlı tapşırıqlardakı bacarığı ilə tanınır.", color: "purple" },
+  { label: "Gemini 4", description: "Mətn + Şəkillər + Səs + Video + PDF → Mətn. Google-un hazırkı model ailəsi: bir milyon tokenlik kontekst pəncərəsi, səsi və videonu birbaşa anlama qabiliyyəti.", color: "blue" },
+  { label: "Llama 4 Scout", description: "Mətn + Şəkillər → Mətn. Meta-nın 10 milyon tokenlik kontekst pəncərəsinə malik açıq çəkili modeli: onu yükləyib öz avadanlığınızda işlədə bilərsiniz.", color: "cyan" },
+  { label: "Grok 4.7", description: "Mətn + Şəkillər → Mətn. Hazırkı Grok modeli, 500K tokenlik kontekst pəncərəsi ilə. Canlı veb məlumatlarını və X paylaşımlarını yalnız axtarış alətləri aktiv olduqda görür.", color: "red" }
 ]} />
 
-### İstehsal Modelləri (Mətn → Media)
+### Yaratma Modelləri (Mətn → Media)
 
-Bu modellər mətn təsvirlərindən şəkillər, səs və ya video yaradır.
+Bu modellər mətn təsvirlərindən şəkil, səs və ya video yaradır.
 
 <InfoGrid items={[
-  { label: "DALL-E 3", description: "Mətn → Şəkillər. OpenAI-nin prompt təsvirlərinə yüksək dəqiqliklə şəkil istehsalçısı.", color: "amber" },
-  { label: "Midjourney", description: "Mətn + Şəkillər → Şəkillər. Bədii keyfiyyət, stil nəzarəti və estetik çıxışları ilə tanınır.", color: "pink" },
-  { label: "Sora", description: "Mətn → Video. OpenAI-nin təsvirlərdən kliplər yaradan video istehsal modeli.", color: "red" },
-  { label: "Whisper", description: "Səs → Mətn. OpenAI-nin dillər arası yüksək dəqiqliklə danışıq-mətn modeli.", color: "cyan" }
+  { label: "GPT Image", description: "Mətn + Şəkillər → Şəkillər. OpenAI-ın şəkil yaratma və redaktə modelləri; 2026-cı ildə istifadədən çıxarılan DALL-E 3-ü əvəz ediblər.", color: "amber" },
+  { label: "Midjourney", description: "Mətn + Şəkillər → Şəkillər. Bədii keyfiyyəti, üslub üzərində nəzarəti və estetik nəticələri ilə tanınır.", color: "pink" },
+  { label: "Video Generatorları", description: "Mətn + Şəkillər → Video. Google-un Gemini Omni Flash və xAI-ın Grok Imagine kimi modelləri promptu və ya statik şəkli təxminən 15 saniyəyə qədər kliplərə çevirir. OpenAI 2026-cı ilin sentyabrında Sora 2 API-sini istifadədən çıxarıb.", color: "red" },
+  { label: "Nitqdən Mətnə", description: "Səs → Mətn. OpenAI-ın GPT-Transcribe (Whisper-in davamçısı) və Google-un Gemini 3.5 Transcribe kimi xüsusi transkripsiya modelləri; bir çox dili dəstəkləyir və danışanları etiketləyə bilir.", color: "cyan" }
 ]} />
 
 <Callout type="info" title="Sürətli Təkamül">
-Çoxrejimli mənzərə sürətlə dəyişir. Yeni modellər tez-tez çıxır və mövcud modellər yeniləmələrlə bacarıqlar qazanır. Aktual xüsusiyyətlər və məhdudiyyətlər üçün həmişə ən son sənədləşdirməni yoxlayın.
+Multimodal mənzərə sürətlə dəyişir. Yeni modellər tez-tez çıxır, mövcud modellər isə yeniləmələrlə yeni imkanlar qazanır. Aktual xüsusiyyətlər və məhdudiyyətlər üçün həmişə ən son sənədləri yoxlayın.
 </Callout>
 
-## Şəkil Anlama Promptları
+## Şəkilləri Anlamaq üçün Promptlar
 
-Ən geniş yayılmış çoxrejimli istifadə halı süni intellektdən şəkilləri təhlil etməsini istəməkdir. Açar, nəyə ehtiyacınız olduğu haqqında kontekst təmin etməkdir.
+Multimodal modellərin ən geniş yayılmış istifadəsi süni intellektdən şəkilləri təhlil etməyi istəməkdir. Burada əsas məsələ nəyə ehtiyacınız olduğu barədə kontekst verməkdir.
 
 ### Əsas Şəkil Təhlili
 
-Aydın bir istək strukturu ilə başlayın. Modelə hansı aspektlərə fokuslanacağını söyləyin.
+Aydın strukturlu istəklə başlayın. Modelə hansı cəhətlərə fokuslanacağını deyin.
 
 <TryIt 
   title="Strukturlaşdırılmış Şəkil Təhlili"
-  description="Bu prompt şəkil təhlili üçün aydın bir çərçivə təmin edir. Model tam olaraq hansı məlumata ehtiyacınız olduğunu bilir."
-  prompt={`Bu şəkli təhlil et və bunları müəyyən et:
+  description="Bu prompt şəkil təhlili üçün aydın çərçivə verir. Model hansı məlumata ehtiyacınız olduğunu dəqiq bilir."
+  prompt={`Bu şəkli təhlil et və bunları təsvir et:
 
-1. **Əsas Mövzu**: Bu şəklin birincil fokusу nədir?
-2. **Mühit**: Bura haraya oxşayır? (daxili/xarici, məkan növü)
-3. **Əhval**: Hansı emosional ton və ya atmosferi çatdırır?
-4. **Mətn Məzmunu**: Görünən mətn, lövhələr və ya etiketlər var mı?
-5. **Diqqət Çəkici Detallar**: İlk baxışda birinin qaçıra biləcəyi nə var?
+1. **Əsas Obyekt**: Bu şəklin əsas diqqət mərkəzində nə var?
+2. **Mühit**: Bu hara oxşayır? (qapalı məkan/açıq hava, məkanın növü)
+3. **Əhval**: Hansı emosional tonu və ya atmosferi ötürür?
+4. **Mətn Məzmunu**: Görünən mətn, lövhə və ya etiket varmı?
+5. **Diqqətəlayiq Detallar**: İlk baxışda gözdən qaça biləcək nə var?
 6. **Texniki Keyfiyyət**: İşıqlandırma, fokus və kompozisiya necədir?
 
 [Təhlil etmək istədiyiniz şəkli yapışdırın və ya təsvir edin]
 
-Şəkil təsviri və ya URL: \${imageDescription}`}
+Şəklin təsviri və ya URL: \${imageDescription}`}
 />
 
-### Şəkillər Üçün Strukturlaşdırılmış Çıxış
+### Şəkillər üçün Strukturlaşdırılmış Çıxış
 
-Şəkil təhlilini proqramatik olaraq işləməli olduğunuzda, JSON çıxışı istəyin.
+Şəkil təhlilini proqram vasitəsilə emal etməli olduqda JSON çıxışı istəyin.
 
 <TryIt 
   title="JSON Şəkil Təhlili"
-  description="Şəkil təhlilindən təhlil etmək və tətbiqlərdə istifadə etmək asan strukturlaşdırılmış məlumat alın."
-  prompt={`Bu şəkli təhlil et və bu strukturda bir JSON obyekti qaytar:
+  description="Şəkil təhlilindən asanlıqla emal olunan və tətbiqlərdə istifadə edilə bilən strukturlaşdırılmış data alın."
+  prompt={`Bu şəkli təhlil et və aşağıdakı strukturda JSON obyekti qaytar:
 
 {
-  "xulase": "Tək cümlə təsvir",
+  "xulase": "Bir cümləlik təsvir",
   "obyektler": ["Görünən əsas obyektlərin siyahısı"],
   "insanlar": {
-    "say": "rəqəm və ya 'yox'",
-    "fealiyyetler": ["Varsa nə edirlər"]
+    "say": "rəqəm və ya 'yoxdur'",
+    "fealiyyetler": ["Nə edirlər (əgər nəsə edirlərsə)"]
   },
-  "askar_edilen_metn": ["Şəkildə görünən mətn"],
-  "renkler": {
-    "dominant": ["İlk 3 rəng"],
+  "askar_edilen_metn": ["Şəkildə görünən istənilən mətn"],
+  "rengler": {
+    "dominant": ["Əsas 3 rəng"],
     "ehval": "İsti/Soyuq/Neytral"
   },
   "muhit": {
-    "nov": "daxili/xarici/bilinmir",
-    "tesit": "Daha spesifik məkan təsviri"
+    "nov": "qapalı/açıq/naməlum",
+    "tesvir": "Məkanın daha dəqiq təsviri"
   },
   "texniki": {
     "keyfiyyet": "yuksek/orta/asagi",
-    "isiqlandirma": "İşıqlandırma təsviri",
-    "kompozisiya": "Çərçivələmə/kompozisiya təsviri"
+    "isiqlandirma": "İşıqlandırmanın təsviri",
+    "kompozisiya": "Kadrlaşdırma/kompozisiyanın təsviri"
   },
   "etibar": "yuksek/orta/asagi"
 }
@@ -126,239 +126,416 @@ Təhlil ediləcək şəkil: \${imageDescription}`}
 
 ### Müqayisəli Təhlil
 
-Bir neçə şəkli müqayisə etmək aydın etiketləmə və spesifik müqayisə meyarları tələb edir.
+Bir neçə şəkli müqayisə etmək üçün onları aydın etiketləmək və konkret müqayisə meyarları vermək lazımdır.
 
 <TryIt 
-  title="Şəkil Müqayisəsi"
-  description="İki və ya daha çox şəkli qərarınız üçün vacib olan spesifik meyarlarla müqayisə edin."
-  prompt={`\${purpose} üçün bu şəkilləri müqayisə et:
+  title="Şəkillərin Müqayisəsi"
+  description="İki və ya daha çox şəkli qərarınız üçün vacib olan konkret meyarlar üzrə müqayisə edin."
+  prompt={`Bu şəkilləri \${purpose} məqsədilə müqayisə et:
 
 **Şəkil A**: \${imageA}
 **Şəkil B**: \${imageB}
 
-Hər şəkli bu meyarlarda təhlil et:
-1. \${criterion1} (əhəmiyyət: yüksək)
-2. \${criterion2} (əhəmiyyət: orta)  
-3. \${criterion3} (əhəmiyyət: aşağı)
+Hər şəkli bu meyarlar üzrə təhlil et:
+1. \${criterion1} (əhəmiyyəti: yüksək)
+2. \${criterion2} (əhəmiyyəti: orta)  
+3. \${criterion3} (əhəmiyyəti: aşağı)
 
-Təmin et:
-- Hər meyar üçün yan-yana müqayisə
+Bunları təqdim et:
+- Hər meyar üzrə yan-yana müqayisə
 - Hər birinin güclü və zəif tərəfləri
-- Əsaslandırma ilə aydın tövsiyə
-- Hər hansı bir narahatlıq və ya xəbərdarlıq`}
+- Əsaslandırılmış aydın tövsiyə
+- İstənilən narahatlıq və ya qeyd-şərt`}
 />
 
-## Sənəd və Ekran Görüntüsü Təhlili
+## Sənədlərin və Ekran Görüntülərinin Təhlili
 
-Çoxrejimli süni intellektin ən praktik tətbiqlərindən biri sənədləri, ekran görüntülərini və UI elementlərini təhlil etməkdir. Bu saatlarca əl ilə transkripsiya və nəzərdən keçirmə qənaəti təmin edir.
+Multimodal süni intellektin ən praktik tətbiqlərindən biri sənədlərin, ekran görüntülərinin və interfeys elementlərinin təhlilidir. Bu, saatlarla əl ilə köçürmə və yoxlama işinə qənaət etdirir.
 
-### Sənəd Çıxarışı
+### Sənədlərdən Məlumat Çıxarışı
 
-Skan edilmiş sənədlər, qəbz fotoğrafları və şəkil olaraq PDF-lər hamısı işlənə bilər. Açar, modelə hansı növ sənəd olduğunu və hansı məlumata ehtiyacınız olduğunu söyləməkdir.
+Skan edilmiş sənədləri, qəbzlərin fotolarını və şəkil formatındakı PDF-ləri emal etmək mümkündür. Əsas məsələ modelə sənədin növünü və hansı məlumata ehtiyacınız olduğunu deməkdir.
 
 <TryIt 
-  title="Sənəd Məlumat Çıxarıcısı"
-  description="Sənəd, qəbz, faktura və ya forma fotoğraflarından strukturlaşdırılmış məlumat çıxarın."
-  prompt={`Bu bir \${documentType} fotoğrafı/skanıdır.
+  title="Sənəd Datası Çıxarıcısı"
+  description="Sənədlərin, qəbzlərin, fakturaların və ya formaların fotolarından strukturlaşdırılmış data çıxarın."
+  prompt={`Bu, \${documentType} sənədinin fotosu/skanıdır.
 
-Bütün məlumatı strukturlaşdırılmış JSON formatına çıxar:
+Bütün məlumatı strukturlaşdırılmış JSON formatında çıxar:
 
 {
-  "sened_novu": "aşkar edilən növ",
+  "sened_novu": "müəyyən edilən növ",
   "tarix": "varsa",
-  "acar_saheler": {
+  "esas_saheler": {
     "sahe_adi": "deyer"
   },
-  "setir_elementleri": [
-    {"tesrit": "", "mebleg": ""}
+  "movqeler": [
+    {"tesvir": "", "mebleg": ""}
   ],
-  "cemler": {
+  "yekunlar": {
     "ara_cem": "",
     "vergi": "",
     "cem": ""
   },
-  "el_yazisi_qeydler": ["əl yazısı mətn"],
-  "qeyri_mueyyen_bolmeler": ["oxunması çətin sahələr"],
+  "el_yazisi_qeydler": ["istənilən əl yazısı mətn"],
+  "aydin_olmayan_hisseler": ["oxunması çətin olan hissələr"],
   "etibar": "yuksek/orta/asagi"
 }
 
-VACİB: Hər hansı bir mətn qeyri-müəyyəndirsə, təxmin etmək əvəzinə "qeyri_mueyyen_bolmeler"-də qeyd edin. Vacib bölmələr oxunması çətindirsə etibarı "asagi" olaraq işarələyin.
+VACİB: Hansısa mətn aydın oxunmursa, təxmin etmək əvəzinə onu "aydin_olmayan_hisseler"-də qeyd et. Mətnin xeyli hissəsi çətin oxunursa, etibarı "asagi" kimi qeyd et.
 
-Sənəd təsviri: \${documentDescription}`}
+Sənədin təsviri: \${documentDescription}`}
 />
 
-### Ekran Görüntüsü və UI Təhlili
+### Ekran Görüntüsü və İnterfeys Təhlili
 
-Ekran görüntüləri sazlama, UX nəzərdən keçirmə və sənədləşdirmə üçün qızıl mədənlərdir. Süni intellekti vacib olana fokuslanması üçün yönləndirin.
+Ekran görüntüləri xətaların aradan qaldırılması, UX yoxlaması və sənədləşdirmə üçün əsl xəzinədir. Süni intellekti vacib olana fokuslanmağa yönləndirin.
 
 <TryIt 
   title="UI/UX Ekran Görüntüsü Analizatoru"
-  description="Sazlama, UX nəzərdən keçirmə və ya sənədləşdirmə üçün ekran görüntülərinin ətraflı təhlilini alın."
-  prompt={`Bu \${applicationName}-in bir ekran görüntüsüdür.
+  description="Xətaların aradan qaldırılması, UX yoxlaması və ya sənədləşdirmə üçün ekran görüntülərinin ətraflı təhlilini alın."
+  prompt={`Bu, \${applicationName} tətbiqinin ekran görüntüsüdür.
 
 Bu interfeysi təhlil et:
 
-**Tanımlama**
-- Bu hansı ekran/səhifə/vəziyyət?
-- İstifadəçi burada ehtimal ki nə etməyə çalışır?
+**Müəyyənləşdirmə**
+- Bu hansı ekran/səhifə/vəziyyətdir?
+- İstifadəçi burada çox güman ki, nə etməyə çalışır?
 
-**UI Elementləri**
+**İnterfeys Elementləri**
 - Əsas interaktiv elementlər (düymələr, formalar, menyular)
-- Cari vəziyyət (seçilmiş, doldurulmuş və ya genişləndirilmiş bir şey var mı?)
-- Hər hansı bir xəta mesajı, xəbərdarlıq və ya bildiriş var mı?
+- Hazırkı vəziyyət (nəsə seçilib, doldurulub və ya açılıbmı?)
+- Xəta mesajı, xəbərdarlıq və ya bildiriş varmı?
 
 **UX Qiymətləndirməsi**
-- Düzen aydın və intuitiv mi?
-- Çaşdırıcı elementlər və ya qeyri-müəyyən etiketlər var mı?
-- Əlçatanlıq narahatlıqları (kontrast, mətn ölçüsü və s.)?
+- Tərtibat aydın və intuitivdirmi?
+- Çaşdırıcı elementlər və ya anlaşılmaz etiketlər varmı?
+- Əlçatanlıq problemləri (kontrast, mətn ölçüsü və s.) varmı?
 
 **Aşkar Edilən Problemlər**
-- Vizual xətalar və ya düzülmə problemləri?
-- Kəsilmiş mətn və ya daşma problemləri?
-- Uyğunsuz stil?
+- Vizual xətalar və ya yerində olmayan elementlər?
+- Kəsilmiş mətn və ya sərhədi aşan məzmun?
+- Uyğunsuz üslub?
 
-Ekran görüntüsü təsviri: \${screenshotDescription}`}
+Ekran görüntüsünün təsviri: \${screenshotDescription}`}
 />
 
-## Şəkil İstehsalı Promptları
+### Xəta Mesajlarının Təhlili
 
-Mətn təsvirlərindən şəkil istehsal etmək bir sənət formasıdır. Promptunuz nə qədər spesifik və strukturlaşdırılmışsa, nəticə viziyanıza o qədər yaxın olacaq.
+Xəta ilə qarşılaşdıqda ekran görüntüsü çox vaxt yalnız xəta mətnini kopyalamaqdan daha çox kontekst verir.
+
+<TryIt 
+  title="Ekran Görüntüsündən Xəta Diaqnostikası"
+  description="Ekran görüntülərindəki xəta mesajları üçün sadə dildə izahlar və həll yolları alın."
+  prompt={`\${context} zamanı bu xətanı görürəm.
+
+[Xəta mesajını/ekran görüntüsünü təsvir edin və ya yapışdırın]
+Xətanın detalları: \${errorDetails}
+
+Zəhmət olmasa, bunları təqdim et:
+
+1. **Sadə Dildə İzah**: Bu xəta əslində nə deməkdir?
+
+2. **Ehtimal Olunan Səbəblər** (ehtimala görə sıralanmış):
+   - Ən ehtimal olunan: 
+   - Bu da mümkündür:
+   - Daha az rast gəlinən:
+
+3. **Addım-addım Həll**:
+   - Əvvəlcə bunu sınayın...
+   - Kömək etməsə...
+   - Son çarə kimi...
+
+4. **Qarşısının Alınması**: Gələcəkdə bu xətadan necə qaçmaq olar
+
+5. **Həyəcan Siqnalları**: Bu xəta nə vaxt daha ciddi problemin əlaməti ola bilər`}
+/>
+
+## Şəkil Yaratma Promptları
+
+Mətn təsvirindən şəkil yaratmaq ayrıca bir sənətdir. Promptunuz nə qədər konkret və strukturlu olsa, nəticə təsəvvürünüzə bir o qədər yaxın olacaq.
 
 ### Şəkil Promptunun Anatomiyası
 
-Effektiv şəkil istehsalı promptlarının bir neçə komponenti var:
+Effektiv şəkil yaratma promptları bir neçə komponentdən ibarətdir:
 
 <InfoGrid items={[
-  { label: "Mövzu", description: "Şəklin əsas fokusу nədir?", example: "Payız yarpaqlarında oynayan golden retriever", color: "blue" },
-  { label: "Stil", description: "Hansı bədii stil və ya mühit?", example: "Suluboya, rəqəmsal sənət, fotorealistik", color: "purple" },
-  { label: "Kompozisiya", description: "Səhnə necə düzülüb?", example: "Yaxın çəkiş portret, geniş mənzərə, quş baxışı", color: "green" },
-  { label: "İşıqlandırma", description: "İşıq mənbəyi və keyfiyyəti nədir?", example: "Yumşaq səhər işığı, dramatik kölgələr, neon parıltısı", color: "amber" },
-  { label: "Əhval", description: "Hansı duyğunu oyatmalıdır?", example: "Dinc, enerjili, sirli, nostaljik", color: "pink" },
-  { label: "Detallar", description: "Daxil ediləcək və ya qaçınılacaq spesifik elementlər", example: "Daxil et: çiçəklər. Qaçın: mətn, filigranlar", color: "cyan" }
+  { label: "Obyekt", description: "Şəklin əsas diqqət mərkəzində nə var?", example: "Payız yarpaqları arasında oynayan qızılı retriver", color: "blue" },
+  { label: "Üslub", description: "Hansı bədii üslub və ya texnika?", example: "Akvarel, rəqəmsal sənət, fotorealizm", color: "purple" },
+  { label: "Kompozisiya", description: "Səhnə necə qurulub?", example: "Yaxın plan portret, geniş mənzərə, quşbaxışı görüntü", color: "green" },
+  { label: "İşıqlandırma", description: "İşıq mənbəyi və işığın xarakteri necədir?", example: "Yumşaq səhər işığı, dramatik kölgələr, neon parıltısı", color: "amber" },
+  { label: "Əhval", description: "Hansı hissi oyatmalıdır?", example: "Sakit, enerjili, sirli, nostalji dolu", color: "pink" },
+  { label: "Detallar", description: "Daxil ediləcək və ya qaçınılacaq konkret elementlər", example: "Daxil et: çiçəklər. Qaçın: mətn, su nişanları", color: "cyan" }
 ]} />
 
-### Əsas Şəkil İstehsalı
+### Əsas Şəkil Yaratma
 
 <TryIt 
   title="Strukturlaşdırılmış Şəkil Promptu"
-  description="Ətraflı, spesifik şəkil istehsalı promptları yaratmaq üçün bu şablondan istifadə edin."
-  prompt={`Bu spesifikasiyalarla bir şəkil yarat:
+  description="Ətraflı və konkret şəkil yaratma promptları hazırlamaq üçün bu şablondan istifadə edin."
+  prompt={`Bu parametrlərlə şəkil yarat:
 
-**Mövzu**: \${subject}
+**Obyekt**: \${subject}
 
-**Stil**: \${style}
-**Mühit**: \${medium} (məs. yağlı boya, rəqəmsal sənət, fotoqrafiya)
+**Üslub**: \${style}
+**Texnika**: \${medium} (məs. yağlı boya, rəqəmsal sənət, fotoqrafiya)
 
 **Kompozisiya**:
-- Çərçivələmə: \${framing} (yaxın çəkiş, orta çəkiş, geniş bucaq)
-- Perspektiv: \${perspective} (göz səviyyəsi, aşağı bucaq, yuxarıdan)
+- Kadr: \${framing} (yaxın plan, orta plan, geniş bucaq)
+- Rakurs: \${perspective} (göz səviyyəsi, aşağıdan, yuxarıdan)
 - Fokus: \${focusArea}
 
 **İşıqlandırma**:
 - Mənbə: \${lightSource}
-- Keyfiyyət: \${lightQuality} (yumşaq, sərt, dağınıq)
+- Xarakter: \${lightQuality} (yumşaq, sərt, səpələnmiş)
 - Günün vaxtı: \${timeOfDay}
 
 **Rəng Palitrası**: \${colors}
 
 **Əhval/Atmosfer**: \${mood}
 
-**Daxil Edilməli**: \${includeElements}
-**Qaçınılmalı**: \${avoidElements}
+**Mütləq Olmalıdır**: \${includeElements}
+**Olmamalıdır**: \${avoidElements}
 
-**Texniki**: \${aspectRatio} en-boy nisbəti, yüksək keyfiyyət`}
+**Texniki**: \${aspectRatio} tərəflər nisbəti, yüksək keyfiyyət`}
 />
 
-## Səs Prompting
+### Səhnənin Qurulması
 
-Səs işləmə, danışılan məzmunun transkripsiyasını, təhlilini və başa düşülməsini açır. Açar, səsin nə ehtiva etdiyi haqqında kontekst təmin etməkdir.
+Mürəkkəb səhnələr üçün qatları ön plandan arxa plana doğru təsvir edin.
 
-### Qabaqcıl Transkripsiya
+<TryIt 
+  title="Qatlı Səhnə Təsviri"
+  description="Dərinliyin hər qatında nə olduğunu təsvir edərək mürəkkəb səhnələr qurun."
+  prompt={`Ətraflı səhnə yarat:
 
-Əsas transkripsiya yalnız başlanğıcdır. Yaxşı promptlarla, danışan tanımlama, zaman damğaları və sahəyə xas dəqiqlik əldə edə bilərsiniz.
+**Məkan**: \${setting}
+
+**Ön Plan** (izləyiciyə ən yaxın):
+\${foreground}
+
+**Orta Plan** (əsas hadisələrin cərəyan etdiyi yer):
+\${middleGround}
+
+**Arxa Plan** (uzaqdakı elementlər):
+\${background}
+
+**Atmosfer Detalları**:
+- Hava: \${weather}
+- İşıqlandırma: \${lighting}
+- Vaxt: \${timeOfDay}
+
+**Üslub**: \${artisticStyle}
+**Əhval**: \${mood}
+**Rəng Palitrası**: \${colors}
+
+Əlavə ediləcək detallar: \${additionalDetails}`}
+/>
+
+## Səslə İşləmək üçün Promptlar
+
+Səs emalı danışıq məzmununun transkripsiyası, təhlili və anlaşılması üçün imkanlar açır. Əsas məsələ səs yazısında nə olduğu barədə kontekst verməkdir.
+
+### Təkmil Transkripsiya
+
+Sadə transkripsiya yalnız başlanğıcdır. Yaxşı promptlarla danışanların müəyyən edilməsinə, zaman işarələrinə və sahəyə uyğun dəqiqliyə nail ola bilərsiniz.
 
 <TryIt 
   title="Ağıllı Transkripsiya"
-  description="Danışan etiketləri, zaman damğaları və qeyri-müəyyən bölmələrin işlənməsi ilə dəqiq transkripsiyalar alın."
-  prompt={`Bu səs yazısını transkript et.
+  description="Danışan etiketləri, zaman işarələri və aydın eşidilməyən hissələrin düzgün qeyd olunması ilə dəqiq transkripsiya alın."
+  prompt={`Bu səs yazısını transkripsiya et.
 
-**Kontekst**: \${recordingType} (görüş, müsahibə, podcast, dərs və s.)
+**Kontekst**: \${recordingType} (görüş, müsahibə, podkast, mühazirə və s.)
 **Gözlənilən Danışanlar**: \${speakerCount} (\${speakerRoles})
 **Sahə**: \${domain} (gözlənilən texniki terminlər: \${technicalTerms})
 
 **Çıxış Formatı**:
-[00:00] **Danışan 1 (Ad/Rol)**: Transkript edilmiş mətn burada.
-[00:15] **Danışan 2 (Ad/Rol)**: Cavabları burada.
+[00:00] **Danışan 1 (Ad/Rol)**: Transkripsiya edilmiş mətn.
+[00:15] **Danışan 2 (Ad/Rol)**: Onun cavabı.
 
 **Təlimatlar**:
-- Təbii fasilələrdə zaman damğaları əlavə et (hər 30-60 saniyədə və ya danışan dəyişikliklərində)
-- Qeyri-müəyyən bölmələri [eşidilmir] və ya [qeyri-müəyyən: ən yaxşı təxmin?] olaraq işarələ
-- Danışıq xarici səsləri köşəli mötərizə ilə qeyd et: [gülüş], [telefon zəngi], [uzun fasilə]
-- Doldurucu sözləri yalnız mənalıdırsa saxla (şey, ee çıxarıla bilər)
-- Fəaliyyət elementlərini və ya qərarları → simvolu ilə işarələ
+- Təbii fasilələrdə zaman işarəsi qoy (hər 30-60 saniyədən bir və ya danışan dəyişdikdə)
+- Aydın eşidilməyən hissələri [eşidilmir] və ya [aydın deyil: ehtimal olunan variant?] kimi qeyd et
+- Nitqdən başqa səsləri kvadrat mötərizədə qeyd et: [gülüş], [telefon zəngi], [uzun fasilə]
+- Parazit sözləri yalnız məna daşıyırsa saxla ("ee", "hı" kimi sözləri silmək olar)
+- Tapşırıqları və ya qərarları → işarəsi ilə qeyd et
 
-Səs təsviri: \${audioDescription}`}
+Səs yazısının təsviri: \${audioDescription}`}
 />
 
-## Video Prompting
+### Səs Məzmununun Təhlili
 
-Video, vizual və səs təhlilini zaman içində birləşdirir. Çətinlik, süni intellekti bütün müddət ərzində əlaqəli aspektlərə fokuslanması üçün yönləndirməkdir.
-
-### Video Anlama
+Süni intellekt transkripsiyadan əlavə, səs yazısının məzmununu, tonunu və əsas məqamlarını da təhlil edə bilir.
 
 <TryIt 
-  title="Əhatəli Video Təhlili"
-  description="Zaman xətti, vizual elementlər və əsas anlar daxil video məzmunun strukturlaşdırılmış dökümünü alın."
+  title="Səs Məzmunu Analizatoru"
+  description="Xülasə, əsas məqamlar və emosional ton daxil olmaqla səs məzmununun hərtərəfli təhlilini alın."
+  prompt={`Bu səs yazısını təhlil et:
+
+Səs yazısının təsviri: \${audioDescription}
+
+Bunları təqdim et:
+
+**1. Qısa Xülasə** (2-3 cümlə)
+Bu yazı nə haqqındadır? Əsas nəticə nədir?
+
+**2. Danışanlar**
+- Neçə fərqli danışan var?
+- Xüsusiyyətləri (müəyyən etmək mümkündürsə): ton, danışıq tərzi, peşəkarlıq səviyyəsi
+
+**3. Məzmunun Bölgüsü**
+- Müzakirə olunan əsas mövzular (təxmini zaman işarələri ilə)
+- Səslənən əsas fikirlər
+- Qaldırılan suallar
+
+**4. Emosional Təhlil**
+- Ümumi ton (rəsmi, sərbəst, gərgin, dostcasına)
+- Diqqətəlayiq emosional anlar
+- Yazı boyunca enerji səviyyəsi
+
+**5. Praktik Nəticələr**
+- Qəbul edilən qərarlar
+- Qeyd olunan tapşırıqlar
+- Sonradan görülməli işlər
+
+**6. Diqqətəlayiq Sitatlar**
+Zaman işarələri ilə 2-3 əhəmiyyətli sitat seç
+
+**7. Səsin Keyfiyyəti**
+- Ümumi aydınlıq
+- Problemlər (fon səs-küyü, kəsintilər, texniki nasazlıqlar)`}
+/>
+
+## Videolarla İşləmək üçün Promptlar
+
+Video vizual və səs təhlilini zaman boyunca birləşdirir. Çətinlik süni intellekti bütün müddət ərzində lazımi cəhətlərə fokuslanmağa yönləndirməkdir.
+
+### Videonu Anlamaq
+
+<TryIt 
+  title="Hərtərəfli Video Təhlili"
+  description="Zaman xətti, vizual elementlər və əsas məqamlar daxil olmaqla video məzmununun strukturlu təhlilini alın."
   prompt={`Bu videonu təhlil et: \${videoDescription}
 
-Əhatəli bir təhlil təmin et:
+Hərtərəfli təhlil təqdim et:
 
 **1. Ümumi Baxış** (2-3 cümlə)
-Bu video nə haqqındadır? Əsas mesaj və ya məqsəd nədir?
+Bu video nə haqqındadır? Əsas mesajı və ya məqsədi nədir?
 
-**2. Əsas Anların Zaman Xətti**
-| Zaman Damğası | Hadisə | Əhəmiyyəti |
-|---------------|--------|------------|
+**2. Əsas Məqamların Zaman Xətti**
+| Zaman | Hadisə | Əhəmiyyəti |
+|-------|--------|------------|
 | 0:00 | ... | ... |
 
 **3. Vizual Təhlil**
-- Mühit/Məkan: Bu harada baş verir?
-- İnsanlar: Kim görünür? Nə edirlər?
-- Obyektlər: Öne çıxan əsas elementlər və ya rekvizitlər
-- Vizual stil: Keyfiyyət, montaj, istifadə olunan qrafika
+- Məkan: Hadisələr harada baş verir?
+- İnsanlar: Kimlər görünür? Nə edirlər?
+- Obyektlər: Önə çıxan əsas əşyalar və ya rekvizitlər
+- Vizual üslub: Keyfiyyət, montaj, istifadə olunan qrafika
 
 **4. Səs Təhlili**
-- Danışıq: Edilən əsas nöqtələr (dialoq varsa)
-- Musiqi: Janr, əhval, necə istifadə olunur
-- Səs effektləri: Diqqət çəkici səs elementləri
+- Nitq: Səslənən əsas fikirlər (dialoq varsa)
+- Musiqi: Növü, əhvalı, necə istifadə olunduğu
+- Səs effektləri: Diqqətəlayiq səs elementləri
 
 **5. İstehsal Keyfiyyəti**
-- Video keyfiyyəti və montaj
-- Tempo və struktur
-- Məqsədi üçün effektivlik
+- Görüntü keyfiyyəti və montaj
+- Temp və struktur
+- Məqsədinə nə dərəcədə xidmət etdiyi
 
 **6. Hədəf Auditoriya**
-Bu video kim üçün hazırlanıb? Onlara yaxşı xidmət edir mi?
+Bu video kim üçün hazırlanıb? Onların ehtiyaclarını yaxşı ödəyirmi?
 
-**7. Əsas Çıxarışlar**
-İzləyici bu videodan nə xatırlamalıdır?`}
+**7. Əsas Nəticələr**
+İzləyici bu videodan nəyi yadda saxlamalıdır?`}
 />
 
-## Çoxrejimli Kombinasiyalar
+### Videodan Məlumat Çıxarışı
 
-Çoxrejimli süni intellektin həqiqi gücü, fərqli giriş növlərini birləşdirdiyinizdə ortaya çıxır. Bu kombinasiyalar, tək hər hansı bir modalitə ilə mümkün olmayan təhlilləri mümkün edir.
-
-### Ekran Görüntüsü + Kod Sazlama
-
-Proqramçılar üçün ən güclü kombinasiyalardan biri: vizual xətanı kodla birlikdə görmək.
+Videodan konkret məlumat çıxarmaq üçün nəyə ehtiyacınız olduğunu dəqiq bildirin.
 
 <TryIt 
-  title="Vizual Sazlayıcı"
-  description="Həm vizual çıxışı həm də mənbə kodunu birlikdə təhlil edərək UI problemlərini sazlayın."
-  prompt={`Bir UI xətam var. Budur gördüyüm və kodum:
+  title="Video Datası Çıxarıcısı"
+  description="Zaman işarələri və strukturlu çıxışla videolardan konkret məlumat çıxarın."
+  prompt={`Bu videodan konkret məlumatları çıxar:
 
-**Ekran Görüntüsü Təsviri**: \${screenshotDescription}
-**Səhv Olan**: \${bugDescription}
+Videonun növü: \${videoType}
+Videonun təsviri: \${videoDescription}
+
+**Çıxarılacaq Məlumat**:
+1. \${extractItem1}
+2. \${extractItem2}
+3. \${extractItem3}
+
+**Çıxış Formatı**:
+{
+  "video_xulasesi": "Qısa təsvir",
+  "muddet": "təxmini uzunluq",
+  "cixarilan_data": [
+    {
+      "zaman": "DD:SS",
+      "element": "Nə tapıldı",
+      "detallar": "Əlavə kontekst",
+      "etibar": "yuksek/orta/asagi"
+    }
+  ],
+  "tapilmayanlar": ["İstənilib, amma videoda olmayan hər şey"],
+  "elave_musahideler": "Açıq istənilməyən, amma əhəmiyyətli olan hər şey"
+}`}
+/>
+
+## Multimodal Kombinasiyalar
+
+Multimodal süni intellektin əsl gücü müxtəlif növ girişləri birləşdirdikdə üzə çıxır. Bu kombinasiyalar tək bir modallıqla mümkün olmayan təhlillərə imkan yaradır.
+
+### Şəkil + Mətn Uyğunluğunun Yoxlanması
+
+Şəkillərin və onların təsvirlərinin bir-birinə uyğun gəlib-gəlmədiyini yoxlayın. Bu, e-ticarət, məzmun moderasiyası və keyfiyyət nəzarəti üçün vacibdir.
+
+<TryIt 
+  title="Şəkil-Mətn Uyğunluğu Yoxlayıcısı"
+  description="Şəkillərin mətn təsvirlərini, mətnlərin də şəkilləri düzgün əks etdirdiyini yoxlayın."
+  prompt={`Bu şəkli və onu müşayiət edən mətni uyğunluq baxımından təhlil et:
+
+**Şəkil**: \${imageDescription}
+**Mətn Təsviri**: "\${textDescription}"
+
+Qiymətləndir:
+
+**1. Dəqiqlik Uyğunluğu**
+- Şəkil mətndə təsvir olunanı göstərirmi?
+- Bal: [1-10], izahla birlikdə
+
+**2. Mətndəki İddialar və Vizual Reallıq**
+| Mətndəki İddia | Şəkildə Görünürmü? | Qeydlər |
+|----------------|--------------------|---------|
+| ... | Bəli/Xeyr/Qismən | ... |
+
+**3. Qeyd Olunmayan Vizual Elementlər**
+Şəkildə görünən, amma mətndə təsvir olunmayan nə var?
+
+**4. Görünməyən İddialar**
+Mətndə təsvir olunan, amma şəkildən təsdiqlənə bilməyən nə var?
+
+**5. Tövsiyələr**
+- Mətn üçün: [şəklə uyğunlaşdırmaq üçün təkmilləşdirmələr]
+- Şəkil üçün: [mətnə uyğunlaşdırmaq üçün təkmilləşdirmələr]
+
+**6. Ümumi Qiymətləndirmə**
+Bu şəkil-mətn cütü \${purpose} üçün etibarlıdırmı?`}
+/>
+
+### Ekran Görüntüsü + Kodla Xəta Axtarışı
+
+Proqramçılar üçün ən güclü kombinasiyalardan biri: vizual xətanı kodla yanaşı görmək.
+
+<TryIt 
+  title="Vizual Xəta Sazlayıcısı"
+  description="Həm vizual nəticəni, həm də mənbə kodunu birlikdə təhlil edərək interfeys problemlərini aradan qaldırın."
+  prompt={`İnterfeysdə xəta var. Gördüyüm və kodum budur:
+
+**Ekran Görüntüsünün Təsviri**: \${screenshotDescription}
+**Nə Səhvdir**: \${bugDescription}
 **Gözlənilən Davranış**: \${expectedBehavior}
 
 **Əlaqəli Kod**:
@@ -366,56 +543,123 @@ Proqramçılar üçün ən güclü kombinasiyalardan biri: vizual xətanı kodla
 \${code}
 \`\`\`
 
-Zəhmət olmasa kömək et:
+Zəhmət olmasa, kömək et:
 
-**1. Kök Səbəb Təhlili**
-- Kodda bu vizual problemə nə səbəb olur?
-- Hansı spesifik sətir(lər) məsuldur?
+**1. Əsas Səbəbin Təhlili**
+- Koddakı nə bu vizual problemə səbəb olur?
+- Konkret olaraq hansı sətir(lər) cavabdehdir?
 
-**2. İzahat**
-- Bu kod niyə bu vizual nəticəni istehsal edir?
-- Altında yatan mexanizm nədir?
+**2. İzah**
+- Bu kod niyə belə vizual nəticə verir?
+- Bunun arxasında hansı mexanizm dayanır?
 
 **3. Düzəliş**
 \`\`\`\${language}
 // Düzəldilmiş kod burada
 \`\`\`
 
-**4. Qarşısını Alma**
-- Gələcəkdə bu növ xətalardan necə qaçınmaq olar
-- Yoxlanılacaq əlaqəli problemlər`}
+**4. Qarşısının Alınması**
+- Gələcəkdə bu növ xətalardan necə qaçmaq olar
+- Yoxlanılmalı olan əlaqəli problemlər`}
 />
 
-## Çoxrejimli Promptlar Üçün Ən Yaxşı Təcrübələr
+### Bir Neçə Şəkil Əsasında Qərar Qəbulu
 
-Çoxrejimli süni intellektdən əla nəticələr almaq həm bacarıqlarını həm də məhdudiyyətlərini anlamağı tələb edir.
+Variantlar arasında seçim edərkən strukturlu müqayisə daha düzgün qərar verməyə kömək edir.
 
-### Çoxrejimli Promptları Effektiv Edən Şeylər
+<TryIt 
+  title="Vizual Variantların Müqayisəçisi"
+  description="Əsaslandırılmış qərar vermək üçün bir neçə şəkli meyarlarınız üzrə sistemli şəkildə müqayisə edin."
+  prompt={`\${purpose} üçün bu variantlar arasında seçim edirəm:
+
+**Variant A**: \${optionA}
+**Variant B**: \${optionB}
+**Variant C**: \${optionC}
+
+**Meyarlarım** (əhəmiyyət sırası ilə):
+1. \${criterion1} (çəki: yüksək)
+2. \${criterion2} (çəki: orta)
+3. \${criterion3} (çəki: aşağı)
+
+Bunları təqdim et:
+
+**Müqayisə Matrisi**
+| Meyar | Variant A | Variant B | Variant C |
+|-------|-----------|-----------|-----------|
+| \${criterion1} | Bal + qeydlər | ... | ... |
+| \${criterion2} | ... | ... | ... |
+| \${criterion3} | ... | ... | ... |
+
+**Çəkili Ballar**
+- Variant A: X/10
+- Variant B: X/10
+- Variant C: X/10
+
+**Tövsiyə**
+Bildirdiyiniz prioritetlərə əsasən [Variant] tövsiyə edirəm, çünki...
+
+**Qeyd-şərtlər**
+- Əgər [şərt], onda bunun əvəzinə [alternativ] variantını nəzərdən keçirin
+- [Potensial problem] məsələsinə diqqət edin`}
+/>
+
+## Multimodal Promptlar üçün Ən Yaxşı Təcrübələr
+
+Multimodal süni intellektdən əla nəticə almaq üçün onun həm imkanlarını, həm də məhdudiyyətlərini anlamaq lazımdır.
+
+### Multimodal Promptları Effektiv Edən Nədir
 
 <InfoGrid items={[
-  { label: "Kontekst Təmin Et", description: "Modelə medianın nə olduğunu və niyə təhlil etdiyinizi söylə", example: "\"Bu e-ticarət saytımız üçün bir məhsul fotoğrafıdır...\"", color: "green" },
-  { label: "Spesifik Ol", description: "Ümumi təəssüratlar əvəzinə müəyyən elementlər haqqında soruş", example: "\"Sağ üst küncdəki qiymətləndirmə cədvəlinə fokuslan\"", color: "green" },
-  { label: "Mövqelərə İstinad Et", description: "Məkan dili istifadə edərək spesifik sahələrə işarə et", example: "\"Sol alt rübdə...\"", color: "green" },
-  { label: "Hədəfini Bildir", description: "Təhlili nə üçün istifadə edəcəyini izah et", example: "\"Bu şəklin mobil tətbiqimiz üçün işləyib-işləmədiyinə qərar verməliyəm\"", color: "green" }
+  { label: "Kontekst Verin", description: "Modelə medianın nə olduğunu və onu niyə təhlil etdiyinizi deyin", example: "\"Bu, e-ticarət saytımız üçün məhsul fotosudur...\"", color: "green" },
+  { label: "Konkret Olun", description: "Ümumi təəssürat əvəzinə müəyyən elementlər barədə soruşun", example: "\"Sağ yuxarı küncdəki qiymət cədvəlinə fokuslan\"", color: "green" },
+  { label: "Yerləri Göstərin", description: "Məkan bildirən ifadələrlə konkret sahələrə işarə edin", example: "\"Sol aşağı küncdə...\"", color: "green" },
+  { label: "Məqsədinizi Bildirin", description: "Təhlildən nə üçün istifadə edəcəyinizi izah edin", example: "\"Bu şəklin mobil tətbiqimizə uyğun olub-olmadığına qərar verməliyəm\"", color: "green" }
 ]} />
 
-### Qaçınılacaq Ümumi Tələlər
+### Qaçınılmalı Ümumi Tələlər
 
 <InfoGrid items={[
-  { label: "Mükəmməl Görmə Fərz Etmək", description: "Modellər kiçik detalları qaçıra bilər, xüsusilə aşağı keyfiyyətli şəkillərdə", example: "Sıxılmış ekran görüntüsündə 8pt mətn haqqında soruşma", color: "red" },
-  { label: "Mükəmməl OCR Gözləmək", description: "Əl yazısı, qeyri-adi fontlar və mürəkkəb düzenlər xətalara səbəb ola bilər", example: "Qəbzlərdən və formalardan çıxarılan mətni doğrula", color: "red" },
-  { label: "Məzmun Siyasətlərini Nəzərə Almamaq", description: "Modellərin müəyyən məzmun növlərində məhdudiyyətləri var", example: "Spesifik fərdləri tanımaz və ya uyğunsuz məzmunu təhlil etməz", color: "red" },
-  { label: "Doğrulamanı Atlamaq", description: "Mediadan çıxarılan kritik məlumatları həmişə doğrula", example: "Sənəd çıxarışından rəqəmləri, tarixləri və adları iki dəfə yoxla", color: "red" }
+  { label: "Mükəmməl Görmə Qabiliyyəti Fərz Etmək", description: "Modellər, xüsusilə aşağı keyfiyyətli şəkillərdə, kiçik detalları qaçıra bilər", example: "Sıxılmış ekran görüntüsündəki 8pt mətn barədə soruşmayın", color: "red" },
+  { label: "Mükəmməl OCR Gözləmək", description: "Əl yazısı, qeyri-adi şriftlər və mürəkkəb tərtibat xətalara səbəb ola bilər", example: "Qəbzlərdən və formalardan çıxarılan mətni yoxlayın", color: "red" },
+  { label: "Məzmun Siyasətlərini Nəzərə Almamaq", description: "Modellərin müəyyən məzmun növləri ilə bağlı məhdudiyyətləri var", example: "Konkret şəxsləri tanımır və yersiz məzmunu təhlil etmir", color: "red" },
+  { label: "Yoxlamanı Atlamaq", description: "Mediadan çıxarılan kritik məlumatları həmişə yoxlayın", example: "Sənədlərdən çıxarılan rəqəmləri, tarixləri və adları iki dəfə yoxlayın", color: "red" }
 ]} />
+
+### Məhdudiyyətlərin Düzgün İdarə Olunması
+
+<TryIt 
+  title="Qeyri-müəyyənliyi Nəzərə Alan Şəkil Təhlili"
+  description="Bu prompt modelin nəyisə aydın görə bilmədiyi və ya əmin olmadığı halları açıq şəkildə idarə edir."
+  prompt={`Bu şəkli təhlil et: \${imageDescription}
+
+**Qeyri-müəyyənliklə Bağlı Təlimatlar**:
+
+NƏYİSƏ AYDIN GÖRMÜRSƏNSƏ:
+- Təxmin etmə və detal uydurma
+- Belə de: "[Görünən hissəni] görürəm, amma [aydın olmayan elementi] dəqiq ayırd edə bilmirəm"
+- Hansı əlavə məlumatın kömək edəcəyini təklif et
+
+MƏZMUN MƏHDUDİYYƏTƏ DÜŞÜRSƏ:
+- Nəyi təhlil edə biləcəyini və nəyi edə bilməyəcəyini izah et
+- Təhlilin icazə verilən tərəflərinə fokuslan
+
+İNSANLAR BARƏDƏ SORUŞULARSA:
+- Hərəkətləri, mövqeləri və ümumi xüsusiyyətləri təsvir et
+- Konkret şəxsləri tanımağa cəhd etmə
+- Bunlara fokuslan: insanların sayı, fəaliyyətləri, üz ifadələri, geyimləri
+
+**Təhlilin**:
+[Bu qaydaları tətbiq edərək təhlilə başla]`}
+/>
 
 <Quiz 
-  question="Çoxrejimli modellər üçün prompting niyə yalnız mətn modellərindən DAHA vacibdir?"
+  question="Nə üçün multimodal modellər üçün prompting yalnız mətnlə işləyən modellərə nisbətən DAHA vacibdir?"
   options={[
-    "Çoxrejimli modellər daha az ağıllıdır və daha çox köməyə ehtiyac duyur",
-    "Şəkillər və səs mahiyyətcə qeyri-müəyyəndir—süni intellektin hansı aspektlərin vacib olduğunu bilməsi üçün kontekstə ehtiyacı var",
-    "Çoxrejimli modellər eyni anda yalnız bir giriş növünü işləyə bilər",
-    "Mətn promptları çoxrejimli modellərlə işləmir"
+    "Multimodal modellər daha az ağıllıdır və daha çox köməyə ehtiyac duyur",
+    "Şəkillər və səs təbiətcə çoxmənalıdır: süni intellektə hansı cəhətlərin vacib olduğunu bilmək üçün kontekst lazımdır",
+    "Multimodal modellər eyni anda yalnız bir növ girişi emal edə bilir",
+    "Mətn promptları multimodal modellərlə işləmir"
   ]}
   correctIndex={1}
-  explanation="Bir şəkilə baxdığınızda, hədəflərinizə görə nəyin vacib olduğunu dərhal bilirsiz. Süni intellekt bu kontekstə sahib deyil—divardakı çatın fotoğrafı bir mühəndislik narahatlığı, bədii bir toxunuş və ya əlaqəsiz arxa plan ola bilər. Promptunuz süni intellektin təmin etdiyiniz medianı necə şərh edəcəyini və fokuslanacağını müəyyən edir."
+  explanation="Şəklə baxdığınız anda məqsədinizə əsasən nəyin vacib olduğunu dərhal bilirsiniz. Süni intellektdə isə bu kontekst yoxdur: divardakı çatın fotosu mühəndislik baxımından narahatlıq, bədii faktura və ya əhəmiyyətsiz fon ola bilər. Süni intellektin verdiyiniz medianı necə şərh edəcəyini və nəyə fokuslanacağını promptunuz müəyyən edir."
 />
