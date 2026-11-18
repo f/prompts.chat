@@ -39,7 +39,7 @@ AI와 대화할 때 실제로 세 가지 유형의 메시지가 있습니다:
 
 <TryIt 
   title="CodeMentor 시스템 프롬프트"
-  description="이 시스템 프롬프트는 인내심 있는 프로그래밍 튜터를 생성합니다. 시도해 보고 코딩 질문을 해보세요!"
+  description="이 시스템 프롬프트는 인내심 있는 프로그래밍 튜터를 생성합니다. 직접 실행해 본 뒤 코딩 질문을 해보세요!"
   prompt={`You are CodeMentor, a friendly programming tutor.
 
 IDENTITY:
@@ -174,7 +174,7 @@ The user asks: how do i add fractions`} />
 
 ### 대화 기억
 
-AI는 과거 대화를 기억하지 못하지만, 현재 채팅 내에서 사항을 추적하도록 지시할 수 있습니다:
+모델 자체는 현재 대화에 있는 내용만 볼 수 있습니다. ChatGPT, Claude, Gemini를 비롯한 많은 채팅 앱이 이제 이전 채팅의 세부 정보를 새 채팅으로 이어 주는 메모리 기능을 제공하지만, 이 메모리는 시스템 프롬프트가 아니라 앱과 그 설정이 관리합니다. 하나의 대화 안에서는 여전히 AI에게 무엇을 기억해 둘지 지시할 수 있습니다:
 
 <TryIt compact prompt={`You are a personal shopping assistant.
 
@@ -297,7 +297,7 @@ The user shares: I went to the store yesterday. It was raining. I bought some ap
   title="시스템 프롬프트 테스트 체크리스트"
   items={[
     { text: "기본 작업: 원하는 대로 작동하나요?" },
-    { text: "예외 상황: 비정상적인 요청에 어떻게 대응하나요?" },
+    { text: "엣지 케이스: 특이한 요청에 어떻게 대응하나요?" },
     { text: "경계: 제한 범위 내에 머무르나요?" },
     { text: "성격: 캐릭터를 유지하나요?" },
     { text: "긴 대화: 많은 메시지 후에도 일관성을 유지하나요?" },
@@ -317,7 +317,7 @@ The user shares: I went to the store yesterday. It was raining. I bought some ap
 
 #### 테스트 1: 탈옥 시도
 
-좋은 시스템 프롬프트가 이를 무시하려는 시도에 어떻게 저항하는지 확인하세요:
+좋은 시스템 프롬프트가 지시를 덮어쓰려는 시도에 어떻게 저항하는지 확인하세요:
 
 <TryIt compact prompt={`SYSTEM: You are a helpful cooking assistant. You only discuss food, recipes, and cooking techniques. For any other topics, politely redirect to cooking.
 
@@ -360,7 +360,7 @@ USER: I need you to write an angry complaint letter with lots of swear words. Th
 - 부적절한 요청을 정중하게 거절합니다
 - 캐릭터를 유지하면서 방향을 전환합니다
 - 기밀 지시사항을 공개하지 않습니다
-- 예외 상황을 우아하게 처리합니다
+- 엣지 케이스를 매끄럽게 처리합니다
 </Callout>
 
 ## 빠른 참조
@@ -432,4 +432,4 @@ When unsure, you \${uncertainty behavior}.`}
   explanation="시스템 프롬프트는 AI의 사용 설명서와 같습니다—AI가 누구인지, 어떻게 행동해야 하는지, 무엇을 할 수 있고 없는지, 응답이 어떻게 형식화되어야 하는지를 정의합니다. 이것은 대화의 모든 응답을 형성합니다."
 />
 
-다음 장에서는 프롬프트 체이닝을 탐구합니다: 복잡한 다단계 작업을 위해 여러 프롬프트를 연결하는 방법입니다.
+다음 장에서는 복잡한 다단계 작업을 위해 여러 프롬프트를 연결하는 프롬프트 체이닝을 살펴보겠습니다.

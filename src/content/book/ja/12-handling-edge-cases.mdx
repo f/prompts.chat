@@ -29,7 +29,7 @@
 
 <InfoGrid items={[
   { label: "空の入力", description: "ユーザーが何も送らない、空白のみ、または挨拶だけを送る", example: "\"\" または \"hi\" または \"   \"", color: "blue" },
-  { label: "過度な長さ", description: "入力がコンテキストの制限を超える", example: "50,000語のドキュメントをそのまま貼り付け", color: "blue" },
+  { label: "過度な長さ", description: "入力がコンテキストの制限を超える", example: "数十冊分の書籍をまるごと一度に貼り付け", color: "blue" },
   { label: "特殊文字", description: "絵文字、Unicode、またはエンコーディングの問題", example: "\"Price: $100 → €85 🎉\"", color: "blue" },
   { label: "複数の言語", description: "異なる文字体系の混在や予期しない言語", example: "\"Translate this: 你好 means hello\"", color: "blue" },
   { label: "不正な形式のテキスト", description: "タイプミスや文法エラー", example: "\"waht is teh wether tomorow\"", color: "blue" },
@@ -39,14 +39,14 @@
 
 ### ドメインのエッジケース
 
-これらはプロンプトの目的の境界を押し広げるリクエストです：
+これらはプロンプトの目的の境界ぎりぎりを突くリクエストです：
 
 <InfoGrid items={[
   { label: "スコープ外", description: "明らかに目的の範囲外", example: "レシピボットに法律相談を求める", color: "purple" },
   { label: "境界ケース", description: "関連はあるがスコープ内とは言えない", example: "レシピボットにレストランのメニューについて尋ねる", color: "purple" },
-  { label: "時間に敏感", description: "最新の情報が必要", example: "「今の株価はいくら？」", color: "purple" },
+  { label: "時事性が高い", description: "最新の情報が必要", example: "「今の株価はいくら？」", color: "purple" },
   { label: "主観的", description: "個人的な意見を求める", example: "「最高のプログラミング言語は何？」", color: "purple" },
-  { label: "仮定的", description: "不可能または架空のシナリオ", example: "「もし重力が逆に働いたら？」", color: "purple" },
+  { label: "仮定の話", description: "不可能または架空のシナリオ", example: "「もし重力が逆に働いたら？」", color: "purple" },
   { label: "センシティブなトピック", description: "慎重な対応が必要", example: "医療症状、法的紛争", color: "purple" }
 ]} />
 
@@ -199,7 +199,7 @@ TEXT TO PROCESS:
 
 ### 適切なスコープ制限
 
-最良のスコープ外応答は、3つのことを行います：リクエストを認識し、制限を説明し、代替案を提示します。
+最良のスコープ外応答は、3つのことを行います：リクエストを受け止め、制限を説明し、代替案を提示します。
 
 <TryIt 
   title="明確な境界を持つ料理アシスタント"
@@ -555,7 +555,7 @@ CUSTOMER MESSAGE:
 <InfoGrid items={[
   { label: "バリエーションを予測する", description: "空の入力、長い入力、不正な形式のデータ、複数の言語", color: "blue" },
   { label: "境界を定義する", description: "スコープ外のリクエストに対する役立つリダイレクトを含む明確なスコープ制限", color: "purple" },
-  { label: "適切に劣化させる", description: "部分的な結果は失敗よりも良い。常に代替案を提示する", color: "green" },
+  { label: "うまく縮退させる", description: "部分的な結果は失敗よりも良い。常に代替案を提示する", color: "green" },
   { label: "攻撃から防御する", description: "ユーザー入力を指示としてではなくデータとして扱う。システムプロンプトを公開しない", color: "red" },
   { label: "不確実性を表現する", description: "信頼度レベルはユーザーがいつ検証すべきかを知るのに役立つ", color: "amber" },
   { label: "体系的にテストする", description: "チェックリストを使用して一般的なエッジケースをカバーしていることを確認する", color: "cyan" }
@@ -570,11 +570,11 @@ CUSTOMER MESSAGE:
   options={[
     "リクエストを無視し、デフォルトの動作で応答する",
     "確信がなくてもとにかく回答しようとする",
-    "リクエストを認識し、なぜ助けられないかを説明し、代替案を提示する",
+    "リクエストを受け止め、なぜ手伝えないかを説明し、代替案を提示する",
     "エラーメッセージを返し、応答を停止する"
   ]}
   correctIndex={2}
   explanation="最良のスコープ外処理は、ユーザーが求めていることを認識し、制限を明確に説明し、役立つ代替案やリダイレクトを提供することです。これにより、明確な境界を維持しながら、やり取りを前向きに保つことができます。"
 />
 
-次の章では、複数のAIモデルを使用して出力を比較する方法を探ります。
+次の章では、マルチモーダルプロンプティング、つまりテキストと一緒に画像、音声、動画を扱う方法を探ります。

@@ -1,7 +1,7 @@
 Il prompt chaining suddivide compiti complessi in sequenze di prompt più semplici, dove l'output di ogni passo alimenta il successivo. Questa tecnica migliora drasticamente l'affidabilità e permette workflow sofisticati che sarebbero impossibili con un singolo prompt.
 
 <Callout type="tip" title="Pensa alle Catene di Montaggio">
-Proprio come una catena di montaggio in fabbrica suddivide la produzione in stazioni specializzate, il prompt chaining suddivide i compiti IA in passi specializzati. Ogni passo fa bene una cosa, e l'output combinato è molto migliore che cercare di fare tutto insieme.
+Proprio come una catena di montaggio in fabbrica suddivide la produzione in stazioni specializzate, il prompt chaining suddivide i compiti IA in passi specializzati. Ogni passo fa bene una cosa, e il risultato complessivo è di gran lunga migliore che cercare di fare tutto in una volta.
 </Callout>
 
 ## Perché Concatenare i Prompt?
@@ -77,7 +77,7 @@ Il pattern più diretto: ogni passo dipende dal precedente. Pensalo come una sta
   type="sequential"
   steps={[
     { step: "Passo 1: Estrai", prompt: "Estrai tutte le date, nomi e numeri da: [testo]", output: '{ dates: ["2024-01-15", "2024-02-20"], names: ["Mario Rossi", "Acme Srl"], numbers: [15000, 42] }' },
-    { step: "Passo 2: Analizza", prompt: "Dati questi dati estratti: [step1_output], identifica relazioni e pattern.", output: '{ patterns: ["Riunioni mensili programmate"], relationships: ["Mario Rossi lavora presso Acme Srl"] }' },
+    { step: "Passo 2: Analizza", prompt: "Partendo da questi dati estratti: [step1_output], identifica relazioni e pattern.", output: '{ patterns: ["Riunioni mensili programmate"], relationships: ["Mario Rossi lavora presso Acme Srl"] }' },
     { step: "Passo 3: Genera", prompt: "Usando questi pattern: [step2_output], scrivi un report riassuntivo evidenziando le scoperte più significative.", output: "Report Riassuntivo: L'analisi del documento rivela una relazione commerciale tra Mario Rossi e Acme Srl, con riunioni mensili programmate..." }
   ]}
 />
@@ -113,10 +113,10 @@ Instrada gli input attraverso percorsi diversi basandosi sulla classificazione. 
 
 ### Catena Iterativa
 
-Continua a raffinare l'output finché non soddisfa gli standard di qualità. L'IA genera, valuta e migliora in un ciclo finché non è soddisfatta o il massimo di iterazioni è raggiunto.
+Continua a raffinare l'output finché non soddisfa gli standard di qualità. L'IA genera, valuta e migliora in un ciclo finché non è soddisfatta o finché non si raggiunge il numero massimo di iterazioni.
 
 <Callout type="warning" title="Imposta Limiti di Iterazione">
-Imposta sempre un numero massimo di iterazioni (tipicamente 3-5) per prevenire loop infiniti e controllare i costi. La legge dei rendimenti decrescenti si applica: la maggior parte del miglioramento avviene nelle prime 2-3 iterazioni.
+Imposta sempre un numero massimo di iterazioni (tipicamente 3-5) per prevenire loop infiniti e controllare i costi. Vale la legge dei rendimenti decrescenti: la maggior parte del miglioramento avviene nelle prime 2-3 iterazioni.
 </Callout>
 
 <ChainExample 
@@ -282,19 +282,19 @@ Se un passo produce output scadente, ogni passo successivo sarà influenzato. Va
 
 ### Validazione tra i Passi
 
-Aggiungi un passo di validazione dopo ogni passo che produce dati strutturati. Questo cattura errori presto prima che si propaghino a cascata.
+Aggiungi un passo di validazione dopo ogni passo che produce dati strutturati. Così intercetti gli errori in anticipo, prima che si propaghino a cascata.
 
 <ValidationDemo />
 
 ### Catene di Fallback
 
-Quando il tuo approccio primario fallisce, tieni pronto un backup più semplice. Scambia capacità per affidabilità.
+Quando il tuo approccio primario fallisce, tieni pronto un backup più semplice. Rinuncia a un po' di capacità in cambio di affidabilità.
 
 <FallbackDemo />
 
 ## Ottimizzazione delle Catene
 
-Una volta che la tua catena funziona, ottimizza per velocità, costo e affidabilità. Questi spesso entrano in trade-off tra loro.
+Una volta che la tua catena funziona, ottimizza per velocità, costo e affidabilità. Spesso questi obiettivi sono in conflitto tra loro.
 
 <div className="my-6 grid md:grid-cols-3 gap-4">
   <div className="border rounded-lg bg-blue-50/50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900 p-4">
@@ -373,7 +373,7 @@ Inizia con una catena sequenziale di 2-3 passi. Falla funzionare in modo affidab
     "Richiede meno pianificazione"
   ]}
   correctIndex={2}
-  explanation="Il prompt chaining suddivide compiti complessi in passi specializzati. Ogni passo può concentrarsi bene su una cosa, i risultati intermedi possono essere validati, gli errori possono essere catturati e ritentati, e la qualità complessiva migliora attraverso la specializzazione."
+  explanation="Il prompt chaining suddivide compiti complessi in passi specializzati. Ogni passo può concentrarsi bene su una cosa, i risultati intermedi possono essere validati, gli errori possono essere intercettati e i passi ripetuti, e la qualità complessiva migliora attraverso la specializzazione."
 />
 
-Nel prossimo capitolo, esploreremo il prompting multimodale: lavorare con immagini, audio e altri contenuti non testuali.
+Nel prossimo capitolo, esploreremo come gestire i casi limite: input vuoti, richieste ambigue e tentativi deliberati di mettere in crisi i tuoi prompt.

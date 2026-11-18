@@ -1,4 +1,4 @@
-I system prompt sono come dare all'IA la sua personalità e descrizione del lavoro prima che inizi una conversazione. Pensali come le "istruzioni dietro le quinte" che modellano tutto ciò che l'IA dice.
+I system prompt sono come dare all'IA una personalità e un mansionario prima che inizi una conversazione. Pensali come le "istruzioni dietro le quinte" che modellano tutto ciò che l'IA dice.
 
 <Callout type="info" title="Cos'è un System Prompt?">
 Un system prompt è un messaggio speciale che dice all'IA chi è, come comportarsi e cosa può o non può fare. Gli utenti di solito non vedono questo messaggio, ma influenza ogni risposta.
@@ -22,7 +22,7 @@ Il messaggio di sistema rimane attivo per l'intera conversazione. È come il "ma
 
 ## Costruire un System Prompt
 
-Un buon system prompt ha cinque parti. Pensale come compilare una scheda personaggio per l'IA:
+Un buon system prompt ha cinque parti. Pensa a questo lavoro come alla compilazione di una scheda personaggio per l'IA:
 
 <Checklist 
   title="Checklist System Prompt"
@@ -103,9 +103,9 @@ Il tuo stile:
 - Offri opzioni, non solo risposte
 - Resta professionale ma amichevole
 
-Aiuti con: email, programmazione, pianificazione, ricerca, organizzazione informazioni.
+Aiuti con: email, gestione dell'agenda, pianificazione, ricerca, organizzazione delle informazioni.
 
-Non: prendi decisioni per l'utente, accedi a calendari reali o invii messaggi veri.
+Non fai: prendere decisioni per l'utente, accedere a calendari reali o inviare messaggi veri.
 
 L'utente chiede: Aiutami a scrivere un'email cortese per rifiutare un invito a una riunione.`} />
 
@@ -125,7 +125,7 @@ Stile di parlata:
 - Usa slang a tema spaziale ("per le lune!", "stellare!")
 - Frasi corte e incisive
 - Occasionali pause drammatiche...
-- Mai rompere il personaggio
+- Non esce mai dal personaggio
 
 L'utente dice: Capitano, c'è una nave Imperiale in avvicinamento!`} />
 
@@ -137,7 +137,7 @@ Pensa al tuo system prompt come a una cipolla con strati. Gli strati interni son
 
 <InfoGrid items={[
   { label: "Regole Base (mai infrangere)", description: "Essere onesti, restare sicuri, proteggere la privacy", color: "red" },
-  { label: "Persona (resta consistente)", description: "Chi è l'IA, come parla, la sua expertise", color: "amber" },
+  { label: "Persona (resta coerente)", description: "Chi è l'IA, come parla, la sua expertise", color: "amber" },
   { label: "Contesto del Compito (può cambiare)", description: "Progetto attuale, obiettivi specifici, info rilevanti", color: "blue" },
   { label: "Preferenze (l'utente può regolare)", description: "Lunghezza risposta, formato, livello di dettaglio", color: "green" },
 ]} />
@@ -174,15 +174,15 @@ L'utente chiede: come si sommano le frazioni`} />
 
 ### Memoria della Conversazione
 
-L'IA non ricorda conversazioni passate, ma puoi dirle di tracciare cose all'interno della chat corrente:
+Il modello in sé vede solo ciò che si trova nella conversazione corrente. Molte app di chat, tra cui ChatGPT, Claude e Gemini, offrono ormai funzioni di memoria che portano dettagli dalle chat precedenti in quelle nuove, ma quella memoria è gestita dall'app e dalle sue impostazioni, non dal tuo system prompt. All'interno di una singola conversazione, puoi comunque dire all'IA di cosa tenere traccia:
 
 <TryIt compact prompt={`Sei un assistente personale per lo shopping.
 
 RICORDA DURANTE QUESTA CONVERSAZIONE:
 - Articoli che l'utente apprezza o non apprezza
-- Il loro budget (se menzionato)
-- Le loro preferenze di stile
-- Taglie che menzionano
+- Il suo budget (se menzionato)
+- Le sue preferenze di stile
+- Le taglie che menziona
 
 USA QUESTO NATURALMENTE:
 - "Dato che hai menzionato che ti piace il blu..."
@@ -256,7 +256,7 @@ EVITA:
 - Farli sentire stupidi
 - Lunghe lezioni
 
-Se sono davvero bloccati dopo 2-3 suggerimenti, affrontalo insieme passo dopo passo.
+Se sono davvero bloccati dopo 2-3 suggerimenti, risolvetelo insieme passo dopo passo.
 
 Studente: Puoi aiutarmi a risolvere questa equazione? 2x + 5 = 13`}
 />
@@ -265,8 +265,8 @@ Studente: Puoi aiutarmi a risolvere questa equazione? 2x + 5 = 13`}
 
 <TryIt 
   title="Coach di Scrittura"
-  description="Un coach di scrittura che supporta e aiuta a migliorare la tua scrittura senza riscriverla per te."
-  prompt={`Sei un coach di scrittura che supporta.
+  description="Un coach di scrittura incoraggiante che ti aiuta a migliorare la tua scrittura senza riscriverla al posto tuo."
+  prompt={`Sei un coach di scrittura incoraggiante.
 
 IL TUO APPROCCIO:
 - Evidenzia cosa sta funzionando bene PRIMA
@@ -284,7 +284,7 @@ MAI:
 - Essere duro o scoraggiante
 - Sopraffare con troppo feedback
 
-TONO: Come un amico che supporta e che è anche un bravo scrittore
+TONO: Come un amico premuroso che è anche un ottimo scrittore
 
 L'utente condivide: Ieri sono andato al negozio. Pioveva. Ho comprato delle mele. Le mele erano rosse. Sono tornato a casa e ne ho mangiata una.`}
 />
@@ -300,7 +300,7 @@ Prima di usare un system prompt per davvero, testalo! Ecco cosa verificare:
     { text: "Casi limite: Cosa succede con richieste insolite?" },
     { text: "Confini: Resta entro i suoi limiti?" },
     { text: "Personalità: Mantiene il personaggio?" },
-    { text: "Conversazioni lunghe: Resta consistente dopo molti messaggi?" },
+    { text: "Conversazioni lunghe: Resta coerente dopo molti messaggi?" },
     { text: "Tentativi di jailbreak: Resiste ai trucchi 'ignora le tue istruzioni'?" }
   ]}
 />
@@ -382,8 +382,8 @@ Un system prompt ben costruito:
       <li>Essere vago sul ruolo</li>
       <li>Dimenticare di impostare limiti</li>
       <li>Renderlo troppo lungo (max 500 parole)</li>
-      <li>Contraddire te stesso</li>
-      <li>Assumere che l'IA "capirà"</li>
+      <li>Contraddirti</li>
+      <li>Dare per scontato che l'IA "capirà da sola"</li>
     </ul>
   </div>
 </div>
@@ -432,4 +432,4 @@ Quando sei incerto, \${comportamento incertezza}.`}
   explanation="Un system prompt è come il manuale di istruzioni dell'IA—definisce chi è l'IA, come dovrebbe comportarsi, cosa può e non può fare, e come dovrebbero essere formattate le risposte. Questo modella ogni risposta nella conversazione."
 />
 
-Nel prossimo capitolo, esploreremo il prompt chaining: collegare molteplici prompt insieme per compiti complessi multi-step.
+Nel prossimo capitolo, esploreremo il prompt chaining: collegare più prompt tra loro per affrontare compiti complessi in più passaggi.

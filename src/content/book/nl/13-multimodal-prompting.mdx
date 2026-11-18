@@ -8,7 +8,7 @@ Gedurende het grootste deel van de geschiedenis werkten computers met één type
 
 ## Waarom Multimodaal Belangrijk Is
 
-Traditionele AI vereiste dat je alles in woorden beschreef. Wil je iets over een afbeelding vragen? Dan moest je deze eerst beschrijven. Wil je een document analyseren? Dan moest je het handmatig transcriberen. Multimodale modellen elimineren deze barrières.
+Traditionele AI vereiste dat je alles in woorden beschreef. Wilde je iets over een afbeelding vragen? Dan moest je die eerst beschrijven. Wilde je een document analyseren? Dan moest je het handmatig transcriberen. Multimodale modellen elimineren deze barrières.
 
 <InfoGrid items={[
   { label: "Zien en Begrijpen", description: "Upload een afbeelding en stel er direct vragen over—geen beschrijving nodig", example: "\"Wat is er mis met dit schakelschema?\"", color: "blue" },
@@ -34,18 +34,18 @@ Wanneer jij naar een afbeelding kijkt, weet je direct wat belangrijk is op basis
 
 ## Het Multimodale Landschap
 
-Verschillende modellen hebben verschillende mogelijkheden. Dit is wat beschikbaar is in 2025:
+Verschillende modellen hebben verschillende mogelijkheden. Hier is een momentopname van het landschap eind 2026:
 
 ### Begripsmodellen (Input → Analyse)
 
 Deze modellen accepteren verschillende mediatypen en produceren tekstanalyse of antwoorden.
 
 <InfoGrid items={[
-  { label: "GPT-4o / GPT-5", description: "Tekst + Afbeeldingen + Audio → Tekst. OpenAI's vlaggenschip met 128K context, sterke creatieve en redeneervaardigheden, verminderde hallucinatiepercentages.", color: "green" },
-  { label: "Claude 4 Sonnet/Opus", description: "Tekst + Afbeeldingen → Tekst. Anthropic's veiligheidsgerichte model met geavanceerd redeneren, uitstekend voor coderen en complexe meerstapstaken.", color: "purple" },
-  { label: "Gemini 2.5", description: "Tekst + Afbeeldingen + Audio + Video → Tekst. Google's model met 1M token context, zelf-feitcontrole, snelle verwerking voor coderen en onderzoek.", color: "blue" },
-  { label: "LLaMA 4 Scout", description: "Tekst + Afbeeldingen + Video → Tekst. Meta's open-source model met enorme 10M token context voor lange documenten en codebases.", color: "cyan" },
-  { label: "Grok 4", description: "Tekst + Afbeeldingen → Tekst. xAI's model met realtime gegevenstoegang en sociale media-integratie voor actuele antwoorden.", color: "red" }
+  { label: "GPT-6.2", description: "Tekst + Afbeeldingen → Tekst. OpenAI's huidige vlaggenschipfamilie, met een contextvenster van ongeveer een miljoen tokens en sterke vaardigheden in redeneren, coderen en beeldbegrip. Spraak en transcriptie worden afgehandeld door aparte, gespecialiseerde modellen.", color: "green" },
+  { label: "Claude Opus / Sonnet 5.5", description: "Tekst + Afbeeldingen → Tekst. Anthropic's huidige familie, met een contextvenster van een miljoen tokens, bekend om zorgvuldig redeneren, coderen en lange taken met veel stappen.", color: "purple" },
+  { label: "Gemini 4", description: "Tekst + Afbeeldingen + Audio + Video + PDF → Tekst. Google's huidige familie, met een contextvenster van een miljoen tokens en native begrip van audio en video.", color: "blue" },
+  { label: "Llama 4 Scout", description: "Tekst + Afbeeldingen → Tekst. Meta's open-weight model met een contextvenster van 10 miljoen tokens, dat je kunt downloaden en op je eigen hardware kunt draaien.", color: "cyan" },
+  { label: "Grok 4.7", description: "Tekst + Afbeeldingen → Tekst. Het huidige Grok-model, met een contextvenster van 500K tokens. Het ziet live webinhoud en posts op X alleen wanneer de zoektools zijn ingeschakeld.", color: "red" }
 ]} />
 
 ### Generatiemodellen (Tekst → Media)
@@ -53,10 +53,10 @@ Deze modellen accepteren verschillende mediatypen en produceren tekstanalyse of 
 Deze modellen creëren afbeeldingen, audio of video vanuit tekstbeschrijvingen.
 
 <InfoGrid items={[
-  { label: "DALL-E 3", description: "Tekst → Afbeeldingen. OpenAI's afbeeldingsgenerator met hoge nauwkeurigheid voor promptbeschrijvingen.", color: "amber" },
+  { label: "GPT Image", description: "Tekst + Afbeeldingen → Afbeeldingen. OpenAI's modellen voor het genereren en bewerken van afbeeldingen, die DALL-E 3 vervingen nadat dat in 2026 werd uitgefaseerd.", color: "amber" },
   { label: "Midjourney", description: "Tekst + Afbeeldingen → Afbeeldingen. Bekend om artistieke kwaliteit, stijlcontrole en esthetische resultaten.", color: "pink" },
-  { label: "Sora", description: "Tekst → Video. OpenAI's videogeneratiemodel voor het maken van clips uit beschrijvingen.", color: "red" },
-  { label: "Whisper", description: "Audio → Tekst. OpenAI's spraak-naar-tekst met hoge nauwkeurigheid in alle talen.", color: "cyan" }
+  { label: "Videogeneratoren", description: "Tekst + Afbeeldingen → Video. Modellen zoals Google's Gemini Omni Flash en xAI's Grok Imagine maken van een prompt of een stilstaand beeld clips van maximaal ongeveer 15 seconden. OpenAI heeft zijn Sora 2-API in september 2026 stopgezet.", color: "red" },
+  { label: "Spraak-naar-Tekst", description: "Audio → Tekst. Gespecialiseerde transcriptiemodellen zoals OpenAI's GPT-Transcribe (de opvolger van Whisper) en Google's Gemini 3.5 Transcribe, met ondersteuning voor veel talen en sprekerlabels.", color: "cyan" }
 ]} />
 
 <Callout type="info" title="Snelle Evolutie">
@@ -222,7 +222,7 @@ Screenshotbeschrijving: \${screenshotDescription}`}
 
 ### Foutmeldingsanalyse
 
-Wanneer je een fout tegenkomt, bevat een screenshot vaak meer context dan alleen het kopiëren van de fouttekst.
+Wanneer je een fout tegenkomt, bevat een screenshot vaak meer context dan alleen de gekopieerde fouttekst.
 
 <TryIt 
   title="Foutdiagnose vanuit Screenshot"
@@ -263,7 +263,7 @@ Effectieve prompts voor afbeeldingsgeneratie hebben verschillende componenten:
   { label: "Onderwerp", description: "Wat is de hoofdfocus van de afbeelding?", example: "Een golden retriever die speelt in herfstbladeren", color: "blue" },
   { label: "Stijl", description: "Welke artistieke stijl of medium?", example: "Aquarel, digitale kunst, fotorealistisch", color: "purple" },
   { label: "Compositie", description: "Hoe is de scène gerangschikt?", example: "Close-up portret, wijd landschap, vogelperspectief", color: "green" },
-  { label: "Belichting", description: "Wat is de lichtbron en kwaliteit?", example: "Zacht ochtendlicht, dramatische schaduwen, neongloed", color: "amber" },
+  { label: "Belichting", description: "Wat is de lichtbron en hoe is het licht?", example: "Zacht ochtendlicht, dramatische schaduwen, neongloed", color: "amber" },
   { label: "Sfeer", description: "Welk gevoel moet het oproepen?", example: "Vredig, energiek, mysterieus, nostalgisch", color: "pink" },
   { label: "Details", description: "Specifieke elementen om op te nemen of te vermijden", example: "Inclusief: bloemen. Vermijd: tekst, watermerken", color: "cyan" }
 ]} />
@@ -302,7 +302,7 @@ Effectieve prompts voor afbeeldingsgeneratie hebben verschillende componenten:
 
 ### Scène Opbouwen
 
-Voor complexe scènes, beschrijf lagen van voorgrond tot achtergrond.
+Beschrijf bij complexe scènes de lagen van voorgrond tot achtergrond.
 
 <TryIt 
   title="Gelaagde Scènebeschrijving"
@@ -334,7 +334,7 @@ Extra details om op te nemen: \${additionalDetails}`}
 
 ## Audio-prompting
 
-Audioverwerking opent transcriptie, analyse en begrip van gesproken inhoud. De sleutel is context geven over wat de audio bevat.
+Audioverwerking maakt transcriptie, analyse en begrip van gesproken inhoud mogelijk. De sleutel is context geven over wat de audio bevat.
 
 ### Verbeterde Transcriptie
 
@@ -391,7 +391,7 @@ Waar gaat deze opname over? Wat is de belangrijkste conclusie?
 **4. Emotionele Analyse**
 - Algehele toon (formeel, informeel, gespannen, vriendelijk)
 - Opvallende emotionele momenten
-- Energieniveau gedurende
+- Energieniveau door de opname heen
 
 **5. Actiepunten**
 - Genomen beslissingen
@@ -444,7 +444,7 @@ Waar gaat deze video over? Wat is de hoofdboodschap of het doel?
 - Effectiviteit voor het doel
 
 **6. Doelgroep**
-Voor wie is deze video gemaakt? Bedient het hen goed?
+Voor wie is deze video gemaakt? Sluit de video goed op hen aan?
 
 **7. Belangrijkste Conclusies**
 Wat zou een kijker moeten onthouden van deze video?`}
@@ -452,7 +452,7 @@ Wat zou een kijker moeten onthouden van deze video?`}
 
 ### Video-inhoudsextractie
 
-Voor specifieke informatie-extractie uit video's, wees precies over wat je nodig hebt.
+Wees precies over wat je nodig hebt wanneer je specifieke informatie uit video's haalt.
 
 <TryIt 
   title="Video Data Extractor"
@@ -493,9 +493,9 @@ De echte kracht van multimodale AI ontstaat wanneer je verschillende soorten inp
 Controleer of afbeeldingen en hun beschrijvingen overeenkomen—essentieel voor e-commerce, contentmoderatie en kwaliteitsborging.
 
 <TryIt 
-  title="Afbeelding-Tekst Uitlijningscontroleur"
+  title="Controle op Overeenstemming tussen Afbeelding en Tekst"
   description="Verifieer dat afbeeldingen hun tekstbeschrijvingen nauwkeurig weergeven en vice versa."
-  prompt={`Analyseer deze afbeelding en bijbehorende tekst op uitlijning:
+  prompt={`Analyseer deze afbeelding en bijbehorende tekst op onderlinge overeenstemming:
 
 **Afbeelding**: \${imageDescription}
 **Tekstbeschrijving**: "\${textDescription}"
@@ -569,7 +569,7 @@ Bij het kiezen tussen opties helpt gestructureerde vergelijking bij betere besli
 
 <TryIt 
   title="Visuele Optievergelijker"
-  description="Vergelijk meerdere afbeeldingen systematisch tegen je criteria om weloverwogen beslissingen te nemen."
+  description="Vergelijk meerdere afbeeldingen systematisch aan de hand van je criteria om weloverwogen beslissingen te nemen."
   prompt={`Ik kies tussen deze opties voor \${purpose}:
 
 **Optie A**: \${optionA}
@@ -599,13 +599,13 @@ Verstrek:
 Op basis van je gestelde prioriteiten raad ik [Optie] aan omdat...
 
 **Kanttekeningen**
-- Als [voorwaarde], overweeg [alternatief] in plaats daarvan
+- Als [voorwaarde], overweeg dan in plaats daarvan [alternatief]
 - Let op [potentieel probleem]`}
 />
 
 ## Best Practices voor Multimodale Prompts
 
-Geweldige resultaten krijgen van multimodale AI vereist begrip van zowel de mogelijkheden als de beperkingen.
+Om uitstekende resultaten uit multimodale AI te halen, moet je zowel de mogelijkheden als de beperkingen begrijpen.
 
 ### Wat Multimodale Prompts Effectief Maakt
 
@@ -643,13 +643,13 @@ ALS INHOUD BEPERKT LIJKT:
 - Leg uit wat je wel en niet kunt analyseren
 - Focus op toegestane aspecten van de analyse
 
-ALS GEVRAAGD OVER MENSEN:
+ALS ER NAAR MENSEN WORDT GEVRAAGD:
 - Beschrijf acties, posities en algemene kenmerken
 - Probeer geen specifieke individuen te identificeren
 - Focus op: aantal mensen, activiteiten, uitdrukkingen, kleding
 
 **Je Analyse**:
-[Ga door met analyse, deze richtlijnen toepassend]`}
+[Voer de analyse uit en pas daarbij deze richtlijnen toe]`}
 />
 
 <Quiz 
@@ -661,5 +661,5 @@ ALS GEVRAAGD OVER MENSEN:
     "Tekstprompts werken niet met multimodale modellen"
   ]}
   correctIndex={1}
-  explanation="Wanneer jij naar een afbeelding kijkt, weet je direct wat belangrijk is op basis van je doelen. De AI heeft deze context niet—een foto van een scheur in een muur kan een constructief probleem zijn, een artistieke textuur, of irrelevante achtergrond. Je prompt bepaalt hoe de AI de media die je verstrekt interpreteert en waarop focust."
+  explanation="Wanneer jij naar een afbeelding kijkt, weet je direct wat belangrijk is op basis van je doelen. De AI heeft deze context niet: een foto van een scheur in een muur kan een constructief probleem zijn, een artistieke textuur, of irrelevante achtergrond. Je prompt bepaalt hoe de AI de media die je verstrekt interpreteert en waar die zich op richt."
 />
