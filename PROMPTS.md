@@ -241237,3 +241237,36 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>CMake C++ Project taste</strong></summary>
+
+## CMake C++ Project taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# CMake C++ Project taste of a systems developer who wants clean, portable builds
+- Require a modern CMake (3.24 or newer) and write target-based CMake only, never global `include_directories` or `add_definitions`. Confidence: 0.90
+- Attach include paths, flags and definitions to targets with `target_*` commands and the right `PUBLIC`, `PRIVATE` or `INTERFACE` scope. Confidence: 0.90
+- Always build out of source, in a `build/` directory that is gitignored. Confidence: 0.95
+- Commit a `CMakePresets.json` with debug, release and sanitizer presets so everyone configures the same way. Confidence: 0.85
+- Set the language standard with `target_compile_features(... cxx_std_20)` instead of raw `-std=` flags. Confidence: 0.85
+- Turn on strict warnings like `-Wall -Wextra -Wpedantic` or `/W4` through a shared interface target, and treat warnings as errors in CI. Confidence: 0.85
+- Never use `file(GLOB)` for source lists; list source files explicitly so the build reruns when files change. Confidence: 0.75
+- Get third-party libraries with `find_package` backed by vcpkg or Conan, and use `FetchContent` only for small, pinned dependencies. Confidence: 0.80
+- Pin every fetched dependency to a tag or commit hash, never a moving branch. Confidence: 0.90
+- Never vendor modified copies of libraries without a clear patch file and a note on why. Confidence: 0.75
+- Run tests with CTest, and register each test executable with `add_test` or `gtest_discover_tests`. Confidence: 0.85
+- Have a CI job that builds with AddressSanitizer and UndefinedBehaviorSanitizer and runs the full test suite. Confidence: 0.85
+- Export `compile_commands.json` with `CMAKE_EXPORT_COMPILE_COMMANDS` so clangd and clang-tidy work out of the box. Confidence: 0.90
+- Format with a committed `.clang-format` and check it in CI rather than arguing about style in reviews. Confidence: 0.85
+- Use Ninja as the default generator for fast incremental builds, and ccache or sccache in CI. Confidence: 0.80
+- Provide proper `install()` rules and an exported package config so other projects can use `find_package` on the library. Confidence: 0.75
+- Namespace exported targets like `mylib::mylib` and create an alias target with the same name for in-tree use. Confidence: 0.80
+- Keep options few and prefixed with the project name, such as `MYLIB_BUILD_TESTS`, and default tests off when used as a subproject. Confidence: 0.75
+- Avoid setting `CMAKE_CXX_FLAGS` directly in `CMakeLists.txt`; leave global flags to presets and toolchain files. Confidence: 0.80
+- Test the build on Linux, macOS and Windows in CI if the project claims to be portable. Confidence: 0.80
+```
+
+</details>
+
