@@ -184,7 +184,7 @@ Kendi kendini geliştiren döngü. Önce içerik üretirsiniz, ardından yapay z
     { step: "Üret", prompt: "[yoğun çalışan profesyonelleri] hedefleyen bir [fitness uygulaması] için pazarlama e-postası yaz.", output: "Konu: Hemen Forma Gir!\n\nMerhaba! Uygulamamız egzersiz yapmana yardımcı olur. Hemen indir ve fitness yolculuğuna başla. Teşekkürler!" },
     { step: "Eleştir", prompt: "Bir pazarlama uzmanı olarak bu e-postayı eleştir:\n[uretilen_eposta]\nDeğerlendir: konu satırı, giriş cümlesi, değer önerisi, harekete geçirici çağrı, ton\nHer birini 1-10 arasında puanla.", output: '{ "konu_satiri": 4, "giris": 3, "deger_onerisi": 2, "cagri": 5, "ton": 4, "geri_bildirim": "Fazla genel, somut fayda yok, aciliyet hissi zayıf" }' },
     { step: "İyileştir", prompt: "E-postayı bu geri bildirimi dikkate alarak yeniden yaz:\nOrijinal: [uretilen_eposta]\nEleştiri: [elestiri_ciktisi]\nEn düşük puan alan unsurlara odaklan.", output: "Konu: Öğle Arasına Sığan 15 Dakikalık Antrenmanlar\n\nProgramınız mı yoğun? Sizi anlıyoruz. Uygulamamız, kaybedecek tek dakikası olmayan profesyoneller için bilimsel temelli antrenmanlar sunuyor. Günde yalnızca 15 dakikayla sağlığını dönüştüren 50.000'i aşkın yöneticiye katılın. Ücretsiz denemenizi hemen başlatın; gelecekteki haliniz size teşekkür edecek." },
-    { step: "Son Puan", prompt: "İyileştirilmiş e-postayı yeniden değerlendir.", output: '{ "konu_satiri": 8, "giris": 8, "deger_onerisi": 9, "cagri": 8, "ton": 9, "iyilesme": "toplamda +23 puan" }' }
+    { step: "Son Puan", prompt: "İyileştirilmiş e-postayı yeniden değerlendir.", output: '{ "konu_satiri": 8, "giris": 8, "deger_onerisi": 9, "cagri": 8, "ton": 9, "iyilesme": "toplamda +24 puan" }' }
   ]}
 />
 
@@ -212,7 +212,9 @@ Gerçek kullanıma açılan sistemlerde zinciri kodla otomatikleştirin. Böylec
 <CodeEditor 
   language="python"
   filename="chain.py"
-  code={`def analysis_chain(document):
+  code={`import json
+
+def analysis_chain(document):
     # Adım 1: Özetle
     summary = call_ai(f"""
         Bu belgenin ana noktalarını 5 madde halinde özetle:

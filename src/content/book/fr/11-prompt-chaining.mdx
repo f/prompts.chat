@@ -184,7 +184,7 @@ La boucle d'auto-amélioration. On génère du contenu, on demande à l'IA de l'
     { step: "Générer", prompt: "Écris un email marketing pour [une application de fitness] destiné [aux professionnels débordés].", output: "Objet : Retrouvez la forme vite !\n\nBonjour ! Notre application vous aide à faire du sport. Téléchargez-la dès aujourd'hui et commencez votre parcours forme. Merci !" },
     { step: "Critiquer", prompt: "En tant qu\'expert marketing, critique cet email :\n[email_genere]\nÉvalue : l\'objet, l\'accroche, la proposition de valeur, l\'appel à l\'action, le ton\nNote chaque élément de 1 à 10.", output: '{ "objet": 4, "accroche": 3, "proposition_de_valeur": 2, "appel_action": 5, "ton": 4, "feedback": "Trop générique, aucun bénéfice concret, aucun sentiment d\'urgence" }' },
     { step: "Affiner", prompt: "Réécris l\'email en tenant compte de ce feedback :\nOriginal : [email_genere]\nCritique : [sortie_critique]\nConcentre-toi sur les éléments les moins bien notés.", output: "Objet : 15 minutes de sport pendant votre pause déjeuner\n\nUn agenda surchargé ? Nous comprenons. Notre application propose des séances fondées sur la science, conçues pour les professionnels qui n'ont pas une minute à perdre. Rejoignez plus de 50 000 cadres qui ont transformé leur santé en seulement 15 minutes par jour. Commencez votre essai gratuit dès maintenant : vous vous remercierez plus tard." },
-    { step: "Score Final", prompt: "Réévalue l\'email affiné.", output: '{ "objet": 8, "accroche": 8, "proposition_de_valeur": 9, "appel_action": 8, "ton": 9, "amelioration": "+23 points au total" }' }
+    { step: "Score Final", prompt: "Réévalue l\'email affiné.", output: '{ "objet": 8, "accroche": 8, "proposition_de_valeur": 9, "appel_action": 8, "ton": 9, "amelioration": "+24 points au total" }' }
   ]}
 />
 
@@ -212,7 +212,9 @@ Pour les systèmes en production, automatisez la chaîne avec du code. Cela perm
 <CodeEditor 
   language="python"
   filename="chaine.py"
-  code={`def chaine_analyse(document):
+  code={`import json
+
+def chaine_analyse(document):
     # Étape 1 : Résumer
     resume = appeler_ia(f"""
         Résume les points clés de ce document en 5 puces :

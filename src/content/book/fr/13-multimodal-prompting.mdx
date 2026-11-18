@@ -56,7 +56,7 @@ Ces modèles créent des images, de l'audio ou de la vidéo à partir de descrip
   { label: "GPT Image", description: "Texte + Images → Images. Les modèles de génération et d'édition d'images d'OpenAI, qui ont remplacé DALL-E 3 après son retrait en 2026.", color: "amber" },
   { label: "Midjourney", description: "Texte + Images → Images. Réputé pour sa qualité artistique, le contrôle du style et l'esthétique de ses résultats.", color: "pink" },
   { label: "Générateurs de Vidéo", description: "Texte + Images → Vidéo. Des modèles comme Gemini Omni Flash de Google et Grok Imagine de xAI transforment un prompt ou une image fixe en clips allant jusqu'à environ 15 secondes maximum. OpenAI a retiré son API Sora 2 en septembre 2026.", color: "red" },
-  { label: "Reconnaissance Vocale", description: "Audio → Texte. Des modèles de transcription dédiés, comme GPT-Transcribe d'OpenAI (le successeur de Whisper) et Gemini 3.5 Transcribe de Google, qui prennent en charge de nombreuses langues et l'identification des locuteurs.", color: "cyan" }
+  { label: "Reconnaissance Vocale", description: "Audio → Texte. Des modèles de transcription dédiés, comme GPT-Transcribe d'OpenAI (le successeur de Whisper) et Gemini 3.5 Transcribe de Google, qui prennent en charge de nombreuses langues.", color: "cyan" }
 ]} />
 
 <Callout type="info" title="Une Évolution Rapide">
@@ -342,7 +342,7 @@ La transcription basique n'est qu'un début. Avec de bons prompts, vous obtenez 
 
 <TryIt 
   title="Transcription Intelligente"
-  description="Obtenez des transcriptions précises, avec le nom des locuteurs, des horodatages et un traitement des passages peu audibles."
+  description="Obtenez des transcriptions précises, avec l'étiquetage des locuteurs, des horodatages et un traitement des passages peu audibles."
   prompt={`Transcris cet enregistrement audio.
 
 **Contexte** : \${typeEnregistrement} (réunion, interview, podcast, cours, etc.)

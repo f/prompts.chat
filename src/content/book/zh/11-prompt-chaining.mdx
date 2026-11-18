@@ -184,7 +184,7 @@
     { step: "生成", prompt: "为[健身应用]撰写一封针对[忙碌职场人士]的营销邮件。", output: "主题：快速健身！\n\n嗨！我们的应用帮助您锻炼。今天就下载，开始您的健身之旅。谢谢！" },
     { step: "评审", prompt: "作为营销专家，评审这封邮件：\n[generated_email]\n评估：主题行、开头吸引力、价值主张、行动号召、语气\n每项打分 1-10。", output: '{ "subject_line": 4, "hook": 3, "value_proposition": 2, "cta": 5, "tone": 4, "feedback": "太笼统，没有具体好处，缺乏紧迫感" }' },
     { step: "优化", prompt: "根据反馈重写邮件：\n原版：[generated_email]\n评审：[critique_output]\n重点改进得分最低的方面。", output: "主题：午休时间的 15 分钟健身\n\n日程繁忙？我们理解。我们的应用提供经科学验证的健身计划，专为没有时间浪费的职场人士设计。加入超过 50,000 名高管的行列，每天只需 15 分钟就能改变健康状况。立即开始免费试用——未来的您会感谢现在的决定。" },
-    { step: "最终得分", prompt: "重新评估优化后的邮件。", output: '{ "subject_line": 8, "hook": 8, "value_proposition": 9, "cta": 8, "tone": 9, "improvement": "总分提升 +23 分" }' }
+    { step: "最终得分", prompt: "重新评估优化后的邮件。", output: '{ "subject_line": 8, "hook": 8, "value_proposition": 9, "cta": 8, "tone": 9, "improvement": "总分提升 +24 分" }' }
   ]}
 />
 
@@ -212,7 +212,9 @@ final_output = call_ai("Generate report: " + step2_output)`}
 <CodeEditor 
   language="python"
   filename="chain.py"
-  code={`def analysis_chain(document):
+  code={`import json
+
+def analysis_chain(document):
     # Step 1: Summarize
     summary = call_ai(f"""
         Summarize the key points of this document in 5 bullets:

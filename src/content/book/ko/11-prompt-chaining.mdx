@@ -184,7 +184,7 @@
     { step: "생성", prompt: "[바쁜 직장인]을 타겟으로 한 [피트니스 앱]의 마케팅 이메일을 작성하세요.", output: "제목: 빠르게 건강해지세요!\n\n안녕하세요! 저희 앱은 운동을 도와줍니다. 오늘 다운로드하고 피트니스 여정을 시작하세요. 감사합니다!" },
     { step: "비평", prompt: "마케팅 전문가로서 이 이메일을 비평하세요:\n[생성된_이메일]\n평가: 제목, 후크, 가치 제안, CTA, 톤\n각각 1-10점으로 점수를 매기세요.", output: '{ "subject_line": 4, "hook": 3, "value_proposition": 2, "cta": 5, "tone": 4, "feedback": "너무 일반적, 구체적 혜택 없음, 긴급성 부족" }' },
     { step: "개선", prompt: "이 피드백을 반영하여 이메일을 다시 작성하세요:\n원본: [생성된_이메일]\n비평: [비평_출력]\n가장 낮은 점수의 요소에 집중하세요.", output: "제목: 점심시간 15분 운동\n\n바쁜 일정? 저희도 알아요. 저희 앱은 시간이 없는 직장인을 위해 설계된 과학적으로 검증된 운동을 제공합니다. 하루 15분 만에 건강을 변화시킨 50,000명 이상의 직장인들과 함께하세요. 지금 무료 체험을 시작하세요—미래의 당신이 감사할 것입니다." },
-    { step: "최종 점수", prompt: "개선된 이메일을 다시 평가하세요.", output: '{ "subject_line": 8, "hook": 8, "value_proposition": 9, "cta": 8, "tone": 9, "improvement": "총 +23점 향상" }' }
+    { step: "최종 점수", prompt: "개선된 이메일을 다시 평가하세요.", output: '{ "subject_line": 8, "hook": 8, "value_proposition": 9, "cta": 8, "tone": 9, "improvement": "총 +24점 향상" }' }
   ]}
 />
 
@@ -212,7 +212,9 @@ final_output = call_ai("Generate report: " + step2_output)`}
 <CodeEditor 
   language="python"
   filename="chain.py"
-  code={`def analysis_chain(document):
+  code={`import json
+
+def analysis_chain(document):
     # Step 1: Summarize
     summary = call_ai(f"""
         Summarize the key points of this document in 5 bullets:

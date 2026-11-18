@@ -184,7 +184,7 @@
     { step: "تولید", prompt: "یک ایمیل بازاریابی برای [اپلیکیشن تناسب اندام] با هدف [افراد حرفه‌ای پرمشغله] بنویس.", output: "موضوع: سریع تناسب پیدا کنید!\n\nسلام! اپلیکیشن ما به شما کمک می‌کند ورزش کنید. همین امروز دانلود کنید و سفر تناسب اندام خود را شروع کنید. ممنون!" },
     { step: "نقد", prompt: "به عنوان یک متخصص بازاریابی، این ایمیل را نقد کن:\n[generated_email]\nارزیابی کن: خط موضوع، قلاب، ارزش پیشنهادی، فراخوان به عمل، لحن\nهر کدام را از ۱ تا ۱۰ امتیاز بده.", output: '{ "subject_line": 4, "hook": 3, "value_proposition": 2, "cta": 5, "tone": 4, "feedback": "خیلی عمومی، بدون مزایای خاص، فوریت ضعیف" }' },
     { step: "پالایش", prompt: "ایمیل را با در نظر گرفتن این بازخورد بازنویسی کن:\nاصلی: [generated_email]\nنقد: [critique_output]\nروی عناصر با کمترین امتیاز تمرکز کن.", output: "موضوع: تمرینات ۱۵ دقیقه‌ای برای وقت ناهار شما\n\nبرنامه شلوغی دارید؟ ما درک می‌کنیم. اپلیکیشن ما تمرینات مبتنی بر علم را ارائه می‌دهد که برای افراد حرفه‌ای طراحی شده‌اند که وقتی برای هدر دادن ندارند. به بیش از ۵۰,۰۰۰ مدیر بپیوندید که سلامت خود را در فقط ۱۵ دقیقه در روز متحول کردند. همین حالا دوره آزمایشی رایگان خود را شروع کنید—خود آینده‌تان از شما تشکر خواهد کرد." },
-    { step: "امتیاز نهایی", prompt: "ایمیل پالایش‌شده را دوباره ارزیابی کن.", output: '{ "subject_line": 8, "hook": 8, "value_proposition": 9, "cta": 8, "tone": 9, "improvement": "+۲۳ امتیاز کل" }' }
+    { step: "امتیاز نهایی", prompt: "ایمیل پالایش‌شده را دوباره ارزیابی کن.", output: '{ "subject_line": 8, "hook": 8, "value_proposition": 9, "cta": 8, "tone": 9, "improvement": "+۲۴ امتیاز کل" }' }
   ]}
 />
 
@@ -212,7 +212,9 @@ final_output = call_ai("Generate report: " + step2_output)`}
 <CodeEditor 
   language="python"
   filename="chain.py"
-  code={`def analysis_chain(document):
+  code={`import json
+
+def analysis_chain(document):
     # Step 1: Summarize
     summary = call_ai(f"""
         Summarize the key points of this document in 5 bullets:

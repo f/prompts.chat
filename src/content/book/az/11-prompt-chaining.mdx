@@ -184,7 +184,7 @@ Kodun yenidən strukturlaşdırılması, layihə planlaması və ya hərəkətə
     { step: "Yarat", prompt: "[məşq tətbiqi] üçün [məşğul peşəkarları] hədəfləyən marketinq e-poçtu yaz.", output: "Mövzu: Tez Forma Düş!\n\nSalam! Tətbiqimiz idman etməyinizə kömək edir. Bu gün yükləyin və fitnes səyahətinizə başlayın. Təşəkkürlər!" },
     { step: "Tənqid Et", prompt: "Marketinq mütəxəssisi kimi bu e-poçtu tənqid et:\n[yaradilmis_e-poct]\nQiymətləndir: mövzu sətri, giriş cümləsi, dəyər təklifi, fəaliyyət çağırışı, ton\nHər birinə 1-10 bal ver.", output: '{ "movzu_setri": 4, "giris": 3, "deyer_teklifi": 2, "cagiris": 5, "ton": 4, "rey": "Çox ümumidir, konkret fayda yoxdur, təcililik hissi zəifdir" }' },
     { step: "Təkmilləşdir", prompt: "Bu rəyi nəzərə alaraq e-poçtu yenidən yaz:\nOrijinal: [yaradilmis_e-poct]\nTənqid: [tenqid_cixisi]\nƏn aşağı bal alan elementlərə fokuslan.", output: "Mövzu: Nahar Fasiləniz üçün 15 Dəqiqəlik Məşqlər\n\nVaxtınız azdır? Bunu başa düşürük. Tətbiqimiz itirməyə bir dəqiqəsi belə olmayan peşəkarlar üçün elmi əsaslı məşqlər təqdim edir. Gündə cəmi 15 dəqiqə ilə sağlamlığını dəyişən 50.000-dən çox rəhbərə qoşulun. Pulsuz sınaq dövrünüzə indi başlayın: gələcəkdəki özünüz sizə minnətdar olacaq." },
-    { step: "Son Bal", prompt: "Təkmilləşdirilmiş e-poçtu yenidən qiymətləndir.", output: '{ "movzu_setri": 8, "giris": 8, "deyer_teklifi": 9, "cagiris": 8, "ton": 9, "irelileyis": "cəmi +23 bal" }' }
+    { step: "Son Bal", prompt: "Təkmilləşdirilmiş e-poçtu yenidən qiymətləndir.", output: '{ "movzu_setri": 8, "giris": 8, "deyer_teklifi": 9, "cagiris": 8, "ton": 9, "irelileyis": "cəmi +24 bal" }' }
   ]}
 />
 
@@ -212,7 +212,9 @@ final_output = call_ai("Hesabat hazırla: " + step2_output)`}
 <CodeEditor 
   language="python"
   filename="chain.py"
-  code={`def analysis_chain(document):
+  code={`import json
+
+def analysis_chain(document):
     # Addım 1: Xülasə et
     summary = call_ai(f"""
         Bu sənədin əsas məqamlarını 5 bənddə xülasə et:

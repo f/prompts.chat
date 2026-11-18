@@ -184,7 +184,7 @@ Die Selbstverbesserungsschleife. Inhalte generieren, die KI sie kritisch bewerte
     { step: "Generieren", prompt: "Schreibe eine Marketing-E-Mail für [Fitness-App] mit Zielgruppe [vielbeschäftigte Berufstätige].", output: "Betreff: Schnell fit werden!\n\nHallo! Unsere App hilft dir beim Training. Lade sie heute herunter und starte deine Fitness-Reise. Danke!" },
     { step: "Kritisieren", prompt: "Kritisiere als Marketing-Experte diese E-Mail:\n[generierte_email]\nBewerte: Betreffzeile, Hook, Wertversprechen, CTA, Ton\nBewerte jedes 1-10.", output: '{ "subject_line": 4, "hook": 3, "value_proposition": 2, "cta": 5, "tone": 4, "feedback": "Zu generisch, keine spezifischen Vorteile, schwache Dringlichkeit" }' },
     { step: "Verfeinern", prompt: "Schreibe die E-Mail neu unter Berücksichtigung dieses Feedbacks:\nOriginal: [generierte_email]\nKritik: [kritik_ausgabe]\nFokussiere auf die am niedrigsten bewerteten Elemente.", output: "Betreff: 15-Minuten-Workouts für deine Mittagspause\n\nVoller Terminkalender? Verstehen wir. Unsere App liefert wissenschaftlich fundierte Workouts für Berufstätige, die keine Zeit zu verschwenden haben. Schließe dich 50.000+ Führungskräften an, die ihre Gesundheit in nur 15 Minuten täglich transformiert haben. Starte jetzt deine kostenlose Testversion – dein zukünftiges Ich wird es dir danken." },
-    { step: "Finale Bewertung", prompt: "Bewerte die verfeinerte E-Mail erneut.", output: '{ "subject_line": 8, "hook": 8, "value_proposition": 9, "cta": 8, "tone": 9, "improvement": "+23 Punkte insgesamt" }' }
+    { step: "Finale Bewertung", prompt: "Bewerte die verfeinerte E-Mail erneut.", output: '{ "subject_line": 8, "hook": 8, "value_proposition": 9, "cta": 8, "tone": 9, "improvement": "+24 Punkte insgesamt" }' }
   ]}
 />
 
@@ -212,7 +212,9 @@ Für Produktionssysteme automatisiere die Kette mit Code. Das ermöglicht Fehler
 <CodeEditor 
   language="python"
   filename="chain.py"
-  code={`def analyse_kette(dokument):
+  code={`import json
+
+def analyse_kette(dokument):
     # Schritt 1: Zusammenfassen
     zusammenfassung = call_ai(f"""
         Fasse die Hauptpunkte dieses Dokuments in 5 Stichpunkten zusammen:

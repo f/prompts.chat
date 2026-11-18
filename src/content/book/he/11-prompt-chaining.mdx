@@ -184,7 +184,7 @@
     { step: "יצירה", prompt: "כתוב אימייל שיווקי עבור [אפליקציית כושר] המיועד ל[אנשי מקצוע עסוקים].", output: "נושא: התאמן מהר!\n\nהיי! האפליקציה שלנו עוזרת לך להתאמן. הורד אותה היום והתחל את מסע הכושר שלך. תודה!" },
     { step: "ביקורת", prompt: "כמומחה שיווק, בקר אימייל זה:\n[generated_email]\nהעריך: שורת נושא, פתיח, הצעת ערך, קריאה לפעולה, טון\nדרג כל אחד 1-10.", output: '{ "subject_line": 4, "hook": 3, "value_proposition": 2, "cta": 5, "tone": 4, "feedback": "גנרי מדי, אין יתרונות ספציפיים, דחיפות חלשה" }' },
     { step: "שיפור", prompt: "כתוב מחדש את האימייל תוך התייחסות למשוב זה:\nמקורי: [generated_email]\nביקורת: [critique_output]\nהתמקד באלמנטים עם הציון הנמוך ביותר.", output: "נושא: אימוני 15 דקות להפסקת הצהריים שלך\n\nלוח זמנים צפוף? אנחנו מבינים. האפליקציה שלנו מספקת אימונים מבוססי מדע שתוכננו עבור אנשי מקצוע שאין להם זמן לבזבז. הצטרפו ל-50,000+ מנהלים בכירים ששינו את הבריאות שלהם ב-15 דקות ביום בלבד. התחילו את תקופת הניסיון החינמית עכשיו - העצמי העתידי שלכם יודה לכם." },
-    { step: "ציון סופי", prompt: "הערך מחדש את האימייל המשופר.", output: '{ "subject_line": 8, "hook": 8, "value_proposition": 9, "cta": 8, "tone": 9, "improvement": "+23 נקודות סה״כ" }' }
+    { step: "ציון סופי", prompt: "הערך מחדש את האימייל המשופר.", output: '{ "subject_line": 8, "hook": 8, "value_proposition": 9, "cta": 8, "tone": 9, "improvement": "+24 נקודות סה״כ" }' }
   ]}
 />
 
@@ -212,7 +212,9 @@ final_output = call_ai("Generate report: " + step2_output)`}
 <CodeEditor 
   language="python"
   filename="chain.py"
-  code={`def analysis_chain(document):
+  code={`import json
+
+def analysis_chain(document):
     # Step 1: Summarize
     summary = call_ai(f"""
         Summarize the key points of this document in 5 bullets:

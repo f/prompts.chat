@@ -184,7 +184,7 @@ O loop de auto-melhoria. Gere conteúdo, faça a IA avaliá-lo criticamente, dep
     { step: "Gerar", prompt: "Escreva um email de marketing para [app de fitness] visando [profissionais ocupados].", output: "Assunto: Fique Em Forma Rápido!\n\nOi! Nosso app ajuda você a se exercitar. Baixe hoje e comece sua jornada fitness. Obrigado!" },
     { step: "Criticar", prompt: "Como especialista em marketing, critique este email:\n[email_gerado]\nAvalie: linha de assunto, gancho, proposta de valor, CTA, tom\nDê uma nota de 1 a 10 para cada um.", output: '{ "linha_assunto": 4, "gancho": 3, "proposta_valor": 2, "cta": 5, "tom": 4, "feedback": "Muito genérico, sem benefícios específicos, urgência fraca" }' },
     { step: "Refinar", prompt: "Reescreva o email abordando este feedback:\nOriginal: [email_gerado]\nCrítica: [saida_critica]\nFoque nos elementos com menor pontuação.", output: "Assunto: Treinos de 15 Min pro Seu Horário de Almoço\n\nAgenda apertada? A gente entende. Nosso app entrega treinos baseados em ciência feitos para profissionais que não têm tempo a perder. Junte-se a 50.000+ executivos que transformaram sua saúde em apenas 15 minutos por dia. Comece seu trial grátis agora—seu eu do futuro vai agradecer." },
-    { step: "Nota Final", prompt: "Reavalie o email refinado.", output: '{ "linha_assunto": 8, "gancho": 8, "proposta_valor": 9, "cta": 8, "tom": 9, "melhoria": "+23 pontos no total" }' }
+    { step: "Nota Final", prompt: "Reavalie o email refinado.", output: '{ "linha_assunto": 8, "gancho": 8, "proposta_valor": 9, "cta": 8, "tom": 9, "melhoria": "+24 pontos no total" }' }
   ]}
 />
 
@@ -212,7 +212,9 @@ Para sistemas de produção, automatize a cadeia com código. Isso permite trata
 <CodeEditor 
   language="python"
   filename="chain.py"
-  code={`def cadeia_analise(documento):
+  code={`import json
+
+def cadeia_analise(documento):
     # Etapa 1: Resumir
     resumo = chamar_ia(f"""
         Resuma os pontos-chave deste documento em 5 bullets:

@@ -184,7 +184,7 @@ El bucle de auto-mejora. Genera contenido, haz que la IA lo evalúe críticament
     { step: "Generar", prompt: "Escribe un email de marketing para [app de fitness] dirigido a [profesionales ocupados].", output: "Asunto: ¡Ponte en Forma Rápido!\n\n¡Hola! Nuestra app te ayuda a ejercitarte. Descárgala hoy y comienza tu viaje fitness. ¡Gracias!" },
     { step: "Criticar", prompt: "Como experto en marketing, critica este email:\n[email_generado]\nEvalúa: línea de asunto, gancho, propuesta de valor, CTA, tono\nCalifica cada uno 1-10.", output: '{ "linea_asunto": 4, "gancho": 3, "propuesta_valor": 2, "cta": 5, "tono": 4, "feedback": "Muy genérico, sin beneficios específicos, urgencia débil" }' },
     { step: "Refinar", prompt: "Reescribe el email abordando este feedback:\nOriginal: [email_generado]\nCrítica: [salida_critica]\nEnfócate en los elementos con menor puntuación.", output: "Asunto: Entrenamientos de 15 Min para Tu Hora de Almuerzo\n\n¿Agenda apretada? Lo entendemos. Nuestra app entrega entrenamientos respaldados por ciencia diseñados para profesionales que no tienen tiempo que perder. Únete a más de 50,000 ejecutivos que transformaron su salud en solo 15 minutos al día. Comienza tu prueba gratis ahora—tu yo futuro te lo agradecerá." },
-    { step: "Puntuación Final", prompt: "Re-evalúa el email refinado.", output: '{ "linea_asunto": 8, "gancho": 8, "propuesta_valor": 9, "cta": 8, "tono": 9, "mejora": "+23 puntos en total" }' }
+    { step: "Puntuación Final", prompt: "Re-evalúa el email refinado.", output: '{ "linea_asunto": 8, "gancho": 8, "propuesta_valor": 9, "cta": 8, "tono": 9, "mejora": "+24 puntos en total" }' }
   ]}
 />
 
@@ -212,7 +212,9 @@ Para sistemas de producción, automatiza la cadena con código. Esto habilita ma
 <CodeEditor 
   language="python"
   filename="chain.py"
-  code={`def cadena_analisis(documento):
+  code={`import json
+
+def cadena_analisis(documento):
     # Paso 1: Resumir
     resumen = call_ai(f"""
         Resume los puntos clave de este documento en 5 viñetas:

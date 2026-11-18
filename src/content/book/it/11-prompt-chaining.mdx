@@ -184,7 +184,7 @@ Il loop di auto-miglioramento. Genera contenuto, fallo valutare criticamente dal
     { step: "Genera", prompt: "Scrivi un'email marketing per [app fitness] rivolta a [professionisti impegnati].", output: "Oggetto: Mettiti in Forma Veloce!\n\nCiao! La nostra app ti aiuta a fare esercizio. Scaricala oggi e inizia il tuo percorso fitness. Grazie!" },
     { step: "Critica", prompt: "Come esperto di marketing, critica questa email:\n[email_generata]\nValuta: oggetto, hook, proposta di valore, CTA, tono\nDai punteggio 1-10 per ciascuno.", output: '{ "subject_line": 4, "hook": 3, "value_proposition": 2, "cta": 5, "tone": 4, "feedback": "Troppo generica, nessun beneficio specifico, urgenza debole" }' },
     { step: "Raffina", prompt: "Riscrivi l'email affrontando questo feedback:\nOriginale: [email_generata]\nCritica: [output_critica]\nConcentrati sugli elementi con punteggio più basso.", output: "Oggetto: Allenamenti da 15 Min per la Tua Pausa Pranzo\n\nAgenda piena? Ti capiamo. La nostra app offre allenamenti scientificamente provati progettati per professionisti che non hanno tempo da perdere. Unisciti a 50.000+ manager che hanno trasformato la loro salute in soli 15 minuti al giorno. Inizia la prova gratuita ora—il tuo io futuro ti ringrazierà." },
-    { step: "Punteggio Finale", prompt: "Rivaluta l'email raffinata.", output: '{ "subject_line": 8, "hook": 8, "value_proposition": 9, "cta": 8, "tone": 9, "improvement": "+23 punti totali" }' }
+    { step: "Punteggio Finale", prompt: "Rivaluta l'email raffinata.", output: '{ "subject_line": 8, "hook": 8, "value_proposition": 9, "cta": 8, "tone": 9, "improvement": "+24 punti totali" }' }
   ]}
 />
 
@@ -212,7 +212,9 @@ Per sistemi di produzione, automatizza la catena con codice. Questo abilita gest
 <CodeEditor 
   language="python"
   filename="chain.py"
-  code={`def analysis_chain(document):
+  code={`import json
+
+def analysis_chain(document):
     # Passo 1: Riassumi
     summary = call_ai(f"""
         Riassumi i punti chiave di questo documento in 5 bullet:

@@ -184,7 +184,7 @@
     { step: "توليد", prompt: "اكتب بريدًا تسويقيًا لـ [تطبيق لياقة] يستهدف [المهنيين المشغولين].", output: "الموضوع: ابقَ لائقًا بسرعة!\n\nمرحبًا! تطبيقنا يساعدك على التمرين. حمّله اليوم وابدأ رحلة لياقتك. شكرًا!" },
     { step: "نقد", prompt: "كخبير تسويق، انتقد هذا البريد:\n[generated_email]\nقيّم: سطر الموضوع، الخطاف، عرض القيمة، الدعوة للعمل، النبرة\nقيّم كلاً من 1-10.", output: '{ "subject_line": 4, "hook": 3, "value_proposition": 2, "cta": 5, "tone": 4, "feedback": "عام جدًا، لا فوائد محددة، إلحاح ضعيف" }' },
     { step: "تحسين", prompt: "أعد كتابة البريد معالجًا هذه الملاحظات:\nالأصلي: [generated_email]\nالنقد: [critique_output]\nركّز على العناصر ذات الدرجات الأدنى.", output: "الموضوع: تمارين 15 دقيقة لاستراحة الغداء\n\nجدول مزدحم؟ نحن نتفهم ذلك. تطبيقنا يقدم تمارين مدعومة علميًا مصممة للمهنيين الذين ليس لديهم وقت يضيعونه. انضم إلى أكثر من 50,000 مدير تنفيذي غيّروا صحتهم في 15 دقيقة فقط يوميًا. ابدأ تجربتك المجانية الآن—ذاتك المستقبلية ستشكرك." },
-    { step: "الدرجة النهائية", prompt: "أعد تقييم البريد المُحسّن.", output: '{ "subject_line": 8, "hook": 8, "value_proposition": 9, "cta": 8, "tone": 9, "improvement": "+23 نقطة إجمالاً" }' }
+    { step: "الدرجة النهائية", prompt: "أعد تقييم البريد المُحسّن.", output: '{ "subject_line": 8, "hook": 8, "value_proposition": 9, "cta": 8, "tone": 9, "improvement": "+24 نقطة إجمالاً" }' }
   ]}
 />
 
@@ -212,7 +212,9 @@ final_output = call_ai("Generate report: " + step2_output)`}
 <CodeEditor 
   language="python"
   filename="chain.py"
-  code={`def analysis_chain(document):
+  code={`import json
+
+def analysis_chain(document):
     # Step 1: Summarize
     summary = call_ai(f"""
         Summarize the key points of this document in 5 bullets:

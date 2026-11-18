@@ -184,7 +184,7 @@ De zelfverbeteringslus. Genereer content, laat de AI het kritisch evalueren, en 
     { step: "Genereer", prompt: "Schrijf een marketing e-mail voor [fitness app] gericht op [drukke professionals].", output: "Onderwerp: Word Snel Fit!\n\nHallo daar! Onze app helpt je met sporten. Download hem vandaag en begin je fitnessreis. Bedankt!" },
     { step: "Bekritiseer", prompt: "Bekritiseer als marketingexpert deze e-mail:\n[gegenereerde_email]\nEvalueer: onderwerpregel, hook, waardepropositie, CTA, toon\nScore elk van 1-10.", output: '{ "subject_line": 4, "hook": 3, "value_proposition": 2, "cta": 5, "tone": 4, "feedback": "Te generiek, geen specifieke voordelen, zwakke urgentie" }' },
     { step: "Verfijn", prompt: "Herschrijf de e-mail met inachtneming van deze feedback:\nOrigineel: [gegenereerde_email]\nKritiek: [kritiek_uitvoer]\nFocus op de laagst gescoorde elementen.", output: "Onderwerp: 15-Minuten Workouts voor je Lunchpauze\n\nDrukke agenda? We begrijpen het. Onze app levert wetenschappelijk onderbouwde workouts ontworpen voor professionals die geen tijd te verliezen hebben. Sluit je aan bij 50.000+ leidinggevenden die hun gezondheid transformeerden in slechts 15 minuten per dag. Start nu je gratis proefperiode—je toekomstige zelf zal je dankbaar zijn." },
-    { step: "Eindscore", prompt: "Evalueer de verfijnde e-mail opnieuw.", output: '{ "subject_line": 8, "hook": 8, "value_proposition": 9, "cta": 8, "tone": 9, "improvement": "+23 punten totaal" }' }
+    { step: "Eindscore", prompt: "Evalueer de verfijnde e-mail opnieuw.", output: '{ "subject_line": 8, "hook": 8, "value_proposition": 9, "cta": 8, "tone": 9, "improvement": "+24 punten totaal" }' }
   ]}
 />
 
@@ -212,7 +212,9 @@ Voor productiesystemen automatiseer je de keten met code. Dit maakt foutafhandel
 <CodeEditor 
   language="python"
   filename="chain.py"
-  code={`def analysis_chain(document):
+  code={`import json
+
+def analysis_chain(document):
     # Stap 1: Samenvatten
     summary = call_ai(f"""
         Vat de belangrijkste punten van dit document samen in 5 bullets:
