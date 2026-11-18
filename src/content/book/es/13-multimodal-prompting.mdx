@@ -3,7 +3,7 @@ Durante la mayor parte de la historia, las computadoras trabajaron con un tipo d
 **La IA Multimodal** lo cambia todo. Estos modelos pueden procesar múltiples tipos de información juntos—analizando una imagen mientras leen tu pregunta sobre ella, o generando imágenes a partir de tus descripciones de texto. Este capítulo te enseña cómo comunicarte efectivamente con estos sistemas poderosos.
 
 <Callout type="info" title="¿Qué Significa Multimodal?">
-"Multi" significa muchos, y "modal" se refiere a modos o tipos de datos. Un modelo multimodal puede trabajar con múltiples modalidades: texto, imágenes, audio, video, o incluso código. En lugar de herramientas separadas para cada tipo, un modelo entiende todos juntos.
+"Multi" significa muchos, y "modal" se refiere a modos o tipos de datos. Un modelo multimodal puede trabajar con múltiples modalidades: texto, imágenes, audio, video, o incluso código. En lugar de herramientas separadas para cada tipo, un solo modelo los entiende todos a la vez.
 </Callout>
 
 ## Por Qué Importa lo Multimodal
@@ -14,7 +14,7 @@ La IA tradicional requería que describieras todo en palabras. ¿Quieres pregunt
   { label: "Ver y Entender", description: "Sube una imagen y haz preguntas sobre ella directamente—sin necesidad de descripción", example: "\"¿Qué está mal en este diagrama de circuito?\"", color: "blue" },
   { label: "Crear desde Palabras", description: "Describe lo que quieres y genera imágenes, audio o video", example: "\"Un atardecer sobre montañas en estilo acuarela\"", color: "purple" },
   { label: "Combinar Todo", description: "Mezcla texto, imágenes y otros medios en una sola conversación", example: "\"Compara estos dos diseños y dime cuál es mejor para móvil\"", color: "green" },
-  { label: "Analizar Documentos", description: "Extrae información de fotos de documentos, recibos o capturas de pantalla", example: "\"Extrae todos los elementos de esta foto de factura\"", color: "amber" }
+  { label: "Analizar Documentos", description: "Extrae información de fotos de documentos, recibos o capturas de pantalla", example: "\"Extrae todas las partidas de esta foto de factura\"", color: "amber" }
 ]} />
 
 ## Por Qué el Prompting Importa Aún Más para Multimodal
@@ -34,18 +34,18 @@ Cuando miras una imagen, instantáneamente sabes qué es importante basándote e
 
 ## El Panorama Multimodal
 
-Diferentes modelos tienen diferentes capacidades. Esto es lo disponible en 2025:
+Diferentes modelos tienen diferentes capacidades. Esta es una instantánea del panorama a finales de 2026:
 
 ### Modelos de Comprensión (Entrada → Análisis)
 
 Estos modelos aceptan varios tipos de medios y producen análisis de texto o respuestas.
 
 <InfoGrid items={[
-  { label: "GPT-4o / GPT-5", description: "Texto + Imágenes + Audio → Texto. El buque insignia de OpenAI con contexto de 128K, fuertes habilidades creativas y de razonamiento, tasas de alucinación reducidas.", color: "green" },
-  { label: "Claude 4 Sonnet/Opus", description: "Texto + Imágenes → Texto. El modelo enfocado en seguridad de Anthropic con razonamiento avanzado, excelente para programación y tareas complejas de múltiples pasos.", color: "purple" },
-  { label: "Gemini 2.5", description: "Texto + Imágenes + Audio + Video → Texto. El modelo de Google con contexto de 1M tokens, auto-verificación de hechos, procesamiento rápido para programación e investigación.", color: "blue" },
-  { label: "LLaMA 4 Scout", description: "Texto + Imágenes + Video → Texto. El modelo de código abierto de Meta con contexto masivo de 10M tokens para documentos largos y bases de código.", color: "cyan" },
-  { label: "Grok 4", description: "Texto + Imágenes → Texto. El modelo de xAI con acceso a datos en tiempo real e integración con redes sociales para respuestas actualizadas.", color: "red" }
+  { label: "GPT-6.2", description: "Texto + Imágenes → Texto. La familia insignia actual de OpenAI, con una ventana de contexto de alrededor de un millón de tokens y sólidas capacidades de razonamiento, programación y visión. La voz y la transcripción quedan a cargo de modelos dedicados e independientes.", color: "green" },
+  { label: "Claude Opus / Sonnet 5.5", description: "Texto + Imágenes → Texto. La familia actual de Anthropic, con una ventana de contexto de un millón de tokens, conocida por su razonamiento cuidadoso, la programación y las tareas largas de múltiples pasos.", color: "purple" },
+  { label: "Gemini 4", description: "Texto + Imágenes + Audio + Video + PDF → Texto. La familia actual de Google, con una ventana de contexto de un millón de tokens y comprensión nativa de audio y video.", color: "blue" },
+  { label: "Llama 4 Scout", description: "Texto + Imágenes → Texto. El modelo de pesos abiertos de Meta, con una ventana de contexto de 10 millones de tokens, que puedes descargar y ejecutar en tu propio hardware.", color: "cyan" },
+  { label: "Grok 4.7", description: "Texto + Imágenes → Texto. El modelo Grok actual, con una ventana de contexto de 500K tokens. Solo ve la web en vivo y las publicaciones de X cuando sus herramientas de búsqueda están activadas.", color: "red" }
 ]} />
 
 ### Modelos de Generación (Texto → Medios)
@@ -53,10 +53,10 @@ Estos modelos aceptan varios tipos de medios y producen análisis de texto o res
 Estos modelos crean imágenes, audio o video a partir de descripciones de texto.
 
 <InfoGrid items={[
-  { label: "DALL-E 3", description: "Texto → Imágenes. El generador de imágenes de OpenAI con alta precisión a las descripciones del prompt.", color: "amber" },
+  { label: "GPT Image", description: "Texto + Imágenes → Imágenes. Los modelos de generación y edición de imágenes de OpenAI, que reemplazaron a DALL-E 3 tras su retirada en 2026.", color: "amber" },
   { label: "Midjourney", description: "Texto + Imágenes → Imágenes. Conocido por calidad artística, control de estilo y resultados estéticos.", color: "pink" },
-  { label: "Sora", description: "Texto → Video. El modelo de generación de video de OpenAI para crear clips a partir de descripciones.", color: "red" },
-  { label: "Whisper", description: "Audio → Texto. El speech-to-text de OpenAI con alta precisión en múltiples idiomas.", color: "cyan" }
+  { label: "Generadores de Video", description: "Texto + Imágenes → Video. Modelos como Gemini Omni Flash de Google y Grok Imagine de xAI convierten un prompt o una imagen fija en clips de hasta unos 15 segundos. OpenAI retiró su API de Sora 2 en septiembre de 2026.", color: "red" },
+  { label: "Voz a Texto", description: "Audio → Texto. Modelos de transcripción dedicados, como GPT-Transcribe de OpenAI (el sucesor de Whisper) y Gemini 3.5 Transcribe de Google, compatibles con muchos idiomas y con identificación de hablantes.", color: "cyan" }
 ]} />
 
 <Callout type="info" title="Evolución Rápida">
@@ -80,7 +80,7 @@ Comienza con una estructura de solicitud clara. Dile al modelo en qué aspectos 
 2. **Escenario**: ¿Dónde parece estar esto? (interior/exterior, tipo de ubicación)
 3. **Ambiente**: ¿Qué tono emocional o atmósfera transmite?
 4. **Contenido de Texto**: ¿Algún texto visible, señales o etiquetas?
-5. **Detalles Notables**: ¿Qué podría alguien perderse a primera vista?
+5. **Detalles Notables**: ¿Qué podría pasar desapercibido a primera vista?
 6. **Calidad Técnica**: ¿Cómo es la iluminación, enfoque y composición?
 
 [Pega o describe la imagen que quieres analizar]
@@ -136,7 +136,7 @@ Comparar múltiples imágenes requiere etiquetado claro y criterios de comparaci
 **Imagen A**: \${imageA}
 **Imagen B**: \${imageB}
 
-Analiza cada imagen en estos criterios:
+Analiza cada imagen según estos criterios:
 1. \${criterion1} (importancia: alta)
 2. \${criterion2} (importancia: media)  
 3. \${criterion3} (importancia: baja)
@@ -222,7 +222,7 @@ Descripción de la captura: \${screenshotDescription}`}
 
 ### Análisis de Mensajes de Error
 
-Cuando encuentras un error, una captura de pantalla a menudo contiene más contexto que copiar solo el texto del error.
+Cuando encuentras un error, una captura de pantalla a menudo aporta más contexto que el simple texto del error copiado.
 
 <TryIt 
   title="Diagnóstico de Error desde Captura de Pantalla"
@@ -334,7 +334,7 @@ Detalles adicionales a incluir: \${additionalDetails}`}
 
 ## Prompts de Audio
 
-El procesamiento de audio abre transcripción, análisis y comprensión de contenido hablado. La clave es proporcionar contexto sobre qué contiene el audio.
+El procesamiento de audio abre la puerta a la transcripción, el análisis y la comprensión de contenido hablado. La clave es proporcionar contexto sobre qué contiene el audio.
 
 ### Transcripción Mejorada
 
@@ -356,9 +356,9 @@ La transcripción básica es solo el inicio. Con buenos prompts, puedes obtener 
 **Instrucciones**:
 - Incluye marcas de tiempo en pausas naturales (cada 30-60 segundos o en cambios de hablante)
 - Marca secciones poco claras como [inaudible] o [poco claro: ¿mejor suposición?]
-- Nota sonidos no verbales entre corchetes: [risas], [teléfono sonando], [pausa larga]
+- Anota los sonidos no verbales entre corchetes: [risas], [teléfono sonando], [pausa larga]
 - Preserva muletillas solo si son significativas (este, eh pueden eliminarse)
-- Marca cualquier acción o decisión con símbolo →
+- Marca cualquier tarea pendiente o decisión con el símbolo →
 
 Descripción del audio: \${audioDescription}`}
 />
@@ -369,7 +369,7 @@ Más allá de la transcripción, la IA puede analizar el contenido, tono y momen
 
 <TryIt 
   title="Analizador de Contenido de Audio"
-  description="Obtén un análisis comprehensivo de contenido de audio incluyendo resumen, momentos clave y sentimiento."
+  description="Obtén un análisis completo de contenido de audio incluyendo resumen, momentos clave y sentimiento."
   prompt={`Analiza esta grabación de audio:
 
 Descripción del audio: \${audioDescription}
@@ -385,17 +385,17 @@ Proporciona:
 
 **3. Desglose de Contenido**
 - Temas principales discutidos (con marcas de tiempo aproximadas)
-- Puntos clave hechos
+- Puntos clave expuestos
 - Preguntas planteadas
 
 **4. Análisis Emocional**
 - Tono general (formal, casual, tenso, amigable)
 - Momentos emocionales notables
-- Nivel de energía a lo largo
+- Nivel de energía a lo largo de la grabación
 
 **5. Elementos Accionables**
 - Decisiones tomadas
-- Elementos de acción mencionados
+- Tareas pendientes mencionadas
 - Seguimientos necesarios
 
 **6. Citas Notables**
@@ -413,11 +413,11 @@ El video combina análisis visual y de audio a lo largo del tiempo. El desafío 
 ### Comprensión de Video
 
 <TryIt 
-  title="Análisis Comprehensivo de Video"
+  title="Análisis Completo de Video"
   description="Obtén un desglose estructurado del contenido de video incluyendo línea de tiempo, elementos visuales y momentos clave."
   prompt={`Analiza este video: \${videoDescription}
 
-Proporciona un análisis comprehensivo:
+Proporciona un análisis completo:
 
 **1. Resumen** (2-3 oraciones)
 ¿De qué trata este video? ¿Cuál es el mensaje o propósito principal?
@@ -434,7 +434,7 @@ Proporciona un análisis comprehensivo:
 - Estilo visual: Calidad, edición, gráficos usados
 
 **4. Análisis de Audio**
-- Habla: Puntos principales hechos (si hay diálogo)
+- Habla: Puntos principales expuestos (si hay diálogo)
 - Música: Tipo, ambiente, cómo se usa
 - Efectos de sonido: Elementos de audio notables
 
@@ -444,7 +444,7 @@ Proporciona un análisis comprehensivo:
 - Efectividad para su propósito
 
 **6. Audiencia Objetivo**
-¿Para quién está hecho este video? ¿Les sirve bien?
+¿Para quién está hecho este video? ¿Cumple bien su función para ese público?
 
 **7. Conclusiones Clave**
 ¿Qué debería recordar un espectador de este video?`}
@@ -452,7 +452,7 @@ Proporciona un análisis comprehensivo:
 
 ### Extracción de Contenido de Video
 
-Para extracción de información específica de videos, sé preciso sobre lo que necesitas.
+Si quieres extraer información específica de videos, sé preciso sobre lo que necesitas.
 
 <TryIt 
   title="Extractor de Datos de Video"
@@ -486,7 +486,7 @@ Descripción del video: \${videoDescription}
 
 ## Combinaciones Multimodales
 
-El verdadero poder de la IA multimodal emerge cuando combinas diferentes tipos de entrada. Estas combinaciones habilitan análisis que sería imposible con cualquier modalidad individual.
+El verdadero poder de la IA multimodal emerge cuando combinas diferentes tipos de entrada. Estas combinaciones permiten análisis que serían imposibles con una sola modalidad.
 
 ### Verificación de Imagen + Texto
 
@@ -495,7 +495,7 @@ Verifica si las imágenes y sus descripciones coinciden—esencial para e-commer
 <TryIt 
   title="Verificador de Alineación Imagen-Texto"
   description="Verifica que las imágenes representen con precisión sus descripciones de texto y viceversa."
-  prompt={`Analiza esta imagen y su texto acompañante para alineación:
+  prompt={`Analiza esta imagen y el texto que la acompaña para comprobar si coinciden:
 
 **Imagen**: \${imageDescription}
 **Descripción de Texto**: "\${textDescription}"
@@ -569,7 +569,7 @@ Cuando eliges entre opciones, la comparación estructurada ayuda a tomar mejores
 
 <TryIt 
   title="Comparador Visual de Opciones"
-  description="Compara múltiples imágenes sistemáticamente contra tus criterios para tomar decisiones informadas."
+  description="Compara múltiples imágenes sistemáticamente según tus criterios para tomar decisiones informadas."
   prompt={`Estoy eligiendo entre estas opciones para \${purpose}:
 
 **Opción A**: \${optionA}
@@ -596,7 +596,7 @@ Proporciona:
 - Opción C: X/10
 
 **Recomendación**
-Basándome en tus prioridades declaradas, recomiendo [Opción] porque...
+Basándome en las prioridades que indicaste, recomiendo [Opción] porque...
 
 **Advertencias**
 - Si [condición], considera [alternativa] en su lugar
@@ -605,27 +605,27 @@ Basándome en tus prioridades declaradas, recomiendo [Opción] porque...
 
 ## Mejores Prácticas para Prompts Multimodales
 
-Obtener excelentes resultados de IA multimodal requiere entender tanto sus capacidades como limitaciones.
+Obtener excelentes resultados de IA multimodal requiere entender tanto sus capacidades como sus limitaciones.
 
 ### Qué Hace Efectivos a los Prompts Multimodales
 
 <InfoGrid items={[
   { label: "Proporciona Contexto", description: "Dile al modelo qué es el medio y por qué lo estás analizando", example: "\"Esta es una foto de producto para nuestro sitio de e-commerce...\"", color: "green" },
   { label: "Sé Específico", description: "Pregunta sobre elementos particulares en lugar de impresiones generales", example: "\"Enfócate en la tabla de precios en la esquina superior derecha\"", color: "green" },
-  { label: "Referencia Ubicaciones", description: "Señala áreas específicas usando lenguaje espacial", example: "\"En el cuadrante inferior izquierdo...\"", color: "green" },
+  { label: "Indica Ubicaciones", description: "Señala áreas específicas usando lenguaje espacial", example: "\"En el cuadrante inferior izquierdo...\"", color: "green" },
   { label: "Declara Tu Objetivo", description: "Explica para qué usarás el análisis", example: "\"Necesito decidir si esta imagen funciona para nuestra app móvil\"", color: "green" }
 ]} />
 
 ### Errores Comunes a Evitar
 
 <InfoGrid items={[
-  { label: "Asumir Visión Perfecta", description: "Los modelos pueden perder detalles pequeños, especialmente en imágenes de baja resolución", example: "No preguntes sobre texto de 8pt en una captura comprimida", color: "red" },
+  { label: "Asumir Visión Perfecta", description: "Los modelos pueden pasar por alto detalles pequeños, especialmente en imágenes de baja resolución", example: "No preguntes sobre texto de 8pt en una captura comprimida", color: "red" },
   { label: "Esperar OCR Perfecto", description: "Escritura a mano, fuentes inusuales y diseños complejos pueden causar errores", example: "Verifica texto extraído de recibos y formularios", color: "red" },
   { label: "Ignorar Políticas de Contenido", description: "Los modelos tienen restricciones en ciertos tipos de contenido", example: "No identificará individuos específicos ni analizará contenido inapropiado", color: "red" },
   { label: "Saltarse la Verificación", description: "Siempre verifica información crítica extraída de medios", example: "Revisa dos veces números, fechas y nombres de extracción de documentos", color: "red" }
 ]} />
 
-### Manejando Limitaciones con Gracia
+### Manejando Limitaciones con Elegancia
 
 <TryIt 
   title="Análisis de Imagen Consciente de Incertidumbre"

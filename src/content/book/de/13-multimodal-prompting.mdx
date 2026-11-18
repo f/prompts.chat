@@ -1,6 +1,6 @@
 Die meiste Zeit der Geschichte arbeiteten Computer mit jeweils einer Art von Daten: Text in einem Programm, Bilder in einem anderen, Audio woanders. Aber Menschen erleben die Welt nicht so. Wir sehen, hören, lesen und sprechen gleichzeitig und kombinieren all diese Eingaben, um unsere Umgebung zu verstehen.
 
-**Multimodale KI** verändert alles. Diese Modelle können mehrere Arten von Informationen zusammen verarbeiten – ein Bild analysieren, während sie deine Frage dazu lesen, oder Bilder aus deinen Textbeschreibungen generieren. Dieses Kapitel lehrt dich, wie du effektiv mit diesen leistungsstarken Systemen kommunizierst.
+**Multimodale KI** verändert alles. Diese Modelle können mehrere Arten von Informationen zusammen verarbeiten – ein Bild analysieren, während sie deine Frage dazu lesen, oder Bilder aus deinen Textbeschreibungen generieren. In diesem Kapitel lernst du, wie du effektiv mit diesen leistungsstarken Systemen kommunizierst.
 
 <Callout type="info" title="Was bedeutet Multimodal?">
 „Multi" bedeutet viele, und „modal" bezieht sich auf Modi oder Datentypen. Ein multimodales Modell kann mit mehreren Modalitäten arbeiten: Text, Bilder, Audio, Video oder sogar Code. Anstatt separate Werkzeuge für jeden Typ zu haben, versteht ein Modell sie alle zusammen.
@@ -13,7 +13,7 @@ Traditionelle KI erforderte, dass du alles in Worten beschreibst. Willst du nach
 <InfoGrid items={[
   { label: "Sehen und Verstehen", description: "Lade ein Bild hoch und stelle Fragen direkt dazu – keine Beschreibung nötig", example: "\"Was stimmt nicht mit diesem Schaltplan?\"", color: "blue" },
   { label: "Aus Worten erschaffen", description: "Beschreibe, was du willst, und generiere Bilder, Audio oder Video", example: "\"Ein Sonnenuntergang über Bergen im Aquarell-Stil\"", color: "purple" },
-  { label: "Alles kombinieren", description: "Mische Text, Bilder und andere Medien in einer einzigen Konversation", example: "\"Vergleiche diese zwei Designs und sag mir, welches besser für Mobile ist\"", color: "green" },
+  { label: "Alles kombinieren", description: "Mische Text, Bilder und andere Medien in einer einzigen Konversation", example: "\"Vergleiche diese zwei Designs und sag mir, welches sich besser für Mobilgeräte eignet\"", color: "green" },
   { label: "Dokumente analysieren", description: "Extrahiere Informationen aus Fotos von Dokumenten, Quittungen oder Screenshots", example: "\"Extrahiere alle Positionen aus diesem Rechnungsfoto\"", color: "amber" }
 ]} />
 
@@ -29,23 +29,23 @@ Bei reinen Textmodellen erhält die KI genau das, was du tippst. Aber bei multim
 **Ohne Anleitung** könnte das Modell Farben, Layout oder irrelevante Details beschreiben. **Mit Anleitung** fokussiert es sich auf das, was dir wirklich wichtig ist.
 
 <Callout type="warning" title="Die Interpretationslücke">
-Wenn du ein Bild anschaust, weißt du sofort, was wichtig ist, basierend auf deinem Kontext und deinen Zielen. Die KI hat diesen Kontext nicht, es sei denn, du stellst ihn bereit. Ein Foto eines Risses in einer Wand könnte sein: ein Statik-Problem, eine künstlerische Textur oder irrelevanter Hintergrund. Dein Prompt bestimmt, wie die KI es interpretiert.
+Wenn du ein Bild anschaust, weißt du anhand deines Kontexts und deiner Ziele sofort, was wichtig ist. Die KI hat diesen Kontext nicht, es sei denn, du lieferst ihn mit. Ein Foto eines Risses in einer Wand könnte sein: ein Statik-Problem, eine künstlerische Textur oder irrelevanter Hintergrund. Dein Prompt bestimmt, wie die KI es interpretiert.
 </Callout>
 
 ## Die multimodale Landschaft
 
-Verschiedene Modelle haben verschiedene Fähigkeiten. Hier ist, was 2025 verfügbar ist:
+Verschiedene Modelle haben verschiedene Fähigkeiten. Hier ist eine Momentaufnahme der Landschaft, Stand Ende 2026:
 
 ### Verständnis-Modelle (Eingabe → Analyse)
 
 Diese Modelle akzeptieren verschiedene Medientypen und produzieren Textanalysen oder Antworten.
 
 <InfoGrid items={[
-  { label: "GPT-4o / GPT-5", description: "Text + Bilder + Audio → Text. OpenAIs Flaggschiff mit 128K Kontext, starken kreativen und Reasoning-Fähigkeiten, reduzierte Halluzinationsraten.", color: "green" },
-  { label: "Claude 4 Sonnet/Opus", description: "Text + Bilder → Text. Anthropics sicherheitsfokussiertes Modell mit fortgeschrittenem Reasoning, exzellent für Coding und komplexe mehrstufige Aufgaben.", color: "purple" },
-  { label: "Gemini 2.5", description: "Text + Bilder + Audio + Video → Text. Googles Modell mit 1M Token-Kontext, Selbst-Faktenprüfung, schnelle Verarbeitung für Coding und Forschung.", color: "blue" },
-  { label: "LLaMA 4 Scout", description: "Text + Bilder + Video → Text. Metas Open-Source-Modell mit massivem 10M Token-Kontext für lange Dokumente und Codebases.", color: "cyan" },
-  { label: "Grok 4", description: "Text + Bilder → Text. xAIs Modell mit Echtzeit-Datenzugang und Social-Media-Integration für aktuelle Antworten.", color: "red" }
+  { label: "GPT-6.2", description: "Text + Bilder → Text. OpenAIs aktuelle Flaggschiff-Familie mit einem Kontextfenster von etwa einer Million Tokens und starken Fähigkeiten in Reasoning, Coding und Bildverständnis. Sprache und Transkription übernehmen separate, spezialisierte Modelle.", color: "green" },
+  { label: "Claude Opus / Sonnet 5.5", description: "Text + Bilder → Text. Anthropics aktuelle Modellfamilie mit einem Kontextfenster von einer Million Tokens, bekannt für sorgfältiges Reasoning, Coding und lange mehrstufige Aufgaben.", color: "purple" },
+  { label: "Gemini 4", description: "Text + Bilder + Audio + Video + PDF → Text. Googles aktuelle Modellfamilie mit einem Kontextfenster von einer Million Tokens und nativem Verständnis von Audio und Video.", color: "blue" },
+  { label: "Llama 4 Scout", description: "Text + Bilder → Text. Metas Open-Weight-Modell mit einem Kontextfenster von 10 Millionen Tokens, das du herunterladen und auf deiner eigenen Hardware betreiben kannst.", color: "cyan" },
+  { label: "Grok 4.7", description: "Text + Bilder → Text. Das aktuelle Grok-Modell mit einem Kontextfenster von 500K Tokens. Live-Webinhalte und X-Posts sieht es nur, wenn seine Suchwerkzeuge eingeschaltet sind.", color: "red" }
 ]} />
 
 ### Generierungs-Modelle (Text → Medien)
@@ -53,10 +53,10 @@ Diese Modelle akzeptieren verschiedene Medientypen und produzieren Textanalysen 
 Diese Modelle erstellen Bilder, Audio oder Video aus Textbeschreibungen.
 
 <InfoGrid items={[
-  { label: "DALL-E 3", description: "Text → Bilder. OpenAIs Bildgenerator mit hoher Genauigkeit zu Prompt-Beschreibungen.", color: "amber" },
+  { label: "GPT Image", description: "Text + Bilder → Bilder. OpenAIs Modelle zur Bildgenerierung und -bearbeitung, die DALL-E 3 abgelöst haben, nachdem es 2026 eingestellt wurde.", color: "amber" },
   { label: "Midjourney", description: "Text + Bilder → Bilder. Bekannt für künstlerische Qualität, Stilkontrolle und ästhetische Ausgaben.", color: "pink" },
-  { label: "Sora", description: "Text → Video. OpenAIs Videogenerierungsmodell zur Erstellung von Clips aus Beschreibungen.", color: "red" },
-  { label: "Whisper", description: "Audio → Text. OpenAIs Speech-to-Text mit hoher Genauigkeit über Sprachen hinweg.", color: "cyan" }
+  { label: "Videogeneratoren", description: "Text + Bilder → Video. Modelle wie Googles Gemini Omni Flash und xAIs Grok Imagine machen aus einem Prompt oder einem Standbild Clips von bis zu etwa 15 Sekunden. OpenAI hat seine Sora-2-API im September 2026 eingestellt.", color: "red" },
+  { label: "Sprache-zu-Text", description: "Audio → Text. Spezialisierte Transkriptionsmodelle wie OpenAIs GPT-Transcribe (der Nachfolger von Whisper) und Googles Gemini 3.5 Transcribe, mit Unterstützung für viele Sprachen und Sprecherkennzeichnung.", color: "cyan" }
 ]} />
 
 <Callout type="info" title="Schnelle Entwicklung">
@@ -83,7 +83,7 @@ Beginne mit einer klaren Anfragestruktur. Sage dem Modell, auf welche Aspekte es
 5. **Bemerkenswerte Details**: Was könnte jemand auf den ersten Blick übersehen?
 6. **Technische Qualität**: Wie ist Beleuchtung, Fokus und Komposition?
 
-[Füge das Bild ein oder beschreibe es, das du analysieren möchtest]
+[Füge das Bild, das du analysieren möchtest, ein oder beschreibe es]
 
 Bildbeschreibung oder URL: \${imageDescription}`}
 />
@@ -222,7 +222,7 @@ Screenshot-Beschreibung: \${screenshotDescription}`}
 
 ### Fehlermeldungs-Analyse
 
-Wenn du einen Fehler antriffst, enthält ein Screenshot oft mehr Kontext als nur den Fehlertext zu kopieren.
+Wenn du auf einen Fehler stößt, enthält ein Screenshot oft mehr Kontext als der bloß kopierte Fehlertext.
 
 <TryIt 
   title="Fehlerdiagnose aus Screenshot"
@@ -242,7 +242,7 @@ Bitte liefere:
    - Weniger häufig:
 
 3. **Schritt-für-Schritt-Lösung**:
-   - Zuerst versuche...
+   - Versuche zuerst...
    - Wenn das nicht funktioniert...
    - Als letzten Ausweg...
 
@@ -302,7 +302,7 @@ Effektive Bildgenerierungs-Prompts haben mehrere Komponenten:
 
 ### Szenenaufbau
 
-Für komplexe Szenen, beschreibe Ebenen von Vordergrund bis Hintergrund.
+Beschreibe bei komplexen Szenen die Ebenen vom Vordergrund bis zum Hintergrund.
 
 <TryIt 
   title="Geschichtete Szenenbeschreibung"
@@ -408,7 +408,7 @@ Ziehe 2-3 bedeutsame Zitate mit Zeitstempeln heraus
 
 ## Video-Prompting
 
-Video kombiniert visuelle und Audio-Analyse über Zeit. Die Herausforderung ist, die KI anzuleiten, sich auf die relevanten Aspekte über die gesamte Dauer zu konzentrieren.
+Video kombiniert visuelle und Audio-Analyse im zeitlichen Verlauf. Die Herausforderung ist, die KI anzuleiten, sich auf die relevanten Aspekte über die gesamte Dauer zu konzentrieren.
 
 ### Video-Verständnis
 
@@ -444,7 +444,7 @@ Worum geht es in diesem Video? Was ist die Hauptbotschaft oder der Zweck?
 - Effektivität für den Zweck
 
 **6. Zielgruppe**
-Für wen ist dieses Video gemacht? Dient es ihnen gut?
+Für wen ist dieses Video gemacht? Erfüllt es ihre Bedürfnisse?
 
 **7. Haupterkenntnisse**
 Was sollte ein Zuschauer von diesem Video behalten?`}
@@ -452,7 +452,7 @@ Was sollte ein Zuschauer von diesem Video behalten?`}
 
 ### Video-Inhaltsextraktion
 
-Für spezifische Informationsextraktion aus Videos, sei präzise darüber, was du brauchst.
+Wenn du gezielt Informationen aus Videos extrahieren willst, sag genau, was du brauchst.
 
 <TryIt 
   title="Video-Daten-Extraktor"
@@ -486,7 +486,7 @@ Videobeschreibung: \${videoDescription}
 
 ## Multimodale Kombinationen
 
-Die wahre Kraft multimodaler KI entfaltet sich, wenn du verschiedene Eingabetypen kombinierst. Diese Kombinationen ermöglichen Analysen, die mit jeder einzelnen Modalität unmöglich wären.
+Die wahre Kraft multimodaler KI entfaltet sich, wenn du verschiedene Eingabetypen kombinierst. Diese Kombinationen ermöglichen Analysen, die mit einer einzelnen Modalität allein unmöglich wären.
 
 ### Bild + Text-Verifizierung
 
@@ -515,7 +515,7 @@ Bewerte:
 Was ist im Bild sichtbar, aber nicht im Text beschrieben?
 
 **4. Nicht sichtbare Text-Behauptungen**
-Was ist im Text beschrieben, aber kann nicht vom Bild verifiziert werden?
+Was ist im Text beschrieben, lässt sich aber anhand des Bildes nicht überprüfen?
 
 **5. Empfehlungen**
 - Für den Text: [Verbesserungen zur Bildübereinstimmung]
@@ -596,23 +596,23 @@ Liefere:
 - Option C: X/10
 
 **Empfehlung**
-Basierend auf deinen genannten Prioritäten empfehle ich [Option] weil...
+Basierend auf deinen genannten Prioritäten empfehle ich [Option], weil...
 
 **Vorbehalte**
-- Wenn [Bedingung], erwäge [Alternative] stattdessen
+- Falls [Bedingung], erwäge stattdessen [Alternative]
 - Achte auf [potenzielles Problem]`}
 />
 
 ## Best Practices für multimodale Prompts
 
-Großartige Ergebnisse von multimodaler KI zu erhalten erfordert Verständnis sowohl ihrer Fähigkeiten als auch Einschränkungen.
+Um großartige Ergebnisse mit multimodaler KI zu erzielen, musst du sowohl ihre Fähigkeiten als auch ihre Grenzen verstehen.
 
 ### Was multimodale Prompts effektiv macht
 
 <InfoGrid items={[
   { label: "Kontext liefern", description: "Sage dem Modell, was das Medium ist und warum du es analysierst", example: "\"Das ist ein Produktfoto für unseren E-Commerce-Shop...\"", color: "green" },
   { label: "Spezifisch sein", description: "Frage nach bestimmten Elementen statt allgemeinen Eindrücken", example: "\"Konzentriere dich auf die Preistabelle oben rechts\"", color: "green" },
-  { label: "Orte referenzieren", description: "Zeige auf bestimmte Bereiche mit räumlicher Sprache", example: "\"Im unteren linken Quadranten...\"", color: "green" },
+  { label: "Orte referenzieren", description: "Verweise mit räumlichen Angaben auf bestimmte Bereiche", example: "\"Im unteren linken Quadranten...\"", color: "green" },
   { label: "Ziel nennen", description: "Erkläre, wofür du die Analyse verwenden wirst", example: "\"Ich muss entscheiden, ob dieses Bild für unsere Mobile-App funktioniert\"", color: "green" }
 ]} />
 
@@ -621,11 +621,11 @@ Großartige Ergebnisse von multimodaler KI zu erhalten erfordert Verständnis so
 <InfoGrid items={[
   { label: "Perfektes Sehen annehmen", description: "Modelle können kleine Details übersehen, besonders bei niedrig aufgelösten Bildern", example: "Frage nicht nach 8pt-Text in einem komprimierten Screenshot", color: "red" },
   { label: "Perfekte OCR erwarten", description: "Handschrift, ungewöhnliche Schriftarten und komplexe Layouts können Fehler verursachen", example: "Verifiziere extrahierten Text aus Quittungen und Formularen", color: "red" },
-  { label: "Inhaltsrichtlinien ignorieren", description: "Modelle haben Einschränkungen bei bestimmten Inhaltstypen", example: "Identifiziert keine bestimmten Personen oder analysiert unangemessene Inhalte", color: "red" },
+  { label: "Inhaltsrichtlinien ignorieren", description: "Modelle haben Einschränkungen bei bestimmten Inhaltstypen", example: "Identifiziert keine bestimmten Personen und analysiert keine unangemessenen Inhalte", color: "red" },
   { label: "Verifizierung überspringen", description: "Verifiziere immer kritische Informationen, die aus Medien extrahiert wurden", example: "Überprüfe Zahlen, Daten und Namen aus Dokumentextraktion doppelt", color: "red" }
 ]} />
 
-### Einschränkungen elegant handhaben
+### Souverän mit Einschränkungen umgehen
 
 <TryIt 
   title="Unsicherheits-bewusste Bildanalyse"
@@ -636,20 +636,20 @@ Großartige Ergebnisse von multimodaler KI zu erhalten erfordert Verständnis so
 
 WENN DU ETWAS NICHT KLAR SEHEN KANNST:
 - Rate nicht oder erfinde keine Details
-- Sage: "Ich kann sehen [was sichtbar ist] aber kann [unklares Element] nicht klar erkennen"
+- Sage: "Ich kann [was sichtbar ist] sehen, aber [unklares Element] nicht klar erkennen"
 - Schlage vor, welche zusätzlichen Informationen helfen würden
 
 WENN INHALT EINGESCHRÄNKT ERSCHEINT:
 - Erkläre, was du analysieren kannst und was nicht
 - Konzentriere dich auf erlaubte Aspekte der Analyse
 
-WENN NACH PERSONEN GEFRAGT:
+WENN NACH PERSONEN GEFRAGT WIRD:
 - Beschreibe Aktionen, Positionen und allgemeine Charakteristiken
 - Versuche nicht, bestimmte Personen zu identifizieren
 - Konzentriere dich auf: Anzahl der Personen, Aktivitäten, Ausdrücke, Kleidung
 
 **Deine Analyse**:
-[Fahre mit der Analyse fort unter Anwendung dieser Richtlinien]`}
+[Fahre mit der Analyse fort und wende dabei diese Richtlinien an]`}
 />
 
 <Quiz 
@@ -661,5 +661,5 @@ WENN NACH PERSONEN GEFRAGT:
     "Text-Prompts funktionieren nicht mit multimodalen Modellen"
   ]}
   correctIndex={1}
-  explanation="Wenn du ein Bild anschaust, weißt du sofort, was wichtig ist, basierend auf deinen Zielen. Die KI hat diesen Kontext nicht – ein Foto eines Wandrisses könnte ein Statik-Problem, eine künstlerische Textur oder irrelevanter Hintergrund sein. Dein Prompt bestimmt, wie die KI die Medien interpretiert und worauf sie sich konzentriert."
+  explanation="Wenn du ein Bild anschaust, weißt du anhand deiner Ziele sofort, was wichtig ist. Die KI hat diesen Kontext nicht – ein Foto eines Wandrisses könnte ein Statik-Problem, eine künstlerische Textur oder irrelevanter Hintergrund sein. Dein Prompt bestimmt, wie die KI die Medien interpretiert und worauf sie sich konzentriert."
 />

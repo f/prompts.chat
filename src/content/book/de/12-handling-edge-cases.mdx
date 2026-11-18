@@ -1,12 +1,12 @@
-Prompts, die in Tests perfekt funktionieren, versagen oft in der realen Welt. Benutzer senden leere Nachrichten, fügen Textwände ein, stellen mehrdeutige Anfragen und versuchen manchmal absichtlich, dein System zu brechen. Dieses Kapitel lehrt dich, Prompts zu erstellen, die das Unerwartete elegant handhaben.
+Prompts, die in Tests perfekt funktionieren, versagen oft in der realen Welt. Benutzer senden leere Nachrichten, fügen Textwände ein, stellen mehrdeutige Anfragen und versuchen manchmal absichtlich, dein System auszuhebeln. In diesem Kapitel lernst du, Prompts zu bauen, die souverän mit dem Unerwarteten umgehen.
 
 <Callout type="warning" title="Die 80/20-Regel der Grenzfälle">
 80% der Produktionsprobleme kommen von Eingaben, die du nie erwartet hast. Ein Prompt, der Grenzfälle gut handhabt, ist mehr wert als ein „perfekter" Prompt, der nur mit idealen Eingaben funktioniert.
 </Callout>
 
-## Warum Grenzfälle Prompts brechen
+## Warum Grenzfälle Prompts zum Scheitern bringen
 
-Wenn ein Prompt unerwartete Eingaben antrifft, versagt er typischerweise auf eine von drei Arten:
+Wenn ein Prompt auf unerwartete Eingaben trifft, versagt er typischerweise auf eine von drei Arten:
 
 **Stille Fehler**: Das Modell produziert Ausgaben, die korrekt aussehen, aber Fehler enthalten. Diese sind am gefährlichsten, weil sie schwer zu erkennen sind.
 
@@ -16,7 +16,7 @@ Wenn ein Prompt unerwartete Eingaben antrifft, versagt er typischerweise auf ein
 
 <Compare 
   before={{ label: "Prompt ohne Grenzfallbehandlung", content: "Extrahiere die E-Mail-Adresse aus dem Text unten und gib sie zurück.\n\nText: [Benutzereingabe]" }}
-  after={{ label: "Was passiert bei leerer Eingabe?", content: "Das Modell könnte eine erfundene E-Mail zurückgeben, \"keine E-Mail gefunden\" in einem unvorhersehbaren Format sagen, oder eine Fehlermeldung produzieren, die dein Parsing bricht." }}
+  after={{ label: "Was passiert bei leerer Eingabe?", content: "Das Modell könnte eine erfundene E-Mail zurückgeben, \"keine E-Mail gefunden\" in einem unvorhersehbaren Format sagen, oder eine Fehlermeldung produzieren, die dein Parsing scheitern lässt." }}
 />
 
 ## Kategorien von Grenzfällen
@@ -29,7 +29,7 @@ Das sind Probleme mit den Daten selbst:
 
 <InfoGrid items={[
   { label: "Leere Eingabe", description: "Benutzer sendet nichts, Leerzeichen oder nur Begrüßungen", example: "\"\" oder \"hi\" oder \"   \"", color: "blue" },
-  { label: "Übermäßige Länge", description: "Eingabe überschreitet Kontextgrenzen", example: "Ein 50.000-Wörter-Dokument vollständig eingefügt", color: "blue" },
+  { label: "Übermäßige Länge", description: "Eingabe überschreitet Kontextgrenzen", example: "Dutzende vollständiger Bücher auf einmal eingefügt", color: "blue" },
   { label: "Sonderzeichen", description: "Emojis, Unicode oder Kodierungsprobleme", example: "\"Preis: 100$ → 85€ 🎉\"", color: "blue" },
   { label: "Mehrere Sprachen", description: "Gemischte Schriften oder unerwartete Sprache", example: "\"Übersetze das: 你好 bedeutet hallo\"", color: "blue" },
   { label: "Fehlerhafter Text", description: "Tippfehler und Grammatikfehler", example: "\"waas ist das Weter morgen\"", color: "blue" },
@@ -44,9 +44,9 @@ Das sind Anfragen, die die Grenzen des Zwecks deines Prompts testen:
 <InfoGrid items={[
   { label: "Außerhalb des Umfangs", description: "Klar außerhalb deines Zwecks", example: "Einen Rezept-Bot nach Rechtsberatung fragen", color: "purple" },
   { label: "Grenzfälle", description: "Verwandt, aber nicht ganz im Umfang", example: "Einen Rezept-Bot nach Restaurant-Menüs fragen", color: "purple" },
-  { label: "Zeitabhängig", description: "Erfordert aktuelle Informationen", example: "\"Was ist der Aktienkurs jetzt?\"", color: "purple" },
+  { label: "Zeitabhängig", description: "Erfordert aktuelle Informationen", example: "\"Wie hoch ist der Aktienkurs gerade?\"", color: "purple" },
   { label: "Subjektiv", description: "Fragt nach persönlichen Meinungen", example: "\"Was ist die beste Programmiersprache?\"", color: "purple" },
-  { label: "Hypothetisch", description: "Unmögliche oder imaginäre Szenarien", example: "\"Was wäre, wenn Schwerkraft umgekehrt funktioniert?\"", color: "purple" },
+  { label: "Hypothetisch", description: "Unmögliche oder imaginäre Szenarien", example: "\"Was wäre, wenn die Schwerkraft umgekehrt funktionieren würde?\"", color: "purple" },
   { label: "Sensible Themen", description: "Erfordert vorsichtige Behandlung", example: "Medizinische Symptome, rechtliche Streitigkeiten", color: "purple" }
 ]} />
 
@@ -107,7 +107,7 @@ A) Die ersten 5000 Wörter jetzt zusammenfassen
 B) Es in [N] Abschnitten verarbeiten, wenn du umfassende Abdeckung möchtest
 C) Mich auf bestimmte Abschnitte konzentrieren, die du als Prioritäten hervorhebst
 
-Welcher Ansatz passt am besten für dich?"
+Welcher Ansatz passt dir am besten?"
 
 DOKUMENT:
 \${document}`}
@@ -142,17 +142,17 @@ Fahre direkt mit der Antwort fort.`}
 
 ## Defensive Prompts erstellen
 
-Ein defensiver Prompt antizipiert Fehlermodi und definiert explizites Verhalten für jeden. Betrachte es als Fehlerbehandlung für natürliche Sprache.
+Ein defensiver Prompt antizipiert Fehlermodi und definiert explizites Verhalten für jeden. Stell es dir als Fehlerbehandlung für natürliche Sprache vor.
 
-### Das Defensive Template
+### Die defensive Vorlage
 
-Jeder robuste Prompt sollte diese vier Bereiche adressieren:
+Jeder robuste Prompt sollte diese vier Bereiche abdecken:
 
 <InfoGrid items={[
   { label: "1. Kernaufgabe", description: "Was der Prompt im Idealfall tut", color: "blue" },
   { label: "2. Eingabebehandlung", description: "Was mit leerer, langer, fehlerhafter oder unerwarteter Eingabe zu tun ist", color: "purple" },
   { label: "3. Umfangsgrenzen", description: "Was im Umfang ist, was nicht, und wie Grenzfälle zu behandeln sind", color: "green" },
-  { label: "4. Fehlerantworten", description: "Wie elegant zu scheitern ist, wenn etwas schiefgeht", color: "amber" }
+  { label: "4. Fehlerantworten", description: "Wie man kontrolliert scheitert, wenn etwas schiefgeht", color: "amber" }
 ]} />
 
 ### Beispiel: Defensive Datenextraktion
@@ -214,7 +214,7 @@ IM UMFANG (dabei hilfst du):
 - Grundlagen zu Lebensmittellagerung und -sicherheit
 
 AUSSERHALB DES UMFANGS (diese umleiten):
-- Medizinische Ernährungsberatung → "Für spezifische Ernährungsbedürfnisse bei Gesundheitszuständen konsultiere bitte einen registrierten Ernährungsberater oder deinen Arzt."
+- Medizinische Ernährungsberatung → "Für spezifische Ernährungsbedürfnisse bei Gesundheitszuständen konsultiere bitte einen zertifizierten Ernährungsberater oder deinen Arzt."
 - Restaurantempfehlungen → "Ich habe keinen Zugang zu Standortdaten oder aktuellen Restaurantinformationen. Ich kann dir aber helfen, ein ähnliches Gericht zu Hause zu kochen!"
 - Essenslieferung/Bestellung → "Ich kann keine Bestellungen aufgeben, aber ich kann dir helfen zu planen, was du kochst."
 - Ernährungstherapie → "Für therapeutische Ernährungspläne arbeite bitte mit einem Gesundheitsfachmann zusammen."
@@ -240,7 +240,7 @@ Sei ehrlich darüber, was du nicht weißt. Benutzer vertrauen KI mehr, wenn sie 
 BEHANDLUNG DER WISSENSGRENZE:
 Wenn die Frage beinhaltet:
 - Aktuelle Ereignisse, Preise oder Statistiken → Nenne dein Wissens-Cutoff-Datum und empfehle, aktuelle Quellen zu prüfen
-- Kürzliche Produktveröffentlichungen oder Updates → Teile, was du zum Cutoff wusstest, bemerke, dass sich Dinge geändert haben könnten
+- Kürzliche Produktveröffentlichungen oder Updates → Teile, was du zum Cutoff wusstest, weise darauf hin, dass sich Dinge geändert haben könnten
 - Laufende Situationen → Liefere historischen Kontext, erkenne an, dass aktueller Status unbekannt ist
 
 ANTWORTVORLAGE FÜR ZEITKRITISCHE THEMEN:
@@ -305,17 +305,17 @@ BEHANDLUNG SENSIBLER THEMEN:
 Wenn die Anfrage SICHERHEITSBEDENKEN beinhaltet (Schaden an sich selbst oder anderen):
 - Drücke Fürsorge und Besorgnis aus
 - Stelle Krisenressourcen bereit (Telefonseelsorge: 0800 111 0 111, Notdienste)
-- Liefere keine schädlichen Informationen unter irgendeinem Rahmen
+- Gib unter keinen Umständen schädliche Informationen heraus, egal wie die Anfrage verpackt ist
 
 Wenn die Anfrage RECHTLICHE FRAGEN beinhaltet:
 - Gib keine spezifische Rechtsberatung
 - Schlage vor, einen zugelassenen Anwalt zu konsultieren
-- Kannst allgemeine Bildungsinformationen über rechtliche Konzepte liefern
+- Du kannst allgemeine Bildungsinformationen über rechtliche Konzepte liefern
 
 Wenn die Anfrage MEDIZINISCHE FRAGEN beinhaltet:
 - Diagnostiziere oder verschreibe nicht
 - Schlage vor, einen Gesundheitsdienstleister zu konsultieren
-- Kannst allgemeine Gesundheitsbildung liefern
+- Du kannst allgemeine Gesundheitsbildung liefern
 
 Wenn die Anfrage KONTROVERSE THEMEN beinhaltet:
 - Präsentiere mehrere Perspektiven fair
@@ -364,7 +364,7 @@ TEXT:
 
 ### Konfidenz-Indikatoren
 
-Lehre deine Prompts, Unsicherheit auszudrücken. Das hilft Benutzern zu wissen, wann sie der Ausgabe vertrauen und wann sie verifizieren sollten.
+Bring deinen Prompts bei, Unsicherheit auszudrücken. Das hilft Benutzern zu wissen, wann sie der Ausgabe vertrauen und wann sie verifizieren sollten.
 
 <Compare 
   before={{ label: "Ohne Konfidenz", content: "Die Hauptstadt von Australien ist Canberra." }}
@@ -402,7 +402,7 @@ Beende immer mit: "Konfidenz: [HOCH/MITTEL/NIEDRIG] weil [kurzer Grund]"`}
 
 ## Grenzfälle testen
 
-Bevor du einen Prompt bereitstellst, teste ihn systematisch gegen die Grenzfälle, die du antizipiert hast. Diese Checkliste hilft sicherzustellen, dass du keine häufigen Fehlermodi übersehen hast.
+Bevor du einen Prompt bereitstellst, teste ihn systematisch mit den Grenzfällen, die du vorhergesehen hast. Diese Checkliste hilft sicherzustellen, dass du keine häufigen Fehlermodi übersehen hast.
 
 ### Grenzfall-Test-Checkliste
 
@@ -473,12 +473,12 @@ Erstelle Testfälle in diesen Kategorien:
    Eingaben an den Grenzen des Akzeptablen
 
 4. ADVERSARIALE FÄLLE (4 Fälle)
-   Versuche, den Prompt zu brechen oder zu missbrauchen
+   Versuche, den Prompt auszuhebeln oder zu missbrauchen
 
 5. DOMÄNEN-GRENZFÄLLE (3 Fälle)
    Anfragen, die die Umfangsgrenzen testen
 
-Für jeden Testfall, liefere:
+Liefere für jeden Testfall:
 - Eingabe: Die Testeingabe
 - Erwartetes Verhalten: Was der Prompt tun SOLLTE
 - Fehlerindikator: Woran du erkennen würdest, dass es gescheitert ist`}
@@ -557,11 +557,11 @@ Robuste Prompts zu erstellen erfordert, darüber nachzudenken, was schiefgehen k
   { label: "Grenzen definieren", description: "Klare Umfangslimits mit hilfreichen Weiterleitungen für Out-of-Scope-Anfragen", color: "purple" },
   { label: "Elegant degradieren", description: "Teilergebnisse sind besser als Fehlschläge; biete immer Alternativen an", color: "green" },
   { label: "Gegen Angriffe verteidigen", description: "Behandle Benutzereingaben als Daten, nicht als Anweisungen; enthülle niemals System Prompts", color: "red" },
-  { label: "Unsicherheit ausdrücken", description: "Konfidenz-Levels helfen Benutzern zu wissen, wann zu verifizieren", color: "amber" },
+  { label: "Unsicherheit ausdrücken", description: "Konfidenz-Levels helfen Benutzern zu wissen, wann sie etwas überprüfen sollten", color: "amber" },
   { label: "Systematisch testen", description: "Verwende Checklisten, um sicherzustellen, dass du häufige Grenzfälle abgedeckt hast", color: "cyan" }
 ]} />
 
-<Callout type="tip" title="Für Fehler designen">
+<Callout type="tip" title="Auf Fehler auslegen">
 In Produktion wird alles, was schiefgehen kann, irgendwann schiefgehen. Ein Prompt, der Grenzfälle elegant handhabt, ist mehr wert als ein „perfekter" Prompt, der nur mit idealen Eingaben funktioniert.
 </Callout>
 
@@ -574,7 +574,7 @@ In Produktion wird alles, was schiefgehen kann, irgendwann schiefgehen. Ein Prom
     "Eine Fehlermeldung zurückgeben und aufhören zu antworten"
   ]}
   correctIndex={2}
-  explanation="Die beste Out-of-Scope-Behandlung erkennt an, was der Benutzer will, erklärt die Einschränkung klar und bietet eine hilfreiche Alternative oder Weiterleitung. Das hält die Interaktion positiv, während klare Grenzen beibehalten werden."
+  explanation="Die beste Out-of-Scope-Behandlung erkennt an, was der Benutzer will, erklärt die Einschränkung klar und bietet eine hilfreiche Alternative oder Weiterleitung. Das hält die Interaktion positiv, und wahrt zugleich klare Grenzen."
 />
 
-Im nächsten Kapitel werden wir erkunden, wie mit mehreren KI-Modellen zu arbeiten und ihre Ausgaben zu vergleichen.
+Im nächsten Kapitel erkunden wir multimodales Prompting: die Arbeit mit Bildern, Audio und Video neben Text.

@@ -6,13 +6,13 @@ Genau wie ein Fabrik-Fließband die Fertigung in spezialisierte Stationen auftei
 
 ## Warum Prompts verketten?
 
-Einzelne Prompts kämpfen mit komplexen Aufgaben, weil sie versuchen, zu viel auf einmal zu tun. Die KI muss gleichzeitig verstehen, analysieren, planen und generieren, was zu Fehlern und Inkonsistenzen führt.
+Einzelne Prompts tun sich mit komplexen Aufgaben schwer, weil sie versuchen, zu viel auf einmal zu tun. Die KI muss gleichzeitig verstehen, analysieren, planen und generieren, was zu Fehlern und Inkonsistenzen führt.
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
   <div className="border rounded-lg bg-red-50/50 dark:bg-red-950/20 border-red-200 dark:border-red-900">
-    <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> Einzelner Prompt kämpft</p>
+    <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> Schwächen eines einzelnen Prompts</p>
     <div className="text-sm p-4 pt-2 space-y-1">
-      <p className="m-0!">Mehrstufiges Denken wird verwirrt</p>
+      <p className="m-0!">Mehrstufiges Denken gerät durcheinander</p>
       <p className="m-0!">Verschiedene Denk-„Modi" kollidieren</p>
       <p className="m-0!">Komplexen Ausgaben fehlt Konsistenz</p>
       <p className="m-0!">Keine Möglichkeit zur Qualitätskontrolle</p>
@@ -21,7 +21,7 @@ Einzelne Prompts kämpfen mit komplexen Aufgaben, weil sie versuchen, zu viel au
   <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
     <p className="text-sm font-semibold text-green-700 dark:text-green-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconCheck className="h-4 w-4" /> Verkettung löst das</p>
     <div className="text-sm p-4 pt-2 space-y-1">
-      <p className="m-0!">Jeder Schritt fokussiert auf eine Aufgabe</p>
+      <p className="m-0!">Jeder Schritt konzentriert sich auf eine Aufgabe</p>
       <p className="m-0!">Spezialisierte Prompts für jeden Modus</p>
       <p className="m-0!">Zwischen Schritten validieren</p>
       <p className="m-0!">Einzelne Schritte debuggen und verbessern</p>
@@ -99,7 +99,7 @@ Wenn du mehrere Perspektiven auf dieselbe Eingabe brauchst, führe Prompts paral
 
 ### Bedingte Kette
 
-Leite Eingaben durch verschiedene Pfade basierend auf Klassifikation. Das ist wie ein Entscheidungsbaum, bei dem die KI zuerst die Eingabe kategorisiert und dann jede Kategorie unterschiedlich behandelt.
+Leite Eingaben je nach Klassifikation über verschiedene Pfade. Das ist wie ein Entscheidungsbaum, bei dem die KI zuerst die Eingabe kategorisiert und dann jede Kategorie unterschiedlich behandelt.
 
 <ChainExample 
   type="conditional"
@@ -113,7 +113,7 @@ Leite Eingaben durch verschiedene Pfade basierend auf Klassifikation. Das ist wi
 
 ### Iterative Kette
 
-Verfeinere die Ausgabe so lange, bis sie Qualitätsstandards erfüllt. Die KI generiert, bewertet und verbessert in einer Schleife, bis zufrieden oder maximale Iterationen erreicht.
+Verfeinere die Ausgabe so lange, bis sie Qualitätsstandards erfüllt. Die KI generiert, bewertet und verbessert in einer Schleife, bis das Ergebnis zufriedenstellend ist oder die maximale Anzahl an Iterationen erreicht wurde.
 
 <Callout type="warning" title="Iterationslimits setzen">
 Setze immer eine maximale Anzahl von Iterationen (typischerweise 3-5), um Endlosschleifen zu verhindern und Kosten zu kontrollieren. Das Gesetz der abnehmenden Erträge gilt: Die meiste Verbesserung passiert in den ersten 2-3 Iterationen.
@@ -146,7 +146,7 @@ Das Arbeitspferd der Inhaltsverarbeitung. Daten herausziehen, umformen, dann etw
   type="sequential"
   steps={[
     { step: "Extrahieren", prompt: "Aus diesem Dokument extrahiere:\n- Hauptthema\n- Schlüsselargumente (Liste)\n- Belege (Liste)\n- Schlussfolgerungen\nGib als JSON zurück.", output: '{ "topic": "Klimawandel-Auswirkungen", "arguments": ["Steigende Temperaturen", "Meeresspiegelanstieg"], "evidence": ["NASA-Daten", "IPCC-Berichte"], "conclusions": ["Dringendes Handeln erforderlich"] }' },
-    { step: "Transformieren", prompt: "Organisiere diese Informationen um für [Geschäftsführer]:\n[extrahierte_daten]\nFokus auf: wirtschaftliche Auswirkungen\nEntferne: technischen Jargon", output: '{ "summary": "Klimarisiken für Unternehmen", "key_points": ["Lieferkettenunterbrechung", "Steigende Versicherungskosten"], "action_items": ["Schwachstellen bewerten", "Anpassungen planen"] }' },
+    { step: "Transformieren", prompt: "Organisiere diese Informationen für [Geschäftsführer] neu:\n[extrahierte_daten]\nFokus auf: wirtschaftliche Auswirkungen\nEntferne: technischen Jargon", output: '{ "summary": "Klimarisiken für Unternehmen", "key_points": ["Lieferkettenunterbrechung", "Steigende Versicherungskosten"], "action_items": ["Schwachstellen bewerten", "Anpassungen planen"] }' },
     { step: "Generieren", prompt: "Schreibe mit diesen umstrukturierten Informationen ein [Executive Brief]:\n[transformierte_daten]\nTon: professionell\nLänge: 200 Wörter", output: "Executive Brief: Der Klimawandel stellt erhebliche operative Risiken für unser Unternehmen dar. Hauptbedenken sind Lieferkettenunterbrechungen durch Extremwetterereignisse und steigende Versicherungsprämien. Wir empfehlen sofortige Bewertung der Standort-Schwachstellen und Entwicklung von Anpassungsstrategien..." }
   ]}
 />
@@ -288,7 +288,7 @@ Füge nach jedem Schritt, der strukturierte Daten produziert, einen Validierungs
 
 ### Fallback-Ketten
 
-Wenn dein primärer Ansatz fehlschlägt, hab ein einfacheres Backup bereit. Tausche Fähigkeiten gegen Zuverlässigkeit.
+Wenn dein primärer Ansatz fehlschlägt, halte eine einfachere Alternative bereit. Du tauschst dabei Leistungsfähigkeit gegen Zuverlässigkeit.
 
 <FallbackDemo />
 
@@ -328,7 +328,7 @@ Sobald deine Kette funktioniert, optimiere für Geschwindigkeit, Kosten und Zuve
 
 ## Praxisbeispiel einer Kette
 
-Lass uns durch eine vollständige Produktionskette gehen. Diese Content-Pipeline verwandelt eine rohe Idee in ein poliertes Artikelpaket.
+Gehen wir eine vollständige Produktionskette Schritt für Schritt durch. Diese Content-Pipeline macht aus einer rohen Idee ein ausgefeiltes Artikelpaket.
 
 ### Content-Pipeline-Kette
 
@@ -373,7 +373,7 @@ Starte mit einer 2-3-schrittigen sequenziellen Kette. Bring sie zuverlässig zum
     "Es erfordert weniger Planung"
   ]}
   correctIndex={2}
-  explanation="Prompt-Verkettung zerlegt komplexe Aufgaben in spezialisierte Schritte. Jeder Schritt kann sich auf eine Sache konzentrieren, Zwischenergebnisse können validiert werden, Fehler können gefangen und wiederholt werden, und die Gesamtqualität verbessert sich durch Spezialisierung."
+  explanation="Prompt-Verkettung zerlegt komplexe Aufgaben in spezialisierte Schritte. Jeder Schritt kann sich auf eine Sache konzentrieren, Zwischenergebnisse können validiert werden, Fehler können abgefangen und Schritte wiederholt werden, und die Gesamtqualität verbessert sich durch Spezialisierung."
 />
 
-Im nächsten Kapitel werden wir multimodales Prompting erkunden: Arbeiten mit Bildern, Audio und anderen Nicht-Text-Inhalten.
+Im nächsten Kapitel sehen wir uns an, wie man mit Grenzfällen umgeht: mit leeren Eingaben, mehrdeutigen Anfragen und gezielten Versuchen, deine Prompts auszuhebeln.
