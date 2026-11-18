@@ -1,122 +1,122 @@
-Tarihin büyük bölümünde, bilgisayarlar aynı anda tek tip veriyle çalıştı: bir programda metin, diğerinde görüntüler, başka bir yerde ses. Ama insanlar dünyayı bu şekilde deneyimlemez. Aynı anda görür, duyar, okur ve konuşuruz, çevremizi anlamak için tüm bu girdileri birleştiririz.
+Tarihin büyük bölümünde bilgisayarlar her seferinde tek bir veri türüyle çalıştı: metin bir programda, görüntüler başka birinde, ses ise bambaşka bir yerde. Oysa insanlar dünyayı böyle deneyimlemez. Aynı anda görür, duyar, okur ve konuşuruz; çevremizi anlamak için bütün bu girdileri bir araya getiririz.
 
-**Çok Modlu Yapay Zeka** her şeyi değiştirir. Bu modeller birden fazla bilgi türünü birlikte işleyebilir—hakkında sorunuzu okurken bir görüntüyü analiz etmek veya metin açıklamalarınızdan görüntüler üretmek. Bu bölüm size bu güçlü sistemlerle etkili iletişim kurmayı öğretir.
+**Çok modlu yapay zeka** bu tabloyu kökten değiştiriyor. Bu modeller farklı bilgi türlerini bir arada işleyebilir: bir görüntüyü incelerken onunla ilgili sorunuzu okuyabilir ya da yazdığınız bir tariften görsel üretebilir. Bu bölümde, bu güçlü sistemlerle nasıl etkili iletişim kuracağınızı öğreneceksiniz.
 
 <Callout type="info" title="Çok Modlu Ne Demek?">
-"Çok" birden fazla anlamına gelir ve "modlu" veri modlarına veya türlerine atıfta bulunur. Çok modlu bir model birden fazla modaliteyle çalışabilir: metin, görüntüler, ses, video veya hatta kod. Her tür için ayrı araçlar yerine, tek bir model hepsini birlikte anlar.
+"Çok" birden fazla anlamına gelir; "mod" ise veri biçimlerini, yani veri türlerini ifade eder. Çok modlu bir model birden fazla veri türüyle çalışabilir: metin, görüntü, ses, video, hatta kod. Her tür için ayrı bir araç kullanmak yerine, tek bir model hepsini birlikte anlar.
 </Callout>
 
-## Çok Modlu Neden Önemli
+## Çok Modluluk Neden Önemli?
 
-Geleneksel yapay zeka her şeyi kelimelerle tanımlamanızı gerektiriyordu. Bir görüntü hakkında sormak mı istiyorsunuz? Önce tanımlamanız gerekiyordu. Bir belgeyi analiz etmek mi istiyorsunuz? Manuel olarak transkribe etmeniz gerekiyordu. Çok modlu modeller bu engelleri ortadan kaldırır.
+Eskiden yapay zekaya her şeyi kelimelerle anlatmanız gerekirdi. Bir görüntü hakkında soru mu sormak istiyorsunuz? Önce onu tarif etmeniz gerekirdi. Bir belgeyi mi analiz etmek istiyorsunuz? Önce elle yazıya dökmeniz gerekirdi. Çok modlu modeller bu engelleri ortadan kaldırır.
 
 <InfoGrid items={[
-  { label: "Gör ve Anla", description: "Bir görüntü yükle ve doğrudan sorular sor—tanımlama gerekmez", example: "\"Bu devre şemasında ne yanlış?\"", color: "blue" },
-  { label: "Kelimelerden Oluştur", description: "Ne istediğini tanımla ve görüntüler, ses veya video üret", example: "\"Suluboya stilinde dağların üzerinde gün batımı\"", color: "purple" },
-  { label: "Her Şeyi Birleştir", description: "Tek bir konuşmada metin, görüntüler ve diğer medyayı karıştır", example: "\"Bu iki tasarımı karşılaştır ve mobil için hangisinin daha iyi olduğunu söyle\"", color: "green" },
-  { label: "Belgeleri Analiz Et", description: "Belge, fiş veya ekran görüntüsü fotoğraflarından bilgi çıkar", example: "\"Bu fatura fotoğrafından tüm satır öğelerini çıkar\"", color: "amber" }
+  { label: "Gör ve Anla", description: "Bir görüntü yükleyin ve doğrudan soru sorun; tarif etmenize gerek yok", example: "\"Bu devre şemasındaki hata ne?\"", color: "blue" },
+  { label: "Kelimelerden Üret", description: "Ne istediğinizi anlatın; görüntü, ses ya da video üretilsin", example: "\"Dağların üzerinde gün batımı, suluboya tarzında\"", color: "purple" },
+  { label: "Hepsini Birleştir", description: "Tek bir sohbette metni, görüntüleri ve diğer medyayı bir arada kullanın", example: "\"Bu iki tasarımı karşılaştır ve mobil için hangisinin daha uygun olduğunu söyle\"", color: "green" },
+  { label: "Belgeleri Analiz Et", description: "Belge, fiş ya da ekran görüntüsü fotoğraflarından bilgi çıkarın", example: "\"Bu fatura fotoğrafındaki tüm kalemleri çıkar\"", color: "amber" }
 ]} />
 
-## Çok Modlu İçin Promptlama Neden Daha da Önemli
+## Çok Modlu Modellerde Promptlama Neden Daha da Önemli?
 
-Sadece metin modelleriyle, yapay zeka tam olarak yazdığınızı alır. Ama çok modlu modellerle, yapay zeka görsel veya işitsel bilgiyi yorumlamalıdır—ve yorum rehberlik gerektirir.
+Yalnızca metinle çalışan modeller, tam olarak sizin yazdığınızı alır. Çok modlu modellerde ise yapay zekanın görsel ya da işitsel bilgiyi yorumlaması gerekir ve yorum, yönlendirme ister.
 
 <Compare 
-  before={{ label: "Belirsiz çok modlu prompt", content: "Bu görüntüde ne görüyorsun?\n\n[karmaşık bir dashboard görüntüsü]" }}
-  after={{ label: "Yönlendirilmiş çok modlu prompt", content: "Bu analitik dashboard'umuzun ekran görüntüsü. Şunlara odaklan:\n1. Sağ üstteki dönüşüm oranı grafiği\n2. Herhangi bir hata göstergesi veya uyarı\n3. Verinin normal mi anormal mi göründüğü\n\n[karmaşık bir dashboard görüntüsü]" }}
+  before={{ label: "Belirsiz çok modlu prompt", content: "Bu görüntüde ne görüyorsun?\n\n[karmaşık bir panel görüntüsü]" }}
+  after={{ label: "Yönlendirilmiş çok modlu prompt", content: "Bu, analitik panelimizin ekran görüntüsü. Şunlara odaklan:\n1. Sağ üstteki dönüşüm oranı grafiği\n2. Varsa hata göstergeleri ya da uyarılar\n3. Verilerin normal mi, yoksa olağan dışı mı göründüğü\n\n[karmaşık bir panel görüntüsü]" }}
 />
 
-**Rehberlik olmadan**, model renkleri, düzeni veya alakasız detayları tanımlayabilir. **Rehberlikle**, sizin için gerçekten önemli olan şeylere odaklanır.
+**Yönlendirme olmadan** model renkleri, yerleşimi ya da konuyla ilgisiz ayrıntıları anlatabilir. **Yönlendirmeyle** ise sizin için gerçekten önemli olana odaklanır.
 
 <Callout type="warning" title="Yorum Boşluğu">
-Bir görüntüye baktığınızda, bağlamınız ve hedeflerinize göre neyin önemli olduğunu anında bilirsiniz. Yapay zeka siz sağlamadıkça bu bağlama sahip değildir. Duvardaki çatlağın fotoğrafı olabilir: bir yapısal mühendislik endişesi, artistik bir doku veya alakasız arka plan. Promptunuz yapay zekanın nasıl yorumlayacağını belirler.
+Bir görüntüye baktığınızda, bağlamınıza ve hedeflerinize göre neyin önemli olduğunu anında bilirsiniz. Siz sağlamadıkça yapay zekanın bu bağlamdan haberi yoktur. Duvardaki bir çatlağın fotoğrafı; yapısal bir mühendislik sorunu, sanatsal bir doku ya da önemsiz bir arka plan olabilir. Yapay zekanın onu nasıl yorumlayacağını promptunuz belirler.
 </Callout>
 
-## Çok Modlu Manzara
+## Çok Modlu Modellerin Genel Görünümü
 
-Farklı modellerin farklı yetenekleri vardır. İşte 2025'te mevcut olanlar:
+Her modelin yetenekleri farklıdır. İşte 2026'nın sonları itibarıyla genel tablo:
 
 ### Anlama Modelleri (Girdi → Analiz)
 
-Bu modeller çeşitli medya türlerini kabul eder ve metin analizi veya yanıtlar üretir.
+Bu modeller çeşitli medya türlerini girdi olarak alır ve metin hâlinde analiz ya da yanıt üretir.
 
 <InfoGrid items={[
-  { label: "GPT-4o / GPT-5", description: "Metin + Görüntüler + Ses → Metin. OpenAI'ın 128K bağlamlı amiral gemisi, güçlü yaratıcı ve muhakeme yetenekleri.", color: "green" },
-  { label: "Claude 4 Sonnet/Opus", description: "Metin + Görüntüler → Metin. Anthropic'in gelişmiş muhakemeli güvenlik odaklı modeli, kodlama ve karmaşık görevler için mükemmel.", color: "purple" },
-  { label: "Gemini 2.5", description: "Metin + Görüntüler + Ses + Video → Metin. Google'ın 1M token bağlamlı modeli, kodlama ve araştırma için hızlı işleme.", color: "blue" },
-  { label: "LLaMA 4 Scout", description: "Metin + Görüntüler + Video → Metin. Meta'nın uzun belgeler için devasa 10M token bağlamlı açık kaynak modeli.", color: "cyan" },
-  { label: "Grok 4", description: "Metin + Görüntüler → Metin. xAI'ın güncel yanıtlar için gerçek zamanlı veri erişimli modeli.", color: "red" }
+  { label: "GPT-6.2", description: "Metin + Görüntü → Metin. OpenAI'ın güncel amiral gemisi model ailesi; yaklaşık bir milyon tokenlik bağlam penceresine sahip, akıl yürütme, kodlama ve görsel görevlerde güçlü. Ses ve yazıya dökme işleri ayrı, özel modellerle yapılır.", color: "green" },
+  { label: "Claude Opus / Sonnet 5.5", description: "Metin + Görüntü → Metin. Anthropic'in güncel model ailesi; bir milyon tokenlik bağlam penceresine sahip, titiz akıl yürütmesi, kodlama becerisi ve uzun, çok adımlı görevlerdeki başarısıyla tanınır.", color: "purple" },
+  { label: "Gemini 4", description: "Metin + Görüntü + Ses + Video + PDF → Metin. Google'ın güncel model ailesi; bir milyon tokenlik bağlam penceresine sahip, sesi ve videoyu doğrudan anlayabilir.", color: "blue" },
+  { label: "Llama 4 Scout", description: "Metin + Görüntü → Metin. Meta'nın açık ağırlıklı modeli; 10 milyon tokenlik bağlam penceresine sahip, indirip kendi donanımınızda çalıştırabilirsiniz.", color: "cyan" },
+  { label: "Grok 4.7", description: "Metin + Görüntü → Metin. Güncel Grok modeli; 500 bin tokenlik bağlam penceresine sahip. Web'deki ve X'teki güncel içerikleri yalnızca arama araçları açıkken görebilir.", color: "red" }
 ]} />
 
 ### Üretim Modelleri (Metin → Medya)
 
-Bu modeller metin açıklamalarından görüntüler, ses veya video oluşturur.
+Bu modeller metin tariflerinden görüntü, ses ya da video üretir.
 
 <InfoGrid items={[
-  { label: "DALL-E 3", description: "Metin → Görüntüler. OpenAI'ın prompt açıklamalarına yüksek doğruluklu görüntü üreticisi.", color: "amber" },
-  { label: "Midjourney", description: "Metin + Görüntüler → Görüntüler. Artistik kalite, stil kontrolü ve estetik çıktılarıyla tanınır.", color: "pink" },
-  { label: "Sora", description: "Metin → Video. OpenAI'ın açıklamalardan klipler oluşturan video üretim modeli.", color: "red" },
-  { label: "Whisper", description: "Ses → Metin. OpenAI'ın diller arası yüksek doğruluklu konuşma-metin modeli.", color: "cyan" }
+  { label: "GPT Image", description: "Metin + Görüntü → Görüntü. OpenAI'ın görüntü üretme ve düzenleme modelleri; 2026'da kullanımdan kaldırılan DALL-E 3'ün yerini aldı.", color: "amber" },
+  { label: "Midjourney", description: "Metin + Görüntü → Görüntü. Sanatsal kalitesi, stil kontrolü ve estetik çıktılarıyla tanınır.", color: "pink" },
+  { label: "Video Üreticiler", description: "Metin + Görüntü → Video. Google'ın Gemini Omni Flash'ı ve xAI'ın Grok Imagine'i gibi modeller, bir prompttan ya da durağan bir görüntüden 15 saniyeye kadar klipler üretir. OpenAI, Sora 2 API'sini Eylül 2026'da kullanımdan kaldırdı.", color: "red" },
+  { label: "Sesten Metne", description: "Ses → Metin. OpenAI'ın GPT-Transcribe'ı (Whisper'ın halefi) ve Google'ın Gemini 3.5 Transcribe'ı gibi özel yazıya dökme modelleri; pek çok dili destekler ve konuşmacıları ayırt edebilir.", color: "cyan" }
 ]} />
 
-<Callout type="info" title="Hızlı Evrim">
-Çok modlu manzara hızla değişir. Yeni modeller sık sık çıkar ve mevcut modeller güncellemelerle yetenekler kazanır. Güncel özellikler ve sınırlamalar için her zaman en son dokümantasyonu kontrol edin.
+<Callout type="info" title="Hızlı Değişim">
+Çok modlu modellerin dünyası hızla değişiyor. Sık sık yeni modeller çıkıyor, mevcut modeller de güncellemelerle yeni yetenekler kazanıyor. Güncel özellikler ve sınırlamalar için her zaman en son dokümantasyona bakın.
 </Callout>
 
 ## Görüntü Anlama Promptları
 
-En yaygın çok modlu kullanım durumu yapay zekadan görüntüleri analiz etmesini istemektir. Anahtar, neye ihtiyacınız olduğu hakkında bağlam sağlamaktır.
+Çok modlu yapay zekanın en yaygın kullanımı, ondan görüntüleri analiz etmesini istemektir. Burada işin sırrı, neye ihtiyacınız olduğuna dair bağlam vermektir.
 
 ### Temel Görüntü Analizi
 
-Net bir istek yapısıyla başlayın. Modele hangi yönlere odaklanacağını söyleyin.
+Net bir istek yapısıyla başlayın. Modele hangi noktalara odaklanması gerektiğini söyleyin.
 
 <TryIt 
   title="Yapılandırılmış Görüntü Analizi"
-  description="Bu prompt görüntü analizi için net bir çerçeve sağlar. Model tam olarak hangi bilgiye ihtiyacınız olduğunu bilir."
-  prompt={`Bu görüntüyü analiz et ve şunları tanımla:
+  description="Bu prompt, görüntü analizi için net bir çerçeve çizer. Model, tam olarak hangi bilgilere ihtiyacınız olduğunu bilir."
+  prompt={`Bu görüntüyü analiz et ve şunları anlat:
 
-1. **Ana Konu**: Bu görüntünün birincil odağı nedir?
-2. **Ortam**: Burası neresi gibi görünüyor? (iç/dış mekan, konum türü)
-3. **Ruh Hali**: Hangi duygusal ton veya atmosferi iletiyor?
-4. **Metin İçeriği**: Görünür metin, tabelalar veya etiketler var mı?
-5. **Dikkat Çekici Detaylar**: İlk bakışta birinin kaçırabileceği ne var?
-6. **Teknik Kalite**: Aydınlatma, odak ve kompozisyon nasıl?
+1. **Ana Konu**: Görüntünün odak noktası ne?
+2. **Ortam**: Burası neresi gibi görünüyor? (iç/dış mekân, mekân türü)
+3. **Hava**: Görüntü nasıl bir duygu ya da atmosfer yansıtıyor?
+4. **Metin İçeriği**: Görünen bir yazı, tabela ya da etiket var mı?
+5. **Dikkat Çeken Ayrıntılar**: İlk bakışta gözden kaçabilecek neler var?
+6. **Teknik Kalite**: Işık, netlik ve kompozisyon nasıl?
 
-[Analiz etmek istediğiniz görüntüyü yapıştırın veya tanımlayın]
+[Analiz etmek istediğiniz görüntüyü yapıştırın ya da tarif edin]
 
 Görüntü açıklaması veya URL: \${imageDescription}`}
 />
 
 ### Görüntüler İçin Yapılandırılmış Çıktı
 
-Görüntü analizini programatik olarak işlemeniz gerektiğinde, JSON çıktısı isteyin.
+Görüntü analizini kodla işlemeniz gerekiyorsa JSON çıktısı isteyin.
 
 <TryIt 
   title="JSON Görüntü Analizi"
-  description="Görüntü analizinden ayrıştırması ve uygulamalarda kullanması kolay yapılandırılmış veri alın."
-  prompt={`Bu görüntüyü analiz et ve şu yapıda bir JSON nesnesi döndür:
+  description="Görüntü analizinden, ayrıştırması ve uygulamalarda kullanması kolay, yapılandırılmış veri alın."
+  prompt={`Bu görüntüyü analiz et ve aşağıdaki yapıda bir JSON nesnesi döndür:
 
 {
-  "ozet": "Tek cümle açıklama",
-  "nesneler": ["Görünür ana nesnelerin listesi"],
+  "ozet": "Tek cümlelik açıklama",
+  "nesneler": ["Görünen başlıca nesnelerin listesi"],
   "insanlar": {
     "sayi": "sayı veya 'yok'",
-    "aktiviteler": ["Varsa ne yapıyorlar"]
+    "etkinlikler": ["Ne yaptıkları, varsa"]
   },
-  "tespit_edilen_metin": ["Görüntüde görünür metin"],
+  "tespit_edilen_metin": ["Görüntüde görünen yazılar"],
   "renkler": {
-    "baskın": ["İlk 3 renk"],
-    "ruh_hali": "Sıcak/Soğuk/Nötr"
+    "baskin": ["Öne çıkan 3 renk"],
+    "hava": "Sıcak/Soğuk/Nötr"
   },
   "ortam": {
     "tur": "ic_mekan/dis_mekan/bilinmiyor",
-    "aciklama": "Daha spesifik konum açıklaması"
+    "aciklama": "Mekânın daha ayrıntılı tarifi"
   },
   "teknik": {
     "kalite": "yuksek/orta/dusuk",
-    "aydinlatma": "Aydınlatma açıklaması",
-    "kompozisyon": "Çerçeveleme/kompozisyon açıklaması"
+    "isik": "Işığın tarifi",
+    "kompozisyon": "Kadrajın/kompozisyonun tarifi"
   },
   "guven": "yuksek/orta/dusuk"
 }
@@ -126,239 +126,416 @@ Analiz edilecek görüntü: \${imageDescription}`}
 
 ### Karşılaştırmalı Analiz
 
-Birden fazla görüntüyü karşılaştırmak net etiketleme ve spesifik karşılaştırma kriterleri gerektirir.
+Birden fazla görüntüyü karşılaştırırken her birini net biçimde etiketlemek ve somut karşılaştırma ölçütleri vermek gerekir.
 
 <TryIt 
   title="Görüntü Karşılaştırma"
-  description="İki veya daha fazla görüntüyü kararınız için önemli olan spesifik kriterlerle karşılaştırın."
-  prompt={`\${purpose} için bu görüntüleri karşılaştır:
+  description="İki ya da daha fazla görüntüyü, kararınız açısından önemli olan ölçütlere göre karşılaştırın."
+  prompt={`Bu görüntüleri \${purpose} amacıyla karşılaştır:
 
 **Görüntü A**: \${imageA}
 **Görüntü B**: \${imageB}
 
-Her görüntüyü şu kriterlerde analiz et:
+Her görüntüyü şu ölçütlere göre değerlendir:
 1. \${criterion1} (önem: yüksek)
 2. \${criterion2} (önem: orta)  
 3. \${criterion3} (önem: düşük)
 
-Sağla:
-- Her kriter için yan yana karşılaştırma
+Şunları ver:
+- Her ölçüt için yan yana karşılaştırma
 - Her birinin güçlü ve zayıf yönleri
-- Gerekçeyle net öneri
-- Herhangi bir endişe veya uyarı`}
+- Gerekçesiyle birlikte net bir öneri
+- Varsa endişeler ya da çekinceler`}
 />
 
 ## Belge ve Ekran Görüntüsü Analizi
 
-Çok modlu yapay zekanın en pratik uygulamalarından biri belgeleri, ekran görüntülerini ve UI öğelerini analiz etmektir. Bu saatlerce manuel transkripsiyon ve inceleme tasarrufu sağlar.
+Çok modlu yapay zekanın en pratik kullanımlarından biri belgeleri, ekran görüntülerini ve arayüz öğelerini analiz etmektir. Bu, saatler sürecek elle yazıya dökme ve inceleme işinden kurtarır.
 
-### Belge Çıkarma
+### Belgelerden Veri Çıkarma
 
-Taranan belgeler, fiş fotoğrafları ve görüntü olarak PDF'ler hepsi işlenebilir. Anahtar, modele ne tür bir belge olduğunu ve hangi bilgiye ihtiyacınız olduğunu söylemektir.
+Taranmış belgeler, fiş fotoğrafları ve görüntü olarak kaydedilmiş PDF'ler işlenebilir. İşin sırrı, modele belgenin türünü ve hangi bilgilere ihtiyacınız olduğunu söylemektir.
 
 <TryIt 
   title="Belge Veri Çıkarıcı"
-  description="Belge, fiş, fatura veya form fotoğraflarından yapılandırılmış veri çıkarın."
+  description="Belge, fiş, fatura ya da form fotoğraflarından yapılandırılmış veri çıkarın."
   prompt={`Bu bir \${documentType} fotoğrafı/taraması.
 
-Tüm bilgiyi yapılandırılmış JSON formatına çıkar:
+Tüm bilgileri yapılandırılmış JSON biçiminde çıkar:
 
 {
   "belge_turu": "tespit edilen tür",
   "tarih": "varsa",
-  "anahtar_alanlar": {
+  "temel_alanlar": {
     "alan_adi": "deger"
   },
-  "satir_ogeleri": [
+  "kalemler": [
     {"aciklama": "", "tutar": ""}
   ],
   "toplamlar": {
     "ara_toplam": "",
     "vergi": "",
-    "toplam": ""
+    "genel_toplam": ""
   },
-  "el_yazisi_notlar": ["el yazısı metin"],
+  "el_yazisi_notlar": ["el yazısıyla yazılmış metinler"],
   "belirsiz_bolumler": ["okunması zor alanlar"],
   "guven": "yuksek/orta/dusuk"
 }
 
-ÖNEMLİ: Herhangi bir metin belirsizse, tahmin etmek yerine "belirsiz_bolumler"de not edin. Önemli bölümler okunması zorsa güveni "dusuk" olarak işaretleyin.
+ÖNEMLİ: Okunamayan bir metin varsa tahmin etmek yerine "belirsiz_bolumler" alanına not düş. Belgenin önemli kısımları zor okunuyorsa güveni "dusuk" olarak işaretle.
 
 Belge açıklaması: \${documentDescription}`}
 />
 
-### Ekran Görüntüsü ve UI Analizi
+### Ekran Görüntüsü ve Arayüz Analizi
 
-Ekran görüntüleri hata ayıklama, UX incelemesi ve dokümantasyon için altın madenleridir. Yapay zekayı önemli olana odaklanması için yönlendirin.
+Ekran görüntüleri hata ayıklama, kullanıcı deneyimi incelemesi ve dokümantasyon için birer hazinedir. Yapay zekayı önemli olana odaklanması için yönlendirin.
 
 <TryIt 
-  title="UI/UX Ekran Görüntüsü Analizörü"
-  description="Hata ayıklama, UX incelemesi veya dokümantasyon için ekran görüntülerinin detaylı analizini alın."
-  prompt={`Bu \${applicationName}'in bir ekran görüntüsü.
+  title="Arayüz/UX Ekran Görüntüsü Analizi"
+  description="Hata ayıklama, UX incelemesi ya da dokümantasyon için ekran görüntülerinin ayrıntılı analizini alın."
+  prompt={`Bu, \${applicationName} uygulamasından bir ekran görüntüsü.
 
 Bu arayüzü analiz et:
 
 **Tanımlama**
 - Bu hangi ekran/sayfa/durum?
-- Kullanıcı burada muhtemelen ne yapmaya çalışıyor?
+- Kullanıcı burada büyük olasılıkla ne yapmaya çalışıyor?
 
-**UI Öğeleri**
-- Ana etkileşimli öğeler (butonlar, formlar, menüler)
-- Mevcut durum (seçili, doldurulmuş veya genişletilmiş bir şey var mı?)
-- Herhangi bir hata mesajı, uyarı veya bildirim var mı?
+**Arayüz Öğeleri**
+- Başlıca etkileşimli öğeler (düğmeler, formlar, menüler)
+- Mevcut durum (seçili, doldurulmuş ya da açılmış bir şey var mı?)
+- Hata mesajı, uyarı ya da bildirim var mı?
 
 **UX Değerlendirmesi**
-- Düzen net ve sezgisel mi?
-- Kafa karıştırıcı öğeler veya belirsiz etiketler var mı?
-- Erişilebilirlik endişeleri (kontrast, metin boyutu vb.)?
+- Yerleşim net ve sezgisel mi?
+- Kafa karıştıran öğeler ya da belirsiz etiketler var mı?
+- Erişilebilirlik sorunları (kontrast, yazı boyutu vb.) var mı?
 
 **Tespit Edilen Sorunlar**
-- Görsel hatalar veya hizalama sorunları?
-- Kesik metin veya taşma sorunları?
-- Tutarsız stil?
+- Görsel hatalar ya da hizalama sorunları?
+- Kesilen ya da taşan metinler?
+- Tutarsız stiller?
 
 Ekran görüntüsü açıklaması: \${screenshotDescription}`}
 />
 
-## Görüntü Üretim Promptları
+### Hata Mesajı Analizi
 
-Metin açıklamalarından görüntü üretmek bir sanat formudur. Promptunuz ne kadar spesifik ve yapılandırılmışsa, sonuç vizyonunuza o kadar yakın olacaktır.
+Bir hatayla karşılaştığınızda, ekran görüntüsü çoğu zaman yalnızca hata metnini kopyalamaktan daha fazla bağlam sunar.
 
-### Görüntü Promptunun Anatomisi
+<TryIt 
+  title="Ekran Görüntüsünden Hata Teşhisi"
+  description="Ekran görüntülerindeki hata mesajları için anlaşılır açıklamalar ve çözümler alın."
+  prompt={`\${context} sırasında şu hatayı görüyorum.
 
-Etkili görüntü üretim promptlarının birkaç bileşeni vardır:
+[Hata mesajını/ekran görüntüsünü tarif edin ya da yapıştırın]
+Hata ayrıntıları: \${errorDetails}
+
+Lütfen şunları ver:
+
+1. **Anlaşılır Bir Açıklama**: Bu hata aslında ne anlama geliyor?
+
+2. **Olası Nedenler** (olasılığa göre sıralı):
+   - En olası: 
+   - Bu da olabilir:
+   - Daha seyrek:
+
+3. **Adım Adım Çözüm**:
+   - Önce şunu dene...
+   - İşe yaramazsa...
+   - Son çare olarak...
+
+4. **Önleme**: Bu hatadan ileride nasıl kaçınılır?
+
+5. **Uyarı İşaretleri**: Bu hata hangi durumlarda daha ciddi bir sorunun belirtisi olabilir?`}
+/>
+
+## Görüntü Üretme Promptları
+
+Metin tariflerinden görüntü üretmek başlı başına bir sanattır. Promptunuz ne kadar somut ve yapılandırılmış olursa, sonuç da hayalinizdekine o kadar yakın olur.
+
+### Bir Görüntü Promptunun Anatomisi
+
+Etkili görüntü üretme promptları birkaç bileşenden oluşur:
 
 <InfoGrid items={[
-  { label: "Konu", description: "Görüntünün ana odağı nedir?", example: "Sonbahar yapraklarında oynayan golden retriever", color: "blue" },
-  { label: "Stil", description: "Hangi artistik stil veya ortam?", example: "Suluboya, dijital sanat, fotorealistik", color: "purple" },
-  { label: "Kompozisyon", description: "Sahne nasıl düzenleniyor?", example: "Yakın çekim portre, geniş manzara, kuş bakışı", color: "green" },
-  { label: "Aydınlatma", description: "Işık kaynağı ve kalitesi ne?", example: "Yumuşak sabah ışığı, dramatik gölgeler, neon parıltısı", color: "amber" },
-  { label: "Ruh Hali", description: "Hangi duyguyu uyandırmalı?", example: "Huzurlu, enerjik, gizemli, nostaljik", color: "pink" },
-  { label: "Detaylar", description: "Dahil edilecek veya kaçınılacak spesifik öğeler", example: "Dahil et: çiçekler. Kaçın: metin, filigranlar", color: "cyan" }
+  { label: "Konu", description: "Görüntünün ana odağı ne?", example: "Sonbahar yaprakları arasında oynayan bir golden retriever", color: "blue" },
+  { label: "Stil", description: "Hangi sanatsal üslup ya da teknik?", example: "Suluboya, dijital sanat, fotogerçekçi", color: "purple" },
+  { label: "Kompozisyon", description: "Sahne nasıl yerleştirilmiş?", example: "Yakın plan portre, geniş manzara, kuşbakışı", color: "green" },
+  { label: "Işık", description: "Işığın kaynağı ve niteliği ne?", example: "Yumuşak sabah ışığı, dramatik gölgeler, neon parıltısı", color: "amber" },
+  { label: "Hava", description: "Hangi duyguyu uyandırmalı?", example: "Huzurlu, enerjik, gizemli, nostaljik", color: "pink" },
+  { label: "Ayrıntılar", description: "Bulunması ya da bulunmaması gereken belirli öğeler", example: "Olsun: çiçekler. Olmasın: yazı, filigran", color: "cyan" }
 ]} />
 
 ### Temel Görüntü Üretimi
 
 <TryIt 
   title="Yapılandırılmış Görüntü Promptu"
-  description="Detaylı, spesifik görüntü üretim promptları oluşturmak için bu şablonu kullanın."
-  prompt={`Bu spesifikasyonlarla bir görüntü oluştur:
+  description="Ayrıntılı ve somut görüntü üretme promptları oluşturmak için bu şablonu kullanın."
+  prompt={`Şu özelliklere sahip bir görüntü oluştur:
 
 **Konu**: \${subject}
 
 **Stil**: \${style}
-**Ortam**: \${medium} (örn. yağlı boya, dijital sanat, fotoğraf)
+**Teknik**: \${medium} (ör. yağlı boya, dijital sanat, fotoğraf)
 
 **Kompozisyon**:
-- Çerçeveleme: \${framing} (yakın çekim, orta çekim, geniş açı)
-- Perspektif: \${perspective} (göz hizası, alt açı, üstten)
+- Kadraj: \${framing} (yakın plan, orta plan, geniş açı)
+- Bakış açısı: \${perspective} (göz hizası, alttan, tepeden)
 - Odak: \${focusArea}
 
-**Aydınlatma**:
+**Işık**:
 - Kaynak: \${lightSource}
-- Kalite: \${lightQuality} (yumuşak, sert, dağınık)
+- Nitelik: \${lightQuality} (yumuşak, sert, dağınık)
 - Günün saati: \${timeOfDay}
 
 **Renk Paleti**: \${colors}
 
-**Ruh Hali/Atmosfer**: \${mood}
+**Hava/Atmosfer**: \${mood}
 
-**Dahil Edilmeli**: \${includeElements}
-**Kaçınılmalı**: \${avoidElements}
+**Mutlaka Olsun**: \${includeElements}
+**Kesinlikle Olmasın**: \${avoidElements}
 
-**Teknik**: \${aspectRatio} en-boy oranı, yüksek kalite`}
+**Teknik Ayrıntılar**: \${aspectRatio} en-boy oranı, yüksek kalite`}
 />
 
-## Ses Promptlama
+### Sahne Kurmak
 
-Ses işleme, konuşulan içeriğin transkripsiyonunu, analizini ve anlaşılmasını açar. Anahtar, sesin ne içerdiği hakkında bağlam sağlamaktır.
-
-### Gelişmiş Transkripsiyon
-
-Temel transkripsiyon sadece başlangıçtır. İyi promptlarla, konuşmacı tanımlama, zaman damgaları ve alana özgü doğruluk alabilirsiniz.
+Karmaşık sahnelerde, ön plandan arka plana doğru katman katman tarif edin.
 
 <TryIt 
-  title="Akıllı Transkripsiyon"
-  description="Konuşmacı etiketleri, zaman damgaları ve belirsiz bölümlerin işlenmesiyle doğru transkripsiyonlar alın."
-  prompt={`Bu ses kaydını transkribe et.
+  title="Katmanlı Sahne Tarifi"
+  description="Derinliğin her katmanında neler olduğunu tarif ederek karmaşık sahneler kurun."
+  prompt={`Ayrıntılı bir sahne oluştur:
+
+**Mekân**: \${setting}
+
+**Ön Plan** (izleyiciye en yakın):
+\${foreground}
+
+**Orta Plan** (asıl olayın geçtiği alan):
+\${middleGround}
+
+**Arka Plan** (uzaktaki öğeler):
+\${background}
+
+**Atmosfer Ayrıntıları**:
+- Hava durumu/Hava: \${weather}
+- Işık: \${lighting}
+- Zaman: \${timeOfDay}
+
+**Stil**: \${artisticStyle}
+**Duygu**: \${mood}
+**Renk Paleti**: \${colors}
+
+Eklenecek diğer ayrıntılar: \${additionalDetails}`}
+/>
+
+## Ses Promptları
+
+Ses işleme; konuşmaların yazıya dökülmesine, analiz edilmesine ve anlaşılmasına kapı aralar. İşin sırrı, kaydın ne içerdiğine dair bağlam vermektir.
+
+### Gelişmiş Yazıya Dökme
+
+Düz bir döküm yalnızca başlangıçtır. İyi promptlarla konuşmacı ayrımı, zaman damgaları ve alana özgü terimlerde daha yüksek doğruluk elde edebilirsiniz.
+
+<TryIt 
+  title="Akıllı Yazıya Dökme"
+  description="Konuşmacı etiketleri, zaman damgaları ve anlaşılmayan bölümlerin işaretlenmesiyle doğru dökümler alın."
+  prompt={`Bu ses kaydını yazıya dök.
 
 **Bağlam**: \${recordingType} (toplantı, röportaj, podcast, ders vb.)
 **Beklenen Konuşmacılar**: \${speakerCount} (\${speakerRoles})
-**Alan**: \${domain} (beklenecek teknik terimler: \${technicalTerms})
+**Alan**: \${domain} (geçmesi muhtemel teknik terimler: \${technicalTerms})
 
-**Çıktı Formatı**:
-[00:00] **Konuşmacı 1 (İsim/Rol)**: Transkribe edilmiş metin burada.
-[00:15] **Konuşmacı 2 (İsim/Rol)**: Yanıtları burada.
+**Çıktı Biçimi**:
+[00:00] **Konuşmacı 1 (Ad/Rol)**: Yazıya dökülen metin.
+[00:15] **Konuşmacı 2 (Ad/Rol)**: Verdiği yanıt.
 
 **Talimatlar**:
-- Doğal aralarda zaman damgaları ekle (her 30-60 saniyede veya konuşmacı değişimlerinde)
-- Belirsiz bölümleri [duyulmuyor] veya [belirsiz: en iyi tahmin?] olarak işaretle
-- Konuşma dışı sesleri köşeli parantezle not et: [gülüşme], [telefon çalıyor], [uzun duraklama]
-- Dolgu kelimeleri sadece anlamlıysa koru (şey, ee kaldırılabilir)
-- Aksiyon öğelerini veya kararları → sembolüyle işaretle
+- Doğal duraklarda zaman damgası ekle (her 30-60 saniyede bir ya da konuşmacı değiştiğinde)
+- Anlaşılmayan yerleri [anlaşılmıyor] ya da [belirsiz: tahmin?] olarak işaretle
+- Konuşma dışındaki sesleri köşeli parantezle belirt: [gülüşmeler], [telefon çalıyor], [uzun sessizlik]
+- Dolgu sözcüklerini yalnızca anlam taşıyorsa koru ("ııı", "şey" gibi sözcükler çıkarılabilir)
+- Yapılacak işleri ve alınan kararları → işaretiyle belirt
 
-Ses açıklaması: \${audioDescription}`}
+Ses kaydı açıklaması: \${audioDescription}`}
 />
 
-## Video Promptlama
+### Ses İçeriği Analizi
 
-Video, görsel ve ses analizini zaman içinde birleştirir. Zorluk, yapay zekayı tüm süre boyunca ilgili yönlere odaklanması için yönlendirmektir.
+Yapay zeka yazıya dökmenin ötesine geçip kaydın içeriğini, tonunu ve önemli anlarını da analiz edebilir.
+
+<TryIt 
+  title="Ses İçeriği Analizi"
+  description="Ses içeriğinin özetini, önemli anlarını ve genel duygusunu kapsayan bir analiz alın."
+  prompt={`Bu ses kaydını analiz et:
+
+Ses kaydı açıklaması: \${audioDescription}
+
+Şunları ver:
+
+**1. Yönetici Özeti** (2-3 cümle)
+Bu kayıt ne hakkında? Akılda kalması gereken ana fikir ne?
+
+**2. Konuşmacılar**
+- Kaç farklı konuşmacı var?
+- Ayırt edilebiliyorsa özellikleri: ses tonu, konuşma tarzı, uzmanlık düzeyi
+
+**3. İçerik Dökümü**
+- Konuşulan başlıca konular (yaklaşık zaman damgalarıyla)
+- Öne çıkan fikirler
+- Gündeme gelen sorular
+
+**4. Duygu Analizi**
+- Genel ton (resmî, samimi, gergin, dostane)
+- Duygusal açıdan dikkat çeken anlar
+- Kayıt boyunca enerji düzeyi
+
+**5. Yapılacaklar**
+- Alınan kararlar
+- Sözü edilen görevler
+- Takip edilmesi gerekenler
+
+**6. Dikkat Çeken Alıntılar**
+Zaman damgalarıyla birlikte 2-3 önemli alıntı
+
+**7. Ses Kalitesi**
+- Genel netlik
+- Varsa sorunlar (arka plan gürültüsü, kesintiler, teknik aksaklıklar)`}
+/>
+
+## Video Promptları
+
+Video, görsel ve işitsel analizi zamanın akışı içinde birleştirir. Zorluk, yapay zekayı videonun tamamı boyunca ilgili noktalara odaklayabilmektir.
 
 ### Video Anlama
 
 <TryIt 
   title="Kapsamlı Video Analizi"
-  description="Zaman çizelgesi, görsel öğeler ve anahtar anlar dahil video içeriğinin yapılandırılmış dökümünü alın."
+  description="Zaman çizelgesi, görsel öğeler ve önemli anlarla birlikte video içeriğinin yapılandırılmış bir dökümünü alın."
   prompt={`Bu videoyu analiz et: \${videoDescription}
 
-Kapsamlı bir analiz sağla:
+Kapsamlı bir analiz sun:
 
 **1. Genel Bakış** (2-3 cümle)
-Bu video ne hakkında? Ana mesaj veya amaç nedir?
+Bu video ne hakkında? Ana mesajı ya da amacı ne?
 
-**2. Anahtar Anların Zaman Çizelgesi**
+**2. Önemli Anların Zaman Çizelgesi**
 | Zaman Damgası | Olay | Önemi |
 |---------------|------|-------|
 | 0:00 | ... | ... |
 
 **3. Görsel Analiz**
-- Ortam/Konum: Bu nerede geçiyor?
-- İnsanlar: Kim görünüyor? Ne yapıyorlar?
-- Nesneler: Öne çıkan ana öğeler veya proplar
-- Görsel stil: Kalite, kurgu, kullanılan grafikler
+- Mekân/Konum: Nerede geçiyor?
+- İnsanlar: Kimler görünüyor? Ne yapıyorlar?
+- Nesneler: Öne çıkan eşyalar ya da aksesuarlar
+- Görsel üslup: Kalite, kurgu, kullanılan grafikler
 
 **4. Ses Analizi**
-- Konuşma: Yapılan ana noktalar (diyalog varsa)
-- Müzik: Türü, ruh hali, nasıl kullanılıyor
-- Ses efektleri: Dikkat çekici ses öğeleri
+- Konuşma: Dile getirilen ana fikirler (diyalog varsa)
+- Müzik: Türü, havası, nasıl kullanıldığı
+- Ses efektleri: Dikkat çeken ses öğeleri
 
-**5. Üretim Kalitesi**
-- Video kalitesi ve kurgu
+**5. Yapım Kalitesi**
+- Görüntü kalitesi ve kurgu
 - Tempo ve yapı
-- Amacı için etkinlik
+- Amacına ne kadar hizmet ettiği
 
 **6. Hedef Kitle**
-Bu video kimin için yapılmış? Onlara iyi hizmet ediyor mu?
+Bu video kimin için yapılmış? O kitleye iyi hitap ediyor mu?
 
-**7. Ana Çıkarımlar**
-İzleyici bu videodan ne hatırlamalı?`}
+**7. Akılda Kalması Gerekenler**
+İzleyici bu videodan neyi hatırlamalı?`}
 />
 
-## Çok Modlu Kombinasyonlar
+### Videodan Bilgi Çıkarma
 
-Çok modlu yapay zekanın gerçek gücü, farklı girdi türlerini birleştirdiğinizde ortaya çıkar. Bu kombinasyonlar, tek herhangi bir modaliteyle imkansız olan analizleri mümkün kılar.
+Videodan belirli bilgileri çıkarmak istiyorsanız, neye ihtiyacınız olduğunu tam olarak belirtin.
 
-### Ekran Görüntüsü + Kod Hata Ayıklama
+<TryIt 
+  title="Video Veri Çıkarıcı"
+  description="Videolardan belirli bilgileri, zaman damgaları ve yapılandırılmış bir çıktıyla birlikte çıkarın."
+  prompt={`Bu videodan belirli bilgileri çıkar:
 
-Geliştiriciler için en güçlü kombinasyonlardan biri: görsel hatayı kodla birlikte görmek.
+Video türü: \${videoType}
+Video açıklaması: \${videoDescription}
+
+**Çıkarılacak Bilgiler**:
+1. \${extractItem1}
+2. \${extractItem2}
+3. \${extractItem3}
+
+**Çıktı Biçimi**:
+{
+  "video_ozeti": "Kısa açıklama",
+  "sure": "tahmini uzunluk",
+  "cikarilan_veriler": [
+    {
+      "zaman_damgasi": "DD:SS",
+      "oge": "Ne bulunduğu",
+      "ayrintilar": "Ek bağlam",
+      "guven": "yuksek/orta/dusuk"
+    }
+  ],
+  "bulunamayanlar": ["İstenen ama videoda olmayan her şey"],
+  "ek_gozlemler": "Açıkça istenmemiş ama önemli görünen her şey"
+}`}
+/>
+
+## Çok Modlu Birleşimler
+
+Çok modlu yapay zekanın asıl gücü, farklı girdi türlerini bir araya getirdiğinizde ortaya çıkar. Bu birleşimler, tek bir veri türüyle mümkün olmayacak analizlere kapı açar.
+
+### Görüntü + Metin Doğrulaması
+
+Görüntülerin ve açıklamalarının birbiriyle örtüşüp örtüşmediğini kontrol edin. Bu; e-ticaret, içerik denetimi ve kalite güvencesi için vazgeçilmezdir.
+
+<TryIt 
+  title="Görüntü-Metin Uyumu Denetleyicisi"
+  description="Görüntülerin, metin açıklamalarını doğru yansıtıp yansıtmadığını (ve tersini) doğrulayın."
+  prompt={`Bu görüntüyü ve ona eşlik eden metni uyum açısından analiz et:
+
+**Görüntü**: \${imageDescription}
+**Metin Açıklaması**: "\${textDescription}"
+
+Değerlendir:
+
+**1. Doğruluk Uyumu**
+- Görüntü, metinde anlatılanı gösteriyor mu?
+- Puan: [1-10] ve gerekçesi
+
+**2. Metindeki İddialar ve Görsel Gerçeklik**
+| Metindeki İddia | Görüntüde Var mı? | Notlar |
+|-----------------|-------------------|--------|
+| ... | Evet/Hayır/Kısmen | ... |
+
+**3. Metinde Geçmeyen Görsel Öğeler**
+Görüntüde görünen ama metinde anlatılmayan neler var?
+
+**4. Görüntüde Görünmeyen İddialar**
+Metinde anlatılan ama görüntüden doğrulanamayan neler var?
+
+**5. Öneriler**
+- Metin için: [görüntüyle uyum için iyileştirmeler]
+- Görüntü için: [metinle uyum için iyileştirmeler]
+
+**6. Genel Değerlendirme**
+Bu görüntü-metin ikilisi \${purpose} için güvenilir mi?`}
+/>
+
+### Ekran Görüntüsü + Kodla Hata Ayıklama
+
+Geliştiriciler için en güçlü birleşimlerden biri: görsel hatayı kodla yan yana görmek.
 
 <TryIt 
   title="Görsel Hata Ayıklayıcı"
-  description="Hem görsel çıktıyı hem de kaynak kodu birlikte analiz ederek UI sorunlarını hata ayıklayın."
-  prompt={`Bir UI hatam var. İşte gördüğüm ve kodum:
+  description="Görsel çıktıyı ve kaynak kodu birlikte inceleyerek arayüz hatalarını ayıklayın."
+  prompt={`Arayüzde bir hata var. Gördüğüm şey ve kodum şöyle:
 
 **Ekran Görüntüsü Açıklaması**: \${screenshotDescription}
-**Yanlış Olan**: \${bugDescription}
+**Sorun Ne**: \${bugDescription}
 **Beklenen Davranış**: \${expectedBehavior}
 
 **İlgili Kod**:
@@ -366,56 +543,123 @@ Geliştiriciler için en güçlü kombinasyonlardan biri: görsel hatayı kodla 
 \${code}
 \`\`\`
 
-Lütfen yardım et:
+Lütfen şu konularda yardım et:
 
 **1. Kök Neden Analizi**
-- Kodda bu görsel soruna ne sebep oluyor?
-- Hangi spesifik satır(lar) sorumlu?
+- Koddaki hangi şey bu görsel soruna yol açıyor?
+- Sorumlu olan satır(lar) hangisi?
 
 **2. Açıklama**
 - Bu kod neden bu görsel sonucu üretiyor?
-- Altta yatan mekanizma nedir?
+- Arka planda işleyen mekanizma ne?
 
 **3. Düzeltme**
 \`\`\`\${language}
-// Düzeltilmiş kod burada
+// Düzeltilmiş kod buraya
 \`\`\`
 
 **4. Önleme**
-- Gelecekte bu tür hatalardan nasıl kaçınılır
-- Kontrol edilecek ilgili sorunlar`}
+- Bu tür hatalardan ileride nasıl kaçınılır?
+- Kontrol edilmesi gereken benzer sorunlar`}
 />
 
-## Çok Modlu Promptlar İçin En İyi Uygulamalar
+### Birden Fazla Görüntüyle Karar Vermek
 
-Çok modlu yapay zekadan harika sonuçlar almak hem yeteneklerini hem de sınırlamalarını anlamayı gerektirir.
+Seçenekler arasında karar verirken yapılandırılmış bir karşılaştırma, daha iyi kararlar almanıza yardımcı olur.
 
-### Çok Modlu Promptları Etkili Yapan Şeyler
+<TryIt 
+  title="Görsel Seçenek Karşılaştırıcı"
+  description="Birden fazla görüntüyü ölçütlerinize göre sistemli biçimde karşılaştırarak bilinçli kararlar verin."
+  prompt={`\${purpose} için şu seçenekler arasında karar vermeye çalışıyorum:
+
+**Seçenek A**: \${optionA}
+**Seçenek B**: \${optionB}
+**Seçenek C**: \${optionC}
+
+**Ölçütlerim** (önem sırasına göre):
+1. \${criterion1} (ağırlık: yüksek)
+2. \${criterion2} (ağırlık: orta)
+3. \${criterion3} (ağırlık: düşük)
+
+Şunları ver:
+
+**Karşılaştırma Tablosu**
+| Ölçüt | Seçenek A | Seçenek B | Seçenek C |
+|-------|-----------|-----------|-----------|
+| \${criterion1} | Puan + notlar | ... | ... |
+| \${criterion2} | ... | ... | ... |
+| \${criterion3} | ... | ... | ... |
+
+**Ağırlıklı Puanlar**
+- Seçenek A: X/10
+- Seçenek B: X/10
+- Seçenek C: X/10
+
+**Öneri**
+Belirttiğin önceliklere göre [Seçenek]'i öneriyorum, çünkü...
+
+**Çekinceler**
+- [koşul] geçerliyse bunun yerine [alternatif] seçeneğini düşün
+- [olası sorun] konusunda dikkatli ol`}
+/>
+
+## Çok Modlu Promptlar İçin İyi Uygulamalar
+
+Çok modlu yapay zekadan iyi sonuç almak için onun hem yeteneklerini hem de sınırlarını bilmek gerekir.
+
+### Çok Modlu Promptları Etkili Kılan Şeyler
 
 <InfoGrid items={[
-  { label: "Bağlam Sağla", description: "Modele medyanın ne olduğunu ve neden analiz ettiğinizi söyle", example: "\"Bu e-ticaret sitemiz için bir ürün fotoğrafı...\"", color: "green" },
-  { label: "Spesifik Ol", description: "Genel izlenimler yerine belirli öğeler hakkında sor", example: "\"Sağ üst köşedeki fiyatlandırma tablosuna odaklan\"", color: "green" },
-  { label: "Konumlara Referans Ver", description: "Mekansal dil kullanarak spesifik alanlara işaret et", example: "\"Sol alt çeyrekte...\"", color: "green" },
-  { label: "Hedefini Belirt", description: "Analizi ne için kullanacağını açıkla", example: "\"Bu görüntünün mobil uygulamamız için işe yarayıp yaramadığına karar vermem gerekiyor\"", color: "green" }
+  { label: "Bağlam Verin", description: "Modele medyanın ne olduğunu ve onu neden incelediğinizi söyleyin", example: "\"Bu, e-ticaret sitemiz için çekilmiş bir ürün fotoğrafı...\"", color: "green" },
+  { label: "Somut Olun", description: "Genel izlenimler yerine belirli öğeler hakkında soru sorun", example: "\"Sağ üst köşedeki fiyat tablosuna odaklan\"", color: "green" },
+  { label: "Konum Belirtin", description: "Uzamsal ifadelerle belirli alanları işaret edin", example: "\"Sol alt çeyrekte...\"", color: "green" },
+  { label: "Amacınızı Söyleyin", description: "Analizi ne için kullanacağınızı açıklayın", example: "\"Bu görselin mobil uygulamamıza uygun olup olmadığına karar vermem gerekiyor\"", color: "green" }
 ]} />
 
-### Kaçınılacak Yaygın Tuzaklar
+### Kaçınılması Gereken Yaygın Tuzaklar
 
 <InfoGrid items={[
-  { label: "Mükemmel Görüş Varsaymak", description: "Modeller küçük detayları kaçırabilir, özellikle düşük çözünürlüklü görüntülerde", example: "Sıkıştırılmış ekran görüntüsünde 8pt metin hakkında sorma", color: "red" },
-  { label: "Mükemmel OCR Beklemek", description: "El yazısı, olağandışı fontlar ve karmaşık düzenler hatalara neden olabilir", example: "Fişlerden ve formlardan çıkarılan metni doğrula", color: "red" },
-  { label: "İçerik Politikalarını Yoksaymak", description: "Modellerin belirli içerik türlerinde kısıtlamaları var", example: "Spesifik bireyleri tanımlamaz veya uygunsuz içeriği analiz etmez", color: "red" },
-  { label: "Doğrulamayı Atlamak", description: "Medyadan çıkarılan kritik bilgileri her zaman doğrula", example: "Belge çıkarmadan sayıları, tarihleri ve isimleri iki kez kontrol et", color: "red" }
+  { label: "Kusursuz Görüş Beklemek", description: "Modeller küçük ayrıntıları kaçırabilir, özellikle düşük çözünürlüklü görüntülerde", example: "Sıkıştırılmış bir ekran görüntüsündeki 8 puntoluk yazıyı sormayın", color: "red" },
+  { label: "Kusursuz OCR Beklemek", description: "El yazısı, alışılmadık yazı tipleri ve karmaşık sayfa düzenleri hatalara yol açabilir", example: "Fişlerden ve formlardan çıkarılan metni kontrol edin", color: "red" },
+  { label: "İçerik Politikalarını Göz Ardı Etmek", description: "Modellerin belirli içerik türleriyle ilgili kısıtlamaları vardır", example: "Belirli kişileri tanımlamaz, uygunsuz içeriği analiz etmez", color: "red" },
+  { label: "Doğrulamayı Atlamak", description: "Medyadan çıkarılan kritik bilgileri her zaman doğrulayın", example: "Belgelerden çıkarılan sayıları, tarihleri ve isimleri iki kez kontrol edin", color: "red" }
 ]} />
+
+### Sınırlamaları Ustalıkla Yönetmek
+
+<TryIt 
+  title="Belirsizliğin Farkında Görüntü Analizi"
+  description="Bu prompt, modelin bir şeyi net göremediği ya da emin olamadığı durumları açıkça ele alır."
+  prompt={`Bu görüntüyü analiz et: \${imageDescription}
+
+**Belirsizlik Durumunda Talimatlar**:
+
+BİR ŞEYİ NET GÖREMİYORSAN:
+- Tahmin yürütme, ayrıntı uydurma
+- Şöyle söyle: "[görünen kısım] görülebiliyor, ancak [belirsiz öğe] net seçilemiyor"
+- Hangi ek bilginin işe yarayacağını öner
+
+İÇERİK KISITLAMAYA TAKILIYOR GİBİYSE:
+- Neyi analiz edip neyi edemeyeceğini açıkla
+- Analizin izin verilen yönlerine odaklan
+
+İNSANLAR HAKKINDA SORULURSA:
+- Hareketlerini, konumlarını ve genel özelliklerini anlat
+- Belirli kişileri tanımlamaya çalışma
+- Şunlara odaklan: kişi sayısı, ne yaptıkları, yüz ifadeleri, kıyafetleri
+
+**Analizin**:
+[Bu yönergeleri uygulayarak analize geç]`}
+/>
 
 <Quiz 
-  question="Çok modlu modeller için promptlama neden sadece metin modellerinden DAHA fazla önemlidir?"
+  question="Promptlama, çok modlu modellerde neden yalnızca metinle çalışan modellerden DAHA önemlidir?"
   options={[
-    "Çok modlu modeller daha az zeki ve daha fazla yardıma ihtiyaç duyar",
-    "Görüntüler ve ses doğası gereği belirsiz—yapay zekanın hangi yönlerin önemli olduğunu bilmesi için bağlama ihtiyacı var",
-    "Çok modlu modeller aynı anda sadece bir girdi türünü işleyebilir",
+    "Çok modlu modeller daha az zekidir ve daha çok yardıma ihtiyaç duyar",
+    "Görüntüler ve sesler doğası gereği belirsizdir; yapay zekanın hangi yönlerin önemli olduğunu bilmesi için bağlama ihtiyacı vardır",
+    "Çok modlu modeller aynı anda yalnızca tek bir girdi türünü işleyebilir",
     "Metin promptları çok modlu modellerle çalışmaz"
   ]}
   correctIndex={1}
-  explanation="Bir görüntüye baktığınızda, hedeflerinize göre neyin önemli olduğunu anında bilirsiniz. Yapay zeka bu bağlama sahip değil—duvardaki çatlağın fotoğrafı bir mühendislik endişesi, artistik bir doku veya alakasız arka plan olabilir. Promptunuz yapay zekanın sağladığınız medyayı nasıl yorumlayıp odaklanacağını belirler."
+  explanation="Bir görüntüye baktığınızda, hedeflerinize göre neyin önemli olduğunu anında bilirsiniz. Yapay zekanın ise bu bağlamdan haberi yoktur: duvardaki bir çatlağın fotoğrafı bir mühendislik sorunu, sanatsal bir doku ya da önemsiz bir arka plan olabilir. Yapay zekanın verdiğiniz medyayı nasıl yorumlayacağını ve nereye odaklanacağını promptunuz belirler."
 />
