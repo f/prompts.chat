@@ -241106,3 +241106,16 @@ Rules:
 
 </details>
 
+<details>
+<summary><strong>Mezzotint Engraving of a Moonlit Wheat Field at Harvest Time</strong></summary>
+
+## Mezzotint Engraving of a Moonlit Wheat Field at Harvest Time
+
+Contributed by [@f](https://github.com/f)
+
+```md
+An authentic 18th-century style mezzotint engraving of a moonlit wheat field at harvest time, landscape 4:3, printed in warm black-brown ink on cream laid paper. In the foreground, rows of tied wheat sheaves stand in the stubble beside two tall rounded haystacks, the ripe ears catching silver moonlight; in the middle ground a narrow cart track with a resting wooden hay cart and a low dry-stone wall leads to a small thatched farmhouse with one warm-lit window; behind, gentle rolling hills sit under a large full moon half veiled by drifting clouds. Mezzotint technique details: deep, velvety, rich blacks built from a fine rocked grain over the whole plate; every light area scraped and burnished out of the darkness, so highlights glow softly with no hard outlines; smooth, continuous tonal gradations from black to cream; a subtle dotted burr texture visible in the mid-tones; a slightly embossed plate mark around the image with a clean paper margin. Quiet, nocturnal, timeless mood. Viewed straight on as a flat print in soft even light. No text, no signature, no frame, no people.
+```
+
+</details>
+
