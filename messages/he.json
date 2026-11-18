@@ -143,6 +143,8 @@
     "delete": "מחק פרומפט",
     "noPrompts": "לא נמצאו פרומפטים",
     "noPromptsDescription": "נסה להתאים את החיפוש או הסינון שלך.",
+    "searchSkillsPlaceholder": "חיפוש מיומנויות...",
+    "noSkills": "לא נמצאו מיומנויות",
     "noMorePrompts": "הגעת לסוף",
     "loadMore": "טען עוד",
     "loading": "טוען...",

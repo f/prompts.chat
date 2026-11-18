@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useFilterContext } from "./filter-context";
@@ -56,7 +56,8 @@ interface PromptFiltersProps {
   aiSearchEnabled?: boolean;
   showTrendingFilter?: boolean;
   basePath?: string;
-  primaryFilter?: PrimaryFilter;
+  /** Defaults to the prompt type; null for listings that have no such filter */
+  primaryFilter?: PrimaryFilter | null;
   searchPlaceholder?: string;
   /** Listings without votes or dates to sort by hide the sort select */
   showSort?: boolean;
@@ -68,7 +69,7 @@ export function PromptFilters({ categories, tags, currentFilters, aiSearchEnable
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations();
-  const primary: PrimaryFilter = primaryFilter ?? {
+  const primary: PrimaryFilter | null = primaryFilter === null ? null : primaryFilter ?? {
     param: "type",
     label: t("prompts.promptType"),
     options: promptTypes.map((type) => ({ value: type, label: t(`prompts.types.${type.toLowerCase()}`) })),
@@ -76,11 +77,20 @@ export function PromptFilters({ categories, tags, currentFilters, aiSearchEnable
       if (value !== "all") analyticsSearch.filter("type", value);
     },
   };
-  const primaryValue = currentFilters[primary.param];
+  const primaryValue = primary ? currentFilters[primary.param] : undefined;
   const [tagSearch, setTagSearch] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const { setFilterPending } = useFilterContext();
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const mobileSearchRef = useRef<HTMLInputElement>(null);
+  const desktopSearchRef = useRef<HTMLInputElement>(null);
+
+  // The search inputs are uncontrolled; follow the URL when it changes from elsewhere (back/forward, clear)
+  useEffect(() => {
+    for (const input of [mobileSearchRef.current, desktopSearchRef.current]) {
+      if (input && input !== document.activeElement) input.value = currentFilters.q ?? "";
+    }
+  }, [currentFilters.q]);
 
   const filteredTags = useMemo(() => {
     if (!tagSearch.trim()) return tags;
@@ -101,6 +111,7 @@ export function PromptFilters({ categories, tags, currentFilters, aiSearchEnable
   };
 
   const clearFilters = () => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
     setFilterPending(true);
     analyticsSearch.clearFilters();
     router.push(basePath);
@@ -124,6 +135,9 @@ export function PromptFilters({ categories, tags, currentFilters, aiSearchEnable
           <div className="relative flex-1">
             <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <Input
+              ref={mobileSearchRef}
+              type="search"
+              aria-label={t("search.search")}
               placeholder={searchPlaceholder ?? t("search.placeholder")}
               className="h-8 text-xs pl-8"
               defaultValue={currentFilters.q}
@@ -160,6 +174,8 @@ export function PromptFilters({ categories, tags, currentFilters, aiSearchEnable
             size="sm"
             className="h-8 px-2 relative shrink-0"
             onClick={() => setShowFilters(!showFilters)}
+            aria-label={t("search.filters")}
+            aria-expanded={showFilters}
           >
             <SlidersHorizontal className="h-3.5 w-3.5" />
             {activeFilterCount > 0 && (
@@ -205,8 +221,11 @@ export function PromptFilters({ categories, tags, currentFilters, aiSearchEnable
 
         {/* Search */}
         <div className="space-y-1.5">
-          <Label className="text-xs">{t("search.search")}</Label>
+          <Label className="text-xs" htmlFor="listing-search">{t("search.search")}</Label>
           <Input
+            ref={desktopSearchRef}
+            id="listing-search"
+            type="search"
             placeholder={searchPlaceholder ?? t("search.placeholder")}
             className="h-8 text-sm"
             defaultValue={currentFilters.q}
@@ -265,26 +284,28 @@ export function PromptFilters({ categories, tags, currentFilters, aiSearchEnable
       )}
 
       {/* Type (or platform) filter */}
-      <div className="space-y-1.5">
-        <Label className="text-xs">{primary.label}</Label>
-        <Select
-          value={primaryValue || "all"}
-          onValueChange={(value) => {
-            primary.onSelect?.(value);
-            updateFilter(primary.param, value === "all" ? null : value);
-          }}
-        >
-          <SelectTrigger className="h-8 text-sm w-full">
-            <SelectValue placeholder={t("common.all")} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t("common.all")}</SelectItem>
-            {primary.options.map((option) => (
-              <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      {primary && (
+        <div className="space-y-1.5">
+          <Label className="text-xs">{primary.label}</Label>
+          <Select
+            value={primaryValue || "all"}
+            onValueChange={(value) => {
+              primary.onSelect?.(value);
+              updateFilter(primary.param, value === "all" ? null : value);
+            }}
+          >
+            <SelectTrigger className="h-8 text-sm w-full">
+              <SelectValue placeholder={t("common.all")} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t("common.all")}</SelectItem>
+              {primary.options.map((option) => (
+                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
       {/* Category filter */}
       {categories.length > 0 && (

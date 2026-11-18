@@ -143,6 +143,8 @@
     "delete": "Excluir Prompt",
     "noPrompts": "Nenhum prompt encontrado",
     "noPromptsDescription": "Tente ajustar sua busca ou critérios de filtro para encontrar o que procura.",
+    "searchSkillsPlaceholder": "Pesquisar habilidades...",
+    "noSkills": "Nenhuma habilidade encontrada",
     "noMorePrompts": "Você chegou ao fim",
     "loadMore": "Carregar mais",
     "loading": "Carregando...",

@@ -143,6 +143,8 @@
     "delete": "Удалить промпт",
     "noPrompts": "Промпты не найдены",
     "noPromptsDescription": "Попробуйте изменить параметры поиска или фильтры.",
+    "searchSkillsPlaceholder": "Поиск навыков...",
+    "noSkills": "Навыки не найдены",
     "noMorePrompts": "Вы достигли конца",
     "loadMore": "Загрузить ещё",
     "loading": "Загрузка...",

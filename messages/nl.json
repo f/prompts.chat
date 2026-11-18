@@ -143,6 +143,8 @@
     "delete": "Prompt verwijderen",
     "noPrompts": "Geen prompts gevonden",
     "noPromptsDescription": "Probeer je zoek- of filtercriteria aan te passen om te vinden wat je zoekt.",
+    "searchSkillsPlaceholder": "Vaardigheden zoeken...",
+    "noSkills": "Geen vaardigheden gevonden",
     "noMorePrompts": "Je hebt het einde bereikt",
     "loadMore": "Meer laden",
     "loading": "Laden...",
