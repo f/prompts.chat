@@ -241132,3 +241132,16 @@ An authentic early 1900s pictorialist gum bichromate photographic print of a mis
 
 </details>
 
+<details>
+<summary><strong>Loggerhead Sea Turtle Hatchlings Racing to the Surf at Sunrise</strong></summary>
+
+## Loggerhead Sea Turtle Hatchlings Racing to the Surf at Sunrise
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Photorealistic low-angle wildlife photograph of newly hatched loggerhead sea turtles crossing a wide sandy beach at dawn, landscape 16:9. Ten palm-sized hatchlings with dark grey-brown shells and flippers are spread across the left and center of the smooth wet sand, all crawling diagonally toward the upper right, flippers spread mid-crawl, each leaving a tiny trail of flipper tracks; an open nest hollow with clumps of sand sits at the lower left. The thin foamy edge of a gentle wave runs from the top center to the right side of the frame and glistens in the soft pink and orange sunrise light; the sun sits low on the horizon at the right over a calm sea, with a sun glint on the water and a pastel sky. Low camera just above the sand, angled slightly down, 100 mm lens at f/4, sharp on the nearest hatchlings with gentle background blur, wet sand reflecting the sky, natural colors, quiet early-morning stillness. No people, no hands, no birds, no text.
+```
+
+</details>
+
