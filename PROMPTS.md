@@ -241119,3 +241119,16 @@ An authentic 18th-century style mezzotint engraving of a moonlit wheat field at 
 
 </details>
 
+<details>
+<summary><strong>Pictorialist Gum Bichromate Print of a Misty Pine Forest at Dawn</strong></summary>
+
+## Pictorialist Gum Bichromate Print of a Misty Pine Forest at Dawn
+
+Contributed by [@f](https://github.com/f)
+
+```md
+An authentic early 1900s pictorialist gum bichromate photographic print of a misty pine forest at dawn, portrait 3:4. Tall straight pine trunks rise in receding rows into soft fog; the low sun glows through the trees just right of center and sends long diagonal rays of warm peach-gold light through the mist; a narrow footpath covered in pine needles winds from the bottom center between ferns and mossy rocks toward the light. Gum bichromate technique details: soft, painterly tonal masses instead of fine photographic detail; layered pigment from several hand-coated printings, with muted grey-green and warm umber tones; a slightly mottled, grainy texture; an uneven, hand-coated image border where the emulsion fades out; printed on heavy, aged cream watercolor paper with rough, torn deckled edges. Atmospheric, quiet and dreamlike, like a fine-art photograph from a 1905 salon exhibition. Viewed straight on as a flat print in soft even light. No text, no signature, no frame, no people, no animals.
+```
+
+</details>
+
