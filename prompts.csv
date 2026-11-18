@@ -203980,3 +203980,24 @@ Docker Compose taste,"# Docker Compose taste of a developer who wants one-comman
 - Wrap common tasks like migrate, test and reset in `make` or `just` targets that call `docker compose run --rm`. Confidence: 0.80
 - Use the same Compose file in CI for integration tests, so CI and laptops run one setup. Confidence: 0.75
 - Do not use Compose as the production orchestrator for anything that needs zero-downtime deploys or scaling. Confidence: 0.80",TRUE,TEXT,f
+OpenAPI Spec taste,"# OpenAPI Spec taste of an API designer who treats the spec as the contract
+- Write the OpenAPI document first and review it in a pull request before any endpoint is implemented. Confidence: 0.80
+- Use OpenAPI 3.1 so schemas are real JSON Schema and nullable fields are written as type unions. Confidence: 0.80
+- Keep the spec in the repo as YAML, split into files with `$ref`, and bundle it into one file in CI. Confidence: 0.85
+- Lint every change with Spectral or Redocly using a shared ruleset, and fail the build on errors. Confidence: 0.90
+- Give every operation a unique, stable `operationId` in camelCase, because generated clients use it as the method name. Confidence: 0.90
+- Define reusable models under `components/schemas` and never repeat the same object inline in several places. Confidence: 0.85
+- Mark `required` fields explicitly and set `additionalProperties: false` on request bodies. Confidence: 0.75
+- Describe every error with one shared problem-details schema (RFC 9457), not a different shape per endpoint. Confidence: 0.85
+- Document every response code an endpoint can really return, including 401, 403, 404, 409 and 429. Confidence: 0.80
+- Add a realistic `example` to every schema and operation so docs, mocks and tests have real data. Confidence: 0.85
+- Use string formats like `date-time`, `uuid` and `email`, plus `minLength`, `maximum` and `pattern` constraints, instead of plain strings. Confidence: 0.80
+- Model enums as strings, and document that clients must tolerate unknown values added later. Confidence: 0.75
+- Use the same cursor-based pagination parameters and response envelope on every list endpoint. Confidence: 0.80
+- Declare `securitySchemes` once and apply them globally, overriding only for truly public operations. Confidence: 0.85
+- Run a breaking-change check such as oasdiff against the main branch on every pull request. Confidence: 0.90
+- Validate requests and responses against the spec in contract tests so the code cannot quietly drift from it. Confidence: 0.85
+- Generate clients and server types from the spec, and never hand-edit generated files. Confidence: 0.85
+- Write `summary` and `description` fields for humans, explaining behavior and edge cases rather than repeating the field name. Confidence: 0.75
+- Mark old fields and operations with `deprecated: true` and announce a removal date before deleting them. Confidence: 0.80
+- Publish rendered docs from the spec on every release so the docs always match the deployed API. Confidence: 0.80",TRUE,TEXT,f
