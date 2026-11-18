@@ -241347,3 +241347,20 @@ Avoid ordinary travel-poster layouts, decorative clutter, excessive colours and 
 
 </details>
 
+<details>
+<summary><strong>Original Sci-Fi Blockbuster Poster: Armored Heroine and a Towering Mech Titan Under a Blue Energy Ring (JSON, 3:4)</strong></summary>
+
+## Original Sci-Fi Blockbuster Poster: Armored Heroine and a Towering Mech Titan Under a Blue Energy Ring (JSON, 3:4)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+{
+  "aspect_ratio": "3:4",
+  "style": "premium Hollywood sci-fi superhero theatrical poster, photorealistic CGI, clean cinematic composition, IMAX production quality, sophisticated visual storytelling",
+  "prompt": "Create an extraordinary original Hollywood blockbuster movie poster titled VYKRON: RISE OF THE LAST TITAN. A powerful adult female superhero stands in the center foreground, shown full body from head to toe. She wears an iconic futuristic metallic cobalt-blue and silver battle suit with elegant orange illuminated energy details, sophisticated mechanical armor, sculpted shoulder protection and advanced robotic gauntlets. Her appearance is confident, stylish and intimidating. Her face is clearly visible and beautifully detailed.\n\nDirectly behind her stands ONE enormous futuristic mechanical Titan, towering over the city. Its distinctive silhouette features massive armored shoulders, powerful mechanical arms, an illuminated circular chest reactor and an angular futuristic head. The Titan should look magnificent, intimidating and incredibly expensive to build.\n\nBACKGROUND DESIGN: A beautiful futuristic megacity stretching across the horizon, with elegant skyscrapers and a dramatic atmospheric sky. A large glowing blue energy ring appears behind the Titan, creating a powerful visual focal point. A few distant orange lights illuminate the architecture. The skyline should remain clean, organized and visually calm. No chaotic destruction.\n\nCOMPOSITION: Heroine occupies the central lower foreground. The gigantic Titan fills the middle background. The glowing circular energy structure frames the upper background. Every subject must be clearly separated and instantly recognizable.\n\nCOLOR GRADING: Rich cobalt blue, polished silver, electric cyan and carefully placed warm orange highlights. Bright attractive colors, balanced exposure, beautiful cinematic reflections and premium atmospheric lighting.\n\nIMPORTANT VISUAL RULES: Minimal background clutter, no excessive explosions, no flying debris, no random aircraft, no multiple robots, no crowded buildings, no excessive smoke, no visual noise, no unnecessary objects. Maintain clean negative space and strong subject separation.\n\nAt the top write:\n\nTHE LAST ERA BEGINS.\n\nAt the bottom display a huge bold metallic movie title:\n\nVYKRON\n\nBelow it write:\n\nRISE OF THE LAST TITAN\n\nProfessional Hollywood theatrical typography, beautiful poster hierarchy, premium cinematic finish, exceptional clarity, original character and original machine design, no existing franchise references, no watermark."
+}
+```
+
+</details>
+
