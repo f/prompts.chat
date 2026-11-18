@@ -1,5 +1,5 @@
 import { formatDistanceToNow as dateFnsFormatDistanceToNow, format as dateFnsFormat, type Locale } from "date-fns";
-import { enUS, tr, es, zhCN, ja, arSA } from "date-fns/locale";
+import { enUS, tr, es, zhCN, ja, arSA, ptBR, fr, it, de, nl, ko, ru, he, el, faIR, az } from "date-fns/locale";
 
 const locales: Record<string, Locale> = {
   en: enUS,
@@ -8,6 +8,17 @@ const locales: Record<string, Locale> = {
   zh: zhCN,
   ja: ja,
   ar: arSA,
+  pt: ptBR,
+  fr: fr,
+  it: it,
+  de: de,
+  nl: nl,
+  ko: ko,
+  ru: ru,
+  he: he,
+  el: el,
+  fa: faIR,
+  az: az,
 };
 
 export function getDateLocale(locale: string): Locale {
