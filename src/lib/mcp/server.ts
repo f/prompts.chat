@@ -38,6 +38,7 @@ export function createMcpServer(ctx: McpContext): McpServer {
         resources: { listChanged: false },
       },
       instructions: instructions(ctx),
+      maxToolInputElements: 10_000,
     }
   );
 
