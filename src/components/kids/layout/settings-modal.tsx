@@ -12,7 +12,8 @@ import { MusicVolumeSlider } from "./background-music";
 
 const SUPPORTED_LOCALES = [
   { code: "en", label: "English", flag: "🇺🇸" },
-  { code: "zh", label: "中文", flag: "🇨🇳" },
+  { code: "zh", label: "简体中文", flag: "🇨🇳" },
+  { code: "zh-tw", label: "繁體中文", flag: "🇹🇼" },
   { code: "es", label: "Español", flag: "🇪🇸" },
   { code: "pt", label: "Português", flag: "🇧🇷" },
   { code: "fr", label: "Français", flag: "🇫🇷" },

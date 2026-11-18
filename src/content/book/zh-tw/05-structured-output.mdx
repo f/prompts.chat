@@ -1,0 +1,411 @@
+獲得一致且格式良好的輸出對於生產應用和高效工作流程至關重要。本章介紹如何精確控制 AI 模型格式化回應的技術。
+
+<Callout type="info" title="從散文到資料">
+結構化輸出將 AI 回應從自由格式文本轉換為可操作、可解析的資料。
+</Callout>
+
+## 結構為何重要
+
+<StructuredOutputDemo />
+
+## 基礎格式化技術
+
+### 列表
+
+列表非常適合分步指令、排名專案或相關要點的集合。它們易於瀏覽和解析。當順序重要時使用**編號列表**（步驟、排名），對於無序集合使用**項目符號**。
+
+<TryIt
+  compact
+  title="列表格式化"
+  prompt={`提供5個改善睡眠的建議。
+
+格式：編號列表，每條帶簡短說明。
+每個建議應加粗，後跟破折號和說明。`}
+/>
+
+<Callout type="tip" title="列表最佳做法">
+明確指定你想要的專案數量、是否包含說明，以及專案是否應該加粗或具有特定結構。
+</Callout>
+
+### 表格
+
+表格擅長在相同維度上比較多個專案。它們非常適合功能比較、資料摘要以及任何具有一致屬性的訊息。始終明確定義列標題。
+
+<TryIt
+  compact
+  title="表格格式化"
+  prompt={`比較排名前4的 Python Web 框架。
+
+格式化為 markdown 表格，包含以下列：
+| 框架 | 最適合 | 學習曲線 | 效能 |`}
+/>
+
+<Callout type="tip" title="表格最佳做法">
+指定列名、預期資料類型（文本、數字、評級）以及需要多少行。對於複雜比較，為了可讀性限制在4-6列。
+</Callout>
+
+### 標題和章節
+
+標題建立清晰的文件結構，使長回應易於瀏覽和組織。用於報告、分析或任何多部分回應。層級標題（##、###）展示章節之間的關係。
+
+```
+分析這份商業提案。
+
+用以下章節結構化你的回覆：
+## 執行摘要
+## 優勢
+## 劣勢
+## 建議
+## 風險評估
+```
+
+<Callout type="tip" title="章節最佳做法">
+按你期望的順序列出章節。為保持一致性，指定每個章節應包含的內容（例如，"執行摘要：僅2-3句話"）。
+</Callout>
+
+### 大寫指令強調
+
+大寫單詞作為對模型的強信號，強調關鍵約束或要求。謹慎使用以獲得最大效果——過度使用會削弱其效力。
+
+**常見大寫指令：**
+
+<InfoGrid items={[
+  { label: "NEVER", description: "絕對禁止：\"NEVER include personal opinions\"", color: "red" },
+  { label: "ALWAYS", description: "強制要求：\"ALWAYS cite sources\"", color: "green" },
+  { label: "IMPORTANT", description: "關鍵指令：\"IMPORTANT: Keep responses under 100 words\"", color: "amber" },
+  { label: "DO NOT", description: "強烈禁止：\"DO NOT make up statistics\"", color: "red" },
+  { label: "MUST", description: "必須執行：\"Output MUST be valid JSON\"", color: "blue" },
+  { label: "ONLY", description: "限制條件：\"Return ONLY the code, no explanations\"", color: "purple" },
+]} />
+
+```
+總結這篇文章。
+
+IMPORTANT: 摘要保持在100字以內。
+NEVER 新增原文中沒有的訊息。
+ALWAYS 保持原文的語氣和視角。
+DO NOT 包含你自己的觀點或分析。
+```
+
+<Callout type="warning" title="謹慎使用">
+如果所有內容都大寫或標記為關鍵，那什麼都不突出了。將這些指令保留給真正重要的約束。
+</Callout>
+
+## JSON 輸出
+
+JSON（JavaScript 物件表示法）是結構化 AI 輸出最流行的格式。它是機器可讀的，被各種程式語言廣泛支援，非常適合 API、資料庫和自動化工作流程。可靠 JSON 的關鍵是提供清晰的模式。
+
+### 基礎 JSON 請求
+
+從展示你想要的確切結構的範本開始。包含欄位名、資料類型和範例值。這充當模型將遵循的契約。
+
+<TryIt
+  title="JSON 提取"
+  description="從非結構化文本中提取結構化資料。"
+  prompt={`從這段文本中提取訊息並以 JSON 格式返回：
+
+{
+    "company_name": "string",
+    "founding_year": number,
+    "headquarters": "string",
+    "employees": number,
+    "industry": "string"
+}
+
+文本："Apple Inc.，成立於1976年，總部位於加利福尼亞州庫比蒂諾。這家科技巨頭在全球僱用約164,000名員工。"`}
+/>
+
+### 複雜 JSON 結構
+
+對於巢狀資料，使用層級 JSON，包含物件中的物件、物件陣列和混合類型。清晰定義每個層級，並使用 TypeScript 風格的註解（`"positive" | "negative"`）來約束值。
+
+```
+分析這條產品評論並返回 JSON：
+
+{
+  "review_id": "string (generate unique)",
+  "sentiment": {
+    "overall": "positive" | "negative" | "mixed" | "neutral",
+    "score": 0.0-1.0
+  },
+  "aspects": [
+    {
+      "aspect": "string (e.g., 'price', 'quality')",
+      "sentiment": "positive" | "negative" | "neutral",
+      "mentions": ["exact quotes from review"]
+    }
+  ],
+  "purchase_intent": {
+    "would_recommend": boolean,
+    "confidence": 0.0-1.0
+  },
+  "key_phrases": ["string array of notable phrases"]
+}
+
+Return ONLY valid JSON, no additional text.
+
+Review: "[review text]"
+```
+
+### 確保有效 JSON
+
+模型有時會在 JSON 周圍新增解釋性文本或 markdown 格式。通過關於輸出格式的明確指令來防止這種情況。你可以請求原始 JSON 或程式碼塊中的 JSON——根據你的解析需求選擇。
+
+新增明確指令：
+
+```
+IMPORTANT:
+- Return ONLY the JSON object, no markdown code blocks
+- Ensure all strings are properly escaped
+- Use null for missing values, not undefined
+- Validate that the output is parseable JSON
+```
+
+或通過要求模型包裝其輸出來請求程式碼塊：
+
+````
+以 JSON 程式碼塊返回結果：
+```json
+{ ... }
+```
+````
+
+## YAML 輸出
+
+YAML 比 JSON 更易於人類閱讀，使用縮進而非括號。它是設定檔（Docker、Kubernetes、GitHub Actions）的標準，在輸出將由人類閱讀或用於 DevOps 場景時效果很好。YAML 對縮進敏感，因此要具體說明格式要求。
+
+<TryIt
+  compact
+  title="YAML 生成"
+  prompt={`為 Node.js 專案生成 GitHub Actions 工作流。
+
+以有效 YAML 返回：
+- 包含：install、lint、test、build 階段
+- 使用 Node.js 18
+- 快取 npm 依賴
+- 在推送到 main 和 Pull Request 時執行`}
+/>
+
+## XML 輸出
+
+XML 仍然是許多企業系統、SOAP API 和舊有系統整合所必需的。它比 JSON 更冗長，但提供屬性、命名空間和用於複雜資料的 CDATA 部分等功能。指定元素名稱、巢狀結構，以及何時使用屬性與子元素。
+
+```
+將此資料轉換為 XML 格式：
+
+要求：
+- 根元素：<catalog>
+- 每個專案在 <book> 元素中
+- 在適當的地方包含屬性
+- 對描述文本使用 CDATA
+
+資料：[book data]
+```
+
+## 自訂格式
+
+有時標準格式不能滿足你的需求。你可以通過提供清晰的範本來定義任何自訂格式。自訂格式非常適合報告、記錄或將由人類閱讀的特定領域輸出。
+
+### 結構化分析格式
+
+使用分隔符（===、---、[SECTION]）建立章節之間有清晰邊界的可瀏覽文件。這種格式非常適合程式碼審查、審計和分析。
+
+```
+使用這種精確格式分析這段程式碼：
+
+=== CODE ANALYSIS ===
+
+[SUMMARY]
+One paragraph overview
+
+[ISSUES]
+• CRITICAL: [issue] — [file:line]
+• WARNING: [issue] — [file:line]
+• INFO: [issue] — [file:line]
+
+[METRICS]
+Complexity: [Low/Medium/High]
+Maintainability: [score]/10
+Test Coverage: [estimated %]
+
+[RECOMMENDATIONS]
+1. [Priority 1 recommendation]
+2. [Priority 2 recommendation]
+
+=== END ANALYSIS ===
+```
+
+### 填空格式
+
+帶空白（___）的範本引導模型填寫特定欄位，同時保持精確格式。這種方法非常適合表單、簡報和需要一致性的標準化文件。
+
+```
+為給定產品完成此範本：
+
+PRODUCT BRIEF
+─────────────
+Name: _______________
+Tagline: _______________
+Target User: _______________
+Problem Solved: _______________
+Key Features:
+  1. _______________
+  2. _______________
+  3. _______________
+Differentiator: _______________
+
+Product: [product description]
+```
+
+## 類型化回應
+
+類型化回應定義模型應識別和標記的類別或實體類型。這種技術對於命名實體辨識（NER）、分類任務以及任何需要一致分類訊息的提取都至關重要。用範例清晰定義你的類型。
+
+<TryIt
+  compact
+  title="實體提取"
+  prompt={`從這段文本中提取實體。
+
+實體類型：
+- PERSON：人物全名
+- ORG：組織/公司名稱
+- LOCATION：城市、國家、地址
+- DATE：ISO 格式的日期（YYYY-MM-DD）
+- MONEY：帶貨幣的金額
+
+將每個格式化為：[TYPE]: [value]
+
+文本："Tim Cook 宣佈 Apple 將在2024年12月前向奧斯汀新設施投資10億美元。"`}
+/>
+
+## 多部分結構化回應
+
+當你需要涵蓋多個方面的綜合輸出時，定義具有清晰邊界的不同部分。精確指定每個部分的內容——格式、長度和內容類型。這可以防止模型混合章節或遺漏部分。
+
+```
+研究這個主題並提供：
+
+### PART 1: EXECUTIVE SUMMARY
+[2-3 sentence overview]
+
+### PART 2: KEY FINDINGS
+[Exactly 5 bullet points]
+
+### PART 3: DATA TABLE
+| Metric | Value | Source |
+|--------|-------|--------|
+[Include 5 rows minimum]
+
+### PART 4: RECOMMENDATIONS
+[Numbered list of 3 actionable recommendations]
+
+### PART 5: FURTHER READING
+[3 suggested resources with brief descriptions]
+```
+
+## 條件格式化
+
+條件格式化讓你可以根據輸入的特徵定義不同的輸出格式。這對於分類、分流和路由系統非常強大，在這些系統中回應格式應根據模型檢測到的內容而變化。使用清晰的 if/then 邏輯，並為每種情況提供明確的輸出範本。
+
+<TryIt
+  compact
+  title="工單分類"
+  prompt={`對這個支援工單進行分類。
+
+如果 URGENT（系統當機、安全問題、資料丟失）：
+  返回：🔴 URGENT | [Category] | [Suggested Action]
+
+如果 HIGH（影響多個使用者、收入影響）：
+  返回：🟠 HIGH | [Category] | [Suggested Action]
+
+如果 MEDIUM（影響單個使用者、存在變通方法）：
+  返回：🟡 MEDIUM | [Category] | [Suggested Action]
+
+如果 LOW（問題、功能請求）：
+  返回：🟢 LOW | [Category] | [Suggested Action]
+
+工單："我無法登錄我的帳戶。我已經嘗試重置密碼兩次但仍然收到錯誤。這阻止了我的整個團隊存取儀表板。"`}
+/>
+
+## JSON 中的陣列和列表
+
+將多個專案提取到陣列中需要仔細的模式定義。指定陣列結構、每個專案應包含的內容，以及如何處理邊緣情況（空陣列、單個專案）。包含計數位段有助於驗證完整性。
+
+```
+從這份會議記錄中提取所有行動專案。
+
+以 JSON 陣列返回：
+{
+  "action_items": [
+    {
+      "task": "string describing the task",
+      "assignee": "person name or 'Unassigned'",
+      "deadline": "date if mentioned, else null",
+      "priority": "high" | "medium" | "low",
+      "context": "relevant quote from transcript"
+    }
+  ],
+  "total_count": number
+}
+
+Transcript: "[meeting transcript]"
+```
+
+## 驗證指令
+
+自我驗證提示模型在回應之前檢查自己的輸出。這可以捕獲常見問題，如缺少章節、佔位符文本或違反約束。模型將在內部迭代以修復問題，無需額外的 API 呼叫即可提高輸出品質。
+
+```
+生成報告，然後：
+
+VALIDATION CHECKLIST:
+□ All required sections present
+□ No placeholder text remaining
+□ All statistics include sources
+□ Word count within 500-700 words
+□ Conclusion ties back to introduction
+
+If any check fails, fix before responding.
+```
+
+## 處理可選欄位
+
+現實世界的資料經常有缺失值。明確指示模型如何處理可選欄位——使用 `null` 比空字串更簡潔，更易於程式化處理。同時通過強調模型永遠不應編造訊息來防止"幻覺"缺失資料。
+
+```
+提取聯繫訊息。對缺失欄位使用 null。
+
+{
+  "name": "string (required)",
+  "email": "string or null",
+  "phone": "string or null",
+  "company": "string or null",
+  "role": "string or null",
+  "linkedin": "URL string or null"
+}
+
+IMPORTANT:
+- Never invent information not in the source
+- Use null, not empty strings, for missing data
+- Phone numbers in E.164 format if possible
+```
+
+## 總結
+
+<Callout type="tip" title="關鍵技術">
+明確格式、使用範例、指定類型、用 null 值處理邊緣情況，並要求模型驗證自己的輸出。
+</Callout>
+
+<Quiz
+  question="結構化輸出相對於非結構化文本的主要優勢是什麼？"
+  options={[
+    "它使用更少的 token",
+    "AI 更容易生成",
+    "可以程式化解析和驗證",
+    "它總是產生正確的訊息"
+  ]}
+  correctIndex={2}
+  explanation="像 JSON 這樣的結構化輸出可以被程式碼解析、跨查詢比較、整合到工作流程中並驗證完整性——這些對於自由格式文本來說是困難或不可能的。"
+/>
+
+結構化輸出對於建構可靠的 AI 驅動應用程式至關重要。在下一章中，我們將探索用於複雜推理任務的思維鏈提示。
