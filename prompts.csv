@@ -204255,3 +204255,6 @@ Zod Schema Validation taste,"# Zod Schema Validation taste of a TypeScript devel
 - Test schemas with both valid and invalid fixtures, especially for edge cases like empty strings and nulls. Confidence: 0.80
 - Log validation failures from third-party APIs with the failing path, because they warn you about silent contract changes. Confidence: 0.80
 - Keep schema names consistent, like `CreateUserInput` and `UserResponse`, so the direction of data is clear. Confidence: 0.65",TRUE,TEXT,f
+Marketing campaign prompt,"Design an accessible service offering for residents, artisans, students, and small businesses in AlUla and nearby areas who want to use a 3D-printing center. Propose service levels for one-off prototypes, small production runs, and help preparing a product for market. Explain how to make pricing competitive and transparent without promising prices before material, design, and production costs are known.
+
+",FALSE,TEXT,3liaalghamdi@gmail.com
