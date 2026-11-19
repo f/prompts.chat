@@ -286,6 +286,22 @@ Ideal cuando la completitud no se conoce de antemano. La regla de parada deberí
 
 Ideal para pagos, publicaciones, eliminaciones, cambios de acceso, decisiones médicas o legales y otras acciones con consecuencias.
 
+### El Bucle de Resultados
+
+`conectar una métrica objetivo → sugerir con evidencia → ofrecer opciones → construir en un sandbox → un humano aprueba el pull request → medir en producción → pausar al alcanzar la meta, reanudar si retrocede`
+
+Ideal para rendimiento, accesibilidad, higiene de seguridad y objetivos de conversión o latencia que se desvían con el tiempo.
+
+Cada una de las formas anteriores termina en algún punto: una prueba pasa, la evidencia es suficiente, una persona dice que sí. El bucle de resultados, en cambio, toma sus observaciones del cuarto tipo de comprobación, el comportamiento real de los usuarios y las métricas de producción a lo largo del tiempo, y esas señales siguen moviéndose cuando el trabajo ya está hecho. Una página que hoy carga rápido puede volverse lenta el mes que viene, a medida que llegan nuevas funciones. Alcanzar la meta no es el final de la historia: es el momento en que el bucle deja de construir y empieza a vigilar.
+
+Eso cambia el contrato. En lugar de una única regla de parada, escribe una **condición de vigilancia** (qué métrica, qué umbral, en qué ventana de tiempo) y una **regla de pausa y reanudación** (descansar mientras el objetivo se mantiene, despertar cuando retrocede). Dale al bucle un **presupuesto por ciclo**, para que un proceso que nunca termina formalmente no pueda gastar sin límite y sin que nadie lo note. Mantén **una aprobación humana para cada cambio** y mide el resultado solo después de que el cambio llegue a producción: las mejoras que se sostienen, los cambios que no hacen nada y los que empeoran las cosas pasan a formar parte del estado del que aprende el siguiente ciclo.
+
+[Stitch Loop](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/), de Google Labs, anunciado en noviembre de 2026 como un experimento con lista de espera, es un ejemplo reciente de esta forma. Se describe como un agente de producto de larga duración conectado a un código fuente y a datos de producto en vivo. Cada vuelta atraviesa cuatro fases: *Suggestions* (sugerencias basadas en evidencia), *Solutions* (opciones con sus ventajas y desventajas), *Build* (código escrito en un sandbox aislado en la nube y abierto como pull request en GitHub) y *Reflect* (supervisa los datos en vivo, aprende de los resultados y sigue vigilando después de alcanzar la meta por si la métrica retrocede). Nada se fusiona hasta que una persona revisa el pull request. [Pulumi Agents](https://www.pulumi.com/blog/introducing-pulumi-agents/), anunciado el mismo día, aplica un patrón similar a la infraestructura: el equipo define un objetivo, restricciones y permisos, los agentes se ejecutan en la nube y devuelven hallazgos y pull requests para que el equipo los revise.
+
+<Callout type="warning" title="Cuando el Número se Convierte en la Meta">
+Un bucle que optimiza una métrica puede mejorar el número mientras daña aquello que el número representaba. Es la ley de Goodhart: cuando una medida se convierte en objetivo, deja de ser una buena medida. Un bucle de conversión podría aprender a esconder el botón de cancelar; uno de latencia podría eliminar en silencio una función lenta pero importante. Acompaña cada métrica objetivo con **métricas de resguardo** que no deben empeorar, como las tasas de error, las puntuaciones de accesibilidad o las quejas al soporte, y conserva la aprobación humana incluso cuando el bucle ya se haya ganado tu confianza.
+</Callout>
+
 ## Modos de Fallo que Hay que Eliminar desde el Diseño
 
 <table>
@@ -397,6 +413,7 @@ Luego identifica los tres modos de fallo más probables de tu diseño y revisa e
 - [Building Effective Agents — Anthropic](https://www.anthropic.com/engineering/building-effective-agents) — flujos de trabajo evaluador-optimizador, retroalimentación del entorno, condiciones de parada y orientación sobre cuándo se justifica la complejidad agéntica
 - [A Practical Guide to Building Agents — OpenAI](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/) — ejecuciones de agentes, condiciones de salida, herramientas, salvaguardas e intervención humana
 - [ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629) — investigación fundacional sobre intercalar acciones con observaciones de un entorno externo
+- [Introducing Stitch Loop (Google Labs)](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/): un agente de producto de larga duración que sugiere, construye y mide cambios frente a métricas en vivo, con cada cambio revisado como pull request
 
 ## Resumen
 
