@@ -72,9 +72,22 @@ export function categoryPromptsWhere(categoryId: string, q?: string | null): Pri
  */
 export function parseDayFilter(date?: string | null): { start: Date; end: Date } | null {
   if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
-  const start = new Date(`${date}T00:00:00`);
-  const end = new Date(`${date}T23:59:59`);
-  if (isNaN(start.getTime()) || isNaN(end.getTime())) return null;
+
+  const [year, month, day] = date.split("-").map(Number);
+
+  const start = new Date(`${date}T00:00:00Z`);
+  const end = new Date(`${date}T23:59:59Z`);
+
+  if (
+    isNaN(start.getTime()) ||
+    isNaN(end.getTime()) ||
+    start.getUTCFullYear() !== year ||
+    start.getUTCMonth() !== month - 1 ||
+    start.getUTCDate() !== day
+  ) {
+    return null;
+  }
+
   return { start, end };
 }
 
