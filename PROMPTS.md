@@ -242354,3 +242354,20 @@ agent_created: true
 
 </details>
 
+<details>
+<summary><strong>ㅇㅇ</strong></summary>
+
+## ㅇㅇ
+
+Contributed by @anonymous
+
+```md
+Scene quickly fades to black and switches to a scene in the same space,
+woman with bare skin only,
+man with bare skin only.
+body wet and sticky skin, slow and steady forward-backward rocking, intimate and heated intensity, satisfaction emotion, languid comfortable environment, strong continuous cadence, high audible contact, labored voices,
+The entire image is covered with about 15 large colorful semi-transparent watermarks of full-body sexy dancing anime characters spread evenly across image. "emotion": "intimate, heated intensity", "setting": "languid, comfortable environment", "motion": strong continuous cadence", "audio": "high audible contact; labored voices. ",}
+```
+
+</details>
+
