@@ -242185,3 +242185,16 @@ Do not make the character look like a superhero or an impossibly wealthy person.
 
 </details>
 
+<details>
+<summary><strong>Ronaldo hanger</strong></summary>
+
+## Ronaldo hanger
+
+Contributed by @anonymous
+
+```md
+Ronaldo os angry  that messi winn the world cup, and he run to steal it from him
+```
+
+</details>
+
