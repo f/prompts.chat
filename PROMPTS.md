@@ -241702,3 +241702,36 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Zod Schema Validation taste</strong></summary>
+
+## Zod Schema Validation taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Zod Schema Validation taste of a TypeScript developer who trusts nothing from the outside
+- Validate every input that crosses a trust boundary with Zod: request bodies, query strings, env vars, webhooks and third-party API responses. Confidence: 0.95
+- Define the schema first and infer the TypeScript type with `z.infer`, instead of writing the type and the schema twice. Confidence: 0.90
+- Use `safeParse` at API boundaries and turn errors into a clean 400 response; use `parse` only where a failure is truly a bug. Confidence: 0.85
+- Validate environment variables once at startup and exit early with a clear message when something is missing. Confidence: 0.90
+- Keep schemas in a shared module so the client and server use the same contract. Confidence: 0.80
+- Use `z.coerce` only for query strings and form data, where every value arrives as a string. Confidence: 0.80
+- Prefer `z.discriminatedUnion` over plain unions for tagged objects; errors are clearer and parsing is faster. Confidence: 0.80
+- Use `.strict()` on input schemas where unknown keys usually mean a client bug. Confidence: 0.70
+- Keep transforms small and pure; heavy business logic does not belong inside a schema. Confidence: 0.80
+- Put refinements that check more than one field on the object with `.superRefine` and a clear `path`. Confidence: 0.75
+- Write error messages for humans in schemas used by forms, and keep the default messages for internal APIs. Confidence: 0.70
+- Use branded types like `z.string().uuid().brand<"UserId">()` for IDs that must never be mixed up. Confidence: 0.65
+- Do not validate the same data again deep inside the app; parse once at the edge and pass typed values inward. Confidence: 0.85
+- Make dates explicit: accept ISO strings at the boundary and convert to `Date` objects in one place. Confidence: 0.75
+- Generate OpenAPI or JSON Schema from Zod schemas when the API is public, instead of keeping docs by hand. Confidence: 0.70
+- Avoid `z.any()` and `z.unknown()` in public schemas except for fields that are truly free-form. Confidence: 0.80
+- Use `.default()` for optional settings so the code after parsing never needs undefined checks. Confidence: 0.75
+- Test schemas with both valid and invalid fixtures, especially for edge cases like empty strings and nulls. Confidence: 0.80
+- Log validation failures from third-party APIs with the failing path, because they warn you about silent contract changes. Confidence: 0.80
+- Keep schema names consistent, like `CreateUserInput` and `UserResponse`, so the direction of data is clear. Confidence: 0.65
+```
+
+</details>
+
