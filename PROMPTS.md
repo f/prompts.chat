@@ -241852,3 +241852,54 @@ Portrait 2:3 composition. No watermark, no unnecessary text, no photorealistic b
 
 </details>
 
+<details>
+<summary><strong>Surrealist Nested-Arch Travel Art: Fill-in Template That Frames Any Landmark Through Infinite Portals (4:5)</strong></summary>
+
+## Surrealist Nested-Arch Travel Art: Fill-in Template That Frames Any Landmark Through Infinite Portals (4:5)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Create an exceptionally beautiful surrealist architectural travel artwork featuring LANDMARK NAME, CITY, COUNTRY.
+
+1. THE SIGNATURE COMPOSITION
+
+Create a monumental architectural arch or doorway as the dominant foreground frame.
+Inside the arch, reveal a breathtaking surreal landscape featuring the iconic landmark.
+Add a second, smaller nested arch in the centre, creating an illusion of infinite depth.
+Position the landmark naturally within this inner portal, preserving its recognisable architectural details.
+
+2. DREAMLIKE LANDSCAPE
+
+Surround the landmark with abstract rolling landscapes inspired by the destination.
+Add a tiny solitary traveller walking towards the inner arch.
+Create a delicate trail of footprints leading towards the landmark.
+Introduce a crescent moon or oversized sun in the distant sky.
+Use beautiful gradients, dramatic shadows and atmospheric lighting.
+
+3. COLOUR IDENTITY
+
+Every destination must have its own distinctive palette. Never repeat colours.
+
+4. ART DIRECTION
+
+Surrealist architectural photography.
+Minimalist geometric composition.
+Cinematic colour grading.
+Monumental arches and nested frames.
+Dreamlike scale and perspective.
+Rich textures and soft atmospheric gradients.
+Deep, sophisticated shadows.
+
+5. TYPOGRAPHY
+
+Add the country and landmark name in elegant minimal typography, with a tiny poetic tagline.
+
+No clutter, no unnecessary decorations, no random buildings. Premium collectible travel-art aesthetic. Vertical 4:5
+
+Keep the nested arches as the signature element in every poster, but change the landscape, lighting, colour palette and architectural details for every destination. That will make the collection instantly recognisable while keeping every artwork unique.
+
+```
+
+</details>
+
