@@ -241636,3 +241636,36 @@ Tamaño sugerido: A3 (310 x 420 mm) o tamaño personalizado.. Comprueba que no f
 
 </details>
 
+<details>
+<summary><strong>Linting and Formatting taste</strong></summary>
+
+## Linting and Formatting taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Linting and Formatting taste of a JavaScript developer who wants zero style debates
+- Let Prettier own all formatting and ESLint own only correctness, so the two tools never fight over the same rule. Confidence: 0.90
+- Use the ESLint flat config (`eslint.config.js`) for new projects and skip the legacy `.eslintrc` formats. Confidence: 0.85
+- Turn off every stylistic ESLint rule with `eslint-config-prettier` instead of tuning them one by one. Confidence: 0.85
+- Keep the Prettier config tiny and close to defaults; arguing about semicolons is not worth a meeting. Confidence: 0.90
+- Commit the formatter and linter configs to the repo and pin their versions so every machine gives the same result. Confidence: 0.90
+- Enable `typescript-eslint` with type-aware rules for TypeScript code, even though it makes linting a bit slower. Confidence: 0.80
+- Treat `no-floating-promises` and `no-misused-promises` as errors; unhandled promises are real bugs, not style. Confidence: 0.85
+- Prefer a short list of rules set to `error` over a long list of `warn` rules that everyone learns to ignore. Confidence: 0.85
+- Run the formatter on save in the editor so formatting never shows up as a separate task. Confidence: 0.85
+- Run lint and format checks on staged files only in a pre-commit hook with `lint-staged`, and keep that hook fast. Confidence: 0.75
+- Run `prettier --check` and `eslint --max-warnings=0` in CI so nothing unformatted or noisy reaches the main branch. Confidence: 0.90
+- Land the first repo-wide format in a single dedicated commit and add it to `.git-blame-ignore-revs`. Confidence: 0.80
+- Allow inline `eslint-disable` comments only for one specific rule, always with a short reason next to it. Confidence: 0.85
+- Never disable a rule for the whole file just to get one tricky line through. Confidence: 0.75
+- Keep import sorting automatic with a plugin, so import order never comes up in code review. Confidence: 0.70
+- Add a `.editorconfig` for line endings, final newlines and indentation so non-JS files stay consistent too. Confidence: 0.70
+- Ignore generated code and build output in both tools instead of fixing lint errors in files nobody writes by hand. Confidence: 0.85
+- Review new lint rules as a team decision with a one-line reason in the config, not as a drive-by change. Confidence: 0.70
+- Consider Biome for new small projects that want one fast tool for both linting and formatting. Confidence: 0.60
+- Fix lint errors in the same pull request that adds them; a "clean up lint later" ticket never gets done. Confidence: 0.80
+```
+
+</details>
+
