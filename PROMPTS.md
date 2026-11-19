@@ -241669,3 +241669,36 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>HTTP Caching taste</strong></summary>
+
+## HTTP Caching taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# HTTP Caching taste of a web developer who wants fast pages without stale surprises
+- Decide the caching policy for every response on purpose; a missing `Cache-Control` header lets browsers and proxies guess. Confidence: 0.90
+- Serve fingerprinted static assets with `Cache-Control: public, max-age=31536000, immutable`. Confidence: 0.95
+- Put a content hash in asset file names instead of using query strings like `?v=2` for cache busting. Confidence: 0.85
+- Send HTML documents with `no-cache` or a very short max-age so new deploys show up right away. Confidence: 0.85
+- Use `private, no-store` for responses with personal or sensitive data, and never let a shared cache hold them. Confidence: 0.95
+- Use `s-maxage` to give the CDN a different lifetime than the browser when the CDN can be purged and the browser cannot. Confidence: 0.80
+- Add `stale-while-revalidate` for content that can be a few seconds old, so users rarely wait for the origin. Confidence: 0.80
+- Use `stale-if-error` so the CDN keeps serving the last good copy when the origin is down. Confidence: 0.70
+- Send strong `ETag` or `Last-Modified` validators so revalidation returns a cheap `304 Not Modified`. Confidence: 0.80
+- Keep the `Vary` header minimal; varying on `User-Agent` or `Cookie` quietly destroys the CDN hit rate. Confidence: 0.85
+- Never cache responses that set cookies at a shared cache. Confidence: 0.90
+- Purge the CDN by tag or surrogate key after content changes instead of purging everything. Confidence: 0.75
+- Cache API GET responses only when the data is truly shared, and say so explicitly in the response headers. Confidence: 0.80
+- Do not cache error responses for long; a cached 500 or 404 can outlive the real problem. Confidence: 0.80
+- Rely on HTTP caching headers instead of a service worker unless the app truly needs offline support. Confidence: 0.70
+- Watch the CDN cache hit ratio as a key metric, and investigate when it drops after a deploy. Confidence: 0.75
+- Test caching behavior with `curl -I` against the real CDN, not only in local development. Confidence: 0.80
+- Document the cache rules per route in one place so nobody has to read headers in the browser to learn them. Confidence: 0.65
+- Keep `Cache-Control` decisions in application code or edge config under version control, not only in a dashboard. Confidence: 0.75
+- Prefer short cache times plus revalidation over long cache times plus emergency purges. Confidence: 0.70
+```
+
+</details>
+
