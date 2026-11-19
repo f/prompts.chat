@@ -242124,3 +242124,64 @@ as a product manager in help me do market reearch on pay on delivey apps in afri
 
 </details>
 
+<details>
+<summary><strong>THE BATTLES NOBODY SEES</strong></summary>
+
+## THE BATTLES NOBODY SEES
+
+Contributed by @anonymous
+
+```md
+Create a 60-second ultra-realistic cinematic motivational short film titled “THE BATTLES NOBODY SEES.”
+
+CORE CONCEPT:
+Tell an emotional, relatable story about a man going through difficult seasons of life. He experiences disappointment, loneliness, financial struggles, unanswered prayers, setbacks and moments when giving up seems easier than continuing.
+
+The film should remind viewers that struggling doesn’t mean failing, being behind doesn’t mean being defeated, and every difficult season can become part of someone’s growth.
+
+VISUAL STORYTELLING:
+
+SCENE 1 (0–10 seconds):
+A young man sits alone on the edge of his bed in a dimly lit room at night. His phone lights up, but there are no meaningful messages. He looks exhausted and lost in thought. Rain falls outside the window.
+
+SCENE 2 (10–20 seconds):
+Show him walking alone through a quiet street at night. Close-up of his face, tired eyes and thoughtful expression. Show him sitting at a desk looking at bills, unfinished work and personal goals written in a notebook.
+
+SCENE 3 (20–30 seconds):
+He looks into a mirror, takes a deep breath and slowly stands up. Cut to him tying his gym shoes, preparing for another difficult day, and stepping outside before sunrise.
+
+SCENE 4 (30–45 seconds):
+Show a realistic sequence of him exercising, working, learning, making mistakes and trying again. Show sweat, exhaustion, persistence and small victories. His progress should feel gradual and believable.
+
+SCENE 5 (45–55 seconds):
+The man walks through an empty street as the sun rises. His facial expression is calmer. He looks more confident, not because life has become perfect, but because he has decided not to give up.
+
+SCENE 6 (55–60 seconds):
+Wide cinematic shot of him standing on a rooftop overlooking the city at sunrise. Slowly fade to black.
+
+FINAL ON-SCREEN MESSAGE:
+“YOUR STORY ISN’T OVER.”
+
+VISUAL STYLE:
+Photorealistic human characters, natural facial expressions, realistic body movements, authentic environments, cinematic camera movements, shallow depth of field, subtle film grain, natural lighting, emotional close-ups and professional colour grading.
+
+Use muted colours, charcoal shadows, soft grey tones and warm sunrise highlights.
+
+VOICEOVER:
+Calm, mature masculine voice. Deep but natural, emotionally grounded, conversational and sincere. Avoid exaggerated shouting or artificial motivational delivery.
+
+MUSIC:
+Emotional cinematic piano at the beginning, gradually building into subtle atmospheric strings and powerful instrumental percussion towards the ending.
+
+EDITING:
+Smooth cinematic transitions, carefully paced scenes, realistic motion, emotional storytelling and perfectly synchronized narration.
+
+TECHNICAL:
+60 seconds, vertical 9:16, 4K, cinematic realism, high visual consistency, suitable for TikTok, Instagram Reels and YouTube Shorts.
+
+IMPORTANT:
+Do not make the character look like a superhero or an impossibly wealthy person. Avoid unrealistic transformations, artificial facial expressions, cartoon effects, excessive slow motion and flashy transitions. Make the story feel personal, honest and believable.
+```
+
+</details>
+
