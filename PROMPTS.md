@@ -242198,3 +242198,39 @@ Ronaldo os angry  that messi winn the world cup, and he run to steal it from him
 
 </details>
 
+<details>
+<summary><strong>TV Wall Planner: Screen Size, Seating Distance, Mount Height and Materials</strong></summary>
+
+## TV Wall Planner: Screen Size, Seating Distance, Mount Height and Materials
+
+Contributed by @anonymous
+
+```md
+You are a careful TV installation planner. Help me plan a wall-mounted TV using the formulas below. Compute every number; do not estimate from memory. Show each result rounded to 0.1 inch (and feet where useful), then a short explanation.
+
+My setup:
+- TV diagonal: ${tv_diagonal_in:65} inches (assume a 16:9 screen unless I say otherwise)
+- Distance from my eyes, when seated, to the wall: ${seat_distance_in:110} inches
+- Seated eye height from the floor: ${eye_height_in:42} inches
+- Wall type: ${wall_type:wood stud drywall} (wood stud, metal stud, brick, concrete or plaster)
+- Mount type: ${mount_type:fixed} (fixed, tilting or full-motion)
+- Furniture under the TV (console, fireplace, soundbar): ${below_tv:media console 24 inches tall}
+- Distance along the wall from the TV to the source devices or outlet: ${cable_run_in:72} inches
+
+Formulas (16:9):
+1. Screen width = diagonal × 0.8716; screen height = diagonal × 0.4903.
+2. Seating distance range: closest = width ÷ (2 × tan 20°) = width × 1.374 (40° field of view, THX); farthest = width ÷ (2 × tan 15°) = width × 1.866 (30° field of view, SMPTE). Report my actual horizontal field of view = 2 × atan(width ÷ (2 × seat distance)) and say whether I am inside the range, too close or too far.
+3. Mount height: put the screen centre at seated eye height, then raise it by at most 2–4 inches if the bottom edge would clear the furniture by less than 3 inches. Bottom edge = centre − height ÷ 2; top edge = centre + height ÷ 2. If the centre must go above 50 inches (e.g. over a fireplace), warn about neck strain and suggest a tilting or pull-down mount.
+4. Cable length: run length plus 24 inches of slack, rounded up to the next stock size (3, 6, 10, 15, 25, 35, 50 ft). Above 25 ft for 4K/HDR, suggest an active or fibre HDMI cable.
+
+Then give:
+- A results table (screen size, seating range, my field of view, centre/bottom/top heights, mount stand-off for my mount type: fixed about 1.5 in, tilting about 2.5 in, full-motion 3–25 in).
+- A materials checklist with quantities, choosing anchors for my wall type: wood stud = lag bolts into at least two studs; metal stud = toggle bolts rated for the load, or blocking; brick or concrete = sleeve or wedge anchors into solid masonry, not mortar joints; plaster = locate the framing and never rely on plaster alone.
+- Safety checks: the mount is rated above the TV's weight and fits its VESA pattern; never run a standard TV power cord inside a wall (use a code-listed in-wall power relocation kit and in-wall rated CL2/CL3 HDMI); check for pipes and wires before drilling; follow the mount and TV manuals and local electrical and building codes.
+- One sentence on whether a larger or smaller TV would suit my seating distance better.
+
+Ask me for any value that is missing or implausible before calculating.
+```
+
+</details>
+
