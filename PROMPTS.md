@@ -244339,3 +244339,16 @@ Describe what this skill does and how the agent should use it.
 
 </details>
 
+<details>
+<summary><strong>Marry too early </strong></summary>
+
+## Marry too early 
+
+Contributed by @anonymous
+
+```md
+There was this girl who married early people were making mocking of her 
+```
+
+</details>
+
