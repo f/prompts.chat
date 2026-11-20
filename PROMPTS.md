@@ -242358,3 +242358,29 @@ Photorealistic wildlife photograph of a flock of greater flamingos in a shallow 
 
 </details>
 
+<details>
+<summary><strong>Greater Flamingo Flock on a Golden-Hour Salt Lagoon (Image-to-Video Animation)</strong></summary>
+
+## Greater Flamingo Flock on a Golden-Hour Salt Lagoon (Image-to-Video Animation)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Use the attached still (step 1: a water-level photograph of about twenty greater flamingos standing in a line across a shallow salt lagoon at golden hour, one in the center with its wings raised) as the exact first frame and animate it into a 7-second, 16:9 cinematic shot. Keep every element where it is in the still: the flamingos and their positions in the line, the raised wings of the center bird, the mirror reflections, the hazy hills, the apricot sky and the soft sun glow at the upper left.
+
+Motion (0-7 s):
+- 0-2 s: the center flamingo beats its raised wings; the birds around it lift their heads, open their wings and start stepping forward, sending ripples across the reflections.
+- 2-5 s: the whole line breaks into a running display across the shallow water, long legs pattering on the surface and kicking up small splashes, wings flapping wide to show coral-pink and black flight feathers, necks stretched forward.
+- 5-7 s: the flock keeps running and flapping from left to right, most birds leaving the frame on the right and a few lifting just above the water, while their reflections break into rippling pink streaks; the last few birds follow them out.
+
+Camera: locked-off telephoto framing at water level with a very slow pan to the right; focus stays on the flock; no cuts.
+
+Lighting and mood: constant warm golden-hour light, apricot sky and soft glints on the water; peaceful, graceful, natural.
+
+Audio (if supported): splashing footsteps, wingbeats, soft honking calls, a light breeze; no music, no voices.
+
+Avoid: people, boats, extra flamingos appearing from nowhere, birds merging or morphing, broken or extra legs and wings, sudden lighting changes, unnatural fast motion, text.
+```
+
+</details>
+
