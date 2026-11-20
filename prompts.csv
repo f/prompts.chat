@@ -206445,3 +206445,20 @@ Regular Expressions taste,"# Regular Expressions taste of a developer who wants 
 - Try patterns in a tester like regex101 with the right engine selected before shipping them. Confidence: 0.70",TRUE,TEXT,f
 AI Video generation ,A 10s AI video of a young Nigerian man having a conversation with his wife in the living room,FALSE,TEXT,seyijay26@gmail.com
 AUTOMATION,"So,I want an AI to go through a piece of document meticulously and extensively, now the piece of document is about a project that I am supposed to work on and automate a workflow for, I also do nor want it to skip any point and I need step by step process on how to properly execute the project with my team",FALSE,TEXT,mcdonald.imo81@gmail.com
+"Photo to Split Editorial Poster: Realistic Photo Above, Hand-Painted Illustration Below (4:5)","Transform the uploaded reference image into a beautiful, premium editorial illustration poster.
+
+Composition: Create a vertical 4:5 split-layout design. The upper half should display the original photograph in its realistic photographic style, preserving the subject's exact appearance, facial features, hairstyle, outfit, pose, and expression.
+
+The lower half should feature a beautifully stylized 2D illustration of the exact same subject, recreating the original photograph's pose, expression, clothing, and composition. Convert the subject into a charming, hand-painted digital illustration with soft brush textures, clean shapes, delicate outlines, warm skin tones, and beautiful artistic details.
+
+Background Design: Transform the original background into a creative illustrated environment. Add minimal geometric architecture, abstract shapes, subtle plants, soft natural elements, and a complementary color palette inspired by the original photograph.
+
+Poster Layout: Place the illustration inside a clean rectangular artwork frame, surrounded by a warm ivory or cream-colored background. Add a large elegant uppercase headline beneath the illustration, with a small complementary subtitle and a subtle decorative line.
+
+Typography: Use thin, sophisticated, widely spaced uppercase lettering. Choose a short title that matches the mood of the photograph, with a smaller minimalist tagline underneath.
+
+Art Direction: Modern Japanese editorial poster design, contemporary lifestyle illustration, soft pastel colors, warm sunlight, minimalist graphic design, artistic storytelling, premium magazine aesthetic.
+
+Important: Maintain the original person's identity and recognizable features. The illustrated version must clearly resemble the person in the original photograph. Keep the top photograph realistic and the bottom illustration artistic. Ensure both versions match perfectly in pose and composition.
+
+High-quality details, balanced layout, elegant negative space, professional art direction, 4:5 portrait poster.",FALSE,TEXT,f

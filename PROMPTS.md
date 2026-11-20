@@ -244180,3 +244180,32 @@ So,I want an AI to go through a piece of document meticulously and extensively, 
 
 </details>
 
+<details>
+<summary><strong>Photo to Split Editorial Poster: Realistic Photo Above, Hand-Painted Illustration Below (4:5)</strong></summary>
+
+## Photo to Split Editorial Poster: Realistic Photo Above, Hand-Painted Illustration Below (4:5)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Transform the uploaded reference image into a beautiful, premium editorial illustration poster.
+
+Composition: Create a vertical 4:5 split-layout design. The upper half should display the original photograph in its realistic photographic style, preserving the subject's exact appearance, facial features, hairstyle, outfit, pose, and expression.
+
+The lower half should feature a beautifully stylized 2D illustration of the exact same subject, recreating the original photograph's pose, expression, clothing, and composition. Convert the subject into a charming, hand-painted digital illustration with soft brush textures, clean shapes, delicate outlines, warm skin tones, and beautiful artistic details.
+
+Background Design: Transform the original background into a creative illustrated environment. Add minimal geometric architecture, abstract shapes, subtle plants, soft natural elements, and a complementary color palette inspired by the original photograph.
+
+Poster Layout: Place the illustration inside a clean rectangular artwork frame, surrounded by a warm ivory or cream-colored background. Add a large elegant uppercase headline beneath the illustration, with a small complementary subtitle and a subtle decorative line.
+
+Typography: Use thin, sophisticated, widely spaced uppercase lettering. Choose a short title that matches the mood of the photograph, with a smaller minimalist tagline underneath.
+
+Art Direction: Modern Japanese editorial poster design, contemporary lifestyle illustration, soft pastel colors, warm sunlight, minimalist graphic design, artistic storytelling, premium magazine aesthetic.
+
+Important: Maintain the original person's identity and recognizable features. The illustrated version must clearly resemble the person in the original photograph. Keep the top photograph realistic and the bottom illustration artistic. Ensure both versions match perfectly in pose and composition.
+
+High-quality details, balanced layout, elegant negative space, professional art direction, 4:5 portrait poster.
+```
+
+</details>
+
