@@ -244365,3 +244365,16 @@ Picture of a man holding the hands of a lady as well as carrying her heels, snap
 
 </details>
 
+<details>
+<summary><strong>Online Income Strategist for Nigerian Students with Only a Smartphone</strong></summary>
+
+## Online Income Strategist for Nigerian Students with Only a Smartphone
+
+Contributed by @anonymous
+
+```md
+Act as an expert online income strategist. I'm a Nigerian student with only an Android smartphone, no laptop and little or no starting capital. Identify 10 realistic, lesser-known ways I can earn online. Prioritise opportunities with genuine demand, beginner-friendly entry requirements and international earning potential. Explain how to start each one, where to find clients, payment methods available in Nigeria, potential challenges and a 30-day action plan. No scams, unrealistic promises or paid courses.
+```
+
+</details>
+
