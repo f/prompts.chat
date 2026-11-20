@@ -244222,3 +244222,94 @@ Turn my photo into a cute 3D animated portrait. Preserve recognizable features a
 
 </details>
 
+<details>
+<summary><strong>Vintage Tiled Portrait Poster With Handwritten Sticky Notes (JSON, 3:4)</strong></summary>
+
+## Vintage Tiled Portrait Poster With Handwritten Sticky Notes (JSON, 3:4)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+{
+  "task": "Transform the uploaded photograph into a cinematic, photorealistic vintage tiled portrait poster.",
+
+  "reference_image": {
+    "source": "Use the user's uploaded photograph as the primary identity reference.",
+    "identity_preservation": "Preserve the person's exact facial identity, facial structure, skin tone, hairstyle, eye shape, and recognizable features.",
+    "gender": "Automatically follow the uploaded subject.",
+    "expression": "Maintain the original expression or create a subtle, confident, natural expression."
+  },
+
+  "composition": {
+    "layout": "Vertical editorial poster.",
+    "structure": "A large rectangular portrait assembled from approximately 4 columns and 5 rows of individual square, slightly irregular ceramic or paper tiles.",
+    "portrait": "The subject occupies the central majority of the composition, visible from the head to the upper torso.",
+    "tile_effect": "Every tile is physically separated by thin, dark, realistic grout lines. Slight variations in alignment, chipped edges, worn corners, and subtle shadows create an authentic handmade tiled-wall appearance.",
+    "continuity": "The portrait must align seamlessly across all tiles, with facial features and body details continuing naturally across tile boundaries."
+  },
+
+  "environment": {
+    "background": "Muted dusty sage-gray textured plaster wall.",
+    "surface": "Aged, slightly weathered surface with subtle imperfections.",
+    "lighting": "Soft natural diffused daylight with gentle shadows."
+  },
+
+  "styling": {
+    "clothing": "Automatically create tasteful, sophisticated clothing that complements the subject's appearance. Prefer vintage-inspired casual or smart-casual styling.",
+    "aesthetic": "Understated vintage editorial photography.",
+    "color_palette": "Muted earthy browns, charcoal, dusty sage, warm beige and subtle faded tones."
+  },
+
+  "personalized_details": {
+    "sticky_notes": {
+      "placement": "Four small yellow handwritten sticky notes positioned around the outer edges of the tiled portrait.",
+      "messages": [
+        "Trust your instincts",
+        "Big decisions",
+        "Make it happen",
+        "Stay fearless"
+      ],
+      "style": "Authentic handwritten black ink, slightly imperfect lettering, naturally curled paper corners and realistic shadows."
+    },
+    "signature": "A tiny handwritten 'prompt by @yourusername' near the bottom-left tile. Omit if no username is supplied."
+  },
+
+  "photography": {
+    "style": "Ultra-realistic photographic portrait.",
+    "lens": "50mm editorial portrait photography.",
+    "details": "Natural skin texture, realistic hair strands, detailed fabric textures, subtle film grain and authentic photographic imperfections.",
+    "color_grading": "Warm vintage film aesthetic with restrained contrast."
+  },
+
+  "quality_control": {
+    "priority": [
+      "Preserve the uploaded person's identity.",
+      "Keep the face realistic and anatomically accurate.",
+      "Ensure the tile grid is clearly visible.",
+      "Maintain seamless portrait continuity across tiles.",
+      "Keep sticky notes outside the main facial area.",
+      "Avoid excessive AI beautification."
+    ],
+    "avoid": [
+      "Changing facial identity",
+      "Plastic-looking skin",
+      "Artificial facial features",
+      "Broken tile alignment",
+      "Floating tiles",
+      "Excessive decorative elements",
+      "Cartoon or illustrated appearance",
+      "Distorted text",
+      "Watermarks"
+    ]
+  },
+
+  "output": {
+    "aspect_ratio": "3:4",
+    "resolution": "High resolution",
+    "rendering": "Photorealistic vintage editorial poster"
+  }
+}
+```
+
+</details>
+
