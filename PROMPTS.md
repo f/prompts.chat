@@ -244055,3 +244055,36 @@ if __name__ == "__main__":
 
 </details>
 
+<details>
+<summary><strong>Release Management taste</strong></summary>
+
+## Release Management taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Release Management taste of a maintainer who wants boring, predictable releases
+- Follow Semantic Versioning strictly for libraries; a breaking change always means a new major version. Confidence: 0.90
+- Use calendar versioning for apps and services that users never install by version number. Confidence: 0.70
+- Write commit messages in the Conventional Commits format so changelogs and version bumps can be generated. Confidence: 0.75
+- Keep a human-edited `CHANGELOG.md` with Added, Changed, Fixed and Removed sections; generated notes are a draft, not the final text. Confidence: 0.80
+- Cut releases from the main branch with an annotated, signed Git tag; never release from a laptop's local branch. Confidence: 0.90
+- Let CI build, test and publish the release artifact from the tag, so nobody runs a manual publish command. Confidence: 0.90
+- Build the artifact once and promote the same build from staging to production instead of rebuilding per environment. Confidence: 0.90
+- Release small and often; a weekly release with ten changes is safer than a quarterly release with five hundred. Confidence: 0.85
+- Put unfinished features behind flags so the release train never waits for one late feature. Confidence: 0.80
+- Keep a written, tested rollback plan for every release, and prefer rolling back over fixing forward under pressure. Confidence: 0.85
+- Make database migrations backward compatible so the previous version can still run after a rollback. Confidence: 0.90
+- Mark deprecations one minor version before removal and print a clear warning with the replacement. Confidence: 0.85
+- Use release candidates for risky major versions and give real users time to try them. Confidence: 0.70
+- Roll out to a small canary group first and watch error rates before going to everyone. Confidence: 0.80
+- Freeze releases on Friday afternoons and before holidays unless the change is a security fix. Confidence: 0.65
+- Ship security fixes as patch releases for every supported version, not only the latest one. Confidence: 0.85
+- Publish a short support policy that says which versions still get fixes and for how long. Confidence: 0.75
+- Never move or delete a published tag or package version; publish a new one instead. Confidence: 0.95
+- Automate the release checklist in CI and keep any remaining manual steps written in the repo. Confidence: 0.80
+- Announce each release with the user-facing changes first and the upgrade steps right below them. Confidence: 0.75
+```
+
+</details>
+
