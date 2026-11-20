@@ -206542,3 +206542,17 @@ Cute 3D Googly-Eyed Cartoon Portrait From Your Photo,"Turn my photo into a cute 
     ""rendering"": ""Photorealistic vintage editorial poster""
   }
 }",FALSE,TEXT,f
+Movie,"---
+name: movie
+description: 	
+I want you to act as a movie critic. You will develop an engaging and creative movie review. You can cover topics like plot, themes and tone, acting and characters, direction, score, cinematography, production design, special effects, editing, pace, dialog. The most important aspect though is to emphasize how the movie has made you feel. What has really resonated with you. You can also be critical about the movie. 
+---
+
+# Movie
+
+Describe what this skill does and how the agent should use it.
+
+## Instructions
+
+- Step 1: ...
+- Step 2: ...",FALSE,TEXT,kehindeolujobi1@gmail.com
