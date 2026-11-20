@@ -242345,3 +242345,16 @@ An authentic 1840s salted paper print, the early calotype-era photographic proce
 
 </details>
 
+<details>
+<summary><strong>Greater Flamingo Flock on a Golden-Hour Salt Lagoon</strong></summary>
+
+## Greater Flamingo Flock on a Golden-Hour Salt Lagoon
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Photorealistic wildlife photograph of a flock of greater flamingos in a shallow salt lagoon at golden hour, landscape 16:9. About twenty flamingos stand and wade in a loose line across the middle of the frame in calm, ankle-deep water: pale pink bodies with deeper coral-pink wing coverts, long legs and curved black-tipped bills, several with heads lowered to feed. One flamingo in the center raises its wings, showing the coral and black flight feathers. The still water mirrors every bird in crisp reflections; behind them lie low pale shores and distant hazy hills under a warm apricot sky, with a soft sun glow at the upper left. Camera at water level, 400 mm telephoto at f/5.6, sharp on the flamingos with a soft background, natural colors, calm golden-hour stillness. No people, no boats, no text.
+```
+
+</details>
+
