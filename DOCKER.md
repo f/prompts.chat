@@ -133,6 +133,7 @@ All variables are prefixed with `PCHAT_` to avoid conflicts.
 | `PCHAT_FEATURE_AI_GENERATION` | `features.aiGeneration` | Enable AI generation | `false` |
 | `PCHAT_FEATURE_MCP` | `features.mcp` | Enable MCP features | `false` |
 | `PCHAT_FEATURE_PROMPT_ENHANCER` | `features.promptEnhancer` | Enable the Prompt Enhancer on `/developers` and `/api/improve-prompt` (requires `OPENAI_API_KEY`) | `true` |
+| `PCHAT_FEATURE_WEBMCP` | `features.webmcp` | Expose the site to AI agents through WebMCP (widget + `document.modelContext`, see [WEBMCP.md](WEBMCP.md)) | `true` |
 
 ## System Environment Variables
 

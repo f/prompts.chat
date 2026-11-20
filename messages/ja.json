@@ -3026,5 +3026,13 @@
         "versionHistory": "バージョン履歴"
       }
     }
+  },
+  "webmcp": {
+    "open": "AIエージェントを接続 (WebMCP)",
+    "tokenPlaceholder": "接続トークンを貼り付け",
+    "connect": "接続",
+    "disconnect": "切断",
+    "close": "閉じる",
+    "localOnly": "このコンピューター上の WebMCP ブリッジ (localhost) にのみ接続できます"
   }
 }

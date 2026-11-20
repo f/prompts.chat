@@ -66,6 +66,9 @@ export default defineConfig({
     comments: true,
     // Enable the AI Prompt Enhancer on /developers and the /api/improve-prompt endpoint (requires OPENAI_API_KEY)
     promptEnhancer: false,
+    // Let AI agents use the site through WebMCP: the webmcp.dev widget and the browser's
+    // built-in document.modelContext API, where available (see WEBMCP.md)
+    webmcp: true,
   },
 
   // Homepage customization

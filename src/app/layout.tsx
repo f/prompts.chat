@@ -10,6 +10,7 @@ import { Analytics } from "@/components/layout/analytics";
 import { AppBanner } from "@/components/layout/app-banner";
 import { AnnouncementBanner } from "@/components/layout/announcement-banner";
 import { LocaleDetector } from "@/components/providers/locale-detector";
+import { WebMcpLoader } from "@/components/webmcp/webmcp-loader";
 import { getConfig } from "@/lib/config";
 import { isRtlLocale } from "@/lib/i18n/config";
 import { getBaseUrl } from "@/lib/seo";
@@ -199,6 +200,7 @@ export default async function RootLayout({
                 <Footer />
                 <CookieConsentBanner />
               </div>
+              {config.features.webmcp && <WebMcpLoader color={config.theme.colors.primary} locales={config.i18n.locales} />}
             </>
           )}
         </Providers>

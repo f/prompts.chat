@@ -3044,5 +3044,13 @@
         "versionHistory": "Cronologia versioni"
       }
     }
+  },
+  "webmcp": {
+    "open": "Collega un agente IA (WebMCP)",
+    "tokenPlaceholder": "Incolla il token di connessione",
+    "connect": "Connetti",
+    "disconnect": "Disconnetti",
+    "close": "Chiudi",
+    "localOnly": "Può connettersi solo un bridge WebMCP su questo computer (localhost)"
   }
 }
