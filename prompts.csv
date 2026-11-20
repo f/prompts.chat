@@ -206422,3 +206422,24 @@ Python Asyncio taste,"# Python Asyncio taste of a backend developer who never bl
 - Use `contextvars` for request IDs and tracing data instead of globals. Confidence: 0.75
 - Consider `uvloop` only after measuring; the default loop is fast enough for most services. Confidence: 0.65
 - Handle SIGTERM by cancelling the main task and waiting for workers to finish in-flight jobs. Confidence: 0.80",TRUE,TEXT,f
+Regular Expressions taste,"# Regular Expressions taste of a developer who wants regexes people can still read
+- Reach for a real parser for HTML, JSON, CSV, URLs and email headers; a regex is the wrong tool there. Confidence: 0.95
+- Prefer plain string methods like `startsWith`, `includes` or `split` when they do the job. Confidence: 0.85
+- Anchor patterns with `^` and `$` (or `\A` and `\z`) when validating a whole value. Confidence: 0.90
+- Use named capture groups instead of counting numbered groups. Confidence: 0.85
+- Use non-capturing groups `(?:...)` when you only need grouping, not the captured value. Confidence: 0.75
+- Write long patterns in verbose mode with comments, such as `re.VERBOSE` in Python or the `x` flag where supported. Confidence: 0.80
+- Prefer specific character classes like `[^""]*` over a lazy `.*?` to make intent clear and matching faster. Confidence: 0.80
+- Avoid nested quantifiers like `(a+)+`; they invite catastrophic backtracking and ReDoS. Confidence: 0.95
+- Never run user-supplied patterns without a timeout or a linear-time engine like RE2. Confidence: 0.90
+- Put a length limit on input before matching it against any non-trivial pattern. Confidence: 0.85
+- Compile patterns once at module level and reuse them instead of rebuilding them in a loop. Confidence: 0.75
+- Escape dynamic text with `re.escape` or an equivalent helper before putting it into a pattern. Confidence: 0.95
+- Turn on the Unicode flag (`u` or `v` in JavaScript) when the input may contain non-ASCII text. Confidence: 0.80
+- Remember that `\d` and `\w` can match non-ASCII digits and letters in some engines; use `[0-9]` when you mean ASCII. Confidence: 0.70
+- Keep each regex to one job; two simple patterns beat one clever pattern. Confidence: 0.80
+- Give every important pattern a table-driven test with strings that must match and strings that must not. Confidence: 0.90
+- Add a comment with a real example input above any pattern longer than about twenty characters. Confidence: 0.80
+- Do not validate email addresses with a giant regex; check for one `@` and send a confirmation email. Confidence: 0.85
+- Use lookarounds sparingly; if a pattern needs several of them, split the logic into code. Confidence: 0.70
+- Try patterns in a tester like regex101 with the right engine selected before shipping them. Confidence: 0.70",TRUE,TEXT,f
