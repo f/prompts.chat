@@ -244352,3 +244352,16 @@ There was this girl who married early people were making mocking of her
 
 </details>
 
+<details>
+<summary><strong>Man black. </strong></summary>
+
+## Man black. 
+
+Contributed by @anonymous
+
+```md
+Picture of a man holding the hands of a lady as well as carrying her heels, snapped hy the woman from the back
+```
+
+</details>
+
