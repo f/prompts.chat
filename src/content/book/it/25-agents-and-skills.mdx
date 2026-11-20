@@ -444,6 +444,55 @@ Quando componi skill, assicurati che non siano in conflitto. Le skill dovrebbero
 - **Compatibili** - Le skill non dovrebbero dare istruzioni contraddittorie
 - **Prioritizzate** - Quando le skill si sovrappongono, definisci quale ha precedenza
 
+## Quando le Skill Imparano dall'Esperienza
+
+Finora tutte le skill di questo capitolo sono state scritte da una persona. Qualcuno si accorge che un compito continua a ripresentarsi, si siede e mette per iscritto come va fatto. Ma un agente che lavora con te giorno dopo giorno tiene anche, in silenzio, traccia di come è andato quel lavoro: quali istruzioni ha seguito, dove sei dovuto intervenire per correggerlo, quali passaggi ha dovuto ripetere. Un approccio più recente mette a frutto questa traccia. Invece di aspettare che qualcuno scriva la skill, è il sistema stesso dell'agente a ripercorrere la propria esperienza e a redigere da solo nuove skill, o a rivedere quelle esistenti. Puoi immaginarlo come un ciclo, molto simile al ciclo dell'agente visto all'inizio del capitolo, solo più lento e rivolto verso l'interno:
+
+<div className="my-6 flex flex-col items-center gap-3 p-6 bg-muted/30 rounded-lg">
+  <div className="flex flex-wrap items-stretch justify-center gap-2">
+    <div className="px-3 py-2 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded text-center text-sm max-w-40">
+      <p className="font-medium text-blue-700 dark:text-blue-300 m-0!">Prove</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0! mt-1">Sessioni passate in cui la skill non è stata all'altezza</p>
+    </div>
+    <div className="self-center text-muted-foreground">→</div>
+    <div className="px-3 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded text-center text-sm max-w-40">
+      <p className="font-medium text-purple-700 dark:text-purple-300 m-0!">Riflessione</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0! mt-1">Un agente propone una modifica, spiegandone le ragioni</p>
+    </div>
+    <div className="self-center text-muted-foreground">→</div>
+    <div className="px-3 py-2 bg-teal-100 dark:bg-teal-900/50 border border-teal-200 dark:border-teal-800 rounded text-center text-sm max-w-40">
+      <p className="font-medium text-teal-700 dark:text-teal-300 m-0!">Verifica</p>
+      <p className="text-xs text-teal-600 dark:text-teal-400 m-0! mt-1">Si controlla che la modifica sia solida e probabilmente utile</p>
+    </div>
+    <div className="self-center text-muted-foreground">→</div>
+    <div className="px-3 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded text-center text-sm max-w-40">
+      <p className="font-medium text-green-700 dark:text-green-300 m-0!">Attivazione</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0! mt-1">D'ora in poi si usa la nuova versione</p>
+    </div>
+  </div>
+  <div className="text-xs text-muted-foreground flex items-center gap-1">
+    <span>↺</span> Ogni nuova versione produce prove per il giro successivo
+  </div>
+</div>
+
+Perplexity descrive questo ciclo nel dettaglio per **Brain**, il sistema di memoria che si migliora da solo e che sta dietro al suo agente Computer ([What is Brain?](https://www.perplexity.ai/help-center/en/articles/19700001-what-is-brain)). In un articolo di novembre 2026 ([Self-improving skills](https://www.perplexity.ai/hub/blog/self-improving-skills)), l'azienda spiega come Brain attinga alla memoria e alla cronologia delle sessioni di un utente per scrivere e perfezionare skill *personali*. Nella fase delle prove, individua le sessioni passate in cui una skill è stata usata, soprattutto quelle in cui non è stata all'altezza. Nella riflessione, un agente di miglioramento studia quelle sessioni e propone modifiche. La verifica controlla che la proposta sia ben formata e che con ogni probabilità migliori i risultati, e l'attivazione la applica, così le sessioni successive diventano prove per il giro seguente. Ciò che rende affidabile il ciclo è la prudenza che porta con sé. Una nuova skill richiede due occorrenze indipendenti dello stesso comportamento riutilizzabile, mentre per aggiornarne una esistente può bastare un solo caso ben documentato. L'agente di miglioramento non modifica mai una skill direttamente: scrive una proposta con il suo ragionamento e le sue prove, apporta al massimo una modifica per skill in ogni esecuzione e si astiene quando le prove non giustificano un cambiamento. Inoltre le skill create automaticamente sono limitate a dieci per utente: una nuova può entrare solo se ne viene ritirata una vecchia, motivando lo scambio.
+
+**Hermes Agent** di Nous Research affronta la stessa idea dal punto di vista di un team. Man mano che una persona gli affida lavoro ricorrente, Hermes trasforma un approccio riuscito in una skill riutilizzabile: una definizione scritta abbinata a codice che esegue i passaggi stabili sempre allo stesso modo ([Nous Research](https://nousresearch.com/press/hermes-enterprise-in-microsoft-teams)). Il suo plugin Collective Wisdom si occupa del momento in cui una skill lascia il computer di una sola persona. Hermes può suggerire che una skill valga la pena di essere condivisa, ma la decisione resta a chi l'ha scritta, che esamina esattamente i file che verranno pubblicati nella libreria del team. I colleghi installano poi una versione precisa, non quello che la skill sembra essere oggi ([Collective Wisdom](https://github.com/NousResearch/hermes-collective-wisdom)). Il capitolo sui [bot sempre attivi](/book/28-persistent-bots) mostra un altro modo in cui Hermes acquisisce una skill: facendosi guidare passo passo attraverso un compito.
+
+Messi uno accanto all'altro, i due esempi insegnano la stessa lezione. Una skill che si riscrive da sola resta un insieme di istruzioni che un agente seguirà, quindi merita la stessa cura di una scritta a mano. Chiedi delle prove prima di una modifica, possibilmente da più di una sessione. Prevedi una revisione umana ovunque una skill passi da una persona ad altre. Conserva le versioni, così che una modifica sbagliata si possa annullare invece di discuterne all'infinito. E fai attenzione alla deriva: una skill rivista abbastanza spesso può piegarsi lentamente verso le abitudini di una sola persona o verso una sola sessione andata male, fino a descrivere più un umore passeggero che il lavoro stesso.
+
+Quanto alzare l'asticella dipende da chi raggiunge la skill. Una skill personale, appresa per un singolo utente, può permettersi di muoversi in fretta, perché un errore tocca solo quell'utente, che è anche il più adatto ad accorgersene. Una skill condivisa o integrata riguarda invece chiunque la carichi. Anche Perplexity traccia questa linea: le modifiche alle skill integrate che ogni utente riceve devono superare test di replay accoppiati e una revisione umana interna prima di arrivare alla versione ufficiale. Un team può adottare lo stesso istinto: lasciare che le skill personali imparino liberamente e chiedere a quelle condivise di guadagnarsi ogni modifica.
+
+Per provare questo ciclo non serve un sistema che si migliora da solo. Puoi percorrerlo a mano, purché tu chieda all'agente di proporre invece di applicare:
+
+<TryIt compact prompt={`Ripensa alla nostra sessione di \${session:ieri, quando abbiamo preparato il report settimanale delle vendite}. Vorrei migliorare la skill \${skill:report-settimanale}, ma non modificarla ancora.
+
+1. Cita testualmente i momenti di quella sessione in cui la skill non è stata all'altezza o in cui ho dovuto correggerti.
+2. Per ognuno, proponi la modifica più piccola alla skill che lo avrebbe evitato.
+3. Dimmi se sembra un caso isolato o qualcosa che probabilmente si ripeterà, e quanto ne sei sicuro.
+4. Segnala ogni modifica che andrebbe bene solo per questa sessione o per le mie abitudini personali.
+5. Mostra le modifiche proposte come diff rispetto alla skill attuale e aspetta la mia approvazione prima di applicare qualsiasi cosa.`} />
+
 ## Condividere e Scoprire Skill
 
 Le skill hanno più valore quando condivise. Piattaforme come [prompts.chat](https://prompts.chat/skills) ti permettono di:
@@ -552,6 +601,18 @@ Man mano che gli agenti IA diventano più capaci, la capacità di comporre, cond
   ]}
   correctIndex={2}
   explanation="Le skill sono pacchetti di expertise portabili. Scrivi una skill di code review una volta, e qualsiasi agente di coding può diventare un esperto code reviewer caricando quella skill—come blocchi LEGO che si incastrano in qualsiasi struttura."
+/>
+
+<Quiz 
+  question="Un agente propone un aggiornamento a una skill condivisa da tutto il tuo team, basandosi su una sola sessione. Qual è il passo successivo più sicuro?"
+  options={[
+    "Applicarlo subito, visto che l'agente ha osservato il problema in prima persona",
+    "Esaminare la modifica e le sue prove, poi pubblicarla come nuova versione che si può annullare",
+    "Eliminare la vecchia skill così che le due versioni non entrino in conflitto",
+    "Ignorarlo, perché delle skill scritte dagli agenti non ci si può mai fidare"
+  ]}
+  correctIndex={1}
+  explanation="Una skill che si rivede da sola resta un insieme di istruzioni che un agente seguirà. Una skill condivisa riguarda chiunque la carichi, quindi una modifica deve arrivare con delle prove, passare da una revisione umana e presentarsi come nuova versione, annullabile se si rivela peggiore."
 />
 
 Le skill permettono anche a un agente di ripetere un lavoro secondo una pianificazione. [Bot sempre attivi](/book/28-persistent-bots) mostra come una skill salvata diventa una routine che un bot persistente esegue da solo.
