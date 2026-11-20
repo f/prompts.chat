@@ -242332,3 +242332,16 @@ An authentic Italian Renaissance-style sgraffito wall panel of a lemon tree in a
 
 </details>
 
+<details>
+<summary><strong>1840s Salted Paper Print of a Stone Harbor at Low Tide</strong></summary>
+
+## 1840s Salted Paper Print of a Stone Harbor at Low Tide
+
+Contributed by [@f](https://github.com/f)
+
+```md
+An authentic 1840s salted paper print, the early calotype-era photographic process, of a quiet stone harbor at low tide, landscape 4:3. Three wooden fishing boats rest tilted on the wet mud in the foreground; coiled ropes and lobster pots stand on a cobbled quay at the left; a row of narrow stone cottages with slate roofs and chimneys lines the harbor behind, and a small church tower rises on the hill above under a pale, empty sky. Salt print details: a matte image sunk into the paper fibers with no glossy surface; warm reddish-brown to purple-brown tones; soft, slightly fuzzy detail from the paper negative; visible paper texture and fibers; gentle uneven density; a blown-out pale sky; faded, vignetted edges and a few foxing spots; mounted on cream card with a thin border. Long-exposure stillness with no motion blur. Quiet, timeless coastal mood. Viewed straight on as a flat print in soft even light. No text, no signature, no frame, no people.
+```
+
+</details>
+
