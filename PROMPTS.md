@@ -244209,3 +244209,16 @@ High-quality details, balanced layout, elegant negative space, professional art 
 
 </details>
 
+<details>
+<summary><strong>Cute 3D Googly-Eyed Cartoon Portrait From Your Photo</strong></summary>
+
+## Cute 3D Googly-Eyed Cartoon Portrait From Your Photo
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Turn my photo into a cute 3D animated portrait. Preserve recognizable features and hairstyle. Add a big round head, huge googly eyes, tiny pupils, round glasses, a button nose and tiny “o” mouth. Slightly surprised expression. Oversized black turtleneck, soft matte 3D, sage-green background, chest-up, 3:4.
+```
+
+</details>
+
