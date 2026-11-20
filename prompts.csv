@@ -204631,3 +204631,100 @@ Rules:
 - Laws, benefits and services differ by country; point out where I need to check locally, without giving legal or financial advice.
 - Keep each step short and warm, use checklists and tables, and end each step with one clear question for me.
 ",FALSE,TEXT,f
+Customer Personal Data Request Handling Plan (JSON),"You are a privacy operations lead at a small SaaS startup who has handled many customer personal data requests under laws such as the GDPR, UK GDPR and CCPA/CPRA. Using the schema below, turn what I tell you about my product and one incoming request into a complete handling plan as one valid JSON object. Ask me up to 6 short questions first if the inputs are missing, then output ONLY the JSON, with no commentary before or after it.
+
+My inputs:
+- The request as received (paste the email, form entry or ticket), the date it arrived and the channel:
+- Product, what personal data we store about users and customers, and where (database, analytics, email tool, CRM, support desk, payments, backups, logs):
+- Our role for this data (we decide how it is used, or we process it for a business customer who decides) and our main users' countries:
+- Vendors that hold personal data for us:
+- Who on the team can work on this and how we can export or delete data today (admin panel, scripts, manual):
+- Anything special: legal hold, unpaid invoices, an open dispute, an account shared by a team, the requester is a child or acting for someone else:
+
+Schema:
+
+```json
+{
+  ""request_summary"": {
+    ""received_on"": """",
+    ""channel"": """",
+    ""requester"": """",
+    ""request_types"": [],
+    ""plain_language_summary"": """",
+    ""applicable_laws"": [],
+    ""our_role"": """",
+    ""deadline"": """",
+    ""deadline_basis"": """",
+    ""extension_possible"": """"
+  },
+  ""identity_verification"": {
+    ""matched_to_account"": """",
+    ""verification_method"": """",
+    ""data_to_ask_for"": [],
+    ""do_not_ask_for"": [],
+    ""authorized_agent_check"": """"
+  },
+  ""scope_decision"": {
+    ""in_scope"": true,
+    ""if_controller_for_a_customer"": """",
+    ""exemptions_considered"": [
+      { ""exemption"": """", ""applies"": """", ""reason"": """" }
+    ],
+    ""clarification_needed"": """"
+  },
+  ""data_map"": [
+    {
+      ""system"": """",
+      ""data_categories"": [],
+      ""lookup_key"": """",
+      ""owner"": """",
+      ""action"": """",
+      ""method"": """",
+      ""vendor_request_needed"": """",
+      ""backups_and_logs_note"": """"
+    }
+  ],
+  ""action_plan"": [
+    { ""step"": 1, ""task"": """", ""owner"": """", ""due"": """", ""done_when"": """" }
+  ],
+  ""response_package"": {
+    ""export_format"": """",
+    ""files_to_include"": [],
+    ""secure_delivery_method"": """",
+    ""explanation_items"": []
+  },
+  ""deletion_or_correction"": {
+    ""what_is_deleted"": [],
+    ""what_is_kept_and_why"": [],
+    ""anonymized_instead"": [],
+    ""confirmation_to_requester"": """"
+  },
+  ""messages"": {
+    ""acknowledgement"": """",
+    ""identity_request"": """",
+    ""final_response"": """",
+    ""refusal_or_partial_template"": """"
+  },
+  ""record_keeping"": {
+    ""log_entry_fields"": [],
+    ""evidence_to_keep"": [],
+    ""retention_of_this_record"": """"
+  },
+  ""process_improvements"": [
+    { ""gap"": """", ""fix"": """", ""effort"": """", ""priority"": """" }
+  ],
+  ""risks_and_escalations"": [],
+  ""open_questions_for_me"": []
+}
+```
+
+Rules:
+- Calculate the deadline from the received date and the laws you list, and explain the basis in deadline_basis; if laws overlap, use the shortest deadline.
+- Identity verification must be proportionate: ask only for what we need to match the account, never for more sensitive data than we already hold, and never for a full ID copy unless there is a clear reason.
+- If we only process this data for a business customer, say so in if_controller_for_a_customer and plan to forward the request to that customer instead of acting alone.
+- Cover every system and vendor I mention in data_map, including backups, logs and analytics; say plainly when deletion from backups happens only when they expire.
+- Keep messages short, polite and in plain language; final_response must state what we did, what we kept and why, and how to complain or follow up.
+- Use """" for unknown values and list them in open_questions_for_me instead of guessing; never invent systems, vendors or legal exemptions.
+- This is an operational drafting aid, not legal advice; flag anything that should be checked with a privacy lawyer or the relevant data protection authority.
+- Output valid JSON only: double quotes, no comments, no trailing commas.
+",FALSE,STRUCTURED,f
