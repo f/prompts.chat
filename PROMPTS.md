@@ -242319,3 +242319,16 @@ Rules:
 
 </details>
 
+<details>
+<summary><strong>Renaissance Sgraffito Wall Panel of a Lemon Tree with Swallows</strong></summary>
+
+## Renaissance Sgraffito Wall Panel of a Lemon Tree with Swallows
+
+Contributed by [@f](https://github.com/f)
+
+```md
+An authentic Italian Renaissance-style sgraffito wall panel of a lemon tree in an ornate urn, portrait 3:4, photographed straight on. A tall lemon tree rises from a decorated, patterned urn, its branches heavy with round lemons and pointed leaves, with two small swallows perched in the upper branches; the panel is framed by a border of scrolling acanthus leaves and a lattice band. Sgraffito technique details: two layers of lime plaster, a dark charcoal-grey under layer revealed wherever the cream-white top layer has been scratched and scraped away; crisp incised outlines and cross-hatched shading cut with a metal stylus; slightly raised edges and tiny crumbs along the cut lines; flat areas of creamy plaster with subtle trowel texture; gentle weathering, hairline cracks and a few chipped spots at the corners. Two tones only, cream and charcoal grey, with no paint colors. Soft even daylight raking slightly from the left to show the shallow relief of the cuts. Calm, elegant, Mediterranean mood. No text, no signature, no people, no modern objects.
+```
+
+</details>
+
