@@ -206401,3 +206401,24 @@ Release Management taste,"# Release Management taste of a maintainer who wants b
 - Never move or delete a published tag or package version; publish a new one instead. Confidence: 0.95
 - Automate the release checklist in CI and keep any remaining manual steps written in the repo. Confidence: 0.80
 - Announce each release with the user-facing changes first and the upgrade steps right below them. Confidence: 0.75",TRUE,TEXT,f
+Python Asyncio taste,"# Python Asyncio taste of a backend developer who never blocks the event loop
+- Use asyncio only for I/O-bound work like network calls and databases; CPU-heavy work goes to a process pool. Confidence: 0.90
+- Start the program with a single `asyncio.run(main())` and never create or manage event loops by hand. Confidence: 0.90
+- Use `asyncio.TaskGroup` for running tasks together so a failure cancels the siblings and nothing leaks. Confidence: 0.85
+- Never fire and forget with `create_task` without keeping a reference; lost tasks get garbage collected and errors vanish. Confidence: 0.90
+- Put a timeout on every network call with `asyncio.timeout()`; waiting forever is a bug. Confidence: 0.90
+- Limit concurrency with a `Semaphore` instead of starting thousands of requests at once. Confidence: 0.85
+- Never call blocking libraries like `requests` or `time.sleep` inside a coroutine. Confidence: 0.95
+- Wrap unavoidable blocking calls in `asyncio.to_thread` and keep them short. Confidence: 0.80
+- Use async-native clients such as `httpx` or `asyncpg`, and share one client per app instead of one per request. Confidence: 0.85
+- Treat `CancelledError` as normal: clean up in `finally` and re-raise it, never swallow it. Confidence: 0.90
+- Avoid `asyncio.gather` without `return_exceptions` for independent jobs where one failure should not hide the others. Confidence: 0.70
+- Use `asyncio.Queue` with a fixed number of worker tasks for producer and consumer pipelines. Confidence: 0.80
+- Close clients, sessions and connections with `async with` so shutdown is clean. Confidence: 0.85
+- Turn on asyncio debug mode in development to catch slow callbacks and never-awaited coroutines. Confidence: 0.75
+- Keep sync and async code paths separate instead of writing clever wrappers that run both. Confidence: 0.75
+- Do not mix threads and the event loop unless you use `run_coroutine_threadsafe` on purpose. Confidence: 0.80
+- Test async code with `pytest-asyncio` or `anyio` and give tests their own short timeouts. Confidence: 0.80
+- Use `contextvars` for request IDs and tracing data instead of globals. Confidence: 0.75
+- Consider `uvloop` only after measuring; the default loop is fast enough for most services. Confidence: 0.65
+- Handle SIGTERM by cancelling the main task and waiting for workers to finish in-flight jobs. Confidence: 0.80",TRUE,TEXT,f
