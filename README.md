@@ -75,6 +75,7 @@ prompts.chat also hosts **always-on AI agents** and the teams they work in.
 
 - **[Bots](https://prompts.chat/bots)** — Share and discover bots (OpenClaw, Hermes Agent, Grok Bot, and more). Each bot page has install instructions per platform, the computer it needs (**cloud**, **the user's computer**, or **both**), "Better together with" pairings, upvotes, comments, and change requests.
 - **[Bot Teams](https://prompts.chat/bots/teams)** — Groups of bots that hand work off to each other, shown as an interactive graph. Upvote a team or install every bot in it at once. Featured teams appear on the homepage, and **Teams** is in the top navigation.
+- **[Agents Universe](https://github.com/agents-universe/agents-universe)** — Shared AI agents and digital teammates with project-context memory.
 - **Profiles** — User profiles have Bots and Teams tabs with counts.
 - **Moderation** — Bots and teams can be unlisted to hide them from public listings.
 
