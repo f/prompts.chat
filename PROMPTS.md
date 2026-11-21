@@ -244782,3 +244782,19 @@ Learning branding and building a firm that deals with branding
 
 </details>
 
+<details>
+<summary><strong>Florentine Pietra Dura Inlay of a Pomegranate Branch with Goldfinches</strong></summary>
+
+## Florentine Pietra Dura Inlay of a Pomegranate Branch with Goldfinches
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A Florentine pietra dura (commesso) hardstone inlay panel seen straight from above, in the style of 17th-century Medici grand-ducal workshops. The ground is deep black marble crossed by fine white and grey veins. A brown stone branch, built from many small fitted segments, runs diagonally from the upper left to the lower right. Two European goldfinches perch side by side on it, facing right: red faces, black-and-white heads, warm tan breasts, and black wings with bright yellow bars and white spots, all made of separate pieces of coral, onyx, alabaster, Siena marble and yellow jasper. Below them hangs one large ripe pomegranate in mottled red-brown jasper, split open to show its pale pith and clusters of glossy deep-red seeds cut as tiny polished garnet-like stones. Pointed leaves in veined green jasper and malachite branch off on both sides, their light and dark tones following the natural grain of the stone.
+
+Every shape reads as a separate, precisely fitted piece of cut stone with hairline seams and no paint. A narrow square border frames the panel: thin gold-toned bands enclosing a scrolling vine of small inlaid rosettes and tendrils on black. Soft, even museum lighting, rich saturated stone colors, crisp detail. No text, no signature. Square 1:1.
+
+```
+
+</details>
+
