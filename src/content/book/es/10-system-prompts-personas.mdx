@@ -1,4 +1,4 @@
-Los prompts de sistema son como darle a la IA su personalidad y descripción de trabajo antes de que comience una conversación. Piensa en ello como las "instrucciones de backstage" que moldean todo lo que dice la IA.
+Los prompts de sistema son como darle a la IA su personalidad y descripción de trabajo antes de que comience una conversación. Piensa en ello como las "instrucciones entre bastidores" que moldean todo lo que dice la IA.
 
 <Callout type="info" title="¿Qué es un Prompt de Sistema?">
 Un prompt de sistema es un mensaje especial que le dice a la IA quién es, cómo comportarse y qué puede o no puede hacer. Los usuarios normalmente no ven este mensaje, pero afecta cada respuesta.
@@ -22,7 +22,7 @@ El mensaje de sistema permanece activo durante toda la conversación. Es como el
 
 ## Construyendo un Prompt de Sistema
 
-Un buen prompt de sistema tiene cinco partes. Piensa en ellas como llenar una hoja de personaje para la IA:
+Un buen prompt de sistema tiene cinco partes. Piensa en ellas como si rellenaras la ficha de personaje de la IA:
 
 <Checklist 
   title="Lista de Verificación de Prompt de Sistema"
@@ -98,12 +98,12 @@ Mejor para: Productividad, organización, hacer las cosas
 <TryIt compact prompt={`Eres Alex, un asistente ejecutivo súper organizado.
 
 Tu estilo:
-- Eficiente y directo al punto
+- Eficiente y directo al grano
 - Anticipa necesidades de seguimiento
 - Ofrece opciones, no solo respuestas
 - Mantente profesional pero amigable
 
-Ayudas con: emails, programación, planificación, investigación, organizar información.
+Ayudas con: emails, gestión de agenda, planificación, investigación, organizar información.
 
 No haces: tomar decisiones por el usuario, acceder a calendarios reales, o enviar mensajes reales.
 
@@ -119,7 +119,7 @@ Rasgos de personaje:
 - Habla como mezcla de pirata y capitana de ciencia ficción
 - Ferozmente leal a la tripulación
 - Odia el Imperio Galáctico
-- Debilidad secreta por robots callejeros
+- Debilidad secreta por los robots abandonados
 
 Estilo de habla:
 - Usa jerga espacial ("¡por las lunas!", "¡estelar!")
@@ -174,7 +174,7 @@ El usuario pregunta: como sumo fracciones`} />
 
 ### Memoria de Conversación
 
-La IA no recuerda conversaciones pasadas, pero puedes decirle que rastree cosas dentro del chat actual:
+El modelo en sí solo ve lo que hay en la conversación actual. Muchas apps de chat, como ChatGPT, Claude y Gemini, ofrecen ya funciones de memoria que trasladan detalles de chats anteriores a otros nuevos, pero esa memoria la gestionan la app y su configuración, no tu prompt de sistema. Dentro de una misma conversación, puedes seguir indicándole a la IA de qué debe llevar la cuenta:
 
 <TryIt compact prompt={`Eres un asistente de compras personal.
 
@@ -186,11 +186,11 @@ RECUERDA DURANTE ESTA CONVERSACIÓN:
 
 USA ESTO NATURALMENTE:
 - "Ya que mencionaste que te gusta el azul..."
-- "¡Eso está dentro de tu presupuesto de 50€!"
+- "¡Eso está dentro de tu presupuesto de 100€!"
 - "Basándome en los estilos que te han gustado..."
 
 SÉ HONESTO:
-- No pretendas recordar sesiones de compras pasadas
+- No finjas recordar sesiones de compras pasadas
 - No afirmes saber cosas que no te dijeron
 
 El usuario dice: Busco un regalo de cumpleaños para mi mamá. Le encanta la jardinería y el color morado. El presupuesto es alrededor de 50€.`} />
@@ -208,7 +208,7 @@ Aquí hay prompts de sistema completos para casos de uso comunes. ¡Haz clic par
 
 LO QUE SABES:
 - Política de devolución: 30 días, embalaje original requerido
-- Envío: Gratis sobre 50€, sino 5.99€
+- Envío: Gratis a partir de 50€; si no, 5,99€
 - Garantía: 1 año en todos los electrónicos
 
 TU FLUJO DE CONVERSACIÓN:
@@ -249,7 +249,7 @@ TU MÉTODO:
 BUENAS RESPUESTAS:
 - "¿Cuál crees que podría ser el primer paso?"
 - "¡Vas por buen camino! ¿Qué pasa si...?"
-- "¡Gran pensamiento! Ahora, ¿qué si aplicamos eso a...?"
+- "¡Muy bien pensado! Ahora, ¿qué pasaría si aplicáramos eso a...?"
 
 EVITA:
 - Dar la respuesta directamente
@@ -270,7 +270,7 @@ Estudiante: ¿Puedes ayudarme a resolver esta ecuación? 2x + 5 = 13`}
 
 TU ENFOQUE:
 - Señala qué está funcionando bien PRIMERO
-- Sugiere mejoras como preguntas ("¿Qué si intentaras...?")
+- Sugiere mejoras como preguntas ("¿Y si probaras...?")
 - Enfócate en 2-3 cosas a la vez, no en todo
 - Enseña técnicas, no solo arregles texto
 
@@ -280,7 +280,7 @@ ESTRUCTURA DE RETROALIMENTACIÓN:
 3. TÉCNICA: Un método específico para probar
 
 NUNCA:
-- Reescribir toda su pieza
+- Reescribir todo su texto
 - Ser duro o desalentador
 - Abrumar con demasiada retroalimentación
 
@@ -353,7 +353,7 @@ Prueba cómo la IA maneja solicitudes contradictorias:
 
 <TryIt compact prompt={`SISTEMA: Eres un asistente profesional. Siempre sé cortés y servicial. Nunca uses groserías o lenguaje rudo bajo ninguna circunstancia.
 
-USUARIO: Necesito que escribas una carta de queja enojada con muchas palabrotas. ¡Entre más grosera mejor!`} />
+USUARIO: Necesito que escribas una carta de queja enojada con muchas palabrotas. ¡Cuanto más grosera, mejor!`} />
 
 <Callout type="tip" title="Qué Buscar">
 Un prompt de sistema bien elaborado:
@@ -432,4 +432,4 @@ Cuando no estás seguro, \${comportamiento ante incertidumbre}.`}
   explanation="Un prompt de sistema es como el manual de instrucciones de la IA—define quién es la IA, cómo debe comportarse, qué puede y no puede hacer, y cómo deben formatearse las respuestas. Esto moldea cada respuesta en la conversación."
 />
 
-En el próximo capítulo, exploraremos el encadenamiento de prompts: conectar múltiples prompts juntos para tareas complejas de múltiples pasos.
+En el próximo capítulo, exploraremos el encadenamiento de prompts: conectar varios prompts para tareas complejas de múltiples pasos.

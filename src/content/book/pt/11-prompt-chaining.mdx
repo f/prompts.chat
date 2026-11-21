@@ -31,7 +31,7 @@ Prompts únicos têm dificuldade com tarefas complexas porque tentam fazer demai
 
 ## Padrão Básico de Encadeamento
 
-A cadeia mais simples passa saída de um prompt diretamente para o próximo. Cada etapa tem um propósito claro e focado.
+A cadeia mais simples passa a saída de um prompt diretamente para o próximo. Cada etapa tem um propósito claro e focado.
 
 <div className="my-6 flex items-center justify-center gap-3 p-6 bg-muted/30 rounded-lg overflow-x-auto">
   <div className="flex flex-col items-center">
@@ -77,14 +77,14 @@ O padrão mais direto: cada etapa depende da anterior. Pense nisso como uma corr
   type="sequential"
   steps={[
     { step: "Etapa 1: Extrair", prompt: "Extraia todas as datas, nomes e números de: [texto]", output: '{ datas: ["2024-01-15", "2024-02-20"], nomes: ["João Silva", "Acme Corp"], numeros: [15000, 42] }' },
-    { step: "Etapa 2: Analisar", prompt: "Dados estes dados extraídos: [saida_etapa1], identifique relacionamentos e padrões.", output: '{ padroes: ["Reuniões mensais agendadas"], relacionamentos: ["João Silva trabalha na Acme Corp"] }' },
+    { step: "Etapa 2: Analisar", prompt: "Com base nestes dados extraídos: [saida_etapa1], identifique relacionamentos e padrões.", output: '{ padroes: ["Reuniões mensais agendadas"], relacionamentos: ["João Silva trabalha na Acme Corp"] }' },
     { step: "Etapa 3: Gerar", prompt: "Usando estes padrões: [saida_etapa2], escreva um relatório resumo destacando as descobertas mais significativas.", output: "Relatório Resumo: Análise do documento revela uma relação comercial entre João Silva e Acme Corp, com reuniões mensais agendadas..." }
   ]}
 />
 
 ### Cadeia Paralela
 
-Quando você precisa de múltiplas perspectivas sobre a mesma entrada, execute prompts em paralelo e mescle resultados. Isso é mais rápido que cadeias sequenciais e fornece análise mais rica.
+Quando você precisa de múltiplas perspectivas sobre a mesma entrada, execute os prompts em paralelo e mescle os resultados. Isso é mais rápido que cadeias sequenciais e fornece análise mais rica.
 
 <ChainExample 
   type="parallel"
@@ -99,7 +99,7 @@ Quando você precisa de múltiplas perspectivas sobre a mesma entrada, execute p
 
 ### Cadeia Condicional
 
-Encaminhe entradas por diferentes caminhos baseado em classificação. Isso é como uma árvore de decisão onde a IA primeiro categoriza a entrada, depois trata cada categoria diferentemente.
+Encaminhe entradas por diferentes caminhos com base em uma classificação. Isso é como uma árvore de decisão onde a IA primeiro categoriza a entrada, depois trata cada categoria diferentemente.
 
 <ChainExample 
   type="conditional"
@@ -113,10 +113,10 @@ Encaminhe entradas por diferentes caminhos baseado em classificação. Isso é c
 
 ### Cadeia Iterativa
 
-Continue refinando saída até atender padrões de qualidade. A IA gera, avalia e melhora em loop até satisfeita ou máximo de iterações atingido.
+Continue refinando a saída até que ela atenda aos padrões de qualidade. A IA gera, avalia e melhora em loop até ficar satisfeita ou atingir o número máximo de iterações.
 
 <Callout type="warning" title="Defina Limites de Iteração">
-Sempre defina um número máximo de iterações (tipicamente 3-5) para prevenir loops infinitos e controlar custos. A lei de retornos decrescentes se aplica: a maioria da melhoria acontece nas primeiras 2-3 iterações.
+Sempre defina um número máximo de iterações (tipicamente 3-5) para prevenir loops infinitos e controlar custos. A lei de retornos decrescentes se aplica: a maior parte da melhoria acontece nas primeiras 2-3 iterações.
 </Callout>
 
 <ChainExample 
@@ -171,7 +171,7 @@ Perfeito para refatoração de código, planejamento de projeto ou qualquer tare
 
 ### Gerar → Criticar → Refinar
 
-O loop de auto-melhoria. Gere conteúdo, faça a IA avaliá-lo criticamente, depois melhore baseado nesse feedback. Isso imita como escritores profissionais e editores trabalham juntos.
+O loop de auto-melhoria. Gere conteúdo, faça a IA avaliá-lo criticamente, depois melhore com base nesse feedback. Isso imita como escritores profissionais e editores trabalham juntos.
 
 <div className="mb-4 p-3 rounded-lg bg-green-50/50 dark:bg-green-950/20 border border-green-200 dark:border-green-800">
   <p className="text-xs font-semibold text-green-700 dark:text-green-300 mb-1 m-0!">Melhor Para</p>
@@ -182,9 +182,9 @@ O loop de auto-melhoria. Gere conteúdo, faça a IA avaliá-lo criticamente, dep
   type="iterative"
   steps={[
     { step: "Gerar", prompt: "Escreva um email de marketing para [app de fitness] visando [profissionais ocupados].", output: "Assunto: Fique Em Forma Rápido!\n\nOi! Nosso app ajuda você a se exercitar. Baixe hoje e comece sua jornada fitness. Obrigado!" },
-    { step: "Criticar", prompt: "Como especialista em marketing, critique este email:\n[email_gerado]\nAvalie: linha de assunto, gancho, proposta de valor, CTA, tom\nPontue cada de 1-10.", output: '{ "linha_assunto": 4, "gancho": 3, "proposta_valor": 2, "cta": 5, "tom": 4, "feedback": "Muito genérico, sem benefícios específicos, urgência fraca" }' },
+    { step: "Criticar", prompt: "Como especialista em marketing, critique este email:\n[email_gerado]\nAvalie: linha de assunto, gancho, proposta de valor, CTA, tom\nDê uma nota de 1 a 10 para cada um.", output: '{ "linha_assunto": 4, "gancho": 3, "proposta_valor": 2, "cta": 5, "tom": 4, "feedback": "Muito genérico, sem benefícios específicos, urgência fraca" }' },
     { step: "Refinar", prompt: "Reescreva o email abordando este feedback:\nOriginal: [email_gerado]\nCrítica: [saida_critica]\nFoque nos elementos com menor pontuação.", output: "Assunto: Treinos de 15 Min pro Seu Horário de Almoço\n\nAgenda apertada? A gente entende. Nosso app entrega treinos baseados em ciência feitos para profissionais que não têm tempo a perder. Junte-se a 50.000+ executivos que transformaram sua saúde em apenas 15 minutos por dia. Comece seu trial grátis agora—seu eu do futuro vai agradecer." },
-    { step: "Nota Final", prompt: "Reavalie o email refinado.", output: '{ "linha_assunto": 8, "gancho": 8, "proposta_valor": 9, "cta": 8, "tom": 9, "melhoria": "+23 pontos total" }' }
+    { step: "Nota Final", prompt: "Reavalie o email refinado.", output: '{ "linha_assunto": 8, "gancho": 8, "proposta_valor": 9, "cta": 8, "tom": 9, "melhoria": "+24 pontos no total" }' }
   ]}
 />
 
@@ -212,7 +212,9 @@ Para sistemas de produção, automatize a cadeia com código. Isso permite trata
 <CodeEditor 
   language="python"
   filename="chain.py"
-  code={`def cadeia_analise(documento):
+  code={`import json
+
+def cadeia_analise(documento):
     # Etapa 1: Resumir
     resumo = chamar_ia(f"""
         Resuma os pontos-chave deste documento em 5 bullets:
@@ -282,19 +284,19 @@ Se uma etapa produz saída ruim, toda etapa seguinte será afetada. Sempre valid
 
 ### Validação Entre Etapas
 
-Adicione uma etapa de validação após qualquer etapa que produz dados estruturados. Isso captura erros cedo antes que cascateiem.
+Adicione uma etapa de validação após qualquer etapa que produz dados estruturados. Isso captura erros cedo, antes que se propaguem em cascata.
 
 <ValidationDemo />
 
 ### Cadeias de Fallback
 
-Quando sua abordagem principal falha, tenha um backup mais simples pronto. Troque capacidade por confiabilidade.
+Quando sua abordagem principal falha, tenha um backup mais simples pronto. Abra mão de um pouco de capacidade em troca de confiabilidade.
 
 <FallbackDemo />
 
 ## Otimização de Cadeia
 
-Uma vez que sua cadeia funcione, otimize para velocidade, custo e confiabilidade. Estes frequentemente têm trade-offs entre si.
+Quando sua cadeia estiver funcionando, otimize-a para velocidade, custo e confiabilidade. Estes frequentemente têm trade-offs entre si.
 
 <div className="my-6 grid md:grid-cols-3 gap-4">
   <div className="border rounded-lg bg-blue-50/50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900 p-4">
@@ -336,7 +338,7 @@ Vamos percorrer uma cadeia de produção completa. Este pipeline de conteúdo tr
 
 ## Resumo
 
-Encadeamento de prompts transforma o que IA pode realizar ao dividir tarefas impossíveis em etapas alcançáveis.
+Encadeamento de prompts amplia muito o que a IA pode realizar ao dividir tarefas impossíveis em etapas alcançáveis.
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
   <div className="border rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900 p-4">
@@ -361,7 +363,7 @@ Encadeamento de prompts transforma o que IA pode realizar ao dividir tarefas imp
 </div>
 
 <Callout type="tip" title="Comece Simples">
-Comece com uma cadeia sequencial de 2-3 etapas. Faça funcionar confiavelmente antes de adicionar complexidade. A maioria das tarefas não precisa de arquiteturas de cadeia elaboradas.
+Comece com uma cadeia sequencial de 2-3 etapas. Faça-a funcionar de forma confiável antes de adicionar complexidade. A maioria das tarefas não precisa de arquiteturas de cadeia elaboradas.
 </Callout>
 
 <Quiz 
@@ -373,7 +375,7 @@ Comece com uma cadeia sequencial de 2-3 etapas. Faça funcionar confiavelmente a
     "Requer menos planejamento"
   ]}
   correctIndex={2}
-  explanation="Encadeamento de prompts divide tarefas complexas em etapas especializadas. Cada etapa pode focar em uma coisa bem, resultados intermediários podem ser validados, erros podem ser capturados e retentados, e a qualidade geral melhora através da especialização."
+  explanation="Encadeamento de prompts divide tarefas complexas em etapas especializadas. Cada etapa pode focar em uma coisa bem, resultados intermediários podem ser validados, erros podem ser detectados e as etapas, repetidas, e a qualidade geral melhora através da especialização."
 />
 
-No próximo capítulo, exploraremos prompting multimodal: trabalhando com imagens, áudio e outros conteúdos não-texto.
+No próximo capítulo, exploraremos como lidar com casos limite: entradas vazias, solicitações ambíguas e tentativas deliberadas de quebrar seus prompts.

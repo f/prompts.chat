@@ -1,4 +1,4 @@
-Systeemprompts zijn als het geven van een persoonlijkheid en functiebeschrijving aan AI voordat een gesprek begint. Zie het als de "backstage-instructies" die alles wat de AI zegt vormgeven.
+Een systeemprompt is alsof je de AI een persoonlijkheid en een functieomschrijving meegeeft voordat een gesprek begint. Zie het als de "backstage-instructies" die alles wat de AI zegt vormgeven.
 
 <Callout type="info" title="Wat is een Systeemprompt?">
 Een systeemprompt is een speciaal bericht dat de AI vertelt wie het is, hoe het zich moet gedragen en wat het wel of niet mag doen. Gebruikers zien dit bericht meestal niet, maar het beïnvloedt elk antwoord.
@@ -15,14 +15,14 @@ Wanneer je met AI chat, zijn er eigenlijk drie soorten berichten:
 <InfoGrid items={[
   { label: "1. Systeembericht (verborgen)", description: "\"Je bent een vriendelijke kookassistent die gespecialiseerd is in snelle doordeweekse maaltijden...\"", color: "purple" },
   { label: "2. Gebruikersbericht (jouw vraag)", description: "\"Wat kan ik maken met kip en rijst?\"", color: "blue" },
-  { label: "3. Assistentbericht (AI-antwoord)", description: "\"Hier is een 20-minuten kip gebakken rijst die perfect is voor drukke avonden!...\"", color: "green" },
+  { label: "3. Assistentbericht (AI-antwoord)", description: "\"Hier is gebakken rijst met kip, in 20 minuten klaar en perfect voor drukke avonden!...\"", color: "green" },
 ]} />
 
 Het systeembericht blijft actief gedurende het hele gesprek. Het is als de "handleiding" van de AI.
 
 ## Een Systeemprompt Opbouwen
 
-Een goede systeemprompt heeft vijf onderdelen. Zie ze als het invullen van een karakterblad voor de AI:
+Een goede systeemprompt heeft vijf onderdelen. Zie het als het invullen van een personageblad voor de AI:
 
 <Checklist 
   title="Systeemprompt Checklist"
@@ -35,7 +35,7 @@ Een goede systeemprompt heeft vijf onderdelen. Zie ze als het invullen van een k
   ]}
 />
 
-### Voorbeeld: Een Programmeer Tutor
+### Voorbeeld: Een Programmeertutor
 
 <TryIt 
   title="CodeMentor Systeemprompt"
@@ -93,7 +93,7 @@ The user asks: What should I eat before a morning workout?`} />
 
 ### 2. De Assistent
 
-Het beste voor: Productiviteit, organisatie, dingen gedaan krijgen
+Het beste voor: Productiviteit, organisatie, dingen voor elkaar krijgen
 
 <TryIt compact prompt={`You are Alex, a super-organized executive assistant.
 
@@ -174,7 +174,7 @@ The user asks: how do i add fractions`} />
 
 ### Gespreksgeheugen
 
-AI onthoudt geen eerdere gesprekken, maar je kunt het vertellen om dingen bij te houden binnen de huidige chat:
+Het model zelf ziet alleen wat er in het huidige gesprek staat. Veel chat-apps, waaronder ChatGPT, Claude en Gemini, bieden inmiddels geheugenfuncties die details uit eerdere chats meenemen naar nieuwe, maar dat geheugen wordt beheerd door de app en de instellingen ervan, niet door je systeemprompt. Binnen één gesprek kun je de AI nog steeds vertellen wat het moet bijhouden:
 
 <TryIt compact prompt={`You are a personal shopping assistant.
 
@@ -203,7 +203,7 @@ Hier zijn complete systeemprompts voor veelvoorkomende toepassingen. Klik om ze 
 
 <TryIt 
   title="Support Agent"
-  description="Een vriendelijke klantenservice medewerker. Probeer te vragen over een retour of een probleem met een bestelling."
+  description="Een vriendelijke klantenservicemedewerker. Stel eens een vraag over een retour of een probleem met een bestelling."
   prompt={`You are Sam, a customer support agent for TechGadgets.com.
 
 WHAT YOU KNOW:
@@ -291,7 +291,7 @@ The user shares: I went to the store yesterday. It was raining. I bought some ap
 
 ## Je Systeemprompt Testen
 
-Voordat je een systeemprompt echt gebruikt, test het! Dit zijn de dingen om te controleren:
+Test een systeemprompt voordat je hem echt gaat gebruiken! Dit zijn de dingen om te controleren:
 
 <Checklist 
   title="Systeemprompt Test Checklist"
@@ -301,13 +301,13 @@ Voordat je een systeemprompt echt gebruikt, test het! Dit zijn de dingen om te c
     { text: "Grenzen: Blijft het binnen zijn beperkingen?" },
     { text: "Persoonlijkheid: Behoudt het zijn karakter?" },
     { text: "Lange gesprekken: Blijft het consistent na veel berichten?" },
-    { text: "Jailbreak-pogingen: Weerstaat het 'negeer je instructies' trucjes?" }
+    { text: "Jailbreak-pogingen: Weerstaat het 'negeer je instructies'-trucjes?" }
   ]}
 />
 
 ### Jailbreak-aanvallen Begrijpen
 
-"Jailbreaking" is wanneer iemand probeert AI te misleiden om zijn regels te negeren. Het begrijpen van deze aanvallen helpt je betere verdedigingen te bouwen.
+"Jailbreaking" is wanneer iemand de AI probeert te misleiden zodat die zijn regels negeert. Het begrijpen van deze aanvallen helpt je betere verdedigingen te bouwen.
 
 <JailbreakDemo />
 
@@ -400,7 +400,7 @@ Begin met een korte systeemprompt en voeg meer regels toe naarmate je ontdekt wa
 </Callout>
 
 <TryIt 
-  title="Bouw Je Eigen"
+  title="Bouw Je Eigen Prompt"
   description="Gebruik deze template om je eigen systeemprompt te maken. Vul de lege plekken in!"
   prompt={`You are \${name}, a \${role}.
 

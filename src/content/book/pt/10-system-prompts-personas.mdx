@@ -5,7 +5,7 @@ Um prompt de sistema é uma mensagem especial que diz à IA quem ela é, como se
 </Callout>
 
 <Callout type="tip" title="Relacionado: Prompting Baseado em Papel">
-Prompts de sistema constroem sobre os conceitos de [Prompting Baseado em Papel](/book/04-role-based-prompting). Enquanto prompts de papel atribuem uma persona dentro da sua mensagem, prompts de sistema definem essa identidade em um nível mais profundo que persiste por toda a conversa.
+Prompts de sistema se baseiam nos conceitos de [Prompting Baseado em Papel](/book/04-role-based-prompting). Enquanto prompts de papel atribuem uma persona dentro da sua mensagem, prompts de sistema definem essa identidade em um nível mais profundo que persiste por toda a conversa.
 </Callout>
 
 ## Como Prompts de Sistema Funcionam
@@ -15,7 +15,7 @@ Quando você conversa com IA, existem na verdade três tipos de mensagens:
 <InfoGrid items={[
   { label: "1. Mensagem de Sistema (oculta)", description: "\"Você é um assistente de culinária amigável especializado em refeições rápidas de dia de semana...\"", color: "purple" },
   { label: "2. Mensagem do Usuário (sua pergunta)", description: "\"O que posso fazer com frango e arroz?\"", color: "blue" },
-  { label: "3. Mensagem do Assistente (resposta da IA)", description: "\"Aqui está um arroz frito com frango de 20 minutos perfeito para noites corridas!...\"", color: "green" },
+  { label: "3. Mensagem do Assistente (resposta da IA)", description: "\"Aqui está um arroz frito com frango pronto em 20 minutos, perfeito para noites corridas!...\"", color: "green" },
 ]} />
 
 A mensagem de sistema permanece ativa por toda a conversa. É como o "manual de instruções" da IA.
@@ -31,7 +31,7 @@ Um bom prompt de sistema tem cinco partes. Pense nelas como preencher uma ficha 
     { text: "Capacidades: O que ela pode fazer?" },
     { text: "Limitações: O que ela NÃO deve fazer?" },
     { text: "Comportamento: Como ela deve falar e agir?" },
-    { text: "Formato: Como as respostas devem parecer?" }
+    { text: "Formato: Como as respostas devem ser apresentadas?" }
   ]}
 />
 
@@ -93,7 +93,7 @@ O usuário pergunta: O que devo comer antes de um treino matinal?`} />
 
 ### 2. O Assistente
 
-Melhor para: Produtividade, organização, fazer as coisas
+Melhor para: Produtividade, organização, dar conta das tarefas
 
 <TryIt compact prompt={`Você é Alex, um assistente executivo super organizado.
 
@@ -137,7 +137,7 @@ Pense no seu prompt de sistema como uma cebola com camadas. As camadas internas 
 
 <InfoGrid items={[
   { label: "Regras Principais (nunca quebrar)", description: "Ser verdadeiro, manter segurança, proteger privacidade", color: "red" },
-  { label: "Persona (mantém consistente)", description: "Quem a IA é, como fala, sua expertise", color: "amber" },
+  { label: "Persona (permanece consistente)", description: "Quem a IA é, como fala, sua expertise", color: "amber" },
   { label: "Contexto da Tarefa (pode mudar)", description: "Projeto atual, objetivos específicos, info relevante", color: "blue" },
   { label: "Preferências (usuário pode ajustar)", description: "Tamanho da resposta, formato, nível de detalhe", color: "green" },
 ]} />
@@ -174,15 +174,15 @@ O usuário pergunta: como eu somo frações`} />
 
 ### Memória de Conversa
 
-IA não lembra conversas passadas, mas você pode dizer a ela para rastrear coisas dentro do chat atual:
+O modelo em si só vê o que está na conversa atual. Muitos apps de chat, incluindo ChatGPT, Claude e Gemini, já oferecem recursos de memória que levam detalhes de conversas anteriores para novas conversas, mas essa memória é gerenciada pelo app e suas configurações, não pelo seu prompt de sistema. Dentro de uma única conversa, você ainda pode dizer à IA o que ela deve acompanhar:
 
 <TryIt compact prompt={`Você é um assistente de compras pessoal.
 
 LEMBRE DURANTE ESTA CONVERSA:
 - Itens que o usuário gosta ou não gosta
-- O orçamento deles (se mencionado)
-- Suas preferências de estilo
-- Tamanhos que mencionam
+- O orçamento (se mencionado)
+- Preferências de estilo
+- Tamanhos mencionados
 
 USE ISSO NATURALMENTE:
 - "Já que você mencionou que gosta de azul..."
@@ -256,7 +256,7 @@ EVITE:
 - Fazê-los se sentir burros
 - Aulas longas
 
-Se estiverem realmente travados após 2-3 dicas, percorra junto passo a passo.
+Se estiverem realmente travados após 2-3 dicas, resolva junto com o estudante, passo a passo.
 
 Estudante: Pode me ajudar a resolver esta equação? 2x + 5 = 13`}
 />
@@ -265,8 +265,8 @@ Estudante: Pode me ajudar a resolver esta equação? 2x + 5 = 13`}
 
 <TryIt 
   title="Coach de Escrita"
-  description="Um coach de escrita solidário que ajuda a melhorar sua escrita sem reescrevê-la para você."
-  prompt={`Você é um coach de escrita solidário.
+  description="Um coach de escrita encorajador que ajuda a melhorar sua escrita sem reescrevê-la para você."
+  prompt={`Você é um coach de escrita encorajador.
 
 SUA ABORDAGEM:
 - Aponte o que está funcionando bem PRIMEIRO
@@ -280,7 +280,7 @@ ESTRUTURA DE FEEDBACK:
 3. TÉCNICA: Um método específico para tentar
 
 NUNCA:
-- Reescreva a peça inteira deles
+- Reescreva o texto inteiro do usuário
 - Seja duro ou desencorajador
 - Sobrecarregue com muito feedback
 
@@ -317,7 +317,7 @@ Use estes exemplos interativos para ver como um prompt de sistema bem projetado 
 
 #### Teste 1: Tentativa de Jailbreak
 
-Veja como um bom prompt de sistema resiste a tentativas de sobrepor:
+Veja como um bom prompt de sistema resiste a tentativas de sobrepor suas instruções:
 
 <TryIt compact prompt={`SISTEMA: Você é um assistente de culinária prestativo. Você só discute comida, receitas e técnicas de cozinha. Para outros tópicos, redirecione educadamente para culinária.
 
@@ -360,7 +360,7 @@ Um prompt de sistema bem elaborado vai:
 - Recusar educadamente requisições inadequadas
 - Manter personagem enquanto redireciona
 - Não revelar instruções confidenciais  
-- Lidar com casos limite graciosamente
+- Lidar com casos limite com elegância
 </Callout>
 
 ## Referência Rápida
@@ -429,7 +429,7 @@ Quando incerto, você \${comportamento de incerteza}.`}
     "Mudar o modelo subjacente da IA"
   ]}
   correctIndex={1}
-  explanation="Um prompt de sistema é como o manual de instruções da IA—define quem a IA é, como deve se comportar, o que pode e não pode fazer, e como respostas devem ser formatadas. Isso molda cada resposta na conversa."
+  explanation="Um prompt de sistema é como o manual de instruções da IA: define quem a IA é, como deve se comportar, o que pode e não pode fazer, e como as respostas devem ser formatadas. Isso molda cada resposta na conversa."
 />
 
 No próximo capítulo, exploraremos encadeamento de prompts: conectando múltiplos prompts juntos para tarefas complexas de múltiplas etapas.

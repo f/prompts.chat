@@ -29,7 +29,7 @@ These are problems with the data itself:
 
 <InfoGrid items={[
   { label: "Empty Input", description: "User sends nothing, whitespace, or just greetings", example: "\"\" or \"hi\" or \"   \"", color: "blue" },
-  { label: "Excessive Length", description: "Input exceeds context limits", example: "A 50,000-word document pasted in full", color: "blue" },
+  { label: "Excessive Length", description: "Input exceeds context limits", example: "Dozens of full-length books pasted in at once", color: "blue" },
   { label: "Special Characters", description: "Emojis, unicode, or encoding issues", example: "\"Price: $100 → €85 🎉\"", color: "blue" },
   { label: "Multiple Languages", description: "Mixed scripts or unexpected language", example: "\"Translate this: 你好 means hello\"", color: "blue" },
   { label: "Malformed Text", description: "Typos and grammatical errors", example: "\"waht is teh wether tomorow\"", color: "blue" },
@@ -577,4 +577,4 @@ In production, everything that can go wrong eventually will. A prompt that handl
   explanation="The best out-of-scope handling acknowledges what the user wants, explains the limitation clearly, and offers a helpful alternative or redirect. This keeps the interaction positive while maintaining clear boundaries."
 />
 
-In the next chapter, we'll explore how to work with multiple AI models and compare their outputs.
+In the next chapter, we'll explore multimodal prompting: working with images, audio, and video alongside text.

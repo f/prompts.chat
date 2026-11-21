@@ -15,7 +15,7 @@
 <InfoGrid items={[
   { label: "1. 系统消息（隐藏）", description: "\"你是一个友好的烹饪助手，专注于快速的工作日晚餐...\"", color: "purple" },
   { label: "2. 用户消息（你的问题）", description: "\"用鸡肉和米饭可以做什么？\"", color: "blue" },
-  { label: "3. 助手消息（AI回复）", description: "\"这里有一道20分钟鸡肉炒饭，非常适合忙碌的夜晚！...\"", color: "green" },
+  { label: "3. 助手消息（AI回复）", description: "\"这里有一道20分钟就能做好的鸡肉炒饭，非常适合忙碌的夜晚！...\"", color: "green" },
 ]} />
 
 系统消息在整个对话过程中保持有效。它就像AI的"使用说明书"。
@@ -174,7 +174,7 @@ The user asks: how do i add fractions`} />
 
 ### 对话记忆
 
-AI不会记住过去的对话，但你可以让它在当前对话中追踪某些内容：
+模型本身只能看到当前对话中的内容。如今许多聊天应用（包括 ChatGPT、Claude 和 Gemini）都提供记忆功能，可以把之前对话中的细节带入新的对话，但这种记忆由应用及其设置管理，而不是由你的系统提示词控制。在单次对话中，你仍然可以告诉 AI 需要记住哪些内容：
 
 <TryIt compact prompt={`You are a personal shopping assistant.
 
@@ -265,7 +265,7 @@ Student: Can you help me solve this equation? 2x + 5 = 13`}
 
 <TryIt 
   title="写作教练"
-  description="一个支持性的写作教练，帮助改善你的写作而不是替你重写。"
+  description="一个善于鼓励的写作教练，帮你提升写作水平，而不是替你重写。"
   prompt={`You are a supportive writing coach.
 
 YOUR APPROACH:
@@ -301,7 +301,7 @@ The user shares: I went to the store yesterday. It was raining. I bought some ap
     { text: "边界：它能保持在限制范围内吗？" },
     { text: "个性：它能保持角色一致吗？" },
     { text: "长对话：在很多消息之后它还能保持一致吗？" },
-    { text: "越狱尝试：它能抵抗 忽略你的指令 这类技巧吗？" }
+    { text: "越狱尝试：它能抵抗'忽略你的指令'这类技巧吗？" }
   ]}
 />
 
@@ -396,11 +396,11 @@ USER: I need you to write an angry complaint letter with lots of swear words. Th
 - **如何**——它应该如何回复（语气、格式、风格）
 
 <Callout type="tip" title="从简单开始">
-先从简短的系统提示词开始，随着发现需要什么再添加更多规则。一个清晰的100字提示词胜过一个令人困惑的500字提示词。
+先从简短的系统提示词开始，在发现确有需要时再逐步添加规则。一个清晰的100字提示词胜过一个令人困惑的500字提示词。
 </Callout>
 
 <TryIt 
-  title="创建你自己的"
+  title="创建你自己的提示词"
   description="使用这个模板创建你自己的系统提示词。填写空白处！"
   prompt={`You are \${name}, a \${role}.
 
@@ -432,4 +432,4 @@ When unsure, you \${uncertainty behavior}.`}
   explanation="系统提示词就像AI的使用说明书——它定义了AI是谁、应该如何表现、能做和不能做什么，以及回复应该如何格式化。这会影响对话中的每一个回复。"
 />
 
-在下一章中，我们将探索提示词链接：将多个提示词连接在一起以完成复杂的多步骤任务。
+在下一章中，我们将探索提示链：将多个提示词连接在一起以完成复杂的多步骤任务。

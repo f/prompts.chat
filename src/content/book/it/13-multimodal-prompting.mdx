@@ -8,7 +8,7 @@ L'**IA Multimodale** cambia tutto. Questi modelli possono elaborare molteplici t
 
 ## Perché il Multimodale È Importante
 
-L'IA tradizionale richiedeva di descrivere tutto a parole. Vuoi chiedere di un'immagine? Dovevi prima descriverla. Vuoi analizzare un documento? Dovevi trascriverlo manualmente. I modelli multimodali eliminano queste barriere.
+L'IA tradizionale richiedeva di descrivere tutto a parole. Volevi chiedere qualcosa su un'immagine? Dovevi prima descriverla. Volevi analizzare un documento? Dovevi trascriverlo a mano. I modelli multimodali eliminano queste barriere.
 
 <InfoGrid items={[
   { label: "Vedere e Capire", description: "Carica un'immagine e fai domande direttamente—nessuna descrizione necessaria", example: "\"Cosa c'è che non va in questo schema circuitale?\"", color: "blue" },
@@ -34,18 +34,18 @@ Quando guardi un'immagine, sai istantaneamente cosa è importante basandoti sul 
 
 ## Il Panorama Multimodale
 
-Modelli diversi hanno capacità diverse. Ecco cosa è disponibile nel 2025:
+Modelli diversi hanno capacità diverse. Ecco una panoramica della situazione a fine 2026:
 
 ### Modelli di Comprensione (Input → Analisi)
 
 Questi modelli accettano vari tipi di media e producono analisi testuale o risposte.
 
 <InfoGrid items={[
-  { label: "GPT-4o / GPT-5", description: "Testo + Immagini + Audio → Testo. Il modello di punta di OpenAI con contesto 128K, forti capacità creative e di ragionamento, tassi ridotti di allucinazione.", color: "green" },
-  { label: "Claude 4 Sonnet/Opus", description: "Testo + Immagini → Testo. Modello di Anthropic focalizzato sulla sicurezza con ragionamento avanzato, eccellente per coding e compiti multi-step complessi.", color: "purple" },
-  { label: "Gemini 2.5", description: "Testo + Immagini + Audio + Video → Testo. Modello di Google con contesto 1M token, auto-verifica dei fatti, elaborazione veloce per coding e ricerca.", color: "blue" },
-  { label: "LLaMA 4 Scout", description: "Testo + Immagini + Video → Testo. Modello open-source di Meta con enorme contesto 10M token per documenti lunghi e codebase.", color: "cyan" },
-  { label: "Grok 4", description: "Testo + Immagini → Testo. Modello di xAI con accesso dati in tempo reale e integrazione social media per risposte aggiornate.", color: "red" }
+  { label: "GPT-6.2", description: "Testo + Immagini → Testo. L'attuale famiglia di punta di OpenAI, con una finestra di contesto di circa un milione di token e solide capacità di ragionamento, programmazione e comprensione visiva. Voce e trascrizione sono affidate a modelli separati e dedicati.", color: "green" },
+  { label: "Claude Opus / Sonnet 5.5", description: "Testo + Immagini → Testo. L'attuale famiglia di Anthropic, con una finestra di contesto di un milione di token, nota per il ragionamento accurato, la programmazione e i compiti lunghi in più passaggi.", color: "purple" },
+  { label: "Gemini 4", description: "Testo + Immagini + Audio + Video + PDF → Testo. L'attuale famiglia di Google, con una finestra di contesto di un milione di token e comprensione nativa di audio e video.", color: "blue" },
+  { label: "Llama 4 Scout", description: "Testo + Immagini → Testo. Il modello open-weight di Meta con una finestra di contesto di 10 milioni di token, che puoi scaricare ed eseguire sul tuo hardware.", color: "cyan" },
+  { label: "Grok 4.7", description: "Testo + Immagini → Testo. L'attuale modello Grok, con una finestra di contesto di 500K token. Vede il web e i post di X in tempo reale solo quando i suoi strumenti di ricerca sono attivi.", color: "red" }
 ]} />
 
 ### Modelli di Generazione (Testo → Media)
@@ -53,10 +53,10 @@ Questi modelli accettano vari tipi di media e producono analisi testuale o rispo
 Questi modelli creano immagini, audio o video da descrizioni testuali.
 
 <InfoGrid items={[
-  { label: "DALL-E 3", description: "Testo → Immagini. Generatore di immagini di OpenAI con alta accuratezza alle descrizioni del prompt.", color: "amber" },
+  { label: "GPT Image", description: "Testo + Immagini → Immagini. I modelli di generazione e modifica di immagini di OpenAI, che hanno sostituito DALL-E 3 dopo il suo ritiro nel 2026.", color: "amber" },
   { label: "Midjourney", description: "Testo + Immagini → Immagini. Noto per qualità artistica, controllo dello stile e output estetici.", color: "pink" },
-  { label: "Sora", description: "Testo → Video. Modello di generazione video di OpenAI per creare clip da descrizioni.", color: "red" },
-  { label: "Whisper", description: "Audio → Testo. Speech-to-text di OpenAI con alta accuratezza attraverso le lingue.", color: "cyan" }
+  { label: "Generatori Video", description: "Testo + Immagini → Video. Modelli come Gemini Omni Flash di Google e Grok Imagine di xAI trasformano un prompt o un'immagine statica in clip fino a circa 15 secondi. OpenAI ha ritirato la sua API Sora 2 a settembre 2026.", color: "red" },
+  { label: "Speech-to-Text", description: "Audio → Testo. Modelli di trascrizione dedicati come GPT-Transcribe di OpenAI (il successore di Whisper) e Gemini 3.5 Transcribe di Google, con supporto per molte lingue.", color: "cyan" }
 ]} />
 
 <Callout type="info" title="Evoluzione Rapida">
@@ -222,7 +222,7 @@ Descrizione screenshot: \${screenshotDescription}`}
 
 ### Analisi Messaggi di Errore
 
-Quando incontri un errore, uno screenshot spesso contiene più contesto che copiare solo il testo dell'errore.
+Quando incontri un errore, uno screenshot spesso offre più contesto del solo testo dell'errore copiato.
 
 <TryIt 
   title="Diagnosi Errore da Screenshot"
@@ -334,7 +334,7 @@ Dettagli aggiuntivi da includere: \${additionalDetails}`}
 
 ## Prompting Audio
 
-L'elaborazione audio apre trascrizione, analisi e comprensione del contenuto parlato. La chiave è fornire contesto su cosa contiene l'audio.
+L'elaborazione audio apre le porte alla trascrizione, all'analisi e alla comprensione del parlato. La chiave è fornire contesto su cosa contiene l'audio.
 
 ### Trascrizione Avanzata
 
@@ -356,7 +356,7 @@ La trascrizione base è solo l'inizio. Con buoni prompt, puoi ottenere identific
 **Istruzioni**:
 - Includi timestamp alle pause naturali (ogni 30-60 secondi o ai cambi speaker)
 - Marca sezioni poco chiare come [inaudibile] o [poco chiaro: ipotesi migliore?]
-- Annota suoni non-parlato tra parentesi: [risata], [telefono che squilla], [lunga pausa]
+- Annota i suoni non verbali tra parentesi: [risata], [telefono che squilla], [lunga pausa]
 - Preserva le parole riempitive solo se sono significative (ehm, uh possono essere rimosse)
 - Segnala eventuali action item o decisioni con simbolo →
 
@@ -391,7 +391,7 @@ Di cosa parla questa registrazione? Qual è il punto principale?
 **4. Analisi Emotiva**
 - Tono generale (formale, casual, teso, amichevole)
 - Momenti emotivi notevoli
-- Livello di energia durante
+- Livello di energia nel corso della registrazione
 
 **5. Elementi Azionabili**
 - Decisioni prese
@@ -444,7 +444,7 @@ Di cosa parla questo video? Qual è il messaggio o scopo principale?
 - Efficacia per il suo scopo
 
 **6. Target Audience**
-Per chi è fatto questo video? Li serve bene?
+Per chi è fatto questo video? Risponde bene alle sue esigenze?
 
 **7. Punti Chiave**
 Cosa dovrebbe ricordare uno spettatore da questo video?`}
@@ -531,7 +531,7 @@ Una delle combinazioni più potenti per sviluppatori: vedere il bug visivo insie
 
 <TryIt 
   title="Debugger Bug Visivo"
-  description="Debug problemi UI analizzando sia l'output visivo che il codice sorgente insieme."
+  description="Esegui il debug di problemi UI analizzando insieme l'output visivo e il codice sorgente."
   prompt={`Ho un bug UI. Ecco cosa vedo e il mio codice:
 
 **Descrizione Screenshot**: \${screenshotDescription}
@@ -569,7 +569,7 @@ Quando scegli tra opzioni, il confronto strutturato aiuta a prendere decisioni m
 
 <TryIt 
   title="Comparatore Opzioni Visivo"
-  description="Confronta molteplici immagini sistematicamente contro i tuoi criteri per prendere decisioni informate."
+  description="Confronta sistematicamente più immagini in base ai tuoi criteri per prendere decisioni consapevoli."
   prompt={`Sto scegliendo tra queste opzioni per \${purpose}:
 
 **Opzione A**: \${optionA}
@@ -599,13 +599,13 @@ Fornisci:
 Basandomi sulle tue priorità dichiarate, raccomando [Opzione] perché...
 
 **Avvertenze**
-- Se [condizione], considera [alternativa] invece
+- Se [condizione], considera invece [alternativa]
 - Fai attenzione a [potenziale problema]`}
 />
 
 ## Best Practice per Prompt Multimodali
 
-Ottenere grandi risultati dall'IA multimodale richiede di capire sia le sue capacità che i suoi limiti.
+Ottenere ottimi risultati dall'IA multimodale richiede di capire sia le sue capacità che i suoi limiti.
 
 ### Cosa Rende Efficaci i Prompt Multimodali
 
@@ -639,7 +639,7 @@ SE NON RIESCI A VEDERE QUALCOSA CHIARAMENTE:
 - Dì: "Posso vedere [cosa è visibile] ma non riesco a distinguere chiaramente [elemento poco chiaro]"
 - Suggerisci quali informazioni aggiuntive aiuterebbero
 
-SE IL CONTENUTO SEMBRA RISTRETTO:
+SE IL CONTENUTO SEMBRA SOGGETTO A RESTRIZIONI:
 - Spiega cosa puoi e non puoi analizzare
 - Concentrati sugli aspetti permessi dell'analisi
 
