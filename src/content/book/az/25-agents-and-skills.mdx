@@ -360,6 +360,55 @@ Bacarıqları birləşdirərkən, ziddiyyət təşkil etmədiklərindən əmin o
 - **Uyğun** - Bacarıqlar ziddiyyətli təlimatlar verməməlidir
 - **Prioritetləşdirilmiş** - Bacarıqlar üst-üstə düşdükdə, hansının prioritet olduğunu təyin et
 
+## Bacarıqlar Təcrübədən Öyrənəndə
+
+Bu fəsildə indiyədək gördüyümüz bütün bacarıqları insanlar yazıb. Kimsə bir işin dönə-dönə qarşısına çıxdığını görür, oturur və o işin necə görüldüyünü sözlərə çevirir. Amma sizinlə hər gün işləyən agent həmin işin necə getdiyini sakitcə qeydə də alır: hansı təlimatlara əməl etdiyini, harada araya girib onu düzəltdiyinizi, hansı addımları iki dəfə atmalı olduğunu. Daha yeni bir yanaşma bu qeydlərdən istifadə edir. Kiminsə bacarığı yazmasını gözləmək əvəzinə, agentin öz sistemi keçmiş təcrübəsinə nəzər salır və yeni bacarıqların qaralamasını özü hazırlayır, ya da köhnələrini özü yenidən işləyir. Bunu bir dövr kimi təsəvvür edə bilərsiniz. Fəslin əvvəlindəki agent dövrünə bənzəyir, sadəcə daha yavaş işləyir və üzünü özünə çevirir:
+
+<div className="my-6 flex flex-col items-center gap-3 p-6 bg-muted/30 rounded-lg">
+  <div className="flex flex-wrap items-stretch justify-center gap-2">
+    <div className="px-3 py-2 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded text-center text-sm max-w-40">
+      <p className="font-medium text-blue-700 dark:text-blue-300 m-0!">Sübut</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0! mt-1">Bacarığın yetərsiz qaldığı keçmiş sessiyalar</p>
+    </div>
+    <div className="self-center text-muted-foreground">→</div>
+    <div className="px-3 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded text-center text-sm max-w-40">
+      <p className="font-medium text-purple-700 dark:text-purple-300 m-0!">Düşünmə</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0! mt-1">Agent səbəbini göstərərək dəyişiklik təklif edir</p>
+    </div>
+    <div className="self-center text-muted-foreground">→</div>
+    <div className="px-3 py-2 bg-teal-100 dark:bg-teal-900/50 border border-teal-200 dark:border-teal-800 rounded text-center text-sm max-w-40">
+      <p className="font-medium text-teal-700 dark:text-teal-300 m-0!">Yoxlama</p>
+      <p className="text-xs text-teal-600 dark:text-teal-400 m-0! mt-1">Dəyişikliyin düzgün və faydalı olacağı yoxlanılır</p>
+    </div>
+    <div className="self-center text-muted-foreground">→</div>
+    <div className="px-3 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded text-center text-sm max-w-40">
+      <p className="font-medium text-green-700 dark:text-green-300 m-0!">Aktivləşdirmə</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0! mt-1">Bundan sonra yeni versiya istifadə olunur</p>
+    </div>
+  </div>
+  <div className="text-xs text-muted-foreground flex items-center gap-1">
+    <span>↺</span> Hər yeni versiya növbəti dövr üçün sübut yaradır
+  </div>
+</div>
+
+Perplexity bu dövrü Computer agentinin arxasında dayanan, özünü təkmilləşdirən yaddaş sistemi **Brain** üçün ətraflı təsvir edir ([What is Brain?](https://www.perplexity.ai/help-center/en/articles/19700001-what-is-brain)). Şirkət 2026-cı ilin noyabrında dərc etdiyi yazıda ([Self-improving skills](https://www.perplexity.ai/hub/blog/self-improving-skills)) Brain-in istifadəçinin yaddaşına və sessiya tarixçəsinə əsaslanaraq *şəxsi* bacarıqları necə yazıb təkmilləşdirdiyini izah edir. Sübut mərhələsində bacarığın istifadə olunduğu keçmiş sessiyaları, xüsusən də onun yetərsiz qaldığı sessiyaları tapır. Düşünmə mərhələsində təkmilləşdirmə agenti həmin sessiyaları öyrənir və dəyişikliklər təklif edir. Yoxlama təklifin düzgün qurulduğunu və nəticələri yaxşılaşdırma ehtimalının yüksək olduğunu yoxlayır. Aktivləşdirmə isə dəyişikliyi tətbiq edir və sonrakı sessiyalar növbəti dövr üçün sübuta çevrilir. Bu dövrü etibarlı edən onun içinə qoyulmuş ehtiyatlılıqdır. Yeni bacarıq yaratmaq üçün eyni təkrar istifadə edilə bilən davranışın bir-birindən asılı olmayan iki halda görünməsi lazımdır, mövcud bacarığı yeniləmək üçün isə əsaslı tək bir hal kifayət edə bilər. Təkmilləşdirmə agenti bacarığa heç vaxt birbaşa toxunmur: səbəbini və sübutunu göstərən bir təklif yazır, hər dövrdə bir bacarıq üçün ən çox bir dəyişiklik edir və sübut kifayət etmədikdə heç nə təklif etməməyi seçir. Avtomatik yaradılan bacarıqların sayı da hər istifadəçi üçün onla məhdudlaşır, yəni yeni bacarığın əlavə olunması üçün köhnələrdən biri səbəbi göstərilməklə çıxarılmalıdır.
+
+Nous Research-ün hazırladığı **Hermes Agent** isə eyni fikrə komandanın gözü ilə baxır. İnsan ona təkrarlanan işləri tapşırdıqca Hermes uğurlu yanaşmanı təkrar istifadə edilə bilən bacarığa çevirir: yazılı tərif və sabit addımları hər dəfə eyni şəkildə icra edən kod ([Nous Research](https://nousresearch.com/press/hermes-enterprise-in-microsoft-teams)). Collective Wisdom plagini isə bacarığın bir nəfərin kompüterindən çıxdığı anla məşğul olur. Hermes bacarığın paylaşmağa dəyər olduğunu təklif edə bilər, amma qərar bacarığın müəllifində qalır: o, komandanın kitabxanasında dərc olunacaq faylların özünü dəqiq nəzərdən keçirir. Komanda yoldaşları isə bacarığın bu gün necə göründüyünü yox, onun konkret bir versiyasını quraşdırırlar ([Collective Wisdom](https://github.com/NousResearch/hermes-collective-wisdom)). [Daim işləyən botlar](/book/28-persistent-bots) fəsli Hermes-in bacarıq qazanmasının başqa bir yolunu göstərir: işi ona addım-addım göstərmək.
+
+İki nümunəni yan-yana qoyanda eyni dərs ortaya çıxır. Özünü yenidən yazan bacarıq da sonda agentin əməl edəcəyi təlimatlardır, ona görə də əllə yazılmış bacarıq qədər diqqətə layiqdir. Dəyişiklikdən əvvəl sübut tələb edin, mümkünsə birdən çox sessiyadan. Bacarıq bir nəfərdən başqalarına keçirsə, orada mütləq insan nəzərdən keçirməsi olsun. Versiyaları saxlayın ki, pis dəyişiklik mübahisə mövzusuna çevrilmək əvəzinə geri qaytarıla bilsin. Və sürüşməyə diqqət edin: kifayət qədər tez-tez yenilənən bacarıq yavaş-yavaş bir nəfərin vərdişlərinə və ya bir pis sessiyaya tərəf əyilə bilər və sonda işin özündən çox keçici bir əhvalı təsvir etməyə başlayar.
+
+Meyarın nə qədər yüksək olacağı bacarığın kimə çatmasından asılıdır. Bir istifadəçi üçün öyrənilmiş şəxsi bacarıq tez hərəkət etməyi özünə rəva bilə bilər, çünki səhv yalnız həmin istifadəçiyə toxunur və bunu ən yaxşı görə biləcək adam da odur. Paylaşılan və ya daxili bacarıq isə onu yükləyən hər kəsə təsir edir. Perplexity də bu sərhədi çəkir: hər istifadəçiyə təqdim olunan daxili bacarıqlardakı dəyişikliklər əsas versiyaya çatmazdan əvvəl cütləşdirilmiş təkrar icra testlərindən və şirkətdaxili insan yoxlamasından keçməlidir. Komanda da eyni instinktdən istifadə edə bilər: şəxsi bacarıqların sərbəst öyrənməsinə imkan verib, paylaşılanlardan isə hər dəyişikliyi qazanmasını gözləmək.
+
+Bu dövrü sınamaq üçün özünü təkmilləşdirən sistemə ehtiyacınız yoxdur. Agentdən dəyişikliyi tətbiq etməsini yox, təklif etməsini istədiyiniz müddətcə onu əllə də işlədə bilərsiniz:
+
+<TryIt compact prompt={`\${session:Dünən həftəlik satış hesabatını hazırladığımız} sessiyaya qayıt. \${skill:heftelik-hesabat} bacarığını təkmilləşdirmək istəyirəm, amma hələ dəyişmə.
+
+1. Həmin sessiyada bacarığın yetərsiz qaldığı və ya səni düzəltməli olduğum anları olduğu kimi sitat gətir.
+2. Hər biri üçün bunun qarşısını ala biləcək ən kiçik dəyişikliyi təklif et.
+3. Bunun birdəfəlik hal, yoxsa yenidən baş verə biləcək bir şey olduğunu və nə qədər əmin olduğunu de.
+4. Yalnız bu sessiyaya və ya mənim şəxsi vərdişlərimə uyğun gələcək dəyişiklikləri ayrıca qeyd et.
+5. Təklif etdiyin dəyişiklikləri mövcud bacarıqla müqayisəli fərq (diff) kimi göstər və heç nəyi tətbiq etməzdən əvvəl təsdiqimi gözlə.`} />
+
 ## Bacarıqları Paylaşma və Kəşf Etmə
 
 Bacarıqlar paylaşıldıqda ən dəyərlidir. [prompts.chat](https://prompts.chat/skills) kimi platformlar bunları etməyinizə imkan verir:
@@ -429,6 +478,18 @@ Süni intellekt agentləri daha bacarıqlı olduqca, bacarıqları birləşdirm�
   ]}
   correctIndex={2}
   explanation="Bacarıqlar daşına bilən ekspertiza paketləridir. Kod nəzərdən keçirmə bacarığını bir dəfə yazın və istənilən kodlaşdırma agenti o bacarığı yükləyərək ekspert kod nəzərdən keçirici ola bilər—istənilən strukturaya oturan LEGO blokları kimi."
+/>
+
+<Quiz 
+  question="Agent tək bir sessiyaya əsaslanaraq bütün komandanızın paylaşdığı bacarıq üçün yeniləmə təklif edir. Ən təhlükəsiz növbəti addım hansıdır?"
+  options={[
+    "Agent problemi özü gördüyü üçün dəyişikliyi dərhal tətbiq etmək",
+    "Dəyişikliyi və onun sübutunu nəzərdən keçirmək, sonra geri qaytarıla bilən yeni versiya kimi dərc etmək",
+    "İki versiya toqquşmasın deyə köhnə bacarığı silmək",
+    "Agentlərin yazdığı bacarıqlara heç vaxt güvənmək olmadığı üçün təklifə məhəl qoymamaq"
+  ]}
+  correctIndex={1}
+  explanation="Özünü yeniləyən bacarıq da sonda agentin əməl edəcəyi təlimatlardır. Paylaşılan bacarıq onu yükləyən hər kəsə təsir edir, ona görə də dəyişiklik sübutla gəlməli, insan yoxlamasından keçməli və daha pis nəticə verərsə geri qaytarıla bilən yeni versiya kimi dərc olunmalıdır."
 />
 
 Bacarıqlar agentə işi cədvəl üzrə təkrarlamağa da imkan verir. [Daim İşləyən Botlar](/book/28-persistent-bots) bölməsi saxlanmış bacarığın daim işləyən botun təkbaşına icra etdiyi rutinə necə çevrildiyini göstərir.

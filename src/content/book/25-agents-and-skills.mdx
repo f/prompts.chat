@@ -444,6 +444,55 @@ When composing skills, ensure they don't conflict. Skills should be:
 - **Compatible** - Skills shouldn't give contradictory instructions
 - **Prioritized** - When skills overlap, define which takes precedence
 
+## When Skills Learn from Experience
+
+Every skill in this chapter so far has been written by a person. Someone notices that a task keeps coming back, sits down, and puts the know-how into words. But an agent that works with you day after day is also quietly keeping a record of how that work went: which instructions it followed, where you stepped in to correct it, which steps it had to do twice. A newer pattern puts that record to use. Instead of waiting for someone to write the skill, the agent's own system looks back at its experience and drafts new skills, or revises old ones, by itself. You can picture it as a loop, much like the agent loop at the start of this chapter, only slower and turned inward:
+
+<div className="my-6 flex flex-col items-center gap-3 p-6 bg-muted/30 rounded-lg">
+  <div className="flex flex-wrap items-stretch justify-center gap-2">
+    <div className="px-3 py-2 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded text-center text-sm max-w-40">
+      <p className="font-medium text-blue-700 dark:text-blue-300 m-0!">Evidence</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0! mt-1">Past sessions where the skill fell short</p>
+    </div>
+    <div className="self-center text-muted-foreground">→</div>
+    <div className="px-3 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded text-center text-sm max-w-40">
+      <p className="font-medium text-purple-700 dark:text-purple-300 m-0!">Reflection</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0! mt-1">An agent proposes a change, with its reasons</p>
+    </div>
+    <div className="self-center text-muted-foreground">→</div>
+    <div className="px-3 py-2 bg-teal-100 dark:bg-teal-900/50 border border-teal-200 dark:border-teal-800 rounded text-center text-sm max-w-40">
+      <p className="font-medium text-teal-700 dark:text-teal-300 m-0!">Verification</p>
+      <p className="text-xs text-teal-600 dark:text-teal-400 m-0! mt-1">Checks that the change is sound and likely to help</p>
+    </div>
+    <div className="self-center text-muted-foreground">→</div>
+    <div className="px-3 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded text-center text-sm max-w-40">
+      <p className="font-medium text-green-700 dark:text-green-300 m-0!">Activation</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0! mt-1">The new version is used from now on</p>
+    </div>
+  </div>
+  <div className="text-xs text-muted-foreground flex items-center gap-1">
+    <span>↺</span> Each new version produces evidence for the next round
+  </div>
+</div>
+
+Perplexity describes this loop in detail for **Brain**, the self-improving memory system behind its Computer agent ([What is Brain?](https://www.perplexity.ai/help-center/en/articles/19700001-what-is-brain)). In a November 2026 post ([Self-improving skills](https://www.perplexity.ai/hub/blog/self-improving-skills)), the company explains how Brain draws on a user's memory and session history to write and refine *personal* skills. In the evidence stage, it finds past sessions where a skill was used, especially the ones where it fell short. In reflection, an improvement agent studies those sessions and proposes changes. Verification checks that the proposal is well-formed and likely to improve outcomes, and activation applies it, so the sessions that follow become evidence for the next round. What makes the loop trustworthy is the restraint built into it. A new skill requires two independent occurrences of the same reusable behavior, while an update to an existing skill can rest on a single grounded one. The improvement agent never edits a skill directly: it writes a proposal with its reasoning and evidence, makes at most one change per skill in each run, and abstains when the evidence does not support a change. Automatically created skills are also capped at ten per user, so a new one can only come in if an old one is retired, with a reason for the swap.
+
+**Hermes Agent** by Nous Research approaches the same idea from the side of a team. As a person hands it recurring work, Hermes turns a successful approach into a reusable skill: a written definition paired with code that runs the stable steps the same way every time ([Nous Research](https://nousresearch.com/press/hermes-enterprise-in-microsoft-teams)). Its Collective Wisdom plugin takes care of the moment a skill leaves one person's machine. Hermes may suggest that a skill is worth sharing, but the decision stays with its author, who reviews the exact files that will be published to the team's library. Teammates then install one specific version, not whatever the skill happens to look like today ([Collective Wisdom](https://github.com/NousResearch/hermes-collective-wisdom)). The chapter on [always-on bots](/book/28-persistent-bots) shows another way Hermes picks up a skill: by being walked through a task.
+
+Side by side, the two examples teach the same lesson. A skill that rewrites itself is still a set of instructions that an agent will follow, so it deserves the same care as one written by hand. Ask for evidence before a change, ideally from more than one session. Keep a human review point wherever a skill passes from one person to others. Keep versions, so that a bad change can be rolled back rather than argued with. And watch for drift: a skill revised often enough can slowly bend toward one person's habits or one bad session, until it describes a passing mood more than the work itself.
+
+How high to set the bar depends on who the skill reaches. A personal skill, learned for a single user, can afford to move quickly, because a mistake touches only that user, who is well placed to notice it. A shared or built-in skill affects everyone who loads it. Perplexity draws this line as well: changes to the built-in skills that every user receives must pass paired replay tests and internal human review before they reach the canonical version. A team can borrow the same instinct, letting personal skills learn freely while asking shared ones to earn every change.
+
+You don't need a self-improving system to try this loop. You can run it by hand, as long as you ask the agent to propose rather than apply:
+
+<TryIt compact prompt={`Look back at our session from \${session:yesterday, when we prepared the weekly sales report}. I'd like to improve the skill \${skill:weekly-report}, but don't change it yet.
+
+1. Quote the exact moments in that session where the skill fell short or I had to correct you.
+2. For each one, propose the smallest change to the skill that would have prevented it.
+3. Tell me whether it looks like a one-off or something likely to happen again, and how confident you are.
+4. Flag any change that would only suit this one session or my personal habits.
+5. Show the proposed changes as a diff against the current skill, and wait for my approval before applying anything.`} />
+
 ## Sharing and Discovering Skills
 
 Skills are most valuable when shared. Platforms like [prompts.chat](https://prompts.chat/skills) allow you to:
@@ -552,6 +601,18 @@ As AI agents become more capable, the ability to compose, share, and customize s
   ]}
   correctIndex={2}
   explanation="Skills are portable expertise packages. Write a code review skill once, and any coding agent can become an expert code reviewer by loading that skill—like LEGO blocks that snap into any structure."
+/>
+
+<Quiz 
+  question="An agent proposes an update to a skill your whole team shares, based on a single session. What is the safest next step?"
+  options={[
+    "Apply it right away, since the agent saw the problem firsthand",
+    "Review the change and its evidence, then publish it as a new version that can be rolled back",
+    "Delete the old skill so the two versions can't conflict",
+    "Ignore it, since skills written by agents can never be trusted"
+  ]}
+  correctIndex={1}
+  explanation="A skill that revises itself is still a set of instructions an agent will follow. A shared skill affects everyone who loads it, so a change should come with evidence, pass a human review, and arrive as a new version that can be undone if it turns out worse."
 />
 
 Skills also let an agent repeat work on a schedule. [Always-On Bots](/book/28-persistent-bots) shows how a saved skill becomes a routine that a persistent bot runs on its own.

@@ -444,6 +444,55 @@ Use full response when:
 - **兼容** - 技能不应给出矛盾的指令
 - **有优先级** - 当技能重叠时，定义哪个优先
 
+## 当技能从经验中学习
+
+到目前为止，本章里的每一个技能都是人写的。有人发现某项任务总是反复出现，于是坐下来，把做法一一写成文字。可是，一个天天和你一起工作的智能体，其实也在悄悄记录这些工作是怎么完成的：它遵循了哪些指令，你在哪里不得不插手纠正它，哪些步骤它做了两遍。一种更新的做法正是要利用这份记录。与其等别人来写技能，不如让智能体自己的系统回顾过去的经验，自行起草新技能，或修订已有的技能。你可以把它想象成一个循环，和本章开头的智能体循环很像，只是转得更慢，而且朝向自身：
+
+<div className="my-6 flex flex-col items-center gap-3 p-6 bg-muted/30 rounded-lg">
+  <div className="flex flex-wrap items-stretch justify-center gap-2">
+    <div className="px-3 py-2 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded text-center text-sm max-w-40">
+      <p className="font-medium text-blue-700 dark:text-blue-300 m-0!">证据</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0! mt-1">技能表现不佳的过往会话</p>
+    </div>
+    <div className="self-center text-muted-foreground">→</div>
+    <div className="px-3 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded text-center text-sm max-w-40">
+      <p className="font-medium text-purple-700 dark:text-purple-300 m-0!">反思</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0! mt-1">智能体提出修改，并说明理由</p>
+    </div>
+    <div className="self-center text-muted-foreground">→</div>
+    <div className="px-3 py-2 bg-teal-100 dark:bg-teal-900/50 border border-teal-200 dark:border-teal-800 rounded text-center text-sm max-w-40">
+      <p className="font-medium text-teal-700 dark:text-teal-300 m-0!">验证</p>
+      <p className="text-xs text-teal-600 dark:text-teal-400 m-0! mt-1">检查修改是否合理、是否可能有帮助</p>
+    </div>
+    <div className="self-center text-muted-foreground">→</div>
+    <div className="px-3 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded text-center text-sm max-w-40">
+      <p className="font-medium text-green-700 dark:text-green-300 m-0!">启用</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0! mt-1">从此改用新版本</p>
+    </div>
+  </div>
+  <div className="text-xs text-muted-foreground flex items-center gap-1">
+    <span>↺</span> 每个新版本都会为下一轮积累证据
+  </div>
+</div>
+
+Perplexity 为 **Brain** 详细描述了这样一个循环。Brain 是支撑其智能体 Computer 的一套能够自我改进的记忆系统（[What is Brain?](https://www.perplexity.ai/help-center/en/articles/19700001-what-is-brain)）。在 2026 年 11 月的一篇文章（[Self-improving skills](https://www.perplexity.ai/hub/blog/self-improving-skills)）中，该公司解释了 Brain 如何借助用户的记忆和会话历史，编写并打磨*个人*技能。在证据阶段，它会找出用过某个技能的过往会话，尤其是技能表现不佳的那些。在反思阶段，一个改进智能体研究这些会话并提出修改。验证阶段检查提案格式是否规范、是否可能改善结果；启用阶段则应用修改，之后的会话又成为下一轮的证据。让这个循环值得信任的，是其中内置的克制。新建一个技能，需要同一种可复用的行为在两次相互独立的场合中出现；而更新已有技能，有时只要一次有据可查的情况就够了。改进智能体从不直接改动技能：它写出一份附带理由和证据的提案，每次运行对每个技能最多只做一处修改，证据不足以支持时就干脆不提。此外，自动创建的技能每位用户最多十个，所以新技能只有在某个旧技能退役后才能加入，而且必须说明这次替换的理由。
+
+Nous Research 的 **Hermes Agent** 则从团队的角度切入同一个想法。随着人们把重复性的工作交给它，Hermes 会把一种行之有效的做法变成可复用的技能：一份书面定义，配上每次都以相同方式执行固定步骤的代码（[Nous Research](https://nousresearch.com/press/hermes-enterprise-in-microsoft-teams)）。它的 Collective Wisdom 插件负责处理技能离开某个人电脑的那一刻。Hermes 可能会建议某个技能值得分享，但决定权仍在作者手里，作者会逐一审阅即将发布到团队技能库的那些文件本身。之后，队友安装的是一个确定的版本，而不是这个技能今天碰巧呈现的样子（[Collective Wisdom](https://github.com/NousResearch/hermes-collective-wisdom)）。[始终在线的机器人](/book/28-persistent-bots)一章还介绍了 Hermes 获得技能的另一种方式：有人带着它一步步走完一项任务。
+
+把两个例子放在一起，得出的是同一个教训。一个会自我改写的技能，仍然是一组智能体将要遵循的指令，因此值得和手写的技能一样用心对待。修改之前先要证据，最好来自不止一次会话。凡是技能从一个人传到其他人手中的地方，都要保留一个人工审核的环节。保存好各个版本，这样出了糟糕的修改就可以直接回滚，而不必争论不休。还要留意漂移：一个被频繁修订的技能，可能会慢慢偏向某一个人的习惯，或者某一次糟糕的会话，直到它描述的与其说是工作本身，不如说是一时的情绪。
+
+门槛该定多高，取决于这个技能会影响到谁。为单个用户学到的个人技能，可以变得快一些，因为出了错也只影响这一个用户，而他恰恰最容易察觉。共享技能或内置技能则会影响每一个加载它的人。Perplexity 也划出了这条线：对每位用户都会收到的内置技能所做的修改，必须先通过成对回放测试和内部人工审核，才能进入正式版本。团队也可以借鉴同样的直觉：让个人技能自由学习，而要求共享技能的每一次修改都名副其实。
+
+想试试这个循环，并不需要一套能自我改进的系统。只要让智能体提出建议而不是直接应用，你也可以手动走一遍：
+
+<TryIt compact prompt={`回顾一下我们\${session:昨天准备每周销售报告时}的那次会话。我想改进 \${skill:weekly-report} 这个技能，但先不要修改它。
+
+1. 原文引用那次会话中技能表现不佳、或我不得不纠正你的那些时刻。
+2. 针对每一处，提出能够避免这个问题的最小技能修改。
+3. 告诉我这看起来是偶发情况，还是很可能再次发生的事，以及你有多大把握。
+4. 指出任何只适合这一次会话或只符合我个人习惯的修改。
+5. 以相对于当前技能的 diff 形式展示建议的修改，在应用任何内容之前等待我的批准。`} />
+
 ## 分享和发现技能
 
 技能在分享时最有价值。像 [prompts.chat](https://prompts.chat/skills) 这样的平台允许你：
@@ -552,6 +601,18 @@ Use full response when:
   ]}
   correctIndex={2}
   explanation="技能是可移植的专业知识包。只需编写一次代码审查技能，任何编程智能体都可以通过加载该技能成为专业的代码审查员——就像可以拼接到任何结构的乐高积木。"
+/>
+
+<Quiz 
+  question="一个智能体仅凭一次会话，就提议更新你们整个团队共用的一个技能。最稳妥的下一步是什么？"
+  options={[
+    "立即应用，因为智能体亲眼看到了问题",
+    "审阅这项修改及其证据，然后把它作为一个可以回滚的新版本发布",
+    "删除旧技能，免得两个版本发生冲突",
+    "直接忽略，因为智能体写的技能永远不可信"
+  ]}
+  correctIndex={1}
+  explanation="会自我修订的技能，仍然是一组智能体将要遵循的指令。共享技能会影响每一个加载它的人，所以修改应当有证据支撑、经过人工审核，并以一个新版本的形式发布，万一效果更差还可以撤销。"
 />
 
 技能还能让智能体按计划重复工作。[常驻机器人](/book/28-persistent-bots)介绍了已保存的技能如何变成由常驻机器人自行运行的例行任务。
