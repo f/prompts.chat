@@ -244753,3 +244753,19 @@ constraints:
 
 </details>
 
+<details>
+<summary><strong>1910s Autochrome of an Apple Orchard in Blossom with an Empty Picnic Table</strong></summary>
+
+## 1910s Autochrome of an Apple Orchard in Blossom with an Empty Picnic Table
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A 1910s Autochrome Lumière color photograph of an old apple orchard in full blossom on a calm, overcast spring afternoon. In the right foreground stands a weathered wooden picnic table with attached benches, its grey planks cracked and silvered with age. A purple-and-white gingham cloth is draped across it, hanging over the near edge, and on it rest a large woven wicker picnic basket with a looped handle and a plain white enamel jug. Behind and to the left, gnarled apple trees with dark twisting trunks are covered in pale pink and white blossom and recede in soft, even rows into a hazy distance; the grass between them is carpeted with small violet wildflowers.
+
+Render it exactly like a real Autochrome glass plate: muted, faded sepia-pastel colors (dusty pinks, mauve and violet, soft olive and sage greens, warm brown shadows, a pale milky sky), the visible random grain of dyed potato-starch particles that makes every area look softly speckled, fine dust specks across the surface, gentle soft focus from a long exposure, low contrast, and a thick dark vignette with rounded, burnt-looking edges around the whole frame. Diffuse daylight, no harsh shadows. No people, no text, no modern objects. Landscape 4:3.
+
+```
+
+</details>
+
