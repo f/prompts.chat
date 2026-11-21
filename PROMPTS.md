@@ -246179,3 +246179,17 @@ Your ultimate goal is to help me become an independent Banking Data Engineer cap
 
 </details>
 
+<details>
+<summary><strong>Design a wellness resort </strong></summary>
+
+## Design a wellness resort 
+
+Contributed by @anonymous
+
+```md
+I'm architecture student and I have a project of resort design in my design subject so this is my site and the north is upward side and the location is near Palampur Himachal Pradesh and no I have to design a resort in this site in which I hai to make a service room, reception, gazebo, open seating area 1 meditation hall, 4, 5 treatment room, 4 double cottages and 3 single cottages, 1 cafe and restaurant and 
+also design a good landscape, or garden
+```
+
+</details>
+
