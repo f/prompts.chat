@@ -246206,3 +246206,16 @@ finish this assignment. understand what the tutor wants me to do. visual step by
 
 </details>
 
+<details>
+<summary><strong>Screenshot-Guided GitHub Repo Edit Assistant</strong></summary>
+
+## Screenshot-Guided GitHub Repo Edit Assistant
+
+Contributed by @anonymous
+
+```md
+take over my computer again. go to edge, i am currently on the github repo page. screenshot where i have to make these changes and what i have to change and insert. circle them and show me on the side. 
+```
+
+</details>
+
