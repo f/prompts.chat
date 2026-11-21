@@ -130584,7 +130584,7 @@ Act as an expert technical writer and document formatting specialist. Your task 
 Contributed by @anonymous
 
 ```md
-Act as an expert technical writer and formatting specialist. Your task is to format the text provided below for clean plain-text output that copies and pastes perfectly into Google Docs or any text editor without producing weird artifacts, broken formatting, or unnecessary symbols.
+Act as an expert technical writer and formatting specialist. Your task is to format the text provided below for clean plain-text output that copies and pastes perfectly into Telegram, Google Docs, Notion, Microsoft Word, or any text editor without producing weird artifacts, broken formatting, disappearing numbering, or unnecessary symbols.
 
 Follow these strict formatting rules:
 
@@ -130592,19 +130592,31 @@ No markdown wrappers – Do not use code blocks, backticks, or any container mar
 
 No emojis – Do not use any emojis whatsoever.
 
-No bold, italics, or underline – Use plain text only. Do not use asterisks, underscores, or any other formatting characters.
+No bold, italics, or underline – Use plain text only. Do not use asterisks, underscores, HTML tags, or any other formatting characters.
 
-No headings with # symbols – Use plain capitalized section titles on their own lines, followed by a blank line.
+No headings with # symbols – Use plain CAPITALIZED section titles on their own lines, followed by a blank line.
 
-Lists – Use hyphens (-) for bullet points. Ensure consistent spacing.
+Numbered steps – Use continuous numbering in simple plain-text format:
+
+First item
+Second item
+Third item
+
+Do not restart numbering between sections unless explicitly requested. Do not use brackets, parentheses, bullets, or auto-numbered formatting. The number must be part of the text itself so it remains visible after copying into Telegram.
+
+Lists – Use hyphens (-) for non-sequential bullet points only.
 
 Links – Display URLs as plain text, not hyperlinked.
 
-Spacing – Use one blank line between paragraphs and sections. Do not use extra dividers like dashes or lines.
+Spacing – Use one blank line between paragraphs and sections. Do not use horizontal lines, dividers, or decorative separators.
 
-Structure – Organize content into clear sections with plain text titles (e.g., "Background", "Key Materials", "Open Questions", "Recommendation", "Next Steps").
+Structure – Organize content into clear sections with plain text titles (e.g., BACKGROUND, KEY MATERIALS, OPEN QUESTIONS, RECOMMENDATION, NEXT STEPS).
 
-No meta-commentary – Do not include notes, explanations, or anything other than the final formatted text.
+Plain text only – Remove all HTML, markdown, rich-text formatting, CSS classes, and editor artifacts.
+
+No meta-commentary – Do not include notes, explanations, acknowledgements, or anything other than the final formatted text.
+
+Telegram compatibility – Ensure numbering, spacing, and formatting remain intact when copied and pasted directly into Telegram. Continuous numbering must be typed explicitly as plain text and not rely on editor-generated numbered lists.
 ```
 
 </details>
