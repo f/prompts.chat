@@ -32,6 +32,7 @@ describe("getModelInfo", () => {
   });
 
   it("returns correct info for MiniMax models", () => {
+    expect(getModelInfo("minimax-m3-1-flash")).toEqual({ name: "MiniMax-M3.1-Flash", provider: "MiniMax" });
     expect(getModelInfo("minimax-m3")).toEqual({ name: "MiniMax-M3", provider: "MiniMax" });
     expect(getModelInfo("minimax-m2-7")).toEqual({ name: "MiniMax-M2.7", provider: "MiniMax" });
   });
@@ -101,15 +102,17 @@ describe("getModelsByProvider", () => {
     }
   });
 
-  it("covers all models in AI_MODELS", () => {
-    const grouped = getModelsByProvider();
-    let totalModels = 0;
+  it("offers Flash first and M3 while preserving legacy model validation", () => {
+    expect(getModelsByProvider().MiniMax).toEqual([
+      { slug: "minimax-m3-1-flash", name: "MiniMax-M3.1-Flash" },
+      { slug: "minimax-m3", name: "MiniMax-M3" },
+    ]);
+    expect(validateBestWithModels(["minimax-m2-7"]).valid).toBe(true);
+  });
 
-    for (const provider of Object.keys(grouped)) {
-      totalModels += grouped[provider].length;
-    }
-
-    expect(totalModels).toBe(Object.keys(AI_MODELS).length);
+  it("covers all models except the legacy MiniMax selection", () => {
+    const slugs = Object.values(getModelsByProvider()).flat().map(model => model.slug);
+    expect(slugs.sort()).toEqual(Object.keys(AI_MODELS).filter(slug => slug !== "minimax-m2-7").sort());
   });
 });
 
