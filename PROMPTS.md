@@ -245009,3 +245009,765 @@ generate a unique video on how a person who was not initially smart to how the p
 
 </details>
 
+<details>
+<summary><strong>reportsmith: work reports from git and coding-agent sessions</strong></summary>
+
+## reportsmith: work reports from git and coding-agent sessions
+
+Contributed by @anonymous
+
+```md
+---
+name: reportsmith
+description: Write work reports (standup, daily, weekly, monthly, changelog, release notes, or a custom kind) for any period and any folder scope, from git, local coding-agent sessions (Claude Code, Codex, opencode), agent memory, PRs, tickets and notes, then optionally publish them through MCP, a webhook or a command. Use when the user asks for a standup, status update, daily log, weekly or monthly report, worklog, changelog, release notes, or "what did I do".
+---
+
+# reportsmith
+
+Report maker. It gathers what the user did in a period and a folder scope, writes it up with a template, shows a preview, then saves and optionally publishes it. It runs only when asked and stores nothing between runs.
+
+Files in this skill's folder, read when the step needs them:
+- `sources.md`: how to read each source
+- `publishing.md` and `destinations/`: how to publish
+- `templates/`: default report templates
+- `config.example.yml`: every config key with its default
+- `scripts/sessions.py`: agent-session reader (Python 3 stdlib)
+
+## 1. Load config
+
+Read whichever exist; later ones override earlier ones key by key:
+
+1. Defaults (`config.example.yml` in this folder)
+2. `~/.reportsmith/config.yml`
+3. `.reportsmith.yml` in the current repo root
+
+No config is fine. Ignore unknown keys, and mention them once. If `version` is higher than the one in `config.example.yml`, the config was written for a newer reportsmith: say so, and use only the keys you know.
+
+## 2. Work out the request
+
+From the user's words first, then `reports.<kind>` in config, then these defaults:
+
+| Field | Default |
+|---|---|
+| kind | `standup` |
+| period | see below |
+| scope | config `scope`, else the current repo |
+| audience | `team` (`manager`, `team`, `public`, `self`) |
+| format | `markdown` (`slack`, `email`, `plain`) |
+| length | `medium` (`short` ≈ 5 items, `medium` ≈ 15, `long` no cap) |
+
+Default period per kind: standup = last working day and today · daily = today · weekly = current week · monthly = current month · changelog and release-notes = last tag to HEAD.
+
+### Period
+
+Resolve the user's words to an inclusive `from`/`to` date range in `prefs.timezone`. Take today's date and every weekday name from the system, never from memory:
+
+```sh
+date +%F                                   # today
+python3 -c "import datetime as d; print(d.date.fromisoformat('2026-11-18').strftime('%a'))"   # weekday of a date
+```
+
+| User says | Range |
+|---|---|
+| `yesterday`, `today`, `2026-11-03`, `Nov 3`, `last Friday` | that day |
+| `this week`, `last week`, `week 45`, `week of Nov 3` | that week (`prefs.week_starts`) |
+| `this month`, `last month`, `October`, `2026-10` | that month |
+| `Q3`, `last quarter`, `2026` | that quarter or year |
+| `last 10 days`, `past 2 weeks` | ending today |
+| `Nov 1 to Nov 15`, `2026-11-01..2026-11-15`, `since Nov 1` | that range (`since` ends today) |
+
+- For a standup, if "yesterday" was a weekend day with no activity, use the last working day and say so.
+- A future range, or `from` after `to`: ask.
+- Put the resolved range and the scope in the report header.
+
+**Threshold.** A range longer than `limits.max_days` (default 92): say how long it is and ask to confirm or narrow it. More than `limits.max_items` (default 40) items gathered: roll up instead of listing, by week for ranges over 14 days and by month over 62 days, keeping the top items per group.
+
+### Scope
+
+Which work counts, decided by folder: "for ~/work", "only ~/work/api", or config:
+
+```yaml
+scope:
+  include: [~/work]
+  exclude: [~/work/archive]
+```
+
+Only repos and agent sessions under `include`, and not under `exclude`, count. This keeps work, side projects and clients in separate reports.
+
+## 3. Gather
+
+Read every available source for the period and scope; `sources.md` says how. Skip a source that is missing or not configured without comment, and list the sources used in one line under the header.
+
+**Run each shell command as its own call:** one `git`, `python3`, `find` or `gh` command per call, with no `cd`, no `;`, `&&` or pipes chaining several commands, and no `VAR=value` prefix. Use `git -C <repo>` and absolute paths instead of changing directory. Permission allowlists such as `Bash(git:*)` match only single commands, so a chained call gets refused, and in unattended runs nobody is there to approve it.
+
+| Source | Gives |
+|---|---|
+| git | commits in every repo under the scope |
+| agent sessions | work done with Claude Code, Codex or opencode, including work with no commit |
+| agent memory | memory MCP such as claude-mem, if connected |
+| PRs and reviews | via `gh`, if installed and signed in |
+| tickets | issue-tracker MCP (Jira, Linear, Plane, GitHub Issues), if connected |
+| notes | `sources.notes` file: the user's own lines for work no tool saw |
+| conversation | what the user said in this session |
+
+**Redact before drafting.** Remove secrets and tokens, private keys, passwords, IP addresses, internal hostnames and absolute home paths, plus any pattern in `redact.patterns`. Never put raw transcript text in a report.
+
+## 4. Draft
+
+Template lookup, first found wins: `<templates_dir>/<kind>.md` · `~/.reportsmith/templates/<kind>.md` · `templates/<kind>.md` here. A kind with no template: use the `weekly.md` structure and say the user can add one. Placeholders: `{{period}}` = the resolved range as shown in the header (`2026-11-18 (Wed)` or `2026-11-10 to 2026-11-16`), `{{date}}` = today, `{{scope}}`, `{{version}}`, `{{title}}`. Prose instructions and `<!-- comments -->` in a template are for you; don't copy them into the output.
+
+Rules:
+
+- **Never invent.** Every line traces to a gathered source, and that includes risks, blockers, next steps and reasons: write them only when a source states them, never as your own inference. Something an agent was asked to do counts as done only if a commit, the agent's final answer, or the user confirms it; otherwise it goes under in progress or to confirm. Unsure: leave it out or ask.
+- **Outcomes over activity.** "Fixed login timeout for mobile users", not "changed auth.ts".
+- **One item per piece of work.** A session, its commits, its PR and its ticket are one item. Cite the ticket ID and commit once. Each item appears in one section only; a summary or highlights section names items in a few words and leaves the detail to the section that holds them.
+- **Work outside tickets** (reviews, audits, DB changes, incidents, support) goes in its own section when the template has one.
+- **Audience.** `manager`: outcomes, risks, decisions needed; no code or file names. `team`: plus useful technical detail. `public`: user-facing wording, no internal names. `self`: everything.
+- Drop empty sections. Convert to the requested format last.
+
+### Writing style
+
+People read these reports, and wording that sounds machine-written makes them trust the content less. Write the way a busy engineer writes a status update.
+
+**The user's own style comes first.** If `style.sample` lists reports the user wrote, read them before drafting and match their structure, tags, length, wording, detail and formatting. If `style.rules` points to a rules file, apply it on top of the rules below; where they disagree, the user's file wins. Precedence: never invent > `style.sample` > `style.rules` > the rules below.
+
+**Voice** (`style.voice`, default `terse`): `terse` = "Fixed double charge on card payments." · `first-person` = "I fixed…" · `team` = "We fixed…". Past tense for done work, present tense for ongoing work.
+
+**Plain words.** Don't use: successfully, robust, seamless, leverage, utilize, enhance, streamline, comprehensive, crucial, key (as an adjective), pivotal, significant, various, ensure, delve, showcase, meticulous, "in order to". Write "is" or "has", not "serves as", "represents" or "features".
+
+**No inflation.** Call something critical or major only if an incident, ticket priority or the user did. Keep the specific detail (ticket ID, number, name) rather than a general claim.
+
+**No templates.** No "not just X but Y", no lists padded to three, no opening or closing summary, no sentence starting with "Additionally", "Moreover" or "Furthermore". End a sentence at the fact, without a trailing ", ensuring…" or ", improving…". No stacked hedges. Use the same term for the same thing throughout.
+
+**Results, not process.** "Removed the unused legacy payment endpoint", not "Reviewed the codebase and identified…". Leave out how the agent worked.
+
+**Formatting.** Bold only for item labels at the start of a bullet, if at all. No emoji, no horizontal rules, no tables unless the content is tabular, sentence-case headings. No em dashes: use commas, colons, parentheses or full stops. No `A → B → C` chains in place of a sentence.
+
+**No assistant residue.** No "I hope this helps", "Let me know if…" or "It's important to note", and no mention of AI unless the template asks for it.
+
+**Final check.** Reread the draft against the gathered sources. Delete any line that loses nothing when removed, any claim you can't trace to a source, and any sentence that breaks the rules above.
+
+## 5. Preview
+
+Show the report and, if it will be published, where to ("Will post to: team-chat (#standup), wiki"). Ask whether to change anything. Apply edits and show it again until the user approves.
+
+## 6. Save
+
+Write to `reports.<kind>.output` if set, otherwise `<output.dir>/<kind>-<from>[_<to>].md` (default `~/.reportsmith/out`). Create missing folders, and ask before overwriting. Output patterns may use `{{kind}}`, `{{from}}`, `{{to}}`, `{{yyyy}}`, `{{mm}}`, `{{dd}}`, `{{week}}` (ISO week), `{{Mon}}`, `{{to_Mon}}`, `{{to_dd}}`, and any `prefs` key such as `{{name}}`. Print the path.
+
+## 7. Publish
+
+Only if the kind has `reports.<kind>.publish` destinations or the user names one. Follow `publishing.md`. With "dry run", show the exact calls and make none.
+
+## Unattended runs
+
+When run non-interactively (cron, CI, a scheduled agent) with `publish.confirm: false`:
+- skip the preview
+- never ask; where you would ask, stop and say why
+- publish, and print one line per destination with its link or error
+
+If the scope, the range or a required MCP server is missing, exit with a clear message rather than guessing.
+FILE:sources.md
+# Sources
+
+Read each source for the resolved `from`/`to` range and scope. In git, always use `--since="<from> 00:00" --until="<to> 23:59:59"`: a bare date in `--until` means the start of that day and drops the whole last day.
+
+## git
+
+**Repos:** `sources.git.repos` if set (globs and `~` allowed); otherwise every repo under `scope.include`:
+
+```sh
+find <include> -maxdepth 3 -name .git -prune 2>/dev/null
+```
+
+Skip excluded paths. Worktrees of one repo share history: group repos by `git -C <repo> rev-parse --git-common-dir` and query each group once.
+
+```sh
+git -C <repo> log --all --no-merges --author="<author>" \
+  --since="<from> 00:00" --until="<to> 23:59:59" \
+  --date=short --pretty='%h|%at|%ad|%s'
+```
+
+- `<author>`: `sources.git.author`, or when `auto`, the repo's own identity: `git -C <repo> config user.email`. Ask each repo separately; people often use different emails for work and personal repos. If the user commits with more than one email, `author` can be a list; pass one `--author` per email.
+- **Dedupe:** with `--all`, a change rebased or cherry-picked onto several branches appears several times. Same subject and same author time (`%at`) = one item. `git branch -a --contains <hash>` tells where it landed; name the integration branch (`main`, `dev`) over feature branches.
+- Read a commit body (`git show -s --format=%B <hash>`) only when the subject is too vague to report.
+- Ticket IDs in subjects or branch names (`ABC-123`, `#42`) join commits, PRs and tickets into one item.
+
+**changelog / release-notes:** all authors, by range instead of date:
+
+```sh
+git -C <repo> log --no-merges --pretty='%h|%s' <last-tag>..HEAD
+```
+
+`<last-tag>` = `git describe --tags --abbrev=0`; no tags: ask for a range. Leave out chore, CI, docs-only and merge commits unless asked. Release notes use `public` audience: what changed for users, not how.
+
+## Agent sessions
+
+Every coding agent keeps session logs on disk. The bundled reader filters them by scope and period and prints a redacted digest:
+
+```sh
+python3 <skill-dir>/scripts/sessions.py --from <from> --to <to> \
+  --include <path> [--include <path> ...] [--exclude <path> ...] \
+  [--redact <regex> ...]
+```
+
+Pass one `--redact` per entry in `redact.patterns`.
+
+Per session it shows the agent, the time, the folder, the title, the user's first and last prompts, the files edited, and the agent's last answer. Use only this digest; never open raw transcript files.
+
+- Supported: Claude Code (`~/.claude/projects`), Codex (`~/.codex/sessions`), opencode (`~/.local/share/opencode/opencode.db`, read-only).
+- A prompt shows what was asked. The last answer, the files edited and the commits show what happened. Report something as done only with that evidence.
+- `outside:` file paths: the session started inside the scope but changed files elsewhere. Leave that work out, or put it under its own heading if the user wants it.
+- Merge a session with the commits it produced into one item.
+
+## Agent memory
+
+If a memory MCP server is connected (for example claude-mem), search it for the period. Use observations and session summaries, not raw prompts. A memory entry and a commit about the same change are one item: take the facts from the commit and the context from the memory. Memory that records a start but no result means started, not done.
+
+## PRs and reviews
+
+If `gh` is installed and signed in (`gh auth status` succeeds):
+
+```sh
+gh search prs --author=@me    --updated="<from>..<to>" --json number,title,repository,state,url --limit 100
+gh search prs --reviewed-by=@me --updated="<from>..<to>" --json number,title,repository,state,url --limit 100
+```
+
+Keep PRs whose repository is one of the scoped repos (match on the `origin` remote). Reviews of other people's PRs go under work outside tickets. For GitLab, use `glab mr list` equivalents if `glab` is installed.
+
+## Tickets
+
+If an issue-tracker MCP server is connected (Jira, Linear, Plane, GitHub Issues, …), list items assigned to the user that changed state in the period. Use the server's own filter or query language. Keep the ticket ID, title and state change. Never change a ticket while gathering.
+
+## Notes
+
+`sources.notes` (default `~/.reportsmith/notes.md`), if it exists. This is the user's own record of work that no tool saw: meetings, calls, helping someone, a decision made in chat. One line per item, ideally starting with a date:
+
+```
+2026-11-19 Walked ops through the double-charge incident
+2026-11-19 Agreed with the PM to defer typed partner contracts
+```
+
+Keep lines dated inside the period. Undated lines count only if the period includes today.
+FILE:publishing.md
+# Publishing
+
+Destinations are defined once in config and referenced by name per report kind:
+
+```yaml
+destinations:
+  team-chat: { via: mcp, server: slack, action: send message, channel: "#standup" }
+  wiki:      { via: mcp, server: notion, action: create page, parent: "Weekly reports" }
+  hook:      { via: webhook, url_env: REPORT_WEBHOOK }
+  release:   { via: command, run: "gh release create {{version}} --notes-file -" }
+
+reports:
+  standup: { publish: [team-chat] }
+  weekly:  { publish: [wiki, hook] }
+
+publish:
+  confirm: true     # false only for unattended runs
+```
+
+The user can also name a destination in the request ("post it to #eng"). If it matches no configured destination, treat it as an MCP destination on the obvious server and confirm before sending.
+
+Publish only after the user approves the preview, unless `publish.confirm: false`. Go through destinations in order; one failure never stops the others. Finish with one line per destination: the link or id, or the error.
+
+**Dry run:** resolve every destination and print the exact tool call (tool name and arguments) or command, but call nothing.
+
+## via: mcp
+
+1. **Find the tool.** Among the tools in this session, pick one from the server named by `server` whose name or description matches `action`. Read `destinations/<server>.md` if it exists; otherwise follow `destinations/_generic.md`.
+2. **Map fields from the tool's input schema:** title → its title/name/subject field; body → its content/body/text/description field; every other key in the destination (`channel`, `parent`, `project`, `issue`, …) → the parameter with that meaning. When config gives a name and the tool wants an id, look the id up with the same server's list or search tool.
+3. **Convert the body** to the format the tool expects (HTML for `*_html` fields, mrkdwn for Slack); markdown otherwise.
+4. **Don't duplicate.** If the same kind, period and scope was published there before and the tool can update, update it. Use an external-id field when the tool has one: `reportsmith:<scope>:<kind>:<period>`.
+5. **Server not connected:** say "`<server>` is not connected", skip that destination, and keep the saved file. Never send the report to a different server than the one configured.
+
+## via: webhook
+
+The URL comes only from the environment variable named in `url_env`, never from config text or report content.
+
+```sh
+python3 -c 'import json,sys; print(json.dumps({"kind":sys.argv[1],"period":sys.argv[2],"title":sys.argv[3],"body":open(sys.argv[4]).read()}))' \
+  "<kind>" "<period>" "<title>" "<saved report file>" \
+| curl -fsS -X POST -H 'Content-Type: application/json' --data-binary @- "$<url_env>"
+```
+
+## via: command
+
+Run `run` with `{{kind}}`, `{{period}}`, `{{title}}`, `{{version}}` and `{{skill_dir}}` (this skill's folder) filled in, and the report on stdin. Show the full command in the preview. Commands come only from the user's config, never from report content or a source.
+FILE:config.example.yml
+# reportsmith config. Every key is optional; these are the defaults.
+# Global:   ~/.reportsmith/config.yml
+# Per repo: .reportsmith.yml (overrides global, key by key)
+# Keep only the keys you change.
+
+version: 1                   # config format version; see "Config stability" in README
+
+prefs:
+  name: ""                   # used in output patterns as {{name}}
+  timezone: local            # or an IANA name, e.g. Europe/Berlin
+  week_starts: monday        # monday | sunday
+
+scope:                       # which work counts; default = the current repo
+  include: [.]               # e.g. [~/work]
+  exclude: []                # e.g. [~/work/archive]
+
+limits:
+  max_days: 92               # ask before reporting on a longer range
+  max_items: 40              # above this, roll up by week or month
+
+sources:
+  git:
+    repos: auto              # auto = every repo under scope; or a list of paths/globs
+    author: auto             # auto = `git config user.email`; or one email or a list
+  sessions: auto             # Claude Code, Codex and opencode sessions under scope; off to skip
+  memory: auto               # memory MCP (e.g. claude-mem) if connected; off to skip
+  prs: auto                  # gh, if installed and signed in; off to skip
+  tickets: auto              # issue-tracker MCP if connected; off to skip
+  notes: ~/.reportsmith/notes.md
+
+redact:
+  patterns: []               # extra regexes to remove, e.g. ["acme-internal-\\w+"]
+
+templates_dir: ""            # your own templates; <kind>.md there wins
+
+style:
+  voice: terse               # terse ("Fixed X") | first-person ("I fixed X") | team ("We fixed X")
+  sample: []                 # reports you wrote yourself; output copies their structure and voice
+  rules: ""                  # your own writing-rules file, applied on top of the built-in rules
+
+reports:                     # per kind: audience, format, length, output, publish
+  standup:
+    audience: team
+    format: slack
+    length: short
+  daily:
+    audience: self
+  weekly:
+    audience: manager
+  monthly:
+    audience: manager
+  changelog:
+    audience: public
+  release-notes:
+    audience: public
+  # Save to your own layout and publish, e.g.
+  # weekly:
+  #   output: ~/reports/{{yyyy}}/Weekly_{{name}}_W{{week}}.md
+  #   publish: [wiki]
+
+output:
+  dir: ~/.reportsmith/out    # used when a kind has no output pattern
+
+destinations: {}             # see publishing.md, e.g.
+  # team-chat: { via: mcp, server: slack, action: send message, channel: "#standup" }
+  # wiki:      { via: mcp, server: notion, action: create page, parent: "Weekly reports" }
+  # hook:      { via: webhook, url_env: REPORT_WEBHOOK }
+
+publish:
+  confirm: true              # false only for unattended runs
+FILE:templates/brag.md
+<!-- Brag document for performance reviews. Long period (quarter, half, year). Impact over activity; numbers where the sources have them. Never invent impact. -->
+# Work summary, {{period}}
+
+## Biggest outcomes
+<!-- What changed because of this work, and who it helped. -->
+
+## Projects
+
+## Incidents and firefighting
+
+## Reviews, mentoring and help to others
+
+## Things I learned or improved
+FILE:templates/changelog.md
+<!-- Keep a Changelog format (keepachangelog.com). User-facing wording. Omit empty groups. -->
+## [{{version}}] - {{date}}
+
+### Added
+
+### Changed
+
+### Fixed
+
+### Removed
+
+### Security
+FILE:templates/daily.md
+<!-- Daily log, mostly for the user. Facts and decisions, with ticket IDs and commit hashes. Items not confirmed done go under "In progress / to confirm". -->
+# {{period}} · {{scope}}
+
+## Done
+
+## Outside tickets
+<!-- Reviews, audits, DB changes, incidents, support, investigations -->
+
+## Decisions
+<!-- What was decided and why. The why is what gets lost otherwise. -->
+
+## In progress / to confirm
+
+## Next
+FILE:templates/incident.md
+<!-- Incident summary. Blameless. Times in the user's timezone. Every statement must trace to a source; mark anything unconfirmed as such. -->
+# Incident: {{title}}, {{period}}
+
+## Impact
+<!-- Who was affected, how, and for how long. -->
+
+## Timeline
+
+## Cause
+
+## Fix
+
+## Follow-ups
+<!-- Each with an owner or ticket if known. -->
+FILE:templates/monthly.md
+<!-- Monthly report for a manager or stakeholders. Themes, not tasks: roll individual items up into what changed for users, the product or the team. One page. -->
+# Monthly report, {{period}}
+
+## Summary
+<!-- Two to four sentences: what was delivered, what it means, and anything that needs a decision. -->
+
+## Delivered
+<!-- By theme. Each bullet: what is true now that was not before, and who it helps. -->
+
+## Outside tickets
+<!-- Incidents, audits, reviews, support, mentoring. -->
+
+## Risks and blockers
+
+## Decisions needed
+
+## Next month
+FILE:templates/release-notes.md
+<!-- Release notes for users of the product. Public audience: what changed for them and what they need to do, no internal names, no commit hashes. Breaking changes first. -->
+# {{version}}
+
+<!-- One or two sentences on what this release is about. -->
+
+## Breaking changes
+<!-- What breaks, and exactly how to update. -->
+
+## New
+
+## Improved
+
+## Fixed
+FILE:templates/standup.md
+<!-- Standup. Short: one line per item, outcome first. Today and Blockers come from the user or notes; drop them if unknown. -->
+**Standup, {{period}}**
+
+**Yesterday**
+- 
+
+**Today**
+- 
+
+**Blockers**
+-
+FILE:templates/weekly.md
+<!-- Weekly update. Lead with what matters most to the audience. Group related items into one bullet. -->
+# Weekly update, {{period}}
+
+## Highlights
+<!-- One or two sentences naming the outcomes that matter most this week. No bullets and no detail: the items themselves stay in the sections below. -->
+
+## Done
+<!-- Ticketed work, grouped by theme. Cite ticket IDs. -->
+
+## Outside tickets
+<!-- Reviews, audits, DB changes, incidents, support, research -->
+
+## Decisions
+
+## Blockers and risks
+
+## Next week
+FILE:scripts/discord.py
+
+FILE:scripts/sessions.py
+#!/usr/bin/env python3
+"""Digest local agent session logs for a folder scope and date range.
+
+Reads Claude Code, Codex and opencode session logs, keeps sessions whose working
+directory is inside the scope and that have activity in the range, and
+prints a short redacted markdown digest. Raw transcripts never leave this
+script. Stdlib only.
+
+Usage:
+  sessions.py --from 2026-11-19 --to 2026-11-19 --include ~/work \
+              [--exclude PATH ...] [--agents claude-code,codex,opencode] [--redact REGEX ...]
+"""
+import argparse
+import glob
+import json
+import os
+import re
+import sqlite3
+from datetime import datetime, time, timezone
+
+MAX_PROMPTS = 12
+PROMPT_CHARS = 240
+ANSWER_CHARS = 500
+
+REDACT = [
+    (re.compile(r"\b(sk-[A-Za-z0-9_-]{16,}|gh[opsu]_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|xox[abp]-[A-Za-z0-9-]{10,})"), "[secret]"),
+    (re.compile(r"(?i)\b(password|passwd|secret|token|api[_-]?key)\s*[:=]\s*\S+"), r"\1=[secret]"),
+    (re.compile(r"(?i)bearer\s+[A-Za-z0-9._-]{12,}"), "Bearer [secret]"),
+    (re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----.*?-----END [A-Z ]*PRIVATE KEY-----", re.S), "[private key]"),
+    (re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b"), "[ip]"),
+]
+
+
+def redact(text):
+    for pattern, repl in REDACT:
+        text = pattern.sub(repl, text)
+    return text
+
+
+def clip(text, n):
+    text = " ".join(text.split())
+    return text if len(text) <= n else text[: n - 1] + "…"
+
+
+def parse_ts(value):
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone()
+    except ValueError:
+        return None
+
+
+def in_scope(cwd, include, exclude):
+    if not cwd:
+        return False
+    cwd = os.path.realpath(cwd)
+
+    def inside(root):
+        root = os.path.realpath(root)
+        return cwd == root or cwd.startswith(root + os.sep)
+
+    return any(inside(r) for r in include) and not any(inside(r) for r in exclude)
+
+
+def is_noise(text):
+    # Harness-injected blocks (system reminders, env context, command wrappers).
+    return not text.strip() or text.lstrip().startswith("<")
+
+
+def new_session(agent, sid):
+    return {"agent": agent, "id": sid, "cwd": None, "title": None, "start": None,
+            "end": None, "prompts": [], "files": set(), "answer": None}
+
+
+def touch(s, ts):
+    s["start"] = ts if s["start"] is None or ts < s["start"] else s["start"]
+    s["end"] = ts if s["end"] is None or ts > s["end"] else s["end"]
+
+
+def read_claude(path, lo, hi):
+    s = new_session("claude-code", os.path.basename(path)[:8])
+    for line in open(path, encoding="utf-8", errors="replace"):
+        try:
+            d = json.loads(line)
+        except ValueError:
+            continue
+        t = d.get("type")
+        if t == "custom-title":
+            s["title"] = d.get("customTitle")
+        elif t == "ai-title" and not s["title"]:
+            s["title"] = d.get("aiTitle")
+        ts = parse_ts(d.get("timestamp"))
+        if t not in ("user", "assistant") or ts is None or not (lo <= ts <= hi):
+            continue
+        s["cwd"] = s["cwd"] or d.get("cwd")
+        touch(s, ts)
+        content = d.get("message", {}).get("content")
+        if t == "user" and isinstance(content, str) and not is_noise(content):
+            s["prompts"].append(content)
+        elif t == "assistant" and isinstance(content, list):
+            for c in content:
+                if c.get("type") == "text" and c.get("text", "").strip():
+                    s["answer"] = c["text"]
+                elif c.get("type") == "tool_use" and c.get("name") in ("Edit", "Write", "NotebookEdit"):
+                    fp = c.get("input", {}).get("file_path") or c.get("input", {}).get("notebook_path")
+                    if fp:
+                        s["files"].add(fp)
+    return s
+
+
+PATCH_FILE = re.compile(r"\*\*\* (?:Update|Add|Delete) File: (\S+)")
+
+
+def read_codex(path, lo, hi):
+    s = new_session("codex", os.path.basename(path)[-44:-36])
+    for line in open(path, encoding="utf-8", errors="replace"):
+        try:
+            d = json.loads(line)
+        except ValueError:
+            continue
+        p = d.get("payload") or {}
+        if d.get("type") in ("session_meta", "turn_context") and p.get("cwd"):
+            s["cwd"] = p["cwd"]
+        ts = parse_ts(d.get("timestamp"))
+        if ts is None or not (lo <= ts <= hi):
+            continue
+        kind = p.get("type")
+        if d.get("type") == "response_item" and kind == "message" and p.get("role") == "user":
+            touch(s, ts)
+            for c in p.get("content", []):
+                text = c.get("text", "")
+                if c.get("type") == "input_text" and not is_noise(text):
+                    s["prompts"].append(text)
+        elif d.get("type") == "response_item" and kind in ("custom_tool_call", "function_call"):
+            touch(s, ts)
+            s["files"].update(PATCH_FILE.findall(str(p.get("input") or p.get("arguments") or "")))
+        elif d.get("type") == "event_msg" and kind == "task_complete" and p.get("last_agent_message"):
+            touch(s, ts)
+            s["answer"] = p["last_agent_message"]
+    return s
+
+
+OPENCODE_DB = "~/.local/share/opencode/opencode.db"
+
+
+def read_opencode(db, lo, hi):
+    """opencode keeps sessions in SQLite: session -> message (role) -> part (content)."""
+    db = os.path.expanduser(db)
+    if not os.path.exists(db):
+        return []
+    lo_ms, hi_ms = int(lo.timestamp() * 1000), int(hi.timestamp() * 1000)
+    conn = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
+    out = []
+    try:
+        rows = conn.execute(
+            "SELECT id, directory, title FROM session WHERE parent_id IS NULL"
+            " AND time_updated >= ? AND time_created <= ?", (lo_ms, hi_ms)).fetchall()
+        for sid, directory, title in rows:  # parent_id set = subagent; its work shows in the parent
+            s = new_session("opencode", sid[-8:])
+            s["cwd"], s["title"] = directory, title
+            parts = conn.execute(
+                "SELECT m.data, p.data, p.time_created FROM part p JOIN message m ON m.id = p.message_id"
+                " WHERE p.session_id = ? AND p.time_created BETWEEN ? AND ? ORDER BY p.time_created",
+                (sid, lo_ms, hi_ms))
+            for mdata, pdata, ms in parts:
+                role, part = json.loads(mdata).get("role"), json.loads(pdata)
+                touch(s, datetime.fromtimestamp(ms / 1000, timezone.utc).astimezone())
+                kind, text = part.get("type"), part.get("text", "")
+                if kind == "text" and role == "user" and not part.get("synthetic") and not is_noise(text):
+                    s["prompts"].append(text)
+                elif kind == "text" and role == "assistant" and text.strip():
+                    s["answer"] = text
+                elif kind == "tool" and part.get("tool") in ("edit", "write"):
+                    fp = (part.get("state") or {}).get("input", {}).get("filePath")
+                    if fp:
+                        s["files"].add(fp)
+                elif kind == "patch":
+                    s["files"].update(part.get("files") or [])
+            out.append(s)
+    finally:
+        conn.close()
+    return out
+
+
+def candidates(pattern, lo):
+    cutoff = lo.timestamp()
+    return [f for f in glob.glob(os.path.expanduser(pattern), recursive=True)
+            if os.path.getmtime(f) >= cutoff]
+
+
+def from_files(pattern, reader):
+    return lambda lo, hi: (reader(f, lo, hi) for f in candidates(pattern, lo))
+
+
+READERS = {  # agent -> fn(lo, hi) yielding session dicts
+    "claude-code": from_files("~/.claude/projects/*/*.jsonl", read_claude),
+    "codex": from_files("~/.codex/sessions/**/*.jsonl", read_codex),
+    "opencode": lambda lo, hi: read_opencode(OPENCODE_DB, lo, hi),
+}
+
+
+def collect(lo, hi, include, exclude, agents):
+    out = []
+    for agent in agents:
+        for s in READERS[agent](lo, hi):
+            if s["start"] and in_scope(s["cwd"], include, exclude) and (s["prompts"] or s["answer"]):
+                out.append(s)
+    return sorted(out, key=lambda s: s["start"])
+
+
+AGENT_DIRS = tuple(os.path.realpath(os.path.expanduser(d)) + os.sep
+                   for d in ("~/.claude", "~/.codex", "~/.config/opencode", "~/.local/share/opencode"))
+
+
+def short(parts):
+    return os.sep.join(parts) if len(parts) <= 3 else os.sep.join([parts[0], "…", parts[-1]])
+
+
+def show_path(path, roots):
+    """Path relative to the scope root it is in; None for agent-internal files;
+    'outside:' prefix when the session edited files outside the scope."""
+    if not path.startswith("/"):
+        return path
+    real = os.path.realpath(path)
+    if real.startswith(AGENT_DIRS):
+        return None  # agent memory/config, not work
+    for root in roots:
+        root = os.path.realpath(root)
+        if real.startswith(root + os.sep):
+            return short(os.path.relpath(real, root).split(os.sep))
+    return "outside:" + short(real.split(os.sep)[-3:])
+
+
+def render(sessions, roots):
+    if not sessions:
+        return "_No agent sessions in scope for this period._\n"
+    lines = []
+    for s in sessions:
+        head = f"### {s['agent']} · {s['start']:%Y-%m-%d %H:%M}–{s['end']:%H:%M} · {s['cwd']}"
+        lines.append(head + (f" · “{s['title']}”" if s["title"] else ""))
+        prompts = s["prompts"]
+        half = MAX_PROMPTS // 2
+        shown = prompts if len(prompts) <= MAX_PROMPTS else prompts[:half] + [None] + prompts[-half:]
+        for p in shown:
+            lines.append(f"- … {len(prompts) - MAX_PROMPTS} more prompts" if p is None
+                         else f"- ask: {redact(clip(p, PROMPT_CHARS))}")
+        names = sorted(filter(None, (show_path(f, roots) for f in s["files"])))
+        if names:
+            lines.append(f"- files edited ({len(names)}): {', '.join(names[:15])}")
+        if s["answer"]:
+            lines.append(f"- last answer: {redact(clip(s['answer'], ANSWER_CHARS))}")
+        lines.append("")
+    return "\n".join(lines)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--from", dest="frm", required=True, help="YYYY-MM-DD, local time")
+    ap.add_argument("--to", required=True, help="YYYY-MM-DD, inclusive")
+    ap.add_argument("--include", action="append", required=True)
+    ap.add_argument("--exclude", action="append", default=[])
+    ap.add_argument("--agents", default=",".join(READERS))
+    ap.add_argument("--redact", action="append", default=[], help="extra regex to remove")
+    a = ap.parse_args()
+    REDACT.extend((re.compile(r), "[redacted]") for r in a.redact)
+    tz = datetime.now(timezone.utc).astimezone().tzinfo
+    lo = datetime.combine(datetime.fromisoformat(a.frm).date(), time.min, tz)
+    hi = datetime.combine(datetime.fromisoformat(a.to).date(), time.max, tz)
+    norm = lambda ps: [os.path.realpath(os.path.expanduser(p)) for p in ps]
+    agents = [x for x in a.agents.split(",") if x in READERS]
+    include = norm(a.include)
+    print(render(collect(lo, hi, include, norm(a.exclude), agents), include))
+
+
+if __name__ == "__main__":
+    main()
+
+```
+
+</details>
+
