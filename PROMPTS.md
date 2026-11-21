@@ -244963,3 +244963,35 @@ Your task: Reason step-by-step about the paper for ${venue_name}, then give your
 
 </details>
 
+<details>
+<summary><strong>Web Forms taste</strong></summary>
+
+## Web Forms taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Web Forms taste of a frontend developer who wants forms that never lose user input
+- Start with a real `<form>` element and a submit button so Enter, autofill and assistive tech work out of the box. Confidence: 0.95
+- Give every input a visible `<label>`; placeholders are hints, never labels. Confidence: 0.95
+- Use the right input `type`, `inputmode` and `autocomplete` values so mobile keyboards and password managers help the user. Confidence: 0.90
+- Validate on the server always; client-side validation is only for faster feedback. Confidence: 0.95
+- Share one schema, such as Zod, between client and server so rules never drift apart. Confidence: 0.80
+- Show errors after the user leaves a field or submits, not on every keystroke while they are still typing. Confidence: 0.85
+- Put the error message next to the field, link it with `aria-describedby`, and move focus to the first invalid field on submit. Confidence: 0.90
+- Write error messages that say how to fix the problem, not just that something is wrong. Confidence: 0.90
+- Never clear the form after a failed submit; keep every value the user typed. Confidence: 0.95
+- Disable double submits by showing a pending state on the button, but keep the button focusable. Confidence: 0.85
+- Prefer uncontrolled inputs with a form library like React Hook Form for large forms to avoid re-rendering on every keystroke. Confidence: 0.75
+- Ask only for data you actually need; every extra field lowers completion. Confidence: 0.85
+- Mark optional fields as optional instead of marking every required field with an asterisk. Confidence: 0.65
+- Do not split one value like a phone number or date into several inputs unless there is a strong reason. Confidence: 0.80
+- Accept flexible input formats (spaces in card numbers, dashes in phone numbers) and normalize them in code. Confidence: 0.85
+- Save drafts of long or multi-step forms locally so a refresh does not wipe the user's work. Confidence: 0.75
+- Make the success state clear and say what happens next. Confidence: 0.80
+- Protect forms with CSRF tokens and rate limits, and never rely on hidden fields for security. Confidence: 0.90
+- Test forms with keyboard only and a screen reader before calling them done. Confidence: 0.85
+```
+
+</details>
+
