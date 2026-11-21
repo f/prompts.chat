@@ -286,6 +286,22 @@ Idéale quand l'exhaustivité n'est pas connue d'avance. La règle d'arrêt doit
 
 Idéale pour les paiements, la publication, la suppression, les changements d'accès, les décisions médicales ou juridiques et les autres actions lourdes de conséquences.
 
+### La Boucle de Résultats
+
+`brancher une métrique cible → suggérer avec des preuves → proposer des options → construire dans un bac à sable → un humain approuve la pull request → mesurer en production → se mettre en pause à l'objectif, reprendre en cas de recul`
+
+Idéale pour la performance, l'accessibilité, l'hygiène de sécurité et les objectifs de conversion ou de latence qui dérivent avec le temps.
+
+Chacune des formes précédentes s'arrête quelque part : un test passe, les preuves suffisent, un humain dit oui. La boucle de résultats, elle, puise ses observations dans le quatrième type de contrôle, le comportement réel des utilisateurs et les métriques de production dans la durée, et ces signaux continuent de bouger une fois le travail terminé. Une page qui se charge vite aujourd'hui peut ralentir le mois prochain, à mesure que de nouvelles fonctionnalités arrivent. Atteindre l'objectif n'est donc pas la fin de l'histoire : c'est le moment où la boucle cesse de construire et commence à veiller.
+
+Cela change le contrat. Au lieu d'une unique règle d'arrêt, écrivez une **condition de veille** (quelle métrique, quel seuil, sur quelle fenêtre de temps) et une **règle de pause et de reprise** (se reposer tant que la cible tient, se réveiller quand elle recule). Donnez à la boucle un **budget par cycle**, afin qu'un processus qui ne se termine jamais officiellement ne puisse pas dépenser sans limite et sans bruit. Gardez **une validation humaine pour chaque changement**, et ne mesurez le résultat qu'après sa mise en production : les améliorations qui tiennent, les changements sans effet et ceux qui ont aggravé la situation deviennent tous un état dont le cycle suivant tire des leçons.
+
+[Stitch Loop](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/), de Google Labs, annoncé en novembre 2026 comme une expérience sur liste d'attente, en offre un exemple récent. Il est présenté comme un agent produit au long cours, relié à une base de code et aux données réelles du produit. Chaque tour traverse quatre phases : *Suggestions*, fondées sur des preuves ; *Solutions*, des options assorties de leurs compromis ; *Build*, où le code est écrit dans un bac à sable cloud isolé puis ouvert sous forme de pull request GitHub ; et *Reflect*, qui surveille les données en direct, apprend des résultats et continue de veiller une fois l'objectif atteint, au cas où la métrique reculerait. Rien n'est fusionné tant qu'une personne n'a pas relu la pull request. [Pulumi Agents](https://www.pulumi.com/blog/introducing-pulumi-agents/), annoncé le même jour, applique un schéma comparable à l'infrastructure : l'équipe définit un objectif, des contraintes et des permissions, les agents s'exécutent dans le cloud et rapportent des constats et des pull requests que l'équipe relit.
+
+<Callout type="warning" title="Quand le Chiffre Devient l'Objectif">
+Une boucle qui optimise une métrique peut améliorer le chiffre tout en abîmant ce qu'il était censé représenter. C'est la loi de Goodhart : lorsqu'une mesure devient une cible, elle cesse d'être une bonne mesure. Une boucle de conversion pourrait apprendre à cacher le bouton de résiliation ; une boucle de latence pourrait supprimer sans bruit une fonctionnalité lente mais importante. Associez chaque métrique cible à des **métriques garde-fous** qui ne doivent pas se dégrader, comme les taux d'erreur, les scores d'accessibilité ou les plaintes au support, et conservez la validation humaine même lorsque la boucle a gagné votre confiance.
+</Callout>
+
 ## Les Modes de Défaillance à Éliminer par Conception
 
 <table>
@@ -397,6 +413,7 @@ Identifie ensuite les trois modes de défaillance les plus probables de ta conce
 - [Building Effective Agents — Anthropic](https://www.anthropic.com/engineering/building-effective-agents) — les flux évaluateur-optimiseur, le retour de l'environnement, les conditions d'arrêt et des repères pour savoir quand la complexité agentique se justifie
 - [A Practical Guide to Building Agents — OpenAI](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/) — les exécutions d'agents, les conditions de sortie, les outils, les garde-fous et l'intervention humaine
 - [ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629) — la recherche fondatrice sur l'entrelacement des actions et des observations d'un environnement externe
+- [Introducing Stitch Loop (Google Labs)](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/) : un agent produit au long cours qui suggère, construit et mesure des changements à partir de métriques en direct, chaque changement étant relu sous forme de pull request
 
 ## Résumé
 

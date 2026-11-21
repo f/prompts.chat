@@ -286,6 +286,22 @@ Kapsamın önceden bilinmediği durumlar için en uygunudur. Durdurma kuralı ar
 
 Ödemeler, yayınlama, silme, erişim değişiklikleri, tıbbi veya hukuki kararlar ve sonuçları ağır diğer eylemler için en uygunudur.
 
+### Sonuç Döngüsü
+
+`hedef metriği bağla → kanıta dayanarak öner → seçenekler sun → yalıtılmış ortamda geliştir → insan pull request'i onaylar → canlıda ölç → hedefte durakla, gerilerse yeniden başla`
+
+Zamanla kayma eğiliminde olan performans, erişilebilirlik, güvenlik hijyeni, dönüşüm veya gecikme hedefleri için en uygunudur.
+
+Yukarıdaki biçimlerin her biri bir yerde son bulur: bir test geçer, kanıt yeterli hale gelir ya da bir insan onay verir. Sonuç döngüsü ise gözlemlerini dördüncü tür kontrolden, yani zaman içindeki gerçek kullanıcı davranışından ve canlı ortam metriklerinden alır; bunlar da iş bittikten sonra bile kıpırdamayı sürdürür. Bugün göz açıp kapayıncaya kadar açılan bir sayfa, yeni özellikler eklendikçe gelecek ay yeniden ağırlaşabilir. Hedefe ulaşmak hikâyenin sonu değildir; döngünün inşa etmeyi bırakıp nöbete geçtiği andır.
+
+Bu da sözleşmeyi değiştirir. Tek bir durdurma kuralı yerine bir **izleme koşulu** (hangi metrik, hangi eşik, hangi zaman aralığında) ve bir **duraklatma ve yeniden başlatma kuralı** (hedef tuttuğu sürece dinlen, gerilediğinde uyan) yazın. Döngüye **her tur için ayrı bir bütçe** verin ki resmen hiç bitmeyen bir süreç sessiz sedasız sınırsız harcama yapamasın. **Her değişikliği bir insan onayından geçirin** ve sonucu ancak değişiklik canlıya çıktıktan sonra ölçün: kalıcı olan iyileşmeler, hiçbir şeyi değiştirmeyen denemeler ve işleri kötüleştiren değişiklikler, hepsi döngünün durumuna işlenir ve bir sonraki tur bunlardan ders çıkarır.
+
+Google Labs'in Kasım 2026'da bekleme listeli bir deney olarak duyurduğu [Stitch Loop](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/), bu biçimin yakın tarihli örneklerinden biri. Bir kod tabanına ve canlı ürün verilerine bağlanan, uzun soluklu çalışan bir ürün ajanı olarak tanımlanıyor. Her döngü dört aşamadan geçiyor: kanıta dayanan *Öneriler* (Suggestions), artıları ve eksileriyle seçenekler sunan *Çözümler* (Solutions), kodu yalıtılmış bir bulut sandbox'ında yazıp GitHub pull request'i olarak açan *İnşa* (Build) adımı ve canlı verileri izleyen, sonuçlardan öğrenen, hedefe ulaşıldıktan sonra da metrik geriler diye gözünü ayırmayan *Değerlendirme* (Reflect) adımı. Bir insan pull request'i incelemeden hiçbir şey birleştirilmiyor. Aynı gün duyurulan [Pulumi Agents](https://www.pulumi.com/blog/introducing-pulumi-agents/) ise benzer bir yaklaşımı altyapıya taşıyor: ekip bir hedef, kısıtlar ve izinler belirliyor, ajanlar bulutta çalışıyor ve ekibin incelemesi için bulgularla pull request'ler getiriyor.
+
+<Callout type="warning" title="Sayı Hedefin Kendisi Olduğunda">
+Bir metriği optimize eden döngü, sayıyı iyileştirirken o sayının temsil ettiği şeye zarar verebilir. Goodhart yasası tam olarak bunu söyler: bir ölçü hedef haline geldiğinde iyi bir ölçü olmaktan çıkar. Dönüşüm oranının peşindeki bir döngü iptal düğmesini saklamayı öğrenebilir; gecikmeyi düşürmeye çalışan bir döngü yavaş ama önemli bir özelliği sessizce devreden çıkarabilir. Her hedef metriği, kötüleşmemesi gereken **koruma metrikleriyle** (hata oranları, erişilebilirlik puanları, destek şikâyetleri gibi) eşleştirin ve döngü güveninizi kazandıktan sonra bile insan onayı kapısını kaldırmayın.
+</Callout>
+
 ## Tasarımla Önlenecek Hata Kalıpları
 
 <table>
@@ -397,6 +413,7 @@ Ardından tasarımındaki en olası üç hata kalıbını belirle ve döngüyü 
 - [Building Effective Agents — Anthropic](https://www.anthropic.com/engineering/building-effective-agents) — değerlendirici-optimize edici iş akışları, ortamdan gelen geri bildirim, durdurma koşulları ve ajan karmaşıklığının ne zaman yerinde olduğuna dair rehberlik
 - [A Practical Guide to Building Agents — OpenAI](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/) — ajan çalıştırmaları, çıkış koşulları, araçlar, güvenlik bariyerleri ve insan müdahalesi
 - [ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629) — eylemleri dış ortamdan gelen gözlemlerle iç içe yürütmek üzerine temel araştırma
+- [Introducing Stitch Loop (Google Labs)](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/): canlı metriklere bakarak değişiklik öneren, geliştiren ve ölçen, her değişikliği pull request olarak incelemeye sunan uzun soluklu bir ürün ajanı
 
 ## Özet
 

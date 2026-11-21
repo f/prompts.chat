@@ -286,6 +286,22 @@ Ideale quando la completezza non è nota in anticipo. La regola di arresto dovre
 
 Ideale per pagamenti, pubblicazioni, cancellazioni, modifiche degli accessi, decisioni mediche o legali e altre azioni con conseguenze importanti.
 
+### Il Loop dei Risultati
+
+`collega una metrica obiettivo → suggerisci con evidenze → offri opzioni → costruisci in una sandbox → un umano approva la pull request → misura in produzione → fermati all'obiettivo, riparti se peggiora`
+
+Ideale per prestazioni, accessibilità, igiene della sicurezza e obiettivi di conversione o latenza che tendono a scivolare nel tempo.
+
+Ognuna delle forme precedenti finisce da qualche parte: un test passa, le evidenze bastano, una persona dice sì. Il loop dei risultati, invece, trae le sue osservazioni dal quarto tipo di controllo, il comportamento reale degli utenti e le metriche di produzione nel tempo, e questi segnali continuano a muoversi anche quando il lavoro è finito. Una pagina che oggi si carica in fretta può rallentare il mese prossimo, man mano che arrivano nuove funzionalità. Raggiungere l'obiettivo non è la fine della storia: è il momento in cui il loop smette di costruire e comincia a vegliare.
+
+Questo cambia il contratto. Al posto di un'unica regola di arresto, scrivi una **condizione di sorveglianza** (quale metrica, quale soglia, su quale finestra temporale) e una **regola di pausa e ripresa** (riposare finché l'obiettivo regge, risvegliarsi quando cede). Dai al loop un **budget per ciclo**, così che un processo che non finisce mai ufficialmente non possa spendere senza limiti e senza che nessuno se ne accorga. Mantieni **un'approvazione umana per ogni modifica** e misura il risultato solo dopo che la modifica è andata in produzione: i miglioramenti che tengono, le modifiche che non cambiano nulla e quelle che peggiorano le cose diventano tutti stato da cui il ciclo successivo impara.
+
+[Stitch Loop](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/) di Google Labs, annunciato a novembre 2026 come esperimento con lista d'attesa, ne è un esempio recente. Viene descritto come un agente di prodotto di lunga durata, collegato a una codebase e ai dati reali del prodotto. Ogni giro attraversa quattro fasi: *Suggestions*, proposte fondate su evidenze; *Solutions*, opzioni con i rispettivi compromessi; *Build*, in cui il codice viene scritto in una sandbox cloud isolata e aperto come pull request su GitHub; e *Reflect*, che monitora i dati dal vivo, impara dai risultati e continua a vigilare anche dopo il raggiungimento dell'obiettivo, nel caso la metrica peggiori. Nulla viene unito finché una persona non ha rivisto la pull request. [Pulumi Agents](https://www.pulumi.com/blog/introducing-pulumi-agents/), annunciato lo stesso giorno, applica uno schema simile all'infrastruttura: il team definisce obiettivo, vincoli e permessi, gli agenti girano nel cloud e restituiscono risultati e pull request da far revisionare al team.
+
+<Callout type="warning" title="Quando il Numero Diventa l'Obiettivo">
+Un loop che ottimizza una metrica può migliorare il numero danneggiando ciò che il numero rappresentava. È la legge di Goodhart: quando una misura diventa un obiettivo, smette di essere una buona misura. Un loop sulla conversione potrebbe imparare a nascondere il pulsante di disdetta; uno sulla latenza potrebbe eliminare in silenzio una funzionalità lenta ma importante. Affianca a ogni metrica obiettivo delle **metriche di guardia** che non devono peggiorare, come tassi di errore, punteggi di accessibilità o reclami al supporto, e mantieni l'approvazione umana anche quando il loop si è guadagnato la tua fiducia.
+</Callout>
+
 ## Modalità di Fallimento da Eliminare in Fase di Progetto
 
 <table>
@@ -397,6 +413,7 @@ Poi individua le tre modalità di fallimento più probabili nel tuo progetto e r
 - [Building Effective Agents — Anthropic](https://www.anthropic.com/engineering/building-effective-agents) — workflow evaluator-optimizer, feedback dall'ambiente, condizioni di arresto e indicazioni su quando la complessità agentica è giustificata
 - [A Practical Guide to Building Agents — OpenAI](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/) — esecuzioni degli agenti, condizioni di uscita, strumenti, guardrail e intervento umano
 - [ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629) — la ricerca fondativa sull'alternanza tra azioni e osservazioni provenienti da un ambiente esterno
+- [Introducing Stitch Loop (Google Labs)](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/): un agente di prodotto di lunga durata che suggerisce, costruisce e misura modifiche sulla base di metriche dal vivo, con ogni modifica revisionata come pull request
 
 ## Riepilogo
 

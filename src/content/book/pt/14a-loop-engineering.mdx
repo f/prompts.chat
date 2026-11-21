@@ -286,6 +286,22 @@ Ideal quando a completude não é conhecida de antemão. A regra de parada deve 
 
 Ideal para pagamentos, publicação, exclusão, mudanças de acesso, decisões médicas ou jurídicas e outras ações de grande consequência.
 
+### O Loop de Resultados
+
+`conectar uma métrica-alvo → sugerir com evidências → oferecer opções → construir em um sandbox → humano aprova o pull request → medir em produção → pausar na meta, retomar se ela cair`
+
+Ideal para desempenho, acessibilidade, higiene de segurança e metas de conversão ou latência que se desviam com o tempo.
+
+Cada uma das formas acima termina em algum lugar: um teste passa, as evidências bastam, uma pessoa diz sim. O loop de resultados tira suas observações do quarto tipo de verificação, o comportamento real dos usuários e as métricas de produção ao longo do tempo, e esses sinais continuam se mexendo depois que o trabalho acaba. Uma página que carrega rápido hoje pode ficar lenta no mês que vem, conforme novas funcionalidades chegam. Atingir a meta não é o fim da história: é o momento em que o loop para de construir e começa a vigiar.
+
+Isso muda o contrato. No lugar de uma única regra de parada, escreva uma **condição de vigilância** (qual métrica, qual limite, em qual janela de tempo) e uma **regra de pausa e retomada** (descansar enquanto a meta se mantém, acordar quando ela escorrega). Dê ao loop um **orçamento por ciclo**, para que um processo que nunca termina oficialmente não consiga gastar sem limite e sem ninguém perceber. Mantenha **aprovação humana em cada mudança** e meça o resultado só depois que a mudança entrar em produção: melhorias que se sustentaram, mudanças que não fizeram diferença e mudanças que pioraram as coisas viram, todas, estado com o qual o próximo ciclo aprende.
+
+O [Stitch Loop](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/), do Google Labs, anunciado em novembro de 2026 como um experimento com lista de espera, é um exemplo recente dessa forma. Ele é descrito como um agente de produto de longa duração conectado a uma base de código e a dados reais do produto. Cada volta passa por quatro fases: *Suggestions* (sugestões apoiadas em evidências), *Solutions* (opções com seus prós e contras), *Build* (código escrito em um sandbox isolado na nuvem e aberto como pull request no GitHub) e *Reflect* (monitora os dados ao vivo, aprende com os resultados e continua de olho depois que a meta é atingida, caso a métrica volte a cair). Nada é mesclado até que uma pessoa revise o pull request. O [Pulumi Agents](https://www.pulumi.com/blog/introducing-pulumi-agents/), anunciado no mesmo dia, aplica um padrão parecido à infraestrutura: a equipe define um objetivo, restrições e permissões, os agentes rodam na nuvem e devolvem descobertas e pull requests para a equipe revisar.
+
+<Callout type="warning" title="Quando o Número Vira a Meta">
+Um loop que otimiza uma métrica pode melhorar o número enquanto prejudica aquilo que o número representava. É a lei de Goodhart: quando uma medida vira meta, deixa de ser uma boa medida. Um loop de conversão pode aprender a esconder o botão de cancelar; um loop de latência pode remover discretamente uma funcionalidade lenta, mas importante. Combine cada métrica-alvo com **métricas de proteção** que não podem piorar, como taxas de erro, notas de acessibilidade ou reclamações no suporte, e mantenha a aprovação humana mesmo depois que o loop tiver conquistado sua confiança.
+</Callout>
+
 ## Modos de Falha para Eliminar no Projeto
 
 <table>
@@ -397,6 +413,7 @@ Depois, identifique os três modos de falha mais prováveis no seu projeto e rev
 - [Building Effective Agents — Anthropic](https://www.anthropic.com/engineering/building-effective-agents) — fluxos avaliador-otimizador, feedback do ambiente, condições de parada e orientações sobre quando a complexidade de agentes se justifica
 - [A Practical Guide to Building Agents — OpenAI](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/) — execuções de agentes, condições de saída, ferramentas, salvaguardas e intervenção humana
 - [ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629) — a pesquisa fundacional sobre intercalar ações com observações de um ambiente externo
+- [Introducing Stitch Loop (Google Labs)](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/): um agente de produto de longa duração que sugere, constrói e mede mudanças com base em métricas ao vivo, com cada mudança revisada como pull request
 
 ## Resumo
 
