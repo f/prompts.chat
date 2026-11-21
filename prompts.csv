@@ -206906,3 +206906,23 @@ Go Concurrency taste,"# Go Concurrency taste of a backend engineer who wants gor
 - Make shutdown graceful: stop accepting work, drain in-flight jobs, then exit with a deadline. Confidence: 0.90
 - Do not use `context.Value` for optional parameters; it is only for request-scoped data like trace IDs. Confidence: 0.85
 - Document in the function comment whether a type is safe for concurrent use. Confidence: 0.80",TRUE,TEXT,f
+AWS CDK Infrastructure taste,"# AWS CDK Infrastructure taste of a platform engineer who wants boring, reviewable cloud changes
+- Write CDK apps in TypeScript so constructs, props and IDE hints are fully typed. Confidence: 0.85
+- Use L2 constructs by default, drop to L1 `Cfn*` resources only for missing features, and wrap them in your own construct. Confidence: 0.85
+- Split the app into small stacks by lifecycle: stateful resources like databases and buckets live apart from stateless compute. Confidence: 0.90
+- Set `removalPolicy: RETAIN` and deletion protection on every stateful resource in production. Confidence: 0.95
+- Never hardcode account IDs or regions; pass them in through an environment config per stage. Confidence: 0.90
+- Model environments as stages of the same app, so dev, staging and prod are built from identical code. Confidence: 0.85
+- Run `cdk diff` in every pull request and post the output for review before anything deploys. Confidence: 0.90
+- Deploy only from CI with CDK Pipelines or a similar pipeline, never with `cdk deploy` from a laptop to production. Confidence: 0.90
+- Grant permissions with construct methods like `bucket.grantRead(fn)` instead of writing IAM policy JSON by hand. Confidence: 0.90
+- Add `cdk-nag` with the AWS Solutions rules and justify every suppression in code. Confidence: 0.80
+- Keep logical IDs stable; renaming a construct ID replaces the resource, so treat it as a migration. Confidence: 0.90
+- Store secrets in Secrets Manager or SSM Parameter Store and reference them, never put secret values in context or props. Confidence: 0.95
+- Tag every resource with owner, service and cost center through `Tags.of(app)`. Confidence: 0.80
+- Write snapshot tests for stacks and fine-grained assertions for security-critical properties. Confidence: 0.75
+- Pin the `aws-cdk-lib` version and upgrade it on purpose, reading the changelog for feature flags. Confidence: 0.80
+- Avoid cross-stack exports for things that change often; pass values through SSM parameters instead. Confidence: 0.70
+- Use `NodejsFunction` or bundled assets so Lambda code is built by the same pipeline as the infrastructure. Confidence: 0.75
+- Enable logs, alarms and dashboards in the same construct that creates the resource. Confidence: 0.80
+- Keep `cdk.context.json` committed so lookups are deterministic across machines. Confidence: 0.85",TRUE,TEXT,f
