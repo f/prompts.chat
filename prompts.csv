@@ -206885,3 +206885,24 @@ Sound: off (silent clip).
 
 Avoid: people, riders, saddles, horses taking off or leaving the group, extra horses appearing, horses merging or morphing, extra or missing legs, unnatural gait, sudden lighting changes, text.
 ",FALSE,TEXT,f
+Go Concurrency taste,"# Go Concurrency taste of a backend engineer who wants goroutines that never leak
+- Start a goroutine only when you know exactly how and when it will stop. Confidence: 0.95
+- Pass a `context.Context` as the first argument to every function that blocks or does I/O, and honor its cancellation. Confidence: 0.95
+- Use `errgroup.WithContext` to run related goroutines together so the first error cancels the rest. Confidence: 0.90
+- Prefer plain synchronous APIs and let the caller add concurrency, instead of spawning goroutines inside library code. Confidence: 0.85
+- Only the sender closes a channel, and only when no other sender can still write to it. Confidence: 0.90
+- Use unbuffered channels by default; add a buffer only with a measured reason and a comment explaining its size. Confidence: 0.75
+- Protect shared state with a `sync.Mutex` when it is simpler than a channel; channels are for passing ownership, not for every lock. Confidence: 0.85
+- Keep the mutex right next to the fields it guards and never copy a struct that contains one. Confidence: 0.85
+- Bound fan-out with a worker pool or `errgroup.SetLimit` instead of one goroutine per item. Confidence: 0.85
+- Every `select` that waits on work also waits on `ctx.Done()`. Confidence: 0.90
+- Use `time.NewTimer` or `context.WithTimeout` instead of `time.After` inside loops. Confidence: 0.75
+- Use `sync.Once` or `sync.OnceValue` for lazy initialization, never a hand-rolled boolean flag. Confidence: 0.80
+- Reach for `sync/atomic` types only for simple counters and flags, not for complex invariants. Confidence: 0.75
+- Avoid `sync.Map` unless profiling shows lock contention on a read-heavy map. Confidence: 0.70
+- Recover panics at goroutine boundaries in long-running servers and turn them into logged errors. Confidence: 0.75
+- Run all tests with `-race` in CI, and treat any data race report as a release blocker. Confidence: 0.95
+- Check for leaked goroutines in tests with `goleak`. Confidence: 0.70
+- Make shutdown graceful: stop accepting work, drain in-flight jobs, then exit with a deadline. Confidence: 0.90
+- Do not use `context.Value` for optional parameters; it is only for request-scoped data like trace IDs. Confidence: 0.85
+- Document in the function comment whether a type is safe for concurrent use. Confidence: 0.80",TRUE,TEXT,f
