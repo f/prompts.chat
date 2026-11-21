@@ -3026,5 +3026,24 @@
         "versionHistory": "バージョン履歴"
       }
     }
+  },
+  "dangerZone": {
+    "title": "デンジャーゾーン",
+    "description": "アカウントとデータに関する元に戻せない操作",
+    "exportTitle": "アカウントデータのエクスポート",
+    "exportDescription": "プロンプトライブラリの履歴、バージョン、アーティファクトをフォーマットされたJSONファイルとしてダウンロードします。",
+    "exportButton": "データをダウンロード",
+    "exporting": "エクスポート中...",
+    "exportSuccess": "プロンプトライブラリがダウンロードされました",
+    "exportFailed": "データのエクスポートに失敗しました",
+    "deleteTitle": "アカウントの削除",
+    "deleteDescription": "アカウント、APIキー、および作成したすべてのプロンプトを完全に削除します。この操作は取り消せません。",
+    "deleteButton": "アカウントを削除",
+    "dialogTitle": "本当によろしいですか？",
+    "dialogDescription": "この操作は取り消すことができません。アカウントプロフィール、APIキー、作成したすべてのプロンプト（公開、非公開、限定公開を含む）が完全に削除されます。",
+    "confirmPrompt": "確認のため、ユーザー名 \"{username}\" を入力してください:",
+    "deleting": "アカウントを削除しています...",
+    "deleteSuccess": "アカウントが正常に削除されました",
+    "deleteFailed": "アカウントの削除に失敗しました"
   }
 }

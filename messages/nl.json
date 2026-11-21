@@ -3029,5 +3029,24 @@
         "versionHistory": "Versiegeschiedenis"
       }
     }
+  },
+  "dangerZone": {
+    "title": "Gevarenzone",
+    "description": "Onomkeerbare acties voor uw account en gegevens",
+    "exportTitle": "Accountgegevens exporteren",
+    "exportDescription": "Download uw historische promptbibliotheek, versies en gebruiksarctifacten als een opgemaakt JSON-bestand.",
+    "exportButton": "Download mijn gegevens",
+    "exporting": "Exporteren...",
+    "exportSuccess": "Uw promptbibliotheek is gedownload",
+    "exportFailed": "Exporteren van gegevens mislukt",
+    "deleteTitle": "Account verwijderen",
+    "deleteDescription": "Verwijder uw account, API-sleutels en alle gemaakte prompts definitief. Deze actie kan niet ongedaan worden gemaakt.",
+    "deleteButton": "Account verwijderen",
+    "dialogTitle": "Weet u het absoluut zeker?",
+    "dialogDescription": "Deze actie kan niet ongedaan worden gemaakt. Dit verwijdert uw accountprofiel, uw API-sleutels en alle door u gemaakte prompts (inclusief openbare, privé en niet-vermelde prompts) permanent.",
+    "confirmPrompt": "Typ uw gebruikersnaam \"{username}\" om te bevestigen:",
+    "deleting": "Account wordt verwijderd...",
+    "deleteSuccess": "Account succesvol verwijderd",
+    "deleteFailed": "Kan account niet verwijderen"
   }
 }

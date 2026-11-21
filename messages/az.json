@@ -3038,5 +3038,24 @@
         "versionHistory": "Versiya tarixçəsi"
       }
     }
+  },
+  "dangerZone": {
+    "title": "Təhlükəli Zona",
+    "description": "Hesabınız və məlumatlarınız üçün geri qaytarılmaz əməliyyatlar",
+    "exportTitle": "Hesab Məlumatlarını İxrac Edin",
+    "exportDescription": "Tarixi sorğu kitabxananızı, versiyaları və istifadə fayllarını formatlaşdırılmış JSON sənədi kimi endirin.",
+    "exportButton": "Məlumatlarımı Endir",
+    "exporting": "İxrac edilir...",
+    "exportSuccess": "Sorğu kitabxananız endirildi",
+    "exportFailed": "Məlumatları ixrac etmək mümkün olmadı",
+    "deleteTitle": "Hesabı Sil",
+    "deleteDescription": "Hesabınızı, API açarlarınızı və yaratdığınız bütün sorğuları birdəfəlik silin. Bu əməliyyat geri qaytarıla bilməz.",
+    "deleteButton": "Hesabı Sil",
+    "dialogTitle": "Tamamilə əminsiniz?",
+    "dialogDescription": "Bu əməliyyat geri qaytarıla bilməz. Bu, hesab profilinizi, API açarlarınızı və yazdığınız bütün sorğuları (ictimai, şəxsi və siyahıda olmayanlar daxil olmaqla) birdəfəlik siləcək.",
+    "confirmPrompt": "Təsdiqləmək üçün istifadəçi adınızı \"{username}\" daxil edin:",
+    "deleting": "Hesab silinir...",
+    "deleteSuccess": "Hesab uğurla silindi",
+    "deleteFailed": "Hesabı silmək mümkün olmadı"
   }
 }
