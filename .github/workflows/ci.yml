@@ -34,6 +34,64 @@ jobs:
       - name: Run tests
         run: npm test
 
+  cli-package:
+    name: CLI package tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/prompts.chat
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: packages/prompts.chat/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Run tests
+        run: npm test
+
+      # Reads public prompts.chat data to catch API contract drift; does not block merges
+      - name: Live API contract tests
+        continue-on-error: true
+        run: npm run test:live
+
+  cli-pack-smoke:
+    name: CLI tarball smoke (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['18', '20', '22', '24']
+    defaults:
+      run:
+        working-directory: packages/prompts.chat
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'npm'
+          cache-dependency-path: packages/prompts.chat/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Pack, install and run the tarball
+        run: npm run test:pack
+
   test-db:
     name: Database tests
     runs-on: ubuntu-latest

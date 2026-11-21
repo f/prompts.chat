@@ -24,18 +24,14 @@ npm install prompts.chat
 
 ## CLI
 
-### Create a New Instance
-
-Scaffold a new prompts.chat deployment with a single command:
+Requires Node.js 18 or newer. No install or account needed:
 
 ```bash
-npx prompts.chat new my-prompt-library
+npx prompts.chat --help
 ```
 
-This will:
-1. Clone a clean copy of the repository (removes `.github`, `.claude`, `packages/`, dev scripts)
-2. Install dependencies
-3. Launch the interactive setup wizard to configure branding, theme, auth, and features
+The CLI only reads public content and never sends credentials. Private prompts stay private (`show`
+reports them as private), and unlisted or deleted items are not listed.
 
 ### Interactive Prompt Browser
 
@@ -49,13 +45,93 @@ npx prompts.chat
 - `↑/↓` or `j/k` — Navigate list
 - `Enter` — Select prompt
 - `/` — Search prompts
+- `c` — Pick a category (list) / copy prompt with variable filling (detail)
 - `n/p` — Next/Previous page
 - `r` — Run prompt (open in ChatGPT, Claude, etc.)
-- `c` — Copy prompt (with variable filling)
 - `C` — Copy raw prompt
 - `o` — Open in browser
 - `b` — Go back
 - `q` — Quit
+
+The browser needs a real terminal. In scripts, pipes and CI use the commands below.
+
+### Search and Browse
+
+```bash
+npx prompts.chat search "code review"            # prompts, skills, tastes and more
+npx prompts.chat search sql --type skill          # text, image, video, audio, structured,
+                                                  # skill, taste, classifier or bot
+npx prompts.chat prompts --sort upvotes --trending
+npx prompts.chat skills postgres
+npx prompts.chat tastes
+npx prompts.chat classifiers fraud
+npx prompts.chat bots --platform hermes           # grok, openclaw, hermes, autogpt, dots, duet, muse
+npx prompts.chat teams --tag software
+```
+
+Listings take `--page`, `--limit` (up to 100), `--sort newest|oldest|upvotes` and `--tag`
+(`bots` and `teams` also take `--category <slug>`). Every result prints the id to pass to `show`.
+
+### Show and Install
+
+```bash
+npx prompts.chat show <id>                        # prompt, skill, taste or classifier
+npx prompts.chat show <id> --raw | pbcopy         # only the prompt body
+npx prompts.chat show https://prompts.chat/classifiers/account-takeover-signal
+
+npx prompts.chat bot <id>                         # instructions, routines, skills, install options
+npx prompts.chat bot <id> --skill > SKILL.md      # the bot as an agent skill
+npx prompts.chat bot <id> --install hermes        # install prompt (and command) for a platform
+
+npx prompts.chat team lean-software-factory
+npx prompts.chat team lean-software-factory --install grok
+```
+
+`show`, `bot` and `team` accept ids, `id_slug` handles and prompts.chat page URLs. Add `--json` to
+any command for the raw API response.
+
+Exit codes: `0` success, `1` request failed or not found, `2` usage error.
+
+### Self-Hosted Instances
+
+Point the CLI (and the interactive browser) at your own instance:
+
+```bash
+npx prompts.chat search onboarding --base-url https://prompts.example.com
+PROMPTS_CHAT_URL=http://localhost:3000 npx prompts.chat
+```
+
+### Create a New Instance
+
+Scaffold a new prompts.chat deployment with a single command:
+
+```bash
+npx prompts.chat new my-prompt-library
+```
+
+This will:
+1. Clone a clean copy of the repository (removes `.github`, `.claude`, `packages/`, dev scripts)
+2. Install dependencies
+3. Launch the interactive setup wizard to configure branding, theme, auth, and features
+
+### MCP Server
+
+```bash
+npx prompts.chat mcp
+```
+
+Starts the stdio MCP server from [`@fkadev/prompts.chat-mcp`](https://www.npmjs.com/package/@fkadev/prompts.chat-mcp).
+
+### Development
+
+```bash
+npm test            # build, then unit, command and built-binary tests against a local mock API
+npm run test:live   # read-only contract tests against https://prompts.chat
+npm run test:pack   # npm pack, install the tarball in a clean temp project, run bins, npx and the TUI
+SMOKE_NODE_BINARIES=/path/to/node18:/path/to/node24 npm run test:pack -- --live
+```
+
+See [CHANGELOG.md](./CHANGELOG.md) for release notes.
 
 ---
 
