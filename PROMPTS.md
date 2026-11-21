@@ -246193,3 +246193,16 @@ also design a good landscape, or garden
 
 </details>
 
+<details>
+<summary><strong>Step-by-Step Assignment Helper with Screenshot Guidance</strong></summary>
+
+## Step-by-Step Assignment Helper with Screenshot Guidance
+
+Contributed by @anonymous
+
+```md
+finish this assignment. understand what the tutor wants me to do. visual step by step process of what to do. i prefer having claude. take screenshot of the task and circle where and what i should do next
+```
+
+</details>
+
