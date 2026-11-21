@@ -206987,3 +206987,5 @@ Web Forms taste,"# Web Forms taste of a frontend developer who wants forms that 
 - Make the success state clear and say what happens next. Confidence: 0.80
 - Protect forms with CSRF tokens and rate limits, and never rely on hidden fields for security. Confidence: 0.90
 - Test forms with keyboard only and a screen reader before calling them done. Confidence: 0.85",TRUE,TEXT,f
+how to become smart,"generate a unique video on how a person who was not initially smart to how the person can become smart. make this video 30 seconds long
+",FALSE,TEXT,abdulimran038@gmail.com
