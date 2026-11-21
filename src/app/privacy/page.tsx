@@ -99,7 +99,9 @@ export default function PrivacyPage() {
           <p className="text-muted-foreground">
             We use essential cookies for authentication and session management. We use Google Analytics 
             to understand how the service is used, including tracking events such as prompt views, searches, 
-            and interactions. On self-hosted instances, analytics can be disabled by not setting the 
+            and interactions. Analytics records whether a visit is signed in, and, if you accept analytics 
+            cookies, a pseudonymous identifier derived from your account (never your email, username, or 
+            account id) so visits can be counted across devices. On self-hosted instances, analytics can be disabled by not setting the 
             <code className="px-1 py-0.5 bg-muted rounded text-xs">GOOGLE_ANALYTICS_ID</code> environment variable.
           </p>
         </section>

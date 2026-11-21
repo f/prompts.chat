@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Noto_Sans_Arabic, Geist_Mono, Playfair_Display } from "next/font/google";
 import { headers } from "next/headers";
+import { unstable_rethrow } from "next/navigation";
 import { getMessages, getLocale } from "next-intl/server";
 import { Providers } from "@/components/providers";
 import { Header } from "@/components/layout/header";
@@ -11,6 +12,7 @@ import { AppBanner } from "@/components/layout/app-banner";
 import { AnnouncementBanner } from "@/components/layout/announcement-banner";
 import { LocaleDetector } from "@/components/providers/locale-detector";
 import { getConfig } from "@/lib/config";
+import { auth } from "@/lib/auth";
 import { isRtlLocale } from "@/lib/i18n/config";
 import { getBaseUrl } from "@/lib/seo";
 import "./globals.css";
@@ -117,6 +119,20 @@ const radiusValues = {
   lg: "0.75rem",
 };
 
+async function getAnalyticsAuth(): Promise<{ loggedIn: boolean; analyticsId: string | null } | undefined> {
+  try {
+    const session = await auth();
+    return {
+      loggedIn: !!session?.user,
+      analyticsId: session?.user?.analyticsId ?? null,
+    };
+  } catch (error) {
+    unstable_rethrow(error);
+    // Leave it to the client-side session sync rather than failing the page
+    return undefined;
+  }
+}
+
 function hexToOklch(hex: string): string {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   if (!result) return "oklch(0.5 0.2 260)";
@@ -155,6 +171,8 @@ export default async function RootLayout({
   const messages = await getMessages();
   const config = await getConfig();
   const isRtl = isRtlLocale(locale);
+  const gaId = process.env.GOOGLE_ANALYTICS_ID;
+  const analyticsAuth = gaId ? await getAnalyticsAuth() : undefined;
 
   // Calculate theme values server-side
   const themeClasses = `theme-${config.theme.variant} density-${config.theme.density}`;
@@ -183,10 +201,10 @@ export default async function RootLayout({
         )}
       </head>
       <body className={`${fontClasses} antialiased`}>
-        {process.env.GOOGLE_ANALYTICS_ID && (
-          <Analytics gaId={process.env.GOOGLE_ANALYTICS_ID} />
-        )}
         <Providers locale={locale} messages={messages} theme={config.theme} branding={{ ...config.branding, useCloneBranding: config.homepage?.useCloneBranding }}>
+          {gaId && (
+            <Analytics gaId={gaId} loggedIn={analyticsAuth?.loggedIn} analyticsId={analyticsAuth?.analyticsId} />
+          )}
           {isEmbedRoute || isKidsRoute ? (
             children
           ) : (
