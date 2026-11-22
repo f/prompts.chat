@@ -248148,3 +248148,36 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Node.js Backend Service taste</strong></summary>
+
+## Node.js Backend Service taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Node.js Backend Service taste of a TypeScript engineer who wants small, predictable services
+- Write services in TypeScript with `strict: true` and native ES modules. Confidence: 0.90
+- Pin the Node.js version to an active LTS release in `.nvmrc`, `engines` and the Docker base image. Confidence: 0.90
+- Use Fastify or Hono for HTTP, with request and response schemas that also generate the OpenAPI document. Confidence: 0.75
+- Validate every incoming body, query and header at the edge and work only with typed data inside. Confidence: 0.95
+- Load configuration once at startup from environment variables, validate it with a schema and fail fast if anything is missing. Confidence: 0.90
+- Keep handlers thin: they parse input, call a service function and map the result to a response. Confidence: 0.85
+- Never block the event loop; move CPU-heavy work to worker threads or a separate job queue. Confidence: 0.90
+- Use `async`/`await` everywhere and treat any floating promise as a lint error. Confidence: 0.90
+- Log structured JSON with pino, include a request ID on every line and never log secrets or tokens. Confidence: 0.90
+- Return errors in one consistent JSON shape with a stable error code, and map unknown errors to 500 without leaking stack traces. Confidence: 0.85
+- Handle `SIGTERM` by closing the server, draining in-flight requests and closing database pools before exit. Confidence: 0.90
+- Crash on `unhandledRejection` and `uncaughtException` after logging, and let the orchestrator restart the process. Confidence: 0.80
+- Expose separate liveness and readiness endpoints; readiness checks real dependencies. Confidence: 0.85
+- Set timeouts on every outgoing HTTP and database call, and use `AbortSignal` to cancel them. Confidence: 0.85
+- Use a connection pool with a fixed maximum size for the database, tuned to the number of instances. Confidence: 0.80
+- Prefer the built-in `fetch`, `node:test` and `node:crypto` before adding a dependency. Confidence: 0.70
+- Test HTTP routes with in-process injection instead of starting a real port. Confidence: 0.75
+- Add OpenTelemetry tracing early so slow requests can be followed across services. Confidence: 0.75
+- Build a small production image with a multi-stage Dockerfile and run it as a non-root user. Confidence: 0.85
+- Keep `package-lock.json` committed and install with `npm ci` in CI and Docker builds. Confidence: 0.90
+```
+
+</details>
+
