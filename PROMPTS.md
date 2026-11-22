@@ -248083,3 +248083,36 @@ Avoid: individual birds growing large, birds flying into the camera, the flock s
 
 </details>
 
+<details>
+<summary><strong>Kotlin Coroutines taste</strong></summary>
+
+## Kotlin Coroutines taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Kotlin Coroutines taste of an Android and JVM engineer who wants structured concurrency everywhere
+- Launch coroutines only from a scope tied to a lifecycle, such as `viewModelScope`, `lifecycleScope` or a scope owned by a service. Confidence: 0.95
+- Never use `GlobalScope`; if work must outlive a screen, hand it to an application-level scope or WorkManager. Confidence: 0.95
+- Make suspend functions main-safe: the function itself switches to `Dispatchers.IO` or `Default` with `withContext`, not the caller. Confidence: 0.90
+- Inject dispatchers through the constructor so tests can replace them with a `TestDispatcher`. Confidence: 0.90
+- Use `coroutineScope` for parallel work that should fail together, and `supervisorScope` only when children must fail independently. Confidence: 0.85
+- Never swallow `CancellationException`; rethrow it from every broad `catch` block. Confidence: 0.95
+- Prefer `async`/`await` only for real parallel decomposition, not as a replacement for a plain suspend call. Confidence: 0.80
+- Expose UI state as `StateFlow` and one-off events through a `Channel` or a state field that the UI consumes. Confidence: 0.80
+- Collect flows in the UI with `repeatOnLifecycle(Lifecycle.State.STARTED)` or `collectAsStateWithLifecycle`. Confidence: 0.90
+- Use `stateIn` with `SharingStarted.WhileSubscribed(5_000)` so upstream work stops when nobody is watching. Confidence: 0.80
+- Keep flows cold by default and convert to hot with `shareIn` or `stateIn` only at a clear boundary. Confidence: 0.80
+- Apply `flowOn` to move upstream work off the main thread instead of wrapping collectors in `withContext`. Confidence: 0.80
+- Wrap blocking Java APIs in `withContext(Dispatchers.IO)` and never call `runBlocking` in production code paths. Confidence: 0.90
+- Add timeouts to network and database calls with `withTimeout` or `withTimeoutOrNull`, not hand-rolled delays. Confidence: 0.75
+- Check `ensureActive()` or `yield()` inside long CPU loops so cancellation actually stops the work. Confidence: 0.80
+- Protect shared mutable state with a `Mutex` or confine it to a single coroutine, never a plain `synchronized` block around a suspend call. Confidence: 0.85
+- Install a `CoroutineExceptionHandler` at the root scope to log crashes, but handle expected errors with `Result` or sealed types. Confidence: 0.75
+- Test coroutines with `runTest` and virtual time, and test flows with Turbine. Confidence: 0.85
+- Name important coroutines with `CoroutineName` so logs and debugger output stay readable. Confidence: 0.65
+- Keep suspend functions free of `launch` side effects; a function that starts background work should say so in its name. Confidence: 0.75
+```
+
+</details>
+
