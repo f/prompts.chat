@@ -248012,3 +248012,25 @@ Lighting: even, soft, flat museum reproduction light, true colors, high detail, 
 
 </details>
 
+<details>
+<summary><strong>Folk Reverse Glass Painting of Sunflowers in a Cobalt Jug on Gold Leaf</strong></summary>
+
+## Folk Reverse Glass Painting of Sunflowers in a Cobalt Jug on Gold Leaf
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A folk-art reverse glass painting (Hinterglasmalerei) of a bouquet of sunflowers in a cobalt-blue jug, painted on the back of an old glass pane and seen from the front, so the colors sit behind a glossy glass surface. Vertical 3:4 composition.
+
+Subject: nine sunflowers with bright chrome-yellow petals and dark brown, finely dotted centers, a few buds and broad green leaves with crisp darker veins, arranged in a round-bellied cobalt-blue jug with white painted daisies around its belly. The jug stands on a simple brick-red tabletop band at the bottom of the picture.
+
+Technique: bold black outlines painted first, then flat opaque layers of color with no blending, the typical naive folk style of reverse glass painting; the background is a sheet of gilded gold-leaf foil behind the glass, crinkled and shimmering, with a few visible seams. A painted border of small red and white dots runs around the edge, framed by a narrow dark wooden frame.
+
+Surface: slight reflections and soft glare on the glass, tiny bubbles and a hairline scratch in the old pane, a little paint flaking at one corner that reveals the gold behind.
+
+Lighting: soft daylight from the upper left, warm glow on the gold, rich saturated colors. No people, no text.
+
+```
+
+</details>
+
