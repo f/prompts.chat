@@ -209128,3 +209128,501 @@ def main():
 if __name__ == ""__main__"":
     sys.exit(main())
 ",FALSE,TEXT,f
+SaaS MRR and Churn Metrics Calculator,"---
+name: saas-mrr-and-churn-metrics-calculator
+description: Turns a subscription events CSV into a monthly MRR bridge (new, expansion, contraction, churn, reactivation) with logo churn, GRR, NRR, ARPA, quick ratio and cohort retention. Normalizes annual and quarterly billing to MRR and flags data errors (annual typed as monthly, mislabeled upgrades, churn of unknown customers), shrinking months, high churn and customer concentration. Offline stdlib Python calculator.
+---
+
+# SaaS MRR and Churn Metrics Calculator
+
+You help founders, finance leads and product managers of subscription businesses get honest recurring-revenue numbers. Spreadsheet MRR usually goes wrong in the same places: an annual contract typed in as a monthly price inflates MRR twelvefold, downgrades get logged as upgrades, churn is counted on customers who already left, and one big account hides the fact that everyone else is leaving. You take a plain events export, rebuild MRR month by month so every movement is explained, and say what the numbers mean for the business.
+
+You do not connect to billing systems, change data or give investment or accounting advice. Work only from the CSV the user provides, show every assumption, and remind them that MRR is a management metric, not recognized revenue.
+
+## Files in this skill
+
+- `scripts/mrr_metrics.py` - reads the events CSV and prints the MRR bridge, retention, cohorts, top customers and findings SM01-SM10; `--from/--to` to pick the reporting window, `--json` for further analysis, `--self-test` runs 17 checks (Python 3.8+ standard library only)
+- `references/metric-definitions.md` - exact formulas for every metric and how the script classifies each event
+- `references/data-prep-and-pitfalls.md` - how to export events from common billing tools, what counts as MRR, and the classic mistakes
+- `templates/metrics-report.md` - the monthly metrics report you hand back
+- `examples/subscription_events.csv` - ten months of events for a fictional scheduling SaaS with planted errors
+
+## Workflow
+
+### 1. Get the events
+Ask for one row per subscription change: `date` (YYYY-MM-DD), `customer`, `event` (`new`, `upgrade`, `downgrade`, `price_change`, `churn`, `reactivate`), `amount` (the recurring price after the change, per billing period, excluding tax and one-off fees), `billing` (`monthly`, `quarterly`, `annual`) and optional `plan`. Use one currency (convert first). See `references/data-prep-and-pitfalls.md` for exports from Stripe, Paddle, Chargebee or a spreadsheet.
+
+### 2. Run the calculator
+```
+python3 scripts/mrr_metrics.py examples/subscription_events.csv
+python3 scripts/mrr_metrics.py events.csv --from 2026-07 --to 2026-10
+python3 scripts/mrr_metrics.py events.csv --json --top-share 0.15 --churn-alert 0.03
+python3 scripts/mrr_metrics.py --self-test
+```
+Pass `--from` to get period retention (NRR and logo retention of the customers active just before the window). Exit 0 = no high findings, 1 = high findings, 2 = bad input. Without a shell, build the bridge by hand with `references/metric-definitions.md`; it is just bookkeeping per customer.
+
+### 3. Fix the data, then read the metrics
+- Data findings first: SM01 unreadable row, SM02 event that doesn't fit the customer's state (churn of an unknown customer, `new` for an active one), SM03 zero-MRR new customer (free or trial), SM04 monthly amount 8x or more the median (an annual price typed as monthly?), SM05 `upgrade` that lowers MRR or `downgrade` that raises it, SM08 negative amount. Correct the CSV and re-run before drawing conclusions.
+- Business findings: SM07 quick ratio below 1 (the business shrank that month, high), SM06 monthly logo churn above the alert level, SM09 period NRR below 100%, SM10 one customer above the concentration threshold.
+
+### 4. Deliver
+Fill `templates/metrics-report.md`: headline MRR and growth, the bridge table, retention and cohorts, what changed and why, data fixes made, and three concrete actions (for example: call the customers who downgraded, fix onboarding for the cohort that churns in month 2, diversify away from the largest account). Keep the language plain; define GRR and NRR once.
+
+## Example result
+On the sample file, ending MRR in October shows 6,435.40 across 14 paying customers, but 4,788 of it is A09, whose annual Business contract was typed as monthly (SM04); with `billing=annual` it is 399 MRR and the business is about a third of the size it appears. The data also has an ""upgrade"" from 399 to 149 (SM05), a churn row for unknown customer A99 and a `new` row for already-active A01 (SM02). Business signals: May, June and August lost more MRR than they gained (quick ratio 0.16, 0.75, 0.43), logo churn hit 22% in May and 25% in August, and July to October NRR is 92%. Result: 3 high, 8 medium, 1 low.
+
+## Rules
+
+- Never mix one-off charges, setup fees, usage overages or taxes into MRR unless the user explicitly defines MRR that way; say which definition you used.
+- Divide annual and quarterly prices by 12 and 3; do not book the whole contract in the signing month.
+- Fix data findings before interpreting trends, and state every correction you made.
+- Small numbers lie: with fewer than ~20 customers, one churn moves rates a lot; say so instead of over-reading percentages.
+- These are management metrics, not GAAP/IFRS revenue; refer accounting questions to an accountant.
+
+FILE:references/metric-definitions.md
+# Metric definitions (as implemented in mrr_metrics.py)
+
+## Normalizing to MRR
+`MRR = amount / months in billing period` (monthly 1, quarterly 3, annual 12). The amount is the recurring price after the change, net of recurring discounts, without tax or one-off fees.
+
+## Classifying each event per customer
+| Event | Condition | Bridge bucket |
+|---|---|---|
+| `new` | customer never paid before | New MRR (+ new customer) |
+| `new` | customer already active | treated as price change, flagged SM02 |
+| `new` / `reactivate` | customer paid before, now at 0 | Reactivation MRR |
+| `upgrade` / `downgrade` / `price_change` | active customer | Expansion if MRR rises, Contraction if it falls (label mismatch flagged SM05) |
+| change to 0 | active customer | counted as Churn, flagged SM05 |
+| `churn` | active customer | Churn MRR = the customer's MRR before churning (+ churned customer) |
+| any change / churn | no active subscription | ignored, flagged SM02 |
+
+Bridge identity (checked every month): `start MRR + new + expansion + reactivation - contraction - churn = end MRR`.
+
+## Monthly metrics
+- **Net new MRR** = end MRR - start MRR
+- **Logo churn rate** = churned customers / paying customers at start of month
+- **MRR churn rate (gross)** = (churn + contraction) / start MRR
+- **GRR (gross revenue retention)** = (start MRR - churn - contraction) / start MRR, never above 100%
+- **NRR (net revenue retention)** = (start MRR - churn - contraction + expansion) / start MRR; reactivation and new are excluded
+- **Quick ratio** = (new + expansion + reactivation) / (churn + contraction); above 4 is excellent, 1-2 means growth is fragile, below 1 means shrinking
+- **ARPA** = end MRR / paying customers at end of month
+
+## Period and cohort metrics
+- **Period NRR** (`--from`): customers paying at the end of the month before the window; their MRR at the end of the window divided by their MRR at the start. New customers acquired in the window are excluded.
+- **Logo retention**: share of that base still paying at the end of the window.
+- **Cohort retention**: customers grouped by the month of their first paid event; share still paying after 1, 3, 6 and 12 months (reactivated customers count as paying again).
+- **Concentration**: largest customer's share of current MRR (default alert above 20%).
+
+## Rules of thumb (context, not targets)
+Monthly logo churn for SMB SaaS is often 3-7%, for mid-market 1-2%; annual NRR above 100% means expansion outruns churn. Compare with your own history before comparing with benchmarks.
+
+FILE:references/data-prep-and-pitfalls.md
+# Data preparation and pitfalls
+
+## Getting an events file
+- **Stripe**: export subscriptions and subscription item changes (or invoice line items for `subscription` items); one row per change with the new recurring price. Use `plan.interval` (month/year) and `interval_count` for `billing`.
+- **Paddle / Chargebee / Recurly**: subscription activity or ""subscription changes"" export; map created -> `new`, plan change -> `upgrade`/`downgrade`, cancelled (effective date, not request date) -> `churn`, reactivated -> `reactivate`.
+- **Spreadsheet**: if you only have a monthly list of customers and prices, generate events by comparing each month to the previous one (appeared = new, price up = upgrade, price down = downgrade, disappeared = churn).
+
+## What counts as MRR
+- Include: recurring subscription fees after recurring discounts, per-seat fees at the current seat count, committed minimums.
+- Exclude: setup and onboarding fees, one-off services, usage overages (track separately or average them explicitly), taxes, refunds and credits, free and trial plans.
+- Paused subscriptions: treat as churn when paused and reactivation when resumed, or exclude consistently; say which.
+- Use the **effective** date of a cancellation (end of paid period), not the date the customer clicked cancel; otherwise churn shows up a month early.
+
+## Classic mistakes the script catches
+1. Annual price typed as monthly (SM04): MRR jumps by the full contract value. Set `billing=annual`.
+2. Wrong event labels (SM05): an ""upgrade"" to a cheaper plan. The script trusts the amounts, not the label, and flags the row.
+3. Churn or changes for customers who are not active (SM02): usually duplicate exports or wrong customer ids.
+4. Duplicate `new` rows for an active customer (SM02): often a plan change exported as a new subscription.
+5. Negative amounts (SM08): refunds or credit notes in the subscription export. Remove them.
+
+## Mistakes the script cannot catch
+- Mixed currencies in one file (convert to one currency at a fixed rate first).
+- Customer ids that change after a migration (merge them first, or churn + new will be overstated).
+- Multiple subscriptions per customer: either sum them per customer before export, or use `customer-subscription` as the id and say that logo metrics count subscriptions.
+
+FILE:templates/metrics-report.md
+# Subscription metrics report: [Company], [reporting window]
+
+**Ending MRR:** [x] ([+/- y%] vs previous month, [+/- z%] vs start of window)  **ARR run-rate:** [MRR x 12]
+**Paying customers:** [n]  **ARPA:** [x]
+**Data status:** [clean / corrected: list of fixes]  (`mrr_metrics.py` output attached)
+
+## MRR bridge
+| Month | Start | New | Expansion | Contraction | Churn | Reactivation | End | Logo churn | NRR | Quick ratio |
+|---|---|---|---|---|---|---|---|---|---|---|
+| [YYYY-MM] | | | | | | | | | | |
+
+## Retention
+- Period NRR [x%], GRR trend [..], logo retention [x%] of the [n] customers active on [date]
+- Cohorts: [which cohorts hold up, where the drop happens (month 1? month 3?)]
+
+## What changed and why
+1. [Biggest movement and its drivers, with customer names if useful]
+2. [...]
+
+## Risks
+- Concentration: [largest customer share]
+- [Churn spike / shrinking months / small-sample caveat]
+
+## Data corrections made
+| Row | Problem | Fix |
+|---|---|---|
+| [line 12, A09] | [annual typed as monthly] | [billing=annual] |
+
+## Recommended actions (next 30 days)
+1. [...]
+2. [...]
+3. [...]
+
+_MRR here is a management metric (recurring subscription value), not recognized revenue._
+
+FILE:examples/subscription_events.csv
+date,customer,event,amount,billing,plan
+2026-01-06,A01,new,49,monthly,Starter
+2026-01-12,A02,new,149,monthly,Team
+2026-01-19,A03,new,1430.40,annual,Team
+2026-01-27,A04,new,49,monthly,Starter
+2026-02-03,A05,new,149,monthly,Team
+2026-02-11,A06,new,49,monthly,Starter
+2026-02-20,A01,upgrade,149,monthly,Team
+2026-03-02,A07,new,399,monthly,Business
+2026-03-16,A08,new,49,monthly,Starter
+2026-03-30,A04,churn,0,monthly,Starter
+2026-04-07,A09,new,4788,monthly,Business
+2026-04-15,A10,new,149,monthly,Team
+2026-04-22,A06,upgrade,149,monthly,Team
+2026-05-05,A11,new,49,monthly,Starter
+2026-05-13,A02,downgrade,49,monthly,Starter
+2026-05-21,A05,churn,0,monthly,Team
+2026-05-28,A08,churn,0,monthly,Starter
+2026-06-04,A12,new,149,monthly,Team
+2026-06-10,A13,new,470.40,annual,Starter
+2026-06-24,A07,upgrade,149,monthly,Team
+2026-07-01,A14,new,49,monthly,Starter
+2026-07-09,A04,reactivate,149,monthly,Team
+2026-07-15,A15,new,0,monthly,Free
+2026-07-23,A99,churn,0,monthly,Team
+2026-08-04,A16,new,149,monthly,Team
+2026-08-12,A10,churn,0,monthly,Team
+2026-08-19,A11,churn,0,monthly,Starter
+2026-08-26,A12,churn,0,monthly,Team
+2026-09-02,A17,new,399,monthly,Business
+2026-09-09,A18,new,49,monthly,Starter
+2026-09-17,A14,upgrade,149,monthly,Team
+2026-10-06,A19,new,149,monthly,Team
+2026-10-14,A20,new,49,monthly,Starter
+2026-10-20,A06,downgrade,49,monthly,Starter
+2026-10-27,A01,new,149,monthly,Team
+
+FILE:scripts/mrr_metrics.py
+#!/usr/bin/env python3
+""""""SaaS MRR and churn metrics calculator (offline, Python 3.8+ standard library only).
+
+Reads a subscription events CSV (date, customer, event, amount, billing, plan), normalizes
+annual and quarterly amounts to MRR, builds a month-by-month MRR bridge (new, expansion,
+contraction, churn, reactivation), computes logo churn, GRR, NRR, ARPA and quick ratio, and
+flags data problems and business warning signs.
+
+Usage:
+  mrr_metrics.py events.csv [--from 2026-01] [--to 2026-10] [--json] [--top-share 0.2]
+  mrr_metrics.py --self-test
+Exit codes: 0 = no high findings, 1 = high findings, 2 = bad input.
+""""""
+import argparse, csv, json, statistics, sys
+from collections import Counter, OrderedDict
+from datetime import date
+
+EVENTS = {""new"", ""upgrade"", ""downgrade"", ""churn"", ""reactivate"", ""price_change""}
+BILLING_MONTHS = {""monthly"": 1, ""quarterly"": 3, ""annual"": 12, ""yearly"": 12}
+SEV = {""high"": 0, ""medium"": 1, ""low"": 2}
+
+
+def month_key(s):
+    y, m = int(s[:4]), int(s[5:7])
+    if not (1 <= m <= 12):
+        raise ValueError(""bad month in %r"" % s)
+    return ""%04d-%02d"" % (y, m)
+
+
+def next_month(k):
+    y, m = int(k[:4]), int(k[5:7])
+    return ""%04d-%02d"" % (y + (m == 12), 1 if m == 12 else m + 1)
+
+
+def month_range(a, b):
+    out = [a]
+    while out[-1] < b:
+        out.append(next_month(out[-1]))
+    return out
+
+
+def load(path):
+    with open(path, newline="""", encoding=""utf-8-sig"") as fh:
+        rows = list(csv.DictReader(fh))
+    need = {""date"", ""customer"", ""event"", ""amount""}
+    if not rows or not need <= set(k.strip() for k in rows[0].keys()):
+        raise ValueError(""CSV needs columns: date, customer, event, amount (optional: billing, plan)"")
+    return [{k.strip(): (v or """").strip() for k, v in r.items()} for r in rows]
+
+
+def compute(rows, start=None, end=None, top_share=0.2, churn_alert=0.05):
+    findings = []
+    def add(code, sev, msg, month=None, customer=None):
+        findings.append({""code"": code, ""severity"": sev, ""month"": month, ""customer"": customer, ""message"": msg})
+    events = []
+    for i, r in enumerate(rows, start=2):
+        try:
+            d = date.fromisoformat(r[""date""][:10])
+        except ValueError:
+            add(""SM01"", ""high"", ""line %d: bad date %r"" % (i, r[""date""])); continue
+        ev = r[""event""].lower()
+        if ev not in EVENTS:
+            add(""SM01"", ""high"", ""line %d: unknown event %r (use %s)"" % (i, r[""event""], "", "".join(sorted(EVENTS)))); continue
+        billing = (r.get(""billing"") or ""monthly"").lower()
+        if billing not in BILLING_MONTHS:
+            add(""SM01"", ""high"", ""line %d: unknown billing %r"" % (i, billing)); continue
+        try:
+            amount = float(r[""amount""] or 0)
+        except ValueError:
+            add(""SM01"", ""high"", ""line %d: amount %r is not a number"" % (i, r[""amount""])); continue
+        if amount < 0:
+            add(""SM08"", ""high"", ""line %d: negative amount %.2f (refunds and credits are not MRR)"" % (i, amount), customer=r[""customer""]); continue
+        events.append({""line"": i, ""date"": d, ""month"": d.strftime(""%Y-%m""), ""customer"": r[""customer""], ""event"": ev,
+                       ""mrr"": round(amount / BILLING_MONTHS[billing], 2), ""billing"": billing, ""amount"": amount, ""plan"": r.get(""plan"", """")})
+    if not events:
+        raise ValueError(""no usable events"")
+    events.sort(key=lambda e: (e[""date""], e[""line""]))
+    # SM04: monthly-billed amounts that look like annual totals typed as monthly
+    monthly_amounts = [e[""mrr""] for e in events if e[""billing""] == ""monthly"" and e[""mrr""] > 0]
+    med = statistics.median(monthly_amounts) if monthly_amounts else 0
+    for e in events:
+        if med and e[""billing""] == ""monthly"" and e[""mrr""] >= 8 * med and e[""mrr""] > 0:
+            add(""SM04"", ""medium"", ""line %d: monthly amount %.2f is %.0fx the median monthly price: an annual contract entered as monthly? (set billing=annual)"" % (e[""line""], e[""mrr""], e[""mrr""] / med), e[""month""], e[""customer""])
+    first = start or events[0][""month""]
+    last = end or events[-1][""month""]
+    months = month_range(min(first, events[0][""month""]), last)
+    state = {}            # customer -> current MRR (0 = churned)
+    ever = set()
+    bridge = OrderedDict()
+    by_month = {}
+    for e in events:
+        by_month.setdefault(e[""month""], []).append(e)
+    cohort_start = {}
+    active_by_month = {}
+    snaps = {}
+    for m in months:
+        start_mrr = round(sum(state.values()), 2)
+        start_logos = sum(1 for v in state.values() if v > 0)
+        b = {""month"": m, ""start_mrr"": start_mrr, ""new"": 0.0, ""expansion"": 0.0, ""contraction"": 0.0, ""churn"": 0.0, ""reactivation"": 0.0,
+             ""start_customers"": start_logos, ""new_customers"": 0, ""churned_customers"": 0, ""reactivated_customers"": 0}
+        for e in by_month.get(m, []):
+            c, ev, new = e[""customer""], e[""event""], e[""mrr""]
+            cur = state.get(c)
+            if ev == ""new"":
+                if cur is not None and cur > 0:
+                    add(""SM02"", ""medium"", ""line %d: 'new' for a customer who is already active (%.2f MRR); treated as a price change"" % (e[""line""], cur), m, c)
+                    ev = ""price_change""
+                elif cur is not None and cur == 0 and c in ever:
+                    add(""SM02"", ""low"", ""line %d: 'new' for a returning customer; counted as reactivation"" % e[""line""], m, c)
+                    ev = ""reactivate""
+            if ev == ""new"":
+                state[c] = new; b[""new""] += new
+                if new == 0:
+                    add(""SM03"", ""low"", ""line %d: new customer with 0 MRR (free plan or trial?) not counted in paid metrics"" % e[""line""], m, c)
+                else:
+                    b[""new_customers""] += 1; cohort_start[c] = m; ever.add(c)
+            elif ev == ""churn"":
+                if not cur:
+                    add(""SM02"", ""medium"", ""line %d: churn for a customer who is not active; ignored"" % e[""line""], m, c); continue
+                b[""churn""] += cur; b[""churned_customers""] += 1; state[c] = 0.0
+            elif ev == ""reactivate"":
+                if cur:
+                    add(""SM02"", ""medium"", ""line %d: reactivate for an active customer; treated as a price change"" % e[""line""], m, c)
+                    ev = ""price_change""
+                else:
+                    if c not in ever:
+                        add(""SM02"", ""low"", ""line %d: reactivate for an unknown customer; counted as new"" % e[""line""], m, c)
+                        b[""new""] += new; b[""new_customers""] += 1; ever.add(c); cohort_start[c] = m
+                    else:
+                        b[""reactivation""] += new; b[""reactivated_customers""] += 1
+                    state[c] = new
+            if ev in (""upgrade"", ""downgrade"", ""price_change""):
+                if cur is None or cur == 0:
+                    add(""SM02"", ""medium"", ""line %d: %s for a customer with no active subscription; ignored"" % (e[""line""], e[""event""]), m, c); continue
+                delta = round(new - cur, 2)
+                if e[""event""] == ""upgrade"" and delta < 0:
+                    add(""SM05"", ""medium"", ""line %d: 'upgrade' lowers MRR %.2f -> %.2f; check the event type"" % (e[""line""], cur, new), m, c)
+                if e[""event""] == ""downgrade"" and delta > 0:
+                    add(""SM05"", ""medium"", ""line %d: 'downgrade' raises MRR %.2f -> %.2f; check the event type"" % (e[""line""], cur, new), m, c)
+                if new == 0:
+                    add(""SM05"", ""medium"", ""line %d: change to 0 MRR; record it as churn instead"" % e[""line""], m, c)
+                    b[""churn""] += cur; b[""churned_customers""] += 1; state[c] = 0.0; continue
+                if delta > 0: b[""expansion""] += delta
+                else: b[""contraction""] += -delta
+                state[c] = new
+        end_mrr = round(sum(state.values()), 2)
+        for k in (""new"", ""expansion"", ""contraction"", ""churn"", ""reactivation""):
+            b[k] = round(b[k], 2)
+        b[""end_mrr""] = end_mrr
+        b[""net_new_mrr""] = round(end_mrr - start_mrr, 2)
+        b[""end_customers""] = sum(1 for v in state.values() if v > 0)
+        b[""arpa""] = round(end_mrr / b[""end_customers""], 2) if b[""end_customers""] else 0.0
+        if start_mrr:
+            b[""grr""] = round((start_mrr - b[""churn""] - b[""contraction""]) / start_mrr, 4)
+            b[""nrr""] = round((start_mrr - b[""churn""] - b[""contraction""] + b[""expansion""]) / start_mrr, 4)
+            b[""mrr_churn_rate""] = round((b[""churn""] + b[""contraction""]) / start_mrr, 4)
+        else:
+            b[""grr""] = b[""nrr""] = b[""mrr_churn_rate""] = None
+        b[""logo_churn_rate""] = round(b[""churned_customers""] / start_logos, 4) if start_logos else None
+        lost = b[""churn""] + b[""contraction""]
+        b[""quick_ratio""] = round((b[""new""] + b[""expansion""] + b[""reactivation""]) / lost, 2) if lost else None
+        assert abs(start_mrr + b[""new""] + b[""expansion""] + b[""reactivation""] - b[""contraction""] - b[""churn""] - end_mrr) < 0.05, m
+        active_by_month[m] = {c for c, v in state.items() if v > 0}
+        snaps[m] = dict(state)
+        bridge[m] = b
+    report_months = [m for m in months if m >= first]
+    rows_out = [bridge[m] for m in report_months]
+    for b in rows_out:
+        m = b[""month""]
+        if b[""logo_churn_rate""] is not None and b[""logo_churn_rate""] > churn_alert and b[""start_customers""] >= 5:
+            add(""SM06"", ""medium"", ""logo churn %.1f%% in %s (alert above %.1f%%)"" % (100 * b[""logo_churn_rate""], m, 100 * churn_alert), m)
+        if b[""quick_ratio""] is not None and b[""quick_ratio""] < 1:
+            add(""SM07"", ""high"", ""quick ratio %.2f in %s: lost MRR exceeded gained MRR (shrinking)"" % (b[""quick_ratio""], m), m)
+    # trailing NRR over the reported period (cohort of customers active at period start)
+    base_month = report_months[0]
+    prev = None
+    for m in months:
+        if m == base_month: break
+        prev = m
+    period = {}
+    if prev and snaps[prev]:
+        base = {c: v for c, v in snaps[prev].items() if v > 0}
+        now = snaps[report_months[-1]]
+        start_sum = sum(base.values()); end_sum = sum(now.get(c, 0) for c in base)
+        kept = sum(1 for c in base if now.get(c, 0) > 0)
+        period = {""base_month"": prev, ""base_customers"": len(base), ""base_mrr"": round(start_sum, 2),
+                  ""same_customers_mrr_now"": round(end_sum, 2), ""period_nrr"": round(end_sum / start_sum, 4) if start_sum else None,
+                  ""logo_retention"": round(kept / len(base), 4) if base else None}
+        if period[""period_nrr""] is not None and period[""period_nrr""] < 1:
+            add(""SM09"", ""medium"", ""net revenue retention over %s..%s is %.1f%% (<100%%): existing customers shrink"" % (report_months[0], report_months[-1], 100 * period[""period_nrr""]))
+    final = {c: v for c, v in state.items() if v > 0}
+    total = sum(final.values())
+    if total:
+        top = sorted(final.items(), key=lambda x: -x[1])[:3]
+        if top[0][1] / total > top_share:
+            add(""SM10"", ""medium"", ""largest customer %s is %.0f%% of MRR (threshold %.0f%%): concentration risk"" % (top[0][0], 100 * top[0][1] / total, 100 * top_share), customer=top[0][0])
+    # cohorts: logo retention by start month
+    cohorts = OrderedDict()
+    for c, m in sorted(cohort_start.items(), key=lambda x: x[1]):
+        cohorts.setdefault(m, []).append(c)
+    cohort_table = []
+    for m, cs in cohorts.items():
+        row = {""cohort"": m, ""customers"": len(cs)}
+        k = m
+        for i in range(0, 13):
+            if k > last: break
+            if i in (1, 3, 6, 12):
+                row[""m%d"" % i] = round(sum(1 for c in cs if c in active_by_month[k]) / len(cs), 2)
+            k = next_month(k)
+        cohort_table.append(row)
+    findings.sort(key=lambda f: (SEV[f[""severity""]], f[""code""], f[""month""] or """"))
+    s = Counter(f[""severity""] for f in findings)
+    return {""months"": rows_out, ""period"": period, ""cohorts"": cohort_table,
+            ""top_customers"": [{""customer"": c, ""mrr"": v, ""share"": round(v / total, 3)} for c, v in sorted(final.items(), key=lambda x: -x[1])[:5]] if total else [],
+            ""findings"": findings, ""summary"": {k: s.get(k, 0) for k in (""high"", ""medium"", ""low"")}}
+
+
+def pct(x):
+    return ""   -  "" if x is None else ""%5.1f%%"" % (100 * x)
+
+
+def print_text(rep):
+    print(""MRR bridge"")
+    print(""month    start_mrr      new  expans  contr    churn  react   end_mrr  cust  logo_ch   GRR     NRR    QR    ARPA"")
+    for b in rep[""months""]:
+        print(""%s %10.2f %8.2f %7.2f %6.2f %8.2f %6.2f %9.2f %5d %s %s %s %5s %7.2f"" % (
+            b[""month""], b[""start_mrr""], b[""new""], b[""expansion""], b[""contraction""], b[""churn""], b[""reactivation""],
+            b[""end_mrr""], b[""end_customers""], pct(b[""logo_churn_rate""]), pct(b[""grr""]), pct(b[""nrr""]),
+            ""-"" if b[""quick_ratio""] is None else ""%.2f"" % b[""quick_ratio""], b[""arpa""]))
+    p = rep[""period""]
+    if p:
+        print(""\nPeriod retention (customers active at end of %s: %d, %.2f MRR): NRR %s, logo retention %s"" % (
+            p[""base_month""], p[""base_customers""], p[""base_mrr""], pct(p[""period_nrr""]), pct(p[""logo_retention""])))
+    if rep[""cohorts""]:
+        print(""\nCohort logo retention (share still paying after N months)"")
+        for c in rep[""cohorts""]:
+            print(""  %s  n=%-3d m1=%s m3=%s m6=%s"" % (c[""cohort""], c[""customers""], c.get(""m1"", ""-""), c.get(""m3"", ""-""), c.get(""m6"", ""-"")))
+    print(""\nTop customers: "" + "", "".join(""%s %.2f (%.0f%%)"" % (t[""customer""], t[""mrr""], 100 * t[""share""]) for t in rep[""top_customers""]))
+    print(""\nFindings: %(high)d high, %(medium)d medium, %(low)d low"" % rep[""summary""])
+    for f in rep[""findings""]:
+        print(""  [%s] %s %s%s: %s"" % (f[""severity""].upper(), f[""code""], f[""month""] or """", ("" "" + f[""customer""]) if f[""customer""] else """", f[""message""]))
+
+
+def self_test():
+    ok = total = 0
+    def t(name, cond):
+        nonlocal ok, total
+        total += 1; ok += bool(cond)
+        print((""PASS  "" if cond else ""FAIL  "") + name)
+    def R(*lines):
+        return [dict(zip([""date"", ""customer"", ""event"", ""amount"", ""billing""], l.split("",""))) for l in lines]
+    r = compute(R(""2026-01-05,a,new,100,monthly"", ""2026-01-09,b,new,1200,annual"", ""2026-02-03,a,upgrade,150,monthly"",
+                  ""2026-02-10,b,churn,0,annual"", ""2026-03-01,b,reactivate,50,monthly"", ""2026-03-15,c,new,200,monthly""))
+    m = {b[""month""]: b for b in r[""months""]}
+    t(""annual normalized to MRR"", m[""2026-01""][""end_mrr""] == 200)
+    t(""expansion counted"", m[""2026-02""][""expansion""] == 50)
+    t(""churn counted at prior MRR"", m[""2026-02""][""churn""] == 100 and m[""2026-02""][""churned_customers""] == 1)
+    t(""reactivation separate from new"", m[""2026-03""][""reactivation""] == 50 and m[""2026-03""][""new""] == 200)
+    t(""bridge closes"", all(abs(b[""start_mrr""] + b[""new""] + b[""expansion""] + b[""reactivation""] - b[""contraction""] - b[""churn""] - b[""end_mrr""]) < 0.01 for b in r[""months""]))
+    t(""NRR feb = (200-100+50)/200"", m[""2026-02""][""nrr""] == 0.75 and m[""2026-02""][""grr""] == 0.5)
+    t(""SM07 quick ratio < 1 in feb"", any(f[""code""] == ""SM07"" and f[""month""] == ""2026-02"" for f in r[""findings""]))
+    r = compute(R(""2026-01-01,a,new,50,monthly"", ""2026-01-01,b,new,50,monthly"", ""2026-01-01,c,new,55,monthly"", ""2026-01-02,d,new,1200,monthly""))
+    t(""SM04 annual typed as monthly"", any(f[""code""] == ""SM04"" and f[""customer""] == ""d"" for f in r[""findings""]))
+    t(""SM10 concentration"", any(f[""code""] == ""SM10"" for f in r[""findings""]))
+    r = compute(R(""2026-01-01,a,new,50,monthly"", ""2026-02-01,a,upgrade,40,monthly"", ""2026-02-02,z,churn,0,monthly"", ""2026-02-03,a,new,60,monthly""))
+    codes = Counter(f[""code""] for f in r[""findings""])
+    t(""SM05 upgrade lowering MRR"", codes[""SM05""] == 1)
+    t(""SM02 churn of unknown + new for active"", codes[""SM02""] == 2)
+    t(""contraction from mislabeled upgrade"", r[""months""][1][""contraction""] == 10 and r[""months""][1][""expansion""] == 20)
+    rows = R(*[""2026-01-0%d,c%d,new,100,monthly"" % (1 + i % 9, i) for i in range(20)] + [""2026-02-05,c%d,churn,0,monthly"" % i for i in range(3)])
+    r = compute(rows)
+    t(""SM06 logo churn alert (15%)"", any(f[""code""] == ""SM06"" for f in r[""findings""]) and r[""months""][1][""logo_churn_rate""] == 0.15)
+    r = compute(R(""2026-01-01,a,new,100,monthly"", ""2026-01-01,b,new,100,monthly"", ""2026-02-01,a,downgrade,60,monthly"", ""2026-03-01,c,new,500,monthly""), start=""2026-02"")
+    t(""period NRR for base cohort excludes new logos"", r[""period""][""period_nrr""] == 0.8 and r[""period""][""base_customers""] == 2)
+    t(""SM09 NRR < 100%"", any(f[""code""] == ""SM09"" for f in r[""findings""]))
+    r = compute(R(""2026-01-01,f,new,0,monthly"", ""2026-02-01,f,new,49,monthly""))
+    t(""free-to-paid conversion counted as new"", r[""months""][1][""new""] == 49 and r[""months""][1][""new_customers""] == 1 and r[""months""][0][""new_customers""] == 0)
+    try:
+        compute(R(""2026-13-01,a,new,1,monthly"")); t(""bad date reported"", False)
+    except ValueError:
+        t(""bad date -> no usable events error"", True)
+    print(""%d/%d passed"" % (ok, total))
+    return 0 if ok == total else 1
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument(""file"", nargs=""?""); ap.add_argument(""--from"", dest=""start""); ap.add_argument(""--to"", dest=""end"")
+    ap.add_argument(""--json"", action=""store_true""); ap.add_argument(""--top-share"", type=float, default=0.2)
+    ap.add_argument(""--churn-alert"", type=float, default=0.05); ap.add_argument(""--self-test"", action=""store_true"")
+    a = ap.parse_args()
+    if a.self_test:
+        return self_test()
+    if not a.file:
+        ap.print_help(); return 2
+    try:
+        rep = compute(load(a.file), a.start and month_key(a.start), a.end and month_key(a.end), a.top_share, a.churn_alert)
+    except (OSError, ValueError) as e:
+        print(""bad input: %s"" % e, file=sys.stderr); return 2
+    if a.json:
+        print(json.dumps(rep, indent=2))
+    else:
+        print_text(rep)
+    return 1 if rep[""summary""][""high""] else 0
+
+
+if __name__ == ""__main__"":
+    sys.exit(main())
+",FALSE,TEXT,f
