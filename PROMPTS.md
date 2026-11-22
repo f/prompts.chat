@@ -246226,3 +246226,16 @@ Generate the standalone HTML file with four mandatory, cleanly separated visual 
 
 </details>
 
+<details>
+<summary><strong>10 seconds video</strong></summary>
+
+## 10 seconds video
+
+Contributed by @anonymous
+
+```md
+A warm, playful 20-second indoor scene in a bright living room. A small boy, about 4 years old, in a yellow t-shirt, stands next to a smiling adult man with a smooth bald head who is sitting on a sofa. The boy looks up curiously, reaches out, and gently pats the man's bald head with both hands. He giggles and tilts his head in amazement. The man laughs warmly, leans his head down to let the boy touch it, and plays along with a funny surprised expression. The boy pats and rubs the head again, laughing louder. Natural soft daylight from a window, cozy home atmosphere, handheld camera feel, medium shot with a gentle push-in toward their faces, realistic skin tones, shallow depth of field, heartwarming and humorous mood, cinematic 4K.
+```
+
+</details>
+
