@@ -248054,3 +248054,32 @@ Camera: shot from a low riverbank with a 35 mm lens, deep focus, the reed tops s
 
 </details>
 
+<details>
+<summary><strong>Starling Murmuration over a Winter Reed Bed at Sunset (Image-to-Video Animation)</strong></summary>
+
+## Starling Murmuration over a Winter Reed Bed at Sunset (Image-to-Video Animation)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Use the attached still (step 1: a photorealistic sunset photograph of a huge starling murmuration shaped like a twisting ribbon in the upper center of the sky, above a flat winter reed bed with a winding mirror-like water channel, a glowing orange band at the right horizon and bare trees on the far left) as the exact first frame and animate it into an 8-second, 16:9 cinematic shot. Keep every element as it is in the still: the reed bed, the channel and its reflections, the tree line, the sunset colors and the position of the flock.
+
+Motion (0-8 s):
+- 0-3 s: the frozen murmuration comes alive; the ribbon of birds slowly ripples and folds, dark waves of density pulsing through the flock as thousands of starlings turn together.
+- 3-6 s: the flock stretches into a long arc, then curls into a rounded wave that rolls across the sky from right to left, edges thinning and thickening in a fluid, liquid way; its dark reflection moves across the water channel.
+- 6-8 s: the cloud of birds tightens into a dense swirling ball and begins to drift lower toward the reeds, still in the upper half of the frame.
+
+Camera: locked-off tripod shot with a very slow push-in; no cuts, no shake, no zoom jumps.
+
+Ambient motion: reed tops and seed heads sway gently in a light breeze; faint ripples on the water; thin clouds drift slowly.
+
+Lighting and mood: constant warm sunset glow fading very slightly; peaceful, hypnotic and wild.
+
+Sound: off (silent clip).
+
+Avoid: individual birds growing large, birds flying into the camera, the flock splitting into unrelated groups, birds morphing into shapes or letters, people, buildings, sudden lighting changes, text.
+
+```
+
+</details>
+
