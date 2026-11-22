@@ -246149,3 +246149,16 @@ take over my computer again. go to edge, i am currently on the github repo page.
 
 </details>
 
+<details>
+<summary><strong>CPA Program Marketing Campaign </strong></summary>
+
+## CPA Program Marketing Campaign 
+
+Contributed by @anonymous
+
+```md
+to promote the upcoming Certified Public Accountant (CPA) program led by the Ethiopian Institute of Certified Public Accountants (ETiCPA)  
+```
+
+</details>
+
