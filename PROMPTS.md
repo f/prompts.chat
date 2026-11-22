@@ -247992,3 +247992,23 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Gyotaku Ink Fish Print of a Red Sea Bream and Two Mackerel on Washi Paper</strong></summary>
+
+## Gyotaku Ink Fish Print of a Red Sea Bream and Two Mackerel on Washi Paper
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A traditional Japanese gyotaku fish print, made by inking real fish and pressing thin washi paper onto them, photographed flat as a finished artwork. Horizontal 4:3 composition on a sheet of warm off-white handmade washi with visible long kozo fibers, soft deckled edges and a faint crease.
+
+Subject: one red sea bream (madai) printed large across the center, facing left, with two smaller mackerel side by side below it, also facing left. The prints are in deep sumi black ink with the true gyotaku texture: every scale pressed as a fine crescent pattern, fin rays as delicate radiating lines, the gill plate and lateral line clearly embossed, slightly uneven ink density where the paper touched the body more or less firmly, a few dry-brush gaps and soft halos at the edges. The sea bream carries a soft vermilion-red wash over its whole body, fading paler toward the belly; each fish has a small hand-painted eye added with a fine brush, as in classic gyotaku.
+
+Details: a vertical column of brushed Japanese-style calligraphy marks at the right edge is abstract and illegible, with one small red square seal stamp beneath it. Light ink speckles near the fins.
+
+Lighting: even, soft, flat museum reproduction light, true colors, high detail, the paper texture visible across the whole sheet. No frame, no table, no hands, no readable text.
+
+```
+
+</details>
+
