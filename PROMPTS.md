@@ -248181,3 +248181,19 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Naming invitation</strong></summary>
+
+## Naming invitation
+
+Contributed by @anonymous
+
+```md
+LUXURY MODERN AFRICAN TRADITIONAL NAMING INVITATIONS 
+NAME: AISHA FAROUQ (NANA)
+ADDRESS: Road 1i house number 5 Apo supercell Estate
+DATE: 21st NOVEMBER 2026
+```
+
+</details>
+
