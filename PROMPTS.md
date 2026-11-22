@@ -248197,3 +248197,16 @@ DATE: 21st NOVEMBER 2026
 
 </details>
 
+<details>
+<summary><strong>Photo to Hyper-Realistic Greco-Roman Marble Statue Avatar (1:1)</strong></summary>
+
+## Photo to Hyper-Realistic Greco-Roman Marble Statue Avatar (1:1)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Turn the uploaded photo into a hyper-realistic marble sculpture avatar in classical Greco-Roman statue style. Precisely chiseled facial features with subtle imperfections, visible stone veins, and natural marble grain texture. Smooth yet slightly weathered surface, realistic sculpting marks, and refined anatomy. Soft museum-style directional lighting casting gentle shadows to enhance depth and contours. Neutral gallery background with shallow depth of field, elegant fine-art atmosphere, timeless aesthetic, ultra-high resolution, cinematic realism, 1:1 aspect ratio, premium statue portrait quality.
+```
+
+</details>
+
