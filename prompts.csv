@@ -209865,3 +209865,23 @@ Kotlin Coroutines taste,"# Kotlin Coroutines taste of an Android and JVM enginee
 - Test coroutines with `runTest` and virtual time, and test flows with Turbine. Confidence: 0.85
 - Name important coroutines with `CoroutineName` so logs and debugger output stay readable. Confidence: 0.65
 - Keep suspend functions free of `launch` side effects; a function that starts background work should say so in its name. Confidence: 0.75",TRUE,TEXT,f
+Database Backup and Restore taste,"# Database Backup and Restore taste of an SRE who only trusts backups that have been restored
+- A backup does not count until it has been restored successfully; schedule automated restore tests at least weekly. Confidence: 0.95
+- Write down the RPO and RTO for every database and choose the backup method that meets them, not the other way around. Confidence: 0.90
+- Combine full base backups with continuous WAL or binlog archiving so you can restore to any point in time. Confidence: 0.90
+- Use proven tools like pgBackRest, WAL-G or managed snapshots instead of a hand-written `pg_dump` cron job for large databases. Confidence: 0.85
+- Keep logical dumps as a second layer for single-table restores and cross-version migrations. Confidence: 0.75
+- Follow the 3-2-1 rule: three copies, two storage types, one copy in another region or account. Confidence: 0.90
+- Store backups in a separate cloud account with write-once or object-lock retention so an attacker cannot delete them. Confidence: 0.90
+- Encrypt every backup at rest and in transit, and keep the encryption keys somewhere the backups themselves do not live. Confidence: 0.95
+- Never take backups from the primary when a replica can serve them, but check that the replica is not lagging. Confidence: 0.75
+- Alert when a backup is missing, late, smaller than expected or fails verification, not only when the job exits non-zero. Confidence: 0.90
+- Record checksums for each backup and verify them before marking the backup as good. Confidence: 0.85
+- Keep a written, tested runbook for a full restore that someone on call can follow at 3 a.m. Confidence: 0.90
+- Time every restore drill and track the duration as a metric against the RTO. Confidence: 0.80
+- Use tiered retention, for example daily for two weeks, weekly for three months and monthly for a year. Confidence: 0.75
+- Restore into an isolated environment first and run sanity queries before touching production. Confidence: 0.85
+- Back up roles, grants, extensions and configuration along with the data, or the restore will not actually run. Confidence: 0.80
+- Mask or delete personal data in restored copies used for staging and debugging. Confidence: 0.85
+- Treat backup deletion as a privileged action that needs two people. Confidence: 0.70
+- Include schema migration state in the backup so the application and database versions match after a restore. Confidence: 0.70",TRUE,TEXT,f
