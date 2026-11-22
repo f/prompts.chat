@@ -246239,3 +246239,479 @@ A warm, playful 20-second indoor scene in a bright living room. A small boy, abo
 
 </details>
 
+<details>
+<summary><strong>Log PII and Secret Redaction Checker</strong></summary>
+
+## Log PII and Secret Redaction Checker
+
+Contributed by [@f](https://github.com/f)
+
+```md
+---
+name: log-pii-and-secret-redaction-checker
+description: Scans plain or JSON-lines logs for data that must never be logged: Luhn-valid cards, IBANs, SSNs, API keys, JWTs, auth headers, passwords, URL tokens, emails, phones, birth dates and public IPs. Masks every value, ranks the loggers to fix and writes a redacted copy. Offline stdlib Python.
+---
+
+# Log PII and Secret Redaction Checker
+
+You help backend developers, SREs and security or privacy reviewers find personal data and credentials that leaked into application logs, and fix the code that writes them. Logs are copied to log platforms, tickets, chat and laptops, are kept for months and are read by many people, so a card number or bearer token in a debug line is a real incident (PCI DSS, GDPR, leaked credentials). You scan a log sample, explain what was found and where it comes from, and give concrete fixes at the logger, not just a cleaned file.
+
+You work only on the log text the user provides, on their machine. You never print a found secret or personal value in full, never try a found credential, and never upload logs anywhere. Treat any real secret you find as compromised: tell the user to rotate it.
+
+## Files in this skill
+
+- `scripts/log_redaction_check.py` - scans one or more log files (plain text or JSON lines) and prints findings LR01-LR10 grouped by type with masked examples, a ranking of the loggers/components that leak, and DEBUG-level hits; `--redact OUT` writes a redacted copy, `--allow REGEX` skips known safe values, `--json` for tooling, `--self-test` runs 24 checks (Python 3.8+ standard library only)
+- `references/detection-rules.md` - every detector, its pattern and validation (Luhn, IBAN mod-97, private IP ranges) and its known false positives
+- `references/fixing-leaks-at-the-source.md` - how to stop the leak in code: structured logging, field allowlists, redaction filters for common stacks, and incident steps
+- `templates/redaction-report.md` - the report you hand back
+- `examples/app.log` - a 25-line mixed text/JSON log from a fictional shop with planted leaks and decoys
+
+## Workflow
+
+### 1. Get a representative sample
+Ask for a log excerpt from each service or level that matters (include DEBUG if it is ever enabled in production), ideally a few thousand lines. If the user cannot share logs, have them run the script locally and paste only the report: the report masks values. Ask which values are known safe (system sender addresses, test cards in a sandbox) so you can pass them with `--allow`.
+
+### 2. Run the checker
+```
+python3 scripts/log_redaction_check.py examples/app.log
+python3 scripts/log_redaction_check.py api.log worker.log --allow '^noreply@example\.com$'
+python3 scripts/log_redaction_check.py app.log --redact app.redacted.log --json > findings.json
+python3 scripts/log_redaction_check.py --self-test
+```
+Exit 0 = no high findings, 1 = high findings, 2 = bad input. Use `--include-private-ip` when internal addresses also count (for example, office or VPN IPs that identify employees). Without a shell, apply `references/detection-rules.md` by hand: search for the patterns and validate cards with Luhn before reporting them.
+
+### 3. Triage the findings
+- High (fix now, usually an incident): LR02 card number, LR03 API key, token, JWT, private key or `Authorization` header value, LR04 password or secret value, LR07 IBAN, LR08 SSN, LR09 token in a URL query string (also leaks through access logs, proxies and the `Referer` header).
+- Medium (personal data, needs a lawful reason and retention limit): LR01 email, LR06 phone, LR10 date of birth.
+- Low (context dependent): LR05 public IP address, personal data under GDPR when it identifies a user.
+- Check every hit before reporting it: decoys such as order numbers, version strings and timestamps can pass a pattern. Mark false positives and re-run with `--allow`.
+- Use the "Sources to fix first" table: one logger often causes most of the hits. DEBUG-level hits mean request or payload dumping.
+
+### 4. Fix at the source, then clean up
+Follow `references/fixing-leaks-at-the-source.md`: stop logging whole request bodies and headers, log ids instead of values, add a redaction filter as a safety net, and move secrets out of URLs. For high findings, rotate the exposed credentials, purge or restrict the affected logs in every sink (log platform, backups, tickets), and check whether the incident must be reported (PCI DSS, GDPR breach assessment). `--redact` output is for sharing a sample safely, not a substitute for fixing the code.
+
+### 5. Deliver
+Fill `templates/redaction-report.md`: scope, counts by severity, a table per finding type with masked examples and source, root causes per logger, code fixes, credentials to rotate, log clean-up steps and a regression check (run the script in CI on a test log, fail on exit 1).
+
+## Example result
+On `examples/app.log` the checker finds 20 hits in 25 lines: 11 high, 7 medium, 2 low.
+- High: a full test card number in a DEBUG charge request, a bearer token in dumped headers, a plaintext password from a failed login, a Stripe-style secret key in an error message, an AWS access key in a deploy line, a JWT, an OAuth `code`, a download `token` and an upstream `api_key` in URLs, a checksum-valid IBAN and an SSN.
+- Medium: 4 emails (3 distinct), 2 phone numbers and a date of birth in a CRM update.
+- Correctly ignored decoys: the masked `4111********1111` card, `cvc=[REDACTED]`, `password=***`, the IBAN-like reference with a bad checksum, the parcel tracking number, the duration in ms, the private `10.0.3.14` and `build 1.2.3.4`.
+- With `--allow '^noreply@'` the system sender address drops out (19 hits). `auth` is the leakiest logger (5 hits) and 3 hits sit in DEBUG lines.
+
+## Asking the right questions
+- Where do these logs go (log platform, files, third-party APM) and how long are they kept?
+- Is DEBUG ever enabled in production, even temporarily?
+- Which values are test data (sandbox cards, example.com addresses) and may be allowlisted?
+- Who owns each logger in the "Sources to fix first" table?
+
+## Rules
+
+- Never echo a full secret or personal value; quote masked values and line numbers only.
+- Any real credential found in logs is compromised: recommend rotation, not just deletion.
+- Report patterns, not proof: say that a clean scan does not prove a log is clean (free-text names and addresses are not detected).
+- Prefer fixes in code (do not log it) over regex filters; filters are a second line of defense.
+- Do not give legal advice; point to the user's DPO or security team for breach-notification decisions.
+
+FILE:references/detection-rules.md
+# Detection rules
+
+Each match is checked in this order; a later detector never reports text already claimed by an earlier one. Values that look already masked (`***`, `xxx`, `[REDACTED]`, `<redacted>`, `[FILTERED]`, `null`, empty) are skipped.
+
+| Code | Kind | Severity | Pattern (simplified) | Extra validation |
+|---|---|---|---|---|
+| LR03 | PRIVATE_KEY | high | `-----BEGIN ... PRIVATE KEY-----` | none |
+| LR09 | URL_TOKEN | high | `?` or `&` + `access_token`, `refresh_token`, `id_token`, `token`, `api_key`, `apikey`, `sig`, `signature`, `password`, `session`, `sid`, `code` = value | value must not be masked |
+| LR03 | AUTH_HEADER | high | `Authorization`, `X-Api-Key`, `api_key`, `X-Auth-Token` `:`/`=` optional `Bearer`/`Basic`/`Token` + 12+ token chars | none |
+| LR03 | JWT | high | `eyJ...` three base64url segments | none |
+| LR03 | AWS_KEY | high | `AKIA`/`ASIA` + 16 upper-case letters or digits | none |
+| LR03 | API_KEY | high | `sk_`/`rk_`/`pk_` + `live_`/`test_` + 16+ chars, GitHub `ghp_`/`gho_`/`ghu_`/`ghs_`/`ghr_`, Slack `xoxa-`/`xoxb-`/`xoxp-`/`xoxr-` | none |
+| LR04 | PASSWORD | high | `password`, `passwd`, `pwd`, `secret`, `client_secret`, `passphrase` + `:`/`=` + value (text or JSON) | value must not be masked |
+| LR10 | DOB | medium | `dob`, `date_of_birth`, `birthdate`, `birth_date`, `birthday` + a date | none |
+| LR07 | IBAN | high | 2 letters, 2 digits, 11-30 more alphanumerics, spaces allowed every 4 | ISO 13616 mod-97 checksum = 1 |
+| LR02 | CARD | high | 13-19 digits, optional single spaces or dashes, not part of a decimal, time or longer number | Luhn checksum, not all the same digit |
+| LR08 | SSN | high | `NNN-NN-NNNN` | not 000, 666 or 9xx area; group not 00; serial not 0000 |
+| LR01 | EMAIL | medium | `local@domain.tld` | none |
+| LR06 | PHONE | medium | `+` country code then 2-4 digit groups | 10-15 digits in total |
+| LR05 | IP | low | dotted IPv4 | octets 0-255; private, loopback, link-local and multicast skipped unless `--include-private-ip`; skipped right after `version`, `build`, `release`, `tag`, `v` |
+
+## Known false positives
+- **Cards**: about 1 in 10 random 13-19 digit numbers pass Luhn. Order ids, millisecond timestamps and tracking numbers can match; confirm with the field name. Separators inside numbers are only single spaces or dashes.
+- **Phones**: only numbers written with a leading `+` are detected, which avoids most ids but misses national formats like `(415) 555-0132` or `0171 2345678`.
+- **SSN**: any `123-45-6789` shape, for example some part numbers.
+- **IPs**: version strings in other forms (`lib 2.10.0.1`), public IPs of your own servers.
+- **URL tokens**: `code=` can be a harmless product code; OAuth authorization codes are short-lived but still must not be logged.
+
+## Known misses
+Names, postal addresses, free-text messages, national ids other than US SSN, non-`+` phone numbers, secrets without a known prefix or key name, base64-encoded payloads, and data split across lines. Combine the scan with a code review of what each log call writes.
+
+FILE:references/fixing-leaks-at-the-source.md
+# Fixing leaks at the source
+
+## Principles
+1. **Log ids, not values.** `user_id=8812` instead of the email; `card_last4=1111` plus a payment id instead of the card; `order_id` instead of the address.
+2. **Allowlist fields.** Log a fixed set of fields per event instead of whole objects, request bodies or header maps. Dumping `request.headers` is the most common source of LR03 bearer tokens.
+3. **Keep secrets out of URLs.** Send tokens in headers or POST bodies; URLs end up in access logs, proxy logs, browser history and `Referer` headers. For signed download links, log the path without the query string.
+4. **Redaction filter as a safety net.** Add one central filter that masks known sensitive keys (`password`, `secret`, `token`, `authorization`, `card*`, `iban`, `ssn`, `dob`) and the patterns in `detection-rules.md`, before logs leave the process.
+5. **DEBUG is not a free pass.** Debug logs get turned on in production during incidents. Apply the same rules.
+
+## Stack hints
+- **Python logging / structlog**: a `logging.Filter` or structlog processor that rewrites `record.msg`/event dict keys; never `logger.debug("req %s", request.__dict__)`.
+- **Node (pino / winston)**: pino `redact: ["req.headers.authorization", "*.password", "card.number"]`; winston custom format.
+- **Java (Logback / Log4j2)**: a masking `PatternLayout` converter or `RewritePolicy`; avoid `toString()` of entities with personal fields (exclude them from Lombok `@ToString`).
+- **Go (slog / zap)**: implement `LogValuer` on sensitive types to return a masked value.
+- **Nginx / load balancers**: custom `log_format` that uses `$uri` instead of `$request_uri` (drops the query string) where tokens appear.
+- **Log platform**: add ingest-time masking rules too (Datadog sensitive data scanner, Elastic ingest pipeline, Loki/Vector `redact` transforms).
+
+## When a high finding is real (incident steps)
+1. Rotate the exposed credential (API key, token, password) and check its use since the first log line.
+2. Fix and deploy the logging code.
+3. Purge or restrict the affected logs in every sink: log platform, archives and backups, exported files, tickets and chat pastes.
+4. Card data: logging full card numbers is a PCI DSS violation; tell the payments owner.
+5. Personal data: record the incident and let the privacy owner decide on breach notification (GDPR art. 33 has a 72-hour clock once a reportable breach is known).
+
+## Regression check
+Keep a test log produced by the test suite and run `log_redaction_check.py test.log` in CI; fail the build on exit code 1. Add the known safe values with `--allow` so the check stays quiet until a real leak appears.
+
+FILE:templates/redaction-report.md
+# Log redaction review: [service / log source], [date range of sample]
+
+**Scope:** [files, services, levels, number of lines]  **Tool:** `log_redaction_check.py` (output attached, values masked)
+**Result:** [n] findings - [h] high, [m] medium, [l] low  **Verdict:** [incident / fix soon / clean sample]
+
+## High findings (act now)
+| Code | Type | Hits | Masked example | Line(s) | Source |
+|---|---|---|---|---|---|
+| [LR03] | [bearer token in headers] | [1] | [to****Nw] | [3] | [auth] |
+
+## Medium and low findings
+| Code | Type | Hits | Masked example | Line(s) | Source |
+|---|---|---|---|---|---|
+| [LR01] | [email] | | | | |
+
+## False positives excluded
+- [value pattern, why it is safe, `--allow` used]
+
+## Root causes by logger
+1. [logger] - [what it writes, e.g. dumps full request headers at DEBUG]
+2. [...]
+
+## Fixes
+| Where | Change | Owner |
+|---|---|---|
+| [auth middleware] | [log user_id only, drop header dump] | [ ] |
+
+## Credentials to rotate
+- [key type, where it was found, first seen]
+
+## Log clean-up
+- [sinks to purge or restrict, retention changes]
+
+## Regression check
+- [CI step running the checker on a test log, fail on exit 1]
+
+_A clean scan does not prove a log is clean: names, addresses and free text are not detected._
+
+FILE:examples/app.log
+2026-11-18T09:00:01Z INFO [web] GET /health 200 4ms from 10.0.3.14
+2026-11-18T09:00:07Z INFO [auth] login ok user_id=8812 email=ana.lima@example.com ip=203.0.113.24
+2026-11-18T09:00:09Z DEBUG [auth] request headers {"Authorization": "Bearer tok_9fA2kLm33QpR7xYz81Nw", "Accept": "application/json"}
+2026-11-18T09:00:12Z INFO [auth] login failed user=bob.k@example.org password=Summer2026! attempts=2
+2026-11-18T09:00:15Z INFO [auth] password reset requested user_id=4410 password=*** (masked)
+2026-11-18T09:01:02Z INFO [checkout] order 100244 created total=59.90 items=3
+2026-11-18T09:01:03Z DEBUG [payments] charge request card_number=4111 1111 1111 1111 exp=12/28 cvc=[REDACTED]
+2026-11-18T09:01:03Z INFO [payments] charge ok card=4111********1111 amount=59.90
+2026-11-18T09:01:04Z ERROR [payments] gateway timeout, retrying with key sk_test_51HxT9mQ2eZvKyL0AbCdEf
+2026-11-18T09:01:30Z INFO [web] GET /oauth/callback?code=4/0AY0e-g7Qx2mN8&state=af31 302 from 198.51.100.77
+2026-11-18T09:02:11Z INFO [web] GET /download/report.pdf?token=a8f3e2c19d7b44&expires=1763456531 200
+2026-11-18T09:02:40Z INFO [crm] contact updated name="Ana Lima" phone=+44 20 7946 0958 dob=1990-04-12
+2026-11-18T09:03:05Z WARN [payouts] payout to IBAN GB82 WEST 1234 5698 7654 32 delayed
+2026-11-18T09:03:06Z INFO [payouts] payout batch 77 ref=DE00370400440532013000 ok
+2026-11-18T09:03:59Z INFO [kyc] verification started ssn=123-45-6789 status=pending
+2026-11-18T09:04:10Z INFO [deploy] s3 sync using AKIAIOSFODNN7EXAMPLE region=eu-west-1
+2026-11-18T09:04:11Z INFO [deploy] build 1.2.3.4 tagged, artifact 8f2e91 uploaded
+{"ts":"2026-11-18T09:05:00Z","level":"info","logger":"orders","msg":"order shipped","order_id":100244,"customer_email":"ana.lima@example.com","tracking":"1Z999AA10123456784"}
+{"ts":"2026-11-18T09:05:02Z","level":"debug","logger":"orders","msg":"upstream call","url":"https://api.example.net/v2/rates?api_key=k_live_77QhR2sT9w","status":200}
+{"ts":"2026-11-18T09:05:09Z","level":"info","logger":"notify","msg":"sms sent","to":"+1 415 555 0132","template":"shipped"}
+{"ts":"2026-11-18T09:05:15Z","level":"info","logger":"notify","msg":"email sent","to":"noreply@example.com","template":"digest"}
+{"ts":"2026-11-18T09:06:00Z","level":"error","logger":"session","msg":"token expired","jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ODEyIiwiZXhwIjoxNzYzNDU2NTMxfQ.Qm9ndXNTaWduYXR1cmVGb3JEZW1v"}
+{"ts":"2026-11-18T09:06:20Z","level":"info","logger":"session","msg":"session refreshed","user_id":8812,"password":"[REDACTED]"}
+2026-11-18T09:07:00Z INFO [web] GET /api/users/8812 200 12ms from 10.0.3.14
+2026-11-18T09:07:45Z INFO [jobs] nightly export finished rows=18233 duration_ms=1731995000123
+
+FILE:scripts/log_redaction_check.py
+#!/usr/bin/env python3
+"""Log PII and secret redaction checker (offline, Python 3.8+ standard library only).
+
+Scans plain-text or JSON-lines logs for personal data and secrets that should never be logged:
+payment cards (Luhn-checked), IBANs (mod-97 checked), US SSNs, API keys and tokens (AWS, Stripe,
+GitHub, Slack, JWT, Authorization headers), passwords in key=value or JSON, tokens in URL query
+strings, emails, phone numbers, dates of birth and public IP addresses. Values that are already
+masked ("***", "[REDACTED]") are ignored. Every value is masked in the report; nothing is sent
+anywhere. Optionally writes a redacted copy of the log.
+
+Usage:
+  log_redaction_check.py app.log [more.log ...] [--json] [--redact OUT] [--allow REGEX ...]
+                         [--include-private-ip] [--max-examples 3]
+  log_redaction_check.py --self-test
+Exit codes: 0 = no high findings, 1 = high findings, 2 = bad input.
+"""
+import argparse, json, re, sys
+from collections import Counter, OrderedDict, defaultdict
+
+SEV = {"high": 0, "medium": 1, "low": 2}
+REDACTED = re.compile(r"^(\*+.*|x{3,}|\[?redacted(:\w+)?\]?|<redacted>|\[filtered\]|null|none|\"\"|-|)$", re.I)
+
+# code, kind, severity, compiled regex, value group, validator (or None)
+def luhn(s):
+    d = [int(c) for c in s if c.isdigit()]
+    if not 13 <= len(d) <= 19 or len(set(d)) == 1:
+        return False
+    tot = 0
+    for i, n in enumerate(reversed(d)):
+        if i % 2:
+            n *= 2
+            n -= 9 if n > 9 else 0
+        tot += n
+    return tot % 10 == 0
+
+
+def iban_ok(s):
+    s = s.replace(" ", "")
+    if not 15 <= len(s) <= 34:
+        return False
+    r = s[4:] + s[:4]
+    num = "".join(str(int(c, 36)) for c in r)
+    return int(num) % 97 == 1
+
+
+def phone_ok(s):
+    return 10 <= sum(c.isdigit() for c in s) <= 15
+
+
+def public_ip(s, include_private=False):
+    parts = s.split(".")
+    if len(parts) != 4 or any(not p.isdigit() or int(p) > 255 or (len(p) > 1 and p[0] == "0") for p in parts):
+        return False
+    a, b = int(parts[0]), int(parts[1])
+    private = a in (10, 127, 0) or (a == 172 and 16 <= b <= 31) or (a == 192 and b == 168) or (a == 169 and b == 254) or a >= 224
+    return include_private or not private
+
+
+DETECTORS = [
+    ("LR03", "PRIVATE_KEY", "high", re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"), 0, None),
+    ("LR09", "URL_TOKEN", "high", re.compile(r"(?i)[?&](?:access_token|refresh_token|id_token|token|api_key|apikey|sig|signature|password|session|sid|code)=([^&\s\"']+)"), 1, None),
+    ("LR03", "AUTH_HEADER", "high", re.compile(r"(?i)\b(?:authorization|x-api-key|api[_-]?key|x-auth-token)\b\"?\s*[:=]\s*\"?(?:bearer\s+|basic\s+|token\s+)?([A-Za-z0-9._~+/=-]{12,})"), 1, None),
+    ("LR03", "JWT", "high", re.compile(r"\beyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}"), 0, None),
+    ("LR03", "AWS_KEY", "high", re.compile(r"\b(?:AKIA|ASIA)[0-9A-Z]{16}\b"), 0, None),
+    ("LR03", "API_KEY", "high", re.compile(r"\b(?:sk|rk|pk)_(?:live|test)_[A-Za-z0-9]{16,}\b|\bgh[pousr]_[A-Za-z0-9]{30,}\b|\bxox[abpr]-[A-Za-z0-9-]{10,}"), 0, None),
+    ("LR04", "PASSWORD", "high", re.compile(r"(?i)\b(?:password|passwd|pwd|secret|client_secret|passphrase)\b\"?\s*[:=]\s*\"?([^\s\",&}]*)"), 1, None),
+    ("LR10", "DOB", "medium", re.compile(r"(?i)\b(?:dob|date_of_birth|birth_?date|birthday)\b\"?\s*[:=]\s*\"?(\d{4}-\d{2}-\d{2}|\d{1,2}[/.]\d{1,2}[/.]\d{2,4})"), 1, None),
+    ("LR07", "IBAN", "high", re.compile(r"\b[A-Z]{2}\d{2}(?: ?[A-Z0-9]{4}){2,7}(?: ?[A-Z0-9]{1,4})?\b"), 0, iban_ok),
+    ("LR02", "CARD", "high", re.compile(r"(?<![\d.:-])\d(?:[ -]?\d){12,18}(?![\d.:])"), 0, luhn),
+    ("LR08", "SSN", "high", re.compile(r"\b(?!000|666|9\d\d)\d{3}-(?!00)\d{2}-(?!0000)\d{4}\b"), 0, None),
+    ("LR01", "EMAIL", "medium", re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"), 0, None),
+    ("LR06", "PHONE", "medium", re.compile(r"(?<![\w+])\+\d{1,3}[ .-]?\(?\d{1,4}\)?(?:[ .-]?\d{2,4}){2,4}\b"), 0, phone_ok),
+    ("LR05", "IP", "low", re.compile(r"(?<![\d.])(?:\d{1,3}\.){3}\d{1,3}(?![\d.])"), 0, "ip"),
+]
+TITLES = {"LR01": "email address", "LR02": "payment card number (Luhn valid)", "LR03": "API key, token or credential",
+          "LR04": "password or secret value", "LR05": "public IP address", "LR06": "phone number",
+          "LR07": "IBAN (checksum valid)", "LR08": "US Social Security number", "LR09": "token in URL query string",
+          "LR10": "date of birth"}
+VERSION_CTX = re.compile(r"(?i)(version|build|release|ver|tag|\bv)[\s:=]*$")
+LEVEL_RE = re.compile(r"\b(TRACE|DEBUG|INFO|WARN|WARNING|ERROR|FATAL)\b\s*[:\-]?\s*\[?([A-Za-z][\w.\-]*)\]?")
+
+
+def mask(kind, v):
+    if kind == "CARD":
+        d = re.sub(r"\D", "", v)
+        return d[:1] + "*" * (len(d) - 5) + d[-4:]
+    if kind == "EMAIL":
+        user, _, dom = v.partition("@")
+        return user[:1] + "***@" + dom
+    if kind == "PRIVATE_KEY":
+        return v
+    if len(v) <= 6:
+        return "*" * len(v)
+    return v[:2] + "*" * min(len(v) - 4, 12) + v[-2:]
+
+
+def source_of(line):
+    s = line.strip()
+    if s.startswith("{"):
+        try:
+            o = json.loads(s)
+            for k in ("logger", "service", "component", "module", "name"):
+                if isinstance(o.get(k), str):
+                    return o[k], str(o.get("level", "")).upper()
+        except ValueError:
+            pass
+    m = LEVEL_RE.search(line)
+    if m:
+        return m.group(2), m.group(1).upper()
+    return "-", ""
+
+
+def scan_line(line, allow=(), include_private_ip=False):
+    taken, hits = [], []
+    for code, kind, sev, rx, grp, val in DETECTORS:
+        for m in rx.finditer(line):
+            v = m.group(grp)
+            a, b = m.span(grp)
+            if v is None or REDACTED.match(v.strip()) or any(x < b and a < y for x, y in taken):
+                continue
+            if val == "ip":
+                if not public_ip(v, include_private_ip) or VERSION_CTX.search(line[max(0, a - 12):a]):
+                    continue
+            elif val and not val(v):
+                continue
+            if any(r.search(v) for r in allow):
+                continue
+            taken.append((a, b))
+            hits.append({"code": code, "kind": kind, "severity": sev, "start": a, "end": b, "value": v})
+    return sorted(hits, key=lambda h: h["start"])
+
+
+def redact_line(line, hits):
+    out = line
+    for h in sorted(hits, key=lambda h: -h["start"]):
+        out = out[:h["start"]] + "[REDACTED:%s]" % h["kind"] + out[h["end"]:]
+    return out
+
+
+def scan(named_lines, allow=(), include_private_ip=False, max_examples=3):
+    findings, by_code, sources, redacted = [], OrderedDict(), defaultdict(Counter), {}
+    distinct = defaultdict(set)
+    debug_hits = 0
+    total_lines = 0
+    for name, lines in named_lines:
+        red = []
+        for i, line in enumerate(lines, 1):
+            total_lines += 1
+            hits = scan_line(line, allow, include_private_ip)
+            red.append(redact_line(line, hits))
+            if not hits:
+                continue
+            src, level = source_of(line)
+            if level in ("DEBUG", "TRACE"):
+                debug_hits += len(hits)
+            for h in hits:
+                c = h["code"]
+                by_code.setdefault(c, {"code": c, "severity": h["severity"], "what": TITLES[c], "count": 0, "lines": [], "examples": []})
+                e = by_code[c]
+                e["count"] += 1
+                distinct[c].add(h["value"])
+                if len(e["lines"]) < 20:
+                    e["lines"].append("%s:%d" % (name, i))
+                if len(e["examples"]) < max_examples:
+                    e["examples"].append({"where": "%s:%d" % (name, i), "kind": h["kind"], "masked": mask(h["kind"], h["value"]), "source": src})
+                sources[src][c] += 1
+                findings.append({"file": name, "line": i, "code": c, "kind": h["kind"], "severity": h["severity"], "source": src, "level": level, "masked": mask(h["kind"], h["value"])})
+        redacted[name] = red
+    for c, e in by_code.items():
+        e["distinct_values"] = len(distinct[c])
+    summary = sorted(by_code.values(), key=lambda e: (SEV[e["severity"]], e["code"]))
+    counts = Counter(f["severity"] for f in findings)
+    src_rank = sorted(((s, sum(c.values()), dict(c)) for s, c in sources.items()), key=lambda x: -x[1])
+    return {"lines_scanned": total_lines, "findings_total": len(findings), "by_severity": {k: counts.get(k, 0) for k in SEV},
+            "summary": summary, "sources": [{"source": s, "hits": n, "codes": c} for s, n, c in src_rank],
+            "debug_level_hits": debug_hits, "findings": findings, "redacted": redacted}
+
+
+def print_text(rep):
+    print("Scanned %d lines: %d findings (%d high, %d medium, %d low)" % (rep["lines_scanned"], rep["findings_total"],
+          rep["by_severity"]["high"], rep["by_severity"]["medium"], rep["by_severity"]["low"]))
+    if not rep["summary"]:
+        print("No personal data or secrets found by the detectors (this is not proof the log is clean).")
+        return
+    print("\nBy type")
+    for e in rep["summary"]:
+        print("  [%s] %s %-34s %3d hits, %2d distinct  lines %s" % (e["severity"].upper(), e["code"], e["what"], e["count"],
+              e["distinct_values"], ", ".join(x.split(":")[-1] for x in e["lines"][:8]) + (" ..." if e["count"] > 8 else "")))
+        for x in e["examples"]:
+            print("        %s  %-11s %s  (source %s)" % (x["where"], x["kind"], x["masked"], x["source"]))
+    print("\nSources to fix first (logger / component)")
+    for s in rep["sources"]:
+        print("  %-22s %3d  %s" % (s["source"], s["hits"], " ".join("%s=%d" % kv for kv in sorted(s["codes"].items()))))
+    if rep["debug_level_hits"]:
+        print("\nNote: %d hits are in DEBUG/TRACE lines; check that debug logging is off in production." % rep["debug_level_hits"])
+
+
+def self_test():
+    ok = 0; tests = []
+    def t(name, cond):
+        tests.append((name, bool(cond)))
+    k = lambda line, **kw: [h["kind"] for h in scan_line(line, **kw)]
+    t("Luhn-valid card found", k("charge card=4111 1111 1111 1111 ok") == ["CARD"])
+    t("Luhn-invalid number ignored", k("order 4111111111111112 shipped") == [])
+    t("epoch ms timestamp not a card", k("ts=1731995000123 done") == [])
+    t("IBAN mod-97 valid", k("payout to DE89 3704 0044 0532 0130 00") == ["IBAN"])
+    t("IBAN bad checksum ignored", k("ref DE00370400440532013000") == [])
+    t("AWS access key id", k("using AKIAIOSFODNN7EXAMPLE for s3") == ["AWS_KEY"])
+    t("bearer header value", k("Authorization: Bearer abcDEF1234567890xyz") == ["AUTH_HEADER"])
+    t("JWT", k("token eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0In0.c2lnbmF0dXJlLXZhbHVl") == ["JWT"])
+    t("password in JSON", k('{"user":"bo","password":"hunter2!"}') == ["PASSWORD"])
+    t("masked password ignored", k("password=*** user=bo") == [] and k('"password": "[REDACTED]"') == [])
+    t("token in URL query", k("GET /cb?code=abc123&state=x") == ["URL_TOKEN"])
+    t("email", k("signup ana.lima@example.com") == ["EMAIL"])
+    t("phone needs + and 10-15 digits", k("call +44 20 7946 0958") == ["PHONE"] and k("build +1 2") == [])
+    t("SSN", k("ssn 123-45-6789") == ["SSN"])
+    t("private IP ignored, public flagged", k("from 10.0.0.5") == [] and k("from 203.0.113.7") == ["IP"])
+    t("include private IP flag", k("from 10.0.0.5", include_private_ip=True) == ["IP"])
+    t("version string not an IP", k("lib 1.2.3.4.5 loaded") == [])
+    t("IP after 'build'/'version' ignored", k("build 1.2.3.4 tagged") == [] and k("version=8.8.8.8") == [])
+    t("api_key in URL is a URL token", k("GET /r?api_key=abcdef123456789") == ["URL_TOKEN"])
+    t("allowlist", k("mail noreply@example.com", allow=[re.compile(r"^noreply@")]) == [])
+    t("date of birth", k("dob=1990-04-12 ok") == ["DOB"])
+    rep = scan([("t.log", ["INFO [auth] login ana@example.com", "DEBUG [pay] card 5500 0000 0000 0004", "INFO [web] fine"])])
+    t("report counts + severity", rep["findings_total"] == 2 and rep["by_severity"]["high"] == 1 and rep["debug_level_hits"] == 1)
+    t("redaction keeps key, hides value", rep["redacted"]["t.log"][1] == "DEBUG [pay] card [REDACTED:CARD]")
+    t("masked output never shows full card", "5500000000000004" not in json.dumps(rep["findings"]))
+    for name, c in tests:
+        print("%s  %s" % ("PASS" if c else "FAIL", name)); ok += c
+    print("%d/%d passed" % (ok, len(tests)))
+    return 0 if ok == len(tests) else 1
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("files", nargs="*"); ap.add_argument("--json", action="store_true")
+    ap.add_argument("--redact", metavar="OUT"); ap.add_argument("--allow", action="append", default=[])
+    ap.add_argument("--include-private-ip", action="store_true"); ap.add_argument("--max-examples", type=int, default=3)
+    ap.add_argument("--self-test", action="store_true")
+    a = ap.parse_args()
+    if a.self_test:
+        return self_test()
+    if not a.files:
+        ap.print_usage(); return 2
+    try:
+        allow = [re.compile(x) for x in a.allow]
+        named = []
+        for f in a.files:
+            fh = sys.stdin if f == "-" else open(f, encoding="utf-8", errors="replace")
+            named.append((f, fh.read().splitlines()))
+    except (OSError, re.error) as e:
+        print("error: %s" % e, file=sys.stderr); return 2
+    rep = scan(named, allow, a.include_private_ip, a.max_examples)
+    if a.redact:
+        with open(a.redact, "w", encoding="utf-8") as out:
+            for f in a.files:
+                out.write("\n".join(rep["redacted"][f]) + "\n")
+    red = rep.pop("redacted")
+    if a.json:
+        print(json.dumps(rep, indent=2))
+    else:
+        print_text(rep)
+        if a.redact:
+            print("\nRedacted copy written to %s (%d lines)" % (a.redact, sum(len(v) for v in red.values())))
+    return 1 if rep["by_severity"]["high"] else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+
+```
+
+</details>
+
