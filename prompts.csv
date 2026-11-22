@@ -208572,3 +208572,559 @@ def main():
 if __name__ == ""__main__"":
     sys.exit(main())
 ",FALSE,TEXT,f
+Utility Meter Reading and Bill Checker,"---
+name: utility-meter-reading-and-bill-checker
+description: Checks electricity, gas and water meter readings for a home or small business: fixes typos, rollovers, over-estimates and duplicates, works out usage per period and month, prices it with your tariffs (standing charge, VAT, price changes, gas m3 to kWh), checks bills, flags leaks. Offline Python.
+---
+
+# Utility Meter Reading and Bill Checker
+
+You help households, landlords, flat-sharers and small shop or office owners understand their electricity, gas and water use and check that their bills match their meters. Bills go wrong in predictable ways: the supplier estimates a reading that is far too high, a price change is applied to the whole period, a reading is typed from memory with swapped digits, a five-digit meter wraps from 99999 to 00000, and a running toilet or dripping tap doubles the water use for months before anyone notices. You turn the user's own meter readings into clean usage figures, price them with their tariff and compare each bill with what the readings imply.
+
+You work only from the readings, tariffs and bills the user gives you. You do not contact suppliers, log into accounts or give legal or financial advice. Show every assumption (meter digits, gas calorific value, which reading was dropped) and say when a figure is interpolated.
+
+## Files in this skill
+
+- `scripts/meter_check.py` - reads the readings CSV (plus optional tariffs and bills CSVs) and prints per-meter periods, monthly usage and cost, annual estimate, a bill check and findings UM01-UM11; `--digits meter=N` for rollover, `--spike`, `--tolerance`, `--calorific`, `--max-gap`, `--json`, `--self-test` runs 18 checks (Python 3.8+ standard library only)
+- `references/reading-meters-and-units.md` - how to read common meters, units, rollover, estimated vs actual readings, gas m3 to kWh conversion
+- `references/tariffs-and-bill-checks.md` - how to enter tariffs, how the bill check works, typical billing errors and what to ask the supplier
+- `templates/usage-and-bill-report.md` - the report you hand back
+- `examples/meter_readings.csv` - ten months of readings for a fictional flat with planted problems
+- `examples/tariffs.csv` - electricity (with a July price rise), gas priced per kWh, water
+- `examples/bills.csv` - five bills to check, one based on an over-estimate
+
+## Workflow
+
+### 1. Collect the readings
+Ask for one row per reading: `date` (YYYY-MM-DD), `meter` (any name, e.g. `electricity`, `gas`, `water`, `ev-charger`), `reading` (the number on the display, without the red decimal digits on gas and water dials unless used consistently), optional `type` (`actual`, `customer`, `estimate`) and `note`. Readings from bills count: mark supplier estimates as `estimate`. Monthly readings on roughly the same day work best; photos of the meter are the best evidence. See `references/reading-meters-and-units.md`.
+
+### 2. Collect tariffs and bills (optional but needed for costs)
+- `tariffs.csv`: `meter,from,meter_unit,tariff_unit,unit_price,standing_per_day,vat_pct`, one row per price change. For gas measured in m3 but priced per kWh, set `meter_unit=m3`, `tariff_unit=kWh`.
+- `bills.csv`: `meter,start,end,amount[,units]` with inclusive dates and the amount including tax.
+- Ask how many digits the meter display has (before the decimal point) so rollovers are detected.
+
+### 3. Run the checker
+```
+python3 scripts/meter_check.py examples/meter_readings.csv --tariffs examples/tariffs.csv --bills examples/bills.csv --digits electricity=5
+python3 scripts/meter_check.py readings.csv --tariffs tariffs.csv --calorific 38.9 --json > usage.json
+python3 scripts/meter_check.py readings.csv --spike 1.4 --tolerance 0.03
+python3 scripts/meter_check.py --self-test
+```
+Exit 0 = no high findings, 1 = high findings, 2 = bad input. Without a shell, follow the formulas in `references/tariffs-and-bill-checks.md`: usage = later reading - earlier reading, prorate by days, cost = (units x unit price + days x standing charge) x (1 + VAT).
+
+### 4. Fix the data first
+- UM01 unreadable row, UM02 reading lower than the previous one (typo or wrong meter, ignored), UM06 two different readings on the same day (actual beats customer beats estimate), UM09 rollover assumed (check the digit count), UM07 long gap between readings (monthly numbers are interpolated).
+- UM03 an estimate that was higher than the next actual reading: the estimate is dropped and the bills based on it overcharged.
+- Ask the user to confirm each correction, then re-run.
+
+### 5. Read usage and bills
+- UM04 a period whose daily use is well above the recent periods; UM05 high use for the last two periods in a row: on water this is the classic leak signal (running toilet, dripping tap, outdoor pipe), on electricity a new appliance, heater or faulty fridge.
+- UM10 a bill more than the tolerance above (high) or below (medium, a catch-up bill will follow) what readings and tariff imply; compare billed units with reading units to see whether the price or the reading is wrong.
+- UM08 a bill that ends on an estimated reading; UM11 a bill that cannot be checked (outside the readings or no tariff).
+- Seasonal patterns are normal for gas heating: compare with the same months last year if the user has them.
+
+### 6. Deliver
+Fill `templates/usage-and-bill-report.md`: usage and cost per meter, the bill check table, data corrections, problems found, money at stake, and next steps (submit an actual reading and ask for a re-bill, do a leak test, check the tariff). Use the user's currency and units; round money to 2 decimals.
+
+## Example result
+On the example files the checker uses 8 of 10 electricity readings: the 89650 typed from memory is ignored (UM02, high) and the April supplier estimate of 98650 is dropped because the May actual was 98500 (UM03). The 00050 in October is read as a rollover of the 5-digit display (UM09). The March-April electricity bill charged 760 kWh, 237.62, but the readings imply 305 kWh, 103.85: an overcharge of 133.77 (UM10 high, UM08). The June-July bill correctly splits the 1 July price rise. Gas has two different readings on 4 July; the actual 5085.5 is kept (UM06). Water jumped from about 0.35 to 0.66-0.68 m3/day in the last two months (UM04 twice, UM05 high): a probable leak costing about 0.67 per day (0.32 m3 x 2.10). Result: 3 high, 5 medium, 1 low.
+
+## Rules
+
+- Never invent readings; interpolate only between real readings and say so.
+- Prefer actual readings over estimates; recommend submitting a reading before every bill date.
+- Explain rollover and digit assumptions before correcting usage by a power of ten.
+- Gas conversion uses volume correction 1.02264 and the calorific value from the user's bill (default 39.5 MJ/m3); say which value you used.
+- Do not tell the user to stop paying a bill; suggest disputing it with the supplier with the evidence.
+- Leak suspicion is a prompt to test (meter reading before and after a no-use period), not a diagnosis.
+
+FILE:references/reading-meters-and-units.md
+# Reading meters and units
+
+## Reading the display
+- **Digital electricity meters**: press the display button until the cumulative import register appears (often labelled `1.8.0`, `IMP` or `kWh`). Ignore instantaneous kW values. Day/night (two-rate) meters have two registers: use two meter names, e.g. `electricity-day` and `electricity-night`.
+- **Smart meters**: readings are sent automatically, but bills can still be estimated when the communication fails; check the bill says ""actual"" or ""smart"".
+- **Gas meters**: read the black digits from left to right; ignore the red digits after the decimal point (or include them every time, consistently). Older imperial meters show hundreds of cubic feet; multiply by 2.83 to get m3.
+- **Water meters**: black digits are m3; red dials are litres. A slowly turning star or triangle with every tap closed is a leak indicator.
+- **Dial meters**: read each dial; if a pointer is between two numbers, take the lower one.
+
+## Digits and rollover
+A meter with 5 digits before the decimal point goes from 99999 to 00000. If a reading is much lower than the previous one and the previous one was close to the maximum, it is a rollover, not a typo. Pass `--digits meter=5`. Without `--digits`, any backwards reading is treated as an error (UM02).
+
+## Reading types
+- `actual`: read by the supplier or a smart meter.
+- `customer`: read and submitted by you (as good as actual if it comes with a photo).
+- `estimate`: calculated by the supplier. Estimates are often based on last winter or on a national average and can be far off. When a later actual reading is lower, the estimate was too high and every bill since overcharged you (UM03).
+
+## Units
+| Meter | Display unit | Usually priced in |
+|---|---|---|
+| Electricity | kWh | kWh |
+| Gas | m3 (or 100 ft3) | kWh (UK, EU) or m3 / therms (some countries) |
+| Water | m3 | m3 (often water + wastewater charges) |
+| Heat / district heating | kWh or MWh | kWh |
+
+## Gas m3 to kWh
+kWh = m3 x volume correction (1.02264) x calorific value (MJ/m3, printed on the bill, typically 37.5-43) / 3.6. The script uses `--calorific 39.5` by default. For therms: 1 therm = 29.3071 kWh.
+
+## Good habits
+Read all meters on the same day every month, photograph the display, and submit the reading to the supplier a day or two before the bill date.
+
+FILE:references/tariffs-and-bill-checks.md
+# Tariffs and bill checks
+
+## Entering tariffs
+One row per meter and price period in `tariffs.csv`:
+
+| column | meaning |
+|---|---|
+| `meter` | same name as in the readings |
+| `from` | first day the price applies (YYYY-MM-DD) |
+| `meter_unit` / `tariff_unit` | e.g. `kWh`/`kWh`, `m3`/`kWh` for gas, `m3`/`m3` for water |
+| `unit_price` | price per tariff unit, before tax |
+| `standing_per_day` | fixed daily charge, before tax (0 if none; convert monthly fees: x12/365) |
+| `vat_pct` | VAT or sales tax percent on the energy bill (e.g. 5, 20, 0) |
+
+Water bills with separate fresh-water and wastewater prices: add them into one `unit_price`, or use two meter names with the same readings.
+
+## How the bill check works
+1. The bill covers `start` to `end` inclusive, so usage is measured from the reading at the start date to the reading at the day after `end`.
+2. Readings on those exact days are rarely available, so the script interpolates linearly between the nearest real readings.
+3. If a price change falls inside the bill, the period is split at the change date and each part is priced with its own tariff.
+4. Expected cost = sum over parts of (units x unit price + days x standing charge) x (1 + VAT).
+5. The bill is flagged (UM10) when it differs by more than `--tolerance` (default 5%). Above = possible overcharge (high), below = likely undercharge followed by a catch-up bill (medium).
+
+Small differences (under 2-3%) usually come from interpolation, rounding, or a slightly different calorific value. Large differences almost always come from an estimated reading, a wrong price period, a missed price change, or the wrong meter number on the account.
+
+## Typical billing errors
+- Bill based on an estimate that was too high (UM03 + UM08 + UM10).
+- New price applied to the whole period instead of from the change date.
+- Wrong meter serial number on the account (your usage does not match the bill at all).
+- Standing charge for days outside your tenancy (move-in/move-out bills).
+- Two-rate meter registers swapped (night units priced as day units).
+
+## What to send the supplier
+The meter serial number, dated photos of the readings, the period and the difference you calculated, and a request to re-bill on actual readings. Keep it short and factual; ask for a corrected statement and a refund or credit of the overcharge.
+
+## Leak test (water)
+Close every tap and appliance, read the meter, wait 1-2 hours without using water, read again. Any movement means a leak; repeat with the toilet supply valve closed to see whether the toilet is the cause.
+
+FILE:templates/usage-and-bill-report.md
+# Utility usage and bill check: [address / business], [period]
+
+**Meters:** [electricity, gas, water]  **Readings used:** [n of m]  **Currency:** [ ]
+**Tool:** `meter_check.py` (output attached)  **Assumptions:** [digits, calorific value, tolerance]
+
+## Usage and cost
+| Meter | Avg per day | Last month | Last month cost | Annual estimate | Annual cost (latest tariff) |
+|---|---|---|---|---|---|
+| [electricity] | [10.6 kWh] | | | | |
+
+## Bill check
+| Meter | Bill period | Billed | Expected from readings | Difference | Billed units vs readings | Verdict |
+|---|---|---|---|---|---|---|
+| [electricity] | [2026-03-06..2026-04-04] | [237.62] | [103.85] | [+128.8%] | [760 vs 305] | [overcharge, based on estimate] |
+
+## Data corrections
+| Meter | Reading | Problem | What we did |
+|---|---|---|---|
+| [electricity] | [89650 on 2026-07-04] | [lower than previous] | [ignored; please re-check the photo] |
+
+## Problems found
+1. [Overcharge / leak / spike, with the evidence and money at stake]
+2. [...]
+
+## Next steps
+1. [Submit an actual reading with photo and ask the supplier to re-bill period X]
+2. [Run the leak test in the water meter guide]
+3. [Read all meters on the same day each month]
+
+_Figures between readings are interpolated. This is a usage check, not legal or financial advice._
+
+FILE:examples/meter_readings.csv
+date,meter,reading,type,note
+2026-01-05,electricity,97200,actual,moved in reading
+2026-02-04,electricity,97560,actual,
+2026-03-06,electricity,97890,actual,
+2026-04-05,electricity,98650,estimate,supplier estimate
+2026-05-05,electricity,98500,actual,photo of meter
+2026-06-04,electricity,98800,actual,
+2026-07-04,electricity,89650,actual,typed from memory
+2026-08-03,electricity,99400,actual,
+2026-09-02,electricity,99720,actual,
+2026-10-02,electricity,00050,actual,display wrapped to 0
+2026-01-05,gas,4520.0,actual,
+2026-02-04,gas,4690.5,actual,
+2026-03-06,gas,4840.2,actual,
+2026-04-05,gas,4950.0,actual,
+2026-05-05,gas,5020.3,actual,
+2026-06-04,gas,5060.0,actual,
+2026-07-04,gas,5085.5,actual,
+2026-07-04,gas,5058.5,customer,second photo (digits swapped?)
+2026-08-03,gas,5110.0,actual,
+2026-09-02,gas,5134.2,actual,
+2026-10-02,gas,5165.0,actual,
+2026-01-05,water,812.4,actual,
+2026-02-04,water,822.1,actual,
+2026-03-06,water,831.6,actual,
+2026-04-05,water,841.0,actual,
+2026-05-05,water,851.2,actual,
+2026-06-04,water,861.5,actual,
+2026-07-04,water,872.4,actual,
+2026-08-03,water,883.0,actual,
+2026-09-02,water,902.8,actual,
+2026-10-02,water,923.1,actual,toilet keeps running?
+
+FILE:examples/tariffs.csv
+meter,from,meter_unit,tariff_unit,unit_price,standing_per_day,vat_pct
+electricity,2026-01-01,kWh,kWh,0.28,0.45,5
+electricity,2026-07-01,kWh,kWh,0.31,0.45,5
+gas,2026-01-01,m3,kWh,0.07,0.30,5
+water,2026-01-01,m3,m3,2.10,0.15,0
+
+FILE:examples/bills.csv
+meter,start,end,amount,units
+electricity,2026-01-05,2026-02-03,120.02,360
+electricity,2026-03-06,2026-04-04,237.62,760
+electricity,2026-06-04,2026-07-03,103.32,300
+gas,2026-01-05,2026-03-05,283.10,
+water,2026-07-04,2026-10-01,119.97,50.7
+
+FILE:scripts/meter_check.py
+#!/usr/bin/env python3
+""""""Utility meter reading and bill checker (offline, Python 3.8+ standard library only).
+
+Reads household or small-business meter readings (electricity, gas, water or any cumulative
+meter), cleans them (backwards readings, typos, meter rollover, over-estimates, conflicting
+duplicates), works out usage per period and per calendar month, prices it with your tariffs
+(unit price, daily standing charge, VAT/sales tax, price changes, gas m3 -> kWh) and checks
+each bill against what the readings imply. Flags spikes and sustained rises (leaks).
+
+Usage:
+  meter_check.py readings.csv [--tariffs tariffs.csv] [--bills bills.csv] [--digits electricity=5]
+                 [--spike 1.6] [--tolerance 0.05] [--calorific 39.5] [--max-gap 70] [--json]
+  meter_check.py --self-test
+readings.csv: date,meter,reading[,type][,note]   type = actual (default) | estimate | customer
+tariffs.csv:  meter,from,meter_unit,tariff_unit,unit_price,standing_per_day,vat_pct
+bills.csv:    meter,start,end,amount[,units]     start/end inclusive, amount incl. tax
+Exit codes: 0 = no high findings, 1 = high findings, 2 = bad input.
+""""""
+import argparse, csv, json, statistics, sys
+from collections import OrderedDict
+from datetime import date, timedelta
+
+SEV = {""high"": 0, ""medium"": 1, ""low"": 2}
+VOLUME_CORRECTION = 1.02264
+RANK = {""actual"": 0, ""customer"": 1, ""estimate"": 2}  # preferred reading on the same day
+
+
+def d(s):
+    return date.fromisoformat(s.strip())
+
+
+def num(s):
+    return float(str(s).replace("","", """").strip())
+
+
+def read_csv(path):
+    with open(path, newline="""", encoding=""utf-8-sig"") as f:
+        return [(i, {(k or """").strip().lower(): (v or """").strip() for k, v in r.items()}) for i, r in enumerate(csv.DictReader(f), 2)]
+
+
+class Report:
+    def __init__(self):
+        self.findings = []
+
+    def add(self, code, sev, meter, msg, when=None):
+        self.findings.append({""code"": code, ""severity"": sev, ""meter"": meter, ""date"": str(when) if when else """", ""message"": msg})
+
+
+def clean_meter(meter, rows, rep, digits=None):
+    """"""rows: list of (line, date, reading, type). Returns cleaned [(date, cumulative, type, raw)].""""""
+    by_date = OrderedDict()
+    for line, dt, val, typ in sorted(rows, key=lambda r: (r[1], r[0])):
+        if dt in by_date:
+            prev = by_date[dt]
+            keep = prev if RANK[prev[3]] < RANK[typ] else (line, dt, val, typ)
+            if abs(prev[2] - val) > 1e-9:
+                rep.add(""UM06"", ""medium"", meter, ""lines %d/%d: two readings on %s (%g and %g); kept %g (%s)"" % (prev[0], line, dt, prev[2], val, keep[2], keep[3]), dt)
+            by_date[dt] = keep
+            continue
+        by_date[dt] = (line, dt, val, typ)
+    rows = list(by_date.values())
+    out, offset = [], 0.0
+    span = 10 ** digits if digits else None
+    for line, dt, val, typ in rows:
+        cum = val + offset
+        if out and cum < out[-1][1]:
+            last = out[-1]
+            if span and last[3] >= 0.9 * span and val <= 0.1 * span:
+                offset += span
+                cum = val + offset
+                rep.add(""UM09"", ""low"", meter, ""line %d: %g after %g read as a %d-digit meter rollover"" % (line, val, last[3], digits), dt)
+            elif last[2] == ""estimate"" and typ != ""estimate"":
+                rep.add(""UM03"", ""medium"", meter, ""estimated reading %g on %s was higher than the actual %g on %s: bills based on it overcharged, a credit is due""
+                        % (last[3], last[0], val, dt), last[0])
+                out.pop()
+                while out and cum < out[-1][1]:
+                    out.pop()
+            else:
+                rep.add(""UM02"", ""high"", meter, ""line %d: reading %g on %s is lower than %g on %s (typo, swapped digits or wrong meter?); ignored""
+                        % (line, val, dt, last[3], last[0]), dt)
+                continue
+        out.append((dt, cum, typ, val))
+    return out
+
+
+def at(series, when):
+    """"""Cumulative reading at a date by linear interpolation, or None outside the readings.""""""
+    if not series or when < series[0][0] or when > series[-1][0]:
+        return None
+    for (d0, c0, *_), (d1, c1, *_) in zip(series, series[1:]):
+        if d0 <= when <= d1:
+            span = (d1 - d0).days
+            return c0 if span == 0 else c0 + (c1 - c0) * (when - d0).days / span
+    return series[-1][1]
+
+
+def periods(meter, series, rep, spike=1.6, max_gap=70):
+    ps = []
+    for (d0, c0, t0, _), (d1, c1, t1, _) in zip(series, series[1:]):
+        days = (d1 - d0).days
+        ps.append({""start"": str(d0), ""end"": str(d1), ""days"": days, ""units"": round(c1 - c0, 3),
+                   ""per_day"": round((c1 - c0) / days, 3) if days else 0.0, ""estimate"": ""estimate"" in (t0, t1)})
+        if days > max_gap:
+            rep.add(""UM07"", ""low"", meter, ""%d days between readings %s and %s: monthly figures are interpolated"" % (days, d0, d1), d0)
+    flagged = []
+    for i, p in enumerate(ps):
+        hist = [q[""per_day""] for q in ps[max(0, i - 3):i]]
+        if len(hist) >= 2:
+            base = statistics.median(hist)
+            if base > 0 and p[""per_day""] > spike * base:
+                flagged.append(i)
+                rep.add(""UM04"", ""medium"", meter, ""%s to %s: %.2f/day is %.1fx the recent %.2f/day"" % (p[""start""], p[""end""], p[""per_day""], p[""per_day""] / base, base), p[""start""])
+    if len(flagged) >= 2 and flagged[-1] == len(ps) - 1 and flagged[-2] == len(ps) - 2:
+        rep.add(""UM05"", ""high"", meter, ""usage stayed high for the last two periods (since %s): check for a leak, a faulty appliance or a meter fault"" % ps[-2][""start""], ps[-2][""start""])
+    return ps
+
+
+def load_tariffs(path):
+    t = {}
+    for line, r in read_csv(path):
+        try:
+            t.setdefault(r[""meter""].lower(), []).append({""from"": d(r[""from""]), ""meter_unit"": r.get(""meter_unit"", """") or ""unit"",
+                ""tariff_unit"": r.get(""tariff_unit"", """") or r.get(""meter_unit"", """") or ""unit"", ""unit_price"": num(r[""unit_price""]),
+                ""standing"": num(r.get(""standing_per_day"") or 0), ""vat"": num(r.get(""vat_pct"") or 0) / 100})
+        except (KeyError, ValueError) as e:
+            raise ValueError(""tariffs line %d: %s"" % (line, e))
+    for v in t.values():
+        v.sort(key=lambda x: x[""from""])
+    return t
+
+
+def convert(units, tar, calorific):
+    if tar[""meter_unit""].lower() in (""m3"", ""m³"") and tar[""tariff_unit""].lower() == ""kwh"":
+        return units * VOLUME_CORRECTION * calorific / 3.6
+    return units
+
+
+def cost(series, tariffs, start, end_excl, calorific):
+    """"""Units (in tariff unit) and cost incl. tax for [start, end_excl), split at tariff changes.""""""
+    if not tariffs:
+        return None
+    cuts = sorted({start, end_excl} | {t[""from""] for t in tariffs if start < t[""from""] < end_excl})
+    total_units = total_cost = 0.0
+    for a, b in zip(cuts, cuts[1:]):
+        ca, cb = at(series, a), at(series, b)
+        if ca is None or cb is None:
+            return None
+        act = [t for t in tariffs if t[""from""] <= a]
+        if not act:
+            return None
+        tar = act[-1]
+        u = convert(cb - ca, tar, calorific)
+        total_units += u
+        total_cost += (u * tar[""unit_price""] + (b - a).days * tar[""standing""]) * (1 + tar[""vat""])
+    return round(total_units, 2), round(total_cost, 2)
+
+
+def month_starts(a, b):
+    m = date(a.year, a.month, 1)
+    while m <= b:
+        yield m
+        m = date(m.year + (m.month == 12), 1 if m.month == 12 else m.month + 1, 1)
+
+
+def analyse(readings, tariffs=None, bills=None, digits=None, spike=1.6, tolerance=0.05, calorific=39.5, max_gap=70):
+    rep, digits, tariffs = Report(), digits or {}, tariffs or {}
+    raw = OrderedDict()
+    for line, r in readings:
+        try:
+            dt, meter, val = d(r[""date""]), r[""meter""].lower(), num(r[""reading""])
+            typ = (r.get(""type"") or ""actual"").lower()
+            if val < 0 or typ not in (""actual"", ""estimate"", ""customer""):
+                raise ValueError(""negative reading or unknown type %r"" % typ)
+        except (KeyError, ValueError) as e:
+            rep.add(""UM01"", ""medium"", r.get(""meter"", ""?""), ""readings line %d unreadable: %s"" % (line, e))
+            continue
+        raw.setdefault(meter, []).append((line, dt, val, typ))
+    out = OrderedDict()
+    for meter, rows in raw.items():
+        series = clean_meter(meter, rows, rep, digits.get(meter))
+        ps = periods(meter, series, rep, spike, max_gap)
+        tar = tariffs.get(meter, [])
+        months = []
+        if len(series) >= 2:
+            for m in month_starts(series[0][0], series[-1][0]):
+                nxt = date(m.year + (m.month == 12), 1 if m.month == 12 else m.month + 1, 1)
+                a, b = at(series, m), at(series, nxt)
+                if a is None or b is None:
+                    continue
+                c = cost(series, tar, m, nxt, calorific)
+                months.append({""month"": m.strftime(""%Y-%m""), ""units"": round(b - a, 2), ""billed_units"": c[0] if c else None, ""cost"": c[1] if c else None})
+        span = (series[-1][0] - series[0][0]).days if len(series) >= 2 else 0
+        per_day = (series[-1][1] - series[0][1]) / span if span else 0
+        yr = None
+        if span and tar:
+            t = tar[-1]
+            yu = convert(per_day * 365, t, calorific)
+            yr = round((yu * t[""unit_price""] + 365 * t[""standing""]) * (1 + t[""vat""]), 2)
+        out[meter] = {""readings_used"": len(series), ""periods"": ps, ""months"": months, ""avg_per_day"": round(per_day, 3),
+                      ""annual_units"": round(per_day * 365, 1), ""annual_cost_at_latest_tariff"": yr,
+                      ""unit"": (tar[-1][""meter_unit""] if tar else ""units""), ""_series"": series}
+    checks = []
+    for line, b in bills or []:
+        try:
+            meter, s, e, amt = b[""meter""].lower(), d(b[""start""]), d(b[""end""]), num(b[""amount""])
+        except (KeyError, ValueError) as ex:
+            rep.add(""UM01"", ""medium"", b.get(""meter"", ""?""), ""bills line %d unreadable: %s"" % (line, ex)); continue
+        series = out.get(meter, {}).get(""_series"", [])
+        c = cost(series, tariffs.get(meter, []), s, e + timedelta(days=1), calorific)
+        row = {""meter"": meter, ""start"": str(s), ""end"": str(e), ""billed"": amt, ""expected"": c[1] if c else None,
+               ""expected_units"": c[0] if c else None, ""billed_units"": num(b[""units""]) if b.get(""units"") else None, ""diff_pct"": None}
+        checks.append(row)
+        if c is None:
+            rep.add(""UM11"", ""low"", meter, ""bill %s to %s cannot be checked: outside the readings or no tariff"" % (s, e), s); continue
+        row[""diff_pct""] = round((amt - c[1]) / c[1] * 100, 1) if c[1] else None
+        est = [x for x in series if s <= x[0] <= e + timedelta(days=1) and x[2] == ""estimate""]
+        dropped = [f for f in rep.findings if f[""code""] == ""UM03"" and f[""meter""] == meter and s <= d(f[""date""]) <= e + timedelta(days=1)]
+        if est or dropped:
+            rep.add(""UM08"", ""medium"", meter, ""bill %s to %s ends on or spans an estimated reading: ask for a bill on an actual reading"" % (s, e), s)
+        if row[""diff_pct""] is not None and abs(row[""diff_pct""]) > tolerance * 100:
+            over = row[""diff_pct""] > 0
+            rep.add(""UM10"", ""high"" if over else ""medium"", meter, ""bill %s to %s is %.2f, readings and tariff imply %.2f (%+.1f%%)%s""
+                    % (s, e, amt, c[1], row[""diff_pct""], """" if over else "": undercharged now, expect a catch-up bill""), s)
+    for m in out.values():
+        m.pop(""_series"")
+    fs = sorted(rep.findings, key=lambda f: (SEV[f[""severity""]], f[""code""], f[""meter""], f[""date""]))
+    return {""meters"": out, ""bills"": checks, ""findings"": fs,
+            ""counts"": {k: sum(f[""severity""] == k for f in fs) for k in SEV}}
+
+
+def print_text(r):
+    for meter, m in r[""meters""].items():
+        print(""== %s (%s): %d readings used, %.3f %s/day, ~%.0f %s/year%s"" % (meter, m[""unit""], m[""readings_used""], m[""avg_per_day""], m[""unit""],
+              m[""annual_units""], m[""unit""], ("", ~%.2f/year at latest tariff"" % m[""annual_cost_at_latest_tariff""]) if m[""annual_cost_at_latest_tariff""] else """"))
+        print(""   period                      days     units   per_day"")
+        for p in m[""periods""]:
+            print(""   %s .. %s  %4d %9.2f %9.3f%s"" % (p[""start""], p[""end""], p[""days""], p[""units""], p[""per_day""], ""  (estimate)"" if p[""estimate""] else """"))
+        if m[""months""]:
+            print(""   month     units   priced_units      cost"")
+            for x in m[""months""]:
+                print(""   %s %8.2f %14s %9s"" % (x[""month""], x[""units""], ""-"" if x[""billed_units""] is None else ""%.2f"" % x[""billed_units""],
+                      ""-"" if x[""cost""] is None else ""%.2f"" % x[""cost""]))
+    if r[""bills""]:
+        print(""\nBill check"")
+        for b in r[""bills""]:
+            units = """"
+            if b[""billed_units""] is not None and b[""expected_units""] is not None:
+                units = ""  units billed %g vs readings %g"" % (b[""billed_units""], b[""expected_units""])
+            print(""  %-12s %s..%s billed %8.2f expected %8s  %7s%s"" % (b[""meter""], b[""start""], b[""end""], b[""billed""],
+                  ""-"" if b[""expected""] is None else ""%.2f"" % b[""expected""], ""-"" if b[""diff_pct""] is None else ""%+.1f%%"" % b[""diff_pct""], units))
+    c = r[""counts""]
+    print(""\nFindings: %d high, %d medium, %d low"" % (c[""high""], c[""medium""], c[""low""]))
+    for f in r[""findings""]:
+        print(""  [%s] %s %s %s: %s"" % (f[""severity""].upper(), f[""code""], f[""meter""], f[""date""], f[""message""]))
+
+
+def self_test():
+    tests = []
+    def t(name, cond):
+        tests.append((name, bool(cond)))
+    def R(*rows):
+        return [(i + 2, dict(zip((""date"", ""meter"", ""reading"", ""type""), r))) for i, r in enumerate(rows)]
+    def codes(res):
+        return [f[""code""] for f in res[""findings""]]
+    a = analyse(R((""2026-01-01"", ""e"", ""100""), (""2026-01-11"", ""e"", ""200""), (""2026-01-21"", ""e"", ""300"")))
+    t(""per-day usage"", a[""meters""][""e""][""periods""][0][""per_day""] == 10 and a[""meters""][""e""][""avg_per_day""] == 10)
+    t(""interpolation"", abs(at([(date(2026, 1, 1), 0, ""actual"", 0), (date(2026, 1, 11), 100, ""actual"", 100)], date(2026, 1, 6)) - 50) < 1e-9)
+    b = analyse(R((""2026-01-01"", ""e"", ""99900""), (""2026-01-11"", ""e"", ""50"")), digits={""e"": 5})
+    t(""rollover with --digits"", b[""meters""][""e""][""periods""][0][""units""] == 150 and ""UM09"" in codes(b))
+    c = analyse(R((""2026-01-01"", ""e"", ""1000""), (""2026-01-11"", ""e"", ""1100""), (""2026-01-21"", ""e"", ""110""), (""2026-01-31"", ""e"", ""1300"")))
+    t(""backwards reading ignored"", ""UM02"" in codes(c) and c[""meters""][""e""][""readings_used""] == 3)
+    e = analyse(R((""2026-01-01"", ""e"", ""1000""), (""2026-02-01"", ""e"", ""1500"", ""estimate""), (""2026-03-01"", ""e"", ""1400"")))
+    t(""over-estimate dropped"", ""UM03"" in codes(e) and e[""meters""][""e""][""readings_used""] == 2)
+    f = analyse(R((""2026-01-01"", ""w"", ""10""), (""2026-01-01"", ""w"", ""11""), (""2026-01-11"", ""w"", ""20"")))
+    t(""conflicting duplicate"", ""UM06"" in codes(f))
+    f2 = analyse(R((""2026-01-01"", ""w"", ""10""), (""2026-01-11"", ""w"", ""20"", ""actual""), (""2026-01-11"", ""w"", ""02"", ""customer"")))
+    t(""duplicate keeps actual over customer"", f2[""meters""][""w""][""periods""][0][""units""] == 10)
+    g = analyse(R(*[(""2026-%02d-01"" % m, ""w"", str(v)) for m, v in zip(range(1, 8), (0, 10, 20, 30, 40, 60, 80))]))
+    t(""spike + sustained rise -> leak"", codes(g).count(""UM04"") == 2 and ""UM05"" in codes(g))
+    tar = {""e"": [{""from"": date(2026, 1, 1), ""meter_unit"": ""kWh"", ""tariff_unit"": ""kWh"", ""unit_price"": 0.2, ""standing"": 0.5, ""vat"": 0.1}]}
+    s = [(date(2026, 1, 1), 0, ""actual"", 0), (date(2026, 1, 11), 100, ""actual"", 100)]
+    t(""cost = (units*price + days*standing)*(1+vat)"", cost(s, tar[""e""], date(2026, 1, 1), date(2026, 1, 11), 39.5) == (100, 27.5))
+    tar2 = [{""from"": date(2026, 1, 1), ""meter_unit"": ""kWh"", ""tariff_unit"": ""kWh"", ""unit_price"": 0.2, ""standing"": 0, ""vat"": 0},
+            {""from"": date(2026, 1, 6), ""meter_unit"": ""kWh"", ""tariff_unit"": ""kWh"", ""unit_price"": 0.4, ""standing"": 0, ""vat"": 0}]
+    t(""price change split by date"", cost(s, tar2, date(2026, 1, 1), date(2026, 1, 11), 39.5)[1] == 30.0)
+    gas = [{""from"": date(2026, 1, 1), ""meter_unit"": ""m3"", ""tariff_unit"": ""kWh"", ""unit_price"": 1, ""standing"": 0, ""vat"": 0}]
+    t(""gas m3 -> kWh"", abs(cost(s, gas, date(2026, 1, 1), date(2026, 1, 11), 39.5)[0] - 100 * 1.02264 * 39.5 / 3.6) < 0.01)
+    bills = [(2, {""meter"": ""e"", ""start"": ""2026-01-01"", ""end"": ""2026-01-10"", ""amount"": ""27.50""}), (3, {""meter"": ""e"", ""start"": ""2026-01-01"", ""end"": ""2026-01-10"", ""amount"": ""40""}),
+             (4, {""meter"": ""e"", ""start"": ""2025-12-01"", ""end"": ""2025-12-31"", ""amount"": ""9""})]
+    h = analyse(R((""2026-01-01"", ""e"", ""0""), (""2026-01-11"", ""e"", ""100"")), tariffs=tar, bills=bills)
+    t(""matching bill passes"", h[""bills""][0][""diff_pct""] == 0.0)
+    t(""overcharge flagged high"", any(x[""code""] == ""UM10"" and x[""severity""] == ""high"" for x in h[""findings""]))
+    t(""bill outside readings -> UM11"", ""UM11"" in codes(h))
+    i = analyse(R((""2026-01-01"", ""e"", ""0""), (""2026-01-31"", ""e"", ""100"", ""estimate"")), tariffs=tar, bills=[(2, {""meter"": ""e"", ""start"": ""2026-01-01"", ""end"": ""2026-01-30"", ""amount"": ""1""})])
+    t(""bill on estimate -> UM08"", ""UM08"" in codes(i))
+    j = analyse(R((""2026-01-01"", ""e"", ""0""), (""2026-03-01"", ""e"", ""590"")))
+    t(""monthly split by interpolation"", [m[""units""] for m in j[""meters""][""e""][""months""]] == [310.0, 280.0])
+    k = analyse(R((""2026-13-01"", ""e"", ""1""), (""2026-01-01"", ""e"", ""-5"")))
+    t(""bad rows -> UM01"", codes(k).count(""UM01"") == 2)
+    l = analyse(R((""2026-01-01"", ""e"", ""0""), (""2026-04-01"", ""e"", ""90"")))
+    t(""long gap -> UM07"", ""UM07"" in codes(l))
+    ok = 0
+    for name, c in tests:
+        print(""%s  %s"" % (""PASS"" if c else ""FAIL"", name)); ok += c
+    print(""%d/%d passed"" % (ok, len(tests)))
+    return 0 if ok == len(tests) else 1
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument(""readings"", nargs=""?""); ap.add_argument(""--tariffs""); ap.add_argument(""--bills"")
+    ap.add_argument(""--digits"", action=""append"", default=[], help=""meter=N, e.g. electricity=5"")
+    ap.add_argument(""--spike"", type=float, default=1.6); ap.add_argument(""--tolerance"", type=float, default=0.05)
+    ap.add_argument(""--calorific"", type=float, default=39.5); ap.add_argument(""--max-gap"", type=int, default=70)
+    ap.add_argument(""--json"", action=""store_true""); ap.add_argument(""--self-test"", action=""store_true"")
+    a = ap.parse_args()
+    if a.self_test:
+        return self_test()
+    if not a.readings:
+        ap.print_usage(); return 2
+    try:
+        digits = {k.strip().lower(): int(v) for k, v in (x.split(""="", 1) for x in a.digits)}
+        readings = read_csv(a.readings)
+        tariffs = load_tariffs(a.tariffs) if a.tariffs else {}
+        bills = read_csv(a.bills) if a.bills else []
+    except (OSError, ValueError) as e:
+        print(""error: %s"" % e, file=sys.stderr); return 2
+    if not readings:
+        print(""error: no readings"", file=sys.stderr); return 2
+    r = analyse(readings, tariffs, bills, digits, a.spike, a.tolerance, a.calorific, a.max_gap)
+    print(json.dumps(r, indent=2)) if a.json else print_text(r)
+    return 1 if r[""counts""][""high""] else 0
+
+
+if __name__ == ""__main__"":
+    sys.exit(main())
+",FALSE,TEXT,f
