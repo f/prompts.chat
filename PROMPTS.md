@@ -248034,3 +248034,23 @@ Lighting: soft daylight from the upper left, warm glow on the gold, rich saturat
 
 </details>
 
+<details>
+<summary><strong>Starling Murmuration over a Winter Reed Bed at Sunset</strong></summary>
+
+## Starling Murmuration over a Winter Reed Bed at Sunset
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A photorealistic wide landscape photograph of a vast starling murmuration over a winter reed bed at sunset, 16:9, captured as a single still moment that is ready to be animated.
+
+Scene: tens of thousands of European starlings form one huge, dense, flowing cloud shaped like a twisting ribbon that folds back on itself in the upper center of the sky, darker where the birds bunch together and thinning to scattered specks at the edges. Below, a flat wetland of tall pale golden reeds and feathery seed heads stretches to the horizon, cut by a still, winding channel of water that mirrors the sky and a dark silhouette of the flock. A line of bare winter trees stands on the far left of the horizon.
+
+Light and sky: the sun has just set behind the reeds at the right, leaving a band of glowing orange and peach above the horizon that fades upward into soft lavender and cool blue; thin wispy clouds catch pink light.
+
+Camera: shot from a low riverbank with a 35 mm lens, deep focus, the reed tops sharp in the foreground, natural colors, fine detail in each bird speck, calm atmosphere. No people, no buildings, no text.
+
+```
+
+</details>
+
