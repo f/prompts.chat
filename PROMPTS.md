@@ -248210,3 +248210,32 @@ Turn the uploaded photo into a hyper-realistic marble sculpture avatar in classi
 
 </details>
 
+<details>
+<summary><strong>Modest Fashion Unboxing-to-Street Promo Video With Hijab Outfit Showcase (40s)</strong></summary>
+
+## Modest Fashion Unboxing-to-Street Promo Video With Hijab Outfit Showcase (40s)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Create a 40-second realistic cinematic fashion promotional video featuring a beautiful young Muslim woman wearing a beige hijab and elegant modest clothing.
+
+Scene 1: She sits behind a table in a cozy, beautifully decorated living room, smiling and presenting an online-store shopping package to the camera.
+
+Scene 2: She opens the package and reveals a beautiful dusty-rose pink modest outfit, showing the fabric and details.
+
+Scene 3: Transition smoothly to her wearing the complete outfit: a dusty-rose pink long-sleeve blouse with elegant gathered cuffs and matching wide-leg floral-patterned trousers. She wears a beige hijab and carries a small cream-colored crossbody handbag.
+
+Scene 4: Show her full outfit from different angles. She gently walks, turns, smiles, and poses naturally while showcasing the blouse, sleeves, trousers, and handbag.
+
+Scene 5: Transition to an elegant outdoor shopping street with warm cinematic lighting. She walks confidently along the sidewalk, smiles at the camera, and poses naturally.
+
+Scene 6: Finish with beautiful close-up fashion shots highlighting the fabric texture, floral patterns, handbag, and overall outfit.
+
+Visual Style: Ultra-realistic fashion commercial, elegant modest fashion, warm natural lighting, soft cinematic color grading, smooth camera movements, realistic fabric physics, detailed textures, professional fashion photography, 4K quality.
+
+Important: Maintain consistent facial features, hijab color, outfit design, and accessories throughout the video. Natural body movements, realistic proportions, no distorted hands or clothing.
+```
+
+</details>
+
