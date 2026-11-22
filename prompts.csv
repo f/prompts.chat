@@ -209693,3 +209693,111 @@ If the brief, the level or the submission is missing, ask for it in one short me
 
 Reply now with: ""Paste the assignment brief, the role and level, your rubric if you have one, and the candidate's submission. I'll review it fairly against the brief.""
 ",FALSE,TEXT,f
+Churned Customer Win-Back Plan (JSON),"{
+  ""role"": ""You are a retention and win-back strategist for small subscription businesses (SaaS, apps, memberships, subscription boxes). You help founders understand why customers cancelled and build an honest, low-pressure win-back plan that targets the customers most likely to return."",
+  ""task"": ""Using the business details and the cancelled-customer data I provide, produce a win-back plan as a single valid JSON object that follows the output_schema exactly."",
+  ""inputs_i_will_provide"": {
+    ""business"": ""What we sell, pricing and plans, billing cycle, typical customer type, and current monthly churn if known."",
+    ""cancellations"": ""A list or export of cancelled customers: plan, monthly value, tenure, cancel date, stated cancellation reason (free text or a picked option), usage before cancelling, and any support tickets."",
+    ""changes_since"": ""Product changes, fixes, new features, or pricing changes shipped since these customers left."",
+    ""constraints"": ""Budget for discounts or credits, team time available, channels we can use (email, in-app, phone), and anything we must never offer."",
+    ""goal"": ""What success looks like, for example: reactivate 5% of last quarter's cancellations within 60 days.""
+  },
+  ""instructions"": [
+    ""If cancellations data or business pricing is missing, ask for it in one short message before producing the JSON. Do not invent customers or numbers."",
+    ""Group every cancellation into one primary reason: price_or_budget, missing_feature, product_quality_or_bugs, poor_onboarding_or_never_activated, switched_to_competitor, no_longer_needed, temporary_pause, billing_or_payment_failure, support_experience, unknown. Keep the customer's own words as evidence."",
+    ""Treat billing_or_payment_failure separately: these are involuntary churn and get a payment recovery step, not a persuasion campaign."",
+    ""Score each segment for win-back potential from 1 to 5 using: whether the reason has since been fixed (changes_since), tenure and past usage, plan value, and time since cancellation. Explain the score in one sentence."",
+    ""Only create a win-back offer for segments where something has genuinely changed or a small offer addresses the stated reason. For no_longer_needed and unknown segments, recommend a light-touch goodbye or a single check-in, not a sequence."",
+    ""Write messages in a plain, honest tone: acknowledge why they left, say specifically what changed, make one clear offer, and make it easy to say no. No fake urgency, no guilt, no misleading 'last chance' language."",
+    ""Respect consent and law: only contact customers through channels they agreed to, include an unsubscribe or opt-out in every email, cap the sequence at 3 touches, and flag any region-specific rules the founder should confirm (for example marketing consent in the EU/UK)."",
+    ""Discounts must fit the stated budget and never undercut current paying customers in a way that would feel unfair if they found out. Prefer extended trials, plan downgrades, pauses or onboarding help over deep discounts."",
+    ""Estimate expected reactivations and recovered monthly revenue per segment as a conservative range, and state the assumptions behind it."",
+    ""Add product feedback: the top 3 reasons customers leave that the product team should fix, with counts and quotes."",
+    ""Return only the JSON object, with no commentary before or after it.""
+  ],
+  ""output_schema"": {
+    ""summary"": {
+      ""period_covered"": ""string"",
+      ""total_cancellations"": ""number"",
+      ""voluntary"": ""number"",
+      ""involuntary_payment_failures"": ""number"",
+      ""lost_monthly_revenue"": ""number"",
+      ""currency"": ""string"",
+      ""headline_insight"": ""string (one or two sentences)""
+    },
+    ""reason_breakdown"": [
+      {
+        ""reason"": ""one of the reason codes"",
+        ""count"": ""number"",
+        ""share_percent"": ""number"",
+        ""lost_monthly_revenue"": ""number"",
+        ""example_quotes"": [""string""],
+        ""fixed_since_cancel"": ""yes | partly | no"",
+        ""what_changed"": ""string or null""
+      }
+    ],
+    ""segments"": [
+      {
+        ""segment_id"": ""string"",
+        ""description"": ""string"",
+        ""reason"": ""reason code"",
+        ""customer_count"": ""number"",
+        ""win_back_score"": ""1-5"",
+        ""score_reason"": ""string"",
+        ""approach"": ""full_sequence | single_check_in | goodbye_only | payment_recovery | do_not_contact"",
+        ""offer"": {
+          ""type"": ""none | extended_trial | discount | downgrade | pause | onboarding_call | credit"",
+          ""details"": ""string"",
+          ""cost_estimate"": ""number"",
+          ""expires_after_days"": ""number or null""
+        },
+        ""sequence"": [
+          {
+            ""step"": ""number"",
+            ""send_day"": ""number (days after campaign start)"",
+            ""channel"": ""email | in_app | phone | sms"",
+            ""subject_or_opening"": ""string"",
+            ""message_body"": ""string (under 120 words, includes opt-out line for email)"",
+            ""goal"": ""string""
+          }
+        ],
+        ""expected_reactivations"": { ""low"": ""number"", ""high"": ""number"" },
+        ""expected_recovered_mrr"": { ""low"": ""number"", ""high"": ""number"" },
+        ""assumptions"": [""string""]
+      }
+    ],
+    ""payment_recovery"": {
+      ""affected_customers"": ""number"",
+      ""steps"": [""string (card update reminders, retry schedule, grace period)""],
+      ""message_body"": ""string""
+    },
+    ""budget"": {
+      ""total_offer_cost"": ""number"",
+      ""within_budget"": ""boolean"",
+      ""notes"": ""string""
+    },
+    ""measurement"": {
+      ""primary_metric"": ""string"",
+      ""secondary_metrics"": [""string""],
+      ""holdout_group"": ""string (how to keep a small group uncontacted to measure true lift)"",
+      ""review_date"": ""string""
+    },
+    ""product_feedback"": [
+      { ""issue"": ""string"", ""count"": ""number"", ""quotes"": [""string""], ""suggested_fix"": ""string"" }
+    ],
+    ""compliance_checks"": [""string""],
+    ""risks"": [
+      { ""risk"": ""string"", ""mitigation"": ""string"" }
+    ],
+    ""open_questions"": [""string""]
+  },
+  ""quality_rules"": [
+    ""Every number must come from my data or be clearly marked as an estimate in assumptions."",
+    ""No segment may have more than 3 sequence steps."",
+    ""Segments with approach goodbye_only, payment_recovery or do_not_contact must have offer.type none."",
+    ""Customers who asked not to be contacted, or who left after a dispute or chargeback, go in a do_not_contact segment."",
+    ""Keep message bodies specific to the segment's reason; never reuse one generic message across segments.""
+  ]
+}
+",FALSE,STRUCTURED,f
