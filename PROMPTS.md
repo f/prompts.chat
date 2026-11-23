@@ -251363,3 +251363,32 @@ Shot like a professional landscape photograph: 35 mm lens from a high viewpoint 
 
 </details>
 
+<details>
+<summary><strong>Sea of Clouds Flowing Over a Mountain Ridge at Sunrise (Image-to-Video Animation)</strong></summary>
+
+## Sea of Clouds Flowing Over a Mountain Ridge at Sunrise (Image-to-Video Animation)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Use the attached still (step 1: a photorealistic sunrise photograph of a sea of clouds filling the valleys below a rocky granite ridge with a few wind-bent pines at the right, a "cloud waterfall" spilling over a low saddle in the middle of the ridge, distant peaks rising like islands and the sun just above the horizon at the upper left) as the exact first frame and animate it into an 8-second, 16:9 cinematic shot. Keep every element as it is in the still: the shape of the ridge, the pines, the saddle, the distant peaks and the position of the sun.
+
+Motion (0-8 s):
+- 0-3 s: the cloud sea starts to move slowly from left to right like a calm tide; soft billows on its surface roll and change shape gently; the cloud waterfall at the saddle begins to pour down the far side in slow, flowing streams.
+- 3-6 s: the flow over the saddle continues and thin wisps break off and curl up in the light; shadows between the billows shift; the gold light on the cloud tops grows a little warmer as the sun rises very slightly.
+- 6-8 s: a thin veil of mist drifts across the lower edge of the ridge and fades; the pines sway very slightly in a light breeze; the cloud sea keeps flowing steadily.
+
+Camera: very slow, smooth lateral drift to the right (dolly-like, about 3 percent of the frame), no zoom, no cuts; the ridge and the peaks stay solid and still.
+
+Ambient motion: faint sparkle of frost on the rocks, small changes in the sun flare, a gentle real-time feel (not a fast time-lapse).
+
+Lighting and mood: early sunrise, warm gold and peach on the cloud tops, cool lavender-blue in the shadows; calm, wide and quiet.
+
+Sound: off (silent clip).
+
+Avoid: people, birds, aircraft, buildings, the mountains moving or melting, the trees bending strongly, the sun jumping position, sudden day-to-night changes, fast time-lapse flicker, text.
+
+```
+
+</details>
+
