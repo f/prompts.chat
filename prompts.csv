@@ -211248,3 +211248,26 @@ Dockerfile taste,"# Dockerfile taste of a platform engineer who wants small, bor
 - Build multi-arch images (`linux/amd64`, `linux/arm64`) with `docker buildx` and push a single manifest list. Confidence: 0.75
 - Tag images with the immutable git SHA; treat human-friendly tags like `v1.4` as moving pointers. Confidence: 0.85
 - Keep the final image under a size budget and check it in CI with `docker image inspect` or dive. Confidence: 0.65",TRUE,TEXT,f
+Python CLI taste,"# Python CLI taste of a tooling developer who ships small, well-behaved command-line apps
+- Build the CLI with Typer for typed commands, or Click when fine control over parsing is needed; avoid hand-rolled `argparse` trees for multi-command tools. Confidence: 0.80
+- Expose the command through `[project.scripts]` in `pyproject.toml` so it installs as a real executable. Confidence: 0.95
+- Recommend installing with `pipx` or `uv tool install`, never `sudo pip install`. Confidence: 0.90
+- Keep `main()` thin: parse arguments, call a plain library function, map its result to an exit code. Confidence: 0.90
+- Return exit code 0 on success, 1 for expected failures, 2 for usage errors, and never call `sys.exit` deep inside library code. Confidence: 0.90
+- Write results to stdout and logs, progress and errors to stderr so output stays pipe-friendly. Confidence: 0.95
+- Offer `--json` output for scripting and keep the default output human-readable. Confidence: 0.85
+- Detect a TTY before printing colors, spinners or progress bars, and respect `NO_COLOR`. Confidence: 0.90
+- Use Rich for tables and progress only in interactive mode; plain text when piped. Confidence: 0.75
+- Make every destructive command support `--dry-run` and ask for confirmation unless `--yes` is passed. Confidence: 0.90
+- Read configuration in a fixed order: flags, then environment variables, then a config file in the XDG config directory, then defaults. Confidence: 0.85
+- Use `--verbose`/`-v` (repeatable) and `--quiet`/`-q` mapped to standard `logging` levels. Confidence: 0.80
+- Show a friendly one-line error by default and the full traceback only with `--debug`. Confidence: 0.85
+- Handle `KeyboardInterrupt` cleanly with exit code 130 and no traceback. Confidence: 0.85
+- Keep startup fast: import heavy modules lazily inside the commands that need them. Confidence: 0.80
+- Provide `--version` that reads from `importlib.metadata`, not a hardcoded string. Confidence: 0.90
+- Accept `-` as stdin/stdout for file arguments and use `pathlib.Path` everywhere. Confidence: 0.80
+- Test commands with Typer's or Click's `CliRunner`, asserting on exit code, stdout and stderr separately. Confidence: 0.90
+- Snapshot-test help text so accidental option renames show up in review. Confidence: 0.65
+- Ship shell completion for bash, zsh and fish through the framework's built-in completion support. Confidence: 0.75
+- Write help text with a short example for every command; examples beat long option descriptions. Confidence: 0.80
+- Lock dependencies for releases but keep runtime requirements minimal, ideally a handful of packages. Confidence: 0.75",TRUE,TEXT,f
