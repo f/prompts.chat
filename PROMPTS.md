@@ -248326,3 +248326,17 @@ Follow-up: Pick the 3 angles most likely to work with people who have never hear
 
 </details>
 
+<details>
+<summary><strong>Autism-Friendly Learning Website, PDF Report and Presentation Builder</strong></summary>
+
+## Autism-Friendly Learning Website, PDF Report and Presentation Builder
+
+Contributed by @anonymous
+
+```md
+Find out what gets in the way of learning for autistic learners, then design and build your own solution. i want a prompt for creating a  website for autistic kids like a website taht can work as a learning tool for them like a simple minimalistic website taht can work btw find a unique idea for a specific challenge they might or maybe face in a day to day basis at last i want reasons also why u chosed this and make the reasons only into a pdf and tell emhow the code wirks in the pdf and make a ppt presentation
+
+```
+
+</details>
+
