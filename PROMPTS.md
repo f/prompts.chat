@@ -253552,3 +253552,37 @@ if __name__ == "__main__":
 
 </details>
 
+<details>
+<summary><strong>TypeScript Library Publishing taste</strong></summary>
+
+## TypeScript Library Publishing taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# TypeScript Library Publishing taste of a maintainer who ships small, well-typed npm packages
+- Publish ESM first and add a CommonJS build only when real consumers still need `require()`. Confidence: 0.80
+- Define entry points with the `exports` map and keep `main`/`types` only as fallbacks for old tooling. Confidence: 0.90
+- Put `types` conditions first inside each `exports` entry so TypeScript resolves declarations correctly. Confidence: 0.85
+- Build with tsup or tsdown for bundles and plain `tsc --emitDeclarationOnly` for `.d.ts` files. Confidence: 0.75
+- Turn on `strict`, `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes` in the library's own tsconfig. Confidence: 0.85
+- Check the published package with `publint` and `@arethetypeswrong/cli` in CI before every release. Confidence: 0.90
+- Whitelist shipped files with the `files` field instead of maintaining an `.npmignore`. Confidence: 0.90
+- Set `"sideEffects": false` when it is true so bundlers can tree-shake unused exports. Confidence: 0.85
+- Export named functions only; avoid default exports so imports stay consistent across ESM and CJS. Confidence: 0.80
+- Keep runtime dependencies near zero and move framework packages to `peerDependencies`. Confidence: 0.90
+- Declare a supported Node.js range in `engines` and test that range in a CI matrix. Confidence: 0.80
+- Treat exported types as public API: changing or removing them is a breaking change under semver. Confidence: 0.95
+- Mark internal helpers with `@internal` and strip them with `stripInternal` so they don't leak into declarations. Confidence: 0.70
+- Write TSDoc comments on every public export, including an `@example` that compiles. Confidence: 0.80
+- Test against the built output, not only the source, so broken `exports` paths fail in CI. Confidence: 0.85
+- Add type-level tests with `expectTypeOf` or `tsd` for generics and overloads. Confidence: 0.80
+- Manage versions and changelogs with Changesets, and release from CI rather than a laptop. Confidence: 0.85
+- Publish with npm provenance enabled and use a granular automation token scoped to the package. Confidence: 0.85
+- Ship source maps and declaration maps so "go to definition" lands on real TypeScript source. Confidence: 0.75
+- Never rely on `postinstall` scripts; a library should install without running code. Confidence: 0.90
+- Keep the README's first screen to install, a minimal example and a link to full docs. Confidence: 0.80
+```
+
+</details>
+
