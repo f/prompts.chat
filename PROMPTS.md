@@ -251613,3 +251613,18 @@ so i have a business project idea which is an application for relating with tuto
 
 </details>
 
+<details>
+<summary><strong>Research project </strong></summary>
+
+## Research project 
+
+Contributed by [@umarsandamuhammad61](https://github.com/umarsandamuhammad61)
+
+```md
+The data sheet and the pilot test does not follow the logic I expected. 
+
+I want you to generate a dataset that reflects the psychology of secondary school students handling a questionnaire using the chapter 3 
+```
+
+</details>
+
