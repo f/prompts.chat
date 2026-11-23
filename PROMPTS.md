@@ -248560,3 +248560,19 @@ Render it exactly like a real metalpoint drawing: only thin, even, delicate grey
 
 </details>
 
+<details>
+<summary><strong>Hand-Colored Magic Lantern Slide of a Great Comet over a Snowy Village</strong></summary>
+
+## Hand-Colored Magic Lantern Slide of a Great Comet over a Snowy Village
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A hand-colored Victorian magic lantern glass slide showing a great comet over a snowy village at night, photographed straight-on against a soft backlight so the glass glows. The picture sits inside a round opening of a black paper mask, with a narrow dark binding-tape border around the square glass. Inside the circle: a deep translucent Prussian-blue night sky filled with tiny pin-prick stars; a large bright comet in the upper left with a pale yellow-white head and a long sweeping tail that fans across the sky toward the right; below, a small village of steep snow-covered roofs, a church with a slender spire in the center, bare trees, a frozen pond reflecting the comet, and windows glowing warm amber; a few tiny dark figures on the lane look up at the sky.
+
+Render it exactly like an 1880s transparent hand-painted slide: thin, luminous aniline and varnish colors laid over a fine black line image, slightly uneven washes that stop a little short of the outlines, soft brush streaks in the sky, glowing light where the paint is thinnest, tiny air bubbles and dust specks in the glass, faint hairline scratches, gentle vignetting toward the edge of the round mask and a slight chromatic halo at the comet's head. Warm, glowing, nostalgic and magical. No text, no labels, no modern objects. Square 1:1.
+
+```
+
+</details>
+
