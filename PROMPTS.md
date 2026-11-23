@@ -251427,3 +251427,38 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Web Components taste</strong></summary>
+
+## Web Components taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Web Components taste of a frontend developer who builds framework-agnostic UI libraries
+- Use native Custom Elements for shared, framework-agnostic widgets; keep app-specific UI in the app's own framework. Confidence: 0.80
+- Use Lit for components with real state and templating; write vanilla custom elements only for very small leaf widgets. Confidence: 0.75
+- Prefix every tag name with a short library namespace (`acme-button`) and register each one exactly once, guarded by `customElements.get`. Confidence: 0.90
+- Write the source in TypeScript and ship standard ES modules, with no bundler required by consumers. Confidence: 0.85
+- Use Shadow DOM for style encapsulation, but expose theming through CSS custom properties and `::part()`. Confidence: 0.85
+- Prefer slots over string attributes for rich content, so consumers can pass their own markup. Confidence: 0.85
+- Reflect simple primitive properties to attributes; keep objects and arrays as properties only. Confidence: 0.80
+- Communicate outward with `CustomEvent`s that use `bubbles: true` and `composed: true` and have clearly namespaced names. Confidence: 0.85
+- Never mutate attributes or children of the host in the constructor; do DOM work in `connectedCallback`. Confidence: 0.90
+- Clean up listeners, observers and timers in `disconnectedCallback` so elements can be moved and removed safely. Confidence: 0.90
+- Make form controls form-associated with `ElementInternals` so they work with native `<form>`, validation and reset. Confidence: 0.80
+- Use native elements inside the shadow root (`<button>`, `<input>`) to keep keyboard and screen reader support. Confidence: 0.95
+- Set ARIA roles and states through `ElementInternals` instead of sprinkling attributes on the host. Confidence: 0.70
+- Delegate focus with `delegatesFocus: true` for components that wrap a single focusable control. Confidence: 0.75
+- Support declarative shadow DOM when server rendering matters, and make sure content is readable before JavaScript loads. Confidence: 0.65
+- Publish a Custom Elements Manifest (`custom-elements.json`) to power docs, IDE autocompletion and framework wrappers. Confidence: 0.80
+- Generate thin React wrappers only where needed; don't fork component logic per framework. Confidence: 0.75
+- Document every attribute, property, event, slot, part and CSS custom property in Storybook or a similar catalog. Confidence: 0.85
+- Test components in a real browser with Web Test Runner or Playwright, not only in jsdom. Confidence: 0.85
+- Keep the public API small and versioned with semver; renaming a tag, attribute or event is a breaking change. Confidence: 0.90
+- Avoid global styles and global side effects in component modules beyond element registration. Confidence: 0.90
+
+```
+
+</details>
+
