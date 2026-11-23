@@ -248544,3 +248544,19 @@ output_schema:
 
 </details>
 
+<details>
+<summary><strong>Silverpoint Drawing of a Wren on a Bramble Branch with Blackberries</strong></summary>
+
+## Silverpoint Drawing of a Wren on a Bramble Branch with Blackberries
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A Renaissance-style silverpoint drawing of a small wren perched on an arching bramble branch with ripe and unripe blackberries, drawn on paper coated with a pale warm ivory-pink prepared ground. The wren sits in the upper middle of the sheet facing left, tail cocked upright, its round body built from hundreds of fine parallel hatching lines and soft cross-hatching that describe the barred wing and tail feathers, a bright tiny eye and a thin slightly curved beak. The bramble enters from the lower right and curves up under the bird: thorny stems, three serrated leaves with clear veins, two clusters of blackberries with each round drupelet modeled by tiny curved strokes, a few hard green berries and one small five-petal flower.
+
+Render it exactly like a real metalpoint drawing: only thin, even, delicate grey lines that have aged to a soft warm brown-grey tarnish, no smudging, no thick or black strokes, no solid fills; tone is built only by layered hatching that follows the forms. Add a few faint exploratory construction lines and one lightly corrected wing outline, small white chalk highlights on the eye, the berries and the leaf edges, and plenty of empty toned paper around the subject. Slight fibre texture and a soft foxing spot near one corner. Even, flat museum lighting, straight-on view of the whole sheet. No text, no signature, no frame. Portrait 3:4.
+
+```
+
+</details>
+
