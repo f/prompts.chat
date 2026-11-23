@@ -253620,3 +253620,37 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Rust Library Crate taste</strong></summary>
+
+## Rust Library Crate taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Rust Library Crate taste of a maintainer who publishes reusable crates
+- Keep the public API small and re-export the important types from the crate root. Confidence: 0.85
+- Define one error enum per crate with `thiserror`, and never return `anyhow::Error` from a library. Confidence: 0.90
+- Mark public enums and config structs `#[non_exhaustive]` when new variants or fields are likely. Confidence: 0.80
+- Accept flexible inputs like `impl AsRef<str>` or `impl Into<String>` and return concrete types. Confidence: 0.80
+- Use the builder pattern for types with more than a few optional settings. Confidence: 0.80
+- Put optional integrations behind additive cargo features; never make a feature remove functionality. Confidence: 0.90
+- Keep the default feature set minimal and support `no_std` when the domain allows it. Confidence: 0.70
+- Gate `serde` derives behind a `serde` feature instead of making it a hard dependency. Confidence: 0.85
+- Declare `rust-version` in Cargo.toml and test the MSRV in CI. Confidence: 0.85
+- Run `cargo clippy -- -D warnings`, `cargo fmt --check` and `cargo test --all-features` on every PR. Confidence: 0.90
+- Check semver breakage with `cargo-semver-checks` before each release. Confidence: 0.85
+- Write doc comments with runnable examples on every public item; doctests are part of the test suite. Confidence: 0.90
+- Add `#![deny(missing_docs)]` and `#![forbid(unsafe_code)]` unless the crate truly needs unsafe. Confidence: 0.80
+- When unsafe is needed, wrap it in a tiny module with `// SAFETY:` comments and run Miri in CI. Confidence: 0.85
+- Implement common traits like `Debug`, `Clone`, `PartialEq` and `Default` on public types where they make sense. Confidence: 0.85
+- Make public types `Send` and `Sync` when possible and assert it in a test. Confidence: 0.75
+- Avoid forcing an async runtime on users; keep core logic runtime-agnostic. Confidence: 0.80
+- Add property tests with `proptest` for parsers and encoders. Confidence: 0.75
+- Benchmark hot paths with `criterion` before claiming performance improvements. Confidence: 0.75
+- Release with `cargo-release` or release-plz and keep a CHANGELOG.md in Keep a Changelog format. Confidence: 0.80
+- Dual-license under MIT OR Apache-2.0 to match the Rust ecosystem. Confidence: 0.80
+```
+
+</details>
+
