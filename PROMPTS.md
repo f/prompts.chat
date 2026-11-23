@@ -251599,3 +251599,17 @@ Create a beautiful 9:16 vertical hand-painted anime illustration of a cute young
 
 </details>
 
+<details>
+<summary><strong>a bisness project idea </strong></summary>
+
+## a bisness project idea 
+
+Contributed by [@oussamoh](https://github.com/oussamoh)
+
+```md
+so i have a business project idea which is an application for relating with tutoring schools and students and thier parents and make them know the near and the good schools in thier country  and making the tutoring easy in algeria by telling the students and thier parents if the schools re good or not and if they work strightly and strickly by the estimation stars and the introductory videos 
+
+```
+
+</details>
+
