@@ -249780,3 +249780,16 @@ make a game like gta the first one with missions and good storyline with great h
 
 </details>
 
+<details>
+<summary><strong>Hai tide sea front cottage  upgradation Facelift </strong></summary>
+
+## Hai tide sea front cottage  upgradation Facelift 
+
+Contributed by [@sudeshshetty25-dotcom](https://github.com/sudeshshetty25-dotcom)
+
+```md
+The uploaded photo of interior room and exterior balcony view of sea  of hai tide cottage , act as interior design expertise in color plattete trending and stylish phylogenetic viral and latest boutique hotel licirynexpierence and ambience for guests premium category by another uploaded color shades , now shades to be applied to these actual room and balcony as per your suggestion and also additional have amenities and beautification of all standard essential requirement room with visual mockup concept into 2 variations 
+```
+
+</details>
+
