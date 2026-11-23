@@ -251586,3 +251586,16 @@ Keep the artwork visually cohesive, highly detailed, charming, and instantly rec
 
 </details>
 
+<details>
+<summary><strong>Playful Winking Anime Girl in a Lavender Hoodie: Hand-Painted Watercolor Portrait (9:16)</strong></summary>
+
+## Playful Winking Anime Girl in a Lavender Hoodie: Hand-Painted Watercolor Portrait (9:16)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Create a beautiful 9:16 vertical hand-painted anime illustration of a cute young girl with short chestnut-brown hair, soft bangs and big sparkling hazel eyes. She is making a playful childish expression, one eye tightly closed in a wink, cheeks puffed slightly, and lips forming a tiny funny pout. Her head is tilted naturally toward the camera. She wears a pastel lavender oversized hoodie. Soft warm sunlight, delicate blush, expressive facial details, textured watercolor and hand-painted anime art style, muted natural background, charming imperfect details, close-up portrait, adorable and full of personality. Original character design, highly detailed, beautiful artistic finish.
+```
+
+</details>
+
