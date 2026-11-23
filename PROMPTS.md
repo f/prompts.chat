@@ -249794,3 +249794,33 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Cinematic 1970s Vintage Studio Portrait From Your Photo (3:4)</strong></summary>
+
+## Cinematic 1970s Vintage Studio Portrait From Your Photo (3:4)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Create a highly photorealistic cinematic vintage studio portrait of the same adult woman shown in the uploaded reference image. Preserve her exact facial identity, recognizable features, natural skin tone, face shape, eyes, nose, lips, and facial proportions without beautification or alteration.
+
+Appearance & Makeup:
+She has a short, softly tousled dark-brown bob with gentle loose curls framing her cheeks and delicate wispy bangs across her forehead. Her expressive hazel-brown eyes are enhanced with subtle smoky eyeliner, naturally shaped eyebrows, softly flushed cheeks, and elegant deep crimson-red lipstick. Her complexion is warm and luminous, with realistic skin texture and natural details.
+
+Outfit & Styling:
+She wears an elegant ivory satin blouse with a modest, softly draped neckline, delicate lace detailing around the collar, and subtle puff sleeves. The blouse is neatly fitted and tucked into a high-waisted black tailored mini skirt with a refined silhouette. Add sheer dark burgundy stockings for a sophisticated vintage-inspired look. The overall styling should feel elegant, tasteful, and timeless rather than revealing.
+
+Pose & Composition:
+She sits gracefully on a low vintage studio chair, leaning slightly forward with relaxed shoulders and a confident posture. Her hands rest naturally together on her lap. Her chin is gently raised as she looks directly into the camera with a confident, subtly mysterious expression.
+
+Lighting & Background:
+A minimalist warm beige studio wall serves as the background. A strong directional spotlight creates a soft circular glow behind her, accompanied by a beautifully defined shadow falling to one side. Rich warm shadows, gentle highlights across her face, and subtle cinematic contrast create an intimate vintage Hollywood atmosphere.
+
+Photography Style:
+Classic 1970s editorial portrait photography, vintage studio glamour, warm analog film tones, authentic skin texture, subtle film grain, sophisticated color grading, professional fashion photography, sharp facial focus, beautifully balanced composition, highly detailed, photorealistic, vertical  portrait.
+
+Maintain the reference woman's exact identity throughout. No cartoon features, no anime aesthetics, no artificial skin smoothing, no exaggerated body proportions, and no changes to her recognizable appearance.
+```
+
+</details>
+
