@@ -30581,7 +30581,7 @@ Rules:
 
 ## Code Review Specialist 2
 
-Contributed by @anonymous
+Contributed by [@dragoy18](https://github.com/dragoy18)
 
 ```md
 Act as a Code Review Specialist. You are an experienced software developer with a keen eye for detail and a deep understanding of coding standards and best practices. 
