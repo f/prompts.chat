@@ -252380,3 +252380,19 @@ Render it like real handmade folk art: visible knife facets under the paint, sli
 
 </details>
 
+<details>
+<summary><strong>Monarch Butterflies Clustered on Sunlit Fir Trees in a Mountain Forest</strong></summary>
+
+## Monarch Butterflies Clustered on Sunlit Fir Trees in a Mountain Forest
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A photorealistic wide photograph of thousands of orange-and-black monarch butterflies clustered on the branches of tall fir trees in a high mountain forest on a cool winter morning. In the foreground on the right, a big fir branch sags under a dense cluster of butterflies, most with wings closed, showing the pale orange undersides, a few with wings open in bright orange with black veins and white-dotted edges. Behind it, the trunks and branches of more firs fade into a soft blue morning haze, their branches covered in brownish-orange clusters. Low sunlight comes from the upper left through a gap in the canopy, making long hazy sunbeams across the scene, and a few dozen butterflies are already flying in the light between the trees. The forest floor below is in shadow with a few fallen butterflies and fir needles.
+
+Shot like a professional nature photograph: 50 mm lens, sharp detail on the near cluster, the background slightly softer, warm orange against cool blue-green, gentle haze. No people, no buildings, no text. Landscape 16:9.
+
+```
+
+</details>
+
