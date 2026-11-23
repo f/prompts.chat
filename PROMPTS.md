@@ -253044,3 +253044,511 @@ if __name__ == "__main__":
 
 </details>
 
+<details>
+<summary><strong>Home Solar Panel Payback Calculator</strong></summary>
+
+## Home Solar Panel Payback Calculator
+
+Contributed by [@f](https://github.com/f)
+
+```md
+---
+name: home-solar-panel-payback-calculator
+description: Compares rooftop solar quotes for your home offline: yearly production, self-used vs exported power, bill cut, simple and discounted payback, NPV, IRR, cost per kWh, loan cash flow, and traps like oversizing, optimistic yields or self-use and missing inverter costs. Stdlib Python.
+---
+
+# Home Solar Panel Payback Calculator
+
+You help homeowners decide whether rooftop solar panels pay off for their home, and which installer quote is the best value. Sales pitches usually show the biggest possible saving: a high yield, most of the power used at home, rising electricity prices and no inverter replacement. You turn the household's real consumption, tariff and each quote into one honest comparison with the same assumptions, and a short list of questions for the installers.
+
+You work only with the numbers the user gives you, on their machine. You are not a financial adviser, an engineer or an installer: you never recommend a specific company, never invent prices, yields or incentives, and say clearly that results are estimates that must be checked against the installer's quote, the roof survey and the utility tariff. Roof condition, shading, structural checks, permits, grid connection rules, tax treatment and insurance are outside the script; mention them when they matter.
+
+## Files in this skill
+
+- `scripts/solar_payback.py` - reads the household (JSON) and quotes (CSV) and computes, per quote: year-1 production, self-used and exported kWh, saving and bill cut, simple and discounted payback, net value at the horizon, NPV, IRR, cost per kWh and findings SP01-SP10; `--horizon-years N`, `--table "<quote name>"` for the year-by-year cash flow, `--json` for tooling, `--self-test` runs 28 checks (Python 3.8+ standard library only)
+- `references/solar-math.md` - the formulas, what each input means and where to find it, typical ranges, and a worked example you can check by hand
+- `references/quote-checklist.md` - questions for installers, what each finding means, and how to make quotes comparable
+- `templates/solar-summary.md` - the one-page summary you hand back
+- `examples/household.json`, `examples/quotes.csv` - a fictional household using 4,600 kWh a year at EUR 0.31 per kWh with six quotes (small, medium, medium with battery, oversized, the small one on a loan, and a door-to-door offer with optimistic assumptions)
+
+## Workflow
+
+### 1. Collect the facts
+Ask for:
+- yearly electricity use in kWh (12 months of bills or the smart-meter total), the price per kWh including taxes, the export or feed-in price and how it is paid, and whether a heat pump, EV or other big load is planned;
+- for each quote: system size in kW, total price, incentives or grants confirmed for this home, the installer's yearly production estimate (or kWh per kW), the self-consumption share they assume, panel degradation, inverter warranty and replacement cost, yearly maintenance, battery size, and loan rate and term if financed;
+- the horizon (25 years is common for panel warranties) and a discount rate (the interest they could earn or pay elsewhere, for example 0.03-0.05).
+Never fill in prices, yields or incentives yourself; if a number is missing, ask or leave that quote out. Rates and shares are decimals (0.03 = 3%).
+
+### 2. Make the quotes comparable
+Use the same household file for all quotes. If one quote assumes a much higher yield (SP10) or an optimistic self-consumption share without a battery (SP08 fires above 0.8; most homes reach 0.25-0.45), run it again with the other quotes' yield and a realistic share, and show both results.
+
+### 3. Run the comparison
+```
+python3 scripts/solar_payback.py examples/household.json examples/quotes.csv
+python3 scripts/solar_payback.py household.json quotes.csv --horizon-years 15
+python3 scripts/solar_payback.py household.json quotes.csv --table "Installer A 4.4 kW on loan"
+python3 scripts/solar_payback.py household.json quotes.csv --json > solar.json
+python3 scripts/solar_payback.py --self-test
+```
+Exit 0 = at least one quote pays back within the horizon with no high findings, 1 = none does, 2 = bad input. Without a shell, follow `references/solar-math.md` by hand for the two most promising quotes.
+
+### 4. Read the results
+- **NPV** is the main number: the value of the system today after all costs, at the chosen discount rate. **Net at horizon** is the same without discounting.
+- **Simple payback** is when cumulative savings cover the cost; **discounted payback** is later and more realistic.
+- **Self-used vs exported**: power used at home saves the full retail price; exported power earns only the export price. A bigger system mostly adds exports.
+- **Cost per kWh** compares the lifetime cost of each kWh produced with the retail and export prices.
+- Findings: SP01 high (never pays back); SP02 slow payback, SP03 most power exported cheaply, SP04 oversized against use, SP05 loan payment above the saving, SP09 implausible yield and SP10 yield far above the other quotes are medium; SP06 no inverter replacement, SP07 degradation assumed and SP08 optimistic self-use without a battery are low.
+Run at least two horizons and the fair re-run from step 2; if the best quote changes, say so plainly.
+
+### 5. Report
+Fill `templates/solar-summary.md`: the household, the comparison table, the best quote with fair assumptions, findings in plain language, the questions for installers (`references/quote-checklist.md`) and what the numbers do not include.
+
+## Rules
+- Compare like for like: same household, horizon, discount rate, price escalation and yield unless the roofs really differ.
+- A bigger system or a battery is not automatically better; show what each extra kW or kWh adds in NPV.
+- Be careful with price escalation: show a 0% escalation run if the user wants a conservative view.
+- Keep bills and addresses private; work from the numbers only.
+
+FILE:references/solar-math.md
+# Solar payback math
+
+All money in one currency, energy in kWh, rates and shares as decimals.
+
+## Inputs and where to find them
+| input | meaning | where to find it | typical range |
+|---|---|---|---|
+| annual_consumption_kwh | electricity the home uses per year | last 12 months of bills, smart meter | 2,000-6,000 for a flat or house without EV/heat pump |
+| electricity_price | price per kWh including taxes, excluding fixed daily charges | tariff sheet or bill | depends on country |
+| export_price | what you get per kWh sent to the grid | utility or export tariff contract | often 20-40% of the retail price |
+| specific_yield | kWh produced per kW of panels per year | installer estimate or a public solar calculator for your address, tilt and shading | 800-1,000 northern Europe, 1,200-1,600 southern Europe and much of the US |
+| self_consumption | share of production used at home | installer estimate, your daytime use | 0.25-0.45 without battery, 0.5-0.75 with a battery |
+| degradation | yearly loss of panel output | panel datasheet / warranty | 0.003-0.007 |
+| inverter_year, inverter_cost | when and how much an inverter replacement costs | inverter warranty (often 10-12 years) | |
+| maintenance | yearly cleaning, monitoring, insurance add-on | quote | 0-1% of price |
+
+## Formulas (year y = 1..N)
+- production_y = size_kw x specific_yield x (1 - degradation)^(y-1)
+- self_used_y = min(production_y x self_consumption, annual_consumption_kwh)
+- exported_y = production_y - self_used_y
+- saving_y = self_used_y x price x (1 + price_escalation)^(y-1) + exported_y x export_price x (1 + export_escalation)^(y-1)
+- cash_flow_y = saving_y - maintenance - inverter cost (in its year) - loan payment (while the loan runs)
+- year 0: - (price - incentives) if paid in cash, 0 if financed (the loan payments carry the cost)
+- simple payback: the (interpolated) year when the cumulative cash flow becomes positive for good
+- discounted payback and NPV: the same with each year divided by (1 + discount_rate)^y
+- IRR: the discount rate where NPV = 0 (shown for cash purchases only)
+- cost per kWh: (net cost + present value of maintenance and inverter costs) / present value of production
+- loan payment per year = 12 x monthly annuity payment on (price - incentives) at loan_rate over loan_years
+
+## Worked example (check by hand)
+4 kW, yield 1,000, self-consumption 0.5, price 0.30, export 0.08, no escalation, no degradation, net cost 6,000:
+- production 4,000 kWh; self-used 2,000; exported 2,000
+- saving = 2,000 x 0.30 + 2,000 x 0.08 = 600 + 160 = 760 per year
+- simple payback = 6,000 / 760 = 7.9 years; net after 25 years = 25 x 760 - 6,000 = 13,000
+- if the household cannot use more power in daylight (self-used stays 2,000 kWh), doubling to 8 kW adds 4,000 kWh that are all exported at 0.08: +320 per year for perhaps +4,000 in price, a 12.5-year payback on the extra panels. That is why oversizing (SP03/SP04) often lowers the value.
+
+## What the script leaves out
+Fixed grid charges, time-of-use tariffs and net metering rules, battery round-trip losses and battery replacement, tax credits paid later rather than upfront, roof repairs, home value effects, and changes in your use (EV, heat pump). Mention the ones that apply and, if needed, model them by changing the inputs (for example a lower self-consumption or a higher consumption).
+
+FILE:references/quote-checklist.md
+# Quote checklist
+
+## Questions for every installer
+1. What yearly production do you estimate, from which tool, and with what shading, tilt and orientation? Is it a guaranteed minimum or a typical value?
+2. What self-consumption share did you assume, and on what usage data?
+3. Panel and inverter brands, models, warranties (product and performance) and degradation per year.
+4. When do you expect the inverter to need replacing, and what does that cost today?
+5. Exactly what is included: scaffolding, mounting, cabling, meter changes, grid application, monitoring, permits, disposal?
+6. Which incentives or grants did you include, are they confirmed for this home, and who applies for them?
+7. Payment schedule, deposit protection and what happens if the installation is delayed or fails inspection.
+8. Workmanship warranty and roof-penetration guarantee; who to call for faults in year 5 or 15.
+9. For a battery: usable capacity, round-trip efficiency, warranty cycles/years, and how much extra self-consumption it really adds for your use.
+10. For financing: APR, total repayable, early repayment fees, and whether the loan is secured on the home.
+
+## Findings and what to do
+| code | meaning | what to do |
+|---|---|---|
+| SP01 | never pays back within the horizon | do not buy as quoted; ask for a smaller or cheaper system |
+| SP02 | payback over 12 years | compare with other uses of the money; check incentives and price |
+| SP03 | over half the power exported at a low price | ask for a smaller system or price a battery or load shifting |
+| SP04 | production above 120% of use | size closer to use unless an EV or heat pump is coming soon |
+| SP05 | loan payment above the year-1 saving | expect to pay extra each month at first; compare cash vs loan |
+| SP06 | no inverter replacement within the horizon | add a realistic replacement year and cost and re-run |
+| SP07 | degradation not given | ask for the datasheet value |
+| SP08 | high self-use without a battery | re-run with 0.3-0.45 unless your daytime use is really high |
+| SP09 | yield outside 600-1,900 kWh/kW | check with a public solar calculator for your address |
+| SP10 | yield far above the other quotes | re-run with the median yield for a fair comparison |
+
+## Red flags in sales pitches
+- Pressure to sign today, "special price only for this street", or a deposit above about 25% before installation.
+- Savings shown with a high electricity price escalation (over about 5% per year) and no 0% scenario.
+- Monthly loan payment compared with the whole electricity bill, not with the realistic saving.
+- No site visit or shading check before the final price.
+
+FILE:templates/solar-summary.md
+# Solar quote summary - {{household_name}} ({{date}})
+
+**Household:** {{consumption}} kWh per year at {{price}} per kWh; export {{export_price}} per kWh; escalation {{escalation}}; discount rate {{discount_rate}}; horizon {{horizon}} years.
+**Command:** `python3 scripts/solar_payback.py household.json quotes.csv`
+
+## Comparison
+| quote | kW | net cost | yr-1 saving | bill cut | simple payback | discounted payback | NPV | IRR | key findings |
+|---|---|---|---|---|---|---|---|---|---|
+| {{quote}} | {{kw}} | {{net_cost}} | {{saving}} | {{bill_cut}} | {{payback}} | {{disc_payback}} | {{npv}} | {{irr}} | {{findings}} |
+
+## Fair comparison
+Re-run with the same yield ({{fair_yield}} kWh/kW) and realistic self-consumption ({{fair_share}}): {{fair_result}}
+
+## Best value
+{{best_quote}} - why: {{reason}}. At a shorter horizon ({{short_horizon}} years): {{short_result}}.
+
+## Things to ask the installers
+- {{question_1}}
+- {{question_2}}
+- {{question_3}}
+
+## Not included in these numbers
+{{exclusions}}
+
+_Estimates only, from the numbers provided. Check with the installer's final quote, the roof survey and your utility tariff before signing._
+
+FILE:examples/household.json
+{
+  "annual_consumption_kwh": 4600,
+  "electricity_price": 0.31,
+  "export_price": 0.07,
+  "price_escalation": 0.03,
+  "export_escalation": 0.0,
+  "discount_rate": 0.04,
+  "horizon_years": 25,
+  "currency": "EUR"
+}
+
+FILE:examples/quotes.csv
+name,size_kw,price,incentives,specific_yield,self_consumption,degradation,inverter_year,inverter_cost,maintenance,battery_kwh,loan_rate,loan_years
+Installer A 4.4 kW,4.4,7200,0,1050,0.45,0.005,13,1300,60,0,,
+Installer B 6.6 kW,6.6,9100,0,1050,0.35,0.005,13,1500,70,0,,
+Installer B 6.6 kW + 5 kWh battery,6.6,13800,500,1050,0.65,0.005,12,2200,90,5,,
+Installer C 10 kW,10,13500,0,1050,0.25,,,,80,0,,
+Installer A 4.4 kW on loan,4.4,7200,0,1050,0.45,0.005,13,1300,60,0,0.079,10
+Door-to-door offer 4 kW,4,11900,0,1350,0.85,0.005,,,0,0,,
+
+FILE:scripts/solar_payback.py
+#!/usr/bin/env python3
+"""solar_payback.py - compare rooftop solar quotes for one household (stdlib only, Python 3.8+).
+
+Usage:
+  python3 scripts/solar_payback.py household.json quotes.csv [--horizon-years N] [--json] [--table QUOTE_NAME]
+  python3 scripts/solar_payback.py --self-test
+
+household.json: annual_consumption_kwh, electricity_price, export_price, optional price_escalation (0.03),
+  export_escalation (0.0), discount_rate (0.04), horizon_years (25), currency.
+quotes.csv columns: name,size_kw,price,incentives,specific_yield,self_consumption,degradation,
+  inverter_year,inverter_cost,maintenance,battery_kwh,loan_rate,loan_years
+  (rates and shares as decimals; specific_yield = kWh per kW per year from the installer or a public
+  solar calculator; loan_rate/loan_years empty or 0 = paid in cash).
+For each quote: year-1 production, self-used and exported kWh, year-1 saving and bill reduction, simple and
+discounted payback, net value at the horizon, NPV, IRR, cost per kWh produced, and findings SP01-SP09.
+Exit 0 = at least one quote pays back within the horizon and no high findings on it, 1 = none does or a high
+finding on every quote, 2 = bad input.
+"""
+import argparse, csv, json, math, sys
+
+NUM = ["size_kw", "price", "incentives", "specific_yield", "self_consumption", "degradation",
+       "inverter_year", "inverter_cost", "maintenance", "battery_kwh", "loan_rate", "loan_years"]
+DEFAULTS = dict(incentives=0, degradation=0.005, inverter_year=0, inverter_cost=0, maintenance=0,
+                battery_kwh=0, loan_rate=0, loan_years=0)
+
+
+def annuity(principal, annual_rate, years):
+    if years <= 0 or principal <= 0:
+        return 0.0
+    n, r = int(round(years * 12)), annual_rate / 12
+    m = principal / n if r == 0 else principal * r / (1 - (1 + r) ** -n)
+    return m * 12
+
+
+def load_household(path):
+    h = json.load(open(path, encoding="utf-8"))
+    for k in ("annual_consumption_kwh", "electricity_price", "export_price"):
+        if k not in h:
+            raise ValueError("household.json missing " + k)
+    h.setdefault("price_escalation", 0.03); h.setdefault("export_escalation", 0.0)
+    h.setdefault("discount_rate", 0.04); h.setdefault("horizon_years", 25); h.setdefault("currency", "")
+    if h["annual_consumption_kwh"] <= 0 or h["electricity_price"] <= 0:
+        raise ValueError("consumption and electricity_price must be positive")
+    for k in ("price_escalation", "export_escalation", "discount_rate"):
+        if abs(h[k]) >= 0.5:
+            raise ValueError(k + " looks like a percent; use decimals (0.03 = 3%)")
+    if h["electricity_price"] > 5:
+        raise ValueError("electricity_price looks like cents; use currency per kWh (0.32)")
+    return h
+
+
+def parse_quote(row):
+    q = {"name": (row.get("name") or "").strip()}
+    if not q["name"]:
+        raise ValueError("quote without a name")
+    for k in NUM:
+        v = (row.get(k) or "").strip()
+        if v == "":
+            if k in DEFAULTS:
+                q[k] = DEFAULTS[k]; q.setdefault("_defaulted", []).append(k); continue
+            raise ValueError("%s: missing %s" % (q["name"], k))
+        q[k] = float(v)
+    if q["size_kw"] <= 0 or q["price"] <= 0 or q["specific_yield"] <= 0:
+        raise ValueError(q["name"] + ": size_kw, price and specific_yield must be positive")
+    if not 0 < q["self_consumption"] <= 1 or not 0 <= q["degradation"] < 0.05:
+        raise ValueError(q["name"] + ": self_consumption must be 0-1 and degradation a decimal like 0.005")
+    if q["loan_rate"] >= 0.5:
+        raise ValueError(q["name"] + ": loan_rate looks like a percent; use decimals")
+    return q
+
+
+def load_quotes(path):
+    with open(path, newline="", encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    if not rows:
+        raise ValueError("quotes.csv has no rows")
+    return [parse_quote(r) for r in rows]
+
+
+def irr(flows):
+    def npv(r):
+        return sum(cf / (1 + r) ** t for t, cf in enumerate(flows))
+    lo, hi = -0.99, 1.0
+    if npv(lo) * npv(hi) > 0:
+        return None
+    for _ in range(200):
+        mid = (lo + hi) / 2
+        if npv(lo) * npv(mid) <= 0:
+            hi = mid
+        else:
+            lo = mid
+    return (lo + hi) / 2
+
+
+def payback(cum):
+    """cum[0] = year 0 (upfront), cum[t] = cumulative after year t. Returns the fractional year when the
+    cumulative position becomes >= 0 for good (0.0 if it never goes negative), or None if it ends negative."""
+    if cum[-1] < 0:
+        return None
+    last_neg = max((t for t, c in enumerate(cum) if c < 0), default=None)
+    if last_neg is None:
+        return 0.0
+    t = last_neg + 1
+    return last_neg + (-cum[last_neg]) / (cum[t] - cum[last_neg])
+
+
+def evaluate(h, q, horizon=None):
+    Y = int(horizon or h["horizon_years"])
+    net_cost = q["price"] - q["incentives"]
+    financed = q["loan_years"] > 0
+    loan_pay = annuity(net_cost, q["loan_rate"], q["loan_years"]) if financed else 0.0
+    upfront = 0.0 if financed else net_cost
+    flows, rows, pv_prod, pv_cost = [-upfront], [], 0.0, net_cost
+    d = h["discount_rate"]
+    for y in range(1, Y + 1):
+        prod = q["size_kw"] * q["specific_yield"] * (1 - q["degradation"]) ** (y - 1)
+        self_used = min(prod * q["self_consumption"], h["annual_consumption_kwh"])
+        exported = prod - self_used
+        price = h["electricity_price"] * (1 + h["price_escalation"]) ** (y - 1)
+        exp = h["export_price"] * (1 + h["export_escalation"]) ** (y - 1)
+        inverter = q["inverter_cost"] if q["inverter_year"] and int(q["inverter_year"]) == y else 0.0
+        saving = self_used * price + exported * exp
+        costs = q["maintenance"] + inverter
+        loan = loan_pay if financed and y <= q["loan_years"] else 0.0
+        cf = saving - costs - loan
+        flows.append(cf)
+        pv_prod += prod / (1 + d) ** y
+        pv_cost += costs / (1 + d) ** y
+        rows.append(dict(year=y, production_kwh=round(prod), self_used_kwh=round(self_used), exported_kwh=round(exported),
+                         saving=round(saving, 2), costs=round(costs, 2), loan=round(loan, 2), cash_flow=round(cf, 2)))
+    cum, disc = [], []
+    c = dc = 0.0
+    for t, cf in enumerate(flows):
+        c += cf; dc += cf / (1 + d) ** t
+        cum.append(c); disc.append(dc)
+    y1 = rows[0]
+    bill_before = h["annual_consumption_kwh"] * h["electricity_price"]
+    r = dict(name=q["name"], size_kw=q["size_kw"], net_cost=round(net_cost, 2), financed=financed,
+             loan_payment=round(loan_pay, 2), year1_production=y1["production_kwh"], year1_self_used=y1["self_used_kwh"],
+             year1_exported=y1["exported_kwh"], year1_saving=y1["saving"],
+             bill_reduction=round(y1["self_used_kwh"] * h["electricity_price"] / bill_before, 3),
+             export_share=round(y1["exported_kwh"] / y1["production_kwh"], 3) if y1["production_kwh"] else 0,
+             coverage=round(y1["production_kwh"] / h["annual_consumption_kwh"], 3),
+             simple_payback=payback(cum), discounted_payback=payback(disc), net_at_horizon=round(cum[-1], 2),
+             npv=round(disc[-1], 2), irr=irr(flows) if not financed else None,
+             cost_per_kwh=round(pv_cost / pv_prod, 4) if pv_prod else None, horizon=Y, years=rows)
+    r["findings"] = findings(h, q, r)
+    return r
+
+
+def findings(h, q, r):
+    F = []
+    def add(sev, code, msg): F.append(dict(severity=sev, code=code, message=msg))
+    if r["simple_payback"] is None:
+        add("high", "SP01", "does not pay back within %d years" % r["horizon"])
+    elif r["simple_payback"] > 12:
+        add("medium", "SP02", "slow payback: %.1f years" % r["simple_payback"])
+    if r["export_share"] > 0.5 and h["export_price"] < 0.4 * h["electricity_price"]:
+        add("medium", "SP03", "%.0f%% of production is exported at a low export price; a smaller system or a battery may pay back faster" % (r["export_share"] * 100))
+    if r["coverage"] > 1.2:
+        add("medium", "SP04", "produces %.0f%% of the yearly use; check the size against consumption" % (r["coverage"] * 100))
+    if r["financed"] and r["loan_payment"] > r["year1_saving"] - q["maintenance"]:
+        add("medium", "SP05", "loan payment %.0f per year is higher than the year-1 saving %.0f: negative cash flow at first" % (r["loan_payment"], r["year1_saving"]))
+    if r["horizon"] > 15 and not q["inverter_year"]:
+        add("low", "SP06", "no inverter replacement planned within %d years (inverters often last 10-15 years)" % r["horizon"])
+    if "degradation" in q.get("_defaulted", []):
+        add("low", "SP07", "degradation not given; assumed 0.5% per year")
+    if q["self_consumption"] > 0.8 and not q["battery_kwh"]:
+        add("low", "SP08", "self-consumption %.0f%% without a battery is optimistic for most homes" % (q["self_consumption"] * 100))
+    if not 600 <= q["specific_yield"] <= 1900:
+        add("medium", "SP09", "specific yield %.0f kWh/kW is outside the usual 600-1900 range; check the estimate" % q["specific_yield"])
+    return F
+
+
+def cross_check(qs, res):
+    """SP10: a quote that assumes a much higher yield than the others for the same home."""
+    ys = sorted(q["specific_yield"] for q in qs)
+    if len(ys) < 3:
+        return
+    med = ys[len(ys) // 2] if len(ys) % 2 else (ys[len(ys) // 2 - 1] + ys[len(ys) // 2]) / 2
+    for q, r in zip(qs, res):
+        if q["specific_yield"] > med * 1.15:
+            r["findings"].append(dict(severity="medium", code="SP10", message="assumes %.0f kWh/kW, %.0f%% above the median of the other quotes (%.0f); re-run it with %.0f for a fair comparison" % (
+                q["specific_yield"], (q["specific_yield"] / med - 1) * 100, med, med)))
+
+
+def fmt_years(v):
+    return "never" if v is None else "%.1f y" % v
+
+
+def render(h, res, table=None):
+    cur = h["currency"] + " " if h["currency"] else ""
+    L = ["# Solar payback check (horizon %d years)" % res[0]["horizon"], "",
+         "Household: %s kWh per year at %s%.3f per kWh (escalating %.1f%%/y), export %s%.3f per kWh, discount rate %.1f%%" %
+         ("{:,}".format(int(h["annual_consumption_kwh"])), cur, h["electricity_price"], h["price_escalation"] * 100, cur, h["export_price"], h["discount_rate"] * 100), "",
+         "| quote | kW | net cost | yr-1 kWh | self-used | exported | yr-1 saving | bill cut | simple payback | disc. payback | net at horizon | NPV | IRR | cost/kWh |",
+         "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    for r in res:
+        L.append("| %s | %.1f | %s | %s | %s | %s | %s | %.0f%% | %s | %s | %s | %s | %s | %s |" % (
+            r["name"], r["size_kw"], "{:,.0f}".format(r["net_cost"]) + (" (loan)" if r["financed"] else ""),
+            "{:,}".format(r["year1_production"]), "{:,}".format(r["year1_self_used"]), "{:,}".format(r["year1_exported"]),
+            "{:,.0f}".format(r["year1_saving"]), r["bill_reduction"] * 100, fmt_years(r["simple_payback"]), fmt_years(r["discounted_payback"]),
+            "{:,.0f}".format(r["net_at_horizon"]), "{:,.0f}".format(r["npv"]), "-" if r["irr"] is None else "%.1f%%" % (r["irr"] * 100),
+            "%.3f" % r["cost_per_kwh"]))
+    best = max(res, key=lambda r: r["npv"])
+    warn = " - check its assumptions first (findings below)" if any(f["severity"] in ("high", "medium") or f["code"] == "SP08" for f in best["findings"]) else ""
+    L += ["", "Highest NPV: %s (NPV %s%s)%s" % (best["name"], cur, "{:,.0f}".format(best["npv"]), warn), "", "## Findings"]
+    n = 0
+    for r in res:
+        for f in r["findings"]:
+            L.append("- [%s] %s %s: %s" % (f["severity"], f["code"], r["name"], f["message"])); n += 1
+    if not n:
+        L.append("- none")
+    if table:
+        r = next((x for x in res if x["name"] == table), None)
+        if r:
+            L += ["", "## Year by year: " + r["name"], "| year | production | self-used | exported | saving | costs | loan | cash flow |", "|---|---|---|---|---|---|---|---|"]
+            for y in r["years"]:
+                L.append("| %d | %s | %s | %s | %.0f | %.0f | %.0f | %.0f |" % (y["year"], "{:,}".format(y["production_kwh"]), "{:,}".format(y["self_used_kwh"]),
+                         "{:,}".format(y["exported_kwh"]), y["saving"], y["costs"], y["loan"], y["cash_flow"]))
+    L += ["", "Estimates only: check yields, prices and incentives with the installer's quote and your utility tariff."]
+    return "\n".join(L)
+
+
+def self_test():
+    ok = [0, 0]
+    def check(name, cond):
+        ok[0 if cond else 1] += 1
+        print(("PASS  " if cond else "FAIL  ") + name)
+    H = dict(annual_consumption_kwh=4000, electricity_price=0.30, export_price=0.08, price_escalation=0.0,
+             export_escalation=0.0, discount_rate=0.0, horizon_years=25, currency="EUR")
+    def Q(**kw):
+        row = dict(name="t", size_kw="4", price="6000", incentives="0", specific_yield="1000", self_consumption="0.5",
+                   degradation="0", inverter_year="", inverter_cost="", maintenance="0", battery_kwh="", loan_rate="", loan_years="")
+        row.update({k: str(v) for k, v in kw.items()})
+        return parse_quote(row)
+    check("annuity 10000 at 0% over 10 y = 1000/y", abs(annuity(10000, 0, 10) - 1000) < 1e-6)
+    check("annuity 10000 at 6% over 10 y = 1332.25/y", abs(annuity(10000, 0.06, 10) - 1332.25) < 0.05)
+    r = evaluate(H, Q())
+    check("year-1 production = kW x yield", r["year1_production"] == 4000)
+    check("self-used = production x share", r["year1_self_used"] == 2000)
+    check("saving = self-used x price + export x export price", abs(r["year1_saving"] - (2000 * 0.30 + 2000 * 0.08)) < 0.01)
+    check("simple payback = 6000 / 760", abs(r["simple_payback"] - 6000 / 760) < 1e-6)
+    check("discount 0 => discounted payback = simple", abs(r["discounted_payback"] - r["simple_payback"]) < 1e-6)
+    check("net at horizon = 25 x 760 - 6000", abs(r["net_at_horizon"] - (25 * 760 - 6000)) < 0.01)
+    check("IRR positive for a paying system", r["irr"] and r["irr"] > 0.1)
+    r = evaluate(H, Q(self_consumption=1.0, size_kw=9))
+    check("self-used capped at consumption", r["year1_self_used"] == 4000)
+    check("oversized system flags SP03 and SP04", {"SP03", "SP04"} <= {f["code"] for f in r["findings"]})
+    r = evaluate(H, Q(price=60000))
+    check("expensive system never pays back SP01", r["simple_payback"] is None and r["findings"][0]["code"] == "SP01")
+    r = evaluate(H, Q(price=12000))
+    check("slow payback flagged SP02", any(f["code"] == "SP02" for f in r["findings"]))
+    r = evaluate(H, Q(degradation=0.01))
+    check("degradation lowers year-2 production", r["years"][1]["production_kwh"] == 3960)
+    r = evaluate(H, Q(inverter_year=12, inverter_cost=1500))
+    check("inverter cost hits year 12 only", r["years"][11]["costs"] == 1500 and r["years"][10]["costs"] == 0)
+    check("no SP06 when inverter is planned", not any(f["code"] == "SP06" for f in r["findings"]))
+    r = evaluate(H, Q(incentives=2000))
+    check("incentives reduce net cost", r["net_cost"] == 4000)
+    r = evaluate(H, Q(loan_rate=0.05, loan_years=10, price=9000))
+    check("financed: no upfront, loan payment in years 1-10 only", r["years"][0]["loan"] > 0 and r["years"][10]["loan"] == 0)
+    check("loan payment above saving flags SP05", any(f["code"] == "SP05" for f in r["findings"]))
+    r = evaluate(H, Q(self_consumption=0.9))
+    check("high self-consumption without battery flags SP08", any(f["code"] == "SP08" for f in r["findings"]))
+    r = evaluate(H, Q(specific_yield=2500))
+    check("implausible yield flags SP09", any(f["code"] == "SP09" for f in r["findings"]))
+    r = evaluate(H, Q(degradation=""))
+    check("missing degradation defaults and flags SP07", any(f["code"] == "SP07" for f in r["findings"]))
+    H2 = dict(H, discount_rate=0.05)
+    r = evaluate(H2, Q())
+    check("discounting makes discounted payback longer", r["discounted_payback"] > r["simple_payback"])
+    res = [evaluate(H, Q(name=n, specific_yield=y)) for n, y in (("a", 1000), ("b", 1010), ("c", 1400))]
+    cross_check([Q(specific_yield=1000), Q(specific_yield=1010), Q(specific_yield=1400)], res)
+    check("yield far above the other quotes flags SP10", any(f["code"] == "SP10" for f in res[2]["findings"]) and not any(f["code"] == "SP10" for f in res[0]["findings"]))
+    check("payback None when the position ends negative", payback([-100, -50, 20, -10]) is None)
+    check("payback 0 when never negative", payback([0, 10, 20]) == 0.0)
+    for bad, label in ((dict(self_consumption=1.5), "share above 1 rejected"), (dict(loan_rate=6, loan_years=10), "percent loan rate rejected")):
+        try:
+            Q(**bad); check(label, False)
+        except ValueError:
+            check(label, True)
+    print("ALL PASS (%d/%d)" % (ok[0], sum(ok)) if not ok[1] else "FAILED %d of %d" % (ok[1], sum(ok)))
+    return 0 if not ok[1] else 1
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("household", nargs="?"); ap.add_argument("quotes", nargs="?")
+    ap.add_argument("--horizon-years", type=int); ap.add_argument("--json", action="store_true")
+    ap.add_argument("--table", help="print the year-by-year table for this quote name")
+    ap.add_argument("--self-test", action="store_true")
+    a = ap.parse_args()
+    if a.self_test:
+        return self_test()
+    if not (a.household and a.quotes):
+        print("error: give household.json and quotes.csv", file=sys.stderr); return 2
+    try:
+        h = load_household(a.household); qs = load_quotes(a.quotes)
+        res = [evaluate(h, q, a.horizon_years) for q in qs]
+        cross_check(qs, res)
+    except (ValueError, OSError, json.JSONDecodeError) as e:
+        print("error:", e, file=sys.stderr); return 2
+    if a.json:
+        print(json.dumps(res, indent=2))
+    else:
+        print(render(h, res, a.table))
+    good = [r for r in res if r["simple_payback"] is not None and not any(f["severity"] == "high" for f in r["findings"])]
+    return 0 if good else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+
+```
+
+</details>
+
