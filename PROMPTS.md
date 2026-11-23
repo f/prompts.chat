@@ -251331,3 +251331,19 @@ Render it exactly like real shell carving: the white layer is thinnest at the ed
 
 </details>
 
+<details>
+<summary><strong>Sashiko Stitched Indigo Cloth of Ocean Waves Under a Crescent Moon</strong></summary>
+
+## Sashiko Stitched Indigo Cloth of Ocean Waves Under a Crescent Moon
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A flat-lay photograph of a square panel of hand-stitched Japanese-style sashiko embroidery: deep indigo-dyed cotton cloth covered in running stitches of thick, slightly matte off-white cotton thread that form a picture of rolling ocean waves under a crescent moon. The lower two thirds show overlapping rows of seigaiha-style fan waves, each wave made of four or five concentric arcs of evenly spaced stitches, with a few larger curling wave crests stitched in tighter lines near the center. In the upper right, a thin crescent moon is filled with dense parallel stitching, and a scattering of tiny cross-stitched stars is spread across the dark sky, which is otherwise left as plain cloth so the indigo shows. A narrow border of hitomezashi grid stitching frames the whole panel.
+
+Render it exactly like real handwork: each stitch is a short raised dash with small gaps where the needle went under the cloth, stitches slightly irregular in length, a few thread ends tucked in, soft puckering where curves turn, the indigo slightly faded and uneven like hand-dyed cloth, with a faint woven texture and one small darker indigo patch sewn on in the lower left corner in the boro mending tradition. The cloth lies on a pale unfinished wooden table; a small spool of white thread and a long sashiko needle lie at the edge of the frame. Soft, even daylight from above, very shallow shadows, true-to-life color. No text, no people, no hands. Square 1:1.
+
+```
+
+</details>
+
