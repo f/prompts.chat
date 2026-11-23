@@ -253766,3 +253766,16 @@ Audio: The woman speaks only in clear English, in a young, warm, natural female 
 
 </details>
 
+<details>
+<summary><strong>Professional crypto trading conversation </strong></summary>
+
+## Professional crypto trading conversation 
+
+Contributed by [@ijewoke345](https://github.com/ijewoke345)
+
+```md
+Create a very professional conversation about the current crypto market and stock market I want the conversation between the 10 persons to be up to 20 texts per person and making it all professional
+```
+
+</details>
+
