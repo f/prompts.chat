@@ -214747,3 +214747,25 @@ TypeScript Library Publishing taste,"# TypeScript Library Publishing taste of a 
 - Ship source maps and declaration maps so ""go to definition"" lands on real TypeScript source. Confidence: 0.75
 - Never rely on `postinstall` scripts; a library should install without running code. Confidence: 0.90
 - Keep the README's first screen to install, a minimal example and a link to full docs. Confidence: 0.80",TRUE,TEXT,f
+Progressive Web App taste,"# Progressive Web App taste of a frontend engineer who builds offline-first web apps
+- Treat the network as optional: the app shell must load and render from cache with no connection. Confidence: 0.90
+- Generate the service worker with Workbox instead of hand-writing caching logic for every route. Confidence: 0.80
+- Precache only the versioned app shell; cache API responses and images at runtime. Confidence: 0.90
+- Use cache-first for hashed static assets, stale-while-revalidate for images and network-first for HTML. Confidence: 0.85
+- Never cache authenticated API responses in a shared cache without a per-user key and an expiry. Confidence: 0.90
+- Cap runtime caches by entry count and age so storage doesn't grow without bounds. Confidence: 0.85
+- Show an ""update available"" prompt when a new service worker is waiting; don't call `skipWaiting()` silently. Confidence: 0.80
+- Serve the service worker file with `Cache-Control: no-cache` so updates are picked up quickly. Confidence: 0.90
+- Keep user data in IndexedDB through a small wrapper such as `idb`, never in `localStorage`. Confidence: 0.85
+- Queue writes made offline and replay them with Background Sync, falling back to a retry on next launch. Confidence: 0.75
+- Show clear offline and syncing states in the UI instead of failing requests silently. Confidence: 0.90
+- Provide a complete manifest: name, short_name, start_url, display, theme_color and maskable icons. Confidence: 0.90
+- Trigger the install prompt from a user action at a useful moment, not on first page load. Confidence: 0.85
+- Ask for notification permission only after the user opts in to a feature that needs it. Confidence: 0.95
+- Call `navigator.storage.persist()` for apps that keep important offline data. Confidence: 0.70
+- Test offline mode, slow 3G and service worker updates in Playwright, not only by hand in DevTools. Confidence: 0.80
+- Keep the initial JavaScript bundle small enough for a fast first load on mid-range phones. Confidence: 0.85
+- Version cache names and delete old caches in the `activate` event. Confidence: 0.90
+- Include an offline fallback page for navigations that aren't cached. Confidence: 0.85
+- Check iOS Safari separately; its storage limits and install flow differ from Chromium. Confidence: 0.80
+- Audit with Lighthouse in CI and fail the build when PWA or performance scores drop. Confidence: 0.65",TRUE,TEXT,f
