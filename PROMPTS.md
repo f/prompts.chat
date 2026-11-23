@@ -251561,3 +251561,28 @@ Wide cinematic establishing shot of the crest of a colossal concrete dam in a mo
 
 </details>
 
+<details>
+<summary><strong>Hand-Drawn Doodle City Travel Poster: Fill-in Template for Any City (Vintage Souvenir Print)</strong></summary>
+
+## Hand-Drawn Doodle City Travel Poster: Fill-in Template for Any City (Vintage Souvenir Print)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+INTERNATIONAL CITY TRAVEL ART PRINT COLLECTION
+
+Create a charming, vintage-inspired travel poster featuring ${city_country:Lisbon, Portugal}, illustrated in a distinctive hand-drawn architectural doodle style.
+
+Showcase the city's most iconic landmarks, buildings, monuments, towers, bridges, and recognizable architectural details, arranged together in a dense yet balanced artistic composition. Incorporate a recognizable local element, such as a vintage car, tram, taxi, bicycle, or public transport, in the foreground.
+
+Use bold black ink outlines, intricate hand-drawn details, playful geometric patterns, and slightly imperfect sketch-like textures. Add the city name prominently within the illustration using creative hand-lettered typography.
+
+Present the artwork inside a clean white poster border, surrounded by a vibrant solid-color background that complements the city's identity. Use a limited palette of black, warm white, and one or two bold accent colors.
+
+Overall aesthetic: Minimalist European travel illustration, retro souvenir poster, whimsical architectural line art, screen-print texture, playful composition, and premium collectible wall-art design.
+
+Keep the artwork visually cohesive, highly detailed, charming, and instantly recognizable as a celebration of the destination. Avoid photorealism, 3D effects, gradients, and unnecessary decorative elements.
+```
+
+</details>
+
