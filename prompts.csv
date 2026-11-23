@@ -210687,3 +210687,540 @@ def main(argv):
 if __name__ == ""__main__"":
     sys.exit(main(sys.argv[1:]))
 ",FALSE,TEXT,f
+Employee Timesheet and Overtime Checker,"---
+name: employee-timesheet-and-overtime-checker
+description: Checks a small team's timesheets pre-payroll: splits each week into regular, overtime and double-time hours under your daily and weekly rules, estimates pay, and flags missing punches, overlaps, duplicates, short breaks, short rest, over-max weeks and too many days in a row. Offline stdlib Python.
+---
+
+# Employee Timesheet and Overtime Checker
+
+You help small business owners, shop and restaurant managers, office managers and payroll admins check a week or two of timesheets before they run payroll. Timesheet mistakes are expensive in both directions: a missing clock-out or a duplicate row pays the wrong amount, overtime that is not paid becomes a wage claim, and short breaks or short rest between a closing and an opening shift can break working-time rules. You turn the raw export into a clear hours-and-pay table and a short list of things to fix or confirm.
+
+You work only on the files the user gives you, on their machine. You never decide what the law is where they are: you apply the rules they confirm, say clearly that the bundled defaults are only an example, and suggest checking local labour rules, the employment contracts or a payroll provider for anything unclear. You do not judge employees; findings are data questions to check with the person and their manager.
+
+## Files in this skill
+
+- `scripts/timesheet_check.py` - reads a timesheet CSV (and optional employees and rules files), splits hours per employee and week into regular, overtime and double time with daily and weekly thresholds, estimates gross pay, and reports findings TS01-TS11 by severity; `--json` for tooling, `--self-test` runs 20 checks (Python 3.8+ standard library only)
+- `references/overtime-and-working-time-rules.md` - how the hours are split, what each rule key means, examples of rule sets people commonly configure, and what the script does not handle
+- `references/fixing-timesheet-problems.md` - what each finding usually means, how to confirm and correct it, and how to prevent it next time
+- `templates/payroll-check-report.md` - the summary you hand back before payroll
+- `examples/timesheet.csv`, `examples/employees.csv`, `examples/rules.json` - a fictional shop week with five people and planted problems (missing clock-out, duplicate row, overlap, short break, closing-then-opening, a 49-hour week)
+
+## Workflow
+
+### 1. Confirm the rules first
+Before running anything, ask which rules apply and fill `rules.json`:
+- week start day and pay period;
+- overtime thresholds (daily and/or weekly hours), multipliers and any double-time threshold;
+- break rules (break required after how many hours, minimum minutes, paid or unpaid);
+- minimum rest between shifts, maximum weekly hours and maximum days in a row;
+- which employees are not eligible for overtime (salaried or exempt) and their hourly rates.
+If the user does not know, run with the defaults but label every result ""example rules"" and list the questions in the report.
+
+### 2. Prepare the files
+- `timesheet.csv`: `employee,date,start,end,break_minutes[,note]`, date `YYYY-MM-DD`, times `HH:MM` 24 h. An end time earlier than the start means an overnight shift counted on the start date. Most clock systems can export this; rename columns if needed.
+- `employees.csv` (optional): `employee,hourly_rate[,overtime_eligible]`.
+- Names must match exactly between files.
+
+### 3. Run the check
+```
+python3 scripts/timesheet_check.py examples/timesheet.csv --rules examples/rules.json --employees examples/employees.csv
+python3 scripts/timesheet_check.py timesheet.csv --rules rules.json --employees employees.csv --json > check.json
+python3 scripts/timesheet_check.py --self-test
+```
+Exit 0 = no high findings, 1 = high findings to fix before payroll, 2 = bad input. Without a shell, follow `references/overtime-and-working-time-rules.md` by hand for each employee and week.
+
+### 4. Triage the findings
+- High (fix before payroll): TS01 missing or unreadable time (the row was skipped, so pay is too low), TS02 overlapping shifts (double counting or a wrong date), TS08 over the weekly maximum.
+- Medium (confirm with the manager): TS04 duplicate row (counted once), TS05 very long shift, TS06 missing or short break, TS07 short rest between shifts, TS09 too many days in a row.
+- Low (information): TS10 no pay rate, TS11 overnight shift.
+Use `references/fixing-timesheet-problems.md` for the likely cause and the fix. Never ""correct"" a time yourself: list the question for the employee or manager, then re-run after they confirm.
+
+### 5. Report
+Fill `templates/payroll-check-report.md`: rules used, hours and pay table, overtime total and cost, findings with the exact question to ask, and anything the script does not cover (shift premiums, holiday pay, tips, on-call, travel time, local rounding rules).
+
+## Rules
+- Overtime is never counted twice: hours already paid as daily overtime or double time do not count toward the weekly regular threshold.
+- Pay estimates are gross base pay only, before taxes, premiums, allowances and deductions.
+- Keep personal data private: do not upload timesheets, and share only the report with people who need it.
+
+FILE:references/overtime-and-working-time-rules.md
+# How timesheet_check.py splits hours and applies rules
+
+## Worked time
+worked hours = (end - start) - break. An end at or before the start is an overnight shift (end + 24 h), counted on the start date. Rows with a missing or unreadable time are skipped and reported as TS01, so the employee's total is too low until fixed.
+
+## Splitting a week (no double counting)
+For each employee and week (week_start in rules), day by day in date order:
+1. Double time = hours above daily_dt_after (if set).
+2. Daily overtime = remaining hours above daily_ot_after (if set).
+3. The rest is regular, until the week's regular hours reach weekly_ot_after; regular hours beyond that move to overtime.
+Employees with overtime_eligible = no get all hours as regular.
+Pay estimate = rate x (regular + overtime x ot_multiplier + double time x dt_multiplier).
+
+Example (daily 8 / weekly 40): Mon 8, Tue 8, Wed 10, Thu 8, Fri 9, Sat 5 = 48 h. Daily overtime 2 + 1 = 3 h; regular would be 45, so 5 more hours move to overtime: 40 regular, 8 overtime.
+
+## Rule keys
+| key | meaning | default |
+|---|---|---|
+| week_start | first day of the work week | monday |
+| daily_ot_after | overtime after this many hours in a day (null = no daily overtime) | null |
+| daily_dt_after | double time after this many hours in a day (null = none) | null |
+| weekly_ot_after | overtime after this many regular hours in a week (null = none) | 40 |
+| ot_multiplier / dt_multiplier | pay multipliers | 1.5 / 2.0 |
+| break_required_after_hours / min_break_minutes | a break of at least N minutes for shifts longer than H hours | 6 / 30 |
+| min_rest_hours | minimum rest between two shifts on different days | 11 |
+| max_weekly_hours | flag weeks above this total | 48 |
+| max_shift_hours | flag a start-to-end span above this (often a typo) | 14 |
+| max_days_in_a_row | flag runs of consecutive working days above this | 6 |
+
+## Rule sets people commonly configure (check your own law and contracts)
+- Weekly-only overtime: weekly_ot_after 40, daily keys null (a common US federal-style setup).
+- Daily and weekly overtime with double time: daily_ot_after 8, daily_dt_after 12, weekly_ot_after 40 (used in some US states).
+- Working-time limits without statutory overtime pay: weekly_ot_after null or per contract, min_rest_hours 11, max_weekly_hours 48 (European working-time style; the 48 h is often an average over several months, which this weekly check does not average).
+These are examples to start a conversation, not legal advice.
+
+## Not handled
+Averaging periods, seventh-day rules, shift or night premiums, holiday and sick pay, on-call and travel time, split-shift premiums, tips, minimum wage checks, time rounding policies, and multi-rate employees. Mention any that apply and handle them separately.
+
+FILE:references/fixing-timesheet-problems.md
+# Findings: likely causes and fixes
+
+| code | finding | likely cause | how to confirm and fix | prevent next time |
+|---|---|---|---|---|
+| TS01 | missing or unreadable time | forgot to clock out, app crash, manual edit | ask the employee and manager for the real time; add it and re-run | clock-out reminders; manager reviews open punches daily |
+| TS02 | overlapping shifts | wrong date on an overnight shift, double entry, two locations | compare with the rota and the till/door logs; fix the date or delete the duplicate | one clock-in at a time per person |
+| TS03 | break longer than the shift | break entered in hours or the wrong column | confirm the real break and correct it | validate break fields in the export |
+| TS04 | duplicate row | double import or edit | the script counts it once; delete it at the source | import each period once |
+| TS05 | very long shift | typo in the end time or a missing clock-out the next day | confirm with the employee; if real, check rest and maximum rules | alert on shifts over the limit |
+| TS06 | break missing or short | busy shift, break not recorded | ask whether a break was taken; some places owe a penalty for missed breaks | schedule breaks on the rota |
+| TS07 | short rest between shifts | closing then opening (""clopening"") | confirm; adjust the rota; check whether local rules require a premium | rota checks before publishing |
+| TS08 | over the weekly maximum | extra cover, missing staff | confirm the hours are real and any opt-out or averaging agreement | plan cover earlier |
+| TS09 | too many days in a row | cover for absence | confirm a day off is scheduled | rota checks |
+| TS10 | no pay rate | new hire, name spelled differently | add the employee or fix the name | one employee list as the source of names |
+| TS11 | overnight shift | night work | confirm the start date is right | none needed |
+
+When you report a finding, give the exact question to ask, for example: ""Priya, on Wed 18 Nov you clocked in at 09:00 but there is no clock-out. What time did you finish?""
+
+FILE:templates/payroll-check-report.md
+# Payroll check: {{business}} - pay period {{period}}
+
+Prepared {{date}}. Rules used: {{rules_summary}} ({{confirmed_or_example}} rules).
+
+## Summary
+- Employees: {{employee_count}} | shifts: {{shift_count}}
+- Overtime and double-time hours: {{ot_hours}} (estimated cost {{ot_cost}})
+- Estimated gross base pay: {{gross_pay}}
+- Fix before payroll: {{high_count}} high findings | confirm: {{medium_count}} medium
+
+## Hours and pay
+(paste the table from timesheet_check.py)
+
+## Fix before payroll
+| employee | date | finding | question to ask | owner |
+|---|---|---|---|---|
+| {{employee}} | {{date}} | {{code and issue}} | {{exact question}} | {{manager}} |
+
+## Confirm with managers
+- {{finding and question}}
+
+## Not covered by this check
+- {{premiums, holiday pay, tips, averaging periods, local rounding rules}}
+
+## Rota suggestions
+- {{for example: avoid closing-then-opening shifts; schedule breaks on 8 h shifts}}
+
+FILE:examples/timesheet.csv
+employee,date,start,end,break_minutes,note
+Maya Torres,2026-11-16,07:00,15:30,30,
+Maya Torres,2026-11-17,07:00,15:30,30,
+Maya Torres,2026-11-18,07:00,17:30,30,stock delivery
+Maya Torres,2026-11-19,07:00,15:30,30,
+Maya Torres,2026-11-20,07:00,16:30,30,
+Maya Torres,2026-11-21,08:00,13:00,0,Saturday cover
+Jonah Reed,2026-11-16,12:00,20:30,30,
+Jonah Reed,2026-11-17,12:00,23:00,30,closing
+Jonah Reed,2026-11-18,07:00,15:00,30,opening after closing
+Jonah Reed,2026-11-19,12:00,20:30,15,
+Jonah Reed,2026-11-20,12:00,20:30,30,
+Jonah Reed,2026-11-20,12:00,20:30,30,
+Priya Nair,2026-11-16,09:00,17:00,45,
+Priya Nair,2026-11-17,09:00,17:00,45,
+Priya Nair,2026-11-18,09:00,,45,forgot to clock out
+Priya Nair,2026-11-19,09:00,19:00,45,
+Priya Nair,2026-11-20,09:00,17:00,45,
+Sam Okafor,2026-11-17,22:00,06:30,30,night stock count
+Sam Okafor,2026-11-18,06:00,10:00,0,
+Sam Okafor,2026-11-19,18:00,23:00,0,
+Lena Fischer,2026-11-16,08:00,16:00,30,
+Lena Fischer,2026-11-17,08:00,18:00,60,
+Lena Fischer,2026-11-18,08:00,18:00,60,
+Lena Fischer,2026-11-19,08:00,18:00,60,
+Lena Fischer,2026-11-20,08:00,18:00,60,
+Lena Fischer,2026-11-21,08:00,14:00,30,
+
+FILE:examples/employees.csv
+employee,hourly_rate,overtime_eligible
+Maya Torres,19.50,yes
+Jonah Reed,17.00,yes
+Priya Nair,24.00,yes
+Sam Okafor,18.25,yes
+Lena Fischer,32.00,no
+
+FILE:examples/rules.json
+{
+  ""name"": ""Example shop rules (illustrative only, set yours from local law and contracts)"",
+  ""week_start"": ""monday"",
+  ""daily_ot_after"": 8,
+  ""daily_dt_after"": 12,
+  ""weekly_ot_after"": 40,
+  ""ot_multiplier"": 1.5,
+  ""dt_multiplier"": 2.0,
+  ""break_required_after_hours"": 6,
+  ""min_break_minutes"": 30,
+  ""min_rest_hours"": 11,
+  ""max_weekly_hours"": 48,
+  ""max_shift_hours"": 14,
+  ""max_days_in_a_row"": 6
+}
+
+FILE:scripts/timesheet_check.py
+#!/usr/bin/env python3
+""""""timesheet_check.py - check a team's timesheets and work out regular, overtime and double-time hours.
+
+Reads shift rows, applies your overtime and working-time rules (daily and weekly
+thresholds, multipliers, breaks, rest between shifts, weekly maximum, days in a
+row), estimates pay per employee and week, and flags data errors and rule
+breaches before payroll. Standard library only.
+
+Usage:
+  python3 timesheet_check.py TIMESHEET.csv [--rules RULES.json] [--employees EMPLOYEES.csv] [--json]
+  python3 timesheet_check.py --self-test
+
+TIMESHEET.csv columns: employee,date,start,end,break_minutes[,note]
+  date YYYY-MM-DD, start/end HH:MM (24 h). An end earlier than the start is an overnight shift
+  (counted on the start date).
+EMPLOYEES.csv columns: employee,hourly_rate[,overtime_eligible]  (overtime_eligible: yes/no, default yes)
+RULES.json keys (all optional, defaults in DEFAULT_RULES): week_start (monday..sunday),
+  daily_ot_after, daily_dt_after, weekly_ot_after (hours or null), ot_multiplier, dt_multiplier,
+  break_required_after_hours, min_break_minutes, min_rest_hours, max_weekly_hours,
+  max_shift_hours, max_days_in_a_row.
+Exit codes: 0 no high findings, 1 high findings, 2 bad input.
+The default rules are an example, not the law where you are: set them from your local labour rules and contracts.
+""""""
+import csv, datetime as dt, json, sys
+from collections import defaultdict
+
+DEFAULT_RULES = {
+    ""week_start"": ""monday"",
+    ""daily_ot_after"": None,          # e.g. 8 where daily overtime applies
+    ""daily_dt_after"": None,          # e.g. 12 where daily double time applies
+    ""weekly_ot_after"": 40,
+    ""ot_multiplier"": 1.5,
+    ""dt_multiplier"": 2.0,
+    ""break_required_after_hours"": 6,
+    ""min_break_minutes"": 30,
+    ""min_rest_hours"": 11,
+    ""max_weekly_hours"": 48,
+    ""max_shift_hours"": 14,
+    ""max_days_in_a_row"": 6,
+}
+DAYS = [""monday"", ""tuesday"", ""wednesday"", ""thursday"", ""friday"", ""saturday"", ""sunday""]
+SEV = {""TS01"": ""high"", ""TS02"": ""high"", ""TS03"": ""high"", ""TS04"": ""medium"", ""TS05"": ""medium"", ""TS06"": ""medium"",
+       ""TS07"": ""medium"", ""TS08"": ""high"", ""TS09"": ""medium"", ""TS10"": ""low"", ""TS11"": ""low""}
+NAMES = {""TS01"": ""missing or unreadable time"", ""TS02"": ""overlapping shifts"", ""TS03"": ""break longer than the shift"",
+         ""TS04"": ""duplicate row"", ""TS05"": ""very long shift (typo?)"", ""TS06"": ""required break missing or short"",
+         ""TS07"": ""short rest between shifts"", ""TS08"": ""over the weekly maximum"", ""TS09"": ""too many days in a row"",
+         ""TS10"": ""no pay rate"", ""TS11"": ""overnight shift (check the date)""}
+
+
+class InputError(Exception):
+    pass
+
+
+def parse_time(s):
+    try:
+        h, m = s.strip().split("":"")
+        h, m = int(h), int(m)
+        if not (0 <= h <= 24 and 0 <= m < 60) or (h == 24 and m):
+            raise ValueError
+        return h * 60 + m
+    except (ValueError, AttributeError):
+        return None
+
+
+def load_rules(path):
+    rules = dict(DEFAULT_RULES)
+    if path:
+        with open(path, encoding=""utf-8"") as f:
+            user = json.load(f)
+        unknown = set(user) - set(DEFAULT_RULES) - {""name"", ""notes""}
+        if unknown:
+            raise InputError(""unknown rule keys: "" + "", "".join(sorted(unknown)))
+        rules.update({k: v for k, v in user.items() if k in DEFAULT_RULES})
+    if str(rules[""week_start""]).lower() not in DAYS:
+        raise InputError(""week_start must be a weekday name"")
+    for k in (""ot_multiplier"", ""dt_multiplier""):
+        if not isinstance(rules[k], (int, float)) or rules[k] < 1:
+            raise InputError(k + "" must be a number >= 1"")
+    return rules
+
+
+def load_employees(path):
+    emp = {}
+    if not path:
+        return emp
+    with open(path, newline="""", encoding=""utf-8"") as f:
+        for i, row in enumerate(csv.DictReader(f), start=2):
+            row = {k.strip(): (v or """").strip() for k, v in row.items()}
+            try:
+                rate = float(row.get(""hourly_rate"", """"))
+            except ValueError:
+                raise InputError(""employees line %d: hourly_rate must be a number"" % i)
+            emp[row[""employee""]] = {""rate"": rate, ""ot"": row.get(""overtime_eligible"", ""yes"").lower() not in (""no"", ""n"", ""false"", ""0"")}
+    return emp
+
+
+def load_shifts(path):
+    shifts, findings = [], []
+    with open(path, newline="""", encoding=""utf-8"") as f:
+        r = csv.DictReader(f)
+        need = {""employee"", ""date"", ""start"", ""end"", ""break_minutes""}
+        if not r.fieldnames or not need.issubset({h.strip() for h in r.fieldnames}):
+            raise InputError(""timesheet needs columns employee,date,start,end,break_minutes"")
+        seen = set()
+        for i, row in enumerate(r, start=2):
+            row = {k.strip(): (v or """").strip() for k, v in row.items() if k}
+            if not any(row.values()):
+                continue
+            e = row[""employee""]
+            key = (e, row[""date""], row[""start""], row[""end""])
+            if key in seen:
+                findings.append((""TS04"", e, row[""date""], ""line %d repeats an earlier row; counted once"" % i))
+                continue
+            seen.add(key)
+            try:
+                day = dt.date.fromisoformat(row[""date""])
+            except ValueError:
+                findings.append((""TS01"", e, row[""date""], ""line %d: date is not YYYY-MM-DD; row skipped"" % i)); continue
+            s, en = parse_time(row[""start""]), parse_time(row[""end""])
+            if s is None or en is None:
+                findings.append((""TS01"", e, row[""date""], ""line %d: start or end missing/unreadable (%r-%r); row skipped"" % (i, row[""start""], row[""end""]))); continue
+            try:
+                brk = int(row[""break_minutes""] or 0)
+            except ValueError:
+                findings.append((""TS01"", e, row[""date""], ""line %d: break_minutes is not a whole number; treated as 0"" % i)); brk = 0
+            overnight = en <= s
+            if overnight:
+                en += 24 * 60
+                findings.append((""TS11"", e, row[""date""], ""line %d: %s-%s crosses midnight; counted on %s"" % (i, row[""start""], row[""end""], row[""date""])))
+            start = dt.datetime.combine(day, dt.time()) + dt.timedelta(minutes=s)
+            end = dt.datetime.combine(day, dt.time()) + dt.timedelta(minutes=en)
+            span = (en - s)
+            if brk > span:
+                findings.append((""TS03"", e, row[""date""], ""line %d: break %d min is longer than the %d-min shift; worked time set to 0"" % (i, brk, span)))
+                brk = span
+            shifts.append({""employee"": e, ""date"": day, ""start"": start, ""end"": end, ""break"": brk,
+                           ""hours"": (span - brk) / 60.0, ""span_h"": span / 60.0, ""line"": i, ""note"": row.get(""note"", """")})
+    return shifts, findings
+
+
+def week_of(day, week_start):
+    offset = (day.weekday() - DAYS.index(week_start)) % 7
+    return day - dt.timedelta(days=offset)
+
+
+def analyse(shifts, rules, employees, findings):
+    ws = rules[""week_start""].lower()
+    by_emp = defaultdict(list)
+    for s in shifts:
+        by_emp[s[""employee""]].append(s)
+    weeks = []
+    for e, ss in sorted(by_emp.items()):
+        ss.sort(key=lambda x: x[""start""])
+        for a, b in zip(ss, ss[1:]):
+            if b[""start""] < a[""end""]:
+                findings.append((""TS02"", e, b[""date""].isoformat(), ""lines %d and %d overlap (%s-%s and %s-%s)"" % (
+                    a[""line""], b[""line""], a[""start""].strftime(""%a %H:%M""), a[""end""].strftime(""%H:%M""), b[""start""].strftime(""%a %H:%M""), b[""end""].strftime(""%H:%M""))))
+            else:
+                rest = (b[""start""] - a[""end""]).total_seconds() / 3600
+                if rules[""min_rest_hours""] and rest < rules[""min_rest_hours""] and b[""date""] != a[""date""]:
+                    findings.append((""TS07"", e, b[""date""].isoformat(), ""only %.1f h rest between line %d and line %d (minimum %s h)"" % (rest, a[""line""], b[""line""], rules[""min_rest_hours""])))
+        for s in ss:
+            if rules[""max_shift_hours""] and s[""span_h""] > rules[""max_shift_hours""]:
+                findings.append((""TS05"", e, s[""date""].isoformat(), ""line %d: %.1f h from start to end (limit %s h); check for a typo"" % (s[""line""], s[""span_h""], rules[""max_shift_hours""])))
+            if rules[""break_required_after_hours""] and s[""span_h""] > rules[""break_required_after_hours""] and s[""break""] < rules[""min_break_minutes""]:
+                findings.append((""TS06"", e, s[""date""].isoformat(), ""line %d: %.1f h shift with %d min break (needs %d min after %s h)"" % (s[""line""], s[""span_h""], s[""break""], rules[""min_break_minutes""], rules[""break_required_after_hours""])))
+        days = sorted({s[""date""] for s in ss if s[""hours""] > 0})
+        run, best, best_end = 1, 1, days[0] if days else None
+        for a, b in zip(days, days[1:]):
+            run = run + 1 if (b - a).days == 1 else 1
+            if run > best:
+                best, best_end = run, b
+        if rules[""max_days_in_a_row""] and best > rules[""max_days_in_a_row""]:
+            findings.append((""TS09"", e, best_end.isoformat(), ""%d days in a row without a day off (limit %d)"" % (best, rules[""max_days_in_a_row""])))
+        info = employees.get(e)
+        if employees and info is None:
+            findings.append((""TS10"", e, """", ""not in the employees file; pay not estimated""))
+        ot_ok = True if info is None else info[""ot""]
+        by_week = defaultdict(lambda: defaultdict(float))
+        for s in ss:
+            by_week[week_of(s[""date""], ws)][s[""date""]] += s[""hours""]
+        for wk, daymap in sorted(by_week.items()):
+            reg = ot = dtm = 0.0
+            for day in sorted(daymap):
+                h = daymap[day]
+                d_dt = max(0.0, h - rules[""daily_dt_after""]) if rules[""daily_dt_after""] else 0.0
+                d_ot = max(0.0, h - d_dt - rules[""daily_ot_after""]) if rules[""daily_ot_after""] else 0.0
+                d_reg = h - d_dt - d_ot
+                if rules[""weekly_ot_after""] is not None and reg + d_reg > rules[""weekly_ot_after""]:
+                    over = reg + d_reg - rules[""weekly_ot_after""]
+                    moved = min(over, d_reg)
+                    d_reg -= moved; d_ot += moved
+                reg += d_reg; ot += d_ot; dtm += d_dt
+            total = reg + ot + dtm
+            if not ot_ok:
+                reg, ot, dtm = total, 0.0, 0.0
+            if rules[""max_weekly_hours""] and total > rules[""max_weekly_hours""]:
+                findings.append((""TS08"", e, wk.isoformat(), ""%.2f h in the week starting %s (maximum %s h)"" % (total, wk.isoformat(), rules[""max_weekly_hours""])))
+            pay = None
+            if info:
+                pay = info[""rate""] * (reg + ot * rules[""ot_multiplier""] + dtm * rules[""dt_multiplier""])
+            weeks.append({""employee"": e, ""week_start"": wk.isoformat(), ""days"": len(daymap), ""total"": round(total, 2),
+                          ""regular"": round(reg, 2), ""overtime"": round(ot, 2), ""double_time"": round(dtm, 2),
+                          ""overtime_eligible"": ot_ok, ""rate"": info[""rate""] if info else None,
+                          ""pay_estimate"": round(pay, 2) if pay is not None else None})
+    return weeks
+
+
+def run(ts_path, rules_path=None, emp_path=None):
+    rules = load_rules(rules_path)
+    employees = load_employees(emp_path)
+    shifts, findings = load_shifts(ts_path)
+    if not shifts:
+        raise InputError(""no usable shifts in the timesheet"")
+    weeks = analyse(shifts, rules, employees, findings)
+    findings = [{""code"": c, ""severity"": SEV[c], ""issue"": NAMES[c], ""employee"": e, ""date"": d, ""detail"": t} for c, e, d, t in findings]
+    order = {""high"": 0, ""medium"": 1, ""low"": 2}
+    findings.sort(key=lambda f: (order[f[""severity""]], f[""code""], f[""employee""], f[""date""]))
+    return {""rules"": rules, ""weeks"": weeks, ""findings"": findings, ""shift_count"": len(shifts)}
+
+
+def report(res):
+    r = res[""rules""]
+    L = [""# Timesheet and overtime check"", """"]
+    L.append(""Rules used: week starts %s; overtime after %s h/day and %s h/week at x%s; double time after %s h/day at x%s; break %s min after %s h; rest %s h; max %s h/week; max %s days in a row."" % (
+        r[""week_start""], r[""daily_ot_after""] or ""-"", r[""weekly_ot_after""] if r[""weekly_ot_after""] is not None else ""-"", r[""ot_multiplier""],
+        r[""daily_dt_after""] or ""-"", r[""dt_multiplier""], r[""min_break_minutes""], r[""break_required_after_hours""], r[""min_rest_hours""], r[""max_weekly_hours""], r[""max_days_in_a_row""]))
+    L.append(""%d shifts read."" % res[""shift_count""])
+    L.append("""")
+    L.append(""## Hours and pay by employee and week"")
+    L.append(""| employee | week starting | days | total h | regular | overtime | double time | rate | pay estimate |"")
+    L.append(""|---|---|---:|---:|---:|---:|---:|---:|---:|"")
+    for w in res[""weeks""]:
+        L.append(""| %s | %s | %d | %.2f | %.2f | %.2f | %.2f | %s | %s |"" % (w[""employee""] + ("""" if w[""overtime_eligible""] else "" (no OT)""), w[""week_start""], w[""days""],
+                 w[""total""], w[""regular""], w[""overtime""], w[""double_time""], ""%.2f"" % w[""rate""] if w[""rate""] is not None else ""-"",
+                 ""{:,.2f}"".format(w[""pay_estimate""]) if w[""pay_estimate""] is not None else ""-""))
+    tot_pay = sum(w[""pay_estimate""] or 0 for w in res[""weeks""])
+    tot_ot = sum(w[""overtime""] + w[""double_time""] for w in res[""weeks""])
+    L.append("""")
+    L.append(""Totals: %.2f overtime/double-time hours; estimated gross pay %s (before taxes, premiums and allowances)."" % (tot_ot, ""{:,.2f}"".format(tot_pay)))
+    L.append("""")
+    L.append(""## Findings (%d)"" % len(res[""findings""]))
+    if not res[""findings""]:
+        L.append(""- none"")
+    for f in res[""findings""]:
+        L.append(""- [%s] %s %s - %s%s: %s"" % (f[""severity""].upper(), f[""code""], f[""issue""], f[""employee""], ("" "" + f[""date""]) if f[""date""] else """", f[""detail""]))
+    L.append("""")
+    L.append(""Check every high finding with the employee or manager before payroll. Your local labour law and contracts decide the real rules."")
+    return ""\n"".join(L)
+
+
+def self_test():
+    import os, tempfile
+    ok = True
+    def check(name, cond):
+        nonlocal ok
+        print((""PASS  "" if cond else ""FAIL  "") + name); ok = ok and cond
+    tmp = tempfile.mkdtemp()
+    def write(name, text):
+        p = os.path.join(tmp, name); open(p, ""w"", encoding=""utf-8"").write(text); return p
+    emp = write(""e.csv"", ""employee,hourly_rate,overtime_eligible\nAna,20,yes\nBo,30,no\n"")
+    week = ""employee,date,start,end,break_minutes\n"" + """".join(""Ana,2026-11-%02d,08:00,17:00,30\n"" % d for d in (16, 17, 18, 19, 20))
+    res = run(write(""a.csv"", week), None, emp)
+    w = res[""weeks""][0]
+    check(""5 x 8.5 h = 42.5 h total"", abs(w[""total""] - 42.5) < 1e-9)
+    check(""weekly OT after 40 h = 2.5 h"", abs(w[""overtime""] - 2.5) < 1e-9 and abs(w[""regular""] - 40) < 1e-9)
+    check(""pay = 40x20 + 2.5x30"", abs(w[""pay_estimate""] - 875) < 1e-6)
+    rules = write(""r.json"", json.dumps({""daily_ot_after"": 8, ""daily_dt_after"": 12, ""weekly_ot_after"": 40}))
+    res = run(write(""b.csv"", ""employee,date,start,end,break_minutes\nAna,2026-11-16,06:00,20:00,30\n""), rules, emp)
+    w = res[""weeks""][0]
+    check(""13.5 h day with daily rules: 8 reg, 4 OT, 1.5 DT"", (w[""regular""], w[""overtime""], w[""double_time""]) == (8.0, 4.0, 1.5))
+    res = run(write(""c.csv"", ""employee,date,start,end,break_minutes\nAna,2026-11-16,22:00,06:00,30\n""))
+    check(""overnight shift counted 7.5 h"", abs(res[""weeks""][0][""total""] - 7.5) < 1e-9)
+    check(""overnight shift flagged TS11"", any(f[""code""] == ""TS11"" for f in res[""findings""]))
+    res = run(write(""d.csv"", ""employee,date,start,end,break_minutes\nAna,2026-11-16,08:00,16:00,30\nAna,2026-11-16,15:00,18:00,0\n""))
+    check(""overlap TS02"", any(f[""code""] == ""TS02"" for f in res[""findings""]))
+    res = run(write(""e2.csv"", ""employee,date,start,end,break_minutes\nAna,2026-11-16,08:00,16:00,30\nAna,2026-11-16,08:00,16:00,30\n""))
+    check(""duplicate TS04 counted once"", any(f[""code""] == ""TS04"" for f in res[""findings""]) and abs(res[""weeks""][0][""total""] - 7.5) < 1e-9)
+    res = run(write(""f.csv"", ""employee,date,start,end,break_minutes\nAna,2026-11-16,08:00,16:30,10\n""))
+    check(""missing break TS06"", any(f[""code""] == ""TS06"" for f in res[""findings""]))
+    res = run(write(""g.csv"", ""employee,date,start,end,break_minutes\nAna,2026-11-16,14:00,23:00,30\nAna,2026-11-17,06:00,14:00,30\n""))
+    check(""7 h rest TS07"", any(f[""code""] == ""TS07"" for f in res[""findings""]))
+    res = run(write(""h.csv"", ""employee,date,start,end,break_minutes\nAna,2026-11-16,08:00,,30\nAna,2026-11-17,08:00,16:00,30\n""))
+    check(""missing end TS01 and row skipped"", any(f[""code""] == ""TS01"" for f in res[""findings""]) and res[""shift_count""] == 1)
+    rows = ""employee,date,start,end,break_minutes\n"" + """".join(""Ana,2026-11-%02d,07:00,18:00,30\n"" % d for d in range(16, 21))
+    res = run(write(""i.csv"", rows))
+    check(""52.5 h week TS08"", any(f[""code""] == ""TS08"" for f in res[""findings""]))
+    rows = ""employee,date,start,end,break_minutes\n"" + """".join(""Ana,2026-11-%02d,09:00,13:00,0\n"" % d for d in range(10, 18))
+    res = run(write(""j.csv"", rows))
+    check(""8 days in a row TS09"", any(f[""code""] == ""TS09"" for f in res[""findings""]))
+    res = run(write(""k.csv"", week.replace(""Ana"", ""Bo"")), None, emp)
+    check(""not OT eligible: all regular"", res[""weeks""][0][""overtime""] == 0 and abs(res[""weeks""][0][""regular""] - 42.5) < 1e-9)
+    res = run(write(""l.csv"", week.replace(""Ana"", ""Cy"")), None, emp)
+    check(""unknown employee TS10, no pay"", any(f[""code""] == ""TS10"" for f in res[""findings""]) and res[""weeks""][0][""pay_estimate""] is None)
+    res = run(write(""m.csv"", ""employee,date,start,end,break_minutes\nAna,2026-11-16,08:00,09:00,90\n""))
+    check(""break longer than shift TS03"", any(f[""code""] == ""TS03"" for f in res[""findings""]) and res[""weeks""][0][""total""] == 0)
+    res = run(write(""n.csv"", ""employee,date,start,end,break_minutes\nAna,2026-11-16,08:00,16:00,30\nAna,2026-11-22,08:00,16:00,30\nAna,2026-11-23,08:00,16:00,30\n""))
+    check(""sunday belongs to the monday week, next monday starts a new week"", [w[""week_start""] for w in res[""weeks""]] == [""2026-11-16"", ""2026-11-23""])
+    rules2 = write(""r2.json"", json.dumps({""week_start"": ""sunday""}))
+    res = run(write(""o.csv"", ""employee,date,start,end,break_minutes\nAna,2026-11-22,08:00,16:00,30\n""), rules2)
+    check(""week_start sunday"", res[""weeks""][0][""week_start""] == ""2026-11-22"")
+    try:
+        run(write(""p.csv"", ""employee,date,start\nAna,2026-11-16,08:00\n"")); check(""missing columns rejected"", False)
+    except InputError:
+        check(""missing columns rejected"", True)
+    try:
+        run(write(""q.csv"", week), write(""bad.json"", json.dumps({""weekly_overtime"": 40}))); check(""unknown rule key rejected"", False)
+    except InputError:
+        check(""unknown rule key rejected"", True)
+    print(""ALL PASS"" if ok else ""SOME TESTS FAILED"")
+    return 0 if ok else 1
+
+
+def main(argv):
+    if ""--self-test"" in argv:
+        return self_test()
+    args, opts, i = [], {}, 0
+    while i < len(argv):
+        a = argv[i]
+        if a in (""--rules"", ""--employees""):
+            if i + 1 >= len(argv):
+                print(a + "" needs a file"", file=sys.stderr); return 2
+            opts[a] = argv[i + 1]; i += 2; continue
+        if a != ""--json"":
+            args.append(a)
+        i += 1
+    if len(args) != 1:
+        print(__doc__, file=sys.stderr); return 2
+    try:
+        res = run(args[0], opts.get(""--rules""), opts.get(""--employees""))
+    except (InputError, OSError, json.JSONDecodeError) as e:
+        print(""input error: %s"" % e, file=sys.stderr); return 2
+    print(json.dumps(res, indent=2, default=str) if ""--json"" in argv else report(res))
+    return 1 if any(f[""severity""] == ""high"" for f in res[""findings""]) else 0
+
+
+if __name__ == ""__main__"":
+    sys.exit(main(sys.argv[1:]))
+",FALSE,TEXT,f
