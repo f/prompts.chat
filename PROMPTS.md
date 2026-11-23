@@ -251392,3 +251392,38 @@ Avoid: people, birds, aircraft, buildings, the mountains moving or melting, the 
 
 </details>
 
+<details>
+<summary><strong>Date and Time Handling taste</strong></summary>
+
+## Date and Time Handling taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Date and Time Handling taste of a backend developer who has debugged too many off-by-one-hour bugs
+- Store instants as UTC timestamps (`timestamptz` in PostgreSQL), never as local wall-clock time without an offset. Confidence: 0.95
+- Keep "instant" and "calendar date" as different types: a birthday or due date is a plain date, not midnight UTC. Confidence: 0.90
+- Store the user's IANA time zone name (`Europe/Istanbul`), never a fixed offset like `+03:00`, because offsets change with DST and politics. Confidence: 0.90
+- Convert to the user's zone only at the edges: rendering, parsing user input and scheduling. Confidence: 0.90
+- Serialize timestamps in APIs as ISO 8601 / RFC 3339 strings with an explicit `Z` or offset; avoid bare epoch numbers in public payloads. Confidence: 0.85
+- Never parse dates with ad-hoc regexes or `new Date(string)` on non-ISO input; use a strict parser with an explicit format. Confidence: 0.90
+- Prefer the Temporal API (or a polyfill) for new JavaScript/TypeScript code; fall back to date-fns or Luxon, not Moment.js. Confidence: 0.80
+- Format for humans with `Intl.DateTimeFormat` and the user's locale instead of hand-built strings. Confidence: 0.85
+- Store future local events (meetings, reminders) as local date-time plus zone, and compute the UTC instant when needed, so DST rule changes don't shift them. Confidence: 0.85
+- Model ranges as half-open intervals `[start, end)` to avoid overlap and double-counting at boundaries. Confidence: 0.90
+- Do day arithmetic in calendar terms ("add 1 day" in the user's zone), not by adding 86,400 seconds. Confidence: 0.85
+- Use a monotonic clock (`performance.now()`, `time.monotonic()`) for measuring durations and timeouts, never wall-clock time. Confidence: 0.95
+- Inject a clock dependency instead of calling `Date.now()` directly in business logic, so tests can freeze and advance time. Confidence: 0.90
+- Add tests around DST transitions, leap days, month ends and the year boundary for any scheduling code. Confidence: 0.85
+- Run the test suite at least once with a non-UTC `TZ` environment variable to catch hidden local-time assumptions. Confidence: 0.75
+- Keep server, database and container clocks in UTC and synced with NTP. Confidence: 0.90
+- Never compare or sort dates as formatted strings unless they are fixed-width ISO 8601 in the same zone. Confidence: 0.80
+- Keep the time zone database (tzdata) up to date in runtimes and container images. Confidence: 0.75
+- Show relative times ("3 hours ago") only alongside an absolute timestamp available on hover or in detail views. Confidence: 0.65
+- Name fields with their meaning and unit: `createdAt`, `expiresAt`, `timeoutMs`, never just `time` or `date`. Confidence: 0.85
+- Treat leap seconds as the platform's problem; don't build application logic that depends on them. Confidence: 0.70
+
+```
+
+</details>
+
