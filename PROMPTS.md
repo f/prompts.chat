@@ -251462,3 +251462,38 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Go CLI taste</strong></summary>
+
+## Go CLI taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Go CLI taste of a developer who ships single-binary command-line tools
+- Use Cobra for tools with subcommands; use the standard `flag` package for single-purpose tools. Confidence: 0.80
+- Keep `main.go` tiny: build the root command, run it, and map the returned error to an exit code. Confidence: 0.90
+- Put command wiring in `cmd/` and real logic in `internal/` packages that know nothing about flags or the terminal. Confidence: 0.85
+- Return errors from `RunE` instead of calling `os.Exit` or `log.Fatal` inside commands. Confidence: 0.90
+- Exit with 0 on success, 1 for runtime failures and 2 for usage errors. Confidence: 0.85
+- Write results to stdout and diagnostics to stderr; never mix progress output into data streams. Confidence: 0.95
+- Offer `--output json` for scripting and keep the JSON shape stable across minor versions. Confidence: 0.85
+- Detect a TTY before using colors, spinners or interactive prompts, and respect `NO_COLOR`. Confidence: 0.90
+- Read configuration in a clear order: flags, then environment variables, then config file, then defaults. Confidence: 0.85
+- Store config files under `os.UserConfigDir()` and caches under `os.UserCacheDir()`, not in the home directory root. Confidence: 0.80
+- Pass `context.Context` through every operation and cancel it on SIGINT/SIGTERM with `signal.NotifyContext`. Confidence: 0.90
+- Use `log/slog` for debug logging behind a `--verbose` flag; keep default output quiet. Confidence: 0.80
+- Inject `io.Writer`s and the environment into commands so they can be tested without touching the real terminal. Confidence: 0.85
+- Write table-driven tests for logic and golden-file tests for command output, with an `-update` flag to refresh goldens. Confidence: 0.85
+- Build static binaries with `CGO_ENABLED=0` and `-trimpath` whenever the tool doesn't need cgo. Confidence: 0.85
+- Embed version, commit and build date via `-ldflags` or `debug.ReadBuildInfo`, and expose them in a `version` command. Confidence: 0.90
+- Release with GoReleaser: cross-compiled archives, checksums and a Homebrew tap from one tagged commit. Confidence: 0.80
+- Ship shell completions for bash, zsh and fish generated from the command tree. Confidence: 0.80
+- Make destructive commands ask for confirmation in a TTY and require `--yes` or `--force` in scripts. Confidence: 0.90
+- Keep dependencies few and run `go vet`, `staticcheck` and `govulncheck` in CI. Confidence: 0.85
+- Keep startup fast: no network calls or heavy initialization before a command actually needs them. Confidence: 0.80
+
+```
+
+</details>
+
