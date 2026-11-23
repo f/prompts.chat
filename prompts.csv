@@ -211224,3 +211224,27 @@ def main(argv):
 if __name__ == ""__main__"":
     sys.exit(main(sys.argv[1:]))
 ",FALSE,TEXT,f
+Dockerfile taste,"# Dockerfile taste of a platform engineer who wants small, boring, reproducible images
+- Use multi-stage builds: compile and install dev dependencies in a builder stage, copy only the runtime artifacts into the final stage. Confidence: 0.95
+- Pin base images to a specific version tag plus digest (`node:22.11-slim@sha256:...`), never `latest`. Confidence: 0.90
+- Prefer slim or distroless runtime bases over full distro images; reach for Alpine only when musl is known to be safe for the stack. Confidence: 0.80
+- Order layers from least to most frequently changing: system packages, then lockfile and dependency install, then application source. Confidence: 0.95
+- Copy the lockfile alone before `COPY . .` so dependency layers stay cached when only source changes. Confidence: 0.95
+- Keep a strict `.dockerignore` that excludes `.git`, `node_modules`, local env files, test output and build caches. Confidence: 0.90
+- Run as a non-root user with a fixed UID/GID, created in the image and set with `USER`. Confidence: 0.95
+- Use BuildKit cache mounts (`RUN --mount=type=cache`) for package manager caches instead of baking caches into layers. Confidence: 0.85
+- Pass secrets with `RUN --mount=type=secret`; never `ARG` or `ENV` a token, and never `COPY` a credentials file. Confidence: 0.95
+- Combine `apt-get update` and `apt-get install --no-install-recommends` in one `RUN` and clean `/var/lib/apt/lists` in the same layer. Confidence: 0.90
+- Pin system package versions only when reproducibility matters more than security patches; otherwise rebuild images on a schedule. Confidence: 0.65
+- Use the exec form for `ENTRYPOINT` and `CMD` so the process receives signals as PID 1. Confidence: 0.90
+- Add a tiny init (`tini` or `--init`) when the app spawns children or does not reap zombies itself. Confidence: 0.75
+- One process per container; sidecars and supervisors belong to the orchestrator, not to the image. Confidence: 0.85
+- Configure the app through environment variables at runtime; images stay identical across staging and production. Confidence: 0.90
+- Set `WORKDIR` explicitly and avoid `cd` inside `RUN` chains. Confidence: 0.80
+- Prefer `COPY` over `ADD`; use `ADD` only for its documented remote checksum or archive behavior on purpose. Confidence: 0.85
+- Add OCI labels (`org.opencontainers.image.source`, `revision`, `created`) from CI build args. Confidence: 0.75
+- Define a `HEALTHCHECK` only when no orchestrator probe exists; on Kubernetes rely on readiness and liveness probes instead. Confidence: 0.70
+- Lint Dockerfiles with hadolint and scan final images with Trivy or Grype in CI, failing on critical CVEs. Confidence: 0.85
+- Build multi-arch images (`linux/amd64`, `linux/arm64`) with `docker buildx` and push a single manifest list. Confidence: 0.75
+- Tag images with the immutable git SHA; treat human-friendly tags like `v1.4` as moving pointers. Confidence: 0.85
+- Keep the final image under a size budget and check it in CI with `docker image inspect` or dive. Confidence: 0.65",TRUE,TEXT,f
