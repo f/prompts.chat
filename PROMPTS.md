@@ -251315,3 +251315,19 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Carved Shell Cameo Brooch of a Chambered Nautilus Among Seaweed</strong></summary>
+
+## Carved Shell Cameo Brooch of a Chambered Nautilus Among Seaweed
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A close-up studio photograph of a hand-carved Victorian-style shell cameo brooch showing a chambered nautilus drifting among seaweed, carved in creamy white relief on a warm peach-to-caramel sardonyx shell background. The oval cameo fills most of the portrait frame and sits in a slim antique gold bezel with a fine twisted-rope border and tiny milgrain beading. In the center, the nautilus shell is seen from the side: its smooth spiral with delicate growth lines and the curved stripes of the shell carved as low ridges, the opening at the left with a few short tentacles curling out beneath the hood. Around it, long ribbons of kelp and frilly sea lettuce rise from a small cluster of rocks at the bottom, and three tiny air bubbles float toward the top.
+
+Render it exactly like real shell carving: the white layer is thinnest at the edges, so the background peach color glows through the thin tentacles, seaweed tips and bubble edges; visible fine chisel and burin marks, softly polished high points, slightly uneven hand-cut outlines, and a faint natural crack line in the shell near the lower right. The brooch rests on dark green velvet with visible pile, lit by soft window light from the upper left that rakes across the relief to show its depth, with a small warm highlight on the gold. Macro lens, shallow depth of field, the carving sharp, the velvet falling softly out of focus. No text, no hallmarks, no hands, no people. Portrait 3:4.
+
+```
+
+</details>
+
