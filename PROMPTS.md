@@ -248576,3 +248576,19 @@ Render it exactly like an 1880s transparent hand-painted slide: thin, luminous a
 
 </details>
 
+<details>
+<summary><strong>Emperor Penguins Huddling Through an Antarctic Blizzard</strong></summary>
+
+## Emperor Penguins Huddling Through an Antarctic Blizzard
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A photorealistic wide telephoto photograph of an emperor penguin colony huddling together on the Antarctic sea ice during a blizzard in the soft blue light of the polar winter twilight. About forty adult emperor penguins stand pressed tightly in a dense, rounded huddle that fills the middle of the frame, their backs and heads dusted with snow and frost, black backs and the bright golden-yellow ear patches showing between them; a few birds on the windward right edge stand with heads tucked down against the wind. In the left foreground, two fluffy grey chicks stand on the feet of their parents, half hidden in the brood pouch. Wind-driven snow streaks horizontally from right to left across the whole scene, softening the background into a pale blue-grey haze where a faint line of ice cliffs is barely visible. The low sun is hidden behind the storm, giving a faint pink-violet glow on the horizon at the far left.
+
+Shot like a National Geographic wildlife photograph: 600 mm telephoto compression, crisp detail on the feathers and frost in the front row, natural cold color balance, fine blowing-snow motion streaks, realistic textures of wind-packed snow at their feet. No people, no buildings, no text. Landscape 16:9.
+
+```
+
+</details>
+
