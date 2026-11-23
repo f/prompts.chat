@@ -251497,3 +251497,67 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Thermal Shock: 30s AAA Game-Trailer Elemental Duel on a Storm Dam (20-Shot Seedance Prompt)</strong></summary>
+
+## Thermal Shock: 30s AAA Game-Trailer Elemental Duel on a Storm Dam (20-Shot Seedance Prompt)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+AAA game cinematic trailer, pre-rendered CG like a high-budget fantasy game launch trailer: stylized semi-realistic characters with idealized faces, large luminous eyes, porcelain skin with subsurface glow, individually simulated hair strands, real fabric with weave and wear; massive particle and energy effects, volumetric god rays, haze and floating dust, low golden-hour backlight with sun flare, deep contrast, bloom, subtle chromatic aberration and film grain, anamorphic lens, shallow depth of field, fast handheld and drone camera work with real motion blur. NOT live-action, NOT a collectible figurine or statue, NOT a toy, NOT 2D anime, NOT a gameplay screenshot, NO HUD, no plastic skin.
+
+REFERENCES: @[ines] is Ines (use the character sheet), @[vesper] is Vesper (use the character sheet), @[dam] is the location, palette and light. Match each exactly whenever visible.
+
+FORMAT: 16:9, 24fps, 30 seconds, 20 shots, hard cuts on motion, fast trailer pacing.
+
+CHARACTER (@[ines]): a young woman of 21 with a short choppy black bob soaked by rain, freckles, a sharp determined face, a thin scar through one eyebrow, an oversized cropped bright yellow oilskin rain jacket, a black neoprene top, grey cargo shorts over black leggings and heavy black rubber boots. Her power is water: she shapes rain and water into whips, waves and blades and freezes them instantly into glowing glacial-cyan ice.
+
+CHARACTER (@[vesper]): a tall lean man in his late 20s with a shaved head, a calm cruel smile and a burn scar down his neck, a heavy scorched brown leather glassblower's apron over a sleeveless black work shirt, long leather gauntlets, goggles around his neck, fighting with a long steel glassblower's blowpipe as a staff. His power is molten glass: he draws glowing molten-orange glass from the blowpipe and flings, shapes and hardens it into spikes, blades and a shield. Molten glass hisses into steam wherever rain touches it.
+
+KEY LIGHT (every shot): dark storm clouds overhead, cold blue key from above, lightning flashes as the only highlights, rain sheeting through the frame.
+
+PALETTE: storm blue-black, wet concrete grey, @[ines]'s yellow jacket. Glacial cyan belongs only to @[ines]; molten orange belongs only to @[vesper]. Where they collide, white steam.
+
+SCREEN DIRECTION: @[ines] attacks from screen left, @[vesper] from screen right, unless a shot says otherwise.
+
+SHOTS
+1 | 0.0-1.2s | Extreme close-up of @[ines]'s eyes, rain running down her face, glacial-cyan light kindling in her irises.
+2 | 1.2-2.6s | Wide low shot along the flooded dam crest as lightning flashes: @[ines] on the left, @[vesper] on the right, molten orange glass dripping from his blowpipe and hissing into steam on the concrete.
+3 | 2.6-3.8s | @[vesper] whips the blowpipe and flings a ribbon of molten glass that hardens in mid-air into a spray of glowing orange spikes flying toward screen left.
+4 | 3.8-4.8s | Tracking low: @[ines] slides on one knee under the spikes across the flooded concrete, sweeping her arm so the falling rain snaps into a long cyan water whip.
+5 | 4.8-6.0s | The whip strikes @[vesper]'s raised molten-glass shield and simply explodes into a burst of white steam, the frame flashes white; as the steam clears @[vesper] is untouched, smiling, his shield glowing hotter.
+6 | 6.0-7.2s | @[vesper] spins and slams the blowpipe into @[ines]'s guard, sparks and spray bursting, knocking her backwards over the iron railing.
+7 | 7.2-9.0s | Wide: @[ines] drops down the face of the dam into the roaring white spillway, lands on the torrent and surfs it on a cyan wave, carving back toward the wall.
+8 | 9.0-10.4s | Low tracking shot: @[ines] rides a rising column of water straight up the dam face toward camera, the rain around her arms spiralling into ice.
+9 | 10.4-11.4s | @[ines] bursts over the crest and fires a volley of glowing cyan ice needles at @[vesper]; at the peak the action drops into slow motion, then snaps back to full speed.
+10 | 11.4-12.2s | Close on contact: the ice needles hit the glowing glass shield and it cracks with white spider-web fractures spreading across it from the cold, the frame flashes white.
+11 | 12.2-13.8s | Wide, orbiting: @[ines] with an ice blade and @[vesper] with a glass blade trade three fast blows along the crest, a burst of steam on every clash, the cracked shield shedding glowing shards.
+12 | 13.8-15.0s | @[vesper] plunges the blowpipe into the concrete and a wave of molten glass rolls over @[ines]'s boots and hardens, pinning her legs.
+13 | 15.0-16.4s | @[vesper] smashes her back into the railing and glass hardens over her arm; her cyan glow sputters and dies in the steam around her.
+14 | 16.4-17.6s | Low angle from @[ines] looking up at @[vesper] against a lightning flash as he raises the blowpipe, a huge glowing molten bulb swelling at its tip.
+15 | 17.6-18.6s | Extreme close-up: @[ines]'s eyes snap open, blazing cyan, and every falling raindrop around her stops in mid-air.
+16 | 18.6-20.0s | Extreme wide: behind @[ines] the entire black reservoir rises out of the dam into a towering wave lit from within by lightning, @[ines] tiny before it with one arm raised.
+17 | 20.0-21.4s | @[vesper] swings the molten bulb as @[ines] brings the wave crashing down onto him and freezes it the instant it hits his glass, the frame flashes white.
+18 | 21.4-23.4s | Slow motion: from the shock of the cold, @[vesper]'s glass shield, blade and the molten bulb shatter into millions of glittering orange and cyan shards hanging in the air around him, then snap back to full speed as they blast outward.
+19 | 23.4-25.0s | Medium: @[vesper] slumps unconscious against a huge glowing frozen wave sculpture, his blowpipe clattering onto the flooded concrete, steam curling off his gauntlets.
+20 | 25.0-30.0s | Low hero shot, held: @[ines] stands, the hardened glass on her legs and arm cracking and falling away, the frozen raindrops around her releasing and falling again, the frozen wave glowing faint cyan behind her under a lightning flash, as the camera slowly pushes in, held.
+
+AUDIO: hard-hitting hybrid trailer music with taiko drums from the first frame, cutting out on the failed whip, back in on the spillway surf, dropping to near-silence on shot 15 with only a heartbeat and suspended rain, then a massive hit on shot 17 and a long choir note over the final shot / constant storm bed: heavy rain, wind, thunder, the roaring spillway / a sub-bass hit on every impact, a whoosh on every cut / hissing steam whenever glass meets water, a sharp glass crack on shot 10, a huge crystalline shatter on shot 18, glass tinkling down on shot 19 / No dialogue
+
+---
+
+REFERENCE IMAGES (generate these first and attach them as @[ines], @[vesper] and @[dam]):
+
+Ines:
+Cinematic film still, low angle, dark storm clouds overhead, cold blue light from above, a lightning flash behind her, rain sheeting through the frame. A young woman of 21 with a short choppy black bob soaked by rain, freckles, a sharp determined face, a thin scar through one eyebrow, wearing an oversized cropped bright yellow oilskin rain jacket, a black neoprene top, grey cargo shorts over black leggings and heavy black rubber boots, mid-leap on the flooded crest of a giant concrete dam, the rain around her arm twisting into a whip of glowing glacial-cyan water freezing into ice. AAA game cinematic trailer, pre-rendered CG, stylized semi-realistic character with an idealized face, large luminous eyes, porcelain skin with subsurface glow, individually simulated hair strands, real fabric with weave and wear, volumetric god rays, flying debris and sparks, bloom, deep contrast, anamorphic lens, shallow depth of field, motion blur, subtle film grain
+
+Vesper:
+Cinematic film still, low angle, dark storm clouds overhead, cold blue light from above, a lightning flash behind him, rain sheeting through the frame. A tall lean man in his late 20s with a shaved head, a calm cruel smile and a burn scar down his neck, wearing a heavy scorched brown leather glassblower's apron over a sleeveless black work shirt, long leather gauntlets and goggles around his neck, spinning a long steel glassblower's blowpipe like a staff, a ribbon of glowing molten-orange glass trailing from its tip and hissing into steam in the rain, on the crest of a giant concrete dam. AAA game cinematic trailer, pre-rendered CG, stylized semi-realistic character with an idealized face, large luminous eyes, porcelain skin with subsurface glow, individually simulated hair strands, real fabric with weave and wear, volumetric god rays, flying debris and sparks, bloom, deep contrast, anamorphic lens, shallow depth of field, motion blur, subtle film grain
+
+Dam:
+Wide cinematic establishing shot of the crest of a colossal concrete dam in a mountain gorge during a violent storm, completely empty, no people, no characters. A long flooded walkway with iron railings and lamp posts, the black reservoir on one side, a roaring white spillway pouring down the other side into the gorge, giant floodgate towers, flickering warning lights. Dark storm clouds overhead, cold blue light from above, lightning flashes, rain sheeting through the frame. Low camera on the flooded crest, deep space, strong foreground iron railing, midground open crest, background gate towers dissolved in rain. AAA game cinematic trailer, pre-rendered CG environment, volumetric light, bloom, deep contrast, anamorphic lens, subtle film grain
+```
+
+</details>
+
