@@ -211271,3 +211271,26 @@ Python CLI taste,"# Python CLI taste of a tooling developer who ships small, wel
 - Ship shell completion for bash, zsh and fish through the framework's built-in completion support. Confidence: 0.75
 - Write help text with a short example for every command; examples beat long option descriptions. Confidence: 0.80
 - Lock dependencies for releases but keep runtime requirements minimal, ideally a handful of packages. Confidence: 0.75",TRUE,TEXT,f
+Database Indexing taste,"# Database Indexing taste of a backend engineer who indexes for real queries, not guesses
+- Design indexes from the actual slow query log and `EXPLAIN (ANALYZE, BUFFERS)` output, not from the schema alone. Confidence: 0.95
+- Index every foreign key column that is used in joins or cascading deletes. Confidence: 0.90
+- Order composite index columns by equality filters first, then range filters, then sort columns. Confidence: 0.90
+- Prefer one well-chosen composite index over several single-column indexes the planner has to combine. Confidence: 0.85
+- Drop indexes whose leading columns duplicate another index; `(a)` is redundant next to `(a, b)`. Confidence: 0.85
+- Use covering indexes (`INCLUDE` columns) for hot read paths so queries can use index-only scans. Confidence: 0.80
+- Use partial indexes for skewed data, such as `WHERE deleted_at IS NULL` or `WHERE status = 'pending'`. Confidence: 0.90
+- Enforce uniqueness with unique indexes or constraints in the database, never only in application code. Confidence: 0.95
+- Create indexes on large live tables with `CREATE INDEX CONCURRENTLY` (or the engine's online equivalent) in a migration of its own. Confidence: 0.95
+- Never wrap indexed columns in functions in `WHERE` clauses; add an expression index like `lower(email)` when needed. Confidence: 0.85
+- Avoid leading-wildcard `LIKE '%term'` on B-tree indexes; use trigram or full-text indexes for substring search. Confidence: 0.85
+- Pick GIN for JSONB containment and arrays, BRIN for huge append-only time-series tables, B-tree for everything else. Confidence: 0.80
+- Use keyset pagination on an indexed sort key instead of large `OFFSET` values. Confidence: 0.90
+- Keep low-cardinality booleans out of standalone indexes; fold them into a partial or composite index instead. Confidence: 0.80
+- Review index usage statistics monthly and remove indexes with zero scans after confirming replicas do not use them. Confidence: 0.75
+- Budget write cost: every extra index slows inserts and updates, so write-heavy tables get the fewest indexes. Confidence: 0.85
+- Keep table statistics fresh with autovacuum/analyze tuning on big, fast-changing tables. Confidence: 0.80
+- Watch for index bloat and rebuild with `REINDEX CONCURRENTLY` when it degrades performance. Confidence: 0.70
+- Name indexes predictably, for example `idx_<table>_<columns>` and `uq_<table>_<columns>`. Confidence: 0.75
+- Add a query plan check to code review for any new query on a table above a million rows. Confidence: 0.70
+- Test index changes on a production-sized copy or branch before shipping them. Confidence: 0.85
+- Never add an index just because a column appears in a `WHERE` clause somewhere; measure first. Confidence: 0.80",TRUE,TEXT,f
