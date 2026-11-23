@@ -251347,3 +251347,19 @@ Render it exactly like real handwork: each stitch is a short raised dash with sm
 
 </details>
 
+<details>
+<summary><strong>Sea of Clouds Flowing Over a Mountain Ridge at Sunrise</strong></summary>
+
+## Sea of Clouds Flowing Over a Mountain Ridge at Sunrise
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A photorealistic wide landscape photograph of a sea of clouds (a temperature inversion) filling the valleys below a rocky mountain ridge at sunrise. In the foreground, a dark granite ridge with patches of frost and low alpine grass runs from the lower left to the middle right, with a small group of wind-bent pine trees standing on it at the right. Beyond the ridge, a smooth, dense white cloud layer fills the whole valley like a calm ocean; at a low saddle in the middle of the ridge the cloud spills over the edge in a soft, slow "cloud waterfall" pouring down into the next valley. Distant blue-grey mountain peaks rise out of the cloud sea like islands, layer after layer toward the horizon. The sun has just cleared the horizon at the upper left, painting the top of the clouds gold and peach and leaving the shadowed sides pale lavender-blue; the sky fades from warm orange near the sun to clear soft blue above.
+
+Shot like a professional landscape photograph: 35 mm lens from a high viewpoint on the ridge, deep focus from the frosty rocks to the far peaks, gentle sun flare at the upper left, natural colors, fine detail in the cloud texture and the pine needles. No people, no buildings, no roads, no birds, no text. Landscape 16:9.
+
+```
+
+</details>
+
