@@ -249824,3 +249824,16 @@ Maintain the reference woman's exact identity throughout. No cartoon features, n
 
 </details>
 
+<details>
+<summary><strong>Cinematic Café Portrait With a Matching 3D Chibi Figurine (1:1)</strong></summary>
+
+## Cinematic Café Portrait With a Matching 3D Chibi Figurine (1:1)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A cinematic studio portrait of a woman seated at a textured stone table against a muted warm gray background. She wears a dark brown satin blouse, subtle evening makeup, and softly layered shoulder-length hair. In front of her is a glass of cold brew coffee with ice and a metal straw. Placed beside it is a glossy 3D chibi figurine of the same woman, with a big rounded head, expressive eyes, soft blush cheeks, and simplified facial features, holding a miniature cold brew glass. The chibi has a high-quality collectible toy look with gentle reflections. Intimate evening café vibe, moody soft lighting, shallow depth of field, realistic human combined with stylized 3D character, cinematic and cozy, 1:1 aspect ratio.
+```
+
+</details>
+
