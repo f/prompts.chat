@@ -91,26 +91,39 @@ def normalize(s):
 
 # --- Contributor helpers ---
 
+BOT_NAME = 'github-actions[bot]'
+BOT_EMAIL = '41898333+github-actions[bot]@users.noreply.github.com'
+
+def sanitize_contributors(field):
+    """Drop email-like entries and duplicates; the CSV and git history are public."""
+    seen = []
+    for c in (field or '').split(','):
+        c = c.strip()
+        if c and '@' not in c and c not in seen:
+            seen.append(c)
+    return ','.join(seen)
+
+def sanitize_row(row):
+    row['contributor'] = sanitize_contributors(row.get('contributor'))
+    return row
+
 def parse_contributors(field):
-    if not field:
-        return 'anonymous', []
-    parts = [c.strip() for c in field.split(',') if c.strip()]
+    parts = [c for c in sanitize_contributors(field).split(',') if c]
     if not parts:
-        return 'anonymous', []
+        return None, []
     return parts[0], parts[1:]
 
-def make_email(name):
-    """Build an email — don't double-suffix if the contributor is already an email."""
-    if '@' in name:
-        return name
-    return f'{name}@users.noreply.github.com'
+def commit_identity(name):
+    if not name:
+        return BOT_NAME, BOT_EMAIL
+    return name, f'{name}@users.noreply.github.com'
 
 def build_commit_msg(action, act, co_authors):
     msg = f'{action} prompt: {act}'
     if co_authors:
         msg += '\n\n'
         for ca in co_authors:
-            msg += f'Co-authored-by: {ca} <{make_email(ca)}>\n'
+            msg += f'Co-authored-by: {ca} <{commit_identity(ca)[1]}>\n'
     return msg
 
 def git_commit(author_name, author_email, message):
@@ -213,6 +226,7 @@ def remove_prompt_from_md(act):
 
 local_rows, local_index, fieldnames, skipped_l = read_csv(csv_file)
 remote_rows, remote_index, remote_fieldnames, skipped_r = read_csv(remote_csv)
+remote_rows = [sanitize_row(r) for r in remote_rows]
 
 if not fieldnames:
     fieldnames = remote_fieldnames
@@ -257,7 +271,7 @@ for i, row in enumerate(deleted_prompts, 1):
     act = (row.get('act') or '').strip()
     contributor = (row.get('contributor') or '').strip()
     primary, coauthors = parse_contributors(contributor)
-    email = make_email(primary)
+    author_name, author_email = commit_identity(primary)
 
     if act in local_index:
         local_rows.pop(local_index[act])
@@ -267,9 +281,9 @@ for i, row in enumerate(deleted_prompts, 1):
     write_csv(local_rows, fieldnames, csv_file)
 
     msg = build_commit_msg('Remove', act, coauthors)
-    if git_commit(primary, email, msg):
+    if git_commit(author_name, author_email, msg):
         ca = f" (+ {', '.join(coauthors)})" if coauthors else ""
-        print(f"  [{i}/{len(deleted_prompts)}] {primary}{ca}: {act}")
+        print(f"  [{i}/{len(deleted_prompts)}] {author_name}{ca}: {act}")
         counts['remove'] += 1
     else:
         print(f"  [{i}/{len(deleted_prompts)}] {act} — no changes, skipping")
@@ -281,7 +295,7 @@ for i, row in enumerate(updated_prompts, 1):
     act = (row.get('act') or '').strip()
     contributor = (row.get('contributor') or '').strip()
     primary, coauthors = parse_contributors(contributor)
-    email = make_email(primary)
+    author_name, author_email = commit_identity(primary)
 
     if act in local_index:
         local_rows[local_index[act]] = row
@@ -290,9 +304,9 @@ for i, row in enumerate(updated_prompts, 1):
     write_csv(local_rows, fieldnames, csv_file)
 
     msg = build_commit_msg('Update', act, coauthors)
-    if git_commit(primary, email, msg):
+    if git_commit(author_name, author_email, msg):
         ca = f" (+ {', '.join(coauthors)})" if coauthors else ""
-        print(f"  [{i}/{len(updated_prompts)}] {primary}{ca}: {act}")
+        print(f"  [{i}/{len(updated_prompts)}] {author_name}{ca}: {act}")
         counts['update'] += 1
     else:
         print(f"  [{i}/{len(updated_prompts)}] {act} — no changes, skipping")
@@ -304,7 +318,7 @@ for i, row in enumerate(new_prompts, 1):
     act = (row.get('act') or '').strip()
     contributor = (row.get('contributor') or '').strip()
     primary, coauthors = parse_contributors(contributor)
-    email = make_email(primary)
+    author_name, author_email = commit_identity(primary)
 
     local_rows.append(row)
     local_index[act] = len(local_rows) - 1
@@ -313,9 +327,9 @@ for i, row in enumerate(new_prompts, 1):
     write_csv(local_rows, fieldnames, csv_file)
 
     msg = build_commit_msg('Add', act, coauthors)
-    if git_commit(primary, email, msg):
+    if git_commit(author_name, author_email, msg):
         ca = f" (+ {', '.join(coauthors)})" if coauthors else ""
-        print(f"  [{i}/{len(new_prompts)}] {primary}{ca}: {act}")
+        print(f"  [{i}/{len(new_prompts)}] {author_name}{ca}: {act}")
         counts['add'] += 1
     else:
         print(f"  [{i}/{len(new_prompts)}] {act} — no changes, skipping")
