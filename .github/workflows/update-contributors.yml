@@ -33,6 +33,19 @@ jobs:
           chmod +x scripts/generate-contributors.sh
           ./scripts/generate-contributors.sh
 
+      - name: Check prompts.csv has no contributor emails
+        run: |
+          python3 << 'EOF'
+          import csv, sys
+          csv.field_size_limit(sys.maxsize)
+          with open("prompts.csv", newline="", encoding="utf-8") as f:
+              bad = sum(1 for row in csv.DictReader(f) if "@" in (row.get("contributor") or ""))
+          if bad:
+              print(f"::error::{bad} rows in prompts.csv have an email-like contributor; refusing to publish")
+              sys.exit(1)
+          print("No contributor emails found")
+          EOF
+
       - name: Push changes
         run: |
           git push origin main --force-with-lease
@@ -41,18 +54,27 @@ jobs:
         env:
           HF_API_TOKEN: ${{ secrets.HF_API_TOKEN }}
         run: |
-          pip install huggingface_hub
+          pip install "huggingface_hub>=0.20"
           python3 << 'EOF'
           import os
           from huggingface_hub import HfApi
           
+          repo_id = "fka/prompts.chat"
           api = HfApi(token=os.environ["HF_API_TOKEN"])
           api.upload_file(
               path_or_fileobj="prompts.csv",
               path_in_repo="prompts.csv",
-              repo_id="fka/prompts.chat",
+              repo_id=repo_id,
               repo_type="dataset",
               commit_message="Update prompts.csv"
           )
           print("Successfully synced prompts.csv to Hugging Face")
+          # Keep the dataset repo at a single commit so its history (and any
+          # previously published contributor data) doesn't accumulate.
+          api.super_squash_history(
+              repo_id=repo_id,
+              repo_type="dataset",
+              commit_message="Update prompts.csv"
+          )
+          print("Squashed Hugging Face history")
           EOF
