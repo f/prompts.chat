@@ -42,7 +42,7 @@ Rewrite the prompt with all these details included.`}
   after={{ label: "Focused prompt", content: "Write a 500-word blog post introducing AI to beginners.\n\nRequirements:\n1. Explain one core concept clearly\n2. Include one simple code example\n3. End with a call to action\n\nTone: Professional but approachable" }}
 />
 
-**Why it happens**: Fear of multiple interactions, or wanting to "get it all out" in one go. But cognitive overload affects AI just like it affects humans—too many competing requirements leads to dropped balls.
+**Why it happens**: Fear of multiple interactions, or wanting to "get it all out" in one go. But cognitive overload affects AI just like it affects humans—too many competing requirements lead to dropped balls.
 
 <InfoGrid items={[
   { label: "Limit Requirements", description: "Stick to 3-5 key requirements per prompt", example: "Focus on: audience, format, length, one key constraint", exampleType: "text", color: "green" },
@@ -64,7 +64,7 @@ When a single prompt gets overloaded, [prompt chaining](/book/11-prompt-chaining
   after={{ label: "Provides context", content: "Update this function to add error handling:\n\n```python\ndef calculate_total(items):\n    return sum(item.price for item in items)\n```\n\nAdd try/except for empty lists and invalid items." }}
 />
 
-**Why it happens**: AI conversations feel like talking to a colleague. But unlike colleagues, most AI models have no persistent memory between sessions—each conversation starts fresh.
+**Why it happens**: AI conversations feel like talking to a colleague. But unlike a colleague, the model itself keeps nothing between sessions. Some chat apps now offer memory features that carry a few saved notes about you into new chats, but they keep selected details, not the code or document you shared last week. Treat each new conversation as a fresh start and include what matters.
 
 <TryIt 
   title="Context Completeness Check"
@@ -209,7 +209,7 @@ Generate a format specification I can add to my prompt, including:
 **The Pattern**: You paste an enormous document and expect comprehensive analysis. But models have limits—they may truncate, lose focus, or miss important details in long inputs.
 
 <InfoGrid items={[
-  { label: "Know Your Limits", description: "Different models have different context windows", example: "GPT-4: 128K tokens, Claude: 200K tokens, Gemini: 1M tokens", exampleType: "text", color: "blue" },
+  { label: "Know Your Limits", description: "Context windows differ by model and change with each release", example: "Many current models accept around 1M tokens, while smaller or older ones may stop at 128K or 200K. Check your model's documentation.", exampleType: "text", color: "blue" },
   { label: "Chunk Large Inputs", description: "Break documents into manageable sections", example: "Analyze chapters separately, then synthesize", exampleType: "text", color: "blue" },
   { label: "Front-Load Important Info", description: "Put critical context early in the prompt", example: "Key requirements first, background details later", exampleType: "text", color: "blue" },
   { label: "Trim the Fat", description: "Remove unnecessary context", example: "Do you really need the entire doc, or just relevant sections?", exampleType: "text", color: "blue" }
