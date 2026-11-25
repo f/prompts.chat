@@ -1,9 +1,9 @@
-Yazdığınız promptlar yapay zekanın nasıl davrandığını şekillendirir. İyi hazırlanmış bir prompt eğitebilir, yardım edebilir ve güçlendirebilir. Dikkatsiz bir prompt aldatabilir, ayrımcılık yapabilir veya zarar verebilir. Prompt mühendisleri olarak sadece kullanıcı değiliz—yapay zeka davranışının tasarımcılarıyız ve bu gerçek bir sorumluluk taşır.
+Yazdığınız promptlar, yapay zekanın nasıl davranacağını belirler. Özenle hazırlanmış bir prompt öğretebilir, yardım edebilir, insanları güçlendirebilir. Özensiz bir prompt ise aldatabilir, ayrımcılık yapabilir ya da zarar verebilir. Prompt mühendisleri olarak yalnızca kullanıcı değiliz; yapay zekanın davranışını biz tasarlıyoruz ve bu, gerçek bir sorumluluk getiriyor.
 
-Bu bölüm yukarıdan dayatılan kurallar hakkında değil. Seçimlerimizin etkisini anlamak ve gurur duyabileceğimiz yapay zeka kullanımına yol açan alışkanlıklar oluşturmak hakkında.
+Bu bölüm, yukarıdan dayatılan kurallarla ilgili değil. Asıl mesele, seçimlerimizin etkisini anlamak ve bizi gurur duyabileceğimiz bir yapay zeka kullanımına götüren alışkanlıklar edinmek.
 
 <Callout type="warning" title="Bu Neden Önemli">
-Yapay zeka ne verilirse onu büyütür. Önyargılı bir prompt büyük ölçekte önyargılı çıktılar üretir. Aldatıcı bir prompt büyük ölçekte aldatmayı mümkün kılar. Prompt mühendisliğinin etik sonuçları bu sistemlerin kazandığı her yeni yetenekle büyür.
+Yapay zeka, kendisine ne verilirse onu büyütür. Önyargılı bir prompt, önyargılı çıktıları çok büyük ölçekte çoğaltır. Aldatıcı bir prompt, aldatmayı çok büyük ölçekte mümkün kılar. Bu sistemler her yeni yetenek kazandığında, prompt mühendisliğinin etik boyutu da büyür.
 </Callout>
 
 ## Etik Temeller
@@ -12,21 +12,21 @@ Prompt mühendisliğindeki her karar birkaç temel ilkeye bağlanır:
 
 <InfoGrid items={[
   { label: "Dürüstlük", description: "İnsanları aldatmak veya yanıltıcı içerik oluşturmak için YZ kullanmayın", example: "Sahte yorumlar, kimliğe bürünme veya uydurulmuş 'kanıtlar' yok", exampleType: "text", color: "blue" },
-  { label: "Adalet", description: "Önyargıları ve stereotipleri sürdürmekten kaçınmak için aktif çalışın", example: "Promptları demografiler arasında test et, farklı bakış açıları iste", exampleType: "text", color: "purple" },
-  { label: "Şeffaflık", description: "Önemli olduğunda YZ katılımı hakkında net olun", example: "Yayınlanan çalışmalarda, profesyonel bağlamlarda YZ yardımını açıkla", exampleType: "text", color: "green" },
-  { label: "Gizlilik", description: "Promptlarda ve çıktılarda kişisel bilgileri koruyun", example: "Verileri anonimleştir, KKV dahil etmekten kaçın, veri politikalarını anla", exampleType: "text", color: "amber" },
-  { label: "Güvenlik", description: "Zararlı çıktıları önleyen promptlar tasarlayın", example: "Güvenlik önlemleri oluştur, uç durumları test et, redleri zarif şekilde ele al", exampleType: "text", color: "red" },
+  { label: "Adalet", description: "Önyargıların ve kalıp yargıların sürmesini önlemek için bilinçli çaba gösterin", example: "Promptları demografiler arasında test et, farklı bakış açıları iste", exampleType: "text", color: "purple" },
+  { label: "Şeffaflık", description: "Önemli olduğu durumlarda yapay zekadan yararlandığınızı açıkça belirtin", example: "Yayınlanan çalışmalarda, profesyonel bağlamlarda YZ yardımını açıkla", exampleType: "text", color: "green" },
+  { label: "Gizlilik", description: "Promptlarda ve çıktılarda kişisel bilgileri koruyun", example: "Verileri anonimleştir, kişisel veri eklemekten kaçın, veri politikalarını öğren", exampleType: "text", color: "amber" },
+  { label: "Güvenlik", description: "Zararlı çıktıları önleyen promptlar tasarlayın", example: "Güvenlik önlemleri kur, uç durumları test et, reddetmeleri incelikle ele al", exampleType: "text", color: "red" },
   { label: "Hesap Verebilirlik", description: "Promptlarınızın ürettiği şeyler için sorumluluk alın", example: "Çıktıları gözden geçir, sorunları düzelt, insan gözetimini sürdür", exampleType: "text", color: "cyan" }
 ]} />
 
 ### Prompt Mühendisinin Rolü
 
-Fark edebileceğinizden daha fazla etkiniz var:
+Sandığınızdan çok daha fazla etkiniz var:
 
-- **YZ ne üretir**: Promptlarınız içeriğin, tonun ve kalitesinin çıktılarını belirler
-- **YZ nasıl etkileşir**: Sistem promptlarınız kişiliği, sınırları ve kullanıcı deneyimini şekillendirir
-- **Hangi güvenlik önlemleri var**: Tasarım seçimleriniz YZ'nin ne yapıp yapmayacağını belirler
-- **Hatalar nasıl ele alınır**: Hata işlemeniz başarısızlıkların zarif mi yoksa zararlı mı olduğunu belirler
+- **YZ'nin ne ürettiği**: Çıktıların içeriğini, tonunu ve kalitesini promptlarınız belirler
+- **YZ'nin nasıl etkileşim kurduğu**: Kişiliği, sınırları ve kullanıcı deneyimini sistem promptlarınız şekillendirir
+- **Hangi güvenlik önlemlerinin olduğu**: YZ'nin neyi yapıp neyi yapmayacağını tasarım tercihleriniz belirler
+- **Hataların nasıl ele alındığı**: Bir aksaklığın zararsızca mı atlatılacağını yoksa zarara mı yol açacağını, hataları nasıl ele aldığınız belirler
 
 ## Zararlı Çıktılardan Kaçınma
 
@@ -40,16 +40,16 @@ En temel etik yükümlülük, promptlarınızın zarar vermesini önlemektir.
   { label: "Taciz ve Nefret", description: "Bireyleri veya grupları hedefleyen içerik", example: "Ayrımcı içerik, ifşa etme, hedefli taciz", exampleType: "text", color: "red" },
   { label: "Yanlış Bilgi", description: "Kasıtlı olarak yanlış veya yanıltıcı içerik", example: "Sahte haberler, sağlık yanlış bilgisi, komplo içeriği", exampleType: "text", color: "red" },
   { label: "Gizlilik İhlalleri", description: "Kişisel bilgileri ifşa etme veya istismar etme", example: "Özel verileri açığa çıkarma, takip yardımı", exampleType: "text", color: "red" },
-  { label: "İstismar", description: "Savunmasız bireyleri istismar eden içerik", example: "ÇCIM, rızasız yakın içerik, yaşlıları hedefleyen dolandırıcılıklar", exampleType: "text", color: "red" }
+  { label: "İstismar", description: "Savunmasız bireyleri istismar eden içerik", example: "ÇCİM, rıza dışı mahrem içerik, yaşlıları hedef alan dolandırıcılıklar", exampleType: "text", color: "red" }
 ]} />
 
-<Callout type="warning" title="ÇCIM Nedir?">
-ÇCIM **Çocuk Cinsel İstismarı Materyali** anlamına gelir. Bu tür içeriği oluşturmak, dağıtmak veya bulundurmak dünya çapında yasadışıdır. YZ sistemleri asla reşit olmayanları cinsel durumlarda gösteren içerik üretmemeli ve sorumlu prompt mühendisleri bu tür kötüye kullanıma karşı aktif olarak güvenlik önlemleri oluşturur.
+<Callout type="warning" title="ÇCİM Nedir?">
+ÇCİM, **Çocuk Cinsel İstismarı Materyali** anlamına gelir. Bu tür içeriği oluşturmak, dağıtmak veya bulundurmak dünya çapında yasadışıdır. YZ sistemleri reşit olmayanları cinsel bağlamda gösteren içerikleri asla üretmemelidir; sorumlu prompt mühendisleri de bu tür kötüye kullanımlara karşı bilinçli olarak önlem alır.
 </Callout>
 
-### Promptlara Güvenlik Oluşturma
+### Güvenliği Promptların İçine Yerleştirmek
 
-YZ sistemleri oluştururken, açık güvenlik kılavuzları dahil edin:
+YZ sistemleri kurarken açık güvenlik yönergelerine yer verin:
 
 <TryIt 
   title="Güvenlik Öncelikli Sistem Promptu"
@@ -66,9 +66,9 @@ YZ sistemleri oluştururken, açık güvenlik kılavuzları dahil edin:
 
 **Reddetmen Gerektiğinde**:
 - İsteği anladığını kabul et
-- Bu spesifik şeyle neden yardım edemediğini kısaca açıkla
+- Bu konuda neden yardım edemediğini kısaca açıkla
 - Mümkün olduğunda yapıcı alternatifler sun
-- Saygılı ol—ders verme veya vaaz verme
+- Saygılı ol, ders verir ya da nasihat eder gibi konuşma
 
 **Emin Olmadığında**:
 - Niyet hakkında açıklayıcı sorular sor
@@ -94,7 +94,7 @@ Yanıt verip vermeyeceğimi ve nasıl vereceğimi düşünmeme yardım et:
 **1. Niyet Analizi**
 - Birinin bunu sormasının en muhtemel nedenleri neler?
 - Bu meşru olabilir mi? (araştırma, kurgu, eğitim, profesyonel ihtiyaç)
-- Kötü niyetli niyeti gösteren kırmızı bayraklar var mı?
+- Kötü niyete işaret eden uyarı işaretleri var mı?
 
 **2. Etki Değerlendirmesi**
 - Bu bilgi kötüye kullanılırsa en kötü durum ne?
@@ -110,7 +110,7 @@ Bu analize dayanarak:
 
 ## Önyargıyı Ele Alma
 
-YZ modelleri eğitim verilerinden önyargıları miras alır—tarihsel eşitsizlikler, temsil boşlukları, kültürel varsayımlar ve dilsel kalıplar. Prompt mühendisleri olarak bu önyargıları ya büyütebiliriz ya da aktif olarak karşı koyabiliriz.
+YZ modelleri, eğitim verilerindeki önyargıları da devralır: tarihsel eşitsizlikler, temsildeki boşluklar, kültürel varsayımlar ve dil kalıpları. Prompt mühendisleri olarak bu önyargıları ya büyütürüz ya da bilinçli olarak onlara karşı koyarız.
 
 ### Önyargı Nasıl Ortaya Çıkar
 
@@ -118,7 +118,7 @@ YZ modelleri eğitim verilerinden önyargıları miras alır—tarihsel eşitsiz
   { label: "Varsayılan Varsayımlar", description: "Model roller için belirli demografileri varsayar", example: "Doktorların varsayılan olarak erkek, hemşirelerin kadın olması", exampleType: "text", color: "amber" },
   { label: "Stereotipleme", description: "Tanımlarda kültürel stereotipleri pekiştirme", example: "Belirli etnik kökenleri spesifik özelliklerle ilişkilendirme", exampleType: "text", color: "amber" },
   { label: "Temsil Boşlukları", description: "Bazı gruplar yetersiz veya yanlış temsil ediliyor", example: "Azınlık kültürleri hakkında sınırlı doğru bilgi", exampleType: "text", color: "amber" },
-  { label: "Batı Merkezli Görüşler", description: "Bakış açıları Batı kültürü ve değerlerine çarpık", example: "Batı normlarının evrensel olduğunu varsayma", exampleType: "text", color: "amber" }
+  { label: "Batı Merkezli Görüşler", description: "Bakış açıları Batı kültürüne ve değerlerine doğru kayar", example: "Batı normlarının evrensel olduğunu varsayma", exampleType: "text", color: "amber" }
 ]} />
 
 ### Önyargıyı Test Etme
@@ -160,7 +160,7 @@ Bulgulara dayanarak, önyargıyı azaltmak için prompt değişiklikleri öner.`
 
 ## Şeffaflık ve Açıklama
 
-İnsanlara YZ'nin dahil olduğunu ne zaman söylemelisiniz? Cevap bağlama bağlıdır—ama eğilim daha az değil, daha fazla açıklama yönünde.
+İnsanlara yapay zekadan yararlandığınızı ne zaman söylemelisiniz? Cevap bağlama göre değişir, ama genel eğilim daha az değil, daha fazla açıklık yönünde.
 
 ### Açıklamanın Ne Zaman Önemli Olduğu
 
@@ -186,54 +186,71 @@ Bulgulara dayanarak, önyargıyı azaltmak için prompt değişiklikleri öner.`
 
 ## Gizlilik Düşünceleri
 
-Gönderdiğiniz her prompt veri içerir. Bu verinin nereye gittiğini—ve neyin içinde olmaması gerektiğini—anlamak esansiyaldir.
+Gönderdiğiniz her prompt veri içerir. Bu verinin nereye gittiğini ve içinde nelerin bulunmaması gerektiğini anlamak çok önemlidir.
 
 ### Promptlara Asla Dahil Edilmemesi Gerekenler
 
 <InfoGrid items={[
-  { label: "Kişisel Tanımlayıcılar", description: "İsimler, adresler, telefon numaraları, SGK numaraları", example: "'John Smith' yerine [MÜŞTERİ] kullan", color: "red" },
+  { label: "Kişisel Tanımlayıcılar", description: "İsimler, adresler, telefon numaraları, T.C. kimlik numaraları", example: "'Ahmet Yılmaz' yerine [MÜŞTERİ] kullan", color: "red" },
   { label: "Finansal Veriler", description: "Hesap numaraları, kredi kartları, gelir detayları", example: "Gerçek rakamlar yerine kalıbı tanımla", exampleType: "text", color: "red" },
   { label: "Sağlık Bilgileri", description: "Tıbbi kayıtlar, tanılar, reçeteler", example: "Spesifik hastalar değil, genel olarak durumlar hakkında sor", exampleType: "text", color: "red" },
-  { label: "Kimlik Bilgileri", description: "Şifreler, API anahtarları, tokenlar, sırlar", example: "Kimlik bilgilerini asla yapıştırma—yer tutucular kullan", exampleType: "text", color: "red" },
+  { label: "Kimlik Bilgileri", description: "Şifreler, API anahtarları, tokenlar, sırlar", example: "Kimlik bilgilerini asla yapıştırma, yer tutucu kullan", exampleType: "text", color: "red" },
   { label: "Özel İletişimler", description: "Kişisel e-postalar, mesajlar, gizli belgeler", example: "Özel metni alıntılamadan durumu özetle", exampleType: "text", color: "red" }
 ]} />
 
 ### Güvenli Veri İşleme Kalıbı
 
 <Compare 
-  before={{ label: "Güvensiz: KKV İçeriyor", content: "Ahmet Yılmaz'dan Kadıköy, Atatürk Cad. 123'te sipariş #12345 hakkındaki bu şikayeti özetle: '15 Mart'ta sipariş verdim ve hâlâ almadım...'" }}
+  before={{ label: "Güvensiz: Kişisel Veri İçeriyor", content: "Ahmet Yılmaz'dan Kadıköy, Atatürk Cad. 123'te sipariş #12345 hakkındaki bu şikayeti özetle: '15 Mart'ta sipariş verdim ve hâlâ almadım...'" }}
   after={{ label: "Güvenli: Anonimleştirilmiş", content: "Bu müşteri şikayeti kalıbını özetle: Bir müşteri 3 hafta önce sipariş verdi, siparişini almadı ve çözüm olmadan iki kez destekle iletişime geçti." }}
 />
 
-<Callout type="info" title="KKV Nedir?">
-**KKV** **Kişiyi Kimliklendirebilir Veriler** anlamına gelir—belirli bir bireyi tanımlayabilen herhangi bir veri. Bu isimler, adresler, telefon numaraları, e-posta adresleri, SGK numaraları, finansal hesap numaraları ve hatta birini tanımlayabilecek veri kombinasyonlarını (iş unvanı + şirket + şehir gibi) içerir. YZ'ye prompt verirken, gizliliği korumak için her zaman KKV'yi anonimleştirin veya kaldırın.
+<Callout type="info" title="Kişisel Veri (PII) Nedir?">
+İngilizcede **PII** (Personally Identifiable Information) olarak geçen **kişiyi tanımlayabilen bilgiler**, belirli bir kişinin kim olduğunu ortaya çıkarabilecek her türlü veridir. İsimler, adresler, telefon numaraları, e-posta adresleri, T.C. kimlik numaraları, banka hesap numaraları ve hatta bir araya geldiğinde birini tanımlayabilecek veri birleşimleri (unvan + şirket + şehir gibi) bu kapsama girer. Yapay zekaya prompt yazarken gizliliği korumak için kişisel verileri her zaman anonimleştirin ya da tamamen çıkarın.
 </Callout>
+
+<TryIt 
+  title="Kişisel Veri Temizleyici"
+  description="Bir metni prompta eklemeden önce içindeki hassas bilgileri bulup çıkarmak için bunu kullanın."
+  prompt={`Bu metni, bir yapay zeka promptunda kullanmadan önce çıkarılması gereken hassas bilgiler açısından incele:
+
+"\${textToReview}"
+
+Şunları tespit et:
+1. **Kişisel Tanımlayıcılar**: İsimler, adresler, telefon numaraları, e-postalar, T.C. kimlik numaraları
+2. **Finansal Veriler**: Hesap numaraları, birini tanımlayabilecek tutarlar
+3. **Sağlık Bilgileri**: Tıbbi ayrıntılar, hastalıklar, reçeteler
+4. **Kimlik Bilgileri**: Her türlü şifre, anahtar ya da token
+5. **Özel Ayrıntılar**: Bir kişinin makul olarak gizli kalmasını bekleyeceği bilgiler
+
+Bulduğun her öğe için, görevin gerektirdiği bilgiyi koruyarak onu nasıl anonimleştirebileceğimi ya da genelleştirebileceğimi öner.`}
+/>
 
 ## Otantiklik ve Aldatma
 
-YZ'yi araç olarak kullanmak ile YZ'yi aldatmak için kullanmak arasında fark var.
+Yapay zekayı bir araç olarak kullanmakla onu aldatmak için kullanmak arasında önemli bir fark var.
 
 ### Meşruiyet Çizgisi
 
 <InfoGrid items={[
   { label: "Meşru Kullanımlar", description: "İşinizi geliştirmek için araç olarak YZ", example: "Taslak oluşturma, beyin fırtınası, düzenleme, öğrenme", exampleType: "text", color: "green" },
   { label: "Gri Alanlar", description: "Bağlama bağlı, yargı gerektirir", example: "Hayalet yazarlık, şablonlar, otomatik yanıtlar", exampleType: "text", color: "amber" },
-  { label: "Aldatıcı Kullanımlar", description: "YZ çalışmasını insan-orijinal olarak yanlış temsil etme", example: "Sahte yorumlar, akademik sahtekarlık, kimliğe bürünme", exampleType: "text", color: "red" }
+  { label: "Aldatıcı Kullanımlar", description: "Yapay zekanın ürettiği işi insanın özgün eseriymiş gibi sunmak", example: "Sahte yorumlar, akademik sahtekarlık, kimliğe bürünme", exampleType: "text", color: "red" }
 ]} />
 
-Sorulması gereken anahtar sorular:
+Kendinize sormanız gereken temel sorular:
 - Alıcı bunun orijinal insan çalışması olmasını bekliyor mu?
 - Aldatma yoluyla haksız avantaj elde ediyor muyum?
 - Açıklama çalışmanın nasıl alındığını değiştirir miydi?
 
 ### Sentetik Medya Sorumluluğu
 
-Gerçek insanların gerçekçi tasvirlerini oluşturmak—görüntüler, ses veya video olsun—özel yükümlülükler taşır:
+Gerçek insanların gerçekçi tasvirlerini oluşturmak, ister görüntü ister ses ya da video olsun, özel sorumluluklar getirir:
 
 - Rıza olmadan gerçekçi tasvirler **asla** oluşturma
 - Sentetik medyayı her zaman net şekilde **etiketle**
 - Oluşturmadan önce kötüye kullanım potansiyelini **düşün**
-- Rızasız yakın görüntü oluşturmayı **reddet**
+- Rıza dışı mahrem görüntü oluşturmayı **reddet**
 
 ## Sorumlu Dağıtım
 
@@ -266,7 +283,7 @@ Başkalarının kullanması için YZ özellikleri oluştururken, etik yükümlü
 
 ## Özel Bağlam Kılavuzları
 
-Bazı alanlar, zarar potansiyelleri veya ilgili kişilerin savunmasızlığı nedeniyle ekstra dikkat gerektirir.
+Bazı alanlar, zarar verme potansiyelleri ya da işin içindeki kişilerin kırılganlığı nedeniyle ekstra özen gerektirir.
 
 ### Sağlık
 
@@ -279,7 +296,7 @@ Bazı alanlar, zarar potansiyelleri veya ilgili kişilerin savunmasızlığı ne
 - Kişisel tıbbi kararlar için nitelikli bir sağlık uzmanına danışmayı öner
 - Kişiselleştirilmiş tıbbi tavsiye değil, genel eğitim bilgisi sağla
 - Durumları teşhis edemeyeceğine dair sorumluluk reddi ekle
-- Acil durumlar için acil servis (112) öner
+- Acil durumlarda yerel acil servislere (örneğin 112 veya 911) yönlendir
 
 **Asla**:
 - Spesifik teşhisler verme
@@ -330,11 +347,11 @@ Herhangi bir prompt veya YZ sistemini dağıtmadan önce bu soruları gözden ge
 <Quiz 
   question="Bir kullanıcı YZ sisteminize 'beni rahatsız eden birinden nasıl kurtulurum' diye soruyor. En uygun yanıt stratejisi nedir?"
   options={[
-    "Hemen reddet—bu zarar talimatları isteği olabilir",
+    "Hemen reddet, bu zarar verme talimatı isteği olabilir",
     "En muhtemel niyet bu olduğundan çatışma çözümü tavsiyesi ver",
     "Nasıl yanıt vereceğine karar vermeden önce niyeti anlamak için açıklayıcı sorular sor",
     "İnsanlara zarar vermeyle ilgili hiçbir şeyde yardım edemeyeceğini açıkla"
   ]}
   correctIndex={2}
-  explanation="Belirsiz istekler varsayımlar değil, açıklama hak eder. 'Birinden kurtulmak' bir arkadaşlığı bitirmek, iş yeri çatışmasını çözmek veya zararlı bir şey anlamına gelebilir. Açıklayıcı sorular sormak, zararlı bilgi sağlama konusunda temkinli kalırken gerçek niyete uygun şekilde yanıt vermenizi sağlar."
+  explanation="Belirsiz istekler varsayımla değil, netleştirmeyle karşılanmalıdır. 'Birinden kurtulmak' bir arkadaşlığı bitirmek, iş yeri çatışmasını çözmek veya zararlı bir şey anlamına gelebilir. Açıklayıcı sorular sormak, zararlı bilgi sağlama konusunda temkinli kalırken gerçek niyete uygun şekilde yanıt vermenizi sağlar."
 />

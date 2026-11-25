@@ -242,7 +242,7 @@ Denetçinin başka bir yapay zeka olması gerekmez. Elinizdeki en deterministik 
 4. **Sonuç kontrolleri** — zaman içinde gerçek kullanıcı davranışı veya canlı ortam metrikleri
 
 <Callout type="tip" title="Özgüven Kanıt Değildir">
-Çıktıyı üreten modelin kendisinin ürettiği bir güven puanı da sonuçta bir model çıktısıdır. Bunu kanıt olarak değil, yönlendirme ipucu olarak değerlendirin.
+Çıktıyı üreten modelin kendi verdiği güven puanı da sonuçta bir model çıktısıdır. Bunu kanıt olarak değil, yönlendirme ipucu olarak değerlendirin.
 </Callout>
 
 ## Durum, Döngünün Omurgasıdır
@@ -278,7 +278,7 @@ Yazı, çeviri, tasarım eleştirisi ve kalitesi açıkça dile getirilmiş geri
 
 `ara → kaynakları incele → boşlukları veya çelişkileri belirle → yeniden ara → sentezle`
 
-Kapsamın önceden bilinmediği durumlar için en uygunudur. Durdurma kuralı arama sonuçlarının sayısını değil, kanıtın kapsayıcılığını ölçmelidir.
+Ne kadarının yeterli olacağının önceden bilinmediği durumlar için en uygunudur. Durdurma kuralı, arama sonuçlarının sayısını değil, kanıtın konuyu ne ölçüde kapsadığını ölçmelidir.
 
 ### İnsan Onaylı Döngü
 
@@ -300,7 +300,7 @@ Kapsamın önceden bilinmediği durumlar için en uygunudur. Durdurma kuralı ar
     <tr>
       <td>Sonsuz yeniden deneme</td>
       <td>Döngünün ölçülebilir bir başarı veya bütçe çıkışı yok.</td>
-      <td>Açık uç durumlar ve kesin bir iterasyon üst sınırı ekleyin.</td>
+      <td>Açıkça tanımlanmış bitiş durumları ve kesin bir iterasyon üst sınırı ekleyin.</td>
     </tr>
     <tr>
       <td>Kendi kendini onaylama</td>
