@@ -1,4 +1,4 @@
-Comprendre le contexte est essentiel pour construire des applications d'IA qui fonctionnent réellement. Ce chapitre couvre tout ce que vous devez savoir sur donner à l'IA la bonne information au bon moment.
+Comprendre le contexte est essentiel pour construire des applications d'IA qui fonctionnent réellement. Ce chapitre couvre tout ce qu'il faut savoir pour donner à l'IA la bonne information au bon moment.
 
 <Callout type="info" title="Pourquoi le Contexte Est Important">
 Les modèles d'IA sont sans état. Ils ne se souviennent pas des conversations passées. Chaque fois que vous envoyez un message, vous devez inclure tout ce dont l'IA a besoin. C'est ce qu'on appelle « l'ingénierie du contexte ».
@@ -17,14 +17,14 @@ Sans contexte, l'IA n'a aucune idée de quel « statut » vous demandez. Avec co
 
 ### La Fenêtre de Contexte
 
-Rappelez-vous des chapitres précédents : l'IA a une « fenêtre de contexte » limitée - la quantité maximale de texte qu'elle peut voir à la fois. Cela inclut :
+Souvenez-vous des chapitres précédents : l'IA a une « fenêtre de contexte » limitée - la quantité maximale de texte qu'elle peut voir à la fois. Cela inclut :
 
 <InfoGrid items={[
   { label: "Prompt Système", description: "Instructions qui définissent le comportement de l'IA", color: "purple" },
   { label: "Historique de Conversation", description: "Messages précédents dans ce chat", color: "blue" },
   { label: "Information Récupérée", description: "Documents, données ou connaissances récupérés pour cette requête", color: "green" },
   { label: "Requête Actuelle", description: "La vraie question de l'utilisateur", color: "amber" },
-  { label: "Réponse de l'IA", description: "La réponse (compte aussi vers la limite !)", color: "rose" },
+  { label: "Réponse de l'IA", description: "La réponse (elle compte aussi dans la limite !)", color: "rose" },
 ]} />
 
 ## L'IA est Sans État
@@ -39,7 +39,7 @@ C'est pourquoi les chatbots envoient généralement tout votre historique de con
 
 De quoi viens-je de te parler ?`} />
 
-L'IA dira qu'elle ne sait pas parce qu'elle n'a vraiment pas accès à un contexte précédent.
+L'IA dira qu'elle ne sait pas, parce qu'elle n'a réellement accès à aucun contexte antérieur.
 
 ### Qui porte l'historique ?
 
@@ -61,7 +61,7 @@ RAG est une technique pour donner à l'IA accès à des connaissances sur lesque
 2. **Cherchez** les documents pertinents quand un utilisateur pose une question
 3. **Récupérez** les morceaux les plus pertinents
 4. **Augmentez** votre prompt avec ces morceaux
-5. **Générez** une réponse utilisant ce contexte
+5. **Générez** une réponse en vous appuyant sur ce contexte
 
 <div className="my-6 p-4 border rounded-lg bg-muted/30">
   <p className="font-semibold mb-3">Comment Fonctionne RAG :</p>
@@ -80,11 +80,11 @@ RAG est une technique pour donner à l'IA accès à des connaissances sur lesque
     </div>
     <div className="flex items-center gap-3">
       <span className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 font-bold">4</span>
-      <span>Envoie à l'IA : « Basé sur cette politique : [texte], réponds : Quelle est notre politique de remboursement ? »</span>
+      <span>Envoie à l'IA : « En te basant sur cette politique : [texte], réponds : Quelle est notre politique de remboursement ? »</span>
     </div>
     <div className="flex items-center gap-3">
       <span className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center text-green-600 font-bold">5</span>
-      <span>L'IA génère une réponse précise utilisant votre vraie politique</span>
+      <span>L'IA génère une réponse précise fondée sur votre politique réelle</span>
     </div>
   </div>
 </div>
@@ -108,7 +108,7 @@ RAG est une technique pour donner à l'IA accès à des connaissances sur lesque
       <li>Bots de support client</li>
       <li>Recherche de documentation</li>
       <li>Bases de connaissances internes</li>
-      <li>Tout Q&R spécifique à un domaine</li>
+      <li>Toute question-réponse propre à un domaine</li>
       <li>Quand la précision compte</li>
     </ul>
   </div>
@@ -167,7 +167,7 @@ Réfléchis étape par étape : As-tu besoin d'un outil ? Lequel ? Quels paramè
 
 ## Résumé : Gérer les Longues Conversations
 
-Comme les conversations s'allongent, vous atteindrez la limite de la fenêtre de contexte. Puisque l'IA est sans état, les longues conversations peuvent déborder. La solution ? **Le résumé**.
+À mesure que les conversations s'allongent, vous atteindrez la limite de la fenêtre de contexte. Puisque l'IA est sans état (elle ne se souvient de rien), les longues conversations peuvent déborder. La solution ? **Le résumé**.
 
 ### Le Problème
 
@@ -177,6 +177,8 @@ Comme les conversations s'allongent, vous atteindrez la limite de la fenêtre de
 />
 
 ### Stratégies de Résumé
+
+Chaque approche convient à des usages différents. Cliquez sur chaque stratégie pour voir comment elle traite la même conversation :
 
 <SummarizationDemo />
 
@@ -200,7 +202,7 @@ Un bon résumé de conversation préserve ce qui compte :
 
 <TryIt 
   title="Résumeur de Conversation"
-  description="Pratiquez la création d'un résumé préservant le contexte :"
+  description="Entraînez-vous à créer, à partir de cette conversation, un résumé qui préserve le contexte :"
   prompt={`Résume cette conversation pour la gestion du contexte. Le résumé remplacera la conversation complète dans la mémoire de l'IA.
 
 CONVERSATION :
@@ -212,6 +214,10 @@ Utilisateur : Peux-tu expliquer les variables ?
 Assistant : Les variables sont des conteneurs pour stocker des données. En Python : nom = "Alice" ou age = 25
 Utilisateur : Et les listes ? J'ai besoin de gérer plusieurs valeurs.
 Assistant : Les listes sont comme des colonnes Excel ! Créez-en une comme : prix = [10, 20, 30]. Accédez aux éléments avec prix[0].
+Utilisateur : Est-ce que je peux faire des calculs sur des listes ?
+Assistant : Oui ! Utilisez sum(prix), len(prix) ou max(prix). Pour des analyses plus poussées, nous utiliserons pandas plus tard.
+Utilisateur : C'est quoi, pandas ?
+Assistant : Pandas est une bibliothèque d'analyse de données, une sorte d'« Excel survitaminé ». Elle propose des DataFrames (comparables à des feuilles de calcul).
 
 CRÉE UN RÉSUMÉ qui capture :
 1. Objectif et contexte de l'utilisateur (1 phrase)
@@ -220,6 +226,23 @@ CRÉE UN RÉSUMÉ qui capture :
 4. Ce qu'il faut couvrir ensuite (1 phrase)`}
 />
 
+### Quand résumer
+
+<TryIt compact prompt={`Tu gères la fenêtre de contexte d'une conversation. Compte tenu des conditions suivantes, décide quand déclencher le résumé :
+
+FENÊTRE DE CONTEXTE : 8 000 tokens maximum
+UTILISATION ACTUELLE :
+- Prompt système : 500 tokens
+- Historique de la conversation : 6 200 tokens
+- Réserve pour la réponse : 1 500 tokens
+
+RÈGLES :
+- Résumer quand l'historique dépasse 70 % de l'espace disponible
+- Conserver intacts les 5 derniers messages
+- Préserver toutes les préférences et décisions de l'utilisateur
+
+Faut-il résumer maintenant ? Si oui, quels messages faut-il résumer et lesquels faut-il garder intacts ?`} />
+
 ## MCP : Model Context Protocol
 
 MCP (Model Context Protocol) est une façon standard de connecter l'IA aux données et outils externes. Au lieu de construire des intégrations personnalisées pour chaque fournisseur d'IA, MCP fournit une interface universelle.
@@ -227,18 +250,18 @@ MCP (Model Context Protocol) est une façon standard de connecter l'IA aux donn�
 ### Pourquoi MCP ?
 
 <InfoGrid columns={2} items={[
-  { label: "Sans MCP", description: "Construire des intégrations séparées pour ChatGPT, Claude, Gemini... Maintenir plusieurs bases de code. Casser quand les APIs changent.", color: "red" },
-  { label: "Avec MCP", description: "Construire une fois, fonctionne partout. Protocole standard. L'IA peut découvrir et utiliser vos outils automatiquement.", color: "green" },
+  { label: "Sans MCP", description: "Construire des intégrations séparées pour ChatGPT, Claude, Gemini... Maintenir plusieurs bases de code. Tout casse dès que les API changent.", color: "red" },
+  { label: "Avec MCP", description: "Développer une fois, utiliser partout. Protocole standard. L'IA peut découvrir et utiliser vos outils automatiquement.", color: "green" },
 ]} />
 
 ### MCP Fournit
 
 - **Ressources** : Données que l'IA peut lire (fichiers, enregistrements de base de données, réponses API)
 - **Outils** : Actions que l'IA peut effectuer (chercher, créer, mettre à jour, supprimer)
-- **Prompts** : Templates de prompts pré-construits
+- **Prompts** : Modèles de prompts prêts à l'emploi
 
 <Callout type="info" title="prompts.chat Utilise MCP">
-Cette plateforme a un serveur MCP ! Vous pouvez le connecter à Claude Desktop ou d'autres clients compatibles MCP pour chercher et utiliser des prompts directement depuis votre assistant IA. Le même serveur donne aussi accès aux skills, aux bots et aux équipes de bots.
+Cette plateforme a un serveur MCP ! Vous pouvez le connecter à Claude Desktop ou à d'autres clients compatibles MCP pour chercher et utiliser des prompts directement depuis votre assistant IA. Le même serveur donne aussi accès aux skills, aux bots et aux équipes de bots.
 </Callout>
 
 ## Construire le Contexte : L'Image Complète
@@ -269,7 +292,7 @@ L'ingénierie du contexte consiste à donner à l'IA la bonne information :
 - **Les embeddings** permettent la recherche sémantique (sens, pas juste mots-clés)
 - **L'appel de fonction** permet à l'IA d'utiliser des outils externes
 - **Le résumé** gère les longues conversations
-- **MCP** standardise comment l'IA se connecte aux données et outils
+- **MCP** standardise la façon dont l'IA se connecte aux données et aux outils
 
 <Callout type="tip" title="Rappelez-vous">
 La qualité de la sortie de l'IA dépend de la qualité du contexte que vous fournissez. Meilleur contexte = meilleures réponses.

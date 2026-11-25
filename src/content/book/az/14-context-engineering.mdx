@@ -1,4 +1,4 @@
-Konteksti anlamaq, həqiqətən işləyən süni intellekt tətbiqləri yaratmaq üçün vacibdir. Bu bölmə, süni intellektə düzgün vaxtda düzgün məlumatı vermə haqqında bilməli olduğunuz hər şeyi əhatə edir.
+Konteksti anlamaq həqiqətən işləyən süni intellekt tətbiqləri yaratmaq üçün vacibdir. Bu fəsil süni intellektə düzgün vaxtda düzgün məlumatı vermək haqqında bilməli olduğunuz hər şeyi əhatə edir.
 
 <Callout type="info" title="Kontekst Niyə Vacibdir">
 Süni intellekt modelləri vəziyyətsizdir. Keçmiş söhbətləri xatırlamırlar. Hər mesaj göndərdiyinizdə, süni intellektin bilməli olduğu hər şeyi daxil etməlisiniz. Buna "kontekst mühəndisliyi" deyilir.
@@ -13,11 +13,11 @@ Kontekst, sualınızla birlikdə süni intellektə verdiyiniz bütün məlumatd�
   after={{ label: "Kontekstlə", content: "Sən bir layihə meneceri köməkçisisən. İstifadəçi Cümə günü təhvil tarixi olan Layihə Alfa üzərində işləyir. Son yeniləmə: 'Backend tamamlandı, frontend 80% bitdi.'\n\nİstifadəçi: Vəziyyət nədir?" }}
 />
 
-Kontekst olmadan, süni intellekt hansı "vəziyyəti" soruşduğunuz haqqında heç bir fikrə sahib deyil. Kontekstlə, faydalı bir cavab verə bilər.
+Kontekst olmadan süni intellekt hansı "vəziyyət"dən söz getdiyini bilmir. Kontekst olduqda isə faydalı cavab verə bilər.
 
 ### Kontekst Pəncərəsi
 
-Əvvəlki bölmələrdən xatırlayın: Süni intellektin məhdud bir "kontekst pəncərəsi" var - eyni anda görə biləcəyi maksimum mətn miqdarı. Bu bunları ehtiva edir:
+Əvvəlki fəsillərdən xatırlayın: süni intellektin məhdud bir "kontekst pəncərəsi" var - eyni anda görə biləcəyi maksimum mətn miqdarı. Buraya bunlar daxildir:
 
 <InfoGrid items={[
   { label: "Sistem Promptu", description: "Sİ davranışını təyin edən təlimatlar", color: "purple" },
@@ -39,7 +39,7 @@ Buna görə söhbət botları adətən hər mesajla bütün söhbət tarixçəni
 
 İndicə sənə nə soruşdum?`} />
 
-Süni intellekt bilmədiyini deyəcək çünki həqiqətən əvvəlki kontekstə girişi yoxdur.
+Süni intellekt bilmədiyini deyəcək, çünki həqiqətən əvvəlki kontekstə girişi yoxdur.
 
 ### Tarixçəni Kim Daşıyır?
 
@@ -84,7 +84,7 @@ RAG, süni intellektə üzərində öyrədilmədiyi məlumata giriş təmin etm�
     </div>
     <div className="flex items-center gap-3">
       <span className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center text-green-600 font-bold">5</span>
-      <span>Sİ həqiqi siyasətinizi istifadə edərək düzgün cavab istehsal edir</span>
+      <span>Sİ həqiqi siyasətinizə əsaslanaraq dəqiq cavab yaradır</span>
     </div>
   </div>
 </div>
@@ -129,7 +129,7 @@ Embedding, mətnin mənasını təmsil edən rəqəm siyahısıdır (bir "vektor
 Embedding-lərlə, yalnız açar sözlərə görə deyil, mənaya görə axtarış edə bilərsiniz:
 
 <Compare 
-  before={{ label: "Açar Söz Axtarışı", content: "Sorğu: 'qaytarma siyasəti'\nTapır: 'qaytarma' və 'siyasəti' ehtiva edən sənədlər\nQaçırır: 'Geri ödəmə necə alınır'" }}
+  before={{ label: "Açar Söz Axtarışı", content: "Sorğu: 'qaytarma siyasəti'\nTapır: 'qaytarma' və 'siyasəti' ehtiva edən sənədlər\nTapmır: 'Geri ödəmə necə alınır'" }}
   after={{ label: "Semantik Axtarış", content: "Sorğu: 'qaytarma siyasəti'\nBütün əlaqəli sənədləri tapır:\n- 'Geri ödəmə təlimatları'\n- 'Məhsullar necə geri göndərilir'\n- 'Pul qaytarma zəmanəti'" }}
 />
 
@@ -140,7 +140,7 @@ Buna görə RAG çox güclüdür - tam sözlər uyğun gəlməsə belə əlaqəl
 Funksiya çağırma, süni intellektin xarici alətləri istifadə etməsini təmin edir - webdə axtarış, verilənlər bazası yoxlaması və ya API çağırışı kimi.
 
 <Callout type="tip" title="Fərqli Adlar">
-Fərqli süni intellekt təminatçıları buna fərqli şeylər deyir: "funksiya çağırma" (OpenAI), "alət istifadəsi" (Anthropic/Claude) və ya "alətlər" (ümumi termin). Hamısı eyni məna verir.
+Fərqli süni intellekt təminatçıları buna fərqli şeylər deyir: "funksiya çağırma" (OpenAI), "alət istifadəsi" (Anthropic/Claude) və ya "alətlər" (ümumi termin). Hamısı eyni şeyi ifadə edir.
 </Callout>
 
 ### Necə İşləyir
@@ -162,7 +162,7 @@ Fərqli süni intellekt təminatçıları buna fərqli şeylər deyir: "funksiya
 
 İstifadəçi: Tokioda indi hava necədir?
 
-Addım-addım düşün: Alətə ehtiyacın var mı? Hansına? Hansı parametrlərlə?`}
+Addım-addım düşün: Alətə ehtiyacın varmı? Hansına? Hansı parametrlərlə?`}
 />
 
 ## Xülasələmə: Uzun Söhbətləri İdarə Etmə
@@ -173,12 +173,12 @@ Söhbətlər uzandıqca, kontekst pəncərəsi limitinə çatırsınız. Sİ və
 
 <Compare 
   before={{ label: "Xülasələmə Olmadan", content: "Mesaj 1 (500 token)\nMesaj 2 (800 token)\nMesaj 3 (600 token)\n... 50 mesaj daha ...\n────────────────────\n= 40.000+ token\n= LİMİTİ AŞIR!" }}
-  after={{ label: "Xülasələmə İlə", content: "[Xülasə]: 200 token\nSon mesajlar: 2.000 token\nCari sorğu: 100 token\n────────────────────\n= 2.300 token\n= Mükəmməl sığır!" }}
+  after={{ label: "Xülasələmə İlə", content: "[Xülasə]: 200 token\nSon mesajlar: 2.000 token\nCari sorğu: 100 token\n────────────────────\n= 2.300 token\n= Rahatca sığır!" }}
 />
 
 ### Xülasələmə Strategiyaları
 
-Fərqli yanaşmalar fərqli istifadə halları üçün işləyir. Hər strategiyanın eyni söhbəti necə işlədiyini görmək üçün klikləyin:
+Fərqli yanaşmalar fərqli istifadə halları üçün işləyir. Hər strategiyanın eyni söhbəti necə emal etdiyini görmək üçün klikləyin:
 
 <SummarizationDemo />
 
@@ -191,9 +191,9 @@ Yaxşı bir söhbət xülasəsi vacib olanı qoruyur:
   items={[
     { text: "Qəbul edilən əsas qərarlar" },
     { text: "Bəhs edilən vacib faktlar" },
-    { text: "Kəşf edilən istifadəçi tercihləri" },
+    { text: "Aşkar edilən istifadəçi seçimləri" },
     { text: "Cari tapşırıq və ya hədəf" },
-    { text: "Gözləyən suallar" },
+    { text: "Cavabsız qalan suallar" },
     { text: "Ton və rəsmilik səviyyəsi" }
   ]}
 />
@@ -222,9 +222,26 @@ Köməkçi: Pandas məlumat təhlili kitabxanasıdır - "steroidli Excel" kimi. 
 BUNLARI TUTAN BİR XÜLASƏ YARAT:
 1. İstifadəçinin hədəfi və keçmişi (1 cümlə)
 2. İndiyə qədər işlənən mövzular (1 cümlə)  
-3. İstifadəçinin öyrənmə tərzi/tercihləri (1 cümlə)
+3. İstifadəçinin öyrənmə tərzi/seçimləri (1 cümlə)
 4. Növbədə nə işlənəcək (1 cümlə)`}
 />
+
+### Nə Vaxt Xülasə Etməli
+
+<TryIt compact prompt={`Sən bir söhbətin kontekst pəncərəsini idarə edirsən. Aşağıdakı şərtlərə əsasən xülasələmənin nə vaxt başlamalı olduğuna qərar ver:
+
+KONTEKST PƏNCƏRƏSİ: maksimum 8.000 token
+CARİ İSTİFADƏ:
+- Sistem promptu: 500 token
+- Söhbət tarixçəsi: 6.200 token  
+- Cavab üçün ehtiyat: 1.500 token
+
+QAYDALAR:
+- Tarixçə mövcud yerin 70%-ni keçəndə xülasə et
+- Son 5 mesajı toxunulmaz saxla
+- İstifadəçinin bütün seçimlərini və qərarlarını qoru
+
+İndi xülasə etməlisənmi? Əgər bəli, hansı mesajlar xülasə edilməli, hansılar olduğu kimi qalmalıdır?`} />
 
 ## MCP: Model Kontekst Protokolu
 
@@ -233,7 +250,7 @@ MCP (Model Context Protocol), süni intellekti xarici məlumat və alətlərə b
 ### Niyə MCP?
 
 <InfoGrid columns={2} items={[
-  { label: "MCP Olmadan", description: "ChatGPT, Claude, Gemini üçün ayrı inteqrasiyalar yarat... Bir neçə kod bazası saxla. API-lər dəyişəndə pozul.", color: "red" },
+  { label: "MCP Olmadan", description: "ChatGPT, Claude, Gemini üçün ayrı inteqrasiyalar yarat... Bir neçə kod bazasını idarə et. API-lər dəyişəndə hər şey pozulur.", color: "red" },
   { label: "MCP İlə", description: "Bir dəfə yarat, hər yerdə işləyir. Standart protokol. Sİ alətlərinizi avtomatik olaraq kəşf edib istifadə edə bilər.", color: "green" },
 ]} />
 
@@ -244,7 +261,7 @@ MCP (Model Context Protocol), süni intellekti xarici məlumat və alətlərə b
 - **Promptlar**: Əvvəlcədən yaradılmış prompt şablonları
 
 <Callout type="info" title="prompts.chat MCP İstifadə Edir">
-Bu platformun bir MCP serveri var! Promptları birbaşa süni intellekt köməkçinizdən axtarmaq və istifadə etmək üçün Claude Desktop və ya digər MCP uyğun müştərilərə bağlaya bilərsiniz. Eyni server bacarıqları, botları və bot komandalarını da təqdim edir.
+Bu platformanın MCP serveri var! Promptları birbaşa süni intellekt köməkçinizdən axtarmaq və istifadə etmək üçün Claude Desktop və ya MCP-ni dəstəkləyən digər klientlərə qoşa bilərsiniz. Eyni server bacarıqları, botları və bot komandalarını da təqdim edir.
 </Callout>
 
 ## Kontekst Yaratma: Tam Mənzərə
@@ -262,7 +279,7 @@ Bu platformun bir MCP serveri var! Promptları birbaşa süni intellekt kömək�
     { text: "Sahəyə xas məlumat üçün RAG istifadə et" },
     { text: "Real vaxt məlumat üçün Sİ-yə alətlər ver" },
     { text: "Limitlər daxilində qalmaq üçün token istifadəsini izlə" },
-    { text: "Uç hallarla test et (çox uzun girişlər və s.)" }
+    { text: "Sərhəd halları ilə test et (çox uzun girişlər və s.)" }
   ]}
 />
 
