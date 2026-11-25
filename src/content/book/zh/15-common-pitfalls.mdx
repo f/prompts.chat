@@ -64,7 +64,7 @@
   after={{ label: "提供上下文", content: "更新这个函数以添加错误处理：\n\n```python\ndef calculate_total(items):\n    return sum(item.price for item in items)\n```\n\n为空列表和无效项目添加 try/except。" }}
 />
 
-**为什么会发生**：与 AI 对话感觉像是在和同事交谈。但与同事不同，大多数 AI 模型在会话之间没有持久记忆——每次对话都是从头开始。
+**为什么会发生**：与 AI 对话感觉像是在和同事交谈。但与同事不同，模型本身不会在会话之间记住任何东西。如今有些聊天应用提供了记忆功能，会把关于你的少量已保存笔记带入新的对话，但它们保留的只是挑选出来的细节，而不是你上周分享的代码或文档。请把每次新对话都当作全新的开始，把重要的信息写进去。
 
 <TryIt 
   title="上下文完整性检查"
@@ -209,7 +209,7 @@
 **模式**：你粘贴一个巨大的文档并期望得到全面的分析。但模型有其限制——它们可能会截断、失去焦点，或在长输入中遗漏重要细节。
 
 <InfoGrid items={[
-  { label: "了解你的限制", description: "不同的模型有不同的上下文窗口", example: "GPT-4: 128K tokens, Claude: 200K tokens, Gemini: 1M tokens", exampleType: "text", color: "blue" },
+  { label: "了解你的限制", description: "上下文窗口因模型而异，并且每次发布新版本都会变化", example: "当前许多模型可接受约 1M tokens，而较小或较旧的模型可能只有 128K 或 200K。请查阅你所用模型的文档。", exampleType: "text", color: "blue" },
   { label: "分块处理大输入", description: "将文档分成可管理的部分", example: "分别分析各章节，然后综合", exampleType: "text", color: "blue" },
   { label: "前置重要信息", description: "将关键上下文放在提示词的开头", example: "关键要求在前，背景细节在后", exampleType: "text", color: "blue" },
   { label: "去除冗余", description: "删除不必要的上下文", example: "你真的需要整个文档，还是只需要相关部分？", exampleType: "text", color: "blue" }

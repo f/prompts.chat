@@ -54,28 +54,28 @@ CSAM تعني **مواد الاعتداء الجنسي على الأطفال**. 
 <TryIt 
   title="موجه نظام يُعطي الأولوية للسلامة"
   description="قالب لبناء إرشادات السلامة في أنظمة الذكاء الاصطناعي الخاصة بك."
-  prompt={`You are a helpful assistant for \${purpose}.
+  prompt={`أنت مساعد مفيد مخصص لـ \${purpose}.
 
-## SAFETY GUIDELINES
+## إرشادات السلامة
 
-**Content Restrictions**:
-- Never provide instructions that could cause physical harm
-- Decline requests for illegal information or activities
-- Don't generate discriminatory or hateful content
-- Don't create deliberately misleading information
+**قيود المحتوى**:
+- لا تقدّم أبداً تعليمات قد تُلحق أذى جسدياً
+- ارفض الطلبات المتعلقة بمعلومات أو أنشطة غير قانونية
+- لا تُنتج محتوى تمييزياً أو يحض على الكراهية
+- لا تختلق معلومات مضللة عن قصد
 
-**When You Must Decline**:
-- Acknowledge you understood the request
-- Briefly explain why you can't help with this specific thing
-- Offer constructive alternatives when possible
-- Be respectful—don't lecture or be preachy
+**عندما يتعين عليك الرفض**:
+- بيّن أنك فهمت الطلب
+- اشرح باختصار لماذا لا تستطيع المساعدة في هذا الأمر بالذات
+- اقترح بدائل بنّاءة متى أمكن ذلك
+- كن محترماً، ولا تُلقِ المواعظ أو تتعالَ في النصح
 
-**When Uncertain**:
-- Ask clarifying questions about intent
-- Err on the side of caution
-- Suggest the user consult appropriate professionals
+**عند الشك**:
+- اطرح أسئلة توضيحية حول القصد
+- مِل إلى جانب الحذر
+- اقترح على المستخدم استشارة المختصين المناسبين
 
-Now, please help the user with: \${userRequest}`}
+والآن، ساعد المستخدم في: \${userRequest}`}
 />
 
 ### إطار النية مقابل التأثير
@@ -85,27 +85,27 @@ Now, please help the user with: \${userRequest}`}
 <TryIt 
   title="محلل الحالات الأخلاقية الحدية"
   description="العمل على الطلبات الغامضة لتحديد الاستجابة المناسبة."
-  prompt={`I received this request that might be sensitive:
+  prompt={`تلقيت هذا الطلب الذي قد يكون حساساً:
 
 "\${sensitiveRequest}"
 
-Help me think through whether and how to respond:
+ساعدني على التفكير فيما إذا كان عليّ الرد، وكيف:
 
-**1. Intent Analysis**
-- What are the most likely reasons someone would ask this?
-- Could this be legitimate? (research, fiction, education, professional need)
-- Are there red flags suggesting malicious intent?
+**1. تحليل النية**
+- ما الأسباب الأرجح التي قد تدفع شخصاً إلى طرح هذا السؤال؟
+- هل يمكن أن يكون الطلب مشروعاً؟ (بحث، عمل أدبي، تعليم، حاجة مهنية)
+- هل توجد إشارات تحذيرية توحي بنية خبيثة؟
 
-**2. Impact Assessment**
-- What's the worst case if this information is misused?
-- How accessible is this information elsewhere?
-- Does providing it meaningfully increase risk?
+**2. تقييم الأثر**
+- ما أسوأ ما قد يحدث إذا أُسيء استخدام هذه المعلومات؟
+- ما مدى سهولة الوصول إلى هذه المعلومات من مصادر أخرى؟
+- هل يؤدي تقديمها إلى زيادة الخطر زيادة حقيقية؟
 
-**3. Recommendation**
-Based on this analysis:
-- Should I respond, decline, or ask for clarification?
-- If responding, what safeguards should I include?
-- If declining, how should I phrase it helpfully?`}
+**3. التوصية**
+بناءً على هذا التحليل:
+- هل ينبغي أن أرد، أم أرفض، أم أطلب توضيحاً؟
+- إذا قررت الرد، ما الضمانات التي يجب أن أضمّنها؟
+- إذا قررت الرفض، كيف أصوغه بطريقة مفيدة؟`}
 />
 
 ## معالجة التحيز
@@ -126,29 +126,29 @@ Based on this analysis:
 <TryIt 
   title="اختبار اكتشاف التحيز"
   description="استخدم هذا لاختبار موجهاتك بحثاً عن مشكلات التحيز المحتملة."
-  prompt={`I want to test this prompt for bias:
+  prompt={`أريد اختبار هذا الموجه بحثاً عن التحيز:
 
 "\${promptToTest}"
 
-Run these bias checks:
+أجرِ فحوصات التحيز التالية:
 
-**1. Demographic Variation Test**
-Run the prompt with different demographic descriptors (gender, ethnicity, age, etc.) and note any differences in:
-- Tone or respect level
-- Assumed competence or capabilities
-- Stereotypical associations
+**1. اختبار التنوع الديموغرافي**
+شغّل الموجه مع أوصاف ديموغرافية مختلفة (الجنس، العرق، العمر، وغيرها) ولاحظ أي اختلافات في:
+- النبرة أو مستوى الاحترام
+- الكفاءة أو القدرات المفترضة
+- الارتباطات النمطية
 
-**2. Default Assumption Check**
-When demographics aren't specified:
-- What does the model assume?
-- Are these assumptions problematic?
+**2. فحص الافتراضات الضمنية**
+عندما لا تُحدَّد الخصائص الديموغرافية:
+- ماذا يفترض النموذج؟
+- هل هذه الافتراضات إشكالية؟
 
-**3. Representation Analysis**
-- Are different groups represented fairly?
-- Are any groups missing or marginalized?
+**3. تحليل التمثيل**
+- هل تُمثَّل المجموعات المختلفة بإنصاف؟
+- هل هناك مجموعات غائبة أو مهمَّشة؟
 
-**4. Recommendations**
-Based on findings, suggest prompt modifications to reduce bias.`}
+**4. التوصيات**
+بناءً على النتائج، اقترح تعديلات على الموجه للحد من التحيز.`}
 />
 
 ### تخفيف التحيز عملياً
@@ -212,18 +212,18 @@ Based on findings, suggest prompt modifications to reduce bias.`}
 <TryIt 
   title="منظف معلومات التعريف الشخصية"
   description="استخدم هذا لتحديد وإزالة المعلومات الحساسة قبل تضمين النص في الموجهات."
-  prompt={`Review this text for sensitive information that should be removed before using it in an AI prompt:
+  prompt={`راجع هذا النص بحثاً عن معلومات حساسة ينبغي إزالتها قبل استخدامه في موجه للذكاء الاصطناعي:
 
 "\${textToReview}"
 
-Identify:
-1. **Personal Identifiers**: Names, addresses, phone numbers, emails, SSNs
-2. **Financial Data**: Account numbers, amounts that could identify someone
-3. **Health Information**: Medical details, conditions, prescriptions
-4. **Credentials**: Any passwords, keys, or tokens
-5. **Private Details**: Information someone would reasonably expect to be confidential
+حدّد:
+1. **المعرفات الشخصية**: الأسماء، العناوين، أرقام الهواتف، عناوين البريد الإلكتروني، أرقام الضمان الاجتماعي
+2. **البيانات المالية**: أرقام الحسابات، والمبالغ التي قد تكشف هوية شخص ما
+3. **المعلومات الصحية**: التفاصيل الطبية، الحالات المرضية، الوصفات الطبية
+4. **بيانات الاعتماد**: أي كلمات مرور أو مفاتيح أو رموز وصول
+5. **التفاصيل الخاصة**: معلومات يتوقع صاحبها بشكل معقول أن تبقى سرية
 
-For each item found, suggest how to anonymize or generalize it while preserving the information needed for the task.`}
+لكل عنصر تجده، اقترح طريقة لإخفاء هويته أو تعميمه مع الحفاظ على المعلومات اللازمة للمهمة.`}
 />
 
 ## الأصالة والخداع
@@ -290,23 +290,23 @@ For each item found, suggest how to anonymize or generalize it while preserving 
 <TryIt 
   title="إخلاء المسؤولية للسياق الطبي"
   description="قالب لأنظمة الذكاء الاصطناعي التي قد تتلقى استفسارات متعلقة بالصحة."
-  prompt={`You are an AI assistant. When users ask about health or medical topics:
+  prompt={`أنت مساعد ذكاء اصطناعي. عندما يسأل المستخدمون عن موضوعات صحية أو طبية:
 
-**Always**:
-- Recommend consulting a qualified healthcare provider for personal medical decisions
-- Provide general educational information, not personalized medical advice
-- Include disclaimers that you cannot diagnose conditions
-- Suggest emergency services (911) for urgent situations
+**دائماً**:
+- أوصِ باستشارة مقدّم رعاية صحية مؤهل في القرارات الطبية الشخصية
+- قدّم معلومات تثقيفية عامة، لا نصيحة طبية مخصصة
+- أضف تنبيهاً بأنك لا تستطيع تشخيص الحالات
+- وجّه المستخدم إلى خدمات الطوارئ المحلية (مثل 911 أو 112) في الحالات العاجلة
 
-**Never**:
-- Provide specific diagnoses
-- Recommend specific medications or dosages
-- Discourage someone from seeking professional care
-- Make claims about treatments without noting uncertainty
+**لا تفعل أبداً ما يلي**:
+- تقديم تشخيصات محددة
+- التوصية بأدوية أو جرعات محددة
+- ثني أي شخص عن طلب الرعاية المتخصصة
+- إطلاق ادعاءات حول العلاجات دون الإشارة إلى عدم اليقين
 
-User question: \${healthQuestion}
+سؤال المستخدم: \${healthQuestion}
 
-Respond helpfully while following these guidelines.`}
+أجب بطريقة مفيدة مع الالتزام بهذه الإرشادات.`}
 />
 
 ### القانوني والمالي

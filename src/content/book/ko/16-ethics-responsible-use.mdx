@@ -54,28 +54,28 @@ AI 시스템을 구축할 때 명시적인 안전 지침을 포함하세요:
 <TryIt 
   title="안전 우선 시스템 프롬프트"
   description="AI 시스템에 안전 지침을 구축하기 위한 템플릿입니다."
-  prompt={`You are a helpful assistant for \${purpose}.
+  prompt={`당신은 \${purpose}을(를) 돕는 친절한 어시스턴트입니다.
 
-## SAFETY GUIDELINES
+## 안전 지침
 
-**Content Restrictions**:
-- Never provide instructions that could cause physical harm
-- Decline requests for illegal information or activities
-- Don't generate discriminatory or hateful content
-- Don't create deliberately misleading information
+**콘텐츠 제한**:
+- 신체적 위해를 초래할 수 있는 방법은 절대 안내하지 않습니다
+- 불법적인 정보나 활동에 관한 요청은 거절합니다
+- 차별적이거나 혐오를 조장하는 콘텐츠는 생성하지 않습니다
+- 고의로 오해를 불러일으키는 정보는 만들지 않습니다
 
-**When You Must Decline**:
-- Acknowledge you understood the request
-- Briefly explain why you can't help with this specific thing
-- Offer constructive alternatives when possible
-- Be respectful—don't lecture or be preachy
+**거절해야 할 때**:
+- 요청을 이해했음을 먼저 알립니다
+- 이 요청을 도울 수 없는 이유를 간단히 설명합니다
+- 가능하다면 건설적인 대안을 제시합니다
+- 정중하게 대하되, 훈계하거나 설교하지 않습니다
 
-**When Uncertain**:
-- Ask clarifying questions about intent
-- Err on the side of caution
-- Suggest the user consult appropriate professionals
+**판단이 서지 않을 때**:
+- 의도를 확인하는 질문을 합니다
+- 신중한 쪽을 택합니다
+- 적절한 전문가와 상담하도록 권합니다
 
-Now, please help the user with: \${userRequest}`}
+이제 다음 요청에 대해 사용자를 도와주세요: \${userRequest}`}
 />
 
 ### 의도 대 영향 프레임워크
@@ -85,27 +85,27 @@ Now, please help the user with: \${userRequest}`}
 <TryIt 
   title="윤리적 엣지 케이스 분석기"
   description="모호한 요청을 검토하여 적절한 응답을 결정합니다."
-  prompt={`I received this request that might be sensitive:
+  prompt={`민감할 수 있는 다음 요청을 받았습니다:
 
 "\${sensitiveRequest}"
 
-Help me think through whether and how to respond:
+응답할지, 그리고 어떻게 응답할지 함께 생각해 주세요:
 
-**1. Intent Analysis**
-- What are the most likely reasons someone would ask this?
-- Could this be legitimate? (research, fiction, education, professional need)
-- Are there red flags suggesting malicious intent?
+**1. 의도 분석**
+- 누군가 이런 질문을 하는 가장 그럴듯한 이유는 무엇인가요?
+- 정당한 요청일 수 있나요? (연구, 창작, 교육, 업무상 필요 등)
+- 악의적인 의도를 암시하는 위험 신호가 있나요?
 
-**2. Impact Assessment**
-- What's the worst case if this information is misused?
-- How accessible is this information elsewhere?
-- Does providing it meaningfully increase risk?
+**2. 영향 평가**
+- 이 정보가 악용된다면 최악의 경우는 무엇인가요?
+- 이 정보는 다른 곳에서 얼마나 쉽게 구할 수 있나요?
+- 이 정보를 제공하면 위험이 실질적으로 커지나요?
 
-**3. Recommendation**
-Based on this analysis:
-- Should I respond, decline, or ask for clarification?
-- If responding, what safeguards should I include?
-- If declining, how should I phrase it helpfully?`}
+**3. 권장 사항**
+이 분석을 바탕으로:
+- 응답해야 할까요, 거절해야 할까요, 아니면 추가 설명을 요청해야 할까요?
+- 응답한다면 어떤 안전장치를 포함해야 할까요?
+- 거절한다면 어떻게 표현해야 상대에게 도움이 될까요?`}
 />
 
 ## 편향 다루기
@@ -126,29 +126,29 @@ AI 모델은 훈련 데이터에서 편향을 상속받습니다—역사적 불
 <TryIt 
   title="편향 감지 테스트"
   description="프롬프트의 잠재적 편향 문제를 테스트하는 데 사용하세요."
-  prompt={`I want to test this prompt for bias:
+  prompt={`이 프롬프트에 편향이 있는지 테스트하고 싶습니다:
 
 "\${promptToTest}"
 
-Run these bias checks:
+다음 편향 검사를 실행해 주세요:
 
-**1. Demographic Variation Test**
-Run the prompt with different demographic descriptors (gender, ethnicity, age, etc.) and note any differences in:
-- Tone or respect level
-- Assumed competence or capabilities
-- Stereotypical associations
+**1. 인구통계 변형 테스트**
+성별, 민족, 나이 등 인구통계적 표현을 바꿔 가며 프롬프트를 실행하고, 다음 항목에서 차이가 나타나는지 확인합니다:
+- 어조나 존중의 정도
+- 전제된 역량이나 능력
+- 고정관념에 기댄 연상
 
-**2. Default Assumption Check**
-When demographics aren't specified:
-- What does the model assume?
-- Are these assumptions problematic?
+**2. 기본 가정 점검**
+인구통계 정보가 명시되지 않았을 때:
+- 모델은 무엇을 가정하나요?
+- 그 가정에 문제가 있나요?
 
-**3. Representation Analysis**
-- Are different groups represented fairly?
-- Are any groups missing or marginalized?
+**3. 대표성 분석**
+- 여러 집단이 공정하게 표현되고 있나요?
+- 누락되거나 소외된 집단은 없나요?
 
-**4. Recommendations**
-Based on findings, suggest prompt modifications to reduce bias.`}
+**4. 권장 사항**
+결과를 바탕으로 편향을 줄이기 위한 프롬프트 수정안을 제안해 주세요.`}
 />
 
 ### 실제로 편향 완화하기
@@ -212,18 +212,18 @@ Based on findings, suggest prompt modifications to reduce bias.`}
 <TryIt 
   title="PII 제거기"
   description="프롬프트에 텍스트를 포함하기 전에 민감한 정보를 식별하고 제거하는 데 사용하세요."
-  prompt={`Review this text for sensitive information that should be removed before using it in an AI prompt:
+  prompt={`AI 프롬프트에 사용하기 전에 제거해야 할 민감한 정보가 있는지 이 텍스트를 검토해 주세요:
 
 "\${textToReview}"
 
-Identify:
-1. **Personal Identifiers**: Names, addresses, phone numbers, emails, SSNs
-2. **Financial Data**: Account numbers, amounts that could identify someone
-3. **Health Information**: Medical details, conditions, prescriptions
-4. **Credentials**: Any passwords, keys, or tokens
-5. **Private Details**: Information someone would reasonably expect to be confidential
+다음 항목을 찾아 주세요:
+1. **개인 식별자**: 이름, 주소, 전화번호, 이메일, 주민등록번호
+2. **금융 데이터**: 계좌번호, 특정인을 식별할 수 있는 금액
+3. **건강 정보**: 의료 관련 세부 사항, 질환, 처방전
+4. **인증 정보**: 모든 비밀번호, 키, 토큰
+5. **사적인 세부 정보**: 당사자가 당연히 비밀로 지켜지길 기대할 만한 정보
 
-For each item found, suggest how to anonymize or generalize it while preserving the information needed for the task.`}
+찾은 항목마다, 작업에 필요한 정보는 유지하면서 익명화하거나 일반화하는 방법을 제안해 주세요.`}
 />
 
 ## 진정성과 기만
@@ -290,23 +290,23 @@ AI를 도구로 사용하는 것과 AI를 기만에 사용하는 것 사이에�
 <TryIt 
   title="의료 맥락 면책 조항"
   description="건강 관련 질문을 받을 수 있는 AI 시스템을 위한 템플릿입니다."
-  prompt={`You are an AI assistant. When users ask about health or medical topics:
+  prompt={`당신은 AI 어시스턴트입니다. 사용자가 건강이나 의료 관련 주제를 물어볼 때:
 
-**Always**:
-- Recommend consulting a qualified healthcare provider for personal medical decisions
-- Provide general educational information, not personalized medical advice
-- Include disclaimers that you cannot diagnose conditions
-- Suggest emergency services (911) for urgent situations
+**항상**:
+- 개인적인 의료 결정은 자격을 갖춘 의료 전문가와 상담하도록 권합니다
+- 개인 맞춤형 의료 조언이 아닌 일반적인 교육 정보를 제공합니다
+- 질환을 진단할 수 없다는 면책 문구를 포함합니다
+- 긴급한 상황에서는 지역 응급 서비스(119, 911, 112 등)를 안내합니다
 
-**Never**:
-- Provide specific diagnoses
-- Recommend specific medications or dosages
-- Discourage someone from seeking professional care
-- Make claims about treatments without noting uncertainty
+**절대 하지 말 것**:
+- 구체적인 진단을 내리는 것
+- 특정 약물이나 복용량을 권하는 것
+- 전문적인 진료를 받지 않도록 만류하는 것
+- 불확실성을 언급하지 않고 치료법에 대해 단정하는 것
 
-User question: \${healthQuestion}
+사용자 질문: \${healthQuestion}
 
-Respond helpfully while following these guidelines.`}
+이 지침을 따르면서 도움이 되는 답변을 해 주세요.`}
 />
 
 ### 법률 및 금융

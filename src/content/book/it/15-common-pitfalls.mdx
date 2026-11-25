@@ -64,7 +64,7 @@ Quando un singolo prompt si sovraccarica, il [prompt chaining](/book/11-prompt-c
   after={{ label: "Fornisce contesto", content: "Aggiorna questa funzione per aggiungere gestione errori:\n\n```python\ndef calculate_total(items):\n    return sum(item.price for item in items)\n```\n\nAggiungi try/except per liste vuote e item invalidi." }}
 />
 
-**Perché accade**: Le conversazioni con l'IA sembrano come parlare con un collega. Ma a differenza dei colleghi, la maggior parte dei modelli IA non ha memoria persistente tra sessioni—ogni conversazione parte da zero.
+**Perché accade**: Le conversazioni con l'IA sembrano chiacchierate con un collega. Ma, a differenza di un collega, il modello in sé non conserva nulla tra una sessione e l'altra. Alcune app di chat offrono ormai funzioni di memoria che portano nelle nuove chat qualche nota salvata su di te, ma conservano dettagli selezionati, non il codice o il documento che hai condiviso la settimana scorsa. Tratta ogni nuova conversazione come un nuovo inizio e includi ciò che conta.
 
 <TryIt 
   title="Verifica Completezza Contesto"
@@ -209,7 +209,7 @@ Genera una specifica di formato che posso aggiungere al mio prompt, includendo:
 **Il Pattern**: Incolli un documento enorme e ti aspetti un'analisi completa. Ma i modelli hanno limiti—potrebbero troncare, perdere focus, o mancare dettagli importanti in input lunghi.
 
 <InfoGrid items={[
-  { label: "Conosci i Tuoi Limiti", description: "Modelli diversi hanno finestre di contesto diverse", example: "GPT-4: 128K token, Claude: 200K token, Gemini: 1M token", exampleType: "text", color: "blue" },
+  { label: "Conosci i Tuoi Limiti", description: "Le finestre di contesto variano da modello a modello e cambiano a ogni nuova versione", example: "Molti modelli attuali accettano circa 1M di token, mentre quelli più piccoli o più vecchi possono fermarsi a 128K o 200K. Controlla la documentazione del tuo modello.", exampleType: "text", color: "blue" },
   { label: "Spezza Input Grandi", description: "Dividi i documenti in sezioni gestibili", example: "Analizza i capitoli separatamente, poi sintetizza", exampleType: "text", color: "blue" },
   { label: "Metti Info Importanti Prima", description: "Metti il contesto critico all'inizio del prompt", example: "Requisiti chiave prima, dettagli di background dopo", exampleType: "text", color: "blue" },
   { label: "Taglia il Grasso", description: "Rimuovi contesto non necessario", example: "Hai davvero bisogno dell'intero documento, o solo delle sezioni rilevanti?", exampleType: "text", color: "blue" }

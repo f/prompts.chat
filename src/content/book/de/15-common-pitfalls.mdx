@@ -64,7 +64,7 @@ Wenn ein einzelner Prompt überladen wird, ist [Prompt Chaining](/book/11-prompt
   after={{ label: "Liefert Kontext", content: "Aktualisiere diese Funktion, um Fehlerbehandlung hinzuzufügen:\n\n```python\ndef calculate_total(items):\n    return sum(item.price for item in items)\n```\n\nFüge try/except für leere Listen und ungültige Elemente hinzu." }}
 />
 
-**Warum es passiert**: KI-Gespräche fühlen sich an wie mit einem Kollegen zu reden. Aber anders als Kollegen haben die meisten KI-Modelle kein persistentes Gedächtnis zwischen Sitzungen – jedes Gespräch beginnt frisch.
+**Warum es passiert**: KI-Gespräche fühlen sich an wie mit einem Kollegen zu reden. Aber anders als ein Kollege behält das Modell selbst zwischen Sitzungen nichts. Manche Chat-Apps bieten inzwischen Gedächtnisfunktionen, die ein paar gespeicherte Notizen über dich in neue Chats mitnehmen, doch sie bewahren ausgewählte Details auf, nicht den Code oder das Dokument, das du letzte Woche geteilt hast. Betrachte jedes neue Gespräch als Neuanfang und gib mit, was wichtig ist.
 
 <TryIt 
   title="Kontext-Vollständigkeitsprüfung"
@@ -209,7 +209,7 @@ Generiere eine Format-Spezifikation, die ich meinem Prompt hinzufügen kann, ink
 **Das Muster**: Du fügst ein riesiges Dokument ein und erwartest umfassende Analyse. Aber Modelle haben Limits – sie können kürzen, den Fokus verlieren oder wichtige Details in langen Eingaben verpassen.
 
 <InfoGrid items={[
-  { label: "Kenne deine Limits", description: "Verschiedene Modelle haben verschiedene Kontextfenster", example: "GPT-4: 128K Tokens, Claude: 200K Tokens, Gemini: 1M Tokens", exampleType: "text", color: "blue" },
+  { label: "Kenne deine Limits", description: "Kontextfenster unterscheiden sich je nach Modell und ändern sich mit jedem Release", example: "Viele aktuelle Modelle verarbeiten rund 1M Tokens, kleinere oder ältere dagegen oft nur 128K oder 200K. Sieh in der Dokumentation deines Modells nach.", exampleType: "text", color: "blue" },
   { label: "Große Eingaben aufteilen", description: "Zerlege Dokumente in handhabbare Abschnitte", example: "Analysiere Kapitel separat, dann synthetisiere", exampleType: "text", color: "blue" },
   { label: "Wichtige Info vorne", description: "Setze kritischen Kontext früh in den Prompt", example: "Schlüsselanforderungen zuerst, Hintergrunddetails später", exampleType: "text", color: "blue" },
   { label: "Überflüssiges entfernen", description: "Entferne unnötigen Kontext", example: "Brauchst du wirklich das ganze Dokument, oder nur relevante Abschnitte?", exampleType: "text", color: "blue" }

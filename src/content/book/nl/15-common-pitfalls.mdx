@@ -42,7 +42,7 @@ Herschrijf de prompt met al deze details erin.`}
   after={{ label: "Gefocuste prompt", content: "Schrijf een blogpost van 500 woorden die AI introduceert aan beginners.\n\nVereisten:\n1. Leg één kernconcept duidelijk uit\n2. Voeg één eenvoudig codevoorbeeld toe\n3. Eindig met een call to action\n\nToon: Professioneel maar toegankelijk" }}
 />
 
-**Waarom het gebeurt**: Angst voor meerdere interacties, of de wens om "alles eruit te gooien" in één keer. Maar cognitieve overbelasting beïnvloedt AI net zoals het mensen beïnvloedt—te veel concurrerende vereisten leidt tot gemiste punten.
+**Waarom het gebeurt**: Angst voor meerdere interacties, of de wens om "alles eruit te gooien" in één keer. Maar cognitieve overbelasting beïnvloedt AI net zoals het mensen beïnvloedt: te veel concurrerende vereisten leiden tot gemiste punten.
 
 <InfoGrid items={[
   { label: "Beperk Vereisten", description: "Houd het bij 3-5 kernvereisten per prompt", example: "Focus op: doelgroep, formaat, lengte, één kernbeperking", exampleType: "text", color: "green" },
@@ -64,7 +64,7 @@ Wanneer een enkele prompt overladen raakt, is [prompt chaining](/book/11-prompt-
   after={{ label: "Geeft context", content: "Update deze functie om foutafhandeling toe te voegen:\n\n```python\ndef calculate_total(items):\n    return sum(item.price for item in items)\n```\n\nVoeg try/except toe voor lege lijsten en ongeldige items." }}
 />
 
-**Waarom het gebeurt**: AI-gesprekken voelen als praten met een collega. Maar in tegenstelling tot collega's hebben de meeste AI-modellen geen persistent geheugen tussen sessies—elk gesprek begint opnieuw.
+**Waarom het gebeurt**: AI-gesprekken voelen als praten met een collega. Maar anders dan een collega onthoudt het model zelf niets tussen sessies. Sommige chat-apps hebben inmiddels geheugenfuncties die een paar opgeslagen notities over jou meenemen naar nieuwe gesprekken, maar die bewaren geselecteerde details, niet de code of het document dat je vorige week deelde. Behandel elk nieuw gesprek als een frisse start en geef mee wat ertoe doet.
 
 <TryIt 
   title="Contextcompleetheidscontrole"
@@ -209,7 +209,7 @@ Genereer een formaatspecificatie die ik aan mijn prompt kan toevoegen, inclusief
 **Het Patroon**: Je plakt een enorm document en verwacht uitgebreide analyse. Maar modellen hebben limieten—ze kunnen afkappen, focus verliezen, of belangrijke details missen in lange inputs.
 
 <InfoGrid items={[
-  { label: "Ken Je Limieten", description: "Verschillende modellen hebben verschillende context windows", example: "GPT-4: 128K tokens, Claude: 200K tokens, Gemini: 1M tokens", exampleType: "text", color: "blue" },
+  { label: "Ken Je Limieten", description: "Context windows verschillen per model en veranderen met elke nieuwe release", example: "Veel huidige modellen accepteren zo'n 1M tokens, terwijl kleinere of oudere modellen al bij 128K of 200K stoppen. Raadpleeg de documentatie van je model.", exampleType: "text", color: "blue" },
   { label: "Verdeel Grote Inputs", description: "Breek documenten op in beheersbare secties", example: "Analyseer hoofdstukken apart, synthetiseer dan", exampleType: "text", color: "blue" },
   { label: "Zet Belangrijke Info Vooraan", description: "Plaats kritieke context vroeg in de prompt", example: "Kernvereisten eerst, achtergronddetails later", exampleType: "text", color: "blue" },
   { label: "Snoei het Overbodige", description: "Verwijder onnodige context", example: "Heb je echt het hele document nodig, of alleen relevante secties?", exampleType: "text", color: "blue" }

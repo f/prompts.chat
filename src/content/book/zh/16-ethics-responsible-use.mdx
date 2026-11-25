@@ -54,28 +54,28 @@ CSAM是**儿童性虐待材料**（Child Sexual Abuse Material）的缩写。在
 <TryIt 
   title="安全优先的系统提示词"
   description="一个将安全指南构建到AI系统中的模板。"
-  prompt={`You are a helpful assistant for \${purpose}.
+  prompt={`你是一个为\${purpose}提供帮助的助手。
 
-## SAFETY GUIDELINES
+## 安全准则
 
-**Content Restrictions**:
-- Never provide instructions that could cause physical harm
-- Decline requests for illegal information or activities
-- Don't generate discriminatory or hateful content
-- Don't create deliberately misleading information
+**内容限制**：
+- 绝不提供可能造成人身伤害的操作指导
+- 拒绝涉及非法信息或非法活动的请求
+- 不生成歧视性或仇恨性内容
+- 不制造故意误导的信息
 
-**When You Must Decline**:
-- Acknowledge you understood the request
-- Briefly explain why you can't help with this specific thing
-- Offer constructive alternatives when possible
-- Be respectful—don't lecture or be preachy
+**必须拒绝时**：
+- 表明你已理解对方的请求
+- 简要说明为什么无法协助这件具体的事
+- 尽可能提供建设性的替代方案
+- 保持尊重，不要说教或居高临下
 
-**When Uncertain**:
-- Ask clarifying questions about intent
-- Err on the side of caution
-- Suggest the user consult appropriate professionals
+**不确定时**：
+- 提出澄清性问题，了解对方的意图
+- 宁可谨慎一些
+- 建议用户咨询相关专业人士
 
-Now, please help the user with: \${userRequest}`}
+现在，请帮助用户处理以下请求：\${userRequest}`}
 />
 
 ### 意图与影响框架
@@ -85,27 +85,27 @@ Now, please help the user with: \${userRequest}`}
 <TryIt 
   title="伦理边缘案例分析器"
   description="分析模糊请求以确定适当的回应方式。"
-  prompt={`I received this request that might be sensitive:
+  prompt={`我收到了一个可能比较敏感的请求：
 
-"\${sensitiveRequest}"
+“\${sensitiveRequest}”
 
-Help me think through whether and how to respond:
+请帮我想清楚是否应该回应，以及如何回应：
 
-**1. Intent Analysis**
-- What are the most likely reasons someone would ask this?
-- Could this be legitimate? (research, fiction, education, professional need)
-- Are there red flags suggesting malicious intent?
+**1. 意图分析**
+- 有人提出这个问题，最可能的原因是什么？
+- 这有可能是正当需求吗？（研究、小说创作、教育、职业需要）
+- 是否存在暗示恶意的危险信号？
 
-**2. Impact Assessment**
-- What's the worst case if this information is misused?
-- How accessible is this information elsewhere?
-- Does providing it meaningfully increase risk?
+**2. 影响评估**
+- 如果这些信息被滥用，最坏的情况是什么？
+- 这些信息在其他地方是否容易获取？
+- 提供这些信息是否会实质性地增加风险？
 
-**3. Recommendation**
-Based on this analysis:
-- Should I respond, decline, or ask for clarification?
-- If responding, what safeguards should I include?
-- If declining, how should I phrase it helpfully?`}
+**3. 建议**
+基于以上分析：
+- 我应该回应、拒绝，还是请对方进一步说明？
+- 如果回应，应该加入哪些防护措施？
+- 如果拒绝，怎样措辞才能对对方有所帮助？`}
 />
 
 ## 处理偏见
@@ -126,29 +126,29 @@ AI模型从其训练数据中继承了偏见——历史不平等、代表性差
 <TryIt 
   title="偏见检测测试"
   description="使用此工具测试你的提示词是否存在潜在的偏见问题。"
-  prompt={`I want to test this prompt for bias:
+  prompt={`我想测试这个提示词是否存在偏见：
 
-"\${promptToTest}"
+“\${promptToTest}”
 
-Run these bias checks:
+请进行以下偏见检查：
 
-**1. Demographic Variation Test**
-Run the prompt with different demographic descriptors (gender, ethnicity, age, etc.) and note any differences in:
-- Tone or respect level
-- Assumed competence or capabilities
-- Stereotypical associations
+**1. 人口特征变换测试**
+用不同的人口特征描述（性别、族裔、年龄等）运行该提示词，并留意以下方面是否有差异：
+- 语气或尊重程度
+- 对能力或水平的预设
+- 刻板印象式的联想
 
-**2. Default Assumption Check**
-When demographics aren't specified:
-- What does the model assume?
-- Are these assumptions problematic?
+**2. 默认假设检查**
+在未指定人口特征时：
+- 模型做出了什么假设？
+- 这些假设是否有问题？
 
-**3. Representation Analysis**
-- Are different groups represented fairly?
-- Are any groups missing or marginalized?
+**3. 代表性分析**
+- 不同群体是否得到了公平的呈现？
+- 是否有群体被遗漏或边缘化？
 
-**4. Recommendations**
-Based on findings, suggest prompt modifications to reduce bias.`}
+**4. 改进建议**
+根据检查结果，提出能够减少偏见的提示词修改建议。`}
 />
 
 ### 实践中减少偏见
@@ -212,18 +212,18 @@ Based on findings, suggest prompt modifications to reduce bias.`}
 <TryIt 
   title="PII清理器"
   description="在将文本纳入提示词之前，使用此工具识别和删除敏感信息。"
-  prompt={`Review this text for sensitive information that should be removed before using it in an AI prompt:
+  prompt={`在把这段文本用于AI提示词之前，请检查其中是否有应当删除的敏感信息：
 
-"\${textToReview}"
+“\${textToReview}”
 
-Identify:
-1. **Personal Identifiers**: Names, addresses, phone numbers, emails, SSNs
-2. **Financial Data**: Account numbers, amounts that could identify someone
-3. **Health Information**: Medical details, conditions, prescriptions
-4. **Credentials**: Any passwords, keys, or tokens
-5. **Private Details**: Information someone would reasonably expect to be confidential
+请识别：
+1. **个人标识信息**：姓名、地址、电话号码、电子邮箱、身份证号
+2. **财务数据**：账号、可能识别出某人的金额
+3. **健康信息**：医疗细节、病情、处方
+4. **凭证**：任何密码、密钥或令牌
+5. **私密细节**：当事人理所当然希望保密的信息
 
-For each item found, suggest how to anonymize or generalize it while preserving the information needed for the task.`}
+对于发现的每一项，请建议如何在保留任务所需信息的同时，将其匿名化或泛化。`}
 />
 
 ## 真实性与欺骗
@@ -290,23 +290,23 @@ For each item found, suggest how to anonymize or generalize it while preserving 
 <TryIt 
   title="医疗场景免责声明"
   description="可能收到健康相关查询的AI系统的模板。"
-  prompt={`You are an AI assistant. When users ask about health or medical topics:
+  prompt={`你是一个AI助手。当用户询问健康或医疗相关话题时：
 
-**Always**:
-- Recommend consulting a qualified healthcare provider for personal medical decisions
-- Provide general educational information, not personalized medical advice
-- Include disclaimers that you cannot diagnose conditions
-- Suggest emergency services (911) for urgent situations
+**始终做到**：
+- 涉及个人医疗决定时，建议咨询有资质的医疗专业人员
+- 提供一般性的科普信息，而非个性化的医疗建议
+- 声明你无法诊断疾病
+- 遇到紧急情况时，引导用户联系当地急救服务（如120、911或112）
 
-**Never**:
-- Provide specific diagnoses
-- Recommend specific medications or dosages
-- Discourage someone from seeking professional care
-- Make claims about treatments without noting uncertainty
+**绝不**：
+- 给出具体诊断
+- 推荐具体药物或剂量
+- 劝阻他人寻求专业医疗帮助
+- 在未说明不确定性的情况下对治疗效果下结论
 
-User question: \${healthQuestion}
+用户问题：\${healthQuestion}
 
-Respond helpfully while following these guidelines.`}
+请在遵守这些准则的前提下，给出有帮助的回答。`}
 />
 
 ### 法律和金融
