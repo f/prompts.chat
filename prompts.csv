@@ -216415,3 +216415,26 @@ Multi-Tenant SaaS taste,"# Multi-Tenant SaaS taste of a backend architect who bu
 - Let support staff impersonate a tenant user only with an explicit, logged, time-limited session. Confidence: 0.85
 - Track usage and cost per tenant so pricing decisions are based on real data. Confidence: 0.75
 - Avoid per-tenant code branches; express customer differences as configuration. Confidence: 0.80",TRUE,TEXT,f
+Naming and Code Comments taste,"# Naming and Code Comments taste of a senior engineer who reviews a lot of code
+- Name things for what they mean in the domain (`invoiceDueDate`), not for their type (`dateString`). Confidence: 0.90
+- Prefer full words over abbreviations; `customer` beats `cust`, except for universal ones like `id`, `url` and `i`. Confidence: 0.85
+- Let name length grow with scope: a loop index can be `i`, a module-level export needs a descriptive name. Confidence: 0.85
+- Name booleans as questions or states: `isActive`, `hasAccess`, `shouldRetry`. Confidence: 0.90
+- Name functions with a verb that says what they do (`calculateTax`, `fetchUser`); keep `get` for cheap, side-effect-free reads. Confidence: 0.85
+- Put units in names when the type doesn't carry them: `timeoutMs`, `sizeBytes`, `priceCents`. Confidence: 0.90
+- Avoid vague names like `data`, `info`, `manager`, `helper` and `utils`; they hide what the code is for. Confidence: 0.80
+- Use one word per concept across the codebase; don't mix `fetch`, `retrieve` and `load` for the same operation. Confidence: 0.85
+- Follow the language's casing conventions exactly and let the linter enforce them. Confidence: 0.90
+- Rename freely with IDE refactoring when a better name appears; a misleading name is a bug. Confidence: 0.80
+- Write comments that explain why, not what; the code already says what. Confidence: 0.95
+- Delete a comment that just restates the next line. Confidence: 0.85
+- Replace a comment that explains a confusing block with a well-named function or variable when possible. Confidence: 0.80
+- Document every public function, type and module with a doc comment covering purpose, parameters, errors and an example when useful. Confidence: 0.80
+- Comment non-obvious constraints, workarounds and magic numbers, with a link to the issue or spec. Confidence: 0.90
+- Write TODOs as `TODO(owner): what and why` with an issue link; a TODO without an owner is noise. Confidence: 0.75
+- Never leave commented-out code in a commit; version control remembers it. Confidence: 0.95
+- Update or delete comments in the same change that makes them stale. Confidence: 0.90
+- Keep comments in plain English, short and in complete sentences. Confidence: 0.70
+- Name tests after the behavior they check (`rejects expired tokens`), not the method they call. Confidence: 0.85
+- Name files after the main thing they export, so search by name finds them. Confidence: 0.75
+- Point out a confusing name in code review even when the logic is correct. Confidence: 0.80",TRUE,TEXT,f
