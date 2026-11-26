@@ -254015,3 +254015,19 @@ Render it exactly like an original hand-coloured photo print: fine silver-gelati
 
 </details>
 
+<details>
+<summary><strong>Purple Wisteria Tunnel in Full Bloom with Dappled Spring Sunlight</strong></summary>
+
+## Purple Wisteria Tunnel in Full Bloom with Dappled Spring Sunlight
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A photorealistic wide photograph looking down a long garden tunnel of wisteria in full bloom on a calm, sunny spring afternoon. Old twisted wisteria trunks climb a dark iron arch on both sides, and thousands of long hanging clusters of lavender, violet and a few white flowers drape from the roof of the tunnel, some almost touching the ground. A pale gravel path runs through the center toward a bright opening at the far end where soft green lawn and trees glow in the sun. Sunlight filters through the blossoms and leaves, making warm dappled patches of light on the path, and a scattering of fallen petals lies on the gravel. A few petals are caught in the air, and two bumblebees hover near the clusters in the foreground.
+
+Shot like a professional garden photograph: 35 mm lens from the middle of the path at eye level, strong depth with the tunnel leading to the bright opening, sharp near flower clusters, slightly softer far end, rich purple against fresh green and warm light. No people, no buildings, no text. Landscape 16:9.
+
+```
+
+</details>
+
