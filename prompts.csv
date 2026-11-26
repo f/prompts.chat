@@ -216368,3 +216368,27 @@ def main(argv=None):
 if __name__ == ""__main__"":
     sys.exit(main())
 ",FALSE,TEXT,f
+Transactional Email taste,"# Transactional Email taste of a backend engineer who owns product email delivery
+- Send transactional email through a dedicated provider (Postmark, SES, Resend), never from the app server's own SMTP. Confidence: 0.90
+- Keep transactional and marketing email on separate sending domains or subdomains so a campaign never hurts password-reset delivery. Confidence: 0.90
+- Publish SPF, DKIM and a DMARC policy before the first send, and move DMARC to `p=quarantine` once reports look clean. Confidence: 0.90
+- Enqueue every email from a background job; a request handler never waits on the email API. Confidence: 0.95
+- Give each send an idempotency key derived from the event (e.g. `order-confirmed:{orderId}`) so retries never send twice. Confidence: 0.85
+- Store templates in the repo as code (React Email or MJML), reviewed in pull requests, not edited in the provider dashboard. Confidence: 0.80
+- Always send a plain-text part alongside the HTML part. Confidence: 0.85
+- Render templates with typed data and fail the build when a template references a missing variable. Confidence: 0.80
+- Keep subject lines specific and under about 60 characters; put the key action in the first line of the body. Confidence: 0.70
+- Use a no-reply address only when replies truly can't be handled; prefer a monitored reply-to. Confidence: 0.70
+- Process bounce and complaint webhooks and suppress those addresses automatically. Confidence: 0.95
+- Verify webhook signatures from the provider before trusting any event. Confidence: 0.90
+- Log a message id per send and link it to the user and the triggering event for support lookups. Confidence: 0.85
+- Never put secrets, full card numbers or raw reset tokens in logs; log only the message id and template name. Confidence: 0.90
+- Make magic links and reset links single-use, short-lived (15-60 minutes) and bound to the account. Confidence: 0.90
+- Route all email in development and staging to a catcher like Mailpit; real addresses never receive non-production mail. Confidence: 0.95
+- Snapshot-test rendered HTML for each template and send a test batch to Gmail, Outlook and Apple Mail before big template changes. Confidence: 0.75
+- Respect user notification preferences for every non-critical email; security and billing emails are the only exceptions. Confidence: 0.85
+- Add `List-Unsubscribe` and one-click unsubscribe headers to any email that isn't strictly transactional. Confidence: 0.85
+- Localize templates by the user's saved locale, with an English fallback, and format dates in the user's time zone. Confidence: 0.80
+- Rate-limit per recipient so a bug can't send hundreds of emails to one person. Confidence: 0.85
+- Monitor delivery, bounce and complaint rates with alerts; a complaint rate above 0.1% is an incident. Confidence: 0.80
+- Warm up a new sending domain or dedicated IP gradually instead of switching all traffic at once. Confidence: 0.75",TRUE,TEXT,f
