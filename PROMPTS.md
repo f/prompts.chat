@@ -253999,3 +253999,19 @@ Render it like real hand-turned and hand-painted lime wood: smooth rounded shape
 
 </details>
 
+<details>
+<summary><strong>Hand-Tinted Vintage Photograph of a Seaside Pier and Striped Bathing Huts</strong></summary>
+
+## Hand-Tinted Vintage Photograph of a Seaside Pier and Striped Bathing Huts
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A hand-tinted black-and-white photograph in the style of a 1920s seaside postcard: a long Victorian pier with a white domed pavilion stretches out into a calm sea on the right, and along the sandy beach in the foreground stands a row of wooden bathing huts with candy stripes. Small figures seen from a distance stroll along the promenade railing with parasols and straw boater hats, a few children play at the water's edge, and gulls hang in a pale sky with soft streaky clouds.
+
+Render it exactly like an original hand-coloured photo print: fine silver-gelatin grain and soft focus at the edges, a sepia-grey base image with thin, slightly translucent watercolor washes added by hand: faded coral and mint on the huts, powder blue on the sea and sky, pale rose on the parasols, a touch of ochre on the sand. Some colors drift a little outside the edges, as in real hand tinting. Slightly warm, aged paper tone, a narrow white border, very faint scratches and a soft vignette. No modern objects, no readable text or captions, no close-up faces. Landscape 4:3.
+
+```
+
+</details>
+
