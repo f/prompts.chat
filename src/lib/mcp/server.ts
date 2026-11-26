@@ -3,8 +3,10 @@ import type { McpContext } from "./context";
 import { registerPrompts } from "./prompts";
 import { registerResources } from "./resources";
 import { registerBotTools } from "./tools/bots";
+import { registerClassifierTools } from "./tools/classifiers";
 import { registerPromptTools } from "./tools/prompts";
 import { registerSkillTools } from "./tools/skills";
+import { registerTaxonomyTools } from "./tools/taxonomy";
 import { registerTeamTools } from "./tools/teams";
 
 function instructions(ctx: McpContext): string {
@@ -14,6 +16,8 @@ function instructions(ctx: McpContext): string {
   return `prompts.chat is a community library of AI prompts, Agent Skills and bots.
 - Discover: search_prompts, search_skills and search_bots, then get_prompt, get_skill or get_bot for the full item. Results also link to prompts-chat:// resources you can read.
 - Bot teams are bots that hand work off to each other: list_teams, then get_team for the handoffs and an install prompt.
+- Classifiers answer one question about an input and map it to outcomes: search_classifiers, then get_classifier.
+- list_categories and list_tags give the slugs the search tools filter by.
 - Prompts with \${variable} placeholders: pass values in get_prompt's \`variables\`; ask the user for any listed in missingVariables.
 - ${authTools} an API key from prompts.chat/settings.
 - An agent can back itself up with save_bot (an idempotent upsert of your own bot) and restore with get_my_bot.
@@ -45,6 +49,8 @@ export function createMcpServer(ctx: McpContext): McpServer {
   registerSkillTools(server, ctx);
   registerBotTools(server, ctx);
   registerTeamTools(server, ctx);
+  registerClassifierTools(server, ctx);
+  registerTaxonomyTools(server, ctx);
   registerPrompts(server, ctx);
   registerResources(server, ctx);
   // Registering tools and resources turns listChanged on, but a stateless server never sends those notifications
