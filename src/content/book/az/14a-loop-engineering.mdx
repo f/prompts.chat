@@ -286,6 +286,22 @@ Tamlıq əvvəlcədən bilinməyəndə ən yaxşısıdır. Dayanma qaydası axta
 
 Ödənişlər, dərc etmə, silmə, giriş hüququ dəyişiklikləri, tibbi və ya hüquqi qərarlar və digər ciddi nəticələri olan hərəkətlər üçün ən yaxşısıdır.
 
+### Nəticə Dövrəsi
+
+`hədəf göstəricini qoşun → sübuta əsaslanaraq təklif edin → seçimlər təqdim edin → sandbox-da qurun → insan pull request-i təsdiqləyir → canlı mühitdə ölçün → hədəfdə fasilə verin, geriləsə davam edin`
+
+Zamanla sürüşən performans, əlçatanlıq, təhlükəsizlik gigiyenası, konversiya və ya gecikmə hədəfləri üçün ən yaxşısıdır.
+
+Yuxarıdakı formaların hər biri harasa çatıb bitir: test keçir, sübutlar kifayət edir, insan razılıq verir. Nəticə dövrəsi isə müşahidələrini dördüncü növ yoxlamadan, yəni zamanla real istifadəçi davranışından və produksiya göstəricilərindən alır və bunlar iş bitdikdən sonra da dəyişməyə davam edir. Bu gün sürətlə açılan səhifə yeni funksiyalar əlavə olunduqca gələn ay yenidən ləngiyə bilər. Hədəfə çatmaq hekayənin sonu deyil: bu, dövrənin qurmağı dayandırıb keşik çəkməyə başladığı andır.
+
+Bu, müqaviləni dəyişir. Tək bir dayanma qaydası əvəzinə **izləmə şərti** (hansı göstərici, hansı hədd, hansı zaman aralığında) və **fasilə və bərpa qaydası** (hədəf qorunduqca dincəlmək, geriləyəndə oyanmaq) yazın. Dövrəyə **hər dövr üçün ayrıca büdcə** verin ki, rəsmən heç vaxt bitməyən proses səssizcə limitsiz xərcləyə bilməsin. **Hər dəyişikliyi insan təsdiqindən keçirin** və nəticəni yalnız dəyişiklik canlıya çıxdıqdan sonra ölçün: davamlı olan təkmilləşdirmələr, heç nəyi dəyişməyən cəhdlər və vəziyyəti pisləşdirən dəyişikliklər hamısı növbəti dövrün öyrəndiyi vəziyyətə çevrilir.
+
+Google Labs-in 2026-cı ilin noyabrında gözləmə siyahısı ilə eksperiment kimi elan etdiyi [Stitch Loop](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/) bu formanın yeni nümunələrindən biridir. O, kod bazasına və canlı məhsul məlumatlarına qoşulan, uzunmüddətli işləyən məhsul agenti kimi təsvir olunur. Hər dövr dörd mərhələdən keçir: sübuta əsaslanan *Suggestions* (təkliflər), üstünlük və çatışmazlıqları ilə seçimlər təqdim edən *Solutions* (həllər), kodu izolə edilmiş bulud sandbox-unda yazıb GitHub pull request-i kimi açan *Build* (qurma) və canlı məlumatları izləyən, nəticələrdən öyrənən, hədəfə çatdıqdan sonra da göstərici geriləyə bilər deyə nəzarəti davam etdirən *Reflect* (dəyərləndirmə) mərhələsi. İnsan pull request-i nəzərdən keçirməyənə qədər heç nə birləşdirilmir. Eyni gün təqdim olunan [Pulumi Agents](https://www.pulumi.com/blog/introducing-pulumi-agents/) oxşar yanaşmanı infrastruktura tətbiq edir: komanda məqsədi, məhdudiyyətləri və icazələri müəyyən edir, agentlər buludda işləyir və komandanın nəzərdən keçirməsi üçün tapıntılar və pull request-lər qaytarır.
+
+<Callout type="warning" title="Rəqəm Məqsədin Özünə Çevriləndə">
+Göstəricini optimallaşdıran dövrə rəqəmi yaxşılaşdırarkən həmin rəqəmin ifadə etdiyi şeyə zərər verə bilər. Bu, Qudhart qanunudur: ölçü hədəfə çevriləndə yaxşı ölçü olmaqdan çıxır. Konversiyanın arxasınca düşən dövrə ləğv düyməsini gizlətməyi öyrənə bilər; gecikməni azaltmağa çalışan dövrə yavaş, amma vacib funksiyanı səssizcə söndürə bilər. Hər hədəf göstəricini pisləşməməli olan **qoruyucu göstəricilərlə** (xəta dərəcələri, əlçatanlıq balları, dəstək şikayətləri kimi) cütləşdirin və dövrə etibarınızı qazandıqdan sonra da insan təsdiqi qapısını saxlayın.
+</Callout>
+
 ## Dizaynla Aradan Qaldırılmalı Uğursuzluq Rejimləri
 
 <table>
@@ -397,6 +413,7 @@ Sonra dizaynında ən ehtimallı üç uğursuzluq rejimini müəyyənləşdir v�
 - [Effektiv Agentlərin Qurulması — Anthropic](https://www.anthropic.com/engineering/building-effective-agents) — qiymətləndirici-optimallaşdırıcı iş axınları, mühitdən gələn əks əlaqə, dayanma şərtləri və agent mürəkkəbliyinin nə vaxt özünü doğrultduğuna dair göstərişlər
 - [Agentlərin Qurulmasına dair Praktiki Bələdçi — OpenAI](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/) — agent icraları, çıxış şərtləri, alətlər, qoruyucu mexanizmlər və insan müdaxiləsi
 - [ReAct: Dil Modellərində Düşünmə və Hərəkətin Sinergiyası](https://arxiv.org/abs/2210.03629) — hərəkətlərin xarici mühitdən gələn müşahidələrlə növbələnməsinə dair fundamental tədqiqat
+- [Stitch Loop-un Təqdimatı (Google Labs)](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/): canlı göstəricilərə əsasən dəyişikliklər təklif edən, quran və ölçən, hər dəyişikliyi pull request kimi nəzərdən keçirməyə təqdim edən uzunmüddətli məhsul agenti
 
 ## Xülasə
 

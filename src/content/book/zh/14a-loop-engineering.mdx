@@ -286,6 +286,22 @@ budget: "轮次、时间、token、金钱或副作用的上限"
 
 最适合付款、发布、删除、权限变更、医疗或法律决策，以及其他后果重大的行动。
 
+### 成效循环
+
+`接入目标指标 → 基于证据提出建议 → 给出可选方案 → 在沙箱中构建 → 人工批准拉取请求 → 在线上衡量 → 达标后暂停，回落时恢复`
+
+最适合性能、可访问性、安全卫生，以及会随时间漂移的转化率或延迟目标。
+
+上面每一种形态都会在某处结束：测试通过，证据充分，或者有人点头同意。成效循环则从第四类检查中获取观察，也就是真实的用户行为和长期的生产环境指标，而这些信号在工作完成之后仍会继续变化。今天加载飞快的页面，下个月可能随着新功能的加入又慢了下来。达成目标并不是故事的终点，而是循环从“建造”转向“守望”的时刻。
+
+这就改变了契约的写法。不再只写一条停止规则，而是写下**监视条件**（看哪个指标、什么阈值、多长的时间窗口）和**暂停与恢复规则**（目标守住时休息，出现回落时醒来）。为循环设定**每个周期的预算**，避免一个在形式上永不结束的流程悄无声息地无限花费。**每一次改动都要经过人工批准**，并且只在改动上线之后再衡量结果：站得住的改进、毫无作用的改动、让情况变糟的改动，都会成为下一个周期从中学习的状态。
+
+Google Labs 于 2026 年 11 月以候补名单实验形式发布的 [Stitch Loop](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/)，就是这种形态的一个新近例子。它被描述为一个长期运行的产品智能体，连接着代码库和实时产品数据。每一轮循环都会经过四个阶段：基于证据的 *Suggestions*（建议），附带取舍分析的 *Solutions*（方案），在隔离的云端沙箱中编写代码并以 GitHub 拉取请求形式提交的 *Build*（构建），以及监测实时数据、从结果中学习、并在目标达成后继续留意指标是否回落的 *Reflect*（反思）。在有人审阅拉取请求之前，任何改动都不会被合并。同一天发布的 [Pulumi Agents](https://www.pulumi.com/blog/introducing-pulumi-agents/) 则把类似的模式用于基础设施：团队定义目标、约束和权限，智能体在云端运行，并交回发现结果和拉取请求供团队审阅。
+
+<Callout type="warning" title="当数字本身成了目标">
+一个优化指标的循环，可能在把数字做好看的同时，损害了这个数字原本代表的东西。这就是古德哈特定律：当一个指标变成目标，它就不再是一个好指标。追逐转化率的循环可能学会把取消按钮藏起来；追逐延迟的循环可能悄悄砍掉一个慢但重要的功能。为每个目标指标配上不得变差的**护栏指标**，例如错误率、可访问性评分或客服投诉，并且即使循环已经赢得你的信任，也要保留人工批准这道关口。
+</Callout>
+
 ## 需要在设计中排除的故障模式
 
 <table>
@@ -397,6 +413,7 @@ return stopWithBudgetReport(state);
 - [Building Effective Agents — Anthropic](https://www.anthropic.com/engineering/building-effective-agents) — 评估器-优化器工作流、环境反馈、停止条件，以及智能体复杂度何时才算物有所值的指导
 - [A Practical Guide to Building Agents — OpenAI](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/) — 智能体运行、退出条件、工具、护栏和人工干预
 - [ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629) — 关于将行动与外部环境观察交替进行的奠基性研究
+- [Introducing Stitch Loop (Google Labs)](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/)：一个长期运行的产品智能体，依据实时指标提出、构建并衡量改动，每一次改动都以拉取请求的形式接受审阅
 
 ## 小结
 

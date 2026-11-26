@@ -286,6 +286,22 @@ Ideaal wanneer de volledigheid vooraf niet bekend is. De stopregel moet de bewij
 
 Ideaal voor betalingen, publiceren, verwijderen, toegangswijzigingen, medische of juridische beslissingen en andere acties met grote gevolgen.
 
+### De uitkomstloop
+
+`koppel een doelmetric → stel voor met bewijs → bied opties → bouw in een sandbox → een mens keurt de pull request goed → meet live → pauzeer bij het doel, hervat als het wegzakt`
+
+Ideaal voor performance, toegankelijkheid, beveiligingshygiëne en conversie- of latentiedoelen die na verloop van tijd afdrijven.
+
+Elke vorm hierboven eindigt ergens: een test slaagt, het bewijs is voldoende, een mens zegt ja. De uitkomstloop haalt zijn observaties uit de vierde soort check, echt gebruikersgedrag en productiemetrics over langere tijd, en die blijven bewegen als het werk al af is. Een pagina die vandaag snel laadt, kan volgende maand weer traag worden naarmate er nieuwe functies bijkomen. Het doel halen is dus niet het einde van het verhaal: het is het moment waarop de loop stopt met bouwen en begint met waken.
+
+Dat verandert het contract. In plaats van één stopregel schrijf je een **waakvoorwaarde** (welke metric, welke drempel, over welk tijdvenster) en een **regel voor pauzeren en hervatten** (rusten zolang het doel standhoudt, wakker worden als het wegzakt). Geef de loop een **budget per cyclus**, zodat een proces dat officieel nooit eindigt niet ongemerkt eindeloos kan uitgeven. Laat **elke wijziging langs een mens** gaan en meet het resultaat pas nadat de wijziging live staat: verbeteringen die standhouden, wijzigingen die niets doen en wijzigingen die het erger maken, worden allemaal state waar de volgende cyclus van leert.
+
+[Stitch Loop](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/) van Google Labs, in november 2026 aangekondigd als experiment met wachtlijst, is een recent voorbeeld van deze vorm. Het wordt beschreven als een langlopende productagent die verbonden is met een codebase en live productdata. Elke ronde doorloopt vier fasen: *Suggestions*, onderbouwd met bewijs; *Solutions*, opties met hun afwegingen; *Build*, waarin code in een geïsoleerde cloudsandbox wordt geschreven en als GitHub-pull request wordt geopend; en *Reflect*, dat live data volgt, leert van de resultaten en ook na het halen van het doel blijft opletten voor het geval de metric wegzakt. Er wordt niets gemerged voordat een mens de pull request heeft beoordeeld. [Pulumi Agents](https://www.pulumi.com/blog/introducing-pulumi-agents/), op dezelfde dag aangekondigd, past een vergelijkbaar patroon toe op infrastructuur: het team legt een doel, grenzen en permissies vast, de agents draaien in de cloud en leveren bevindingen en pull requests op die het team beoordeelt.
+
+<Callout type="warning" title="Als het Getal het Doel Wordt">
+Een loop die een metric optimaliseert, kan het getal verbeteren en tegelijk beschadigen waar dat getal voor stond. Dat is de wet van Goodhart: zodra een maatstaf een doel wordt, is het geen goede maatstaf meer. Een conversieloop kan leren de opzegknop te verstoppen; een latentieloop kan stilletjes een trage maar belangrijke functie schrappen. Koppel elke doelmetric aan **bewakingsmetrics** die niet slechter mogen worden, zoals foutpercentages, toegankelijkheidsscores of supportklachten, en houd de menselijke goedkeuring aan, ook als de loop je vertrouwen al heeft verdiend.
+</Callout>
+
 ## Faalmodi die je wegontwerpt
 
 <table>
@@ -397,6 +413,7 @@ Benoem daarna de drie meest waarschijnlijke faalmodi in je ontwerp en pas de loo
 - [Building Effective Agents — Anthropic](https://www.anthropic.com/engineering/building-effective-agents) — evaluator-optimizer-workflows, feedback uit de omgeving, stopcondities en richtlijnen voor wanneer agentische complexiteit gerechtvaardigd is
 - [A Practical Guide to Building Agents — OpenAI](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/) — agent-runs, exitcondities, tools, guardrails en menselijk ingrijpen
 - [ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629) — fundamenteel onderzoek naar het afwisselen van acties met observaties uit een externe omgeving
+- [Introducing Stitch Loop (Google Labs)](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/): een langlopende productagent die wijzigingen voorstelt, bouwt en meet aan de hand van live metrics, waarbij elke wijziging als pull request wordt beoordeeld
 
 ## Samenvatting
 

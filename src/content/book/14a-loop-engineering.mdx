@@ -286,6 +286,22 @@ Best when completeness is not known in advance. The stop rule should measure evi
 
 Best for payments, publishing, deletion, access changes, medical or legal decisions, and other consequential actions.
 
+### The Outcome Loop
+
+`connect a goal metric → suggest with evidence → offer options → build in a sandbox → human approves the pull request → measure live → pause at the goal, resume if it slips`
+
+Best for performance, accessibility, security hygiene, and conversion or latency targets that drift over time.
+
+Every shape above ends somewhere: a test passes, the evidence is sufficient, a person says yes. The outcome loop draws its observations from the fourth kind of checker, real user behavior and production metrics over time, and those keep moving after the work is done. A page that loads quickly today can slow down next month as new features land. Reaching the goal is not the end of the story; it is the moment the loop stops building and starts watching.
+
+That changes the contract. In place of a single stop rule, write a **watch condition** (which metric, what threshold, over what window) and a **pause and resume rule** (rest while the target holds, wake when it slips). Give the loop a **budget per cycle**, so a process that never formally ends cannot quietly spend without limit. Keep a **human gate on every change**, and measure the result only after the change ships: improvements that held, changes that did nothing, and changes that made things worse all become state the next cycle learns from.
+
+Google Labs' [Stitch Loop](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/), announced in November 2026 as a waitlist experiment, is one recent example of this shape. It is described as a long-running product agent connected to a codebase and live product data. Each loop moves through four phases: *Suggestions* grounded in evidence, *Solutions* offered as options with tradeoffs, a *Build* step that writes code in an isolated cloud sandbox and opens it as a GitHub pull request, and a *Reflect* step that monitors live data, learns from the results, and keeps watching after the goal is met in case the metric slips. Nothing merges until a person reviews the pull request. [Pulumi Agents](https://www.pulumi.com/blog/introducing-pulumi-agents/), announced the same day, apply a similar pattern to infrastructure: the team defines a goal, constraints, and permissions, the agents run in the cloud, and they return findings and pull requests for the team to review.
+
+<Callout type="warning" title="When the Number Becomes the Goal">
+A loop that optimizes a metric can improve the number while hurting what the number stood for. This is Goodhart's law: when a measure becomes a target, it stops being a good measure. A conversion loop might learn to bury the cancel button; a latency loop might quietly drop a slow but important feature. Pair every target metric with **guard metrics** it must not worsen, such as error rates, accessibility scores, or support complaints, and keep the human approval gate even after the loop has earned your trust.
+</Callout>
+
 ## Failure Modes to Design Out
 
 <table>
@@ -397,6 +413,7 @@ Then identify the three most likely failure modes in your design and revise the 
 - [Building Effective Agents — Anthropic](https://www.anthropic.com/engineering/building-effective-agents) — evaluator-optimizer workflows, environmental feedback, stopping conditions, and guidance on when agentic complexity is justified
 - [A Practical Guide to Building Agents — OpenAI](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/) — agent runs, exit conditions, tools, guardrails, and human intervention
 - [ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629) — foundational research on interleaving actions with observations from an external environment
+- [Introducing Stitch Loop (Google Labs)](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/): a long-running product agent that suggests, builds, and measures changes against live metrics, with every change reviewed as a pull request
 
 ## Summary
 

@@ -286,6 +286,22 @@ Am besten, wenn die Vollständigkeit vorab unbekannt ist. Die Stoppregel sollte 
 
 Am besten für Zahlungen, Veröffentlichungen, Löschungen, Zugriffsänderungen, medizinische oder rechtliche Entscheidungen und andere folgenreiche Aktionen.
 
+### Die Ergebnisschleife
+
+`Zielmetrik anbinden → mit Belegen vorschlagen → Optionen anbieten → in einer Sandbox bauen → Mensch gibt den Pull Request frei → live messen → am Ziel pausieren, bei Rückfall wieder aufnehmen`
+
+Am besten für Performance, Barrierefreiheit, Sicherheitshygiene sowie Konversions- oder Latenzziele, die mit der Zeit abdriften.
+
+Jede der bisherigen Formen endet irgendwo: Ein Test läuft grün, die Belege reichen aus, ein Mensch sagt Ja. Die Ergebnisschleife bezieht ihre Beobachtungen dagegen aus der vierten Art von Prüfung, aus echtem Nutzerverhalten und Produktionsmetriken über die Zeit, und die bewegen sich weiter, auch wenn die Arbeit getan ist. Eine Seite, die heute schnell lädt, kann nächsten Monat wieder träge werden, weil neue Funktionen hinzukommen. Das Ziel zu erreichen ist also nicht das Ende der Geschichte, sondern der Moment, in dem die Schleife aufhört zu bauen und anfängt zu wachen.
+
+Das verändert den Vertrag. Statt einer einzigen Stoppregel schreibst du eine **Beobachtungsbedingung** (welche Metrik, welche Schwelle, über welchen Zeitraum) und eine **Regel für Pause und Wiederaufnahme** (ruhen, solange das Ziel hält, aufwachen, wenn es abrutscht). Gib der Schleife ein **Budget pro Zyklus**, damit ein Prozess, der nie offiziell endet, nicht unbemerkt grenzenlos Ressourcen verbraucht. Lass **jede Änderung durch eine menschliche Freigabe** gehen und miss das Ergebnis erst, wenn die Änderung live ist: Verbesserungen, die Bestand haben, Änderungen, die nichts bewirken, und Änderungen, die etwas verschlechtern, werden gleichermaßen zu Zustand, aus dem der nächste Zyklus lernt.
+
+Ein aktuelles Beispiel für diese Form ist [Stitch Loop](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/) von Google Labs, im November 2026 als Experiment mit Warteliste angekündigt. Beschrieben wird ein langlebiger Produkt-Agent, der mit einer Codebasis und Live-Produktdaten verbunden ist. Jede Runde durchläuft vier Phasen: *Suggestions*, die auf Belegen beruhen, *Solutions*, die Optionen samt Abwägungen anbieten, einen *Build*-Schritt, der Code in einer isolierten Cloud-Sandbox schreibt und als GitHub-Pull-Request öffnet, und einen *Reflect*-Schritt, der Live-Daten beobachtet, aus den Ergebnissen lernt und auch nach Erreichen des Ziels wachsam bleibt, falls die Metrik wieder abrutscht. Nichts wird gemergt, bevor ein Mensch den Pull Request geprüft hat. [Pulumi Agents](https://www.pulumi.com/blog/introducing-pulumi-agents/), am selben Tag vorgestellt, übertragen ein ähnliches Muster auf Infrastruktur: Das Team legt Ziel, Grenzen und Berechtigungen fest, die Agents laufen in der Cloud und liefern Befunde und Pull Requests, die das Team prüft.
+
+<Callout type="warning" title="Wenn die Zahl selbst zum Ziel wird">
+Eine Schleife, die eine Metrik optimiert, kann die Zahl verbessern und gleichzeitig beschädigen, wofür die Zahl stand. Das ist Goodharts Gesetz: Wird ein Maß zum Ziel, hört es auf, ein gutes Maß zu sein. Eine Konversionsschleife könnte lernen, den Kündigen-Button zu verstecken; eine Latenzschleife könnte stillschweigend eine langsame, aber wichtige Funktion streichen. Stelle jeder Zielmetrik **Schutzmetriken** zur Seite, die sich nicht verschlechtern dürfen, etwa Fehlerraten, Barrierefreiheitswerte oder Supportbeschwerden, und behalte die menschliche Freigabe bei, auch wenn die Schleife dein Vertrauen längst gewonnen hat.
+</Callout>
+
 ## Fehlermodi, die dein Design ausschließen sollte
 
 <table>
@@ -397,6 +413,7 @@ Identifiziere anschließend die drei wahrscheinlichsten Fehlermodi in deinem Ent
 - [Building Effective Agents – Anthropic](https://www.anthropic.com/engineering/building-effective-agents) – Evaluator-Optimizer-Workflows, Feedback aus der Umgebung, Stoppbedingungen und Hinweise, wann agentische Komplexität gerechtfertigt ist
 - [A Practical Guide to Building Agents – OpenAI](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/) – Agent-Läufe, Exit-Bedingungen, Tools, Leitplanken und menschliches Eingreifen
 - [ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629) – Grundlagenforschung zur Verzahnung von Aktionen mit Beobachtungen aus einer externen Umgebung
+- [Introducing Stitch Loop (Google Labs)](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/): ein langlebiger Produkt-Agent, der Änderungen anhand von Live-Metriken vorschlägt, baut und misst, wobei jede Änderung als Pull Request geprüft wird
 
 ## Zusammenfassung
 
