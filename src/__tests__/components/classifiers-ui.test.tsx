@@ -3,6 +3,7 @@ import { render, screen, fireEvent, within } from "@testing-library/react";
 import { ClassifierCatalog } from "@/components/classifiers/classifier-catalog";
 import { ScenarioExplorer } from "@/components/classifiers/scenario-explorer";
 import { ChainFlow } from "@/components/classifiers/chain-flow";
+import { FilterProvider, useFilterContext } from "@/components/prompts/filter-context";
 import { CHAINS, CLASSIFIERS, SOURCES } from "../../../prisma/classifiers/fixtures";
 
 const author = { id: "user-ada", name: "Ada", username: "ada", avatar: null, verified: false };
@@ -48,40 +49,83 @@ describe("ClassifierCatalog", () => {
     expect(within(second).getByRole("link", { name: secondClassifier.name })).toBeInTheDocument();
   });
 
-  it("filters by category and syncs the URL", () => {
-    renderCatalog();
-    const button = screen.getByRole("button", { name: "categories.security" });
-    fireEvent.click(button);
-    expect(button).toHaveAttribute("aria-pressed", "true");
-    const cards = screen.getAllByTestId("classifier-card");
-    expect(cards).toHaveLength(getClassifiers().filter((c) => c.category === "security").length);
-    expect(window.location.search).toContain("category=security");
+  type Filters = { query?: string; category?: Parameters<typeof ClassifierCatalog>[0]["category"] };
+  const renderFiltered = (filters: Filters) =>
+    render(<ClassifierCatalog classifiers={getClassifiers()} chains={getChains()} {...filters} />);
+  const cardNames = () => screen.queryAllByTestId("classifier-card").map((card) => within(card).getAllByRole("link")[0].textContent);
+
+  it("filters by the category from the URL", () => {
+    renderFiltered({ category: "security" });
+    const expected = getClassifiers().filter((c) => c.category === "security");
+    expect(expected.length).toBeGreaterThan(0);
+    expect(cardNames()).toEqual(expected.map((c) => c.name));
   });
 
   it("filters by a domain category and keeps chains that use it", () => {
-    renderCatalog();
-    fireEvent.click(screen.getByRole("button", { name: "categories.logistics" }));
+    renderFiltered({ category: "logistics" });
     expect(screen.getAllByTestId("classifier-card")).toHaveLength(
       getClassifiers().filter((c) => c.category === "logistics").length
     );
     const chainCards = screen.getAllByTestId("chain-card").map((card) => card.textContent ?? "");
     expect(chainCards.some((text) => text.includes(getChain("delivery-exception-routing")!.name))).toBe(true);
-    expect(window.location.search).toContain("category=logistics");
   });
 
-  it("searches and recovers from no results", () => {
-    renderCatalog();
-    const input = screen.getByRole("searchbox");
-    fireEvent.change(input, { target: { value: "groundedness" } });
-    expect(screen.getAllByTestId("classifier-card").length).toBeGreaterThan(0);
-    expect(window.location.search).toContain("q=groundedness");
+  it("searches classifiers and chains from the URL query", () => {
+    renderFiltered({ query: "groundedness" });
+    expect(cardNames().length).toBeGreaterThan(0);
+    expect(cardNames().length).toBeLessThan(getClassifiers().length);
+    expect(cardNames().every((name) => name)).toBe(true);
+  });
 
-    fireEvent.change(input, { target: { value: "zzzz-no-match" } });
+  it("combines search with a category", () => {
+    const refund = getClassifier("refund-eligibility")!;
+    const { unmount } = renderFiltered({ query: "refund" });
+    const searchOnly = cardNames();
+    unmount();
+    renderFiltered({ query: "refund", category: refund.category });
+    expect(cardNames()).toContain(refund.name);
+    expect(cardNames().length).toBeLessThan(searchOnly.length);
+    const inCategory = new Set(getClassifiers().filter((c) => c.category === refund.category).map((c) => c.name));
+    for (const name of cardNames()) expect(inCategory.has(name!)).toBe(true);
+  });
+
+  it("shows no results with a link that resets every filter", () => {
+    renderFiltered({ query: "zzzz-no-match", category: "security" });
     expect(screen.queryByTestId("classifier-card")).toBeNull();
+    expect(screen.queryByTestId("chain-card")).toBeNull();
     expect(screen.getByText("noResults")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "clearFilters" })).toHaveAttribute("href", "/classifiers");
+  });
 
-    fireEvent.click(screen.getByRole("button", { name: "clearFilters" }));
-    expect(screen.getAllByTestId("classifier-card")).toHaveLength(getClassifiers().length);
+  it("leaves search and category controls to the listing sidebar", () => {
+    renderCatalog();
+    expect(screen.queryByRole("searchbox")).toBeNull();
+    expect(screen.queryByRole("button", { name: "categories.security" })).toBeNull();
+    expect(screen.queryByRole("link", { name: "clearFilters" })).toBeNull();
+  });
+
+  it("dims the results while a new filter loads and restores them when it arrives", () => {
+    function PendingTrigger() {
+      const { setFilterPending } = useFilterContext();
+      return <button onClick={() => setFilterPending(true)}>filter</button>;
+    }
+    const { rerender, container } = render(
+      <FilterProvider>
+        <PendingTrigger />
+        <ClassifierCatalog classifiers={getClassifiers()} chains={getChains()} />
+      </FilterProvider>
+    );
+    const results = () => container.querySelector("[aria-busy]")!;
+    expect(results()).toHaveAttribute("aria-busy", "false");
+    fireEvent.click(screen.getByRole("button", { name: "filter" }));
+    expect(results()).toHaveAttribute("aria-busy", "true");
+    rerender(
+      <FilterProvider>
+        <PendingTrigger />
+        <ClassifierCatalog classifiers={getClassifiers()} chains={getChains()} category="security" />
+      </FilterProvider>
+    );
+    expect(results()).toHaveAttribute("aria-busy", "false");
   });
 });
 

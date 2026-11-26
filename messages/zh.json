@@ -143,6 +143,8 @@
     "delete": "删除提示词",
     "noPrompts": "未找到提示词",
     "noPromptsDescription": "尝试调整搜索或筛选条件以找到您需要的内容。",
+    "searchSkillsPlaceholder": "搜索技能...",
+    "noSkills": "未找到技能",
     "promptTitle": "标题",
     "promptContent": "内容",
     "promptDescription": "描述",

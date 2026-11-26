@@ -143,6 +143,8 @@
     "delete": "프롬프트 삭제",
     "noPrompts": "프롬프트가 없습니다",
     "noPromptsDescription": "원하는 것을 찾으려면 검색 또는 필터 조건을 조정해 보세요.",
+    "searchSkillsPlaceholder": "스킬 검색...",
+    "noSkills": "스킬이 없습니다",
     "noMorePrompts": "끝에 도달했습니다",
     "loadMore": "더 보기",
     "loading": "로딩 중...",

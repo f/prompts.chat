@@ -143,6 +143,8 @@
     "delete": "Elimina Prompt",
     "noPrompts": "Nessun prompt trovato",
     "noPromptsDescription": "Prova a modificare i criteri di ricerca o filtro per trovare quello che cerchi.",
+    "searchSkillsPlaceholder": "Cerca competenze...",
+    "noSkills": "Nessuna competenza trovata",
     "noMorePrompts": "Hai raggiunto la fine",
     "loadMore": "Carica altro",
     "loading": "Caricamento...",

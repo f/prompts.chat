@@ -143,6 +143,8 @@
     "delete": "Promptu Sil",
     "noPrompts": "Prompt tapılmadı",
     "noPromptsDescription": "Axtardığınızı tapmaq üçün axtarış və ya filtr meyarlarını tənzimləməyə çalışın.",
+    "searchSkillsPlaceholder": "Bacarıqlarda axtar...",
+    "noSkills": "Bacarıq tapılmadı",
     "noMorePrompts": "Sona çatdınız",
     "loadMore": "Daha Çox Yüklə",
     "loading": "Yüklənir...",
