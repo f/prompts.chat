@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { getWebhookSiteUrl } from "@/lib/app-url";
 import { WebhookEvent } from "@prisma/client";
 
 interface PromptData {
@@ -221,7 +222,7 @@ function isPrivateUrl(urlString: string): boolean {
 export { isPrivateUrl };
 
 function replacePlaceholders(template: string, prompt: PromptData): string {
-  const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "https://prompts.chat";
+  const siteUrl = getWebhookSiteUrl();
   const promptUrl = `${siteUrl}/prompts/${prompt.id}`;
   const defaultAvatar = `${siteUrl}/default-avatar.png`;
   const chatgptUrl = `https://chat.openai.com/?prompt=${encodeURIComponent(prompt.content)}`;

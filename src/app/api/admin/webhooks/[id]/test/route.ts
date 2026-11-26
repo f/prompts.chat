@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { isPrivateUrl } from "@/lib/webhook";
+import { getWebhookSiteUrl } from "@/lib/app-url";
 
 export async function POST(
   request: Request,
@@ -26,7 +27,7 @@ export async function POST(
 
     // Replace placeholders with test values (must match WEBHOOK_PLACEHOLDERS)
     let payload = webhook.payload;
-    const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "https://prompts.chat";
+    const siteUrl = getWebhookSiteUrl();
     const testData: Record<string, string> = {
       "{{PROMPT_ID}}": "test-prompt-id-12345",
       "{{PROMPT_TITLE}}": "Test Prompt Title",

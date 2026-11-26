@@ -1,0 +1,13 @@
+// Spacefast config, read by `sf publish`. See docs/deploy/spacefast.md.
+//
+// There is deliberately no build command here: with none set, `sf publish`
+// detects Next.js, runs `npm run build` through its Next adapter and packages
+// the output with OpenNext. Setting one turns that pipeline off.
+{
+  "crons": [
+    // Daily credit reset. Spacefast crons are plain GETs, so the route is
+    // authorized by the CRON_PATH_TOKEN path segment. Templates can only read
+    // plain variables: set it with `sf env set CRON_PATH_TOKEN --no-secret`.
+    { "path": "/api/cron/reset-credits/{{vars.CRON_PATH_TOKEN}}", "schedule": "daily" }
+  ]
+}

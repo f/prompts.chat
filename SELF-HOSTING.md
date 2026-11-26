@@ -142,6 +142,16 @@ This will:
    npm run start
    ```
 
+### Hosting Platforms
+
+The same code runs on Vercel, Docker or any Node.js server, and on worker hosts.
+Host-specific settings are read from the environment when `next build` runs;
+`.env.example` groups them and marks which ones apply at build time.
+
+- **Vercel**: import the repository; no extra settings are needed.
+- **Docker / Node.js**: see [DOCKER.md](DOCKER.md), or run `npm run build && npm run start`.
+- **Spacefast**: see [docs/deploy/spacefast.md](docs/deploy/spacefast.md).
+
 ## Configuration
 
 The setup wizard (`npm run setup`) generates `prompts.config.ts` automatically. You can also manually edit it:

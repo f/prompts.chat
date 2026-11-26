@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import { PixelRobot } from "@/components/kids/elements/pixel-art";
 import { getTranslations, getLocale } from "next-intl/server";
 import { ContinueReadingButton } from "@/components/book/continue-reading";
+import { absoluteUrl, getBaseUrl } from "@/lib/seo";
 
 const kidsFont = Schoolbell({
   subsets: ["latin"],
@@ -48,7 +49,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: "prompts.chat",
       images: [
         {
-          url: "https://prompts.chat/book-cover-photo.jpg",
+          url: absoluteUrl("/book-cover-photo.jpg"),
           width: 1200,
           height: 630,
           alt: title,
@@ -61,7 +62,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: "summary_large_image",
       title,
       description,
-      images: ["https://prompts.chat/book-cover-photo.jpg"],
+      images: [absoluteUrl("/book-cover-photo.jpg")],
       creator: "@fkadev",
     },
     alternates: {
@@ -96,10 +97,10 @@ const jsonLd = {
   publisher: {
     "@type": "Organization",
     name: "prompts.chat",
-    url: "https://prompts.chat",
+    url: getBaseUrl(),
   },
-  url: "https://prompts.chat/book",
-  image: "https://prompts.chat/book-cover-photo.jpg",
+  url: absoluteUrl("/book"),
+  image: absoluteUrl("/book-cover-photo.jpg"),
   inLanguage: "en",
   genre: ["Technology", "Education", "Artificial Intelligence"],
   about: {

@@ -1,6 +1,5 @@
-import { readFileSync } from "fs";
-import { join } from "path";
 import { parse } from "yaml";
+import { readBundledText } from "@/lib/bundled-files";
 
 // Cache for loaded prompts
 const promptCache = new Map<string, PromptFile>();
@@ -33,8 +32,10 @@ export function loadPrompt(relativePath: string): PromptFile {
     return promptCache.get(relativePath)!;
   }
 
-  const absolutePath = join(process.cwd(), relativePath);
-  const content = readFileSync(absolutePath, "utf-8");
+  const content = readBundledText(relativePath);
+  if (content === undefined) {
+    throw new Error(`${relativePath} is not bundled. Run \`npm run generate:bundled-files\`.`);
+  }
   const prompt = parse(content) as PromptFile;
   
   // Cache the result

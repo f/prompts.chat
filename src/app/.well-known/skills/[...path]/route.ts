@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-
-const SKILLS_DIR = path.join(
-  process.cwd(),
-  "plugins/claude/prompts.chat/skills"
-);
+import { readBundledText } from "@/lib/bundled-files";
+import { SKILLS_DIR } from "../skills-dir";
 
 export async function GET(
   request: NextRequest,
@@ -13,20 +8,19 @@ export async function GET(
 ) {
   try {
     const { path: pathSegments } = await params;
-    const filePath = path.join(SKILLS_DIR, ...pathSegments);
 
-    // Security: ensure the resolved path is within SKILLS_DIR
-    const resolvedPath = path.resolve(filePath);
-    if (!resolvedPath.startsWith(path.resolve(SKILLS_DIR))) {
+    // Security: only plain names, so the lookup cannot leave SKILLS_DIR
+    if (pathSegments.some((segment) => segment === "" || segment === "." || segment === ".." || /[/\\]/.test(segment))) {
       return NextResponse.json({ error: "Invalid path" }, { status: 400 });
     }
 
-    if (!fs.existsSync(resolvedPath)) {
+    const relativePath = pathSegments.join("/");
+    const content = readBundledText(`${SKILLS_DIR}/${relativePath}`);
+    if (content === undefined) {
       return NextResponse.json({ error: "File not found" }, { status: 404 });
     }
 
-    const content = fs.readFileSync(resolvedPath, "utf-8");
-    const ext = path.extname(resolvedPath).toLowerCase();
+    const ext = relativePath.slice(relativePath.lastIndexOf(".")).toLowerCase();
 
     // Determine content type
     let contentType = "text/plain";

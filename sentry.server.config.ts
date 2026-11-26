@@ -5,10 +5,11 @@
 import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
-  dsn: "https://9c2eb3b4441745efad28a908001c30bf@o4510673866063872.ingest.de.sentry.io/4510673871306832",
+  // Set from NEXT_PUBLIC_SENTRY_DSN / SENTRY_DSN at build time (see src/lib/build-config.ts)
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
 
-  // Disable Sentry in development
-  enabled: process.env.NODE_ENV === "production",
+  // Disable Sentry in development and when no DSN is configured
+  enabled: process.env.NODE_ENV === "production" && !!process.env.NEXT_PUBLIC_SENTRY_DSN,
 
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   tracesSampleRate: 0.1,

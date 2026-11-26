@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import config from "@/../prompts.config";
+import { getAppUrl } from "@/lib/app-url";
 
 export const SITE_NAME = config.branding.name;
 
@@ -27,7 +28,7 @@ export const NOINDEX_ROBOTS: Metadata["robots"] = {
  * Returns the absolute site origin without a trailing slash
  */
 export function getBaseUrl(): string {
-  return (process.env.NEXTAUTH_URL || "https://prompts.chat").replace(/\/+$/, "");
+  return getAppUrl();
 }
 
 /**
