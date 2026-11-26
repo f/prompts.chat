@@ -254031,3 +254031,32 @@ Shot like a professional garden photograph: 35 mm lens from the middle of the pa
 
 </details>
 
+<details>
+<summary><strong>Purple Wisteria Tunnel in Full Bloom with Dappled Spring Sunlight (Image-to-Video Animation)</strong></summary>
+
+## Purple Wisteria Tunnel in Full Bloom with Dappled Spring Sunlight (Image-to-Video Animation)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Use the attached still (step 1: a photorealistic wide photograph looking down a long wisteria tunnel in full bloom, hanging lavender and violet flower clusters on both sides, a pale gravel path leading to a bright sunny opening at the far end, dappled sunlight on the path and a few fallen petals) as the exact first frame and animate it into an 8-second, 16:9 cinematic shot. Keep every element as it is in the still: the shape of the arch and trunks, the position of the flower clusters, the path and the bright opening.
+
+Motion (0-8 s):
+- 0-3 s: a soft spring breeze starts; the long hanging flower clusters sway gently back and forth, the ones nearest to the camera moving a little more; the bumblebees hover and drift slowly between the clusters.
+- 3-6 s: a slightly stronger, still gentle gust loosens a few petals that float down slowly through the sunbeams and settle on the gravel; the dappled light patches on the path shift as the leaves move.
+- 6-8 s: the breeze calms, the clusters slow to a light sway, a few last petals spin down in the light.
+
+Camera: very slow, smooth dolly forward along the path (about 3-4 percent), no cuts, no fast moves; the trunks and the iron arch stay solid and still.
+
+Ambient motion: tiny specks of pollen glinting in the sunbeams, distant leaves at the bright opening moving slightly.
+
+Lighting and mood: warm late spring afternoon light, purple and green tones, calm, dreamy and quiet.
+
+Sound: off (silent clip).
+
+Avoid: people, birds, flowers changing color or shape, clusters merging or melting, petals falling too fast or like snow, the tunnel bending, sudden light changes, time-lapse, text.
+
+```
+
+</details>
+
