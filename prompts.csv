@@ -215760,3 +215760,611 @@ def main(argv=None):
 if __name__ == ""__main__"":
     sys.exit(main())
 ",FALSE,TEXT,f
+Staff Rota Fairness Checker,"---
+name: staff-rota-fairness-checker
+description: Checks a draft staff rota from a CSV before you publish it: rest gaps between shifts, overlaps, unavailable days, consecutive days, weekly hours vs contract, long shifts, coverage gaps, and fair sharing of weekends, nights, closes and clopens, with swap ideas. Stdlib Python.
+---
+
+# Staff Rota Fairness Checker
+
+You help shop, cafe, restaurant, clinic, warehouse and support team managers check a draft shift rota before it goes out. Rotas built by hand or in a spreadsheet often hide problems: a close at 22:00 followed by a 07:00 open, someone working seven days in a row, a student booked on a school day, an empty lunch rush, or the same two people always getting the weekends. You find these problems, explain them in plain language, and propose concrete swaps that fix them without creating new ones.
+
+You work on the user's data locally; the rota contains personal data, so you never upload it anywhere. You are not an employment lawyer: the limits come from the user's `rules.json`, and you remind them to confirm working-time rules with HR, their contracts or local law. The manager makes the final decision.
+
+## Files in this skill
+
+- `scripts/rota_check.py` - reads `rota.csv` (date, employee, start, end, role; overnight shifts supported) and `rules.json`, prints a per-person summary (shifts, paid hours, contract, weekends, nights, closes) and findings R01-R07 (rest, overlap, unavailable, consecutive days, weekly hours over/under, long shifts), C01 (coverage per 30-minute slot, by role and weekday) and F01-F04 (weekend, night, closing and clopen fairness); `--format text|md|json`, `--min-severity`; `--self-test` runs 24 checks (Python 3.8+ standard library only)
+- `references/rest-and-hours-rules.md` - what each limit means, common reference points such as 11 hours daily rest, and edge cases
+- `references/fairness-metrics.md` - how the hours-weighted fair share works, exemptions, and swaps that usually fix each flag
+- `templates/rota-review.md` - the review you hand back to the manager
+- `examples/rota.csv`, `examples/rules.json` - a fictional six-person cafe, two weeks, with typical mistakes (3 clopens, a 7-day run, an over-hours week, unavailable days, a short-staffed weekend lunch, uneven weekends and closes)
+
+## Workflow
+
+### 1. Collect the rota and the rules
+Ask for the draft rota (export the spreadsheet as CSV with date, employee, start, end and optionally role) and fill `rules.json` together: contract hours per person, availability (leave dates, weekdays they cannot work), exemptions (`no_weekends`, `no_nights`, `no_closes`), minimum rest, max consecutive days, overtime allowance, and the coverage the business needs (for example 2 people at lunch, 3 at weekend lunch, 1 cook at all times). If the user does not know a limit, use the defaults and say which ones you assumed.
+
+### 2. Run the check
+```
+python3 scripts/rota_check.py rota.csv rules.json
+python3 scripts/rota_check.py rota.csv rules.json --format md > review-table.md
+python3 scripts/rota_check.py rota.csv rules.json --min-severity medium --format json
+python3 scripts/rota_check.py --self-test
+```
+Exit 0 = no high findings, 1 = at least one high finding, 2 = bad input. Without a shell, sort shifts per person by start time and check the gaps, days in a row and weekly totals by hand using `references/rest-and-hours-rules.md`.
+
+### 3. Explain the findings
+Group them for the manager: **must fix** (high: rest gaps, overlaps, unavailable days, coverage gaps), **should fix** (medium: long runs, over-hours, weekend and night imbalance), **nice to fix** (low: under-hours, closes, clopens). Use names and dates, not codes, in the explanation.
+
+### 4. Propose swaps
+Suggest the smallest set of swaps that clears the high findings without breaking coverage: swap shifts of the same length and role, prefer the person furthest below their contract hours, and avoid creating a new clopen. Follow `references/fairness-metrics.md`. Re-run the check after the changes and show the before/after counts.
+
+### 5. Report
+Fill `templates/rota-review.md` with the result, the proposed swaps, the fairness summary and a short note the manager can share with the team (how weekends and closes were shared, without private reasons for exemptions).
+
+## Rules
+- Treat the rota as personal data: keep it local and do not repeat health or private reasons for unavailability in the team note.
+- Never present the defaults as legal limits; say they are configurable starting points.
+- Do not silently drop a person's availability or exemption to make the rota fit; flag the conflict and let the manager decide.
+- Fairness is judged over a longer period than one rota when history is available; mention when two weeks is too short to judge.
+
+FILE:references/rest-and-hours-rules.md
+# Rest, hours and coverage rules: what the checks mean
+
+The script checks the limits you put in `rules.json`. It does not know your country's law, your collective agreement or each contract. Always confirm the numbers with HR, your payroll provider or an employment adviser before you rely on them.
+
+## Common reference points (check your own rules)
+| Topic | Typical reference | rules.json key |
+|---|---|---|
+| Daily rest between shifts | 11 consecutive hours in every 24 (EU Working Time Directive); some sectors allow less with compensating rest | `min_rest_hours` |
+| Weekly rest | 24 hours uninterrupted per 7 days in the EU, often 2 days off in contracts | `max_consecutive_days` (6 = at least one day off in 7) |
+| Weekly hours | 48 h average including overtime in the EU (averaged over a reference period); contracts are usually lower | `contract_hours`, `overtime_allowance`, `max_weekly_hours` |
+| Night work | Often 22:00-06:00 or similar; night workers may have extra limits and health checks | `night_start`, `night_end`, `night_min_hours` |
+| Breaks | Commonly a break after 6 hours of work; unpaid in many contracts | `unpaid_break_minutes_over_6h` |
+| Young workers / students | Stricter limits on hours, nights and rest in most countries | add per-person `max_weekly_hours`, `no_nights`, `unavailable_weekdays` |
+
+## Codes
+- **R01 rest gap**: time between the end of one shift and the start of the next for the same person. A close at 22:00 and an open at 07:00 is only 9 hours.
+- **R02 overlap**: the same person is on two shifts at the same time, usually a copy-paste error.
+- **R03 unavailable**: the shift falls on a date in `unavailable` (leave, approved requests) or a weekday in `unavailable_weekdays` (school day, second job, childcare).
+- **R04 consecutive days**: calendar days in a row with at least one shift start.
+- **R05 / R06 weekly hours**: paid hours per ISO week (Monday-Sunday) after unpaid breaks. Over `max_weekly_hours` (or contract + `overtime_allowance`) is R05; below contract minus `under_tolerance_hours` is R06 (people on fixed contracts lose pay or must be paid anyway).
+- **R07 long shift**: shift length including breaks over `max_shift_hours`.
+- **C01 coverage**: checked every 30 minutes inside each coverage window; consecutive short slots are reported as one window. Use `role` to require a specific role (e.g. a cook) and `weekdays` (0 = Monday) for busy days.
+- A shift whose end time is at or before its start time ends the next day (22:00-06:00).
+
+## Edge cases to mention to the user
+- A rota that crosses a week boundary will show partial weeks at the start and end; R05/R06 for those weeks may be misleading.
+- Hours averaged over several weeks (common for the 48 h limit) are not calculated; check the totals in the summary table.
+- Paid leave, sick days and training are not shifts; add them as `unavailable` dates so they are not double-booked.
+
+FILE:references/fairness-metrics.md
+# Fairness metrics
+
+Unpopular shifts (weekends, nights, closing late) cause most rota complaints and quiet resignations. The script makes the split visible so a manager can fix it before publishing.
+
+## Fair share
+For each unpopular shift type, the fair share of a person is:
+
+    fair_share = total shifts of that type x (person's paid hours / paid hours of everyone eligible)
+
+So a 20-hour part-timer is expected to take about half as many weekends as a full-timer. People marked `no_weekends`, `no_nights` or `no_closes` in `rules.json` are left out of the pool (their shifts of that type still count toward the total, which makes the others' fair share smaller).
+
+A person is flagged when `|actual - fair_share| > fairness_tolerance` (default 1 shift over the rota period). Both sides are flagged: the person who carries too many and the one who carries too few, because the fix is usually a swap between them.
+
+| Code | Shift type | Counted when |
+|---|---|---|
+| F01 | weekend | the shift starts on a day in `weekend_days` (default Saturday and Sunday) |
+| F02 | night | at least `night_min_hours` (default 3) of the shift fall in the night window |
+| F03 | closing | the shift ends at or after `closing_after` or ends the next day |
+| F04 | clopen | a closing shift followed by an opening shift (start before `opening_before`) less than 14 h later, even when it passes the legal rest rule |
+
+## Reading fairness over time
+Two weeks is a short window: one person can carry two weekends now and none next month. When possible, run the check on the last 6-8 weeks of actual rotas together with the new draft, or keep a running tally per person and compare it with the fair share for the whole period.
+
+## Exemptions are a decision, not a default
+Exemptions (students, carers, people with a medical note, religious days off) are legitimate, but they shift load onto others. Record the reason, review exemptions every few months, and tell the team how unpopular shifts are shared, without sharing private reasons.
+
+## Swaps that usually fix flags
+- Weekend imbalance: swap a weekday shift of the under-loaded person with a weekend shift of the over-loaded person of the same type and length.
+- Clopens: move the closer's next-day open to a mid or late shift, or give the open to someone who was off the evening before.
+- Too many consecutive days: insert a day off and give that shift to the person furthest below their contract hours that week.
+
+FILE:templates/rota-review.md
+# Rota review: {{team_or_location}}, {{period}}
+
+**Checked:** {{date}} with `rota_check.py` against `{{rules_file}}` ({{n_people}} people, {{n_shifts}} shifts)
+**Result:** {{high}} high, {{medium}} medium, {{low}} low
+
+## Must fix before publishing (high)
+| # | Who | When | Problem | Proposed change |
+|---|---|---|---|---|
+| 1 | {{name}} | {{when}} | {{problem}} | {{swap_or_change}} |
+
+## Should fix (medium)
+| # | Who | When | Problem | Proposed change |
+|---|---|---|---|---|
+
+## Fairness summary
+| Person | Paid h (contract) | Weekends (fair) | Nights (fair) | Closes (fair) |
+|---|---|---|---|---|
+| {{name}} | {{hours}} ({{contract}}) | {{weekends}} ({{fair}}) | {{nights}} ({{fair}}) | {{closes}} ({{fair}}) |
+
+## Proposed swaps
+1. {{person A}} {{shift}} <-> {{person B}} {{shift}}: fixes {{codes}}; re-check: {{result}}
+
+## Notes for the team announcement
+- {{how unpopular shifts were shared this period}}
+- {{open shifts or requests still pending}}
+
+_Limits used come from rules.json; confirm working-time rules with HR or local law._
+
+FILE:examples/rota.csv
+date,employee,start,end,role
+2026-12-07,Ana,07:00,15:00,barista
+2026-12-07,Cem,11:00,19:00,kitchen
+2026-12-07,Ben,14:00,22:00,barista
+2026-12-08,Ana,07:00,15:00,barista
+2026-12-08,Emre,11:00,19:00,kitchen
+2026-12-08,Ben,14:00,22:00,barista
+2026-12-09,Ana,07:00,15:00,barista
+2026-12-09,Cem,11:00,19:00,kitchen
+2026-12-09,Ben,14:00,22:00,barista
+2026-12-10,Ana,07:00,15:00,barista
+2026-12-10,Fatma,11:00,19:00,kitchen
+2026-12-10,Ben,14:00,22:00,barista
+2026-12-11,Ana,07:00,15:00,barista
+2026-12-11,Emre,11:00,19:00,kitchen
+2026-12-11,Ben,14:00,22:00,barista
+2026-12-12,Cem,07:00,15:00,kitchen
+2026-12-12,Fatma,11:00,19:00,kitchen
+2026-12-12,Ben,14:00,22:00,barista
+2026-12-12,Dilan,10:00,18:00,barista
+2026-12-13,Dilan,07:00,15:00,barista
+2026-12-13,Fatma,11:00,19:00,kitchen
+2026-12-13,Ben,14:00,22:00,barista
+2026-12-13,Cem,10:00,18:00,kitchen
+2026-12-14,Ana,07:00,15:00,barista
+2026-12-14,Cem,11:00,19:00,kitchen
+2026-12-14,Dilan,14:00,22:00,barista
+2026-12-15,Ana,07:00,15:00,barista
+2026-12-15,Emre,11:00,19:00,kitchen
+2026-12-15,Dilan,14:00,22:00,barista
+2026-12-16,Ana,07:00,15:00,barista
+2026-12-16,Fatma,11:00,19:00,kitchen
+2026-12-16,Dilan,14:00,22:00,barista
+2026-12-17,Dilan,07:00,15:00,barista
+2026-12-17,Cem,11:00,19:00,kitchen
+2026-12-17,Ana,14:00,22:00,barista
+2026-12-18,Ana,07:00,15:00,barista
+2026-12-18,Emre,11:00,19:00,kitchen
+2026-12-18,Ben,14:00,22:00,barista
+2026-12-19,Ben,07:00,15:00,barista
+2026-12-19,Cem,11:00,19:00,kitchen
+2026-12-19,Dilan,14:00,22:00,barista
+2026-12-19,Fatma,10:00,18:00,kitchen
+2026-12-20,Ben,07:00,15:00,barista
+2026-12-20,Fatma,11:00,19:00,kitchen
+2026-12-20,Dilan,14:00,22:00,barista
+
+FILE:examples/rules.json
+{
+  ""business"": ""Corner Cafe, open 07:00-22:00 every day (fictional example)"",
+  ""min_rest_hours"": 11,
+  ""max_consecutive_days"": 6,
+  ""max_shift_hours"": 10,
+  ""overtime_allowance"": 4,
+  ""night_start"": ""22:00"",
+  ""night_end"": ""06:00"",
+  ""closing_after"": ""22:00"",
+  ""opening_before"": ""08:00"",
+  ""fairness_tolerance"": 1,
+  ""under_tolerance_hours"": 4,
+  ""weekend_days"": [
+    5,
+    6
+  ],
+  ""unpaid_break_minutes_over_6h"": 30,
+  ""staff"": {
+    ""Ana"": {
+      ""contract_hours"": 37.5
+    },
+    ""Ben"": {
+      ""contract_hours"": 37.5
+    },
+    ""Cem"": {
+      ""contract_hours"": 30,
+      ""unavailable"": [
+        ""2026-12-19""
+      ]
+    },
+    ""Dilan"": {
+      ""contract_hours"": 30
+    },
+    ""Emre"": {
+      ""contract_hours"": 20,
+      ""no_weekends"": true,
+      ""unavailable_weekdays"": [
+        4
+      ]
+    },
+    ""Fatma"": {
+      ""contract_hours"": 24
+    }
+  },
+  ""coverage"": [
+    {
+      ""name"": ""opening"",
+      ""from"": ""07:00"",
+      ""to"": ""10:00"",
+      ""min"": 1
+    },
+    {
+      ""name"": ""lunch rush"",
+      ""from"": ""11:30"",
+      ""to"": ""14:30"",
+      ""min"": 2
+    },
+    {
+      ""name"": ""weekend lunch rush"",
+      ""weekdays"": [
+        5,
+        6
+      ],
+      ""from"": ""11:30"",
+      ""to"": ""14:30"",
+      ""min"": 3
+    },
+    {
+      ""name"": ""evening"",
+      ""from"": ""15:00"",
+      ""to"": ""22:00"",
+      ""min"": 1
+    }
+  ]
+}
+
+FILE:scripts/rota_check.py
+#!/usr/bin/env python3
+""""""rota_check.py - check a planned staff rota (shift schedule) for rest, hours, coverage and fairness problems, offline.
+
+Input:
+  rota.csv   columns: date (YYYY-MM-DD), employee, start (HH:MM), end (HH:MM), role (optional)
+             A shift whose end is at or before its start ends the next day (e.g. 22:00-06:00).
+  rules.json staff contracts, availability and limits (see examples/rules.json); every key is optional.
+
+Checks:
+  R01 high   rest between two shifts of one person below min_rest_hours
+  R02 high   overlapping shifts for one person
+  R03 high   scheduled on a day the person is unavailable (leave, request, school, etc.)
+  R04 medium more consecutive working days than max_consecutive_days
+  R05 medium weekly hours above the person's max_weekly_hours (or contract + overtime_allowance)
+  R06 low    weekly hours below min_weekly_hours / contract minus under_tolerance
+  R07 medium single shift longer than max_shift_hours
+  C01 high   fewer staff (or fewer of a role) than required in a coverage window
+  F01 medium weekend shifts unevenly shared (vs. hours-weighted fair share)
+  F02 medium night shifts unevenly shared
+  F03 low    closing shifts (ending at/after closing_after) unevenly shared
+  F04 low    ""clopen"": a closing shift followed by an opening shift (start before opening_before)
+
+Usage:
+  python3 rota_check.py rota.csv rules.json [--format text|md|json] [--min-severity low|medium|high]
+  python3 rota_check.py --self-test
+Exit codes: 0 = no high findings, 1 = at least one high finding, 2 = bad input.
+Not legal advice: limits come from rules.json; check local working-time law and contracts.
+Standard library only, Python 3.8+.
+""""""
+import argparse, csv, io, json, sys
+from collections import defaultdict
+from datetime import date, datetime, timedelta
+
+SEV = {""R01"": ""high"", ""R02"": ""high"", ""R03"": ""high"", ""R04"": ""medium"", ""R05"": ""medium"", ""R06"": ""low"", ""R07"": ""medium"",
+       ""C01"": ""high"", ""F01"": ""medium"", ""F02"": ""medium"", ""F03"": ""low"", ""F04"": ""low""}
+RANK = {""low"": 0, ""medium"": 1, ""high"": 2}
+DEFAULTS = {""min_rest_hours"": 11, ""max_consecutive_days"": 6, ""max_shift_hours"": 10, ""overtime_allowance"": 0,
+            ""night_start"": ""22:00"", ""night_end"": ""06:00"", ""night_min_hours"": 3, ""closing_after"": ""22:00"",
+            ""opening_before"": ""08:00"", ""fairness_tolerance"": 1, ""under_tolerance_hours"": 4,
+            ""weekend_days"": [5, 6], ""unpaid_break_minutes_over_6h"": 30}
+
+
+class Shift:
+    def __init__(self, emp, start, end, role, line):
+        self.emp, self.start, self.end, self.role, self.line = emp, start, end, role, line
+
+    @property
+    def hours(self):
+        return (self.end - self.start).total_seconds() / 3600
+
+    def label(self):
+        return ""%s %s-%s"" % (self.start.strftime(""%a %Y-%m-%d""), self.start.strftime(""%H:%M""), self.end.strftime(""%H:%M""))
+
+
+def hm(s):
+    h, m = s.strip().split("":"")
+    return int(h), int(m)
+
+
+def parse_rota(text):
+    rows = list(csv.DictReader(io.StringIO(text)))
+    need = {""date"", ""employee"", ""start"", ""end""}
+    if not rows or not need <= set(k.strip().lower() for k in rows[0].keys()):
+        raise ValueError(""rota.csv needs columns: date, employee, start, end (role optional)"")
+    shifts = []
+    for i, r in enumerate(rows, 2):
+        r = {k.strip().lower(): (v or """").strip() for k, v in r.items()}
+        if not r[""employee""]:
+            continue
+        try:
+            d = datetime.strptime(r[""date""], ""%Y-%m-%d"")
+            sh, sm = hm(r[""start""]); eh, em = hm(r[""end""])
+        except ValueError:
+            raise ValueError(""bad date or time on rota.csv line %d"" % i)
+        start = d.replace(hour=sh, minute=sm)
+        end = d.replace(hour=eh, minute=em)
+        if end <= start:
+            end += timedelta(days=1)
+        shifts.append(Shift(r[""employee""], start, end, r.get(""role"", """"), i))
+    if not shifts:
+        raise ValueError(""rota.csv has no shifts"")
+    return shifts
+
+
+def paid_hours(s, rules):
+    h = s.hours
+    if h > 6:
+        h -= rules[""unpaid_break_minutes_over_6h""] / 60
+    return h
+
+
+def night_hours(s, rules):
+    """"""Hours of the shift that fall inside the night window (default 22:00-06:00).""""""
+    nh, nm = hm(rules[""night_start""]); eh, em = hm(rules[""night_end""])
+    total = 0.0
+    day = s.start.replace(hour=0, minute=0) - timedelta(days=1)
+    while day < s.end:
+        ws = day.replace(hour=nh, minute=nm)
+        we = day.replace(hour=eh, minute=em)
+        if we <= ws:
+            we += timedelta(days=1)
+        a, b = max(ws, s.start), min(we, s.end)
+        if b > a:
+            total += (b - a).total_seconds() / 3600
+        day += timedelta(days=1)
+    return total
+
+
+def week_key(dt):
+    y, w, _ = dt.isocalendar()[:3]
+    return ""%d-W%02d"" % (y, w)
+
+
+def check(shifts, rules_in):
+    rules = dict(DEFAULTS); rules.update({k: v for k, v in rules_in.items() if k not in (""staff"", ""coverage"")})
+    staff = rules_in.get(""staff"", {})
+    F = []
+
+    def add(code, who, when, detail, at=None):
+        F.append({""code"": code, ""severity"": SEV[code], ""employee"": who, ""when"": when, ""detail"": detail,
+                  ""at"": at.strftime(""%Y-%m-%dT%H:%M"") if at else """"})
+
+    by_emp = defaultdict(list)
+    for s in shifts:
+        by_emp[s.emp].append(s)
+    first = min(s.start for s in shifts).date(); last = max(s.start for s in shifts).date()
+    n_weeks = max(1, ((last - first).days + 1) / 7)
+    stats = {}
+    for emp, ss in sorted(by_emp.items()):
+        ss.sort(key=lambda s: s.start)
+        info = staff.get(emp, {})
+        for s in ss:
+            if s.hours > rules[""max_shift_hours""]:
+                add(""R07"", emp, s.label(), ""%.1f h shift; limit %s h"" % (s.hours, rules[""max_shift_hours""]), s.start)
+            if s.start.strftime(""%Y-%m-%d"") in info.get(""unavailable"", []) or s.start.weekday() in info.get(""unavailable_weekdays"", []):
+                add(""R03"", emp, s.label(), ""marked unavailable that day"", s.start)
+        for a, b in zip(ss, ss[1:]):
+            gap = (b.start - a.end).total_seconds() / 3600
+            if gap < 0:
+                add(""R02"", emp, ""%s and %s"" % (a.label(), b.label()), ""shifts overlap by %.1f h"" % -gap, a.start)
+            elif gap < rules[""min_rest_hours""]:
+                add(""R01"", emp, ""%s -> %s"" % (a.label(), b.label()), ""only %.1f h rest; minimum %s h"" % (gap, rules[""min_rest_hours""]), a.start)
+            ch, cm = hm(rules[""closing_after""]); oh, om = hm(rules[""opening_before""])
+            a_close = a.end.time() >= a.end.replace(hour=ch, minute=cm).time() or a.end.date() > a.start.date()
+            b_open = b.start.time() < b.start.replace(hour=oh, minute=om).time()
+            if gap >= 0 and a_close and b_open and gap < 14:
+                add(""F04"", emp, ""%s -> %s"" % (a.label(), b.label()), ""close then open ('clopen'), %.1f h apart"" % gap, a.start)
+        days = sorted({s.start.date() for s in ss})
+        run, start_run = 1, days[0]
+        for p, q in zip(days, days[1:] + [None]):
+            if q is not None and (q - p).days == 1:
+                run += 1
+                continue
+            if run > rules[""max_consecutive_days""]:
+                add(""R04"", emp, ""%s to %s"" % (start_run, p), ""%d days in a row; limit %d"" % (run, rules[""max_consecutive_days""]), datetime.combine(start_run, datetime.min.time()))
+            run, start_run = 1, q
+        weeks = defaultdict(float)
+        for s in ss:
+            weeks[week_key(s.start)] += paid_hours(s, rules)
+        contract = info.get(""contract_hours"")
+        max_w = info.get(""max_weekly_hours"", (contract + rules[""overtime_allowance""]) if contract else None)
+        min_w = info.get(""min_weekly_hours"", (contract - rules[""under_tolerance_hours""]) if contract else None)
+        for wk, h in sorted(weeks.items()):
+            if max_w is not None and h > max_w + 1e-9:
+                add(""R05"", emp, wk, ""%.1f paid h; max %s"" % (h, max_w))
+            if min_w is not None and h < min_w - 1e-9:
+                add(""R06"", emp, wk, ""%.1f paid h; contract %s h (tolerance %s h)"" % (h, contract, rules[""under_tolerance_hours""]))
+        ch, cm = hm(rules[""closing_after""])
+        stats[emp] = {""shifts"": len(ss), ""paid_hours"": round(sum(paid_hours(s, rules) for s in ss), 1),
+                      ""weekend"": sum(1 for s in ss if s.start.weekday() in rules[""weekend_days""]),
+                      ""nights"": sum(1 for s in ss if night_hours(s, rules) >= rules[""night_min_hours""]),
+                      ""closes"": sum(1 for s in ss if s.end.date() > s.start.date() or (s.end.hour, s.end.minute) >= (ch, cm)),
+                      ""contract_hours"": contract}
+    # fairness: compare each person's count with an hours-weighted fair share; exempt people listed in no_nights etc.
+    total_h = sum(v[""paid_hours""] for v in stats.values()) or 1
+    for code, key, exempt_key, label in ((""F01"", ""weekend"", ""no_weekends"", ""weekend shifts""), (""F02"", ""nights"", ""no_nights"", ""night shifts""),
+                                         (""F03"", ""closes"", ""no_closes"", ""closing shifts"")):
+        pool = {e: v for e, v in stats.items() if not staff.get(e, {}).get(exempt_key)}
+        total = sum(v[key] for v in stats.values())
+        pool_h = sum(v[""paid_hours""] for v in pool.values()) or 1
+        if total == 0 or len(pool) < 2:
+            continue
+        for e, v in sorted(pool.items()):
+            fair = total * v[""paid_hours""] / pool_h
+            v[key + ""_fair""] = round(fair, 1)
+            if abs(v[key] - fair) > rules[""fairness_tolerance""] + 1e-9:
+                add(code, e, ""whole rota"", ""%d %s vs fair share %.1f (by paid hours; tolerance +/-%s)"" % (v[key], label, fair, rules[""fairness_tolerance""]))
+    # coverage
+    for cov in rules_in.get(""coverage"", []):
+        wd = cov.get(""weekdays"", list(range(7)))
+        fh, fm = hm(cov[""from""]); th, tm = hm(cov[""to""])
+        d = first
+        while d <= last:
+            if d.weekday() in wd:
+                t = datetime(d.year, d.month, d.day, fh, fm)
+                t_end = datetime(d.year, d.month, d.day, th, tm)
+                if t_end <= t:
+                    t_end += timedelta(days=1)
+                gaps = []
+                while t < t_end:
+                    on = [s for s in shifts if s.start <= t < s.end and (not cov.get(""role"") or s.role == cov[""role""])]
+                    if len(on) < cov[""min""]:
+                        gaps.append((t, len(on)))
+                    t += timedelta(minutes=30)
+                ranges = []
+                for g in gaps:
+                    if ranges and g[0] == ranges[-1][-1][0] + timedelta(minutes=30):
+                        ranges[-1].append(g)
+                    else:
+                        ranges.append([g])
+                for rg in ranges:
+                    lo = min(g[1] for g in rg)
+                    add(""C01"", ""-"", ""%s %s-%s"" % (d.strftime(""%a %Y-%m-%d""), rg[0][0].strftime(""%H:%M""), (rg[-1][0] + timedelta(minutes=30)).strftime(""%H:%M"")),
+                        ""%s: as few as %d on shift, need %d%s"" % (cov.get(""name"", ""coverage""), lo, cov[""min""], ("" "" + cov[""role""]) if cov.get(""role"") else """"), rg[0][0])
+            d += timedelta(days=1)
+    order = {""high"": 0, ""medium"": 1, ""low"": 2}
+    F.sort(key=lambda f: (order[f[""severity""]], f[""code""], f[""at""], f[""employee""]))
+    return {""period"": ""%s to %s"" % (first, last), ""weeks"": round(n_weeks, 1), ""people"": stats, ""findings"": F}
+
+
+def render(res, fmt):
+    if fmt == ""json"":
+        return json.dumps(res, indent=2, default=str)
+    P, F = res[""people""], res[""findings""]
+    c = {s: sum(1 for f in F if f[""severity""] == s) for s in (""high"", ""medium"", ""low"")}
+    if fmt == ""md"":
+        out = [""**Period:** %s (%s weeks). **Findings:** %d high, %d medium, %d low."" % (res[""period""], res[""weeks""], c[""high""], c[""medium""], c[""low""]), """",
+               ""| Person | Shifts | Paid h | Contract h | Weekend | Nights | Closes |"", ""|---|---|---|---|---|---|---|""]
+        for e, v in P.items():
+            out.append(""| %s | %d | %.1f | %s | %d | %d | %d |"" % (e, v[""shifts""], v[""paid_hours""], v[""contract_hours""] or ""-"", v[""weekend""], v[""nights""], v[""closes""]))
+        out += ["""", ""| Code | Severity | Who | When | Problem |"", ""|---|---|---|---|---|""]
+        out += [""| %s | %s | %s | %s | %s |"" % (f[""code""], f[""severity""], f[""employee""], f[""when""], f[""detail""]) for f in F]
+        return ""\n"".join(out)
+    out = [""Rota %s (%s weeks)"" % (res[""period""], res[""weeks""]), """",
+           ""%-10s %6s %7s %9s %8s %7s %7s"" % (""person"", ""shifts"", ""paid h"", ""contract"", ""weekend"", ""nights"", ""closes"")]
+    for e, v in P.items():
+        out.append(""%-10s %6d %7.1f %9s %8d %7d %7d"" % (e, v[""shifts""], v[""paid_hours""], v[""contract_hours""] or ""-"", v[""weekend""], v[""nights""], v[""closes""]))
+    out.append("""")
+    for f in F:
+        out.append(""%s [%s] %s | %s | %s"" % (f[""code""], f[""severity""], f[""employee""], f[""when""], f[""detail""]))
+    out += ["""", ""Findings: %d high, %d medium, %d low."" % (c[""high""], c[""medium""], c[""low""])]
+    return ""\n"".join(out)
+
+
+def self_test():
+    T = []
+
+    def run(csv_text, rules=None):
+        return check(parse_rota(""date,employee,start,end,role\n"" + csv_text), rules or {})
+
+    def codes(res, who=None):
+        return [f[""code""] for f in res[""findings""] if who is None or f[""employee""] == who]
+
+    def ok(name, cond):
+        T.append((name, bool(cond)))
+
+    r = run(""2026-12-01,Ana,14:00,23:00,\n2026-12-02,Ana,07:00,15:00,\n"")
+    ok(""8 h rest gives R01"", ""R01"" in codes(r))
+    ok(""close then open gives F04"", ""F04"" in codes(r))
+    r = run(""2026-12-01,Ana,07:00,15:00,\n2026-12-02,Ana,07:00,15:00,\n"")
+    ok(""16 h rest is fine"", ""R01"" not in codes(r) and ""F04"" not in codes(r))
+    r = run(""2026-12-01,Ana,09:00,17:00,\n2026-12-01,Ana,16:00,20:00,\n"")
+    ok(""overlap gives R02"", ""R02"" in codes(r))
+    r = run(""2026-12-01,Ana,22:00,06:00,\n"")
+    ok(""overnight shift ends next day (8 h)"", abs(r[""people""][""Ana""][""paid_hours""] - 7.5) < 1e-9)
+    ok(""overnight shift counts as a night"", r[""people""][""Ana""][""nights""] == 1)
+    ok(""overnight shift counts as a close"", r[""people""][""Ana""][""closes""] == 1)
+    rows = """".join(""2026-12-%02d,Ana,09:00,13:00,\n"" % d for d in range(1, 9))
+    ok(""8 days in a row gives R04"", ""R04"" in codes(run(rows)))
+    ok(""7 days allowed when max_consecutive_days=7"", ""R04"" not in codes(run("""".join(""2026-12-%02d,Ana,09:00,13:00,\n"" % d for d in range(1, 8)), {""max_consecutive_days"": 7})))
+    r = run("""".join(""2026-11-%02d,Ana,08:00,18:00,\n"" % d for d in (30,)) + """".join(""2026-12-%02d,Ana,08:00,18:00,\n"" % d for d in range(1, 6)),
+            {""staff"": {""Ana"": {""contract_hours"": 40}}, ""max_shift_hours"": 10})
+    ok(""57 paid h in a 40 h contract week gives R05"", ""R05"" in codes(r))
+    r = run(""2026-12-01,Ana,09:00,13:00,\n"", {""staff"": {""Ana"": {""contract_hours"": 30}}})
+    ok(""4 h in a 30 h contract week gives R06"", ""R06"" in codes(r))
+    ok(""12 h shift gives R07"", ""R07"" in codes(run(""2026-12-01,Ana,08:00,20:00,\n"")))
+    r = run(""2026-12-05,Ana,09:00,17:00,\n"", {""staff"": {""Ana"": {""unavailable"": [""2026-12-05""]}}})
+    ok(""unavailable date gives R03"", ""R03"" in codes(r))
+    r = run(""2026-12-01,Ana,09:00,17:00,\n"", {""staff"": {""Ana"": {""unavailable_weekdays"": [1]}}})
+    ok(""unavailable weekday gives R03"", ""R03"" in codes(r))
+    r = run(""2026-12-01,Ana,09:00,17:00,cook\n2026-12-01,Ben,12:00,20:00,cook\n"",
+            {""coverage"": [{""name"": ""kitchen"", ""from"": ""09:00"", ""to"": ""20:00"", ""min"": 2, ""role"": ""cook""}]})
+    cov = [f for f in r[""findings""] if f[""code""] == ""C01""]
+    ok(""two separate coverage gaps found"", len(cov) == 2)
+    ok(""coverage gap windows 09:00-12:00 and 17:00-20:00"", [c[""when""][-11:] for c in cov] == [""09:00-12:00"", ""17:00-20:00""])
+    rows = """".join(""2026-12-%02d,Ana,10:00,18:00,\n"" % d for d in (5, 6, 12, 13)) + """".join(""2026-12-%02d,Ben,10:00,18:00,\n"" % d for d in (1, 2, 3, 4))
+    r = run(rows)
+    ok(""all weekends on one person gives F01 for both"", set(f[""employee""] for f in r[""findings""] if f[""code""] == ""F01"") == {""Ana"", ""Ben""})
+    r = run(rows, {""staff"": {""Ben"": {""no_weekends"": True}}})
+    ok(""no_weekends exemption removes F01 when only one left"", ""F01"" not in codes(r))
+    rows = """".join(""2026-12-%02d,Ana,22:00,06:00,\n"" % d for d in (1, 3, 5)) + """".join(""2026-12-%02d,Ben,09:00,17:00,\n"" % d for d in (1, 3, 5))
+    ok(""night imbalance gives F02"", ""F02"" in codes(run(rows)))
+    ok(""tolerance 2 hides a gap of 1.5"", ""F02"" not in codes(run(rows, {""fairness_tolerance"": 2})))
+    try:
+        parse_rota(""name,when\nx,y\n""); ok(""missing columns rejected"", False)
+    except ValueError:
+        ok(""missing columns rejected"", True)
+    try:
+        parse_rota(""date,employee,start,end\n2026-13-01,Ana,09:00,17:00\n""); ok(""bad date rejected"", False)
+    except ValueError:
+        ok(""bad date rejected"", True)
+    r = run(""2026-12-01,Ana,09:00,17:00,\n"")
+    ok(""json render parses"", json.loads(render(r, ""json""))[""people""][""Ana""][""shifts""] == 1)
+    ok(""md render has table"", ""| Person |"" in render(r, ""md""))
+    n = sum(1 for _, x in T if x)
+    for name, x in T:
+        print((""PASS  "" if x else ""FAIL  "") + name)
+    print((""ALL PASS"" if n == len(T) else ""FAILED"") + "" (%d/%d)"" % (n, len(T)))
+    return 0 if n == len(T) else 1
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__.split(""\n"")[0])
+    ap.add_argument(""rota"", nargs=""?"")
+    ap.add_argument(""rules"", nargs=""?"")
+    ap.add_argument(""--format"", choices=(""text"", ""md"", ""json""), default=""text"")
+    ap.add_argument(""--min-severity"", choices=(""low"", ""medium"", ""high""), default=""low"")
+    ap.add_argument(""--self-test"", action=""store_true"")
+    a = ap.parse_args(argv)
+    if a.self_test:
+        return self_test()
+    if not a.rota:
+        ap.print_usage(sys.stderr)
+        return 2
+    try:
+        with open(a.rota, encoding=""utf-8-sig"") as fh:
+            shifts = parse_rota(fh.read())
+        rules = {}
+        if a.rules:
+            with open(a.rules, encoding=""utf-8"") as fh:
+                rules = json.load(fh)
+        res = check(shifts, rules)
+    except (OSError, ValueError, KeyError) as e:
+        print(""error: %s"" % e, file=sys.stderr)
+        return 2
+    res[""findings""] = [f for f in res[""findings""] if RANK[f[""severity""]] >= RANK[a.min_severity]]
+    print(render(res, a.format))
+    return 1 if any(f[""severity""] == ""high"" for f in res[""findings""]) else 0
+
+
+if __name__ == ""__main__"":
+    sys.exit(main())
+",FALSE,TEXT,f
