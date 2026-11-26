@@ -213077,6 +213077,8 @@ Maintain visual consistency throughout the project.
 
 ## Phase 5 — Production readiness
 
+DELIVERABLES (this will be handed to a developer to build in code)
+
 Once the visual direction is approved, help translate the concept into a practical design system suitable for real software development.
 
 This should eventually include:
@@ -213088,7 +213090,9 @@ This should eventually include:
 - Navigation and interaction conventions
 - Responsive behaviour
 - Accessibility and contrast considerations
-- Image and icon asset recommendations
+- Image and icon asset recommendations including hero images, textures, backgrounds, and emblems
+- style sheet: the colour hex values, font names, and what each
+   colour is used for
 
 Separate aspirational concept artwork from elements that can be implemented directly in production. Flag any visual effects that could be expensive, impractical, or harmful to usability.
 
