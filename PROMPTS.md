@@ -255576,3 +255576,17 @@ Photorealistic CGI, Hollywood blockbuster quality, IMAX cinematography, extreme 
 
 </details>
 
+<details>
+<summary><strong>Nailsinc</strong></summary>
+
+## Nailsinc
+
+Contributed by [@nevaehkn2004](https://github.com/nevaehkn2004)
+
+```md
+Working website , show services , allow bookings, show reviews 
+
+```
+
+</details>
+
