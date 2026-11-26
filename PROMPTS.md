@@ -254060,3 +254060,719 @@ Avoid: people, birds, flowers changing color or shape, clusters merging or melti
 
 </details>
 
+<details>
+<summary><strong>Python Exception Handling Smell Finder</strong></summary>
+
+## Python Exception Handling Smell Finder
+
+Contributed by [@f](https://github.com/f)
+
+```md
+---
+name: python-exception-handling-smell-finder
+description: Finds risky exception handling in Python code offline: bare and swallowed excepts, errors turned into silent return values, raise without from, caught KeyboardInterrupt, return in finally, logs without traceback and oversized try blocks, with file:line, severity and fix recipes. Stdlib Python.
+---
+
+# Python Exception Handling Smell Finder
+
+You help developers find the places where a Python codebase hides its own failures: `except: pass`, broad handlers that return `None` or `[]`, re-raised errors that lose their cause, logs without a traceback, `return` inside `finally`, and workers that swallow Ctrl+C. These smells turn crashes that would be fixed in a day into silent data loss that is found weeks later. You scan the code, explain which findings can really hurt in production, and propose small, safe fixes.
+
+You work on the user's code locally and never upload it. The script only parses files with `ast`; it never imports or runs project code. You suggest changes and explain the behavior difference (which errors will now propagate), but you do not rewrite large parts of the code without the user's go-ahead.
+
+## Files in this skill
+
+- `scripts/exception_smells.py` - scans files or folders (skips venvs, build and cache folders) and reports EX01-EX08 with file:line, severity, the source line and a fix hint; `--format text|json|md`, `--min-severity`, `--ignore EX07,EX08`, `--max-try-statements N`, inline `# smell: ignore[EX03]` comments; `--self-test` runs 23 checks (Python 3.8+ standard library only)
+- `references/smell-catalog.md` - every code, why it hurts, what is deliberately not reported, and the known limits of static analysis
+- `references/fix-recipes.md` - eight before/after fixes: narrow the type, `raise ... from err`, `logger.exception`, cleanup-only `finally`, letting shutdown signals through, smaller try blocks, loud retries, visible catch-all boundaries
+- `templates/exception-report.md` - the review summary you hand back
+- `examples/sync_orders.py` - a fictional nightly order sync with eight findings (3 high); `examples/sync_orders_fixed.py` - the same job with every smell fixed (0 findings)
+
+## Workflow
+
+### 1. Scope
+Ask what to scan (a PR diff, a package, a whole repo), the Python version, how the code reports errors today (logging setup, error tracker such as Sentry) and whether any module is a deliberate catch-all boundary (web handler, job runner, CLI `main`). For a PR, scan only the changed files first.
+
+### 2. Run the scanner
+```
+python3 scripts/exception_smells.py path/to/package
+python3 scripts/exception_smells.py src tests --min-severity medium
+python3 scripts/exception_smells.py src --format md > exception-report-table.md
+python3 scripts/exception_smells.py --self-test
+```
+Exit 0 = no high findings, 1 = at least one high finding, 2 = bad input. Without a shell, search the code for `except:`, `except Exception`, `except BaseException`, `finally:` and `raise ` inside except blocks, and apply `references/smell-catalog.md` by hand.
+
+### 3. Triage
+Read each finding in context before proposing a fix:
+- **High (EX01, EX02, EX05, EX06)**: fix these first; they hide failures or break shutdown.
+- **Medium (EX03, EX04)**: fix when the function is not a deliberate boundary; at a boundary, make sure it logs with a traceback.
+- **Low (EX07, EX08)**: cheap improvements; batch them or suppress with a reason.
+- Ask "what did the author expect to fail here?" and narrow the handler to that type.
+- Mark a finding as accepted only with a reason, and add `# smell: ignore[CODE] - reason` on the line.
+
+### 4. Fix
+Use `references/fix-recipes.md`. Keep each change small and explain the new behavior: "a malformed `sync.json` now raises `JSONDecodeError` instead of silently using defaults". Suggest a test for every error path that now propagates.
+
+### 5. Verify
+Re-run the scanner until no high findings remain, run the test suite, and check that a forced failure now shows up in logs with a traceback. Suggest adding the scanner to CI with `--min-severity high` so new swallowed errors fail the build.
+
+### 6. Report
+Fill `templates/exception-report.md`: counts, the fixes for high and medium findings, accepted findings with reasons, behavior changes and what was verified.
+
+## Rules
+- Never execute or import the user's code to analyze it.
+- Do not "fix" a smell by catching more broadly or adding `# smell: ignore` without a reason.
+- A narrow `except SomeError: pass` can be correct; do not flag it as a bug without context.
+- Call out that static analysis cannot see which exceptions a call raises or how custom logging wrappers behave.
+
+FILE:references/smell-catalog.md
+# Exception handling smell catalog
+
+Each code below is reported by `scripts/exception_smells.py`. Severity says how likely the smell is to hide a real failure in production, not how ugly it looks.
+
+| Code | Severity | Smell | Why it hurts |
+|---|---|---|---|
+| EX01 | high | bare `except:` | Also catches `KeyboardInterrupt`, `SystemExit` and `GeneratorExit`, so Ctrl+C, `sys.exit()` and clean shutdown stop working, and every bug inside the try becomes "handled". |
+| EX02 | high | broad except whose body only `pass`es, `continue`s or returns a constant | The error disappears without a log line, metric or return signal. The caller sees success. This is the classic "it silently did nothing" bug. |
+| EX03 | medium | broad except that neither re-raises nor logs | The error is turned into a normal value (`None`, `[]`, `{"ok": False}`) that callers often ignore. Not always wrong at a boundary, but it must be deliberate and visible. |
+| EX04 | medium | `raise NewError(...)` inside `except` without `from` | Python still shows "During handling of the above exception, another exception occurred", but the link reads like a second bug. `raise ... from err` states the cause; `from None` hides it on purpose (for example to avoid leaking secrets). |
+| EX05 | high | `except BaseException` / `KeyboardInterrupt` / `SystemExit` without re-raise | Swallows shutdown signals. Workers that ignore SIGINT or `sys.exit()` hang deploys and leave half-finished work. |
+| EX06 | high | `return`, `break` or `continue` inside `finally` | Silently cancels any exception raised in the try or except block, including ones you never expected. Python 3.14 warns about this (PEP 765). |
+| EX07 | low | `logger.error(...)` / `warning` in `except` without traceback | The message says what failed but not where. Use `logger.exception(...)` (ERROR level with traceback) or pass `exc_info=True`. |
+| EX08 | low | broad except around a large try body (default > 8 statements) | One handler covers many operations, so a bug in any of them is treated like the expected failure. Wrap only the call that can fail. |
+| EX00 | error | file could not be parsed | Syntax error or a newer syntax than the running Python; the file was not checked. |
+
+## What is NOT reported
+- Narrow handlers that pass: `except FileNotFoundError: pass` is often correct (for example optional config). Review them, but they are not smells by default.
+- Handlers that re-raise (`raise`, `raise err`, `raise X from err`).
+- Handlers that log with a traceback or report to an error tracker (`logger.exception`, `exc_info=True`, `sentry_sdk.capture_exception`, `traceback.print_exc`).
+- `break` / `continue` inside a loop that itself lives in the `finally` block.
+
+## Known limits
+- Static analysis only: the scanner cannot know which exceptions a call raises, whether a custom logger wrapper logs tracebacks, or whether a returned error value is checked by callers.
+- Logger detection is by name (`log`, `logger`, `logging`, `LOG`, `_logger`, `self.logger`, ...). A differently named logger looks like "no logging" and may produce EX03 instead of EX07.
+- `contextlib.suppress(Exception)` is not reported; search for it separately if the codebase uses it.
+
+## Suppressing a finding on purpose
+Add a trailing comment on the reported line with a reason in the code review:
+
+```python
+except Exception:  # smell: ignore[EX03] - top-level boundary, error returned to the API client as 500
+```
+
+FILE:references/fix-recipes.md
+# Fix recipes
+
+Pick the smallest change that makes the failure visible to the right place: the caller, the log, or the user.
+
+## 1. Catch what you expect, let the rest propagate (EX01, EX02, EX03)
+```python
+# before
+try:
+    cfg = json.load(open(path))
+except:
+    cfg = {}
+
+# after
+try:
+    with open(path) as fh:
+        cfg = json.load(fh)
+except FileNotFoundError:
+    logger.info("no %s, using defaults", path)
+    cfg = {}
+# a broken JSON file now raises json.JSONDecodeError instead of silently using defaults
+```
+Ask: "Which failure did the author have in mind?" Catch exactly that type.
+
+## 2. Keep the cause when translating errors (EX04)
+```python
+except KeyError as err:
+    raise OrderError(f"order {order_id} is missing {err}") from err
+```
+Use `from None` only when the original exception would leak secrets or confuse the user, and say so in a comment.
+
+## 3. Log with the traceback, once (EX07)
+```python
+except PaymentError:
+    logger.exception("payment %s failed", payment_id)   # ERROR level + traceback
+    raise
+```
+Log at the boundary that handles the error, not at every layer it passes through (otherwise one failure becomes five log lines).
+
+## 4. Never return from finally (EX06)
+```python
+# before
+try:
+    process()
+finally:
+    if pushed == 0:
+        return {"ok": True}
+
+# after
+try:
+    process()
+finally:
+    client.close()          # cleanup only
+return {"ok": True, "pushed": pushed}
+```
+`finally` is for cleanup. Move results and decisions after the try statement.
+
+## 5. Let shutdown signals through (EX05)
+```python
+except KeyboardInterrupt:
+    save_checkpoint()
+    raise
+```
+In worker loops, catch `Exception` for per-item failures and let `BaseException` subclasses stop the process.
+
+## 6. Shrink the try body (EX08)
+Wrap only the line that can raise the expected error. Put the "happy path" after the try in an `else:` block or after the statement.
+
+```python
+try:
+    resp = session.get(url, timeout=10)
+except requests.RequestException as err:
+    raise FetchError(url) from err
+else:
+    data = resp.json()
+```
+
+## 7. Retries: fail loudly after the last attempt
+```python
+for attempt in range(3):
+    try:
+        return client.send(msg)
+    except (ConnectionError, TimeoutError):
+        logger.debug("retry %d", attempt + 1)
+        time.sleep(2 ** attempt)
+raise DeliveryError(f"message {msg.id} not sent after 3 attempts")
+```
+
+## 8. Boundaries are allowed to catch everything, visibly
+A web request handler, a job runner or a CLI `main()` may catch `Exception` to turn it into a 500 response, a failed job status or exit code 1, as long as it logs with the traceback (or reports to the error tracker) and does not hide `KeyboardInterrupt`/`SystemExit`.
+
+FILE:templates/exception-report.md
+# Exception handling review: {{project_or_pr}}
+
+**Scanned:** {{files_scanned}} files ({{paths}}) on {{date}}, `exception_smells.py` {{options}}
+**Result:** {{high}} high, {{medium}} medium, {{low}} low, {{parse_errors}} parse errors
+
+## Fix first (high)
+| # | Location | Code | What can go wrong in production | Proposed fix |
+|---|---|---|---|---|
+| 1 | `{{file}}:{{line}}` | {{code}} | {{impact}} | {{fix}} |
+
+## Fix in this PR if cheap (medium)
+| # | Location | Code | Proposed fix |
+|---|---|---|---|
+| 1 | `{{file}}:{{line}}` | {{code}} | {{fix}} |
+
+## Low / accepted on purpose
+- `{{file}}:{{line}}` {{code}}: {{reason it is fine, or suppress comment added}}
+
+## Behavior changes to check
+- {{which errors now propagate instead of being swallowed, and who handles them}}
+- {{tests added or updated: e.g. a test that a broken config file now raises}}
+
+## Verified
+- [ ] Re-ran the scanner: no high findings left (exit 0)
+- [ ] Test suite passes
+- [ ] Logs now include a traceback for {{failure}}
+
+FILE:examples/sync_orders.py
+"""Fictional nightly job that copies new web-shop orders into the accounting system.
+It runs, but its exception handling hides real failures. Used to demo exception_smells.py."""
+import json
+import logging
+import time
+
+import requests  # third-party; the scanner never imports it
+
+logger = logging.getLogger(__name__)
+API = "https://shop.example.com/api/orders"
+
+
+class SyncError(Exception):
+    pass
+
+
+def load_config(path):
+    try:
+        with open(path) as fh:
+            return json.load(fh)
+    except:
+        return {}
+
+
+def fetch_orders(since):
+    try:
+        resp = requests.get(API, params={"since": since}, timeout=10)
+        resp.raise_for_status()
+        return resp.json()["orders"]
+    except Exception as err:
+        logger.error("could not fetch orders: %s", err)
+        return []
+
+
+def to_invoice(order):
+    try:
+        return {"number": order["id"], "total": round(float(order["total"]), 2), "currency": order["currency"]}
+    except KeyError:
+        raise SyncError("order is missing a field")
+
+
+def push_invoice(client, invoice):
+    for attempt in range(3):
+        try:
+            client.create_invoice(invoice)
+            return True
+        except Exception:
+            time.sleep(2 ** attempt)
+            continue
+    return False
+
+
+def run(client, since):
+    pushed = 0
+    try:
+        config = load_config("sync.json")
+        orders = fetch_orders(since)
+        batch = config.get("batch_size", 50)
+        for order in orders[:batch]:
+            invoice = to_invoice(order)
+            if push_invoice(client, invoice):
+                pushed += 1
+        client.commit()
+        logger.info("pushed %d invoices", pushed)
+        client.close()
+    except Exception as e:
+        status = {"ok": False, "error": str(e)}
+        return status
+    finally:
+        if pushed == 0:
+            return {"ok": True, "pushed": 0}
+    return {"ok": True, "pushed": pushed}
+
+
+def main():
+    try:
+        run(client=None, since="2026-11-23")
+    except BaseException:
+        logger.exception("sync failed")
+
+FILE:examples/sync_orders_fixed.py
+"""The same nightly order sync with the smells fixed. exception_smells.py reports nothing here."""
+import json
+import logging
+import time
+
+import requests  # third-party; the scanner never imports it
+
+logger = logging.getLogger(__name__)
+API = "https://shop.example.com/api/orders"
+
+
+class SyncError(Exception):
+    pass
+
+
+def load_config(path):
+    try:
+        with open(path) as fh:
+            return json.load(fh)
+    except FileNotFoundError:
+        logger.info("no %s, using defaults", path)
+        return {}
+
+
+def fetch_orders(since):
+    try:
+        resp = requests.get(API, params={"since": since}, timeout=10)
+        resp.raise_for_status()
+    except requests.RequestException as err:
+        raise SyncError("could not fetch orders since %s" % since) from err
+    return resp.json()["orders"]
+
+
+def to_invoice(order):
+    try:
+        return {"number": order["id"], "total": round(float(order["total"]), 2), "currency": order["currency"]}
+    except KeyError as err:
+        raise SyncError("order %s is missing field %s" % (order.get("id", "?"), err)) from err
+
+
+def push_invoice(client, invoice, retryable=(ConnectionError, TimeoutError)):
+    for attempt in range(3):
+        try:
+            client.create_invoice(invoice)
+            return
+        except retryable:
+            logger.debug("retry %d for invoice %s", attempt + 1, invoice["number"])
+            time.sleep(2 ** attempt)
+    raise SyncError("invoice %s not pushed after 3 attempts" % invoice["number"])
+
+
+def run(client, since):
+    config = load_config("sync.json")
+    orders = fetch_orders(since)
+    batch = config.get("batch_size", 50)
+    pushed, failed = 0, []
+    for order in orders[:batch]:
+        try:
+            push_invoice(client, to_invoice(order))
+            pushed += 1
+        except SyncError:
+            logger.exception("order %s skipped", order.get("id", "?"))
+            failed.append(order.get("id"))
+    try:
+        client.commit()
+    finally:
+        client.close()
+    logger.info("pushed %d invoices, %d failed", pushed, len(failed))
+    return {"ok": not failed, "pushed": pushed, "failed": failed}
+
+
+def main():
+    try:
+        run(client=None, since="2026-11-23")
+    except SyncError:
+        logger.exception("sync failed")
+        raise
+
+FILE:scripts/exception_smells.py
+#!/usr/bin/env python3
+"""exception_smells.py - find risky exception handling in Python code, offline.
+
+Parses files with the standard library `ast` module (it never imports or runs the code) and reports:
+  EX01 high    bare `except:` (also catches KeyboardInterrupt and SystemExit)
+  EX02 high    broad except whose body only passes / continues / returns (error silently swallowed)
+  EX03 medium  broad except that neither re-raises nor logs (error turned into a normal value)
+  EX04 medium  new exception raised inside `except` without `from` (original cause hidden)
+  EX05 high    `except BaseException` (or KeyboardInterrupt / SystemExit) without re-raise
+  EX06 high    return / break / continue inside `finally` (silently cancels any exception)
+  EX07 low     error logged in `except` without the traceback (no exc_info / logger.exception)
+  EX08 low     broad except around a large try body (hides which statement failed)
+  EX00 error   file could not be parsed
+
+Usage:
+  python3 exception_smells.py PATH [PATH ...] [--format text|json|md] [--min-severity low|medium|high]
+                              [--ignore EX07,EX08] [--max-try-statements 8]
+  python3 exception_smells.py --self-test
+Suppress one finding with a trailing comment on the `except` / `raise` / `finally` line: `# smell: ignore[EX03]`.
+Exit codes: 0 = no high findings, 1 = at least one high finding, 2 = bad input.
+Standard library only, Python 3.8+.
+"""
+import argparse, ast, json, os, re, sys, tempfile, textwrap
+
+SEVERITY = {"EX00": "error", "EX01": "high", "EX02": "high", "EX03": "medium", "EX04": "medium",
+            "EX05": "high", "EX06": "high", "EX07": "low", "EX08": "low"}
+TITLE = {"EX00": "file could not be parsed",
+         "EX01": "bare except",
+         "EX02": "broad except swallows the error",
+         "EX03": "broad except neither re-raises nor logs",
+         "EX04": "raise inside except without 'from'",
+         "EX05": "catches BaseException / KeyboardInterrupt / SystemExit without re-raise",
+         "EX06": "return/break/continue in finally cancels exceptions",
+         "EX07": "error logged without traceback",
+         "EX08": "broad except around a large try body"}
+RANK = {"low": 0, "medium": 1, "high": 2, "error": 3}
+BROAD = {"Exception", "BaseException"}
+SYSTEM = {"BaseException", "KeyboardInterrupt", "SystemExit", "GeneratorExit"}
+LOG_METHODS = {"debug", "info", "warning", "warn", "error", "exception", "critical", "fatal", "log"}
+LOGGER_NAMES = re.compile(r"(^|_)(log|logger|logging|logs|_log|_logger|LOG|LOGGER)$")
+SKIP_DIRS = {".git", ".hg", ".venv", "venv", "env", "__pycache__", "node_modules", "build", "dist", ".tox", ".mypy_cache", "site-packages"}
+IGNORE_RE = re.compile(r"#\s*smell:\s*ignore\[([A-Z0-9, ]+)\]")
+
+
+def type_names(node):
+    """Names of the exception classes an except handler catches ([] for bare except)."""
+    if node is None:
+        return []
+    items = node.elts if isinstance(node, ast.Tuple) else [node]
+    out = []
+    for it in items:
+        if isinstance(it, ast.Name):
+            out.append(it.id)
+        elif isinstance(it, ast.Attribute):
+            out.append(it.attr)
+        else:
+            out.append("?")
+    return out
+
+
+def walk_no_nested(nodes):
+    """Walk statements but do not descend into nested functions, classes or lambdas."""
+    stack = list(nodes)
+    while stack:
+        n = stack.pop()
+        yield n
+        for child in ast.iter_child_nodes(n):
+            if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Lambda)):
+                continue
+            stack.append(child)
+
+
+def is_log_call(call):
+    if not isinstance(call, ast.Call):
+        return False
+    f = call.func
+    if isinstance(f, ast.Attribute) and f.attr in LOG_METHODS:
+        base = f.value
+        name = base.id if isinstance(base, ast.Name) else (base.attr if isinstance(base, ast.Attribute) else "")
+        return bool(LOGGER_NAMES.search(name))
+    return False
+
+
+def has_traceback(call):
+    f = call.func
+    if isinstance(f, ast.Attribute) and f.attr == "exception":
+        return True
+    for kw in call.keywords:
+        if kw.arg in ("exc_info", "stack_info") and not (isinstance(kw.value, ast.Constant) and kw.value.value in (False, None)):
+            return True
+    return False
+
+
+def handler_facts(h):
+    body = list(walk_no_nested(h.body))
+    reraises = any(isinstance(n, ast.Raise) for n in body)
+    logs = [n for n in body if is_log_call(n)]
+    reports = any(isinstance(n, ast.Call) and (
+        (isinstance(n.func, ast.Attribute) and n.func.attr in ("capture_exception", "print_exc", "format_exc", "notify", "report_exc"))
+        or (isinstance(n.func, ast.Name) and n.func.id in ("capture_exception", "print_exc"))) for n in body)
+    trivial = all(isinstance(s, (ast.Pass, ast.Continue, ast.Break)) or
+                  (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant)) or
+                  (isinstance(s, ast.Return) and (s.value is None or isinstance(s.value, ast.Constant)))
+                  for s in h.body)
+    return reraises, logs, reports, trivial
+
+
+class Finder(ast.NodeVisitor):
+    def __init__(self, path, lines, max_try):
+        self.path, self.lines, self.max_try = path, lines, max_try
+        self.found = []
+        self.handler_stack = []
+
+    def add(self, code, node, detail):
+        line = getattr(node, "lineno", 0)
+        src = self.lines[line - 1] if 0 < line <= len(self.lines) else ""
+        m = IGNORE_RE.search(src)
+        if m and code in [c.strip() for c in m.group(1).split(",")]:
+            return
+        self.found.append({"code": code, "severity": SEVERITY[code], "file": self.path, "line": line,
+                           "title": TITLE[code], "detail": detail, "source": src.strip()})
+
+    def visit_Try(self, node):
+        n_body = sum(1 for _ in walk_no_nested(node.body) if isinstance(_, ast.stmt))
+        for h in node.handlers:
+            names = type_names(h.type)
+            reraises, logs, reports, trivial = handler_facts(h)
+            broad = (not names) or any(n in BROAD for n in names)
+            if not names:
+                self.add("EX01", h, "use `except Exception:` (or narrower) so Ctrl+C and sys.exit() still work" + ("" if reraises else "; the error is not re-raised"))
+            elif any(n in SYSTEM for n in names) and not reraises:
+                self.add("EX05", h, "catches %s; re-raise it or catch Exception instead" % ", ".join(n for n in names if n in SYSTEM))
+            if broad and trivial and not reraises:
+                self.add("EX02", h, "the handler body only passes/continues/returns a constant; the error disappears without a trace")
+            elif broad and not reraises and not logs and not reports and names:
+                self.add("EX03", h, "the error becomes a normal return value; log it, re-raise it, or catch a narrower type")
+            for call in logs:
+                if call.func.attr in ("error", "critical", "fatal", "warning", "warn") and not has_traceback(call) and not reraises:
+                    self.add("EX07", call, "add exc_info=True or use logger.exception(...) so the traceback is kept")
+            if broad and n_body > self.max_try:
+                self.add("EX08", h, "try body has %d statements; wrap only the call that can fail" % n_body)
+            self.handler_stack.append(h)
+            for s in h.body:
+                self.visit(s)
+            self.handler_stack.pop()
+        for part in (node.body, node.orelse):
+            for s in part:
+                self.visit(s)
+        for s in node.finalbody:
+            self.visit(s)
+        for n in walk_no_nested(node.finalbody):
+            if isinstance(n, (ast.Return, ast.Break, ast.Continue)) and not self._inside_loop_in(node.finalbody, n):
+                self.add("EX06", n, "`%s` in finally discards any exception raised in the try block" % type(n).__name__.lower())
+
+    visit_TryStar = visit_Try
+
+    def _inside_loop_in(self, stmts, target):
+        """True if a break/continue sits inside a loop that is itself inside the finally block (that is fine)."""
+        if isinstance(target, ast.Return):
+            return False
+        for n in walk_no_nested(stmts):
+            if isinstance(n, (ast.For, ast.While, ast.AsyncFor)):
+                if any(c is target for c in walk_no_nested(n.body + n.orelse)):
+                    return True
+        return False
+
+    def visit_Raise(self, node):
+        if self.handler_stack and node.exc is not None and node.cause is None:
+            h = self.handler_stack[-1]
+            if not (isinstance(node.exc, ast.Name) and h.name and node.exc.id == h.name):
+                self.add("EX04", node, "use `raise NewError(...) from err` (or `from None` on purpose) to keep the cause")
+        self.generic_visit(node)
+
+    def visit_FunctionDef(self, node):
+        saved, self.handler_stack = self.handler_stack, []
+        self.generic_visit(node)
+        self.handler_stack = saved
+
+    visit_AsyncFunctionDef = visit_FunctionDef
+    visit_Lambda = visit_FunctionDef
+
+
+def scan_source(src, path="<string>", max_try=8):
+    lines = src.splitlines()
+    try:
+        tree = ast.parse(src, filename=path)
+    except SyntaxError as e:
+        return [{"code": "EX00", "severity": "error", "file": path, "line": e.lineno or 0, "title": TITLE["EX00"],
+                 "detail": str(e.msg), "source": ""}]
+    f = Finder(path, lines, max_try)
+    f.visit(tree)
+    seen, out = set(), []
+    for x in sorted(f.found, key=lambda x: (x["line"], x["code"])):
+        k = (x["code"], x["line"])
+        if k not in seen:
+            seen.add(k)
+            out.append(x)
+    return out
+
+
+def iter_files(paths):
+    for p in paths:
+        if os.path.isfile(p):
+            yield p
+        elif os.path.isdir(p):
+            for root, dirs, files in os.walk(p):
+                dirs[:] = sorted(d for d in dirs if d not in SKIP_DIRS and not d.endswith(".egg-info"))
+                for fn in sorted(files):
+                    if fn.endswith(".py"):
+                        yield os.path.join(root, fn)
+        else:
+            raise FileNotFoundError(p)
+
+
+def scan_paths(paths, max_try=8):
+    findings, n = [], 0
+    for fp in iter_files(paths):
+        n += 1
+        with open(fp, encoding="utf-8", errors="replace") as fh:
+            findings += scan_source(fh.read(), fp, max_try)
+    return n, findings
+
+
+def render(n_files, findings, fmt):
+    counts = {s: sum(1 for f in findings if f["severity"] == s) for s in ("high", "medium", "low", "error")}
+    if fmt == "json":
+        return json.dumps({"files_scanned": n_files, "counts": counts, "findings": findings}, indent=2)
+    if fmt == "md":
+        out = ["| Code | Severity | Location | Problem | Fix hint |", "|---|---|---|---|---|"]
+        for f in findings:
+            out.append("| %s | %s | `%s:%d` | %s | %s |" % (f["code"], f["severity"], f["file"], f["line"], f["title"], f["detail"]))
+        out.append("")
+        out.append("Files scanned: %d. High: %d, medium: %d, low: %d, parse errors: %d." % (n_files, counts["high"], counts["medium"], counts["low"], counts["error"]))
+        return "\n".join(out)
+    out = []
+    for f in findings:
+        out.append("%s:%d  %s [%s] %s" % (f["file"], f["line"], f["code"], f["severity"], f["title"]))
+        if f["source"]:
+            out.append("    > " + f["source"])
+        out.append("    hint: " + f["detail"])
+    out.append("")
+    out.append("Files scanned: %d. High: %d, medium: %d, low: %d, parse errors: %d." % (n_files, counts["high"], counts["medium"], counts["low"], counts["error"]))
+    return "\n".join(out)
+
+
+def self_test():
+    T = []
+
+    def codes(src, **kw):
+        return [f["code"] for f in scan_source(textwrap.dedent(src), **kw)]
+
+    def check(name, cond):
+        T.append((name, bool(cond)))
+
+    check("bare except is EX01", "EX01" in codes("try:\n    x()\nexcept:\n    raise\n"))
+    check("bare except with pass is EX01 + EX02", {"EX01", "EX02"} <= set(codes("try:\n    x()\nexcept:\n    pass\n")))
+    check("except Exception: pass is EX02", codes("try:\n    x()\nexcept Exception:\n    pass\n") == ["EX02"])
+    check("narrow except ValueError: pass is fine", codes("try:\n    int(s)\nexcept ValueError:\n    pass\n") == [])
+    check("broad except returning a value without log is EX03",
+          codes("def f():\n    try:\n        return x()\n    except Exception as e:\n        y = str(e)\n        return {'ok': False, 'err': y}\n") == ["EX03"])
+    check("broad except that logs with exception() is fine",
+          codes("def f():\n    try:\n        x()\n    except Exception:\n        logger.exception('boom')\n        return None\n") == [])
+    check("logger.error without exc_info is EX07",
+          codes("try:\n    x()\nexcept Exception as e:\n    logger.error('failed: %s', e)\n") == ["EX07"])
+    check("logger.error with exc_info=True is fine",
+          codes("try:\n    x()\nexcept Exception:\n    log.error('failed', exc_info=True)\n") == [])
+    check("raise without from in except is EX04",
+          codes("try:\n    x()\nexcept KeyError as e:\n    raise ValueError('bad')\n") == ["EX04"])
+    check("raise ... from err is fine", codes("try:\n    x()\nexcept KeyError as e:\n    raise ValueError('bad') from e\n") == [])
+    check("re-raising the caught name is fine", codes("try:\n    x()\nexcept KeyError as e:\n    cleanup()\n    raise e\n") == [])
+    check("except BaseException without re-raise is EX05",
+          "EX05" in codes("try:\n    x()\nexcept BaseException:\n    logger.exception('x')\n"))
+    check("except KeyboardInterrupt with re-raise is fine",
+          codes("try:\n    x()\nexcept KeyboardInterrupt:\n    cleanup()\n    raise\n") == [])
+    check("return in finally is EX06", "EX06" in codes("def f():\n    try:\n        x()\n    finally:\n        return 1\n"))
+    check("break inside a loop within finally is fine",
+          codes("try:\n    x()\nfinally:\n    for i in r:\n        break\n") == [])
+    check("large try body with broad except is EX08",
+          "EX08" in codes("try:\n" + "".join("    a%d()\n" % i for i in range(10)) + "except Exception:\n    logger.exception('x')\n    raise\n"))
+    check("--max-try-statements raises the limit",
+          "EX08" not in codes("try:\n" + "".join("    a%d()\n" % i for i in range(10)) + "except Exception:\n    raise\n", max_try=20))
+    check("inline ignore comment suppresses a code",
+          codes("try:\n    x()\nexcept Exception:  # smell: ignore[EX02]\n    pass\n") == [])
+    check("nested function raise is not attributed to outer except",
+          codes("try:\n    x()\nexcept KeyError as e:\n    def g():\n        raise ValueError()\n    raise\n") == [])
+    check("syntax error reported as EX00", codes("def f(:\n    pass\n") == ["EX00"])
+    check("tuple of exceptions incl. Exception is broad",
+          codes("try:\n    x()\nexcept (ValueError, Exception):\n    pass\n") == ["EX02"])
+    with tempfile.TemporaryDirectory() as d:
+        os.makedirs(os.path.join(d, "pkg")); os.makedirs(os.path.join(d, ".venv"))
+        open(os.path.join(d, "pkg", "a.py"), "w").write("try:\n    x()\nexcept:\n    pass\n")
+        open(os.path.join(d, ".venv", "b.py"), "w").write("try:\n    x()\nexcept:\n    pass\n")
+        n, fs = scan_paths([d])
+        check("directory scan skips .venv", n == 1 and all(".venv" not in f["file"] for f in fs))
+        check("json output parses", json.loads(render(n, fs, "json"))["counts"]["high"] == 2)
+    ok = sum(1 for _, r in T if r)
+    for name, r in T:
+        print(("PASS  " if r else "FAIL  ") + name)
+    print(("ALL PASS" if ok == len(T) else "FAILED") + " (%d/%d)" % (ok, len(T)))
+    return 0 if ok == len(T) else 1
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("paths", nargs="*")
+    ap.add_argument("--format", choices=("text", "json", "md"), default="text")
+    ap.add_argument("--min-severity", choices=("low", "medium", "high"), default="low")
+    ap.add_argument("--ignore", default="", help="comma-separated codes to skip, e.g. EX07,EX08")
+    ap.add_argument("--max-try-statements", type=int, default=8)
+    ap.add_argument("--self-test", action="store_true")
+    a = ap.parse_args(argv)
+    if a.self_test:
+        return self_test()
+    if not a.paths:
+        ap.print_usage(sys.stderr)
+        return 2
+    try:
+        n, fs = scan_paths(a.paths, a.max_try_statements)
+    except FileNotFoundError as e:
+        print("error: path not found: %s" % e, file=sys.stderr)
+        return 2
+    if n == 0:
+        print("error: no .py files found", file=sys.stderr)
+        return 2
+    skip = {c.strip().upper() for c in a.ignore.split(",") if c.strip()}
+    fs = [f for f in fs if f["code"] not in skip and RANK[f["severity"]] >= RANK[a.min_severity]]
+    print(render(n, fs, a.format))
+    return 1 if any(f["severity"] == "high" for f in fs) else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+
+```
+
+</details>
+
