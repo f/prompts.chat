@@ -1,4 +1,7 @@
+import { readFileSync } from 'fs';
 import { defineConfig } from 'tsup';
+
+const { version } = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf-8')) as { version: string };
 
 export default defineConfig([
   {
@@ -26,6 +29,9 @@ export default defineConfig([
     splitting: false,
     sourcemap: true,
     external: ['ink', 'react', 'ink-text-input', 'ink-spinner', 'ink-select-input'],
+    define: {
+      __CLI_VERSION__: JSON.stringify(version),
+    },
     banner: {
       js: '#!/usr/bin/env node',
     },

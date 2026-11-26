@@ -1,10 +1,10 @@
 {
   "name": "prompts.chat",
-  "version": "0.1.1",
-  "description": "Developer toolkit for AI prompts - build, validate, parse, and connect to prompts.chat",
+  "version": "0.2.0",
+  "description": "Developer toolkit and CLI for prompts.chat - browse prompts, skills, bots and teams, and build, validate and parse prompts",
   "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
     "prompts-chat": "./bin/cli.js",
@@ -12,40 +12,72 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./variables": {
-      "types": "./dist/variables/index.d.ts",
-      "import": "./dist/variables/index.mjs",
-      "require": "./dist/variables/index.js"
+      "import": {
+        "types": "./dist/variables/index.d.ts",
+        "default": "./dist/variables/index.js"
+      },
+      "require": {
+        "types": "./dist/variables/index.d.cts",
+        "default": "./dist/variables/index.cjs"
+      }
     },
     "./similarity": {
-      "types": "./dist/similarity/index.d.ts",
-      "import": "./dist/similarity/index.mjs",
-      "require": "./dist/similarity/index.js"
+      "import": {
+        "types": "./dist/similarity/index.d.ts",
+        "default": "./dist/similarity/index.js"
+      },
+      "require": {
+        "types": "./dist/similarity/index.d.cts",
+        "default": "./dist/similarity/index.cjs"
+      }
     },
     "./quality": {
-      "types": "./dist/quality/index.d.ts",
-      "import": "./dist/quality/index.mjs",
-      "require": "./dist/quality/index.js"
+      "import": {
+        "types": "./dist/quality/index.d.ts",
+        "default": "./dist/quality/index.js"
+      },
+      "require": {
+        "types": "./dist/quality/index.d.cts",
+        "default": "./dist/quality/index.cjs"
+      }
     },
     "./builder": {
-      "types": "./dist/builder/index.d.ts",
-      "import": "./dist/builder/index.mjs",
-      "require": "./dist/builder/index.js"
+      "import": {
+        "types": "./dist/builder/index.d.ts",
+        "default": "./dist/builder/index.js"
+      },
+      "require": {
+        "types": "./dist/builder/index.d.cts",
+        "default": "./dist/builder/index.cjs"
+      }
     },
     "./parser": {
-      "types": "./dist/parser/index.d.ts",
-      "import": "./dist/parser/index.mjs",
-      "require": "./dist/parser/index.js"
-    }
+      "import": {
+        "types": "./dist/parser/index.d.ts",
+        "default": "./dist/parser/index.js"
+      },
+      "require": {
+        "types": "./dist/parser/index.d.cts",
+        "default": "./dist/parser/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "bin",
     "dist",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
   "keywords": [
     "prompts",
@@ -58,7 +90,10 @@
     "prompt-engineering",
     "prompt-templates",
     "prompt-builder",
-    "cli"
+    "cli",
+    "skills",
+    "agents",
+    "bots"
   ],
   "repository": {
     "type": "git",
@@ -74,11 +109,15 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
+    "pretest": "npm run build",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "docs": "npx ts-node scripts/generate-docs.ts",
-    "docs:generate": "npx tsx scripts/generate-docs.ts"
+    "docs:generate": "npx tsx scripts/generate-docs.ts",
+    "prepack": "npm run build",
+    "test:pack": "node scripts/pack-smoke.mjs",
+    "test:live": "PROMPTS_CHAT_LIVE=1 vitest run src/cli/__tests__/live.test.ts"
   },
   "dependencies": {
     "ink": "^5.1.0",

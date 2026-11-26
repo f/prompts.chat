@@ -1,10 +1,11 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { homedir } from 'os';
 import { join } from 'path';
+import { createHash } from 'crypto';
+import { getBaseUrl, USER_AGENT } from './config.js';
 
-const PROMPTS_URL = 'https://prompts.chat/prompts.json?full_content=true';
 const CACHE_DIR = join(homedir(), '.prompts-chat');
-const CACHE_FILE = join(CACHE_DIR, 'prompts.json');
+const FETCH_TIMEOUT_MS = 120_000;
 
 export interface Prompt {
   id: string;
@@ -12,7 +13,7 @@ export interface Prompt {
   slug: string;
   description: string | null;
   content: string;
-  type: 'TEXT' | 'IMAGE' | 'VIDEO' | 'AUDIO' | 'SKILL';
+  type: 'TEXT' | 'IMAGE' | 'VIDEO' | 'AUDIO' | 'STRUCTURED' | 'SKILL' | 'TASTE';
   mediaUrl: string | null;
   voteCount: number;
   viewCount: number;
@@ -46,21 +47,45 @@ export interface Category {
 interface CachedData {
   prompts: Prompt[];
   fetchedAt: number;
+  etag?: string;
 }
 
 let cachedPrompts: Prompt[] | null = null;
 
-function ensureCacheDir() {
-  if (!existsSync(CACHE_DIR)) {
-    mkdirSync(CACHE_DIR, { recursive: true });
-  }
+export function promptsUrl(baseUrl: string = getBaseUrl()): string {
+  return `${baseUrl}/prompts.json?full_content=true`;
 }
 
-function loadFromCache(): Prompt[] | null {
+/**
+ * One cache file per instance. The name is versioned because caches written by 0.1.x can hold
+ * preview-only prompts without `content`.
+ */
+export function cacheFile(baseUrl: string = getBaseUrl()): string {
+  const key = createHash('sha1').update(baseUrl).digest('hex').slice(0, 10);
+  return join(CACHE_DIR, `prompts-v2-${key}.json`);
+}
+
+/** prompts.json drops `content` unless full_content=true; never hand the UI an undefined body */
+export function normalizePrompts(raw: unknown): Prompt[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.map((p) => {
+    const prompt = p as Prompt & { contentPreview?: string };
+    return {
+      ...prompt,
+      content: prompt.content ?? prompt.contentPreview ?? '',
+      voteCount: prompt.voteCount ?? 0,
+      tags: prompt.tags ?? [],
+      author: prompt.author ?? { username: 'unknown', name: null, avatar: null, verified: false },
+    };
+  });
+}
+
+function readCache(): CachedData | null {
   try {
-    if (existsSync(CACHE_FILE)) {
-      const data = JSON.parse(readFileSync(CACHE_FILE, 'utf-8')) as CachedData;
-      return data.prompts;
+    const file = cacheFile();
+    if (existsSync(file)) {
+      const data = JSON.parse(readFileSync(file, 'utf-8')) as CachedData;
+      return { ...data, prompts: normalizePrompts(data.prompts) };
     }
   } catch {
     // Ignore cache read errors
@@ -68,43 +93,48 @@ function loadFromCache(): Prompt[] | null {
   return null;
 }
 
-function saveToCache(prompts: Prompt[]) {
+function saveToCache(prompts: Prompt[], etag: string | undefined) {
   try {
-    ensureCacheDir();
-    const data: CachedData = { prompts, fetchedAt: Date.now() };
-    writeFileSync(CACHE_FILE, JSON.stringify(data));
+    if (!existsSync(CACHE_DIR)) mkdirSync(CACHE_DIR, { recursive: true });
+    const data: CachedData = { prompts, fetchedAt: Date.now(), etag };
+    writeFileSync(cacheFile(), JSON.stringify(data));
   } catch {
     // Ignore cache write errors
   }
 }
 
 export async function loadPrompts(): Promise<Prompt[]> {
-  // Return cached prompts if already loaded
   if (cachedPrompts) {
     return cachedPrompts;
   }
 
-  // Try to fetch fresh data
+  const cache = readCache();
+  let failure = '';
   try {
-    const response = await fetch(PROMPTS_URL);
-    if (response.ok) {
-      const data = await response.json();
-      cachedPrompts = data.prompts as Prompt[];
-      saveToCache(cachedPrompts);
+    const headers: Record<string, string> = { Accept: 'application/json', 'User-Agent': USER_AGENT };
+    if (cache?.etag && cache.prompts.length > 0) headers['If-None-Match'] = cache.etag;
+    const response = await fetch(promptsUrl(), { headers, signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
+    if (response.status === 304 && cache) {
+      cachedPrompts = cache.prompts;
       return cachedPrompts;
     }
-  } catch {
-    // Network error, try cache
+    if (response.ok) {
+      const data = (await response.json()) as { prompts?: unknown };
+      cachedPrompts = normalizePrompts(data.prompts);
+      saveToCache(cachedPrompts, response.headers.get('etag') ?? undefined);
+      return cachedPrompts;
+    }
+    failure = `HTTP ${response.status}`;
+  } catch (error) {
+    failure = error instanceof Error ? error.message : String(error);
   }
 
-  // Fall back to local cache
-  const cached = loadFromCache();
-  if (cached) {
-    cachedPrompts = cached;
+  if (cache && cache.prompts.length > 0) {
+    cachedPrompts = cache.prompts;
     return cachedPrompts;
   }
 
-  throw new Error('No prompts available. Please check your internet connection.');
+  throw new Error(`Could not load prompts from ${getBaseUrl()} (${failure}). Check your internet connection or PROMPTS_CHAT_URL.`);
 }
 
 export function getCategories(prompts: Prompt[]): Category[] {
