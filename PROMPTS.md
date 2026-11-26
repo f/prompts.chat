@@ -255502,3 +255502,58 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Stone Buddy Ramp: 30-Second Korean Heartwarming Fantasy Short (Timestamped Seedance Prompt)</strong></summary>
+
+## Stone Buddy Ramp: 30-Second Korean Heartwarming Fantasy Short (Timestamped Seedance Prompt)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Style: Ultra-photorealistic cinematic Korean heartwarming fantasy drama, 4K clarity, shot on a high-end cinema camera with a 35mm lens, 24 fps, shallow depth of field, soft natural overcast daylight, warm muted colors, sharp focus on the subject, clean crisp details, smooth stable camera.
+
+Characters:
+- THE MAN: a Korean man in his mid-20s, short black hair with soft bangs, light grey hoodie, dark trousers, black sneakers, sitting in a manual wheelchair. Kind, thoughtful face.
+- THE GIRL: a Korean woman in her mid-20s, shoulder-length dark brown bob, white off-shoulder top, blue flared jeans, small chain-strap bag, a small brown notebook and a pen.
+- THE STONE BUDDY: a knee-high living stone character, rough grey-brown stone body, round head, two small black dot eyes, a tiny line mouth, chunky stone arms and legs. Gentle, shy and cute.
+Same faces, outfits and stone texture in every shot.
+
+Location: A lively Korean market street with small shops, hanging shop awnings, potted plants, a yellow tactile paving strip and a few blurred passersby in the background. One shop has a glass door at the top of a short flight of concrete steps. No readable signs.
+
+SHOT SEQUENCE:
+
+* 0-2s: Wide shot. The man rolls his wheelchair along the busy market sidewalk toward the shop with the glass door. The girl walks far behind him among the passersby.
+
+* 2-5s: Front view, then side close-up. He stops at the bottom of the steps, looks at the glass door, then down at the steps. A small worried sigh: how will I get in?
+
+* 5-7s: Close-up of the girl noticing him, with a gentle, caring look.
+
+* 7-9s: Extreme close-up of her hand drawing a simple round little figure in her notebook. Then a medium shot of her concentrating.
+
+* 9-10s: The notebook lies open on the ground. The drawing glows with warm orange light, the outline lifting off the page in sparkling lines.
+
+* 10-12s: The glow bursts softly and the drawing becomes the real Stone Buddy, standing beside the notebook and looking around curiously.
+
+* 12-15s: Low-angle tracking shot. The Stone Buddy walks past the wheelchair wheel toward the steps and looks up at them.
+
+* 15-17s: It bends forward and its body smoothly turns into a solid stone ramp over the steps. Slow and magical, no flashing lights.
+
+* 17-18s: Close-up of the man's face: surprise and wonder, eyes wide.
+
+* 18-22s: He pushes his wheels and rolls up the ramp with ease. Close-up of the wheels climbing, then a wide shot as he reaches the shop's glass door.
+
+* 22-25s: The ramp turns back into the Stone Buddy, who stands up on the steps. The man turns around.
+
+* 25-26s: Close-up of the man smiling warmly, saying in Korean: "고마워요!" (Thank you!)
+
+* 26-28s: The Stone Buddy shyly rubs its hands together. The girl, far behind in the crowd, smiles quietly.
+
+* 28-30s: Close-up of the Stone Buddy's face, blinking slowly, a tiny smile line. Soft fade.
+
+Audio: Soft market ambience with distant chatter, soft footsteps, pen scratching, soft magical shimmer as the drawing glows, gentle stone scraping during the transformations, wheelchair wheels rolling, light uplifting piano melody. The man's one Korean line only. No narration.
+
+Negative: cartoon, anime, game graphics, low quality, blurry, noisy, flickering, jittery motion, warped faces, melting features, deformed hands, changing faces or outfits, duplicated characters, distorted anatomy, teleportation, oversaturated colors, burned-in subtitles, readable text, logos, watermark.
+```
+
+</details>
+
