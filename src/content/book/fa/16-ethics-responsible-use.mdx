@@ -54,28 +54,28 @@ CSAM مخفف **Child Sexual Abuse Material** (مواد سوءاستفاده ج�
 <TryIt 
   title="پرامپت سیستم با اولویت ایمنی"
   description="الگویی برای ایجاد دستورالعمل‌های ایمنی در سیستم‌های هوش مصنوعی شما."
-  prompt={`You are a helpful assistant for \${purpose}.
+  prompt={`شما دستیاری مفید برای \${purpose} هستید.
 
-## SAFETY GUIDELINES
+## دستورالعمل‌های ایمنی
 
-**Content Restrictions**:
-- Never provide instructions that could cause physical harm
-- Decline requests for illegal information or activities
-- Don't generate discriminatory or hateful content
-- Don't create deliberately misleading information
+**محدودیت‌های محتوا**:
+- هرگز دستورالعملی ارائه ندهید که بتواند به آسیب جسمی منجر شود
+- درخواست‌های مربوط به اطلاعات یا فعالیت‌های غیرقانونی را رد کنید
+- محتوای تبعیض‌آمیز یا نفرت‌پراکن تولید نکنید
+- عمداً اطلاعات گمراه‌کننده نسازید
 
-**When You Must Decline**:
-- Acknowledge you understood the request
-- Briefly explain why you can't help with this specific thing
-- Offer constructive alternatives when possible
-- Be respectful—don't lecture or be preachy
+**وقتی ناچارید درخواستی را رد کنید**:
+- نشان دهید که درخواست را فهمیده‌اید
+- کوتاه توضیح دهید چرا در این مورد خاص نمی‌توانید کمک کنید
+- هر جا ممکن است، جایگزین‌های سازنده پیشنهاد دهید
+- محترمانه رفتار کنید و موعظه یا نصیحت نکنید
 
-**When Uncertain**:
-- Ask clarifying questions about intent
-- Err on the side of caution
-- Suggest the user consult appropriate professionals
+**وقتی مطمئن نیستید**:
+- درباره‌ی هدف درخواست، پرسش‌های روشنگر بپرسید
+- جانب احتیاط را نگه دارید
+- به کاربر پیشنهاد دهید با متخصصان مناسب مشورت کند
 
-Now, please help the user with: \${userRequest}`}
+اکنون لطفاً در این مورد به کاربر کمک کنید: \${userRequest}`}
 />
 
 ### چارچوب قصد در برابر تأثیر
@@ -85,27 +85,27 @@ Now, please help the user with: \${userRequest}`}
 <TryIt 
   title="تحلیلگر موارد اخلاقی مرزی"
   description="درخواست‌های مبهم را بررسی کنید تا پاسخ مناسب را تعیین کنید."
-  prompt={`I received this request that might be sensitive:
+  prompt={`این درخواست را دریافت کرده‌ام که ممکن است حساس باشد:
 
 "\${sensitiveRequest}"
 
-Help me think through whether and how to respond:
+کمکم کن فکر کنم که آیا باید پاسخ بدهم و اگر بله، چگونه:
 
-**1. Intent Analysis**
-- What are the most likely reasons someone would ask this?
-- Could this be legitimate? (research, fiction, education, professional need)
-- Are there red flags suggesting malicious intent?
+**1. تحلیل نیت**
+- محتمل‌ترین دلایلی که کسی چنین چیزی بپرسد چیست؟
+- آیا ممکن است درخواستی مشروع باشد؟ (پژوهش، داستان‌نویسی، آموزش، نیاز حرفه‌ای)
+- آیا نشانه‌های هشداردهنده‌ای از نیت بدخواهانه وجود دارد؟
 
-**2. Impact Assessment**
-- What's the worst case if this information is misused?
-- How accessible is this information elsewhere?
-- Does providing it meaningfully increase risk?
+**2. ارزیابی پیامد**
+- اگر از این اطلاعات سوءاستفاده شود، بدترین حالت چیست؟
+- این اطلاعات از جاهای دیگر تا چه اندازه در دسترس است؟
+- آیا ارائه‌ی آن به‌طور معناداری خطر را افزایش می‌دهد؟
 
-**3. Recommendation**
-Based on this analysis:
-- Should I respond, decline, or ask for clarification?
-- If responding, what safeguards should I include?
-- If declining, how should I phrase it helpfully?`}
+**3. توصیه**
+بر اساس این تحلیل:
+- باید پاسخ بدهم، رد کنم یا توضیح بیشتری بخواهم؟
+- اگر پاسخ می‌دهم، چه تدابیر حفاظتی‌ای باید بگنجانم؟
+- اگر رد می‌کنم، چطور آن را به شکلی مفید بیان کنم؟`}
 />
 
 ## پرداختن به تعصب
@@ -126,36 +126,36 @@ Based on this analysis:
 <TryIt 
   title="آزمون تشخیص تعصب"
   description="از این برای آزمایش پرامپت‌های خود برای مشکلات احتمالی تعصب استفاده کنید."
-  prompt={`I want to test this prompt for bias:
+  prompt={`می‌خواهم این پرامپت را از نظر تعصب آزمایش کنم:
 
 "\${promptToTest}"
 
-Run these bias checks:
+این بررسی‌های تعصب را انجام بده:
 
-**1. Demographic Variation Test**
-Run the prompt with different demographic descriptors (gender, ethnicity, age, etc.) and note any differences in:
-- Tone or respect level
-- Assumed competence or capabilities
-- Stereotypical associations
+**1. آزمون تنوع جمعیتی**
+پرامپت را با توصیف‌های جمعیتی مختلف (جنسیت، قومیت، سن و غیره) اجرا کن و هر تفاوتی را در این موارد یادداشت کن:
+- لحن یا میزان احترام
+- شایستگی یا توانایی‌های فرض‌شده
+- تداعی‌های کلیشه‌ای
 
-**2. Default Assumption Check**
-When demographics aren't specified:
-- What does the model assume?
-- Are these assumptions problematic?
+**2. بررسی فرض‌های پیش‌فرض**
+وقتی ویژگی‌های جمعیتی مشخص نشده‌اند:
+- مدل چه چیزی را فرض می‌کند؟
+- آیا این فرض‌ها مشکل‌سازند؟
 
-**3. Representation Analysis**
-- Are different groups represented fairly?
-- Are any groups missing or marginalized?
+**3. تحلیل بازنمایی**
+- آیا گروه‌های مختلف به‌طور منصفانه بازنمایی شده‌اند؟
+- آیا گروهی غایب است یا به حاشیه رانده شده؟
 
-**4. Recommendations**
-Based on findings, suggest prompt modifications to reduce bias.`}
+**4. توصیه‌ها**
+بر اساس یافته‌ها، تغییراتی در پرامپت پیشنهاد بده تا تعصب کاهش یابد.`}
 />
 
 ### کاهش تعصب در عمل
 
 <Compare 
-  before={{ label: "پرامپت مستعد تعصب", content: "Describe a typical CEO." }}
-  after={{ label: "پرامپت آگاه از تعصب", content: "Describe a CEO. Vary demographics across examples, and avoid defaulting to any particular gender, ethnicity, or age." }}
+  before={{ label: "پرامپت مستعد تعصب", content: "یک مدیرعامل معمولی را توصیف کن." }}
+  after={{ label: "پرامپت آگاه از تعصب", content: "یک مدیرعامل را توصیف کن. در مثال‌ها ویژگی‌های جمعیتی را متنوع کن و به‌طور پیش‌فرض جنسیت، قومیت یا سن خاصی را فرض نکن." }}
 />
 
 ## شفافیت و افشا
@@ -174,8 +174,8 @@ Based on findings, suggest prompt modifications to reduce bias.`}
 ### نحوه افشای مناسب
 
 <Compare 
-  before={{ label: "دخالت پنهان هوش مصنوعی", content: "Here's my analysis of the market trends..." }}
-  after={{ label: "افشای شفاف", content: "I used AI tools to help analyze the data and draft this report. All conclusions have been verified and edited by me." }}
+  before={{ label: "دخالت پنهان هوش مصنوعی", content: "این تحلیل من از روندهای بازار است..." }}
+  after={{ label: "افشای شفاف", content: "برای تحلیل داده‌ها و نوشتن پیش‌نویس این گزارش از ابزارهای هوش مصنوعی کمک گرفتم. همه‌ی نتیجه‌گیری‌ها را خودم بررسی و ویرایش کرده‌ام." }}
 />
 
 عبارات افشای رایج که خوب کار می‌کنند:
@@ -201,8 +201,8 @@ Based on findings, suggest prompt modifications to reduce bias.`}
 ### الگوی مدیریت امن داده
 
 <Compare 
-  before={{ label: "ناامن: حاوی اطلاعات شناسایی شخصی", content: "Summarize this complaint from John Smith at 123 Main St, Anytown about order #12345: 'I ordered on March 15 and still haven't received...'" }}
-  after={{ label: "امن: ناشناس شده", content: "Summarize this customer complaint pattern: A customer ordered 3 weeks ago, hasn't received their order, and has contacted support twice without resolution." }}
+  before={{ label: "ناامن: حاوی اطلاعات شناسایی شخصی", content: "این شکایت علی رضایی، ساکن تهران، خیابان آزادی، پلاک ۱۲۳، درباره‌ی سفارش شماره‌ی ۱۲۳۴۵ را خلاصه کن: «۱۵ اسفند سفارش دادم و هنوز به دستم نرسیده...»" }}
+  after={{ label: "امن: ناشناس شده", content: "این الگوی شکایت مشتری را خلاصه کن: مشتری ۳ هفته پیش سفارش داده، سفارشش هنوز نرسیده و دو بار بدون نتیجه با پشتیبانی تماس گرفته است." }}
 />
 
 <Callout type="info" title="PII چیست؟">
@@ -212,18 +212,18 @@ Based on findings, suggest prompt modifications to reduce bias.`}
 <TryIt 
   title="پاک‌کننده اطلاعات شناسایی شخصی"
   description="از این برای شناسایی و حذف اطلاعات حساس قبل از گنجاندن متن در پرامپت‌ها استفاده کنید."
-  prompt={`Review this text for sensitive information that should be removed before using it in an AI prompt:
+  prompt={`این متن را بررسی کن و اطلاعات حساسی را که باید پیش از استفاده در پرامپت هوش مصنوعی حذف شوند پیدا کن:
 
 "\${textToReview}"
 
-Identify:
-1. **Personal Identifiers**: Names, addresses, phone numbers, emails, SSNs
-2. **Financial Data**: Account numbers, amounts that could identify someone
-3. **Health Information**: Medical details, conditions, prescriptions
-4. **Credentials**: Any passwords, keys, or tokens
-5. **Private Details**: Information someone would reasonably expect to be confidential
+این موارد را شناسایی کن:
+1. **شناسه‌های شخصی**: نام‌ها، نشانی‌ها، شماره تلفن‌ها، ایمیل‌ها، شماره‌های تأمین اجتماعی
+2. **داده‌های مالی**: شماره حساب‌ها، مبالغی که می‌توانند هویت کسی را آشکار کنند
+3. **اطلاعات سلامت**: جزئیات پزشکی، بیماری‌ها، نسخه‌های دارویی
+4. **اعتبارنامه‌ها**: هر نوع رمز عبور، کلید یا توکن
+5. **جزئیات خصوصی**: اطلاعاتی که هر کسی به‌طور منطقی انتظار دارد محرمانه بماند
 
-For each item found, suggest how to anonymize or generalize it while preserving the information needed for the task.`}
+برای هر مورد یافت‌شده، پیشنهاد بده چگونه می‌توان آن را ناشناس یا کلی کرد، طوری که اطلاعات لازم برای کار حفظ شود.`}
 />
 
 ## اصالت و فریب
@@ -290,23 +290,23 @@ For each item found, suggest how to anonymize or generalize it while preserving 
 <TryIt 
   title="سلب مسئولیت زمینه پزشکی"
   description="الگویی برای سیستم‌های هوش مصنوعی که ممکن است سوالات مرتبط با سلامت دریافت کنند."
-  prompt={`You are an AI assistant. When users ask about health or medical topics:
+  prompt={`شما یک دستیار هوش مصنوعی هستید. وقتی کاربران درباره‌ی موضوعات سلامت یا پزشکی می‌پرسند:
 
-**Always**:
-- Recommend consulting a qualified healthcare provider for personal medical decisions
-- Provide general educational information, not personalized medical advice
-- Include disclaimers that you cannot diagnose conditions
-- Suggest emergency services (911) for urgent situations
+**همیشه**:
+- برای تصمیم‌های پزشکی شخصی، مشورت با یک ارائه‌دهنده‌ی خدمات سلامت واجد شرایط را توصیه کنید
+- اطلاعات آموزشی عمومی ارائه دهید، نه توصیه‌ی پزشکی شخصی‌سازی‌شده
+- تصریح کنید که نمی‌توانید بیماری‌ها را تشخیص دهید
+- در موقعیت‌های فوری، کاربر را به خدمات اورژانس محلی (مانند ۱۱۵، ۹۱۱ یا ۱۱۲) ارجاع دهید
 
-**Never**:
-- Provide specific diagnoses
-- Recommend specific medications or dosages
-- Discourage someone from seeking professional care
-- Make claims about treatments without noting uncertainty
+**هرگز**:
+- تشخیص مشخصی ارائه ندهید
+- دارو یا دوز مشخصی توصیه نکنید
+- کسی را از مراجعه به متخصص منصرف نکنید
+- بدون اشاره به عدم قطعیت، درباره‌ی درمان‌ها ادعا نکنید
 
-User question: \${healthQuestion}
+پرسش کاربر: \${healthQuestion}
 
-Respond helpfully while following these guidelines.`}
+با رعایت این دستورالعمل‌ها، پاسخی مفید بدهید.`}
 />
 
 ### حقوقی و مالی

@@ -42,7 +42,7 @@ Reescreva o prompt com todos estes detalhes incluídos.`}
   after={{ label: "Prompt focado", content: "Escreva um post de blog de 500 palavras introduzindo IA para iniciantes.\n\nRequisitos:\n1. Explique um conceito central claramente\n2. Inclua um exemplo de código simples\n3. Termine com um call to action\n\nTom: Profissional mas acessível" }}
 />
 
-**Por que acontece**: Medo de múltiplas interações, ou querer "colocar tudo" de uma vez. Mas sobrecarga cognitiva afeta IA assim como afeta humanos—muitos requisitos competindo leva a coisas esquecidas.
+**Por que acontece**: Medo de múltiplas interações, ou querer "colocar tudo" de uma vez. Mas sobrecarga cognitiva afeta IA assim como afeta humanos: muitos requisitos competindo levam a coisas esquecidas.
 
 <InfoGrid items={[
   { label: "Limite Requisitos", description: "Fique com 3-5 requisitos-chave por prompt", example: "Foque em: audiência, formato, comprimento, uma restrição-chave", exampleType: "text", color: "green" },
@@ -64,7 +64,7 @@ Quando um único prompt fica sobrecarregado, [encadeamento de prompts](/book/11-
   after={{ label: "Fornece contexto", content: "Atualize esta função para adicionar tratamento de erro:\n\n```python\ndef calculate_total(items):\n    return sum(item.price for item in items)\n```\n\nAdicione try/except para listas vazias e itens inválidos." }}
 />
 
-**Por que acontece**: Conversas com IA parecem conversar com um colega. Mas diferente de colegas, a maioria dos modelos de IA não tem memória persistente entre sessões—cada conversa começa do zero.
+**Por que acontece**: Conversas com IA parecem conversas com um colega. Mas, diferente de um colega, o modelo em si não guarda nada entre sessões. Alguns apps de chat já oferecem recursos de memória que levam para novos chats algumas anotações salvas sobre você, mas eles guardam detalhes selecionados, não o código ou o documento que você compartilhou na semana passada. Trate cada nova conversa como um recomeço e inclua o que importa.
 
 <TryIt 
   title="Verificação de Completude de Contexto"
@@ -209,7 +209,7 @@ Gere uma especificação de formato que posso adicionar ao meu prompt, incluindo
 **O Padrão**: Você cola um documento enorme e espera análise abrangente. Mas modelos têm limites—podem truncar, perder foco ou perder detalhes importantes em entradas longas.
 
 <InfoGrid items={[
-  { label: "Conheça Seus Limites", description: "Diferentes modelos têm diferentes janelas de contexto", example: "GPT-4: 128K tokens, Claude: 200K tokens, Gemini: 1M tokens", exampleType: "text", color: "blue" },
+  { label: "Conheça Seus Limites", description: "Janelas de contexto variam de modelo para modelo e mudam a cada nova versão", example: "Muitos modelos atuais aceitam cerca de 1M de tokens, enquanto modelos menores ou mais antigos podem parar em 128K ou 200K. Consulte a documentação do seu modelo.", exampleType: "text", color: "blue" },
   { label: "Divida Entradas Grandes", description: "Quebre documentos em seções gerenciáveis", example: "Analise capítulos separadamente, depois sintetize", exampleType: "text", color: "blue" },
   { label: "Coloque Info Importante Primeiro", description: "Coloque contexto crítico no início do prompt", example: "Requisitos-chave primeiro, detalhes de background depois", exampleType: "text", color: "blue" },
   { label: "Corte o Desnecessário", description: "Remova contexto desnecessário", example: "Você realmente precisa do doc inteiro, ou apenas seções relevantes?", exampleType: "text", color: "blue" }

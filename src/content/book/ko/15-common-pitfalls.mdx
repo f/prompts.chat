@@ -64,7 +64,7 @@
   after={{ label: "맥락을 제공함", content: "이 함수에 에러 처리를 추가해주세요:\n\n```python\ndef calculate_total(items):\n    return sum(item.price for item in items)\n```\n\n빈 리스트와 잘못된 항목에 대한 try/except를 추가해주세요." }}
 />
 
-**왜 발생하는가**: AI 대화는 동료와 대화하는 것처럼 느껴집니다. 하지만 동료와 달리, 대부분의 AI 모델은 세션 간에 영구적인 기억이 없습니다—각 대화는 새로 시작됩니다.
+**왜 발생하는가**: AI 대화는 동료와 대화하는 것처럼 느껴집니다. 하지만 동료와 달리, 모델 자체는 세션이 바뀌면 아무것도 기억하지 않습니다. 요즘은 메모리 기능을 제공하는 채팅 앱도 있어서, 여러분에 대해 저장된 몇 가지 메모를 새 채팅으로 이어 줍니다. 하지만 남는 것은 선별된 일부 정보일 뿐, 지난주에 공유한 코드나 문서 자체가 아닙니다. 새 대화는 백지에서 시작한다고 생각하고, 중요한 내용은 다시 담아 주세요.
 
 <TryIt 
   title="맥락 완전성 검사"
@@ -209,7 +209,7 @@
 **패턴**: 방대한 문서를 붙여넣고 포괄적인 분석을 기대합니다. 하지만 모델에는 한계가 있습니다—긴 입력에서 잘리거나, 집중력을 잃거나, 중요한 세부사항을 놓칠 수 있습니다.
 
 <InfoGrid items={[
-  { label: "한계 파악하기", description: "모델마다 컨텍스트 윈도우가 다릅니다", example: "GPT-4: 128K 토큰, Claude: 200K 토큰, Gemini: 1M 토큰", exampleType: "text", color: "blue" },
+  { label: "한계 파악하기", description: "컨텍스트 윈도우는 모델마다 다르고, 새 버전이 나올 때마다 바뀝니다", example: "현재 많은 모델이 약 1M 토큰을 받아들이지만, 작거나 오래된 모델은 128K나 200K에서 멈추기도 합니다. 사용하는 모델의 문서를 확인하세요.", exampleType: "text", color: "blue" },
   { label: "큰 입력 분할하기", description: "문서를 관리 가능한 섹션으로 나누세요", example: "챕터를 별도로 분석한 다음 종합", exampleType: "text", color: "blue" },
   { label: "중요한 정보 앞에 배치", description: "프롬프트 초반에 핵심 맥락을 넣으세요", example: "핵심 요구사항을 먼저, 배경 세부사항은 나중에", exampleType: "text", color: "blue" },
   { label: "불필요한 것 제거", description: "불필요한 맥락을 삭제하세요", example: "전체 문서가 정말 필요한가요, 아니면 관련 섹션만 필요한가요?", exampleType: "text", color: "blue" }

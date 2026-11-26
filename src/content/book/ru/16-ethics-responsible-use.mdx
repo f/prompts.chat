@@ -54,28 +54,28 @@ CSAM означает **Child Sexual Abuse Material** (материалы сек
 <TryIt 
   title="Системный промпт с приоритетом безопасности"
   description="Шаблон для встраивания рекомендаций по безопасности в ваши ИИ-системы."
-  prompt={`You are a helpful assistant for \${purpose}.
+  prompt={`Ты полезный помощник. Твоя задача: \${purpose}.
 
-## SAFETY GUIDELINES
+## ПРАВИЛА БЕЗОПАСНОСТИ
 
-**Content Restrictions**:
-- Never provide instructions that could cause physical harm
-- Decline requests for illegal information or activities
-- Don't generate discriminatory or hateful content
-- Don't create deliberately misleading information
+**Ограничения на содержание**:
+- Никогда не давай инструкций, которые могут причинить физический вред
+- Отклоняй запросы о незаконной информации или деятельности
+- Не создавай дискриминационный или разжигающий ненависть контент
+- Не создавай заведомо вводящую в заблуждение информацию
 
-**When You Must Decline**:
-- Acknowledge you understood the request
-- Briefly explain why you can't help with this specific thing
-- Offer constructive alternatives when possible
-- Be respectful—don't lecture or be preachy
+**Когда приходится отказать**:
+- Покажи, что ты понял запрос
+- Коротко объясни, почему не можешь помочь именно с этим
+- По возможности предложи конструктивную альтернативу
+- Оставайся уважительным: не читай нотаций и не морализируй
 
-**When Uncertain**:
-- Ask clarifying questions about intent
-- Err on the side of caution
-- Suggest the user consult appropriate professionals
+**Когда есть сомнения**:
+- Задай уточняющие вопросы о намерениях
+- Лучше перестраховаться
+- Посоветуй пользователю обратиться к подходящему специалисту
 
-Now, please help the user with: \${userRequest}`}
+Теперь помоги пользователю с этим: \${userRequest}`}
 />
 
 ### Фреймворк «Намерение vs. Последствия»
@@ -85,27 +85,27 @@ Now, please help the user with: \${userRequest}`}
 <TryIt 
   title="Анализатор этических пограничных случаев"
   description="Проработайте неоднозначные запросы, чтобы определить подходящий ответ."
-  prompt={`I received this request that might be sensitive:
+  prompt={`Я получил запрос, который может быть деликатным:
 
 "\${sensitiveRequest}"
 
-Help me think through whether and how to respond:
+Помоги мне разобраться, стоит ли отвечать и как именно:
 
-**1. Intent Analysis**
-- What are the most likely reasons someone would ask this?
-- Could this be legitimate? (research, fiction, education, professional need)
-- Are there red flags suggesting malicious intent?
+**1. Анализ намерений**
+- По каким причинам кто-то вероятнее всего задал бы такой вопрос?
+- Может ли запрос быть законным? (исследование, художественный текст, обучение, профессиональная задача)
+- Есть ли тревожные признаки злого умысла?
 
-**2. Impact Assessment**
-- What's the worst case if this information is misused?
-- How accessible is this information elsewhere?
-- Does providing it meaningfully increase risk?
+**2. Оценка последствий**
+- Каков худший сценарий, если этой информацией злоупотребят?
+- Насколько легко найти эту информацию в других местах?
+- Повышает ли мой ответ риск сколько-нибудь заметно?
 
-**3. Recommendation**
-Based on this analysis:
-- Should I respond, decline, or ask for clarification?
-- If responding, what safeguards should I include?
-- If declining, how should I phrase it helpfully?`}
+**3. Рекомендация**
+На основе этого анализа:
+- Ответить, отказать или попросить уточнений?
+- Если отвечать, какие меры предосторожности добавить?
+- Если отказывать, как сформулировать отказ так, чтобы он всё же помог?`}
 />
 
 ## Работа с предвзятостью
@@ -126,29 +126,29 @@ Based on this analysis:
 <TryIt 
   title="Тест на обнаружение предвзятости"
   description="Используйте это для проверки ваших промптов на потенциальные проблемы с предвзятостью."
-  prompt={`I want to test this prompt for bias:
+  prompt={`Я хочу проверить этот промпт на предвзятость:
 
 "\${promptToTest}"
 
-Run these bias checks:
+Проведи следующие проверки:
 
-**1. Demographic Variation Test**
-Run the prompt with different demographic descriptors (gender, ethnicity, age, etc.) and note any differences in:
-- Tone or respect level
-- Assumed competence or capabilities
-- Stereotypical associations
+**1. Тест с разными демографическими данными**
+Запусти промпт с разными демографическими характеристиками (пол, этническая принадлежность, возраст и т. д.) и отметь различия в:
+- Тоне или степени уважения
+- Предполагаемой компетентности или способностях
+- Стереотипных ассоциациях
 
-**2. Default Assumption Check**
-When demographics aren't specified:
-- What does the model assume?
-- Are these assumptions problematic?
+**2. Проверка допущений по умолчанию**
+Когда демографические данные не указаны:
+- Что модель предполагает?
+- Проблематичны ли эти допущения?
 
-**3. Representation Analysis**
-- Are different groups represented fairly?
-- Are any groups missing or marginalized?
+**3. Анализ представленности**
+- Справедливо ли представлены разные группы?
+- Не упущены ли или не оттеснены ли на обочину какие-то группы?
 
-**4. Recommendations**
-Based on findings, suggest prompt modifications to reduce bias.`}
+**4. Рекомендации**
+На основе результатов предложи изменения в промпте, которые уменьшат предвзятость.`}
 />
 
 ### Снижение предвзятости на практике
@@ -212,18 +212,18 @@ Based on findings, suggest prompt modifications to reduce bias.`}
 <TryIt 
   title="Очиститель PII"
   description="Используйте это для выявления и удаления конфиденциальной информации перед включением текста в промпты."
-  prompt={`Review this text for sensitive information that should be removed before using it in an AI prompt:
+  prompt={`Проверь этот текст на конфиденциальную информацию, которую нужно удалить перед использованием в промпте для ИИ:
 
 "\${textToReview}"
 
-Identify:
-1. **Personal Identifiers**: Names, addresses, phone numbers, emails, SSNs
-2. **Financial Data**: Account numbers, amounts that could identify someone
-3. **Health Information**: Medical details, conditions, prescriptions
-4. **Credentials**: Any passwords, keys, or tokens
-5. **Private Details**: Information someone would reasonably expect to be confidential
+Найди:
+1. **Персональные идентификаторы**: имена, адреса, номера телефонов, адреса электронной почты, номера документов (СНИЛС, паспорт)
+2. **Финансовые данные**: номера счетов, суммы, по которым можно узнать человека
+3. **Медицинская информация**: медицинские подробности, заболевания, рецепты
+4. **Учётные данные**: любые пароли, ключи или токены
+5. **Личные подробности**: сведения, которые человек вправе считать конфиденциальными
 
-For each item found, suggest how to anonymize or generalize it while preserving the information needed for the task.`}
+Для каждого найденного элемента предложи, как его анонимизировать или обобщить, сохранив информацию, необходимую для задачи.`}
 />
 
 ## Подлинность и обман
@@ -290,23 +290,23 @@ For each item found, suggest how to anonymize or generalize it while preserving 
 <TryIt 
   title="Дисклеймер для медицинского контекста"
   description="Шаблон для ИИ-систем, которые могут получать вопросы о здоровье."
-  prompt={`You are an AI assistant. When users ask about health or medical topics:
+  prompt={`Ты ИИ-ассистент. Когда пользователи спрашивают о здоровье или медицинских темах:
 
-**Always**:
-- Recommend consulting a qualified healthcare provider for personal medical decisions
-- Provide general educational information, not personalized medical advice
-- Include disclaimers that you cannot diagnose conditions
-- Suggest emergency services (911) for urgent situations
+**Всегда**:
+- Советуй обращаться к квалифицированному врачу при принятии личных медицинских решений
+- Давай общую образовательную информацию, а не персональные медицинские советы
+- Предупреждай, что не можешь ставить диагнозы
+- В срочных случаях направляй в местные экстренные службы (например, 112 или 911)
 
-**Never**:
-- Provide specific diagnoses
-- Recommend specific medications or dosages
-- Discourage someone from seeking professional care
-- Make claims about treatments without noting uncertainty
+**Никогда**:
+- Не ставь конкретных диагнозов
+- Не рекомендуй конкретные лекарства или дозировки
+- Не отговаривай человека от обращения за профессиональной помощью
+- Не делай утверждений о методах лечения, не оговаривая неопределённость
 
-User question: \${healthQuestion}
+Вопрос пользователя: \${healthQuestion}
 
-Respond helpfully while following these guidelines.`}
+Ответь полезно, соблюдая эти правила.`}
 />
 
 ### Юридические и финансовые вопросы

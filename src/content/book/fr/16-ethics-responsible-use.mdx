@@ -1,32 +1,32 @@
-Les prompts que vous écrivez façonnent le comportement de l'IA. Un prompt bien conçu peut éduquer, assister et autonomiser. Un prompt négligent peut tromper, discriminer ou causer du tort. En tant qu'ingénieurs de prompts, nous ne sommes pas que des utilisateurs—nous sommes des concepteurs du comportement de l'IA, et cela vient avec une vraie responsabilité.
+Les prompts que vous écrivez façonnent le comportement de l'IA. Un prompt bien conçu peut instruire, aider et donner aux gens les moyens d'agir. Un prompt négligent peut tromper, discriminer ou causer du tort. En tant qu'ingénieurs de prompts, nous ne sommes pas de simples utilisateurs : nous concevons le comportement de l'IA, et cela s'accompagne d'une vraie responsabilité.
 
-Ce chapitre n'est pas sur des règles imposées d'en haut. Il s'agit de comprendre l'impact de nos choix et de construire des habitudes qui mènent à une utilisation de l'IA dont nous pouvons être fiers.
+Ce chapitre ne parle pas de règles imposées d'en haut. Il s'agit de comprendre l'impact de nos choix et de prendre des habitudes qui mènent à une utilisation de l'IA dont nous pouvons être fiers.
 
 <Callout type="warning" title="Pourquoi C'est Important">
-L'IA amplifie tout ce qu'on lui donne. Un prompt biaisé produit des sorties biaisées à grande échelle. Un prompt trompeur permet la tromperie à grande échelle. Les implications éthiques de l'ingénierie des prompts grandissent avec chaque nouvelle capacité que ces systèmes acquièrent.
+L'IA amplifie tout ce qu'on lui donne. Un prompt biaisé produit des sorties biaisées à grande échelle. Un prompt trompeur permet la tromperie à grande échelle. Les enjeux éthiques de l'ingénierie des prompts grandissent avec chaque nouvelle capacité que ces systèmes acquièrent.
 </Callout>
 
 ## Fondements Éthiques
 
-Chaque décision en ingénierie de prompts se connecte à quelques principes fondamentaux :
+Chaque décision en ingénierie de prompts renvoie à quelques principes fondamentaux :
 
 <InfoGrid items={[
-  { label: "Honnêteté", description: "N'utilisez pas l'IA pour tromper les gens ou créer du contenu trompeur", example: "Pas de faux avis, d'usurpation d'identité, ou de 'preuves' fabriquées", color: "blue" },
-  { label: "Équité", description: "Travaillez activement pour éviter de perpétuer les biais et stéréotypes", example: "Testez les prompts sur différentes démographies, demandez des perspectives diverses", color: "purple" },
-  { label: "Transparence", description: "Soyez clair sur l'implication de l'IA quand c'est important", example: "Divulguez l'assistance IA dans le travail publié, contextes professionnels", color: "green" },
-  { label: "Vie Privée", description: "Protégez les informations personnelles dans les prompts et sorties", example: "Anonymisez les données, évitez d'inclure des PII, comprenez les politiques de données", color: "amber" },
-  { label: "Sécurité", description: "Concevez des prompts qui préviennent les sorties nuisibles", example: "Intégrez des garde-fous, testez les cas limites, gérez les refus gracieusement", color: "red" },
-  { label: "Responsabilité", description: "Assumez la responsabilité de ce que vos prompts produisent", example: "Révisez les sorties, corrigez les problèmes, maintenez la supervision humaine", color: "cyan" }
+  { label: "Honnêteté", description: "N'utilisez pas l'IA pour tromper les gens ou créer du contenu trompeur", example: "Pas de faux avis, d'usurpation d'identité ni de « preuves » fabriquées", exampleType: "text", color: "blue" },
+  { label: "Équité", description: "Efforcez-vous activement de ne pas perpétuer les biais et les stéréotypes", example: "Testez les prompts avec des profils démographiques variés, demandez des points de vue divers", exampleType: "text", color: "purple" },
+  { label: "Transparence", description: "Soyez clair sur l'intervention de l'IA quand cela compte", example: "Signalez l'aide de l'IA dans les travaux publiés et en contexte professionnel", exampleType: "text", color: "green" },
+  { label: "Vie Privée", description: "Protégez les informations personnelles dans les prompts et les sorties", example: "Anonymisez les données, évitez d'inclure des PII, renseignez-vous sur les politiques de données", exampleType: "text", color: "amber" },
+  { label: "Sécurité", description: "Concevez des prompts qui empêchent les sorties nuisibles", example: "Intégrez des garde-fous, testez les cas limites, gérez les refus avec tact", exampleType: "text", color: "red" },
+  { label: "Responsabilité", description: "Assumez la responsabilité de ce que vos prompts produisent", example: "Relisez les sorties, corrigez les problèmes, maintenez une supervision humaine", exampleType: "text", color: "cyan" }
 ]} />
 
 ### Le Rôle de l'Ingénieur de Prompts
 
-Vous avez plus d'influence que vous ne le réalisez peut-être :
+Vous avez plus d'influence que vous ne le pensez peut-être :
 
 - **Ce que l'IA produit** : Vos prompts déterminent le contenu, le ton et la qualité des sorties
-- **Comment l'IA interagit** : Vos prompts système façonnent la personnalité, les frontières et l'expérience utilisateur
+- **Comment l'IA interagit** : Vos prompts système façonnent la personnalité, les limites et l'expérience utilisateur
 - **Quels garde-fous existent** : Vos choix de conception déterminent ce que l'IA fera et ne fera pas
-- **Comment les erreurs sont gérées** : Votre gestion des erreurs détermine si les échecs sont gracieux ou nuisibles
+- **Comment les erreurs sont gérées** : Votre gestion des erreurs détermine si les échecs restent sans gravité ou deviennent nuisibles
 
 ## Éviter les Sorties Nuisibles
 
@@ -35,268 +35,323 @@ L'obligation éthique la plus fondamentale est d'empêcher vos prompts de causer
 ### Catégories de Contenu Nuisible
 
 <InfoGrid items={[
-  { label: "Violence & Préjudice", description: "Instructions qui pourraient mener à un préjudice physique", example: "Création d'armes, automutilation, violence envers autrui", color: "red" },
-  { label: "Activités Illégales", description: "Contenu qui facilite la violation des lois", example: "Schémas de fraude, instructions de piratage, synthèse de drogues", color: "red" },
-  { label: "Harcèlement & Haine", description: "Contenu ciblant des individus ou groupes", example: "Contenu discriminatoire, doxxing, harcèlement ciblé", color: "red" },
-  { label: "Désinformation", description: "Contenu délibérément faux ou trompeur", example: "Fake news, désinformation médicale, contenu conspirationniste", color: "red" },
-  { label: "Violations de Vie Privée", description: "Exposer ou exploiter des informations personnelles", example: "Révéler des données privées, assistance au harcèlement", color: "red" },
-  { label: "Exploitation", description: "Contenu qui exploite des individus vulnérables", example: "CSAM, images intimes non consensuelles, arnaques ciblant les personnes âgées", color: "red" }
+  { label: "Violence & Préjudice", description: "Instructions qui pourraient mener à un préjudice physique", example: "Fabrication d'armes, automutilation, violence envers autrui", exampleType: "text", color: "red" },
+  { label: "Activités Illégales", description: "Contenu qui facilite la violation des lois", example: "Montages frauduleux, instructions de piratage, synthèse de drogues", exampleType: "text", color: "red" },
+  { label: "Harcèlement & Haine", description: "Contenu ciblant des individus ou des groupes", example: "Contenu discriminatoire, divulgation de données personnelles (doxxing), harcèlement ciblé", exampleType: "text", color: "red" },
+  { label: "Désinformation", description: "Contenu délibérément faux ou trompeur", example: "Fausses nouvelles, désinformation médicale, contenu complotiste", exampleType: "text", color: "red" },
+  { label: "Atteintes à la Vie Privée", description: "Exposer ou exploiter des informations personnelles", example: "Révéler des données privées, aider à traquer quelqu'un", exampleType: "text", color: "red" },
+  { label: "Exploitation", description: "Contenu qui exploite des personnes vulnérables", example: "CSAM, images intimes non consenties, arnaques ciblant les personnes âgées", exampleType: "text", color: "red" }
 ]} />
 
 <Callout type="warning" title="Qu'est-ce que le CSAM ?">
-CSAM signifie **Matériel d'Abus Sexuel sur Enfants**. Créer, distribuer ou posséder un tel contenu est illégal dans le monde entier. Les systèmes d'IA ne doivent jamais générer de contenu représentant des mineurs dans des situations sexuelles, et les ingénieurs de prompts responsables construisent activement des garde-fous contre une telle utilisation abusive.
+CSAM est le sigle anglais de **Child Sexual Abuse Material**, c'est-à-dire les contenus d'abus sexuels sur mineurs. Créer, diffuser ou détenir de tels contenus est illégal dans le monde entier. Les systèmes d'IA ne doivent jamais générer de contenu représentant des mineurs dans des situations sexuelles, et les ingénieurs de prompts responsables mettent activement en place des garde-fous contre ce type d'abus.
 </Callout>
 
 ### Intégrer la Sécurité dans les Prompts
 
+Quand vous construisez des systèmes d'IA, incluez des consignes de sécurité explicites :
+
 <TryIt 
-  title="Prompt Système Sécurité d'Abord"
-  description="Un template pour intégrer des directives de sécurité dans vos systèmes IA."
-  prompt={`Tu es un assistant utile pour \${objectif}.
+  title="Prompt Système Axé sur la Sécurité"
+  description="Un modèle pour intégrer des consignes de sécurité dans vos systèmes d'IA."
+  prompt={`Tu es un assistant serviable pour \${purpose}.
 
-## DIRECTIVES DE SÉCURITÉ
+## CONSIGNES DE SÉCURITÉ
 
-**Restrictions de Contenu** :
+**Restrictions de contenu** :
 - Ne jamais fournir d'instructions qui pourraient causer un préjudice physique
-- Décliner les demandes d'informations ou activités illégales
+- Refuser les demandes d'informations ou d'activités illégales
 - Ne pas générer de contenu discriminatoire ou haineux
 - Ne pas créer d'informations délibérément trompeuses
 
-**Quand Tu Dois Décliner** :
-- Reconnaître que tu as compris la demande
-- Expliquer brièvement pourquoi tu ne peux pas aider avec cette chose spécifique
-- Offrir des alternatives constructives quand possible
-- Être respectueux—ne pas faire la morale
+**Quand tu dois refuser** :
+- Montrer que tu as compris la demande
+- Expliquer brièvement pourquoi tu ne peux pas aider sur ce point précis
+- Proposer des alternatives constructives quand c'est possible
+- Rester respectueux, sans faire la morale ni sermonner
 
-**Quand Incertain** :
-- Poser des questions de clarification sur l'intention
-- Errer du côté de la prudence
-- Suggérer à l'utilisateur de consulter des professionnels appropriés
+**En cas de doute** :
+- Poser des questions pour clarifier l'intention
+- Pencher du côté de la prudence
+- Suggérer à l'utilisateur de consulter des professionnels compétents
 
-Maintenant, aide l'utilisateur avec : \${demandeUtilisateur}`}
+Maintenant, aide l'utilisateur avec : \${userRequest}`}
 />
 
-### Le Framework Intention vs Impact
+### Le Cadre Intention et Impact
+
+Toutes les demandes sensibles ne sont pas malveillantes. Utilisez ce cadre pour les cas ambigus :
 
 <TryIt 
-  title="Analyseur de Cas Éthiques Limites"
-  description="Travaillez sur les demandes ambiguës pour déterminer la réponse appropriée."
+  title="Analyseur de Cas Limites Éthiques"
+  description="Examinez les demandes ambiguës pour déterminer la réponse appropriée."
   prompt={`J'ai reçu cette demande qui pourrait être sensible :
 
-"\${demandeSensible}"
+"\${sensitiveRequest}"
 
-Aide-moi à réfléchir si et comment répondre :
+Aide-moi à déterminer si je dois répondre, et comment :
 
-**1. Analyse d'Intention**
-- Quelles sont les raisons les plus probables pour lesquelles quelqu'un demanderait ceci ?
+**1. Analyse de l'intention**
+- Pour quelles raisons quelqu'un poserait-il le plus probablement cette question ?
 - Cela pourrait-il être légitime ? (recherche, fiction, éducation, besoin professionnel)
-- Y a-t-il des signaux d'alarme suggérant une intention malveillante ?
+- Y a-t-il des signaux d'alerte suggérant une intention malveillante ?
 
-**2. Évaluation d'Impact**
-- Quel est le pire cas si cette information est mal utilisée ?
-- Cette information est-elle accessible ailleurs ?
-- La fournir augmente-t-elle significativement le risque ?
+**2. Évaluation de l'impact**
+- Quel est le pire scénario si cette information est détournée ?
+- Cette information est-elle facilement accessible ailleurs ?
+- La fournir augmente-t-il réellement le risque ?
 
 **3. Recommandation**
-Basé sur cette analyse :
-- Devrais-je répondre, décliner, ou demander une clarification ?
-- Si je réponds, quels garde-fous devrais-je inclure ?
-- Si je décline, comment devrais-je le formuler utilement ?`}
+D'après cette analyse :
+- Dois-je répondre, refuser ou demander des précisions ?
+- Si je réponds, quels garde-fous dois-je inclure ?
+- Si je refuse, comment le formuler de façon utile ?`}
 />
 
-## Adresser les Biais
+## Lutter Contre les Biais
 
-Les modèles d'IA héritent des biais de leurs données d'entraînement. En tant qu'ingénieurs de prompts, nous pouvons soit amplifier ces biais, soit activement les contrecarrer.
+Les modèles d'IA héritent des biais de leurs données d'entraînement : inégalités historiques, lacunes de représentation, présupposés culturels et habitudes de langage. En tant qu'ingénieurs de prompts, nous pouvons soit amplifier ces biais, soit les contrer activement.
 
 ### Comment les Biais se Manifestent
 
 <InfoGrid items={[
-  { label: "Suppositions par Défaut", description: "Le modèle suppose certaines démographies pour les rôles", example: "Médecins par défaut masculins, infirmières féminines", color: "amber" },
-  { label: "Stéréotypage", description: "Renforcer les stéréotypes culturels dans les descriptions", example: "Associer certaines ethnies à des traits spécifiques", color: "amber" },
-  { label: "Écarts de Représentation", description: "Certains groupes sont sous-représentés ou mal représentés", example: "Information limitée et précise sur les cultures minoritaires", color: "amber" },
-  { label: "Vues Occidentalo-centrées", description: "Perspectives biaisées vers la culture et les valeurs occidentales", example: "Supposer que les normes occidentales sont universelles", color: "amber" }
+  { label: "Présupposés par Défaut", description: "Le modèle associe certains profils démographiques à certains rôles", example: "Les médecins imaginés par défaut comme des hommes, le personnel infirmier comme des femmes", exampleType: "text", color: "amber" },
+  { label: "Stéréotypes", description: "Renforcer des stéréotypes culturels dans les descriptions", example: "Associer certaines origines ethniques à des traits particuliers", exampleType: "text", color: "amber" },
+  { label: "Lacunes de Représentation", description: "Certains groupes sont sous-représentés ou mal représentés", example: "Peu d'informations exactes sur les cultures minoritaires", exampleType: "text", color: "amber" },
+  { label: "Vision Occidentalocentrée", description: "Des points de vue biaisés en faveur de la culture et des valeurs occidentales", example: "Supposer que les normes occidentales sont universelles", exampleType: "text", color: "amber" }
 ]} />
 
 ### Tester les Biais
 
 <TryIt 
-  title="Test de Détection de Biais"
-  description="Utilisez ceci pour tester vos prompts pour des problèmes de biais potentiels."
-  prompt={`Je veux tester ce prompt pour les biais :
+  title="Test de Détection des Biais"
+  description="Utilisez ceci pour vérifier si vos prompts présentent des biais potentiels."
+  prompt={`Je veux vérifier si ce prompt contient des biais :
 
-"\${promptATester}"
+"\${promptToTest}"
 
-Exécute ces vérifications de biais :
+Effectue ces vérifications :
 
-**1. Test de Variation Démographique**
-Exécute le prompt avec différents descripteurs démographiques (genre, ethnicité, âge, etc.) et note toute différence dans :
+**1. Test de variation démographique**
+Exécute le prompt avec différents descripteurs démographiques (genre, origine ethnique, âge, etc.) et note toute différence de :
 - Ton ou niveau de respect
-- Compétence ou capacités supposées
-- Associations stéréotypiques
+- Compétences ou capacités supposées
+- Associations stéréotypées
 
-**2. Vérification des Suppositions par Défaut**
-Quand les démographies ne sont pas spécifiées :
+**2. Vérification des présupposés par défaut**
+Quand les caractéristiques démographiques ne sont pas précisées :
 - Que suppose le modèle ?
-- Ces suppositions sont-elles problématiques ?
+- Ces présupposés posent-ils problème ?
 
-**3. Recommandations**
-Basé sur les découvertes, suggère des modifications de prompt pour réduire les biais.`}
+**3. Analyse de la représentation**
+- Les différents groupes sont-ils représentés équitablement ?
+- Certains groupes sont-ils absents ou marginalisés ?
+
+**4. Recommandations**
+D'après ces constats, suggère des modifications du prompt pour réduire les biais.`}
 />
 
 ### Atténuer les Biais en Pratique
 
 <Compare 
   before={{ label: "Prompt sujet aux biais", content: "Décris un PDG typique." }}
-  after={{ label: "Prompt conscient des biais", content: "Décris un PDG. Varie les démographies dans les exemples, et évite de supposer par défaut un genre, une ethnicité ou un âge particulier." }}
+  after={{ label: "Prompt attentif aux biais", content: "Décris un PDG. Varie les profils démographiques d'un exemple à l'autre, et évite de supposer par défaut un genre, une origine ethnique ou un âge particulier." }}
 />
 
 ## Transparence et Divulgation
 
-Quand devriez-vous dire aux gens que l'IA a été impliquée ? La réponse dépend du contexte—mais la tendance est vers plus de divulgation, pas moins.
+Quand faut-il dire aux gens que l'IA est intervenue ? La réponse dépend du contexte, mais la tendance va vers plus de transparence, pas moins.
 
 ### Quand la Divulgation Compte
 
 <InfoGrid items={[
-  { label: "Contenu Publié", description: "Articles, posts, ou contenu partagé publiquement", example: "Articles de blog, médias sociaux, matériel marketing", color: "blue" },
-  { label: "Décisions Conséquentes", description: "Quand les sorties IA affectent la vie des gens", example: "Recommandations d'embauche, infos médicales, conseils juridiques", color: "blue" },
-  { label: "Contextes de Confiance", description: "Où l'authenticité est attendue ou valorisée", example: "Correspondance personnelle, témoignages, avis", color: "blue" },
-  { label: "Cadres Professionnels", description: "Environnements de travail ou académiques", example: "Rapports, recherche, livrables clients", color: "blue" }
+  { label: "Contenu Publié", description: "Articles, publications ou contenus partagés publiquement", example: "Articles de blog, réseaux sociaux, supports marketing", exampleType: "text", color: "blue" },
+  { label: "Décisions Lourdes de Conséquences", description: "Quand les sorties de l'IA affectent la vie des gens", example: "Recommandations d'embauche, informations médicales, orientation juridique", exampleType: "text", color: "blue" },
+  { label: "Contextes de Confiance", description: "Là où l'authenticité est attendue ou valorisée", example: "Correspondance personnelle, témoignages, avis", exampleType: "text", color: "blue" },
+  { label: "Cadres Professionnels", description: "Environnements de travail ou universitaires", example: "Rapports, recherche, livrables pour des clients", exampleType: "text", color: "blue" }
 ]} />
 
 ### Comment Divulguer Correctement
 
 <Compare 
-  before={{ label: "Implication IA cachée", content: "Voici mon analyse des tendances du marché..." }}
-  after={{ label: "Divulgation transparente", content: "J'ai utilisé des outils IA pour aider à analyser les données et rédiger ce rapport. Toutes les conclusions ont été vérifiées et éditées par moi." }}
+  before={{ label: "Intervention de l'IA cachée", content: "Voici mon analyse des tendances du marché..." }}
+  after={{ label: "Divulgation transparente", content: "J'ai utilisé des outils d'IA pour m'aider à analyser les données et à rédiger ce rapport. J'ai vérifié et retravaillé moi-même toutes les conclusions." }}
 />
 
-Phrases de divulgation courantes qui fonctionnent bien :
-- « Écrit avec assistance IA »
-- « Premier brouillon généré par IA, édité par un humain »
-- « Analyse effectuée avec des outils IA »
-- « Créé avec l'IA, revu et approuvé par [nom] »
+Quelques formules de divulgation courantes qui fonctionnent bien :
+- « Écrit avec l'aide de l'IA »
+- « Premier jet généré par IA, revu par un humain »
+- « Analyse réalisée avec des outils d'IA »
+- « Créé avec l'IA, relu et approuvé par [nom] »
 
 ## Considérations de Vie Privée
 
-Chaque prompt que vous envoyez contient des données. Comprendre où vont ces données—et ce qui ne devrait pas y être—est essentiel.
+Chaque prompt que vous envoyez contient des données. Il est essentiel de comprendre où vont ces données, et ce qui ne devrait pas s'y trouver.
 
 ### Ce Qui N'a Jamais Sa Place dans les Prompts
 
 <InfoGrid items={[
-  { label: "Identifiants Personnels", description: "Noms, adresses, numéros de téléphone, numéros de sécu", example: "Utiliser [CLIENT] au lieu de 'Jean Dupont'", color: "red" },
-  { label: "Données Financières", description: "Numéros de compte, cartes de crédit, détails de revenus", example: "Décrire le pattern, pas les vrais chiffres", color: "red" },
-  { label: "Informations de Santé", description: "Dossiers médicaux, diagnostics, prescriptions", example: "Demander sur les conditions en général, pas des patients spécifiques", color: "red" },
-  { label: "Identifiants", description: "Mots de passe, clés API, tokens, secrets", example: "Ne jamais coller d'identifiants—utiliser des placeholders", color: "red" },
-  { label: "Communications Privées", description: "Emails personnels, messages, docs confidentiels", example: "Résumer la situation sans citer du texte privé", color: "red" }
+  { label: "Identifiants Personnels", description: "Noms, adresses, numéros de téléphone, numéros de sécurité sociale", example: "Utiliser [CLIENT] au lieu de « Jean Dupont »", color: "red" },
+  { label: "Données Financières", description: "Numéros de compte, cartes bancaires, détails de revenus", example: "Décrire la tendance, pas les chiffres réels", exampleType: "text", color: "red" },
+  { label: "Informations de Santé", description: "Dossiers médicaux, diagnostics, ordonnances", example: "Poser des questions générales sur une pathologie, pas sur des patients précis", exampleType: "text", color: "red" },
+  { label: "Identifiants de Connexion", description: "Mots de passe, clés API, tokens, secrets", example: "Ne jamais coller d'identifiants : utiliser des valeurs fictives", exampleType: "text", color: "red" },
+  { label: "Communications Privées", description: "E-mails personnels, messages, documents confidentiels", example: "Résumer la situation sans citer de texte privé", exampleType: "text", color: "red" }
 ]} />
 
-<Callout type="info" title="Qu'est-ce que les PII ?">
-**PII** signifie **Informations Personnellement Identifiables**—toute donnée qui peut identifier un individu spécifique. Cela inclut les noms, adresses, numéros de téléphone, adresses email, numéros de sécurité sociale, numéros de comptes financiers, et même des combinaisons de données (comme titre de poste + entreprise + ville) qui pourraient identifier quelqu'un. Quand vous promptez l'IA, anonymisez ou retirez toujours les PII pour protéger la vie privée.
+### Modèle de Traitement Sûr des Données
+
+<Compare 
+  before={{ label: "Risqué : contient des PII", content: "Résume cette réclamation de Jean Dupont, 12 rue Principale à Villeneuve, au sujet de la commande n° 12345 : « J'ai commandé le 15 mars et je n'ai toujours pas reçu... »" }}
+  after={{ label: "Sûr : anonymisé", content: "Résume ce type de réclamation client : un client a passé commande il y a 3 semaines, ne l'a toujours pas reçue et a contacté le support deux fois sans obtenir de solution." }}
+/>
+
+<Callout type="info" title="Que sont les PII ?">
+**PII** est le sigle anglais de **Personally Identifiable Information**, les informations personnellement identifiables : toute donnée qui permet d'identifier une personne précise. Cela comprend les noms, adresses, numéros de téléphone, adresses e-mail, numéros de sécurité sociale, numéros de comptes financiers, et même des combinaisons de données (comme intitulé de poste + entreprise + ville) qui pourraient permettre d'identifier quelqu'un. Quand vous rédigez un prompt, anonymisez ou retirez toujours les PII pour protéger la vie privée.
 </Callout>
+
+<TryIt 
+  title="Nettoyeur de PII"
+  description="Utilisez ceci pour repérer et retirer les informations sensibles avant d'inclure un texte dans un prompt."
+  prompt={`Examine ce texte pour repérer les informations sensibles à retirer avant de l'utiliser dans un prompt d'IA :
+
+"\${textToReview}"
+
+Identifie :
+1. **Identifiants personnels** : Noms, adresses, numéros de téléphone, e-mails, numéros de sécurité sociale
+2. **Données financières** : Numéros de compte, montants qui pourraient permettre d'identifier quelqu'un
+3. **Informations de santé** : Détails médicaux, pathologies, ordonnances
+4. **Identifiants de connexion** : Mots de passe, clés ou tokens
+5. **Détails privés** : Informations dont on peut raisonnablement attendre qu'elles restent confidentielles
+
+Pour chaque élément trouvé, suggère comment l'anonymiser ou le généraliser tout en conservant les informations nécessaires à la tâche.`}
+/>
 
 ## Authenticité et Tromperie
 
-Il y a une différence entre utiliser l'IA comme outil et utiliser l'IA pour tromper.
+Il y a une différence entre utiliser l'IA comme un outil et l'utiliser pour tromper.
 
 ### La Ligne de Légitimité
 
 <InfoGrid items={[
-  { label: "Utilisations Légitimes", description: "L'IA comme outil pour améliorer votre travail", example: "Brouillons, brainstorming, édition, apprentissage", color: "green" },
-  { label: "Zones Grises", description: "Dépendant du contexte, nécessite du jugement", example: "Ghostwriting, templates, réponses automatisées", color: "amber" },
-  { label: "Utilisations Trompeuses", description: "Présenter faussement le travail IA comme original humain", example: "Faux avis, fraude académique, usurpation d'identité", color: "red" }
+  { label: "Utilisations Légitimes", description: "L'IA comme outil pour améliorer votre travail", example: "Brouillons, remue-méninges, relecture, apprentissage", exampleType: "text", color: "green" },
+  { label: "Zones Grises", description: "Dépend du contexte, demande du discernement", example: "Écriture pour le compte d'autrui, modèles, réponses automatisées", exampleType: "text", color: "amber" },
+  { label: "Utilisations Trompeuses", description: "Faire passer le travail de l'IA pour une création humaine originale", example: "Faux avis, fraude universitaire, usurpation d'identité", exampleType: "text", color: "red" }
 ]} />
 
 Questions clés à se poser :
-- Le destinataire s'attendrait-il à ce que ce soit un travail humain original ?
-- Est-ce que je gagne un avantage injuste par la tromperie ?
-- La divulgation changerait-elle comment le travail est reçu ?
+- Le destinataire s'attendrait-il à un travail humain original ?
+- Est-ce que j'obtiens un avantage déloyal en trompant les autres ?
+- La divulgation changerait-elle la façon dont le travail est reçu ?
+
+### Responsabilité face aux Médias Synthétiques
+
+Créer des représentations réalistes de personnes réelles, qu'il s'agisse d'images, de sons ou de vidéos, implique des obligations particulières :
+
+- **Ne jamais** créer de représentations réalistes sans consentement
+- **Toujours** signaler clairement les médias synthétiques
+- **Réfléchir** aux détournements possibles avant de créer
+- **Refuser** de créer des images intimes non consenties
 
 ## Déploiement Responsable
 
-Quand vous construisez des fonctionnalités IA pour que d'autres les utilisent, vos obligations éthiques se multiplient.
+Quand vous construisez des fonctionnalités d'IA destinées à d'autres, vos obligations éthiques se multiplient.
 
-### Checklist Pré-Déploiement
+### Checklist Avant Déploiement
 
 <Checklist 
-  title="Préparation au Déploiement"
+  title="Prêt pour le Déploiement"
   items={[
-    { text: "Testé pour les sorties nuisibles sur des entrées diverses" },
-    { text: "Testé pour les biais avec des démographies variées" },
-    { text: "Mécanismes de divulgation/consentement utilisateur en place" },
-    { text: "Supervision humaine pour les décisions à enjeux élevés" },
-    { text: "Système de feedback et signalement disponible" },
+    { text: "Testé contre les sorties nuisibles avec des entrées variées" },
+    { text: "Testé contre les biais avec des profils démographiques variés" },
+    { text: "Mécanismes d'information et de consentement des utilisateurs en place" },
+    { text: "Supervision humaine pour les décisions à fort enjeu" },
+    { text: "Système de retours et de signalement disponible" },
     { text: "Plan de réponse aux incidents documenté" },
     { text: "Politiques d'utilisation claires communiquées" },
-    { text: "Monitoring et alertes configurés" }
+    { text: "Surveillance et alertes configurées" }
   ]}
 />
 
 ### Principes de Supervision Humaine
 
 <InfoGrid items={[
-  { label: "Revue Haute Importance", description: "Les humains révisent les décisions qui affectent significativement les gens", example: "Recommandations d'embauche, médicales, juridiques, financières", color: "blue" },
-  { label: "Correction d'Erreurs", description: "Des mécanismes existent pour attraper et corriger les erreurs IA", example: "Feedback utilisateur, échantillonnage qualité, processus d'appel", color: "blue" },
-  { label: "Apprentissage Continu", description: "Les insights des problèmes améliorent le système", example: "Post-mortems, mises à jour de prompts, améliorations d'entraînement", color: "blue" },
-  { label: "Capacité d'Override", description: "Les humains peuvent intervenir quand l'IA échoue", example: "Files d'attente de revue manuelle, chemins d'escalade", color: "blue" }
+  { label: "Revue des Décisions à Fort Enjeu", description: "Des humains examinent les décisions qui affectent sensiblement les personnes", example: "Recommandations d'embauche, médicales, juridiques, financières", exampleType: "text", color: "blue" },
+  { label: "Correction des Erreurs", description: "Des mécanismes permettent de repérer et de corriger les erreurs de l'IA", example: "Retours des utilisateurs, contrôle qualité par échantillonnage, procédure de recours", exampleType: "text", color: "blue" },
+  { label: "Amélioration Continue", description: "Les enseignements tirés des incidents améliorent le système", example: "Analyses post-incident, mises à jour des prompts, améliorations de l'entraînement", exampleType: "text", color: "blue" },
+  { label: "Possibilité de Reprendre la Main", description: "Des humains peuvent intervenir quand l'IA échoue", example: "Files de revue manuelle, procédures d'escalade", exampleType: "text", color: "blue" }
 ]} />
 
-## Directives pour Contextes Spéciaux
+## Consignes pour les Contextes Sensibles
+
+Certains domaines demandent une attention particulière, en raison des préjudices possibles ou de la vulnérabilité des personnes concernées.
 
 ### Santé
 
 <TryIt 
-  title="Avertissement Contexte Médical"
-  description="Template pour les systèmes IA qui pourraient recevoir des questions liées à la santé."
-  prompt={`Tu es un assistant IA. Quand les utilisateurs posent des questions sur la santé ou des sujets médicaux :
+  title="Avertissement pour le Contexte Médical"
+  description="Modèle pour les systèmes d'IA susceptibles de recevoir des questions de santé."
+  prompt={`Tu es un assistant IA. Quand les utilisateurs posent des questions de santé ou des questions médicales :
 
 **Toujours** :
 - Recommander de consulter un professionnel de santé qualifié pour les décisions médicales personnelles
-- Fournir des informations éducatives générales, pas des conseils médicaux personnalisés
-- Inclure des avertissements que tu ne peux pas diagnostiquer de conditions
-- Suggérer les services d'urgence (15/SAMU) pour les situations urgentes
+- Fournir des informations générales à visée éducative, pas des conseils médicaux personnalisés
+- Préciser que tu ne peux pas poser de diagnostic
+- Orienter vers les services d'urgence locaux (comme le 911 ou le 112) en cas d'urgence
 
 **Jamais** :
-- Fournir des diagnostics spécifiques
-- Recommander des médicaments ou dosages spécifiques
-- Décourager quelqu'un de chercher des soins professionnels
-- Faire des affirmations sur des traitements sans noter l'incertitude
+- Poser de diagnostic précis
+- Recommander des médicaments ou des dosages précis
+- Dissuader quelqu'un de consulter un professionnel
+- Affirmer quoi que ce soit sur un traitement sans en signaler l'incertitude
 
-Question utilisateur : \${questionSante}
+Question de l'utilisateur : \${healthQuestion}
 
-Réponds utilement tout en suivant ces directives.`}
+Réponds de manière utile tout en suivant ces consignes.`}
 />
 
 ### Juridique et Financier
 
+Ces domaines ont des implications réglementaires et exigent des avertissements adaptés :
+
 <InfoGrid items={[
-  { label: "Questions Juridiques", description: "Fournir des informations générales, pas des conseils juridiques", example: "\"Ceci est une information générale. Pour votre situation spécifique, consultez un avocat.\"", color: "purple" },
-  { label: "Questions Financières", description: "Éduquer sans fournir de conseils financiers personnels", example: "\"Ceci est éducatif. Considérez consulter un conseiller financier pour votre situation.\"", color: "purple" },
-  { label: "Conscience des Juridictions", description: "Les lois varient selon les lieux", example: "\"Les lois diffèrent selon les pays/régions. Vérifiez les exigences pour votre juridiction.\"", color: "purple" }
+  { label: "Questions Juridiques", description: "Fournir des informations générales, pas des conseils juridiques", example: "\"Ceci est une information générale. Pour votre situation particulière, consultez un avocat.\"", color: "purple" },
+  { label: "Questions Financières", description: "Informer sans donner de conseils financiers personnalisés", example: "\"Ceci est donné à titre informatif. Pensez à consulter un conseiller financier pour votre situation.\"", color: "purple" },
+  { label: "Prise en Compte des Juridictions", description: "Les lois varient selon les lieux", example: "\"Les lois diffèrent selon les pays et les régions. Vérifiez les exigences applicables dans votre juridiction.\"", color: "purple" }
+]} />
+
+### Enfants et Éducation
+
+<InfoGrid items={[
+  { label: "Contenu Adapté à l'Âge", description: "S'assurer que les sorties conviennent à la tranche d'âge", example: "Filtrer les contenus pour adultes, employer un langage approprié", exampleType: "text", color: "cyan" },
+  { label: "Intégrité Scolaire", description: "Soutenir l'apprentissage, pas le remplacer", example: "Expliquer les notions plutôt que rédiger les devoirs à la place des élèves", exampleType: "text", color: "cyan" },
+  { label: "La Sécurité d'Abord", description: "Une protection renforcée pour les utilisateurs vulnérables", example: "Filtres de contenu plus stricts, aucune collecte de données personnelles", exampleType: "text", color: "cyan" }
 ]} />
 
 ## Auto-Évaluation
 
+Avant de déployer un prompt ou un système d'IA, passez en revue ces questions :
+
 <Checklist 
   title="Auto-Vérification Éthique"
   items={[
-    { text: "Cela pourrait-il être utilisé pour nuire à quelqu'un ?" },
-    { text: "Cela respecte-t-il la vie privée de l'utilisateur ?" },
+    { text: "Cela pourrait-il servir à nuire à quelqu'un ?" },
+    { text: "Cela respecte-t-il la vie privée des utilisateurs ?" },
     { text: "Cela pourrait-il perpétuer des biais nuisibles ?" },
-    { text: "L'implication de l'IA est-elle correctement divulguée ?" },
-    { text: "Y a-t-il une supervision humaine adéquate ?" },
-    { text: "Quel est le pire qui pourrait arriver ?" },
-    { text: "Serais-je à l'aise si cette utilisation était publique ?" }
+    { text: "L'intervention de l'IA est-elle correctement signalée ?" },
+    { text: "La supervision humaine est-elle suffisante ?" },
+    { text: "Que pourrait-il arriver de pire ?" },
+    { text: "Serais-je à l'aise si cet usage était rendu public ?" }
   ]}
 />
 
 <Quiz 
-  question="Un utilisateur demande à votre système IA comment 'se débarrasser de quelqu'un qui l'embête'. Quelle est la stratégie de réponse la plus appropriée ?"
+  question="Un utilisateur demande à votre système d'IA comment « se débarrasser de quelqu'un qui l'embête ». Quelle est la stratégie de réponse la plus appropriée ?"
   options={[
-    "Refuser immédiatement—cela pourrait être une demande d'instructions nuisibles",
-    "Fournir des conseils de résolution de conflit puisque c'est l'intention la plus probable",
-    "Poser des questions de clarification pour comprendre l'intention avant de décider comment répondre",
-    "Expliquer que vous ne pouvez pas aider avec quoi que ce soit lié à nuire aux gens"
+    "Refuser immédiatement, car cela pourrait être une demande d'instructions pour nuire",
+    "Donner des conseils de résolution de conflit, puisque c'est l'intention la plus probable",
+    "Poser des questions pour comprendre l'intention avant de décider comment répondre",
+    "Expliquer que vous ne pouvez rien faire qui ait un lien avec le fait de nuire à quelqu'un"
   ]}
   correctIndex={2}
-  explanation="Les demandes ambiguës méritent une clarification, pas des suppositions. 'Se débarrasser de quelqu'un' pourrait signifier mettre fin à une amitié, résoudre un conflit au travail, ou quelque chose de nuisible. Poser des questions de clarification vous permet de répondre de manière appropriée à l'intention réelle tout en restant prudent sur la fourniture d'informations nuisibles."
+  explanation="Une demande ambiguë mérite des précisions, pas des suppositions. « Se débarrasser de quelqu'un » peut vouloir dire mettre fin à une amitié, régler un conflit au travail, ou quelque chose de nuisible. Poser des questions vous permet de répondre de manière appropriée à l'intention réelle, tout en restant prudent quant aux informations nuisibles."
 />

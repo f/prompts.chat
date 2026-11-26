@@ -54,28 +54,28 @@ CSAM הוא ראשי תיבות של **Child Sexual Abuse Material** (חומר �
 <TryIt 
   title="פרומפט מערכת עם בטיחות בראש סדר העדיפויות"
   description="תבנית לבניית הנחיות בטיחות במערכות הבינה המלאכותית שלכם."
-  prompt={`You are a helpful assistant for \${purpose}.
+  prompt={`אתה עוזר מועיל עבור \${purpose}.
 
-## SAFETY GUIDELINES
+## הנחיות בטיחות
 
-**Content Restrictions**:
-- Never provide instructions that could cause physical harm
-- Decline requests for illegal information or activities
-- Don't generate discriminatory or hateful content
-- Don't create deliberately misleading information
+**הגבלות תוכן**:
+- לעולם אל תספק הוראות שעלולות לגרום לפגיעה גופנית
+- סרב לבקשות למידע או לפעילויות בלתי חוקיים
+- אל תיצור תוכן מפלה או תוכן שמסית לשנאה
+- אל תיצור בכוונה מידע מטעה
 
-**When You Must Decline**:
-- Acknowledge you understood the request
-- Briefly explain why you can't help with this specific thing
-- Offer constructive alternatives when possible
-- Be respectful—don't lecture or be preachy
+**כשאתה חייב לסרב**:
+- הראה שהבנת את הבקשה
+- הסבר בקצרה למה אינך יכול לעזור בדבר הספציפי הזה
+- הצע חלופות בונות כשאפשר
+- שמור על כבוד, ואל תטיף או תתנשא
 
-**When Uncertain**:
-- Ask clarifying questions about intent
-- Err on the side of caution
-- Suggest the user consult appropriate professionals
+**כשאינך בטוח**:
+- שאל שאלות הבהרה לגבי הכוונה
+- העדף זהירות
+- הצע למשתמש להתייעץ עם אנשי מקצוע מתאימים
 
-Now, please help the user with: \${userRequest}`}
+עכשיו, אנא עזור למשתמש עם: \${userRequest}`}
 />
 
 ### מסגרת כוונה מול השפעה
@@ -84,28 +84,28 @@ Now, please help the user with: \${userRequest}`}
 
 <TryIt 
   title="מנתח מקרי קצה אתיים"
-  description="עבדו דרך בקשות מעורפלות כדי לקבוע את התגובה המתאימה."
-  prompt={`I received this request that might be sensitive:
+  description="נתחו בקשות עמומות כדי לקבוע את התגובה המתאימה."
+  prompt={`קיבלתי את הבקשה הבאה, שעשויה להיות רגישה:
 
 "\${sensitiveRequest}"
 
-Help me think through whether and how to respond:
+עזור לי לחשוב אם להגיב, ואם כן, איך:
 
-**1. Intent Analysis**
-- What are the most likely reasons someone would ask this?
-- Could this be legitimate? (research, fiction, education, professional need)
-- Are there red flags suggesting malicious intent?
+**1. ניתוח כוונה**
+- מהן הסיבות הסבירות ביותר שבגללן מישהו ישאל את זה?
+- האם ייתכן שזו בקשה לגיטימית? (מחקר, ספרות, חינוך, צורך מקצועי)
+- האם יש סימני אזהרה שמרמזים על כוונה זדונית?
 
-**2. Impact Assessment**
-- What's the worst case if this information is misused?
-- How accessible is this information elsewhere?
-- Does providing it meaningfully increase risk?
+**2. הערכת השפעה**
+- מה התרחיש הגרוע ביותר אם ייעשה במידע הזה שימוש לרעה?
+- עד כמה המידע הזה נגיש במקומות אחרים?
+- האם מסירתו מגדילה את הסיכון באופן משמעותי?
 
-**3. Recommendation**
-Based on this analysis:
-- Should I respond, decline, or ask for clarification?
-- If responding, what safeguards should I include?
-- If declining, how should I phrase it helpfully?`}
+**3. המלצה**
+על סמך הניתוח הזה:
+- האם עליי להגיב, לסרב או לבקש הבהרה?
+- אם אגיב, אילו אמצעי הגנה כדאי לכלול?
+- אם אסרב, איך לנסח זאת בצורה מועילה?`}
 />
 
 ## התמודדות עם הטיות
@@ -126,36 +126,36 @@ Based on this analysis:
 <TryIt 
   title="מבחן זיהוי הטיות"
   description="השתמשו בזה כדי לבדוק את הפרומפטים שלכם לבעיות הטיה פוטנציאליות."
-  prompt={`I want to test this prompt for bias:
+  prompt={`אני רוצה לבדוק את הפרומפט הזה לאיתור הטיות:
 
 "\${promptToTest}"
 
-Run these bias checks:
+בצע את בדיקות ההטיה הבאות:
 
-**1. Demographic Variation Test**
-Run the prompt with different demographic descriptors (gender, ethnicity, age, etc.) and note any differences in:
-- Tone or respect level
-- Assumed competence or capabilities
-- Stereotypical associations
+**1. מבחן שונות דמוגרפית**
+הרץ את הפרומפט עם תיאורים דמוגרפיים שונים (מגדר, מוצא אתני, גיל וכדומה) וציין הבדלים כלשהם מבחינת:
+- טון או רמת כבוד
+- רמת היכולת או הכישורים המיוחסים
+- אסוציאציות סטריאוטיפיות
 
-**2. Default Assumption Check**
-When demographics aren't specified:
-- What does the model assume?
-- Are these assumptions problematic?
+**2. בדיקת הנחות ברירת מחדל**
+כשהמאפיינים הדמוגרפיים אינם מצוינים:
+- מה המודל מניח?
+- האם ההנחות האלה בעייתיות?
 
-**3. Representation Analysis**
-- Are different groups represented fairly?
-- Are any groups missing or marginalized?
+**3. ניתוח ייצוג**
+- האם קבוצות שונות מיוצגות בהגינות?
+- האם יש קבוצות שחסרות או נדחקות לשוליים?
 
-**4. Recommendations**
-Based on findings, suggest prompt modifications to reduce bias.`}
+**4. המלצות**
+על סמך הממצאים, הצע שינויים בפרומפט שיפחיתו הטיה.`}
 />
 
 ### הפחתת הטיות בפרקטיקה
 
 <Compare 
-  before={{ label: "פרומפט נוטה להטיה", content: "Describe a typical CEO." }}
-  after={{ label: "פרומפט מודע להטיה", content: "Describe a CEO. Vary demographics across examples, and avoid defaulting to any particular gender, ethnicity, or age." }}
+  before={{ label: "פרומפט נוטה להטיה", content: "תאר מנכ\"ל טיפוסי." }}
+  after={{ label: "פרומפט מודע להטיה", content: "תאר מנכ\"ל. גוון את המאפיינים הדמוגרפיים בין הדוגמאות, והימנע מברירת מחדל של מגדר, מוצא אתני או גיל מסוימים." }}
 />
 
 ## שקיפות וגילוי
@@ -174,8 +174,8 @@ Based on findings, suggest prompt modifications to reduce bias.`}
 ### איך לגלות באופן מתאים
 
 <Compare 
-  before={{ label: "מעורבות בינה מלאכותית מוסתרת", content: "Here's my analysis of the market trends..." }}
-  after={{ label: "גילוי שקוף", content: "I used AI tools to help analyze the data and draft this report. All conclusions have been verified and edited by me." }}
+  before={{ label: "מעורבות בינה מלאכותית מוסתרת", content: "הנה הניתוח שלי למגמות בשוק..." }}
+  after={{ label: "גילוי שקוף", content: "נעזרתי בכלי בינה מלאכותית לניתוח הנתונים ולכתיבת טיוטת הדוח. את כל המסקנות בדקתי וערכתי בעצמי." }}
 />
 
 ביטויי גילוי נפוצים שעובדים היטב:
@@ -201,8 +201,8 @@ Based on findings, suggest prompt modifications to reduce bias.`}
 ### דפוס טיפול בטוח בנתונים
 
 <Compare 
-  before={{ label: "לא בטוח: מכיל PII", content: "Summarize this complaint from John Smith at 123 Main St, Anytown about order #12345: 'I ordered on March 15 and still haven't received...'" }}
-  after={{ label: "בטוח: אנונימי", content: "Summarize this customer complaint pattern: A customer ordered 3 weeks ago, hasn't received their order, and has contacted support twice without resolution." }}
+  before={{ label: "לא בטוח: מכיל PII", content: "סכם את התלונה הזו של ישראל ישראלי מרחוב הרצל 123, תל אביב, בנוגע להזמנה מספר 12345: 'הזמנתי ב-15 במרץ ועדיין לא קיבלתי...'" }}
+  after={{ label: "בטוח: אנונימי", content: "סכם את דפוס התלונה הזה: לקוח הזמין לפני 3 שבועות, עדיין לא קיבל את ההזמנה, ופנה לתמיכה פעמיים ללא פתרון." }}
 />
 
 <Callout type="info" title="מהו PII?">
@@ -212,18 +212,18 @@ Based on findings, suggest prompt modifications to reduce bias.`}
 <TryIt 
   title="מנקה PII"
   description="השתמשו בזה כדי לזהות ולהסיר מידע רגיש לפני הכללת טקסט בפרומפטים."
-  prompt={`Review this text for sensitive information that should be removed before using it in an AI prompt:
+  prompt={`עבור על הטקסט הזה ואתר מידע רגיש שיש להסיר לפני שמשתמשים בו בפרומפט לבינה מלאכותית:
 
 "\${textToReview}"
 
-Identify:
-1. **Personal Identifiers**: Names, addresses, phone numbers, emails, SSNs
-2. **Financial Data**: Account numbers, amounts that could identify someone
-3. **Health Information**: Medical details, conditions, prescriptions
-4. **Credentials**: Any passwords, keys, or tokens
-5. **Private Details**: Information someone would reasonably expect to be confidential
+זהה:
+1. **מזהים אישיים**: שמות, כתובות, מספרי טלפון, כתובות אימייל, מספרי זהות
+2. **נתונים פיננסיים**: מספרי חשבון, סכומים שעלולים לזהות מישהו
+3. **מידע בריאותי**: פרטים רפואיים, מחלות ומצבים, מרשמים
+4. **פרטי גישה**: סיסמאות, מפתחות או טוקנים מכל סוג
+5. **מידע פרטי**: מידע שאדם היה מצפה באופן סביר שיישאר חסוי
 
-For each item found, suggest how to anonymize or generalize it while preserving the information needed for the task.`}
+לכל פריט שנמצא, הצע איך להפוך אותו לאנונימי או כללי יותר, תוך שמירה על המידע הדרוש למשימה.`}
 />
 
 ## אותנטיות והונאה
@@ -290,23 +290,23 @@ For each item found, suggest how to anonymize or generalize it while preserving 
 <TryIt 
   title="הצהרת אזהרה להקשר רפואי"
   description="תבנית למערכות בינה מלאכותית שעשויות לקבל שאילתות הקשורות לבריאות."
-  prompt={`You are an AI assistant. When users ask about health or medical topics:
+  prompt={`אתה עוזר בינה מלאכותית. כשמשתמשים שואלים על נושאי בריאות או רפואה:
 
-**Always**:
-- Recommend consulting a qualified healthcare provider for personal medical decisions
-- Provide general educational information, not personalized medical advice
-- Include disclaimers that you cannot diagnose conditions
-- Suggest emergency services (911) for urgent situations
+**תמיד**:
+- המלץ להתייעץ עם איש מקצוע מוסמך בתחום הבריאות לגבי החלטות רפואיות אישיות
+- ספק מידע כללי ולימודי, לא ייעוץ רפואי מותאם אישית
+- ציין במפורש שאינך יכול לאבחן מצבים רפואיים
+- הפנה לשירותי החירום המקומיים (כמו 101, 911 או 112) במצבים דחופים
 
-**Never**:
-- Provide specific diagnoses
-- Recommend specific medications or dosages
-- Discourage someone from seeking professional care
-- Make claims about treatments without noting uncertainty
+**לעולם לא**:
+- לתת אבחנות ספציפיות
+- להמליץ על תרופות או מינונים ספציפיים
+- להניא מישהו מפנייה לטיפול מקצועי
+- לטעון טענות על טיפולים בלי לציין את אי הוודאות
 
-User question: \${healthQuestion}
+שאלת המשתמש: \${healthQuestion}
 
-Respond helpfully while following these guidelines.`}
+השב באופן מועיל תוך הקפדה על ההנחיות האלה.`}
 />
 
 ### משפטי ופיננסי

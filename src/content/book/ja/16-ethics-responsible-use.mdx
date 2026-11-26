@@ -54,28 +54,28 @@ AI システムを構築する際は、明示的な安全ガイドラインを�
 <TryIt 
   title="安全第一のシステムプロンプト"
   description="AI システムに安全ガイドラインを組み込むためのテンプレートです。"
-  prompt={`You are a helpful assistant for \${purpose}.
+  prompt={`あなたは\${purpose}のための親切なアシスタントです。
 
-## SAFETY GUIDELINES
+## 安全ガイドライン
 
-**Content Restrictions**:
-- Never provide instructions that could cause physical harm
-- Decline requests for illegal information or activities
-- Don't generate discriminatory or hateful content
-- Don't create deliberately misleading information
+**コンテンツの制限**：
+- 身体的な危害につながりうる手順は決して提供しない
+- 違法な情報や行為に関するリクエストは断る
+- 差別的、または憎悪に満ちたコンテンツを生成しない
+- 意図的に誤解を招く情報を作らない
 
-**When You Must Decline**:
-- Acknowledge you understood the request
-- Briefly explain why you can't help with this specific thing
-- Offer constructive alternatives when possible
-- Be respectful—don't lecture or be preachy
+**断らなければならないとき**：
+- リクエストの内容を理解したことを伝える
+- この件に限って手伝えない理由を簡潔に説明する
+- 可能であれば建設的な代替案を示す
+- 敬意を忘れず、説教じみた言い方はしない
 
-**When Uncertain**:
-- Ask clarifying questions about intent
-- Err on the side of caution
-- Suggest the user consult appropriate professionals
+**判断に迷うとき**：
+- 意図を確かめるための質問をする
+- 慎重な側に立って判断する
+- 適切な専門家への相談を勧める
 
-Now, please help the user with: \${userRequest}`}
+それでは、次のリクエストについてユーザーを手助けしてください：\${userRequest}`}
 />
 
 ### 意図と影響のフレームワーク
@@ -85,27 +85,27 @@ Now, please help the user with: \${userRequest}`}
 <TryIt 
   title="倫理的エッジケース分析ツール"
   description="曖昧なリクエストを検討して適切な対応を決定します。"
-  prompt={`I received this request that might be sensitive:
+  prompt={`センシティブな可能性のある次のリクエストを受け取りました：
 
-"\${sensitiveRequest}"
+「\${sensitiveRequest}」
 
-Help me think through whether and how to respond:
+応答すべきかどうか、またどう応答すべきかを一緒に考えてください：
 
-**1. Intent Analysis**
-- What are the most likely reasons someone would ask this?
-- Could this be legitimate? (research, fiction, education, professional need)
-- Are there red flags suggesting malicious intent?
+**1. 意図の分析**
+- このような質問をする理由として、最も考えられるものは何か？
+- 正当な目的の可能性はあるか？（研究、フィクション、教育、仕事上の必要など）
+- 悪意を示す危険信号はあるか？
 
-**2. Impact Assessment**
-- What's the worst case if this information is misused?
-- How accessible is this information elsewhere?
-- Does providing it meaningfully increase risk?
+**2. 影響の評価**
+- この情報が悪用された場合、最悪の事態は何か？
+- この情報は他の場所でどの程度簡単に入手できるか？
+- これを提供することで、リスクは実質的に高まるか？
 
-**3. Recommendation**
-Based on this analysis:
-- Should I respond, decline, or ask for clarification?
-- If responding, what safeguards should I include?
-- If declining, how should I phrase it helpfully?`}
+**3. 推奨される対応**
+この分析に基づいて：
+- 応答すべきか、断るべきか、それとも確認の質問をすべきか？
+- 応答する場合、どのような安全策を盛り込むべきか？
+- 断る場合、相手の役に立つ形でどう伝えるべきか？`}
 />
 
 ## バイアスへの対処
@@ -126,29 +126,29 @@ AI モデルは学習データからバイアスを継承します—歴史的�
 <TryIt 
   title="バイアス検出テスト"
   description="プロンプトの潜在的なバイアス問題をテストするために使用します。"
-  prompt={`I want to test this prompt for bias:
+  prompt={`このプロンプトにバイアスがないかテストしたいと思います：
 
-"\${promptToTest}"
+「\${promptToTest}」
 
-Run these bias checks:
+次のバイアスチェックを実行してください：
 
-**1. Demographic Variation Test**
-Run the prompt with different demographic descriptors (gender, ethnicity, age, etc.) and note any differences in:
-- Tone or respect level
-- Assumed competence or capabilities
-- Stereotypical associations
+**1. 属性を変えたテスト**
+性別、民族、年齢などの属性を表す言葉を変えてプロンプトを実行し、次の点に違いがないか確認する：
+- 口調や敬意の度合い
+- 想定される能力や力量
+- ステレオタイプ的な連想
 
-**2. Default Assumption Check**
-When demographics aren't specified:
-- What does the model assume?
-- Are these assumptions problematic?
+**2. デフォルトの前提チェック**
+属性が指定されていない場合：
+- モデルは何を前提としているか？
+- その前提に問題はないか？
 
-**3. Representation Analysis**
-- Are different groups represented fairly?
-- Are any groups missing or marginalized?
+**3. 表現の分析**
+- さまざまなグループが公平に表現されているか？
+- 欠落していたり、周縁に追いやられていたりするグループはないか？
 
-**4. Recommendations**
-Based on findings, suggest prompt modifications to reduce bias.`}
+**4. 改善提案**
+結果に基づいて、バイアスを減らすためのプロンプトの修正案を提案してください。`}
 />
 
 ### 実践におけるバイアスの軽減
@@ -212,18 +212,18 @@ AI が関与したことを人々にいつ伝えるべきでしょうか？答�
 <TryIt 
   title="PII スクラバー"
   description="プロンプトにテキストを含める前に機密情報を特定して削除するために使用します。"
-  prompt={`Review this text for sensitive information that should be removed before using it in an AI prompt:
+  prompt={`AI プロンプトで使用する前に削除すべき機密情報がないか、このテキストを確認してください：
 
-"\${textToReview}"
+「\${textToReview}」
 
-Identify:
-1. **Personal Identifiers**: Names, addresses, phone numbers, emails, SSNs
-2. **Financial Data**: Account numbers, amounts that could identify someone
-3. **Health Information**: Medical details, conditions, prescriptions
-4. **Credentials**: Any passwords, keys, or tokens
-5. **Private Details**: Information someone would reasonably expect to be confidential
+次の項目を特定してください：
+1. **個人識別子**：名前、住所、電話番号、メールアドレス、社会保障番号
+2. **金融データ**：口座番号、個人の特定につながりうる金額
+3. **健康情報**：医療に関する詳細、病状、処方箋
+4. **認証情報**：パスワード、キー、トークンなど
+5. **プライベートな詳細**：本人が当然、秘密にしておきたいと考える情報
 
-For each item found, suggest how to anonymize or generalize it while preserving the information needed for the task.`}
+見つかった項目ごとに、タスクに必要な情報を残しつつ、匿名化または一般化する方法を提案してください。`}
 />
 
 ## 真正性と欺瞞
@@ -290,23 +290,23 @@ AI をツールとして使用することと、AI を使って欺くことに�
 <TryIt 
   title="医療コンテキストの免責事項"
   description="健康関連のクエリを受ける可能性のある AI システム用のテンプレートです。"
-  prompt={`You are an AI assistant. When users ask about health or medical topics:
+  prompt={`あなたは AI アシスタントです。ユーザーから健康や医療に関する質問を受けたとき：
 
-**Always**:
-- Recommend consulting a qualified healthcare provider for personal medical decisions
-- Provide general educational information, not personalized medical advice
-- Include disclaimers that you cannot diagnose conditions
-- Suggest emergency services (911) for urgent situations
+**必ず行うこと**：
+- 個人的な医療上の判断については、資格のある医療専門家への相談を勧める
+- 個別の医療アドバイスではなく、一般的な教育目的の情報を提供する
+- 病状を診断することはできない旨の注意書きを添える
+- 緊急の場合は、地域の救急サービス（119、911、112など）への連絡を促す
 
-**Never**:
-- Provide specific diagnoses
-- Recommend specific medications or dosages
-- Discourage someone from seeking professional care
-- Make claims about treatments without noting uncertainty
+**決して行わないこと**：
+- 具体的な診断を下す
+- 特定の薬や用量を勧める
+- 専門家の診察を受けることを思いとどまらせる
+- 不確実性に触れずに治療法について断定する
 
-User question: \${healthQuestion}
+ユーザーの質問：\${healthQuestion}
 
-Respond helpfully while following these guidelines.`}
+これらのガイドラインに従いつつ、役に立つ回答をしてください。`}
 />
 
 ### 法律と財務

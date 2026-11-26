@@ -38,7 +38,7 @@ De meest fundamentele ethische verplichting is voorkomen dat je prompts schade v
   { label: "Geweld & Schade", description: "Instructies die kunnen leiden tot fysieke schade", example: "Wapencreatie, zelfbeschadiging, geweld tegen anderen", exampleType: "text", color: "red" },
   { label: "Illegale activiteiten", description: "Content die het overtreden van wetten faciliteert", example: "Fraudeschema's, hackinstructies, drugsynthese", exampleType: "text", color: "red" },
   { label: "Intimidatie & Haat", description: "Content gericht op individuen of groepen", example: "Discriminerende content, doxxing, gerichte intimidatie", exampleType: "text", color: "red" },
-  { label: "Misinformatie", description: "Opzettelijk valse of misleidende content", example: "Nepnieuws, gezondheidsmisinfomatie, complotcontent", exampleType: "text", color: "red" },
+  { label: "Misinformatie", description: "Opzettelijk valse of misleidende content", example: "Nepnieuws, gezondheidsmisinformatie, complotcontent", exampleType: "text", color: "red" },
   { label: "Privacyschendingen", description: "Blootstellen of exploiteren van persoonlijke informatie", example: "Onthullen van privégegevens, stalkinghulp", exampleType: "text", color: "red" },
   { label: "Exploitatie", description: "Content die kwetsbare individuen exploiteert", example: "CSAM, niet-consensuele intieme content, oplichting gericht op ouderen", exampleType: "text", color: "red" }
 ]} />
@@ -54,28 +54,28 @@ Bij het bouwen van AI-systemen, neem expliciete veiligheidsrichtlijnen op:
 <TryIt 
   title="Veiligheid-eerst systeemprompt"
   description="Een sjabloon voor het inbouwen van veiligheidsrichtlijnen in je AI-systemen."
-  prompt={`You are a helpful assistant for \${purpose}.
+  prompt={`Je bent een behulpzame assistent voor \${purpose}.
 
-## SAFETY GUIDELINES
+## VEILIGHEIDSRICHTLIJNEN
 
-**Content Restrictions**:
-- Never provide instructions that could cause physical harm
-- Decline requests for illegal information or activities
-- Don't generate discriminatory or hateful content
-- Don't create deliberately misleading information
+**Inhoudsbeperkingen**:
+- Geef nooit instructies die fysieke schade kunnen veroorzaken
+- Weiger verzoeken om illegale informatie of activiteiten
+- Genereer geen discriminerende of hatelijke inhoud
+- Maak geen opzettelijk misleidende informatie
 
-**When You Must Decline**:
-- Acknowledge you understood the request
-- Briefly explain why you can't help with this specific thing
-- Offer constructive alternatives when possible
-- Be respectful—don't lecture or be preachy
+**Als je moet weigeren**:
+- Laat merken dat je het verzoek hebt begrepen
+- Leg kort uit waarom je met dit specifieke punt niet kunt helpen
+- Bied waar mogelijk een constructief alternatief
+- Blijf respectvol: ga niet preken of de les lezen
 
-**When Uncertain**:
-- Ask clarifying questions about intent
-- Err on the side of caution
-- Suggest the user consult appropriate professionals
+**Bij twijfel**:
+- Stel verduidelijkende vragen over de bedoeling
+- Kies liever voor voorzichtigheid
+- Raad de gebruiker aan een geschikte professional te raadplegen
 
-Now, please help the user with: \${userRequest}`}
+Help de gebruiker nu met: \${userRequest}`}
 />
 
 ### Het intentie vs. impact framework
@@ -85,27 +85,27 @@ Niet elk gevoelig verzoek is kwaadaardig. Gebruik dit framework voor ambigue gev
 <TryIt 
   title="Ethische randgeval-analysator"
   description="Werk ambigue verzoeken door om de juiste reactie te bepalen."
-  prompt={`I received this request that might be sensitive:
+  prompt={`Ik heb dit verzoek ontvangen, dat mogelijk gevoelig ligt:
 
 "\${sensitiveRequest}"
 
-Help me think through whether and how to respond:
+Help me nadenken over de vraag of en hoe ik moet reageren:
 
-**1. Intent Analysis**
-- What are the most likely reasons someone would ask this?
-- Could this be legitimate? (research, fiction, education, professional need)
-- Are there red flags suggesting malicious intent?
+**1. Analyse van de bedoeling**
+- Wat zijn de meest waarschijnlijke redenen waarom iemand dit vraagt?
+- Kan dit legitiem zijn? (onderzoek, fictie, onderwijs, beroepsmatige behoefte)
+- Zijn er waarschuwingssignalen die op kwade bedoelingen wijzen?
 
-**2. Impact Assessment**
-- What's the worst case if this information is misused?
-- How accessible is this information elsewhere?
-- Does providing it meaningfully increase risk?
+**2. Inschatting van de impact**
+- Wat is het ergste scenario als deze informatie wordt misbruikt?
+- Hoe makkelijk is deze informatie elders te vinden?
+- Vergroot het geven ervan het risico wezenlijk?
 
-**3. Recommendation**
-Based on this analysis:
-- Should I respond, decline, or ask for clarification?
-- If responding, what safeguards should I include?
-- If declining, how should I phrase it helpfully?`}
+**3. Aanbeveling**
+Op basis van deze analyse:
+- Moet ik antwoorden, weigeren of om verduidelijking vragen?
+- Als ik antwoord, welke waarborgen moet ik inbouwen?
+- Als ik weiger, hoe verwoord ik dat op een behulpzame manier?`}
 />
 
 ## Bias aanpakken
@@ -126,36 +126,36 @@ AI-modellen erven vooroordelen van hun trainingsdata—historische ongelijkheden
 <TryIt 
   title="Biasdetectietest"
   description="Gebruik dit om je prompts te testen op mogelijke biasproblemen."
-  prompt={`I want to test this prompt for bias:
+  prompt={`Ik wil deze prompt testen op bias:
 
 "\${promptToTest}"
 
-Run these bias checks:
+Voer deze biascontroles uit:
 
-**1. Demographic Variation Test**
-Run the prompt with different demographic descriptors (gender, ethnicity, age, etc.) and note any differences in:
-- Tone or respect level
-- Assumed competence or capabilities
-- Stereotypical associations
+**1. Test met demografische variatie**
+Voer de prompt uit met verschillende demografische kenmerken (gender, etniciteit, leeftijd enz.) en noteer eventuele verschillen in:
+- Toon of mate van respect
+- Veronderstelde competentie of vaardigheden
+- Stereotiepe associaties
 
-**2. Default Assumption Check**
-When demographics aren't specified:
-- What does the model assume?
-- Are these assumptions problematic?
+**2. Controle van standaardaannames**
+Als er geen demografische gegevens zijn opgegeven:
+- Wat neemt het model dan aan?
+- Zijn die aannames problematisch?
 
-**3. Representation Analysis**
-- Are different groups represented fairly?
-- Are any groups missing or marginalized?
+**3. Analyse van representatie**
+- Worden verschillende groepen eerlijk weergegeven?
+- Ontbreken er groepen of worden ze gemarginaliseerd?
 
-**4. Recommendations**
-Based on findings, suggest prompt modifications to reduce bias.`}
+**4. Aanbevelingen**
+Stel op basis van de bevindingen aanpassingen aan de prompt voor die bias verminderen.`}
 />
 
 ### Bias verminderen in de praktijk
 
 <Compare 
-  before={{ label: "Bias-gevoelige prompt", content: "Describe a typical CEO." }}
-  after={{ label: "Bias-bewuste prompt", content: "Describe a CEO. Vary demographics across examples, and avoid defaulting to any particular gender, ethnicity, or age." }}
+  before={{ label: "Bias-gevoelige prompt", content: "Beschrijf een typische CEO." }}
+  after={{ label: "Bias-bewuste prompt", content: "Beschrijf een CEO. Varieer de demografische kenmerken tussen voorbeelden en ga niet standaard uit van een bepaald gender, een bepaalde etniciteit of leeftijd." }}
 />
 
 ## Transparantie en bekendmaking
@@ -174,8 +174,8 @@ Wanneer moet je mensen vertellen dat AI betrokken was? Het antwoord hangt af van
 ### Hoe gepast bekend te maken
 
 <Compare 
-  before={{ label: "Verborgen AI-betrokkenheid", content: "Here's my analysis of the market trends..." }}
-  after={{ label: "Transparante bekendmaking", content: "I used AI tools to help analyze the data and draft this report. All conclusions have been verified and edited by me." }}
+  before={{ label: "Verborgen AI-betrokkenheid", content: "Hier is mijn analyse van de markttrends..." }}
+  after={{ label: "Transparante bekendmaking", content: "Ik heb AI-tools gebruikt bij het analyseren van de data en het opstellen van dit rapport. Alle conclusies heb ik zelf gecontroleerd en bewerkt." }}
 />
 
 Veel voorkomende bekendmakingszinnen die goed werken:
@@ -201,8 +201,8 @@ Elke prompt die je verstuurt bevat data. Begrijpen waar die data naartoe gaat—
 ### Veilig data-verwerkingspatroon
 
 <Compare 
-  before={{ label: "Onveilig: Bevat PII", content: "Summarize this complaint from John Smith at 123 Main St, Anytown about order #12345: 'I ordered on March 15 and still haven't received...'" }}
-  after={{ label: "Veilig: Geanonimiseerd", content: "Summarize this customer complaint pattern: A customer ordered 3 weeks ago, hasn't received their order, and has contacted support twice without resolution." }}
+  before={{ label: "Onveilig: Bevat PII", content: "Vat deze klacht samen van Jan Jansen, Dorpsstraat 123, Ergenshuizen, over bestelling #12345: 'Ik heb op 15 maart besteld en nog steeds niets ontvangen...'" }}
+  after={{ label: "Veilig: Geanonimiseerd", content: "Vat dit klachtpatroon samen: een klant heeft 3 weken geleden besteld, de bestelling nog niet ontvangen en twee keer contact opgenomen met de klantenservice zonder oplossing." }}
 />
 
 <Callout type="info" title="Wat is PII?">
@@ -212,18 +212,18 @@ Elke prompt die je verstuurt bevat data. Begrijpen waar die data naartoe gaat—
 <TryIt 
   title="PII-verwijderaar"
   description="Gebruik dit om gevoelige informatie te identificeren en te verwijderen voordat je tekst in prompts opneemt."
-  prompt={`Review this text for sensitive information that should be removed before using it in an AI prompt:
+  prompt={`Controleer deze tekst op gevoelige informatie die verwijderd moet worden voordat je hem in een AI-prompt gebruikt:
 
 "\${textToReview}"
 
-Identify:
-1. **Personal Identifiers**: Names, addresses, phone numbers, emails, SSNs
-2. **Financial Data**: Account numbers, amounts that could identify someone
-3. **Health Information**: Medical details, conditions, prescriptions
-4. **Credentials**: Any passwords, keys, or tokens
-5. **Private Details**: Information someone would reasonably expect to be confidential
+Identificeer:
+1. **Persoonlijke identificatoren**: namen, adressen, telefoonnummers, e-mailadressen, BSN's
+2. **Financiële gegevens**: rekeningnummers, bedragen waarmee iemand te herkennen is
+3. **Gezondheidsinformatie**: medische details, aandoeningen, recepten
+4. **Inloggegevens**: wachtwoorden, sleutels of tokens
+5. **Privédetails**: informatie waarvan iemand redelijkerwijs mag verwachten dat ze vertrouwelijk blijft
 
-For each item found, suggest how to anonymize or generalize it while preserving the information needed for the task.`}
+Stel voor elk gevonden onderdeel voor hoe je het kunt anonimiseren of algemener kunt maken, terwijl de informatie die nodig is voor de taak behouden blijft.`}
 />
 
 ## Authenticiteit en misleiding
@@ -290,23 +290,23 @@ Sommige domeinen vereisen extra zorg vanwege hun potentieel voor schade of de kw
 <TryIt 
   title="Medische context disclaimer"
   description="Sjabloon voor AI-systemen die gezondheidsgerelateerde vragen kunnen ontvangen."
-  prompt={`You are an AI assistant. When users ask about health or medical topics:
+  prompt={`Je bent een AI-assistent. Als gebruikers vragen stellen over gezondheid of medische onderwerpen:
 
-**Always**:
-- Recommend consulting a qualified healthcare provider for personal medical decisions
-- Provide general educational information, not personalized medical advice
-- Include disclaimers that you cannot diagnose conditions
-- Suggest emergency services (112) for urgent situations
+**Altijd**:
+- Raad aan een gekwalificeerde zorgverlener te raadplegen bij persoonlijke medische beslissingen
+- Geef algemene, educatieve informatie, geen persoonlijk medisch advies
+- Vermeld dat je geen diagnoses kunt stellen
+- Verwijs bij spoed naar de lokale hulpdiensten (bijvoorbeeld 112 of 911)
 
-**Never**:
-- Provide specific diagnoses
-- Recommend specific medications or dosages
-- Discourage someone from seeking professional care
-- Make claims about treatments without noting uncertainty
+**Nooit**:
+- Specifieke diagnoses stellen
+- Specifieke medicijnen of doseringen aanraden
+- Iemand ontmoedigen om professionele zorg te zoeken
+- Uitspraken doen over behandelingen zonder onzekerheid te benoemen
 
-User question: \${healthQuestion}
+Vraag van de gebruiker: \${healthQuestion}
 
-Respond helpfully while following these guidelines.`}
+Antwoord behulpzaam en houd je daarbij aan deze richtlijnen.`}
 />
 
 ### Juridisch en financieel
