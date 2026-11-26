@@ -8,7 +8,7 @@
 
 ## 为什么多模态很重要
 
-传统 AI 需要你用文字描述一切。想询问关于图像的问题？你必须先描述它。想分析一份文档？你需要手动转录它。多模态模型消除了这些障碍。
+传统 AI 需要你用文字描述一切。以前想询问关于图像的问题？你得先把它描述出来。想分析一份文档？你得手动转录。多模态模型消除了这些障碍。
 
 <InfoGrid items={[
   { label: "观看并理解", description: "上传图像并直接提问——无需描述", example: "\"这个电路图有什么问题？\"", color: "blue" },
@@ -34,18 +34,18 @@
 
 ## 多模态领域概览
 
-不同的模型有不同的能力。以下是 2025 年的可用情况：
+不同的模型有不同的能力。以下是截至 2026 年末的概况：
 
 ### 理解模型（输入 → 分析）
 
 这些模型接受各种媒体类型，并产生文本分析或回复。
 
 <InfoGrid items={[
-  { label: "GPT-4o / GPT-5", description: "文本 + 图像 + 音频 → 文本。OpenAI 的旗舰产品，拥有 128K 上下文，强大的创意和推理能力，幻觉率降低。", color: "green" },
-  { label: "Claude 4 Sonnet/Opus", description: "文本 + 图像 → 文本。Anthropic 注重安全的模型，具有高级推理能力，非常适合编程和复杂的多步骤任务。", color: "purple" },
-  { label: "Gemini 2.5", description: "文本 + 图像 + 音频 + 视频 → 文本。Google 的模型，拥有 1M token 上下文，自我事实核查，快速处理编程和研究任务。", color: "blue" },
-  { label: "LLaMA 4 Scout", description: "文本 + 图像 + 视频 → 文本。Meta 的开源模型，拥有海量 10M token 上下文，适用于长文档和代码库。", color: "cyan" },
-  { label: "Grok 4", description: "文本 + 图像 → 文本。xAI 的模型，具有实时数据访问和社交媒体集成，提供最新的回复。", color: "red" }
+  { label: "GPT-6.2", description: "文本 + 图像 → 文本。OpenAI 当前的旗舰模型系列，上下文窗口约为一百万 token，在推理、编程和视觉理解方面能力出色。语音和转录由独立的专用模型负责。", color: "green" },
+  { label: "Claude Opus / Sonnet 5.5", description: "文本 + 图像 → 文本。Anthropic 当前的模型系列，拥有一百万 token 的上下文窗口，以严谨的推理、编程和长时间的多步骤任务见长。", color: "purple" },
+  { label: "Gemini 4", description: "文本 + 图像 + 音频 + 视频 + PDF → 文本。Google 当前的模型系列，拥有一百万 token 的上下文窗口，原生支持理解音频和视频。", color: "blue" },
+  { label: "Llama 4 Scout", description: "文本 + 图像 → 文本。Meta 的开放权重模型，拥有 1000 万 token 的上下文窗口，你可以下载并在自己的硬件上运行。", color: "cyan" },
+  { label: "Grok 4.7", description: "文本 + 图像 → 文本。当前的 Grok 模型，拥有 50 万 token 的上下文窗口。只有在开启搜索工具时，它才能看到实时网页和 X 上的帖子。", color: "red" }
 ]} />
 
 ### 生成模型（文本 → 媒体）
@@ -53,10 +53,10 @@
 这些模型根据文字描述创建图像、音频或视频。
 
 <InfoGrid items={[
-  { label: "DALL-E 3", description: "文本 → 图像。OpenAI 的图像生成器，对提示词描述的准确度很高。", color: "amber" },
+  { label: "GPT Image", description: "文本 + 图像 → 图像。OpenAI 的图像生成和编辑模型，在 DALL-E 3 于 2026 年停用后接替了它。", color: "amber" },
   { label: "Midjourney", description: "文本 + 图像 → 图像。以艺术质量、风格控制和美学输出著称。", color: "pink" },
-  { label: "Sora", description: "文本 → 视频。OpenAI 的视频生成模型，根据描述创建视频片段。", color: "red" },
-  { label: "Whisper", description: "音频 → 文本。OpenAI 的语音转文字工具，跨语言准确率很高。", color: "cyan" }
+  { label: "视频生成器", description: "文本 + 图像 → 视频。Google 的 Gemini Omni Flash 和 xAI 的 Grok Imagine 等模型可以将提示词或静态图像转换为最长约 15 秒的视频片段。OpenAI 已于 2026 年 9 月停用 Sora 2 API。", color: "red" },
+  { label: "语音转文字", description: "音频 → 文本。专用的转录模型，例如 OpenAI 的 GPT-Transcribe（Whisper 的继任者）和 Google 的 Gemini 3.5 Transcribe，支持多种语言。", color: "cyan" }
 ]} />
 
 <Callout type="info" title="快速演进">
@@ -65,7 +65,7 @@
 
 ## 图像理解提示词
 
-最常见的多模态用例是让 AI 分析图像。关键是提供你需要什么的背景信息。
+最常见的多模态用例是让 AI 分析图像。关键是说明你需要什么，并提供相关背景。
 
 ### 基础图像分析
 
@@ -222,7 +222,7 @@
 
 ### 错误消息分析
 
-当你遇到错误时，截图通常比单独复制错误文本包含更多上下文信息。
+当你遇到错误时，截图通常比单纯复制的错误文本包含更多上下文信息。
 
 <TryIt 
   title="从截图诊断错误"
@@ -263,7 +263,7 @@
   { label: "主体", description: "图像的主要焦点是什么？", example: "一只金毛寻回犬在秋叶中玩耍", color: "blue" },
   { label: "风格", description: "什么艺术风格或媒介？", example: "水彩画、数字艺术、照片级真实感", color: "purple" },
   { label: "构图", description: "场景如何安排？", example: "特写肖像、广角风景、鸟瞰视角", color: "green" },
-  { label: "光线", description: "光源和质量是什么？", example: "柔和的晨光、戏剧性的阴影、霓虹灯光", color: "amber" },
+  { label: "光线", description: "光源是什么，光质如何？", example: "柔和的晨光、戏剧性的阴影、霓虹灯光", color: "amber" },
   { label: "情绪", description: "应该唤起什么感觉？", example: "宁静、充满活力、神秘、怀旧", color: "pink" },
   { label: "细节", description: "要包含或避免的具体元素", example: "包含：花朵。避免：文字、水印", color: "cyan" }
 ]} />
@@ -287,7 +287,7 @@
 
 **光线**：
 - 光源：\${lightSource}
-- 质量：\${lightQuality}（柔和、强烈、漫射）
+- 光质：\${lightQuality}（柔和、强烈、漫射）
 - 时间：\${timeOfDay}
 
 **色彩调色板**：\${colors}
@@ -342,7 +342,7 @@
 
 <TryIt 
   title="智能转录"
-  description="获取带有说话人标签、时间戳和不清楚部分处理的准确转录。"
+  description="获取带有说话人标签和时间戳、并能妥善处理不清楚部分的准确转录。"
   prompt={`转录这段音频录音。
 
 **背景**：\${recordingType}（会议、访谈、播客、讲座等）
@@ -393,7 +393,7 @@
 - 值得注意的情感时刻
 - 整体的能量水平
 
-**5. 可行动项目**
+**5. 行动项**
 - 做出的决定
 - 提到的行动项目
 - 需要的后续跟进
@@ -444,7 +444,7 @@
 - 对其目的的有效性
 
 **6. 目标受众**
-这个视频是为谁制作的？它是否很好地服务了他们？
+这个视频是为谁制作的？它是否很好地满足了他们的需求？
 
 **7. 关键要点**
 观众应该从这个视频中记住什么？`}
@@ -452,7 +452,7 @@
 
 ### 视频内容提取
 
-对于从视频中提取特定信息，要精确说明你需要什么。
+从视频中提取特定信息时，要精确说明你需要什么。
 
 <TryIt 
   title="视频数据提取器"
@@ -493,9 +493,9 @@
 检查图像和描述是否匹配——对于电子商务、内容审核和质量保证至关重要。
 
 <TryIt 
-  title="图像-文字对齐检查器"
-  description="验证图像是否准确代表其文字描述，反之亦然。"
-  prompt={`分析这张图像及其配套文字的对齐程度：
+  title="图像-文字一致性检查器"
+  description="验证图像是否准确呈现其文字描述，反之亦然。"
+  prompt={`分析这张图像及其配套文字是否一致：
 
 **图像**：\${imageDescription}
 **文字描述**："\${textDescription}"
@@ -530,7 +530,7 @@
 对开发者来说最强大的组合之一：同时查看视觉错误和代码。
 
 <TryIt 
-  title="可视化错误调试器"
+  title="视觉 Bug 调试器"
   description="通过同时分析视觉输出和源代码来调试 UI 问题。"
   prompt={`我有一个 UI 错误。这是我看到的和我的代码：
 
@@ -547,7 +547,7 @@
 
 **1. 根本原因分析**
 - 代码中的什么导致了这个视觉问题？
-- 具体是哪一行负责？
+- 具体是哪一行（或哪几行）导致的？
 
 **2. 解释**
 - 为什么这段代码产生了这个视觉结果？
@@ -622,7 +622,7 @@
   { label: "假设完美视觉", description: "模型可能会遗漏小细节，尤其是在低分辨率图像中", example: "不要询问压缩截图中 8pt 的文字", color: "red" },
   { label: "期望完美 OCR", description: "手写字、不寻常的字体和复杂的布局可能导致错误", example: "验证从收据和表格中提取的文字", color: "red" },
   { label: "忽略内容政策", description: "模型对某些类型的内容有限制", example: "不会识别特定个人或分析不当内容", color: "red" },
-  { label: "跳过验证", description: "始终验证从媒体中提取的关键信息", example: "仔细核对从文档提取中得到的数字、日期和姓名", color: "red" }
+  { label: "跳过验证", description: "始终验证从媒体中提取的关键信息", example: "仔细核对从文档中提取的数字、日期和姓名", color: "red" }
 ]} />
 
 ### 优雅地处理局限性
@@ -649,7 +649,7 @@
 - 关注：人数、活动、表情、着装
 
 **你的分析**：
-[继续分析，应用这些指南]`}
+[按照这些指南进行分析]`}
 />
 
 <Quiz 

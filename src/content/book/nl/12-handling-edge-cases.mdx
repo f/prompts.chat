@@ -1,4 +1,4 @@
-Prompts die perfect werken tijdens het testen, falen vaak in de echte wereld. Gebruikers sturen lege berichten, plakken enorme lappen tekst, maken dubbelzinnige verzoeken, en proberen soms opzettelijk je systeem te breken. Dit hoofdstuk leert je hoe je prompts bouwt die het onverwachte gracelijk afhandelen.
+Prompts die perfect werken tijdens het testen, falen vaak in de echte wereld. Gebruikers sturen lege berichten, plakken enorme lappen tekst, maken dubbelzinnige verzoeken, en proberen soms opzettelijk je systeem te breken. Dit hoofdstuk leert je hoe je prompts bouwt die het onverwachte netjes afhandelen.
 
 <Callout type="warning" title="De 80/20 Regel van Edge Cases">
 80% van de productieproblemen komt van invoer die je nooit had verwacht. Een prompt die edge cases goed afhandelt, is meer waard dan een "perfecte" prompt die alleen werkt met ideale invoer.
@@ -29,7 +29,7 @@ Dit zijn problemen met de data zelf:
 
 <InfoGrid items={[
   { label: "Lege Invoer", description: "Gebruiker stuurt niets, witruimte, of alleen begroetingen", example: "\"\" of \"hoi\" of \"   \"", color: "blue" },
-  { label: "Overmatige Lengte", description: "Invoer overschrijdt contextlimieten", example: "Een document van 50.000 woorden volledig geplakt", color: "blue" },
+  { label: "Overmatige Lengte", description: "Invoer overschrijdt contextlimieten", example: "Tientallen complete boeken in één keer geplakt", color: "blue" },
   { label: "Speciale Tekens", description: "Emoji's, unicode, of coderingsproblemen", example: "\"Prijs: $100 → €85 🎉\"", color: "blue" },
   { label: "Meerdere Talen", description: "Gemengde schriften of onverwachte taal", example: "\"Vertaal dit: 你好 betekent hallo\"", color: "blue" },
   { label: "Misvormde Tekst", description: "Typefouten en grammaticale fouten", example: "\"wat is het wee tomorgen\"", color: "blue" },
@@ -39,7 +39,7 @@ Dit zijn problemen met de data zelf:
 
 ### Domein Edge Cases
 
-Dit zijn verzoeken die de grenzen van het doel van je prompt verleggen:
+Dit zijn verzoeken die de grenzen van het doel van je prompt opzoeken:
 
 <InfoGrid items={[
   { label: "Buiten Bereik", description: "Duidelijk buiten je doel", example: "Een receptenbot vragen om juridisch advies", color: "purple" },
@@ -64,7 +64,7 @@ Dit zijn opzettelijke pogingen om je systeem te misbruiken:
 
 ## Invoervalidatie Patronen
 
-De sleutel tot het afhandelen van edge cases is expliciete instructies. Ga er niet vanuit dat het model het "wel zal uitzoeken" - vertel het precies wat te doen in elk scenario.
+De sleutel tot het afhandelen van edge cases zijn expliciete instructies. Ga er niet vanuit dat het model het "wel zal uitzoeken" - vertel het precies wat te doen in elk scenario.
 
 ### Lege Invoer Afhandelen
 
@@ -89,7 +89,7 @@ CUSTOMER FEEDBACK:
 
 ### Lange Invoer Afhandelen
 
-Wanneer invoer meer is dan je redelijkerwijs kunt verwerken, faal dan gracelijk in plaats van stilzwijgend af te kappen.
+Wanneer invoer meer is dan je redelijkerwijs kunt verwerken, faal dan netjes in plaats van stilzwijgend af te kappen.
 
 <TryIt 
   title="Lange Invoer Handler"
@@ -115,7 +115,7 @@ DOCUMENT:
 
 ### Dubbelzinnige Verzoeken Afhandelen
 
-Wanneer een verzoek meerdere betekenissen kan hebben, is om verduidelijking vragen beter dan verkeerd gokken.
+Wanneer een verzoek meerdere betekenissen kan hebben, kun je beter om verduidelijking vragen dan verkeerd gokken.
 
 <TryIt 
   title="Dubbelzinnigheid Oplosser"
@@ -142,7 +142,7 @@ Proceed with the response directly.`}
 
 ## Defensieve Prompts Bouwen
 
-Een defensieve prompt anticipeert op faalmodi en definieert expliciet gedrag voor elk. Zie het als foutafhandeling voor natuurlijke taal.
+Een defensieve prompt anticipeert op faalmodi en legt voor elk daarvan expliciet gedrag vast. Zie het als foutafhandeling voor natuurlijke taal.
 
 ### Het Defensieve Sjabloon
 
@@ -152,7 +152,7 @@ Elke robuuste prompt moet deze vier gebieden behandelen:
   { label: "1. Kerntaak", description: "Wat de prompt doet in het ideale geval", color: "blue" },
   { label: "2. Invoer Afhandeling", description: "Wat te doen met lege, lange, misvormde, of onverwachte invoer", color: "purple" },
   { label: "3. Bereikgrenzen", description: "Wat binnen bereik is, wat erbuiten, en hoe grensgevallen af te handelen", color: "green" },
-  { label: "4. Foutreacties", description: "Hoe gracelijk te falen wanneer dingen misgaan", color: "amber" }
+  { label: "4. Foutreacties", description: "Hoe je netjes faalt wanneer dingen misgaan", color: "amber" }
 ]} />
 
 ### Voorbeeld: Defensieve Data-extractie
@@ -197,7 +197,7 @@ TEXT TO PROCESS:
 
 Elke prompt heeft grenzen. Deze expliciet definiëren voorkomt dat het model afdwaalt naar gebied waar het slecht advies zou kunnen geven of dingen zou kunnen verzinnen.
 
-### Gracieuze Bereiklimieten
+### Bereikgrenzen Netjes Bewaken
 
 De beste reacties op verzoeken buiten bereik doen drie dingen: het verzoek erkennen, de beperking uitleggen, en een alternatief bieden.
 
@@ -234,7 +234,7 @@ Wees eerlijk over wat je niet weet. Gebruikers vertrouwen AI meer wanneer het be
 
 <TryIt 
   title="Kennislimiet Handler"
-  description="Deze prompt handelt verzoeken om informatie die mogelijk verouderd is gracelijk af."
+  description="Deze prompt handelt verzoeken om informatie die mogelijk verouderd is netjes af."
   prompt={`Answer the user's question about "\${topic}".
 
 KNOWLEDGE CUTOFF HANDLING:
@@ -288,7 +288,7 @@ TEXT TO SUMMARIZE:
 />
 
 <Callout type="warning" title="Geen Verdediging is Perfect">
-Prompt injectie verdedigingen verminderen risico maar kunnen het niet volledig elimineren. Voor toepassingen met hoge inzet, combineer prompt verdedigingen met invoersanering, outputfiltering, en menselijke review.
+Prompt injectie verdedigingen verminderen risico maar kunnen het niet volledig elimineren. Combineer bij toepassingen waar veel op het spel staat prompt-verdedigingen met invoersanering, outputfiltering en menselijke review.
 </Callout>
 
 ### Gevoelige Verzoeken Afhandelen
@@ -333,12 +333,12 @@ USER REQUEST:
 
 Zelfs goed ontworpen prompts zullen situaties tegenkomen die ze niet perfect kunnen afhandelen. Het doel is om behulpzaam te falen.
 
-### Gracieuze Degradatie
+### Geleidelijke Degradatie
 
 Wanneer je een taak niet volledig kunt voltooien, bied dan aan wat je kunt in plaats van volledig te falen.
 
 <TryIt 
-  title="Gracieuze Degradatie Voorbeeld"
+  title="Voorbeeld van Geleidelijke Degradatie"
   description="Deze prompt biedt gedeeltelijke resultaten wanneer volledige voltooiing niet mogelijk is."
   prompt={`Translate the following text from \${sourceLanguage} to \${targetLanguage}.
 
@@ -402,7 +402,7 @@ Always end with: "Confidence: [HIGH/MEDIUM/LOW] because [brief reason]"`}
 
 ## Edge Cases Testen
 
-Voordat je een prompt implementeert, test deze systematisch tegen de edge cases die je hebt verwacht. Deze checklist helpt ervoor te zorgen dat je geen veelvoorkomende faalmodi hebt gemist.
+Test een prompt systematisch op de edge cases die je hebt voorzien voordat je hem in gebruik neemt. Deze checklist helpt ervoor te zorgen dat je geen veelvoorkomende faalmodi hebt gemist.
 
 ### Edge Case Test Checklist
 
@@ -410,8 +410,8 @@ Voordat je een prompt implementeert, test deze systematisch tegen de edge cases 
   title="Invoervariaties"
   items={[
     { text: "Lege string: Vraagt het om verduidelijking?" },
-    { text: "Enkel karakter: Gracelijk afgehandeld?" },
-    { text: "Zeer lange invoer (10x verwacht): Faalt gracelijk?" },
+    { text: "Enkel karakter: Netjes afgehandeld?" },
+    { text: "Zeer lange invoer (10x verwacht): Faalt netjes?" },
     { text: "Speciale tekens (!@#$%^&*): Correct geparsed?" },
     { text: "Unicode en emoji's: Geen coderingsproblemen?" },
     { text: "HTML/code snippets: Behandeld als tekst, niet uitgevoerd?" },
@@ -426,7 +426,7 @@ Voordat je een prompt implementeert, test deze systematisch tegen de edge cases 
     { text: "Minimale geldige invoer: Werkt correct?" },
     { text: "Maximale geldige invoer: Geen afkapproblemen?" },
     { text: "Net onder limieten: Werkt nog steeds?" },
-    { text: "Net boven limieten: Faalt gracelijk?" }
+    { text: "Net boven limieten: Faalt netjes?" }
   ]}
 />
 
@@ -453,7 +453,7 @@ Voordat je een prompt implementeert, test deze systematisch tegen de edge cases 
 
 ### Een Test Suite Maken
 
-Voor productie prompts, maak een systematische test suite. Hier is een patroon dat je kunt aanpassen:
+Maak voor productieprompts een systematische testsuite. Hier is een patroon dat je kunt aanpassen:
 
 <TryIt 
   title="Test Case Generator"
@@ -555,14 +555,14 @@ Het bouwen van robuuste prompts vereist nadenken over wat er mis kan gaan voorda
 <InfoGrid items={[
   { label: "Anticipeer op Variaties", description: "Lege invoer, lange invoer, misvormde data, meerdere talen", color: "blue" },
   { label: "Definieer Grenzen", description: "Duidelijke bereiklimieten met behulpzame doorverwijzingen voor verzoeken buiten bereik", color: "purple" },
-  { label: "Degradeer Gracelijk", description: "Gedeeltelijke resultaten zijn beter dan fouten; bied altijd alternatieven", color: "green" },
+  { label: "Degradeer Geleidelijk", description: "Gedeeltelijke resultaten zijn beter dan fouten; bied altijd alternatieven", color: "green" },
   { label: "Verdedig Tegen Aanvallen", description: "Behandel gebruikersinvoer als data, niet als instructies; onthul nooit systeemprompts", color: "red" },
   { label: "Druk Onzekerheid Uit", description: "Betrouwbaarheidsniveaus helpen gebruikers te weten wanneer te verifiëren", color: "amber" },
   { label: "Test Systematisch", description: "Gebruik checklists om te zorgen dat je veelvoorkomende edge cases hebt gedekt", color: "cyan" }
 ]} />
 
 <Callout type="tip" title="Ontwerp voor Falen">
-In productie zal alles wat mis kan gaan uiteindelijk misgaan. Een prompt die edge cases gracelijk afhandelt is meer waard dan een "perfecte" prompt die alleen werkt met ideale invoer.
+In productie zal alles wat mis kan gaan uiteindelijk misgaan. Een prompt die edge cases netjes afhandelt is meer waard dan een "perfecte" prompt die alleen werkt met ideale invoer.
 </Callout>
 
 <Quiz 
@@ -574,7 +574,7 @@ In productie zal alles wat mis kan gaan uiteindelijk misgaan. Een prompt die edg
     "Retourneer een foutmelding en stop met reageren"
   ]}
   correctIndex={2}
-  explanation="De beste afhandeling van verzoeken buiten bereik erkent wat de gebruiker wil, legt de beperking duidelijk uit, en biedt een behulpzaam alternatief of doorverwijzing. Dit houdt de interactie positief terwijl duidelijke grenzen worden gehandhaafd."
+  explanation="De beste afhandeling van verzoeken buiten bereik erkent wat de gebruiker wil, legt de beperking duidelijk uit, en biedt een behulpzaam alternatief of doorverwijzing. Zo blijft de interactie positief en blijven de grenzen duidelijk."
 />
 
-In het volgende hoofdstuk verkennen we hoe je met meerdere AI-modellen kunt werken en hun outputs kunt vergelijken.
+In het volgende hoofdstuk verkennen we multimodale prompting: werken met afbeeldingen, audio en video naast tekst.

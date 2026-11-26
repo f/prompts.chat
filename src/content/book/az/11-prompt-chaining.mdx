@@ -6,7 +6,7 @@ Necə ki fabrik montaj xətti istehsalı ixtisaslaşmış stansiyalara bölür, 
 
 ## Niyə Promptları Zəncirləyirik?
 
-Tək promptlar mürəkkəb tapşırıqlarda çətinlik çəkir çünki eyni anda çox şey etməyə çalışırlar. Süni intellekt eyni anda anlamalı, təhlil etməli, planlamalı və istehsal etməlidir, bu da xətalara və uyğunsuzluqlara səbəb olur.
+Tək promptlar mürəkkəb tapşırıqlarda çətinlik çəkir, çünki eyni anda çox şey etməyə çalışırlar. Süni intellekt eyni anda anlamalı, təhlil etməli, planlamalı və yaratmalıdır, bu da xətalara və uyğunsuzluqlara səbəb olur.
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
   <div className="border rounded-lg bg-red-50/50 dark:bg-red-950/20 border-red-200 dark:border-red-900">
@@ -53,14 +53,14 @@ Tək promptlar mürəkkəb tapşırıqlarda çətinlik çəkir çünki eyni anda
   <div className="flex flex-col items-center">
     <div className="px-4 py-3 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg text-center">
       <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">Prompt 3</p>
-      <p className="text-xs text-green-600 dark:text-green-400 m-0!">(İstehsal Et)</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0!">(Yarat)</p>
     </div>
     <p className="text-xs text-muted-foreground mt-1 m-0!">Çıxış</p>
   </div>
 </div>
 
-<Callout type="info" title="ÇDİ Nümunəsi">
-Ən geniş yayılmış zəncir nümunəsi **Çıxar → Dönüşdür → İstehsal Et**-dir. Əvvəlcə xam məlumatı çıxar, sonra məqsədiniz üçün yenidən formalaşdır, sonra son çıxışı istehsal et. Bu nümunə demək olar ki, hər məzmun tapşırığı üçün işləyir.
+<Callout type="info" title="ÇÇY Nümunəsi">
+Ən geniş yayılmış zəncir nümunəsi **Çıxar → Çevir → Yarat** modelidir. Əvvəlcə xam datanı çıxarın, sonra onu məqsədinizə uyğun yenidən formalaşdırın, sonda isə yekun çıxışı yaradın. Bu nümunə demək olar ki, hər məzmun tapşırığı üçün işləyir.
 </Callout>
 
 ## Zəncir Növləri
@@ -76,9 +76,9 @@ Fərqli tapşırıqlar fərqli zəncir arxitekturaları tələb edir. İş axın
 <ChainExample 
   type="sequential"
   steps={[
-    { step: "Addım 1: Çıxar", prompt: "Bundan bütün tarixləri, adları və rəqəmləri çıxar: [mətn]", output: '{ tarixler: ["2024-01-15", "2024-02-20"], adlar: ["Əhməd Yılmaz", "Acme MMC"], reqemler: [15000, 42] }' },
-    { step: "Addım 2: Təhlil Et", prompt: "Bu çıxarılmış məlumat nəzərə alınanda: [addim1_cixis], əlaqələri və nümunələri müəyyən et.", output: '{ numuneler: ["Aylıq görüşlər planlaşdırılıb"], elaqeler: ["Əhməd Yılmaz Acme MMC-də işləyir"] }' },
-    { step: "Addım 3: İstehsal Et", prompt: "Bu nümunələri istifadə edərək: [addim2_cixis], ən vacib tapıntıları vurğulayan xülasə hesabat yaz.", output: "Xülasə Hesabat: Sənədin təhlili Əhməd Yılmaz ilə Acme MMC arasında planlaşdırılmış aylıq görüşlərlə bir iş əlaqəsi olduğunu ortaya qoyur..." }
+    { step: "Addım 1: Çıxar", prompt: "Bu mətndən bütün tarixləri, adları və rəqəmləri çıxar: [mətn]", output: '{ tarixler: ["2024-01-15", "2024-02-20"], adlar: ["Əhməd Məmmədov", "Acme MMC"], reqemler: [15000, 42] }' },
+    { step: "Addım 2: Təhlil Et", prompt: "Çıxarılmış bu dataya əsasən: [addim1_cixis], əlaqələri və qanunauyğunluqları müəyyən et.", output: '{ numuneler: ["Aylıq görüşlər planlaşdırılıb"], elaqeler: ["Əhməd Məmmədov Acme MMC-də işləyir"] }' },
+    { step: "Addım 3: Yarat", prompt: "Bu qanunauyğunluqlardan istifadə edərək: [addim2_cixis], ən vacib tapıntıları vurğulayan xülasə hesabat yaz.", output: "Xülasə Hesabat: Sənədin təhlili Əhməd Məmmədov ilə Acme MMC arasında planlaşdırılmış aylıq görüşlərlə bir iş əlaqəsi olduğunu ortaya qoyur..." }
   ]}
 />
 
@@ -89,17 +89,17 @@ Eyni giriş üzərində bir neçə perspektivə ehtiyacınız olduqda, promptlar
 <ChainExample 
   type="parallel"
   steps={[
-    { step: "Giriş", prompt: "Məhsul rəyi mətni", output: '"Bu qulaqlıqları çox sevdim! Batareya ömrü əbədi davam edir və qutudakı ekran çox faydalıdır. Gündəlik işə gedişlərim üçün mükəmməl."' },
+    { step: "Giriş", prompt: "Məhsul rəyi mətni", output: '"Bu qulaqlıqları çox sevdim! Batareyası bitmək bilmir, qutudakı ekran da çox rahatdır. Gündəlik işə gedişlərim üçün mükəmməl."' },
     { step: "Qol A: Əhval", prompt: "Əhval təhlili apar: [mətn]", output: '{ ehval: "pozitiv", bal: 0.85 }' },
     { step: "Qol B: Xüsusiyyətlər", prompt: "Bəhs edilən xüsusiyyətləri çıxar: [mətn]", output: '{ xususiyyetler: ["batareya", "ekran"] }' },
     { step: "Qol C: Persona", prompt: "İstifadəçi personasını müəyyən et: [mətn]", output: '{ persona: "işə gedən" }' },
-    { step: "Birləşdir", prompt: "Təhlilləri birləşmiş hesabata birləşdir", output: "Birləşmiş Hesabat: Batareya və ekranı vurğulayan işə gedən birindən pozitiv rəy." }
+    { step: "Birləşdir", prompt: "Təhlilləri vahid hesabatda birləşdir", output: "Vahid Hesabat: Hər gün işə gedib-gələn istifadəçidən batareyanı və ekranı öndə çəkən pozitiv rəy." }
   ]}
 />
 
 ### Şərti Zəncir
 
-Təsnifata görə girişləri fərqli yollardan yönləndir. Bu, süni intellektin əvvəlcə girişi kateqoriyalaşdırdığı, sonra hər kateqoriyanı fərqli şəkildə idarə etdiyi bir qərar ağacı kimidir.
+Girişləri təsnifata görə fərqli yollara yönləndirin. Bu, süni intellektin əvvəlcə girişi kateqoriyalaşdırdığı, sonra hər kateqoriyanı fərqli şəkildə idarə etdiyi bir qərar ağacı kimidir.
 
 <ChainExample 
   type="conditional"
@@ -107,13 +107,13 @@ Təsnifata görə girişləri fərqli yollardan yönləndir. Bu, süni intellekt
     { step: "Girişi Təsnif Et", prompt: "Bu müştəri mesajını belə təsnif et: şikayət, sual, rəy və ya digər.\n\nMesaj: [mətn]", output: '{ tesnif: "şikayət", etibar: 0.92 }' },
     { step: "Yol: Sual (atlandı)", prompt: "Hansı məlumata ehtiyac olduğunu müəyyən et", output: "Atlandı - giriş şikayət olaraq təsnif edildi" },
     { step: "Yol: Şikayət", prompt: "Problemi və ciddiliyi müəyyən et: [mətn]", output: '{ problem: "gecikən çatdırılma", ciddilik: "orta" }' },
-    { step: "Cavab İstehsal Et", prompt: "Həlli olan empatik cavab istehsal et: [təhlil]", output: "Hörmətli Müştərimiz, Gecikmə üçün səmimi üzr istəyirik. Sifarişiniz sürətləndirildi..." }
+    { step: "Cavab Yarat", prompt: "Həll yolu təklif edən empatik cavab yaz: [təhlil]", output: "Hörmətli Müştərimiz, Gecikmə üçün səmimi üzr istəyirik. Sifarişiniz sürətləndirildi..." }
   ]}
 />
 
 ### İterativ Zəncir
 
-Keyfiyyət standartlarını qarşılayana qədər çıxışı yaxşılaşdırmağa davam et. Süni intellekt razı qalana və ya maksimum iterasiyaya çatana qədər bir dövrədə istehsal edir, qiymətləndirir və yaxşılaşdırır.
+Çıxış keyfiyyət standartlarına cavab verənə qədər onu təkmilləşdirməyə davam edin. Süni intellekt nəticə qənaətbəxş olana və ya maksimum iterasiya sayına çatana qədər dövrə şəklində yaradır, qiymətləndirir və təkmilləşdirir.
 
 <Callout type="warning" title="İterasiya Limitləri Qoy">
 Sonsuz dövrələrin qarşısını almaq və xərcləri nəzarətdə saxlamaq üçün həmişə maksimum iterasiya sayı (adətən 3-5) müəyyən edin. Azalan gəlirlər qanunu keçərlidir: yaxşılaşdırmanın çoxu ilk 2-3 iterasiyada baş verir.
@@ -122,124 +122,260 @@ Sonsuz dövrələrin qarşısını almaq və xərcləri nəzarətdə saxlamaq ü
 <ChainExample 
   type="iterative"
   steps={[
-    { step: "Qaralama İstehsal Et", prompt: "[simsiz qulaqlıq] üçün məhsul təsviri yaz", output: "Bu simsiz qulaqlıqlar gündəlik istifadə üçün yaxşı səs keyfiyyəti və rahat oturuş təklif edir." },
-    { step: "Qiymətləndir (Bal: 5)", prompt: "Bu təsviri aydınlıq, inandırıcılıq, dəqiqlik üzrə 1-10 ballanır.\n\nTəsvir: [cari_qaralama]", output: '{ bal: 5, yaxsilasmanlar: ["Spesifik xüsusiyyətlər əlavə et", "Emosional faydaları daxil et", "Batareya ömründən bəhs et", "Fəaliyyət çağırışı əlavə et"] }' },
-    { step: "Qaralama Yaxşılaşdır", prompt: "Bu təsviri bu rəyə görə yaxşılaşdır:\n\nCari: [cari_qaralama]\nRəy: [yaxsilasmanlar]", output: "Premium simsiz qulaqlıqlarımızla kristal aydınlığında səs təcrübəsi yaşayın. 30 saatlıq batareya ömrü, aktiv səs-küy ləğvi və gün boyu rahat qalan erqonomik dizayn. Musiqi sevənlər və peşəkarlar üçün mükəmməl. İndi sifariş verin və dinləmə təcrübənizi dönüşdürün." },
-    { step: "Qiymətləndir (Bal: 8)", prompt: "Bu təsviri 1-10 ballayın.\n\nTəsvir: [yaxsilasdirilmis_qaralama]", output: '{ bal: 8, yaxsilasmanlar: ["Kiçik: Zəmanət məlumatı əlavə edilə bilər"] }\n\n✓ Bal >= 8: DÖVRƏDƏN ÇIX' }
+    { step: "Qaralama Yarat", prompt: "[simsiz qulaqlıq] üçün məhsul təsviri yaz", output: "Bu simsiz qulaqlıqlar gündəlik istifadə üçün yaxşı səs keyfiyyəti və rahat oturuş təklif edir." },
+    { step: "Qiymətləndir (Bal: 5)", prompt: "Bu təsviri aydınlıq, inandırıcılıq və dəqiqlik üzrə 1-10 arası qiymətləndir.\n\nTəsvir: [cari_qaralama]", output: '{ bal: 5, yaxsilasdirmalar: ["Spesifik xüsusiyyətlər əlavə et", "Emosional faydaları daxil et", "Batareya ömründən bəhs et", "Fəaliyyət çağırışı əlavə et"] }' },
+    { step: "Qaralamanı Təkmilləşdir", prompt: "Bu təsviri aşağıdakı rəyə əsasən təkmilləşdir:\n\nCari: [cari_qaralama]\nRəy: [yaxsilasdirmalar]", output: "Premium simsiz qulaqlıqlarımızla kristal aydınlığında səs təcrübəsi yaşayın. 30 saatlıq batareya ömrü, aktiv səs-küy ləğvi və gün boyu rahat qalan erqonomik dizayn. Musiqi sevənlər və peşəkarlar üçün mükəmməl. İndi sifariş verin və musiqini tamam yeni cür dinləyin." },
+    { step: "Qiymətləndir (Bal: 8)", prompt: "Bu təsviri aydınlıq, inandırıcılıq və dəqiqlik üzrə 1-10 arası qiymətləndir.\n\nTəsvir: [yaxsilasdirilmis_qaralama]", output: '{ bal: 8, yaxsilasdirmalar: ["Kiçik: Zəmanət məlumatı əlavə edilə bilər"] }\n\n✓ Bal >= 8: DÖVRƏDƏN ÇIX' }
   ]}
 />
 
 ## Ümumi Zəncir Nümunələri
 
-Bu döyüşdə sınaqdan keçmiş nümunələr ümumi problemləri həll edir. Başlanğıc nöqtəsi kimi istifadə edin və ehtiyaclarınıza görə uyğunlaşdırın.
+Bu nümunələr praktikada dəfələrlə sınanıb və tez-tez rastlaşılan problemləri həll edir. Onları başlanğıc nöqtəsi kimi götürün və ehtiyaclarınıza uyğunlaşdırın.
 
-### Çıxar → Dönüşdür → İstehsal Et
+### Çıxar → Çevir → Yarat
 
-Məzmun işləmənin iş atı. Məlumatı çək, yenidən formalaşdır, sonra yeni bir şey yarat.
+Məzmun emalının əsas iş atı. Məlumatı çıxarın, yenidən formalaşdırın, sonra ondan yeni bir şey yaradın.
 
 <div className="mb-4 p-3 rounded-lg bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800">
   <p className="text-xs font-semibold text-blue-700 dark:text-blue-300 mb-1 m-0!">Ən Yaxşı İstifadə</p>
-  <p className="text-sm text-blue-600 dark:text-blue-400 m-0!">Sənəd xülasəsi, hesabat istehsalı, məzmunun yenidən istifadəsi, məlumatdan hekayəyə dönüşüm</p>
+  <p className="text-sm text-blue-600 dark:text-blue-400 m-0!">Sənədlərin xülasəsi, hesabat hazırlanması, məzmunun yeni formatlara uyğunlaşdırılması, datanın hekayəyə çevrilməsi</p>
 </div>
 
-### Təhlil Et → Planla → Tətbiq Et
+<ChainExample 
+  type="sequential"
+  steps={[
+    { step: "Çıxar", prompt: "Bu sənəddən bunları çıxar:\n- Əsas mövzu\n- Əsas arqumentlər (siyahı)\n- Dəstəkləyici sübutlar (siyahı)\n- Nəticələr\nJSON olaraq qaytar.", output: '{ "movzu": "İqlim dəyişikliyinin təsirləri", "arqumentler": ["Temperaturun artması", "Dəniz səviyyəsinin qalxması"], "subutlar": ["NASA dataları", "IPCC hesabatları"], "neticeler": ["Təcili tədbir lazımdır"] }' },
+    { step: "Çevir", prompt: "Bu məlumatı [biznes rəhbərləri] üçün yenidən təşkil et:\n[cixarilmis_data]\nDiqqət mərkəzində: iqtisadi nəticələr\nÇıxar: texniki jarqon", output: '{ "xulase": "İqlim risklərinin biznesə təsiri", "esas_meqamlar": ["Təchizat zəncirində fasilələr", "Sığorta xərclərinin artması"], "tedbirler": ["Zəif nöqtələri qiymətləndirmək", "Uyğunlaşma planı hazırlamaq"] }' },
+    { step: "Yarat", prompt: "Yenidən strukturlaşdırılmış bu məlumatdan istifadə edərək [rəhbərlik üçün qısa arayış] yaz:\n[cevrilmis_data]\nTon: peşəkar\nHəcm: 200 söz", output: "Rəhbərlik üçün arayış: İqlim dəyişikliyi biznesimiz üçün ciddi əməliyyat riskləri yaradır. Əsas narahatlıqlar ekstremal hava hadisələrinin təchizat zəncirində yaratdığı fasilələr və artan sığorta haqlarıdır. Obyektlərimizin zəif nöqtələrinin dərhal qiymətləndirilməsini və uyğunlaşma strategiyalarının hazırlanmasını tövsiyə edirik..." }
+  ]}
+/>
 
-Kod yenidən strukturlaşdırma, layihə planlaması və ya hərəkətə keçməzdən əvvəl anlamalı olduğunuz hər hansı tapşırıq üçün mükəmməl.
+### Təhlil Et → Planla → İcra Et
+
+Kodun yenidən strukturlaşdırılması, layihə planlaması və ya hərəkətə keçməzdən əvvəl vəziyyəti anlamalı olduğunuz istənilən tapşırıq üçün idealdır.
 
 <div className="mb-4 p-3 rounded-lg bg-purple-50/50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-800">
   <p className="text-xs font-semibold text-purple-700 dark:text-purple-300 mb-1 m-0!">Ən Yaxşı İstifadə</p>
-  <p className="text-sm text-purple-600 dark:text-purple-400 m-0!">Kod yenidən strukturlaşdırma, layihə planlaması, problem həlli, strateji qərar qəbul etmə, mürəkkəb problem həlli</p>
+  <p className="text-sm text-purple-600 dark:text-purple-400 m-0!">Kodun yenidən strukturlaşdırılması, layihə planlaması, nasazlıqların aradan qaldırılması, strateji qərarların qəbulu, mürəkkəb problemlərin həlli</p>
 </div>
 
-### İstehsal Et → Tənqid Et → Yaxşılaşdır
+<ChainExample 
+  type="sequential"
+  steps={[
+    { step: "Təhlil Et", prompt: "Bu kod bazasının strukturunu təhlil et və bunları müəyyən et:\n- Arxitektura modeli\n- Əsas komponentlər\n- Asılılıqlar\n- Potensial problemlər\n[kod]", output: '{ "model": "MVC", "komponentler": ["UserController", "AuthService", "Database"], "asililiqlar": ["express", "mongoose"], "problemler": ["Giriş doğrulaması yoxdur", "Gizli açarlar koda yazılıb"] }' },
+    { step: "Planla", prompt: "Bu təhlilə əsasən yenidən strukturlaşdırma planı hazırla:\n[tehlil_cixisi]\nMəqsəd: təhlükəsizliyi artırmaq\nMəhdudiyyət: mövcud funksionallıq pozulmamalıdır", output: '{ "addimlar": ["1. Giriş doğrulaması üçün middleware əlavə et", "2. Gizli açarları mühit dəyişənlərinə köçür", "3. Sorğu sayına limit qoy"], "prioritet": "yüksək", "texmini_vaxt": "4 saat" }' },
+    { step: "İcra Et", prompt: "Bu planın 1-ci addımını həyata keçir:\n[plan_cixisi]\nYenidən strukturlaşdırılmış kodu izahlarla göstər.", output: "// Doğrulama middleware-i əlavə edildi\nconst validateInput = (req, res, next) => {\n  const { email, password } = req.body;\n  if (!email || !isValidEmail(email)) {\n    return res.status(400).json({ error: 'Yanlış e-poçt' });\n  }\n  next();\n};" }
+  ]}
+/>
 
-Öz-yaxşılaşdırma dövrəsi. Məzmun istehsal et, süni intellektin tənqidi qiymətləndirməsini al, sonra o rəyə görə yaxşılaşdır.
+### Yarat → Tənqid Et → Təkmilləşdir
+
+Özünü təkmilləşdirmə dövrəsi. Məzmun yaradın, süni intellektə onu tənqidi gözlə qiymətləndirməyi tapşırın, sonra bu rəyə əsasən təkmilləşdirin. Bu, peşəkar yazıçı ilə redaktorun birgə işinə bənzəyir.
 
 <div className="mb-4 p-3 rounded-lg bg-green-50/50 dark:bg-green-950/20 border border-green-200 dark:border-green-800">
   <p className="text-xs font-semibold text-green-700 dark:text-green-300 mb-1 m-0!">Ən Yaxşı İstifadə</p>
-  <p className="text-sm text-green-600 dark:text-green-400 m-0!">Marketinq mətni, yaradıcı yazı, e-poçt qaralamları, təqdimatlar, redaktədən faydalanan hər hansı məzmun</p>
+  <p className="text-sm text-green-600 dark:text-green-400 m-0!">Marketinq mətnləri, yaradıcı yazı, e-poçt qaralamaları, təqdimatlar, redaktədən fayda görən istənilən məzmun</p>
 </div>
 
-## Zəncirlərdə Xəta İdarəetməsi
+<ChainExample 
+  type="iterative"
+  steps={[
+    { step: "Yarat", prompt: "[məşq tətbiqi] üçün [məşğul peşəkarları] hədəfləyən marketinq e-poçtu yaz.", output: "Mövzu: Tez Forma Düş!\n\nSalam! Tətbiqimiz idman etməyinizə kömək edir. Bu gün yükləyin və fitnes səyahətinizə başlayın. Təşəkkürlər!" },
+    { step: "Tənqid Et", prompt: "Marketinq mütəxəssisi kimi bu e-poçtu tənqid et:\n[yaradilmis_e-poct]\nQiymətləndir: mövzu sətri, giriş cümləsi, dəyər təklifi, fəaliyyət çağırışı, ton\nHər birinə 1-10 bal ver.", output: '{ "movzu_setri": 4, "giris": 3, "deyer_teklifi": 2, "cagiris": 5, "ton": 4, "rey": "Çox ümumidir, konkret fayda yoxdur, təcililik hissi zəifdir" }' },
+    { step: "Təkmilləşdir", prompt: "Bu rəyi nəzərə alaraq e-poçtu yenidən yaz:\nOrijinal: [yaradilmis_e-poct]\nTənqid: [tenqid_cixisi]\nƏn aşağı bal alan elementlərə fokuslan.", output: "Mövzu: Nahar Fasiləniz üçün 15 Dəqiqəlik Məşqlər\n\nVaxtınız azdır? Bunu başa düşürük. Tətbiqimiz itirməyə bir dəqiqəsi belə olmayan peşəkarlar üçün elmi əsaslı məşqlər təqdim edir. Gündə cəmi 15 dəqiqə ilə sağlamlığını dəyişən 50.000-dən çox rəhbərə qoşulun. Pulsuz sınaq dövrünüzə indi başlayın: gələcəkdəki özünüz sizə minnətdar olacaq." },
+    { step: "Son Bal", prompt: "Təkmilləşdirilmiş e-poçtu yenidən qiymətləndir.", output: '{ "movzu_setri": 8, "giris": 8, "deyer_teklifi": 9, "cagiris": 8, "ton": 9, "irelileyis": "cəmi +24 bal" }' }
+  ]}
+/>
 
-Zəncirlər hər hansı bir addımda uğursuz ola bilər. Zəncirlərinizi möhkəm etmək üçün doğrulama, yenidən cəhd və ehtiyatlar qurun.
+## Zəncirlərin Həyata Keçirilməsi
+
+Zəncirləri sınaq üçün əl ilə, istehsal sistemləri üçün isə proqram vasitəsilə qura bilərsiniz. Sadədən başlayın və mürəkkəbliyi ehtiyac yarandıqca artırın.
+
+### Əl ilə Zəncirləmə
+
+Kopyala-yapışdır yanaşması prototip hazırlamaq və sınaq aparmaq üçün idealdır. Hər promptu əl ilə işə salın, çıxışı nəzərdən keçirin və onu növbəti prompta yapışdırın.
+
+<CodeEditor 
+  language="python"
+  filename="manual_chain.py"
+  code={`# Əl ilə zəncirləmə üçün psevdokod
+step1_output = call_ai("Bu mətndən varlıqları çıxar: " + input_text)
+step2_output = call_ai("Əlaqələri təhlil et: " + step1_output)
+final_output = call_ai("Hesabat hazırla: " + step2_output)`}
+/>
+
+### Proqram vasitəsilə Zəncirləmə
+
+İstehsal sistemlərində zənciri kodla avtomatlaşdırın. Bu, xətaların idarə olunmasına, jurnal yazılmasına və tətbiqinizlə inteqrasiyaya imkan verir.
+
+<CodeEditor 
+  language="python"
+  filename="chain.py"
+  code={`import json
+
+def analysis_chain(document):
+    # Addım 1: Xülasə et
+    summary = call_ai(f"""
+        Bu sənədin əsas məqamlarını 5 bənddə xülasə et:
+        {document}
+    """)
+    
+    # Addım 2: Varlıqları çıxar
+    entities = call_ai(f"""
+        Bu xülasədən adlandırılmış varlıqları (insanlar, təşkilatlar, məkanlar)
+        çıxar. JSON olaraq qaytar.
+        {summary}
+    """)
+    
+    # Addım 3: Fikirlər yarat
+    insights = call_ai(f"""
+        Bu xülasə və varlıqlara əsasən biznes analitiki üçün
+        tətbiq oluna bilən 3 fikir irəli sür.
+        Xülasə: {summary}
+        Varlıqlar: {entities}
+    """)
+    
+    return {
+        "summary": summary,
+        "entities": json.loads(entities),
+        "insights": insights
+    }`}
+/>
+
+### Zəncir Şablonlarından İstifadə
+
+Zəncirləri təkrar istifadə etmək və asanlıqla dəyişdirmək üçün konfiqurasiya faylları kimi təyin edin. Bu, prompt məntiqini tətbiq kodundan ayırır.
+
+<CodeEditor 
+  language="yaml"
+  filename="chain_template.yaml"
+  code={`name: "Sənəd Təhlili Zənciri"
+steps:
+  - name: "extract"
+    prompt: |
+      Bu sənəddən əsas məlumatları çıxar:
+      {input}
+      JSON qaytar: mövzular, varlıqlar, tarixlər, rəqəmlər
+    
+  - name: "analyze"
+    prompt: |
+      Çıxarılmış bu datada qanunauyğunluqları təhlil et:
+      {extract.output}
+      Müəyyən et: tendensiyalar, anomaliyalar, əlaqələr
+    
+  - name: "report"
+    prompt: |
+      Bunlara əsasən rəhbərlik üçün xülasə hazırla:
+      Data: {extract.output}
+      Təhlil: {analyze.output}
+      Format: 3 abzas, işgüzar ton`}
+/>
+
+## Zəncirlərdə Xətaların İdarə Olunması
+
+Zəncir istənilən addımda uğursuz ola bilər. Zəncirlərinizi möhkəm etmək üçün onlara doğrulama, təkrar cəhd və ehtiyat yollar əlavə edin.
 
 <ChainErrorDemo />
 
 <Callout type="warning" title="Zibil Girər, Zibil Çıxar">
-Bir addım pis çıxış istehsal edərsə, növbəti hər addım təsirlənəcək. Kritik ara nəticələri həmişə irəliyə ötürməzdən əvvəl doğrulayın.
+Bir addım pis çıxış verərsə, ondan sonrakı bütün addımlar təsirlənəcək. Kritik ara nəticələri irəli ötürməzdən əvvəl həmişə doğrulayın.
 </Callout>
 
-## Zəncir Optimallaşdırması
+### Addımlar Arası Doğrulama
 
-Zənciriniz işlədikdən sonra, sürət, xərc və etibarlılıq üçün optimallaşdırın.
+Strukturlaşdırılmış data çıxaran hər addımdan sonra doğrulama addımı əlavə edin. Bu, xətaları zəncir boyu yayılmazdan əvvəl, erkən mərhələdə tutur.
+
+<ValidationDemo />
+
+### Ehtiyat Zəncirlər
+
+Əsas yanaşmanız uğursuz olduqda, daha sadə bir ehtiyat variantınız hazır olsun. Bir qədər imkandan güzəşt edin, əvəzində etibarlılıq qazanın.
+
+<FallbackDemo />
+
+## Zəncirin Optimallaşdırılması
+
+Zənciriniz işlədikdən sonra onu sürət, xərc və etibarlılıq baxımından optimallaşdırın. Bunlar çox vaxt bir-biri ilə ziddiyyət təşkil edir.
 
 <div className="my-6 grid md:grid-cols-3 gap-4">
   <div className="border rounded-lg bg-blue-50/50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900 p-4">
-    <p className="text-sm font-semibold text-blue-700 dark:text-blue-400 mb-2 m-0!">Gecikməni Azalt</p>
+    <p className="text-sm font-semibold text-blue-700 dark:text-blue-400 mb-2 m-0!">Gecikməni Azaltmaq</p>
     <div className="text-sm space-y-1">
-      <p className="m-0!">Müstəqil addımları paralelize et</p>
-      <p className="m-0!">Ara nəticələri keşlə</p>
-      <p className="m-0!">Sadə addımlar üçün daha kiçik modellər istifadə et</p>
+      <p className="m-0!">Müstəqil addımları paralel işlədin</p>
+      <p className="m-0!">Ara nəticələri keşləyin</p>
+      <p className="m-0!">Sadə addımlar üçün kiçik modellərdən istifadə edin</p>
+      <p className="m-0!">Oxşar əməliyyatları paketlərlə icra edin</p>
     </div>
   </div>
   <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900 p-4">
-    <p className="text-sm font-semibold text-green-700 dark:text-green-400 mb-2 m-0!">Xərci Azalt</p>
+    <p className="text-sm font-semibold text-green-700 dark:text-green-400 mb-2 m-0!">Xərci Azaltmaq</p>
     <div className="text-sm space-y-1">
-      <p className="m-0!">Təsnifat üçün ucuz modellər istifadə et</p>
-      <p className="m-0!">Dövrələrdə iterasiyaları məhdudlaşdır</p>
-      <p className="m-0!">Mümkünsə qısa dövrə et</p>
+      <p className="m-0!">Təsnifat üçün daha ucuz modellərdən istifadə edin</p>
+      <p className="m-0!">Dövrələrdə iterasiya sayını məhdudlaşdırın</p>
+      <p className="m-0!">Mümkün olduqda zənciri vaxtından əvvəl dayandırın</p>
+      <p className="m-0!">Təkrarlanan sorğuları keşləyin</p>
     </div>
   </div>
   <div className="border rounded-lg bg-purple-50/50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-900 p-4">
-    <p className="text-sm font-semibold text-purple-700 dark:text-purple-400 mb-2 m-0!">Etibarlılığı Artır</p>
+    <p className="text-sm font-semibold text-purple-700 dark:text-purple-400 mb-2 m-0!">Etibarlılığı Artırmaq</p>
     <div className="text-sm space-y-1">
-      <p className="m-0!">Addımlar arasında doğrulama əlavə et</p>
-      <p className="m-0!">Yenidən cəhd məntiqi daxil et</p>
-      <p className="m-0!">Ehtiyat yollar tətbiq et</p>
+      <p className="m-0!">Addımlar arasında doğrulama əlavə edin</p>
+      <p className="m-0!">Təkrar cəhd məntiqi qurun</p>
+      <p className="m-0!">Ara nəticələri jurnalda qeyd edin</p>
+      <p className="m-0!">Ehtiyat yollar nəzərdə tutun</p>
     </div>
   </div>
 </div>
 
+## Real Dünyadan Zəncir Nümunəsi
+
+Gəlin, istehsalda işləyən tam bir zəncirə addım-addım baxaq. Bu məzmun konveyeri xam bir ideyanı cilalanmış məqalə paketinə çevirir.
+
+### Məzmun Konveyeri Zənciri
+
+<ContentPipelineDemo />
+
 ## Xülasə
 
-Prompt zəncirlənməsi, mümkün olmayan tapşırıqları başarıla bilən addımlara bölərək süni intellektin bacarıqlarını dönüşdürür.
+Prompt zəncirlənməsi mümkünsüz görünən tapşırıqları icra oluna bilən addımlara bölərək süni intellektin bacara biləcəklərinin hüdudlarını genişləndirir.
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
   <div className="border rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900 p-4">
     <p className="text-sm font-semibold text-amber-700 dark:text-amber-400 mb-2 m-0!">Zəncirlənmə Bunları Təmin Edir</p>
     <div className="text-sm space-y-1">
       <p className="m-0!">Mürəkkəb çox addımlı iş axınları</p>
-      <p className="m-0!">İxtisaslaşma vasitəsilə daha yüksək keyfiyyət</p>
-      <p className="m-0!">Daha yaxşı xəta idarəetməsi və doğrulama</p>
-      <p className="m-0!">Modul, yenidən istifadə edilə bilən prompt komponentləri</p>
+      <p className="m-0!">İxtisaslaşma hesabına daha yüksək keyfiyyət</p>
+      <p className="m-0!">Xətaların daha yaxşı idarə olunması və doğrulama</p>
+      <p className="m-0!">Modul, təkrar istifadə oluna bilən prompt komponentləri</p>
     </div>
   </div>
   <div className="border rounded-lg bg-cyan-50/50 dark:bg-cyan-950/20 border-cyan-200 dark:border-cyan-900 p-4">
     <p className="text-sm font-semibold text-cyan-700 dark:text-cyan-400 mb-2 m-0!">Əsas Prinsiplər</p>
     <div className="text-sm space-y-1">
-      <p className="m-0!">Mürəkkəb tapşırıqları sadə addımlara böl</p>
-      <p className="m-0!">Addımlar arası aydın interfeysler dizayn et</p>
-      <p className="m-0!">Ara çıxışları doğrula</p>
-      <p className="m-0!">Xəta idarəetməsi və ehtiyatlar qur</p>
+      <p className="m-0!">Mürəkkəb tapşırıqları sadə addımlara bölün</p>
+      <p className="m-0!">Addımlar arasında aydın interfeyslər qurun</p>
+      <p className="m-0!">Ara çıxışları doğrulayın</p>
+      <p className="m-0!">Xətaların idarə olunmasını və ehtiyat yolları əvvəlcədən düşünün</p>
+      <p className="m-0!">Öz məhdudiyyətlərinizə uyğun optimallaşdırın</p>
     </div>
   </div>
 </div>
 
-<Callout type="tip" title="Sadə Başla">
-2-3 addımlı ardıcıl bir zəncirlə başlayın. Mürəkkəblik əlavə etməzdən əvvəl etibarlı şəkildə işləməsini təmin edin. Əksər tapşırıqlar ətraflı zəncir arxitekturalarına ehtiyac duymur.
+<Callout type="tip" title="Sadədən Başlayın">
+2-3 addımlı ardıcıl bir zəncirlə başlayın. Mürəkkəblik əlavə etməzdən əvvəl onun etibarlı işlədiyinə əmin olun. Əksər tapşırıqlar üçün mürəkkəb zəncir arxitekturasına ehtiyac yoxdur.
 </Callout>
 
 <Quiz 
   question="Prompt zəncirlənməsinin tək mürəkkəb prompta nisbətən əsas üstünlüyü nədir?"
   options={[
-    "Ümumiyyətlə daha az token istifadə edir",
-    "İcra etmək daha sürətlidir",
-    "Hər addım ixtisaslaşa bilər, keyfiyyəti artırır və xəta idarəetməsini mümkün edir",
+    "Ümumilikdə daha az token istifadə edir",
+    "Daha sürətli icra olunur",
+    "Hər addım ixtisaslaşa bilir, bu da keyfiyyəti artırır və xətaları idarə etməyə imkan verir",
     "Daha az planlaşdırma tələb edir"
   ]}
   correctIndex={2}
-  explanation="Prompt zəncirlənməsi mürəkkəb tapşırıqları ixtisaslaşmış addımlara bölür. Hər addım tək bir şeyə yaxşı fokuslanda bilər, ara nəticələr doğrulana bilər, xətalar tutulub yenidən sınaqdan keçirilə bilər və ümumi keyfiyyət ixtisaslaşma vasitəsilə yaxşılaşır."
+  explanation="Prompt zəncirlənməsi mürəkkəb tapşırıqları ixtisaslaşmış addımlara bölür. Hər addım bir işi yaxşı görməyə fokuslana bilir, ara nəticələr doğrulana bilir, xətalar tutulub təkrar cəhd edilə bilir və ixtisaslaşma hesabına ümumi keyfiyyət yüksəlir."
 />
 
-Növbəti fəsildə, çoxrejimli prompting-i kəşf edəcəyik: şəkillər, səs və digər mətn xarici məzmunlarla işləmə.
+Növbəti fəsildə kənar halların necə idarə olunacağını araşdıracağıq: boş girişlər, qeyri-müəyyən istəklər və promptlarınızı qəsdən sındırmaq cəhdləri.

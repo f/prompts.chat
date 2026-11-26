@@ -1,43 +1,43 @@
-Prompt zincirleme, karmaşık görevleri daha basit promptlar dizisine böler; her adımın çıktısı bir sonrakine beslenir. Bu teknik güvenilirliği dramatik biçimde artırır ve tek bir promptla imkansız olan sofistike iş akışlarını mümkün kılar.
+Prompt zincirleme, karmaşık bir görevi daha basit promptlardan oluşan bir diziye böler; her adımın çıktısı bir sonraki adımın girdisi olur. Bu teknik güvenilirliği kayda değer ölçüde artırır ve tek bir promptla mümkün olmayan gelişmiş iş akışlarının önünü açar.
 
-<Callout type="tip" title="Montaj Hatları Gibi Düşünün">
-Tıpkı bir fabrika montaj hattının imalatı uzmanlaşmış istasyonlara bölmesi gibi, prompt zincirleme yapay zeka görevlerini uzmanlaşmış adımlara böler. Her adım bir şeyi iyi yapar ve birleşik çıktı her şeyi aynı anda yapmaya çalışmaktan çok daha iyidir.
+<Callout type="tip" title="Bir Montaj Hattı Düşünün">
+Fabrikadaki bir montaj hattı üretimi her biri tek bir işte uzmanlaşmış istasyonlara nasıl bölüyorsa, prompt zincirleme de yapay zeka görevlerini uzmanlaşmış adımlara böler. Her adım tek bir işi iyi yapar ve ortaya çıkan sonuç, her şeyi aynı anda yapmaya çalışmaktan çok daha iyidir.
 </Callout>
 
-## Neden Promptları Zincirliyoruz?
+## Promptlar Neden Zincirlenir?
 
-Tek promptlar karmaşık görevlerde zorlanır çünkü aynı anda çok fazla şey yapmaya çalışırlar. Yapay zeka aynı anda anlamak, analiz etmek, planlamak ve üretmek zorundadır, bu da hatalara ve tutarsızlıklara yol açar.
+Tek bir prompt karmaşık görevlerde zorlanır, çünkü aynı anda çok fazla işe girişir. Yapay zeka bir yandan anlamaya, bir yandan analiz etmeye, planlamaya ve üretmeye çalışır; bu da hatalara ve tutarsızlıklara yol açar.
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
   <div className="border rounded-lg bg-red-50/50 dark:bg-red-950/20 border-red-200 dark:border-red-900">
-    <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> Tek Prompt Zorlanır</p>
+    <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> Tek Promptun Zorlandığı Yerler</p>
     <div className="text-sm p-4 pt-2 space-y-1">
-      <p className="m-0!">Çok adımlı muhakeme karışır</p>
-      <p className="m-0!">Farklı "düşünme modları" çatışır</p>
-      <p className="m-0!">Karmaşık çıktılar tutarsız olur</p>
-      <p className="m-0!">Kalite kontrolü fırsatı yok</p>
+      <p className="m-0!">Çok adımlı akıl yürütme birbirine karışır</p>
+      <p className="m-0!">Farklı "düşünme kipleri" çatışır</p>
+      <p className="m-0!">Karmaşık çıktılar tutarlılığını yitirir</p>
+      <p className="m-0!">Kalite kontrolüne fırsat kalmaz</p>
     </div>
   </div>
   <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
-    <p className="text-sm font-semibold text-green-700 dark:text-green-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconCheck className="h-4 w-4" /> Zincirleme Bunu Çözer</p>
+    <p className="text-sm font-semibold text-green-700 dark:text-green-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconCheck className="h-4 w-4" /> Zincirlemenin Çözümü</p>
     <div className="text-sm p-4 pt-2 space-y-1">
-      <p className="m-0!">Her adım tek göreve odaklanır</p>
-      <p className="m-0!">Her mod için uzmanlaşmış promptlar</p>
+      <p className="m-0!">Her adım tek bir işe odaklanır</p>
+      <p className="m-0!">Her kip için ona özel bir prompt</p>
       <p className="m-0!">Adımlar arasında doğrulama</p>
-      <p className="m-0!">Bireysel adımları hata ayıkla ve iyileştir</p>
+      <p className="m-0!">Adımları tek tek ayıklayıp iyileştirme</p>
     </div>
   </div>
 </div>
 
 ## Temel Zincirleme Kalıbı
 
-En basit zincir, çıktıyı bir prompttan doğrudan sonrakine aktarır. Her adımın net, odaklı bir amacı vardır.
+En basit zincir, bir promptun çıktısını doğrudan bir sonrakine aktarır. Her adımın net ve odaklı bir amacı vardır.
 
 <div className="my-6 flex items-center justify-center gap-3 p-6 bg-muted/30 rounded-lg overflow-x-auto">
   <div className="flex flex-col items-center">
     <div className="px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
       <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">Prompt 1</p>
-      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">(Çıkar)</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">(Ayıkla)</p>
     </div>
     <p className="text-xs text-muted-foreground mt-1 m-0!">Girdi</p>
   </div>
@@ -47,7 +47,7 @@ En basit zincir, çıktıyı bir prompttan doğrudan sonrakine aktarır. Her ad�
       <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">Prompt 2</p>
       <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">(Analiz Et)</p>
     </div>
-    <p className="text-xs text-muted-foreground mt-1 m-0!">Ara</p>
+    <p className="text-xs text-muted-foreground mt-1 m-0!">Ara Sonuç</p>
   </div>
   <div className="text-purple-400 dark:text-purple-500">→</div>
   <div className="flex flex-col items-center">
@@ -59,187 +59,323 @@ En basit zincir, çıktıyı bir prompttan doğrudan sonrakine aktarır. Her ad�
   </div>
 </div>
 
-<Callout type="info" title="ÇDÜ Kalıbı">
-En yaygın zincir kalıbı **Çıkar → Dönüştür → Üret**'tir. Önce ham veriyi çıkar, sonra amacın için yeniden şekillendir, sonra son çıktıyı üret. Bu kalıp neredeyse her içerik görevi için çalışır.
+<Callout type="info" title="ADÜ Kalıbı">
+En yaygın zincir kalıbı **Ayıkla → Dönüştür → Üret** kalıbıdır. Önce ham veriyi ayıklarsınız, sonra onu amacınıza göre yeniden biçimlendirir, en sonunda da nihai çıktıyı üretirsiniz. Bu kalıp, içerikle ilgili neredeyse her işte işe yarar.
 </Callout>
 
 ## Zincir Türleri
 
-Farklı görevler farklı zincir mimarileri gerektirir. İş akışınıza uyan kalıbı seçin.
+Her görev farklı bir zincir yapısı ister. İş akışınıza uyan kalıbı seçin.
 
 <ChainFlowDemo />
 
 ### Sıralı Zincir
 
-En basit kalıp: her adım öncekine bağlıdır. Her koşucunun bayrağı sonrakine geçirdiği bir bayrak yarışı gibi düşünün.
+En yalın kalıp budur: her adım bir öncekine dayanır. Her koşucunun bayrağı bir sonrakine devrettiği bir bayrak yarışı gibi düşünebilirsiniz.
 
 <ChainExample 
   type="sequential"
   steps={[
-    { step: "Adım 1: Çıkar", prompt: "Şundan tüm tarihleri, isimleri ve sayıları çıkar: [metin]", output: '{ tarihler: ["2024-01-15", "2024-02-20"], isimler: ["Ahmet Yılmaz", "Acme A.Ş."], sayilar: [15000, 42] }' },
-    { step: "Adım 2: Analiz Et", prompt: "Bu çıkarılan veri göz önüne alındığında: [adim1_cikti], ilişkileri ve kalıpları belirle.", output: '{ kaliplar: ["Aylık toplantılar planlanmış"], iliskiler: ["Ahmet Yılmaz Acme A.Ş.\'de çalışıyor"] }' },
-    { step: "Adım 3: Üret", prompt: "Bu kalıpları kullanarak: [adim2_cikti], en önemli bulguları vurgulayan bir özet rapor yaz.", output: "Özet Rapor: Belgenin analizi Ahmet Yılmaz ile Acme A.Ş. arasında planlanmış aylık toplantılarla bir iş ilişkisi olduğunu ortaya koyuyor..." }
+    { step: "Adım 1: Ayıkla", prompt: "Şu metindeki tüm tarihleri, isimleri ve sayıları ayıkla: [metin]", output: '{ tarihler: ["2024-01-15", "2024-02-20"], isimler: ["Ahmet Yılmaz", "Acme A.Ş."], sayilar: [15000, 42] }' },
+    { step: "Adım 2: Analiz Et", prompt: "Ayıklanan şu verilerdeki ilişkileri ve örüntüleri belirle: [adim1_cikti]", output: '{ oruntuler: ["Aylık toplantılar planlanmış"], iliskiler: ["Ahmet Yılmaz, Acme A.Ş.\'de çalışıyor"] }' },
+    { step: "Adım 3: Üret", prompt: "Şu örüntüleri kullanarak en önemli bulguları öne çıkaran bir özet rapor yaz: [adim2_cikti]", output: "Özet Rapor: Belgenin analizi, Ahmet Yılmaz ile Acme A.Ş. arasında, aylık toplantılarla sürdürülen bir iş ilişkisi olduğunu ortaya koyuyor..." }
   ]}
 />
 
 ### Paralel Zincir
 
-Aynı girdi üzerinde birden fazla perspektife ihtiyacınız olduğunda, promptları paralel çalıştırın ve sonuçları birleştirin. Bu sıralı zincirlerden daha hızlıdır ve daha zengin analiz sağlar.
+Aynı girdiye birden fazla açıdan bakmanız gerektiğinde promptları paralel çalıştırın ve sonuçları birleştirin. Bu yöntem sıralı zincirlerden daha hızlıdır ve daha zengin bir analiz sunar.
 
 <ChainExample 
   type="parallel"
   steps={[
-    { step: "Girdi", prompt: "Ürün yorumu metni", output: '"Bu kulaklıkları çok sevdim! Pil ömrü sonsuza kadar sürüyor ve kasadaki ekran çok kullanışlı. Günlük işe gidişlerim için mükemmel."' },
-    { step: "Dal A: Duygu", prompt: "Duygu analizi yap: [metin]", output: '{ duygu: "pozitif", puan: 0.85 }' },
-    { step: "Dal B: Özellikler", prompt: "Bahsedilen özellikleri çıkar: [metin]", output: '{ ozellikler: ["pil", "ekran"] }' },
+    { step: "Girdi", prompt: "Ürün yorumu metni", output: '"Bu kulaklıklara bayıldım! Pili bitmek bilmiyor, kutusundaki ekran da çok kullanışlı. İşe gidip gelirken tam aradığım şey."' },
+    { step: "Dal A: Duygu", prompt: "Duygu analizi yap: [metin]", output: '{ duygu: "olumlu", puan: 0.85 }' },
+    { step: "Dal B: Özellikler", prompt: "Sözü edilen özellikleri ayıkla: [metin]", output: '{ ozellikler: ["pil", "ekran"] }' },
     { step: "Dal C: Persona", prompt: "Kullanıcı personasını belirle: [metin]", output: '{ persona: "işe gidip gelen" }' },
-    { step: "Birleştir", prompt: "Analizleri birleşik rapora birleştir", output: "Birleşik Rapor: Pil ve ekranı vurgulayan işe gidip gelen birinden pozitif yorum." }
+    { step: "Birleştir", prompt: "Analizleri tek bir raporda birleştir", output: "Birleşik Rapor: İşe gidip gelen bir kullanıcıdan, pili ve ekranı öne çıkaran olumlu bir yorum." }
   ]}
 />
 
 ### Koşullu Zincir
 
-Sınıflandırmaya göre girdileri farklı yollardan yönlendir. Bu, yapay zekanın önce girdiyi kategorize ettiği, sonra her kategoriyi farklı ele aldığı bir karar ağacı gibidir.
+Girdileri, sınıflandırma sonucuna göre farklı yollara yönlendirin. Bu, yapay zekanın önce girdiyi bir kategoriye koyduğu, ardından her kategoriyi ayrı bir şekilde ele aldığı bir karar ağacına benzer.
 
 <ChainExample 
   type="conditional"
   steps={[
-    { step: "Girdiyi Sınıflandır", prompt: "Bu müşteri mesajını şu şekilde sınıflandır: şikayet, soru, geri bildirim veya diğer.\n\nMesaj: [metin]", output: '{ siniflandirma: "şikayet", guven: 0.92 }' },
-    { step: "Yol: Soru (atlandı)", prompt: "Hangi bilgiye ihtiyaç olduğunu belirle", output: "Atlandı - girdi şikayet olarak sınıflandırıldı" },
-    { step: "Yol: Şikayet", prompt: "Sorunu ve ciddiyeti belirle: [metin]", output: '{ sorun: "geciken kargo", ciddiyet: "orta" }' },
-    { step: "Yanıt Üret", prompt: "Çözümlü empatik yanıt üret: [analiz]", output: "Sayın Müşterimiz, Gecikme için içtenlikle özür dileriz. Siparişiniz hızlandırıldı..." }
+    { step: "Girdiyi Sınıflandır", prompt: "Bu müşteri mesajını şu kategorilerden birine yerleştir: şikâyet, soru, geri bildirim veya diğer.\n\nMesaj: [metin]", output: '{ siniflandirma: "şikâyet", guven: 0.92 }' },
+    { step: "Yol: Soru (atlandı)", prompt: "Hangi bilgiye ihtiyaç duyulduğunu belirle", output: "Atlandı - girdi şikâyet olarak sınıflandırıldı" },
+    { step: "Yol: Şikâyet", prompt: "Sorunu ve ciddiyetini belirle: [metin]", output: '{ sorun: "geciken kargo", ciddiyet: "orta" }' },
+    { step: "Yanıt Üret", prompt: "Çözüm içeren, empatik bir yanıt üret: [analiz]", output: "Değerli Müşterimiz, yaşanan gecikme için içtenlikle özür dileriz. Siparişiniz öncelikli gönderime alındı..." }
   ]}
 />
 
 ### Yinelemeli Zincir
 
-Kalite standartlarını karşılayana kadar çıktıyı iyileştirmeye devam et. Yapay zeka tatmin olana veya maksimum iterasyona ulaşana kadar bir döngüde üretir, değerlendirir ve iyileştirir.
+Çıktı kalite çıtasını aşana kadar iyileştirmeye devam edin. Yapay zeka, sonuçtan memnun kalana ya da en fazla tur sayısına ulaşana kadar bir döngü içinde üretir, değerlendirir ve iyileştirir.
 
-<Callout type="warning" title="İterasyon Limitleri Koy">
-Sonsuz döngüleri önlemek ve maliyetleri kontrol etmek için her zaman maksimum iterasyon sayısı (genellikle 3-5) belirleyin. Azalan getiriler kanunu geçerlidir: iyileştirmenin çoğu ilk 2-3 iterasyonda gerçekleşir.
+<Callout type="warning" title="Tur Sınırı Koyun">
+Sonsuz döngülerin önüne geçmek ve maliyeti kontrol altında tutmak için her zaman bir en fazla tur sayısı belirleyin (genellikle 3-5). Burada da azalan verim yasası geçerlidir: iyileşmenin büyük kısmı ilk 2-3 turda gerçekleşir.
 </Callout>
 
 <ChainExample 
   type="iterative"
   steps={[
-    { step: "Taslak Üret", prompt: "[kablosuz kulaklık] için ürün açıklaması yaz", output: "Bu kablosuz kulaklıklar günlük kullanım için iyi ses kalitesi ve rahat oturuş sunar." },
-    { step: "Değerlendir (Puan: 5)", prompt: "Bu açıklamayı netlik, ikna edicilik, doğruluk üzerinden 1-10 puanla.\n\nAçıklama: [mevcut_taslak]", output: '{ puan: 5, iyilestirmeler: ["Spesifik özellikler ekle", "Duygusal faydaları dahil et", "Pil ömründen bahset", "Eylem çağrısı ekle"] }' },
-    { step: "Taslağı İyileştir", prompt: "Bu açıklamayı şu geri bildirime göre iyileştir:\n\nMevcut: [mevcut_taslak]\nGeri Bildirim: [iyilestirmeler]", output: "Premium kablosuz kulaklıklarımızla kristal netliğinde ses deneyimi yaşayın. 30 saatlik pil ömrü, aktif gürültü engelleme ve gün boyu rahat kalan ergonomik tasarım. Müzik severler ve profesyoneller için mükemmel. Şimdi sipariş verin ve dinleme deneyiminizi dönüştürün." },
-    { step: "Değerlendir (Puan: 8)", prompt: "Bu açıklamayı 1-10 puanla.\n\nAçıklama: [iyilestirilmis_taslak]", output: '{ puan: 8, iyilestirmeler: ["Küçük: Garanti bilgisi eklenebilir"] }\n\n✓ Puan >= 8: DÖNGÜDEN ÇIK' }
+    { step: "Taslak Üret", prompt: "Şu ürün için bir tanıtım metni yaz: [kablosuz kulaklık]", output: "Bu kablosuz kulaklıklar günlük kullanım için iyi ses kalitesi ve rahat bir kullanım sunar." },
+    { step: "Değerlendir (Puan: 5)", prompt: "Bu metni netlik, ikna gücü ve doğruluk açısından 1-10 arasında puanla.\n\nMetin: [mevcut_taslak]", output: '{ puan: 5, iyilestirmeler: ["Somut özellikler ekle", "Duygusal faydalara değin", "Pil ömründen söz et", "Harekete geçirici bir çağrı ekle"] }' },
+    { step: "Taslağı İyileştir", prompt: "Bu metni aşağıdaki geri bildirime göre iyileştir:\n\nMevcut: [mevcut_taslak]\nGeri bildirim: [iyilestirmeler]", output: "Premium kablosuz kulaklıklarımızla kristal netliğinde sesin tadını çıkarın. 30 saatlik pil ömrü, aktif gürültü engelleme ve gün boyu rahat ettiren ergonomik tasarım bir arada. Müzikseverler ve profesyoneller için ideal. Hemen sipariş verin, dinleme deneyiminiz baştan değişsin." },
+    { step: "Değerlendir (Puan: 8)", prompt: "Bu metni netlik, ikna gücü ve doğruluk açısından 1-10 arasında puanla.\n\nMetin: [iyilestirilmis_taslak]", output: '{ puan: 8, iyilestirmeler: ["Küçük: Garanti bilgisi eklenebilir"] }\n\n✓ Puan >= 8: DÖNGÜDEN ÇIK' }
   ]}
 />
 
 ## Yaygın Zincir Kalıpları
 
-Bu savaşta test edilmiş kalıplar yaygın problemleri çözer. Başlangıç noktası olarak kullanın ve ihtiyaçlarınıza göre uyarlayın.
+Bu kalıplar sahada defalarca sınanmış ve sık karşılaşılan sorunları çözer. Bunları başlangıç noktası olarak alın ve ihtiyacınıza göre uyarlayın.
 
-### Çıkar → Dönüştür → Üret
+### Ayıkla → Dönüştür → Üret
 
-İçerik işlemenin iş atı. Veriyi çek, yeniden şekillendir, sonra yeni bir şey oluştur.
+İçerik işlemenin emektar beygiri. Veriyi çekip çıkarın, yeniden biçimlendirin, sonra ondan yeni bir şey üretin.
 
 <div className="mb-4 p-3 rounded-lg bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800">
-  <p className="text-xs font-semibold text-blue-700 dark:text-blue-300 mb-1 m-0!">En İyi Kullanım</p>
-  <p className="text-sm text-blue-600 dark:text-blue-400 m-0!">Belge özetleme, rapor üretimi, içerik yeniden kullanımı, veriden anlatıya dönüşüm</p>
+  <p className="text-xs font-semibold text-blue-700 dark:text-blue-300 mb-1 m-0!">En Uygun Olduğu İşler</p>
+  <p className="text-sm text-blue-600 dark:text-blue-400 m-0!">Belge özetleme, rapor hazırlama, içeriği yeni biçimlere uyarlama, veriyi anlatıya dönüştürme</p>
 </div>
+
+<ChainExample 
+  type="sequential"
+  steps={[
+    { step: "Ayıkla", prompt: "Bu belgeden şunları ayıkla:\n- Ana konu\n- Temel argümanlar (liste)\n- Destekleyici kanıtlar (liste)\n- Sonuçlar\nJSON olarak döndür.", output: '{ "konu": "İklim değişikliğinin etkileri", "argumanlar": ["Yükselen sıcaklıklar", "Deniz seviyesindeki artış"], "kanitlar": ["NASA verileri", "IPCC raporları"], "sonuclar": ["Acil önlem gerekiyor"] }' },
+    { step: "Dönüştür", prompt: "Bu bilgileri [üst düzey yöneticiler] için yeniden düzenle:\n[ayiklanan_veri]\nOdak: ekonomik etkiler\nÇıkar: teknik jargon", output: '{ "ozet": "İklim kaynaklı iş riskleri", "temel_noktalar": ["Tedarik zincirinde aksamalar", "Artan sigorta maliyetleri"], "aksiyonlar": ["Zayıf noktaları belirle", "Uyum planı hazırla"] }' },
+    { step: "Üret", prompt: "Yeniden düzenlenen bu bilgilerle bir [yönetici özeti] yaz:\n[donusturulmus_veri]\nTon: profesyonel\nUzunluk: 200 kelime", output: "Yönetici Özeti: İklim değişikliği, şirketimiz için ciddi operasyonel riskler barındırıyor. Başlıca endişeler, aşırı hava olaylarının yol açtığı tedarik zinciri aksamaları ve yükselen sigorta primleri. Tesislerimizin zayıf noktalarının vakit kaybetmeden değerlendirilmesini ve uyum stratejilerinin geliştirilmesini öneriyoruz..." }
+  ]}
+/>
 
 ### Analiz Et → Planla → Uygula
 
-Kod yeniden düzenleme, proje planlama veya harekete geçmeden önce anlamanız gereken herhangi bir görev için mükemmel.
+Kodu yeniden düzenlemek, proje planlamak ya da harekete geçmeden önce durumu anlamanız gereken her iş için biçilmiş kaftan.
 
 <div className="mb-4 p-3 rounded-lg bg-purple-50/50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-800">
-  <p className="text-xs font-semibold text-purple-700 dark:text-purple-300 mb-1 m-0!">En İyi Kullanım</p>
-  <p className="text-sm text-purple-600 dark:text-purple-400 m-0!">Kod yeniden düzenleme, proje planlama, sorun giderme, stratejik karar alma, karmaşık problem çözme</p>
+  <p className="text-xs font-semibold text-purple-700 dark:text-purple-300 mb-1 m-0!">En Uygun Olduğu İşler</p>
+  <p className="text-sm text-purple-600 dark:text-purple-400 m-0!">Kodu yeniden düzenleme, proje planlama, sorun giderme, stratejik karar alma, karmaşık problem çözme</p>
 </div>
+
+<ChainExample 
+  type="sequential"
+  steps={[
+    { step: "Analiz Et", prompt: "Bu kod tabanının yapısını analiz et ve şunları belirle:\n- Mimari kalıp\n- Ana bileşenler\n- Bağımlılıklar\n- Olası sorunlar\n[kod]", output: '{ "kalip": "MVC", "bilesenler": ["UserController", "AuthService", "Database"], "bagimliliklar": ["express", "mongoose"], "sorunlar": ["Girdi doğrulaması yok", "Gizli anahtarlar koda gömülü"] }' },
+    { step: "Planla", prompt: "Bu analize dayanarak bir yeniden düzenleme planı hazırla:\n[analiz_ciktisi]\nHedef: güvenliği artırmak\nKısıt: geriye dönük uyumluluğu bozmamak", output: '{ "adimlar": ["1. Girdi doğrulama ara katmanı ekle", "2. Gizli anahtarları ortam değişkenlerine taşı", "3. İstek sınırlaması ekle"], "oncelik": "yüksek", "tahmini_sure": "4 saat" }' },
+    { step: "Uygula", prompt: "Bu planın 1. adımını uygula:\n[plan_ciktisi]\nYeniden düzenlenmiş kodu açıklamalarıyla birlikte göster.", output: "// Doğrulama ara katmanı eklendi\nconst validateInput = (req, res, next) => {\n  const { email, password } = req.body;\n  if (!email || !isValidEmail(email)) {\n    return res.status(400).json({ error: 'Invalid email' });\n  }\n  next();\n};" }
+  ]}
+/>
 
 ### Üret → Eleştir → İyileştir
 
-Öz iyileştirme döngüsü. İçerik üret, yapay zekanın eleştirel değerlendirmesini al, sonra o geri bildirime göre iyileştir.
+Kendi kendini geliştiren döngü. Önce içerik üretirsiniz, ardından yapay zekadan onu eleştirel bir gözle değerlendirmesini istersiniz, sonra da bu geri bildirime göre metni iyileştirirsiniz. Bu, profesyonel yazarlarla editörlerin birlikte çalışma biçimini taklit eder.
 
 <div className="mb-4 p-3 rounded-lg bg-green-50/50 dark:bg-green-950/20 border border-green-200 dark:border-green-800">
-  <p className="text-xs font-semibold text-green-700 dark:text-green-300 mb-1 m-0!">En İyi Kullanım</p>
-  <p className="text-sm text-green-600 dark:text-green-400 m-0!">Pazarlama metni, yaratıcı yazı, e-posta taslakları, sunumlar, revizyondan faydalanan herhangi bir içerik</p>
+  <p className="text-xs font-semibold text-green-700 dark:text-green-300 mb-1 m-0!">En Uygun Olduğu İşler</p>
+  <p className="text-sm text-green-600 dark:text-green-400 m-0!">Pazarlama metinleri, yaratıcı yazarlık, e-posta taslakları, sunumlar, gözden geçirilmekle güzelleşen her türlü içerik</p>
 </div>
 
-## Zincirlerde Hata İşleme
+<ChainExample 
+  type="iterative"
+  steps={[
+    { step: "Üret", prompt: "[yoğun çalışan profesyonelleri] hedefleyen bir [fitness uygulaması] için pazarlama e-postası yaz.", output: "Konu: Hemen Forma Gir!\n\nMerhaba! Uygulamamız egzersiz yapmana yardımcı olur. Hemen indir ve fitness yolculuğuna başla. Teşekkürler!" },
+    { step: "Eleştir", prompt: "Bir pazarlama uzmanı olarak bu e-postayı eleştir:\n[uretilen_eposta]\nDeğerlendir: konu satırı, giriş cümlesi, değer önerisi, harekete geçirici çağrı, ton\nHer birini 1-10 arasında puanla.", output: '{ "konu_satiri": 4, "giris": 3, "deger_onerisi": 2, "cagri": 5, "ton": 4, "geri_bildirim": "Fazla genel, somut fayda yok, aciliyet hissi zayıf" }' },
+    { step: "İyileştir", prompt: "E-postayı bu geri bildirimi dikkate alarak yeniden yaz:\nOrijinal: [uretilen_eposta]\nEleştiri: [elestiri_ciktisi]\nEn düşük puan alan unsurlara odaklan.", output: "Konu: Öğle Arasına Sığan 15 Dakikalık Antrenmanlar\n\nProgramınız mı yoğun? Sizi anlıyoruz. Uygulamamız, kaybedecek tek dakikası olmayan profesyoneller için bilimsel temelli antrenmanlar sunuyor. Günde yalnızca 15 dakikayla sağlığını dönüştüren 50.000'i aşkın yöneticiye katılın. Ücretsiz denemenizi hemen başlatın; gelecekteki haliniz size teşekkür edecek." },
+    { step: "Son Puan", prompt: "İyileştirilmiş e-postayı yeniden değerlendir.", output: '{ "konu_satiri": 8, "giris": 8, "deger_onerisi": 9, "cagri": 8, "ton": 9, "iyilesme": "toplamda +24 puan" }' }
+  ]}
+/>
 
-Zincirler herhangi bir adımda başarısız olabilir. Zincirlerinizi sağlam yapmak için doğrulama, yeniden deneme ve yedekler oluşturun.
+## Zincirleri Uygulamaya Dökmek
+
+Zincirleri denemek için elle, gerçek sistemlerde ise kodla kurabilirsiniz. Basit başlayın, ihtiyaç duydukça karmaşıklık ekleyin.
+
+### Elle Zincirleme
+
+Kopyala-yapıştır yöntemi, prototip hazırlamak ve denemeler yapmak için birebirdir. Her promptu elle çalıştırın, çıktıyı inceleyin ve bir sonraki prompta yapıştırın.
+
+<CodeEditor 
+  language="python"
+  filename="manual_chain.py"
+  code={`# Elle zincirleme için sözde kod
+step1_output = call_ai("Şu metindeki varlıkları ayıkla: " + input_text)
+step2_output = call_ai("İlişkileri analiz et: " + step1_output)
+final_output = call_ai("Rapor üret: " + step2_output)`}
+/>
+
+### Kodla Zincirleme
+
+Gerçek kullanıma açılan sistemlerde zinciri kodla otomatikleştirin. Böylece hata yönetimi, kayıt tutma ve uygulamanızla bütünleşme mümkün hale gelir.
+
+<CodeEditor 
+  language="python"
+  filename="chain.py"
+  code={`import json
+
+def analysis_chain(document):
+    # Adım 1: Özetle
+    summary = call_ai(f"""
+        Bu belgenin ana noktalarını 5 madde halinde özetle:
+        {document}
+    """)
+    
+    # Adım 2: Varlıkları ayıkla
+    entities = call_ai(f"""
+        Bu özetteki özel adları (kişiler, kurumlar, yerler)
+        ayıkla. JSON olarak döndür.
+        {summary}
+    """)
+    
+    # Adım 3: İçgörü üret
+    insights = call_ai(f"""
+        Bu özete ve varlıklara dayanarak bir iş analisti için
+        uygulanabilir 3 içgörü üret.
+        Özet: {summary}
+        Varlıklar: {entities}
+    """)
+    
+    return {
+        "summary": summary,
+        "entities": json.loads(entities),
+        "insights": insights
+    }`}
+/>
+
+### Zincir Şablonları Kullanmak
+
+Zincirleri, yeniden kullanması ve değiştirmesi kolay yapılandırma dosyaları olarak tanımlayın. Böylece prompt mantığı uygulama kodundan ayrı durur.
+
+<CodeEditor 
+  language="yaml"
+  filename="chain_template.yaml"
+  code={`name: "Belge Analizi Zinciri"
+steps:
+  - name: "extract"
+    prompt: |
+      Bu belgedeki temel bilgileri ayıkla:
+      {input}
+      Şu alanları içeren bir JSON döndür: konular, varlıklar, tarihler, sayılar
+    
+  - name: "analyze"
+    prompt: |
+      Ayıklanan bu verilerdeki örüntüleri analiz et:
+      {extract.output}
+      Belirle: eğilimler, aykırılıklar, ilişkiler
+    
+  - name: "report"
+    prompt: |
+      Şunlara dayanarak bir yönetici özeti hazırla:
+      Veri: {extract.output}
+      Analiz: {analyze.output}
+      Biçim: 3 paragraf, kurumsal bir ton`}
+/>
+
+## Zincirlerde Hata Yönetimi
+
+Zincirler herhangi bir adımda tökezleyebilir. Zincirlerinizi sağlamlaştırmak için doğrulama, yeniden deneme ve yedek planlar ekleyin.
 
 <ChainErrorDemo />
 
-<Callout type="warning" title="Çöp Girer, Çöp Çıkar">
-Bir adım kötü çıktı üretirse, sonraki her adım etkilenecektir. Kritik ara sonuçları her zaman ileriye aktarmadan önce doğrulayın.
+<Callout type="warning" title="Çöp Girerse Çöp Çıkar">
+Bir adım hatalı çıktı üretirse, ondan sonraki her adım bundan etkilenir. Kritik ara sonuçları bir sonraki adıma geçirmeden önce mutlaka doğrulayın.
 </Callout>
 
-## Zincir Optimizasyonu
+### Adımlar Arasında Doğrulama
 
-Zinciriniz çalıştıktan sonra, hız, maliyet ve güvenilirlik için optimize edin.
+Yapılandırılmış veri üreten her adımın ardından bir doğrulama adımı ekleyin. Böylece hatalar zincir boyunca yayılmadan erkenden yakalanır.
+
+<ValidationDemo />
+
+### Yedek Zincirler
+
+Asıl yaklaşımınız başarısız olduğunda elinizde daha basit bir yedek bulunsun. Bu, biraz yetenekten vazgeçip güvenilirlik kazanmak demektir.
+
+<FallbackDemo />
+
+## Zinciri Optimize Etmek
+
+Zinciriniz çalışır hale geldikten sonra onu hız, maliyet ve güvenilirlik açısından optimize edin. Bu üçü çoğu zaman birbirinin aleyhine işler.
 
 <div className="my-6 grid md:grid-cols-3 gap-4">
   <div className="border rounded-lg bg-blue-50/50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900 p-4">
-    <p className="text-sm font-semibold text-blue-700 dark:text-blue-400 mb-2 m-0!">Gecikmeyi Azaltma</p>
+    <p className="text-sm font-semibold text-blue-700 dark:text-blue-400 mb-2 m-0!">Gecikmeyi Azaltmak</p>
     <div className="text-sm space-y-1">
-      <p className="m-0!">Bağımsız adımları paralelize et</p>
-      <p className="m-0!">Ara sonuçları önbelleğe al</p>
-      <p className="m-0!">Basit adımlar için daha küçük modeller kullan</p>
+      <p className="m-0!">Birbirinden bağımsız adımları paralel çalıştırın</p>
+      <p className="m-0!">Ara sonuçları önbelleğe alın</p>
+      <p className="m-0!">Basit adımlarda daha küçük modeller kullanın</p>
+      <p className="m-0!">Benzer işlemleri toplu halde yapın</p>
     </div>
   </div>
   <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900 p-4">
-    <p className="text-sm font-semibold text-green-700 dark:text-green-400 mb-2 m-0!">Maliyeti Azaltma</p>
+    <p className="text-sm font-semibold text-green-700 dark:text-green-400 mb-2 m-0!">Maliyeti Düşürmek</p>
     <div className="text-sm space-y-1">
-      <p className="m-0!">Sınıflandırma için ucuz modeller kullan</p>
-      <p className="m-0!">Döngülerde iterasyonları sınırla</p>
-      <p className="m-0!">Mümkünse kısa devre yap</p>
+      <p className="m-0!">Sınıflandırma için daha ucuz modeller kullanın</p>
+      <p className="m-0!">Döngülerdeki tur sayısını sınırlayın</p>
+      <p className="m-0!">Mümkün olduğunda zinciri erken sonlandırın</p>
+      <p className="m-0!">Tekrarlanan sorguları önbelleğe alın</p>
     </div>
   </div>
   <div className="border rounded-lg bg-purple-50/50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-900 p-4">
-    <p className="text-sm font-semibold text-purple-700 dark:text-purple-400 mb-2 m-0!">Güvenilirliği Artırma</p>
+    <p className="text-sm font-semibold text-purple-700 dark:text-purple-400 mb-2 m-0!">Güvenilirliği Artırmak</p>
     <div className="text-sm space-y-1">
-      <p className="m-0!">Adımlar arasında doğrulama ekle</p>
-      <p className="m-0!">Yeniden deneme mantığı dahil et</p>
-      <p className="m-0!">Yedek yollar uygula</p>
+      <p className="m-0!">Adımlar arasına doğrulama ekleyin</p>
+      <p className="m-0!">Yeniden deneme mantığı kurun</p>
+      <p className="m-0!">Ara sonuçları kayıt altına alın</p>
+      <p className="m-0!">Yedek yollar tanımlayın</p>
     </div>
   </div>
 </div>
+
+## Gerçek Hayattan Bir Zincir Örneği
+
+Şimdi gerçek kullanımdaki eksiksiz bir zinciri baştan sona inceleyelim. Bu içerik hattı, ham bir fikri cilalanmış bir makale paketine dönüştürüyor.
+
+### İçerik Üretim Zinciri
+
+<ContentPipelineDemo />
 
 ## Özet
 
-Prompt zincirleme, imkansız görevleri başarılabilir adımlara bölerek yapay zekanın başarabileceklerini dönüştürür.
+Prompt zincirleme, altından kalkılamaz görünen işleri yönetilebilir adımlara bölerek yapay zekayla yapabileceklerinizi kökten değiştirir.
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
   <div className="border rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900 p-4">
-    <p className="text-sm font-semibold text-amber-700 dark:text-amber-400 mb-2 m-0!">Zincirleme Şunları Sağlar</p>
+    <p className="text-sm font-semibold text-amber-700 dark:text-amber-400 mb-2 m-0!">Zincirlemenin Kazandırdıkları</p>
     <div className="text-sm space-y-1">
-      <p className="m-0!">Karmaşık çok adımlı iş akışları</p>
-      <p className="m-0!">Uzmanlaşma yoluyla daha yüksek kalite</p>
-      <p className="m-0!">Daha iyi hata işleme ve doğrulama</p>
-      <p className="m-0!">Modüler, yeniden kullanılabilir prompt bileşenleri</p>
+      <p className="m-0!">Karmaşık, çok adımlı iş akışları</p>
+      <p className="m-0!">Uzmanlaşma sayesinde daha yüksek kalite</p>
+      <p className="m-0!">Daha iyi hata yönetimi ve doğrulama</p>
+      <p className="m-0!">Modüler, yeniden kullanılabilir prompt parçaları</p>
     </div>
   </div>
   <div className="border rounded-lg bg-cyan-50/50 dark:bg-cyan-950/20 border-cyan-200 dark:border-cyan-900 p-4">
-    <p className="text-sm font-semibold text-cyan-700 dark:text-cyan-400 mb-2 m-0!">Ana İlkeler</p>
+    <p className="text-sm font-semibold text-cyan-700 dark:text-cyan-400 mb-2 m-0!">Temel İlkeler</p>
     <div className="text-sm space-y-1">
-      <p className="m-0!">Karmaşık görevleri basit adımlara böl</p>
-      <p className="m-0!">Adımlar arası net arayüzler tasarla</p>
-      <p className="m-0!">Ara çıktıları doğrula</p>
-      <p className="m-0!">Hata işleme ve yedekler oluştur</p>
+      <p className="m-0!">Karmaşık görevleri basit adımlara bölün</p>
+      <p className="m-0!">Adımlar arasındaki geçişleri net tanımlayın</p>
+      <p className="m-0!">Ara çıktıları doğrulayın</p>
+      <p className="m-0!">Hata yönetimini ve yedekleri baştan kurun</p>
+      <p className="m-0!">Kendi kısıtlarınıza göre optimize edin</p>
     </div>
   </div>
 </div>
 
-<Callout type="tip" title="Basit Başla">
-2-3 adımlı sıralı bir zincirle başlayın. Karmaşıklık eklemeden önce güvenilir şekilde çalışmasını sağlayın. Çoğu görev ayrıntılı zincir mimarilerine ihtiyaç duymaz.
+<Callout type="tip" title="Basit Başlayın">
+İşe 2-3 adımlı, sıralı bir zincirle başlayın. Karmaşıklık eklemeden önce onun güvenilir biçimde çalıştığından emin olun. Çoğu görev, gösterişli zincir yapılarına ihtiyaç duymaz.
 </Callout>
 
 <Quiz 
-  question="Prompt zincirlemenin tek karmaşık prompta göre temel avantajı nedir?"
+  question="Prompt zincirlemenin, tek ve karmaşık bir prompta göre en önemli avantajı nedir?"
   options={[
-    "Genel olarak daha az token kullanır",
-    "Yürütmesi daha hızlıdır",
-    "Her adım uzmanlaşabilir, kaliteyi artırır ve hata işlemeyi mümkün kılar",
+    "Toplamda daha az token kullanır",
+    "Daha hızlı çalışır",
+    "Her adım kendi işinde uzmanlaşabilir; bu da kaliteyi artırır ve hata yönetimini mümkün kılar",
     "Daha az planlama gerektirir"
   ]}
   correctIndex={2}
-  explanation="Prompt zincirleme karmaşık görevleri uzmanlaşmış adımlara böler. Her adım tek bir şeye iyi odaklanabilir, ara sonuçlar doğrulanabilir, hatalar yakalanıp yeniden denenebilir ve genel kalite uzmanlaşma yoluyla iyileşir."
+  explanation="Prompt zincirleme, karmaşık görevleri uzmanlaşmış adımlara böler. Her adım tek bir işi iyi yapmaya odaklanabilir, ara sonuçlar doğrulanabilir, hatalar yakalanıp yeniden denenebilir ve uzmanlaşma sayesinde genel kalite yükselir."
 />
 
-Bir sonraki bölümde, çok modlu promptlamayı keşfedeceğiz: görüntüler, ses ve diğer metin dışı içeriklerle çalışma.
+Bir sonraki bölümde uç durumlarla nasıl başa çıkacağımızı ele alacağız: boş girdiler, belirsiz istekler ve promptlarınızı bilerek bozmaya yönelik girişimler.
