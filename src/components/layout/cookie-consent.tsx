@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Cookie } from "lucide-react";
 
-const COOKIE_CONSENT_KEY = "cookie-consent";
+export const COOKIE_CONSENT_KEY = "cookie-consent";
 
 export type CookieConsent = "accepted" | "rejected" | null;
 
