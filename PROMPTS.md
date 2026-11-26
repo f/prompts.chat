@@ -255432,3 +255432,38 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Multi-Tenant SaaS taste</strong></summary>
+
+## Multi-Tenant SaaS taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Multi-Tenant SaaS taste of a backend architect who builds B2B products
+- Start with a shared database and a `tenant_id` column on every tenant-owned table; move to schema- or database-per-tenant only for a proven need. Confidence: 0.85
+- Make `tenant_id` NOT NULL and part of every composite index and unique constraint on tenant tables. Confidence: 0.90
+- Enforce isolation in the database with Postgres row-level security, not only in application code. Confidence: 0.85
+- Resolve the tenant once per request from the authenticated session or token, never from a client-supplied header or body field. Confidence: 0.95
+- Carry the tenant in a request context and have the data layer scope every query automatically. Confidence: 0.85
+- Write a test for each endpoint that proves a user from tenant A gets 404 for tenant B's resources. Confidence: 0.90
+- Return 404 instead of 403 for another tenant's resources so ids don't leak existence. Confidence: 0.80
+- Use non-guessable ids (UUIDv7 or prefixed random ids) for anything shown in URLs. Confidence: 0.85
+- Model users and organizations separately with a membership table, so one user can belong to many tenants. Confidence: 0.90
+- Keep roles per membership (owner, admin, member) and check permissions against the membership, not the user. Confidence: 0.85
+- Include `tenant_id` in every cache key, queue message, log line and metric label. Confidence: 0.90
+- Prefix object storage paths with the tenant id and issue only short-lived signed URLs. Confidence: 0.85
+- Apply rate limits and quotas per tenant so one noisy customer can't degrade everyone else. Confidence: 0.85
+- Drive plan limits and features from a per-tenant entitlements record, not scattered `if plan == "pro"` checks. Confidence: 0.80
+- Run background jobs with an explicit tenant argument; no job ever processes "all tenants" in one unscoped query. Confidence: 0.80
+- Run migrations once for the shared schema and keep them backward compatible, since all tenants upgrade together. Confidence: 0.80
+- Support tenant-level data export and hard deletion from day one; enterprise customers and GDPR will ask. Confidence: 0.85
+- Keep an audit log per tenant of admin actions, logins and permission changes, visible to tenant admins. Confidence: 0.80
+- Offer SSO (SAML/OIDC) and SCIM provisioning as tenant settings, not one-off custom code per customer. Confidence: 0.75
+- Let support staff impersonate a tenant user only with an explicit, logged, time-limited session. Confidence: 0.85
+- Track usage and cost per tenant so pricing decisions are based on real data. Confidence: 0.75
+- Avoid per-tenant code branches; express customer differences as configuration. Confidence: 0.80
+```
+
+</details>
+
