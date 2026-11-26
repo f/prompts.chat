@@ -253845,7 +253845,7 @@ Contributed by [@ijewoke345](https://github.com/ijewoke345)
 
 ```md
 Create a very professional conversation about the current crypto market and stock market I want the conversation between the 10 persons to be up to 20 texts per person and making it all professional, the conversations should align with current market trends.
-
+this time the whole 10 persons are excited and happy about the amazing trades going on which was set by the admin, they are praising him for being the best in the copy trading scheme and how he gives all win in his trades
 ```
 
 </details>
