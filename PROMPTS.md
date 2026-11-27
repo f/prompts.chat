@@ -257204,3 +257204,28 @@ Measure the improvement by comparing `turbo run build --dry=json --filter=<pkg>`
 
 </details>
 
+<details>
+<summary><strong>Find convenience re-exports</strong></summary>
+
+## Find convenience re-exports
+
+Contributed by [@santoshyadavdev](https://github.com/santoshyadavdev)
+
+```md
+Find convenience re-exports in <package>: `export * from` and `export { X } from` statements that forward symbols owned by another workspace package.
+
+For each re-export:
+
+- Name the owning package. Say whether the re-export forces consumers to install or build that package when they would not otherwise need it.
+- Count consumers with `git grep` and note which ones already depend on the owning package.
+- Classify it:
+  (a) Type-only. Usually keep it, because it has no runtime cost.
+  (b) A runtime value with few consumers. Remove it and point consumers at the owner.
+  (c) Real code that only looks like a re-export. Keep it.
+  (d) Many consumers. Defer it to its own PR.
+
+Produce a table with these columns: symbol, owner, consumers, classification, recommended action. Do not edit any files yet.
+```
+
+</details>
+
