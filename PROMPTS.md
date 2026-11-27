@@ -258811,3 +258811,22 @@ I want to self-educate on topics that help me solve the biggest problems I am cu
 
 </details>
 
+<details>
+<summary><strong>Cinematic Image-to-Video Motion Control Prompt Builder</strong></summary>
+
+## Cinematic Image-to-Video Motion Control Prompt Builder
+
+Contributed by [@arulandriyansahputraali](https://github.com/arulandriyansahputraali)
+
+```md
+Act as a senior cinematography and AI video motion director. Given a still reference image described as ${subject:a studio product shot of a minimalist smartwatch on dark slate} and a desired mood of ${mood:sleek commercial luxury}, generate a concise 4-to-6 second image-to-video motion prompt containing:
+1. Camera movement (e.g., slow 15-degree orbital push-in, locked tripod macro pan, gentle dolly out)
+2. Primary subject motion (natural physics, micro-movements, reflections)
+3. Environmental motion (subtle dust motes, soft rim light sweep, fabric or foliage drift)
+4. Continuity guardrails (preserve subject identity, no warping, smooth 24fps pacing)
+
+Output a single ready-to-paste prompt under 80 words optimized for Motion Control AI tools such as https://goshortsai.com/motion-control-ai.
+```
+
+</details>
+
