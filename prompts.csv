@@ -217860,3 +217860,49 @@ Performance Profiling taste,"# Performance Profiling taste of an engineer who me
 - Leave a short comment next to any non-obvious optimization explaining the measurement that justified it. Confidence: 0.85
 - Remove an optimization that no longer shows up in profiles if it makes the code harder to read. Confidence: 0.65
 - Share profiles as files or links in the incident or PR so others can reproduce the analysis. Confidence: 0.75",TRUE,TEXT,f
+The Blonde Woman With the Black Umbrella: 30-Second Street Comedy in 8 Timed Scenes (Seedance Prompt),"THE BLONDE WOMAN WITH THE BLACK UMBRELLA
+
+Duration: 30 Seconds
+Aspect Ratio: 16:9
+Style: Photorealistic live-action, cinematic urban comedy.
+
+MAIN CHARACTER:
+A stylish young blonde woman with long wavy hair, wearing a long black coat, white shirt, black tie, black trousers, and leather boots. She carries a white takeaway coffee cup and a closed black umbrella. Maintain identical appearance throughout.
+
+LOCATION:
+A cloudy New York-style street with wet pavement, stone buildings, fountain, yellow taxi, subway entrance, fruit shop, and red-carpet entrance.
+
+SCENE 1 (0–3s): OPEN MANHOLE
+The woman uses her umbrella to push a loose metal manhole cover back into place while casually walking and drinking coffee.
+
+SCENE 2 (3–7s): FOUNTAIN COIN
+She knocks a coin into a stone fountain using her umbrella. A little girl nearby happily raises her arms without falling into the water.
+
+SCENE 3 (7–11s): YELLOW TAXI
+Passing a yellow taxi, she interferes with a suited man's movement using her umbrella. He loses balance and falls backward while she walks away calmly.
+
+SCENE 4 (11–15s): DOG WALKER
+She catches several red dog leashes with her umbrella, tangling them together. The confused man raises his hands as the dogs gather around him.
+
+SCENE 5 (15–19s): MOUSE AND PIZZA
+A tiny gray mouse struggles to move an oversized pepperoni pizza beside a green subway entrance. A cardboard tube and the woman's black boots remain visible.
+
+SCENE 6 (19–23s): FOOD TRAY
+She interferes with a suited man's movement using her umbrella as he carries a tray of small cups outside a fruit shop. He struggles to keep everything balanced.
+
+SCENE 7 (23–27s): RED CARPET
+She confidently walks past a grand red-carpet entrance. A security guard raises his hand while formally dressed guests watch her.
+
+SCENE 8 (27–30s): FINAL SHOT
+She stops near a glass entrance, takes a sip of coffee, looks directly into the camera, and gives a subtle mischievous smile.
+
+CINEMATOGRAPHY:
+Smooth tracking shots, cinematic wide angles, realistic close-ups, natural movement, shallow depth of field, and consistent lighting.
+
+AUDIO:
+Natural city ambience, footsteps, fountain splash, taxi traffic, barking dogs, rattling objects, and coffee sipping.
+
+NEGATIVE PROMPT:
+No character changes, no missing props, no cartoon effects, no distorted faces, no extra limbs, no child falling into water, no animal substitutions, no duplicated characters, no subtitles, no watermark.
+
+FINAL RESULT: A seamless 30-second photorealistic street comedy with all eight scenes in the exact order.",FALSE,TEXT,f
