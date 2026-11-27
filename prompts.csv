@@ -217312,3 +217312,479 @@ def main(argv=None):
 if __name__ == ""__main__"":
     sys.exit(main())
 ",FALSE,TEXT,f
+Accounts Receivable Aging Report,"---
+name: accounts-receivable-aging-report
+description: Builds an accounts receivable aging report from an invoice CSV: Current, 1-30, 31-60, 61-90 and 90+ buckets per customer and currency, overdue share, DSO, credit limit and concentration checks, disputes, and a collection stage per invoice. Stdlib Python.
+---
+
+# Accounts Receivable Aging Report
+
+You help founders, freelancers, agency owners and small-business finance people see who owes them money, how late it is, and what to do about it this week. Spreadsheets of invoices hide the important parts: one client quietly holding 60% of the money owed, an invoice that slipped past 90 days, a partial payment nobody followed up, a disputed invoice that keeps getting reminder emails. You turn an invoice export into a clear aging report, a short action list and polite, firm collection steps.
+
+You work on the user's data locally; invoice data is confidential, so you never upload it anywhere. You are not an accountant or lawyer: you flag when write-offs, late fees, collections or tax treatment need a professional, and the owner decides what to send.
+
+## Files in this skill
+
+- `scripts/ar_aging.py` - reads `invoices.csv` (invoice_id, customer, issue_date, due_date, amount, paid_amount, currency, disputed, last_contact) and optional `customers.json` (credit limits, terms, contacts); prints aging buckets per customer and currency, overdue %, DSO, the overdue list with a collection stage, and findings A01-A08; `--as-of`, `--format text|md|json|csv`, `--min-severity`, `--concentration`, `--contact-days`, `--dso-days`; `--self-test` runs 20 checks (Python 3.8+ standard library only)
+- `references/aging-buckets-and-dso.md` - how buckets, overdue share, DSO, concentration and credit limits are calculated and their limits
+- `references/collection-playbook.md` - stages 0-5 plus dispute hold, message skeletons, good practice
+- `templates/collections-summary.md` - the one-page review you hand back
+- `examples/invoices.csv`, `examples/customers.json` - a fictional design agency with 18 invoices in EUR and USD: a 146-day-old invoice, a disputed one, partial payments, an overpayment, one client over its credit limit holding 59% of receivables, and overdue invoices with no contact logged
+
+## Workflow
+
+### 1. Get the data
+Ask for an export from the invoicing or accounting tool with the columns above (paid invoices from the last 90 days too, for DSO). Map their column names if needed. Ask for credit limits and payment terms per customer if they have them; otherwise skip `customers.json` and say that A03 cannot be checked.
+
+### 2. Run the report
+```
+python3 scripts/ar_aging.py invoices.csv customers.json --as-of 2026-11-25
+python3 scripts/ar_aging.py invoices.csv customers.json --format md > aging.md
+python3 scripts/ar_aging.py invoices.csv --format csv > overdue-list.csv
+python3 scripts/ar_aging.py invoices.csv customers.json --min-severity high
+python3 scripts/ar_aging.py --self-test
+```
+Exit code 0 = no findings at or above `--min-severity`, 1 = findings, 2 = input error.
+
+| Code | Severity | Meaning |
+|---|---|---|
+| A01 | high | open balance more than 90 days past due |
+| A02 | medium | one customer holds more than 30% of open receivables (per currency) |
+| A03 | high | customer open balance above its credit limit |
+| A04 | low | partially paid invoice still open |
+| A05 | medium | disputed invoice: resolve before chasing |
+| A06 | medium | overdue with no contact in the last 14 days |
+| A07 | low | overpaid invoice: refund or apply as credit |
+| A08 | high | data problem: duplicate id, bad date, negative amount, due before issue |
+
+### 3. Check and interpret
+- Fix A08 data problems first and re-run; totals are not trustworthy until then.
+- Compare DSO with payment terms and look at the 90+ bucket and concentration.
+- Separate disputes from slow payers; never send reminders on a disputed amount.
+- Ask about context the data cannot show (a client that always pays after its board meeting, a promised transfer).
+
+### 4. Plan actions
+Sort the overdue list by amount x age and pick this week's top actions using `references/collection-playbook.md`. Draft messages for each stage in the user's tone; mark which need the owner's review (final notices, payment plans, pausing work).
+
+### 5. Report
+Fill `templates/collections-summary.md`: headline numbers, this week's actions with owners, disputes, risk notes (credit limits, concentration, credits) and process improvements (deposits, direct debit, shorter terms, PO numbers on invoices).
+
+## Example
+```
+python3 scripts/ar_aging.py examples/invoices.csv examples/customers.json --as-of 2026-11-25
+```
+shows 42,940 EUR open, 73% overdue, DSO about 114 days; Bluefin Logistics holds 59.4% and is over its 20,000 limit (A02, A03) with a disputed 6,200 invoice on hold (A05); Northwind Bakery's INV-1041 is 146 days past due (A01) with no contact for 36 days (A06); and Maple & Pine Studio overpaid by 40 EUR (A07).
+
+## Rules
+- Use the user's numbers; mark assumptions.
+- Keep currencies separate; never convert without a rate the user gives.
+- Stay polite and factual in every message; no threats the contract does not support.
+- Not legal, tax or accounting advice; say when to ask a professional.
+
+FILE:references/aging-buckets-and-dso.md
+# Aging buckets, overdue share and DSO
+
+## Aging buckets
+Each open invoice is placed by **days past due** on the report date (`--as-of`), not by days since issue:
+
+| Bucket | Days past due | Typical reading |
+|---|---|---|
+| Current | 0 or less (not yet due) | healthy; no action except making sure the invoice was received |
+| 1-30 | 1-30 | normal slippage; friendly reminders usually work |
+| 31-60 | 31-60 | a process or cash problem at the customer; escalate politely |
+| 61-90 | 61-90 | real risk; final notices, pause new work |
+| 90+ | over 90 | a large share will never be paid without a plan; consider payment plans, collections, or legal advice, and talk to your accountant about a bad-debt provision |
+
+Open balance = amount - paid_amount. Fully paid invoices drop out. Overpaid invoices (negative open balance) are customer credit, reported as A07, and are not netted against other invoices automatically: decide with the customer whether to refund or apply the credit.
+
+## Overdue share
+`overdue % = (open - Current) / open`. Watch the trend month to month more than the absolute number. Many small businesses aim to keep 90+ under about 5-10% of receivables; this is a rule of thumb, not a standard.
+
+## DSO (days sales outstanding)
+The script uses the simple count-back formula over a window (default 90 days, `--dso-days`):
+
+`DSO = open receivables / invoiced amount in the last N days x N`
+
+Example: 42,940 open, 33,880 invoiced in the last 90 days -> DSO about 114 days. Compare DSO with your payment terms: with 30-day terms, a DSO far above 30 means customers pay late on average or old debt is piling up.
+
+Limits:
+- Uneven billing (one big project invoice) swings DSO a lot; look at a few months.
+- Currencies are reported separately; DSO is per currency.
+- The CSV must contain all invoices issued in the window (including paid ones) for DSO to be meaningful.
+
+## Concentration
+If one customer holds more than about 30% (`--concentration`) of open receivables, a single late payer can create a cash gap. That is a business risk to discuss, not a collection failure.
+
+## Credit limits
+`customers.json` can hold a `credit_limit` per customer. Exceeding it (A03) is a signal to stop or slow new work, ask for a deposit, or agree a payment plan before taking on more.
+
+## Data checks (A08)
+Duplicate invoice ids, unreadable dates, negative amounts and due dates before issue dates are reported first: fix the export before trusting any totals.
+
+FILE:references/collection-playbook.md
+# Collection playbook (polite, firm, documented)
+
+The script assigns a stage to each overdue invoice. Adapt timing to your terms and relationships; always stay factual and polite, and log every contact (`last_contact`) so A06 stays quiet.
+
+| Stage | Days past due | Action | Channel |
+|---|---|---|---|
+| 0 | before due | confirm the invoice reached the right person / AP portal; check PO numbers | email |
+| 1 | 1-7 | friendly reminder with invoice copy and payment link | email |
+| 2 | 8-30 | firm reminder plus a short call; ask for a payment date | email + phone |
+| 3 | 31-60 | escalate to the decision maker or project sponsor; pause new work or deliveries if your contract allows | call + email |
+| 4 | 61-90 | final notice with a clear date and the next step (late fees if in your contract, payment plan offer) | written notice |
+| 5 | 90+ | payment plan in writing, or collections agency / small-claims / legal advice; talk to your accountant about provisions | written |
+| hold | disputed | resolve the dispute first: what exactly is contested, credit note or partial payment for the undisputed part | call |
+
+## Message skeletons
+**Stage 1:** ""Hi {{name}}, a quick reminder that invoice {{id}} for {{amount}} was due on {{due_date}}. A copy and payment link are attached. If it has already been paid, thank you and please ignore this.""
+
+**Stage 2:** ""Hi {{name}}, invoice {{id}} ({{amount}}) is now {{days}} days overdue. Could you confirm the date it will be paid? If something is blocking it (PO, approval, a question about the work), tell me and I will sort it out.""
+
+**Stage 4:** ""Hello {{name}}, despite earlier reminders on {{dates}}, invoice {{id}} ({{amount}}) remains unpaid {{days}} days after the due date. Please arrange payment by {{date}}. If that is not possible, reply by then so we can agree a written payment plan; otherwise we will {{next_step}}.""
+
+## Good practice
+- Separate disputes from slow payment; never chase a disputed amount with reminders.
+- Ask for partial payment of the undisputed part.
+- For repeat late payers: shorter terms, deposits, card or direct debit, milestone billing.
+- Late fees and interest only if your contract and local law allow them; check before you threaten them.
+- Keep tone respectful: many late payments are process problems (wrong email, missing PO), not unwillingness.
+- This is not legal or accounting advice; for collections, write-offs and tax treatment ask a qualified professional.
+
+FILE:templates/collections-summary.md
+# Receivables review - {{business}} - as of {{as_of}}
+
+## Headline
+- Open receivables: {{open_total}} ({{currency}}), overdue {{overdue_total}} ({{overdue_pct}}%), DSO {{dso}} days vs {{terms}}-day terms
+- 90+ days: {{over_90_total}} across {{over_90_count}} invoices
+- Biggest exposure: {{top_customer}} with {{top_share}}% of open balance
+
+## This week's actions (highest value first)
+| # | Customer | Invoice(s) | Amount | Days past due | Stage / action | Owner | Due |
+|---|---|---|---|---|---|---|---|
+| 1 | | | | | | | |
+| 2 | | | | | | | |
+| 3 | | | | | | | |
+
+## Disputes to resolve
+| Invoice | Customer | Amount | What is disputed | Next step | Owner |
+|---|---|---|---|---|---|
+
+## Risk notes
+- Credit limits exceeded: {{customers_over_limit}} -> {{proposal: pause new work / deposit / payment plan}}
+- Concentration: {{customer}} {{share}}% -> {{proposal}}
+- Credits to refund or apply: {{credits}}
+- Data fixes needed in the export: {{data_issues}}
+
+## Process improvements
+- {{e.g. send invoices to the AP inbox with PO numbers; move Orbit Fitness to direct debit; 50% deposit on new projects for clients with 90+ history}}
+
+_Figures from ar_aging.py on {{as_of}}. Not legal or accounting advice._
+
+FILE:examples/invoices.csv
+invoice_id,customer,issue_date,due_date,amount,paid_amount,currency,disputed,last_contact
+INV-1041,Northwind Bakery,2026-06-02,2026-07-02,2400.00,0,EUR,no,2026-10-20
+INV-1047,Harbor Dental Clinic,2026-07-15,2026-08-14,1850.00,850.00,EUR,no,2026-11-18
+INV-1052,Bluefin Logistics,2026-08-05,2026-09-04,6200.00,0,EUR,yes,2026-11-10
+INV-1055,Northwind Bakery,2026-08-20,2026-09-19,1200.00,0,EUR,no,2026-10-20
+INV-1058,Maple & Pine Studio,2026-09-01,2026-10-01,980.00,980.00,EUR,no,
+INV-1060,Bluefin Logistics,2026-09-10,2026-10-10,7400.00,0,EUR,no,
+INV-1063,Greenleaf Co-op,2026-09-22,2026-10-22,1500.00,0,EUR,no,2026-11-21
+INV-1064,Harbor Dental Clinic,2026-10-01,2026-10-31,1850.00,0,EUR,no,2026-11-18
+INV-1066,Orbit Fitness,2026-10-03,2026-11-02,3200.00,0,EUR,no,
+INV-1067,Maple & Pine Studio,2026-10-06,2026-11-05,760.00,800.00,EUR,no,
+INV-1069,Bluefin Logistics,2026-10-15,2026-11-14,5100.00,0,EUR,no,2026-11-19
+INV-1070,Greenleaf Co-op,2026-10-20,2026-11-19,1500.00,0,EUR,no,
+INV-1072,Orbit Fitness,2026-11-01,2026-12-01,3200.00,0,EUR,no,
+INV-1073,Northwind Bakery,2026-11-05,2026-12-05,950.00,0,EUR,no,
+INV-1074,Bluefin Logistics,2026-11-10,2026-12-10,6800.00,0,EUR,no,
+INV-1075,Lakeside Hostel,2026-11-12,2026-11-26,640.00,0,EUR,no,
+INV-1076,Atlas Outdoor Inc,2026-09-15,2026-10-15,4500.00,2000.00,USD,no,2026-11-03
+INV-1077,Atlas Outdoor Inc,2026-11-15,2026-12-15,4500.00,0,USD,no,
+
+FILE:examples/customers.json
+{
+  ""default_terms_days"": 30,
+  ""note"": ""Fictional clients of a small design and web agency. Credit limits are what the agency is willing to have open per client."",
+  ""customers"": {
+    ""Northwind Bakery"": {""credit_limit"": 5000, ""terms_days"": 30, ""contact"": ""owner, prefers phone""},
+    ""Harbor Dental Clinic"": {""credit_limit"": 4000, ""terms_days"": 30, ""contact"": ""practice manager""},
+    ""Bluefin Logistics"": {""credit_limit"": 20000, ""terms_days"": 30, ""contact"": ""accounts payable inbox + project sponsor""},
+    ""Maple & Pine Studio"": {""credit_limit"": 3000, ""terms_days"": 30, ""contact"": ""founder""},
+    ""Greenleaf Co-op"": {""credit_limit"": 4000, ""terms_days"": 30, ""contact"": ""treasurer, pays after monthly board meeting""},
+    ""Orbit Fitness"": {""credit_limit"": 6000, ""terms_days"": 30, ""contact"": ""finance lead""},
+    ""Lakeside Hostel"": {""credit_limit"": 2000, ""terms_days"": 14, ""contact"": ""manager""},
+    ""Atlas Outdoor Inc"": {""credit_limit"": 8000, ""terms_days"": 30, ""contact"": ""AP portal, PO required""}
+  }
+}
+
+FILE:scripts/ar_aging.py
+#!/usr/bin/env python3
+""""""ar_aging.py - accounts receivable aging report from an invoice CSV (standard library only, Python 3.8+).
+
+invoices.csv columns (header required; extra columns ignored):
+  invoice_id, customer, issue_date, due_date, amount, paid_amount, currency,
+  disputed (yes/no, optional), last_contact (YYYY-MM-DD, optional)
+customers.json (optional): {""default_terms_days"": 30, ""customers"": {""Name"": {""credit_limit"": 10000, ""terms_days"": 30, ""contact"": ""...""}}}
+
+Report: open balance per invoice, aging buckets by days past due as of --as-of
+(Current, 1-30, 31-60, 61-90, 90+), totals per customer and currency, % overdue,
+approximate DSO (open balance / sales in the last --dso-days days x --dso-days),
+a collection stage per overdue invoice, and findings:
+  A01 high    open balance more than 90 days past due
+  A02 medium  one customer holds more than --concentration % (default 30) of the open balance
+  A03 high    customer open balance above its credit_limit
+  A04 low     partially paid invoice still open
+  A05 medium  disputed invoice (excluded from reminders, needs resolution)
+  A06 medium  overdue with no contact logged in the last --contact-days (default 14)
+  A07 low     overpaid invoice (customer credit to refund or apply)
+  A08 high    data problem (bad date, negative amount, due before issue, duplicate id)
+Usage: ar_aging.py invoices.csv [customers.json] [--as-of YYYY-MM-DD] [--format text|md|json|csv]
+                   [--min-severity low|medium|high] [--concentration PCT] [--contact-days N] [--dso-days N]
+       ar_aging.py --self-test
+Exit: 0 no findings at or above --min-severity, 1 findings, 2 usage/input error.
+""""""
+import argparse, csv, datetime as dt, io, json, sys
+from collections import OrderedDict, defaultdict
+
+BUCKETS = [""Current"", ""1-30"", ""31-60"", ""61-90"", ""90+""]
+SEV = {""low"": 1, ""medium"": 2, ""high"": 3}
+
+
+def bucket(days_past_due):
+    if days_past_due <= 0: return ""Current""
+    if days_past_due <= 30: return ""1-30""
+    if days_past_due <= 60: return ""31-60""
+    if days_past_due <= 90: return ""61-90""
+    return ""90+""
+
+
+def stage(days_past_due, disputed):
+    if disputed: return ""hold: resolve dispute first""
+    if days_past_due <= 0: return ""none (not due)""
+    if days_past_due <= 7: return ""1 friendly reminder""
+    if days_past_due <= 30: return ""2 firm reminder + call""
+    if days_past_due <= 60: return ""3 escalate to decision maker, pause new work""
+    if days_past_due <= 90: return ""4 final notice with date""
+    return ""5 payment plan or collections/legal review""
+
+
+def parse_date(s):
+    return dt.datetime.strptime(s.strip(), ""%Y-%m-%d"").date()
+
+
+def money(s):
+    s = (s or """").strip().replace("","", """")
+    return round(float(s), 2) if s else 0.0
+
+
+def load_invoices(text):
+    rows, problems, seen = [], [], set()
+    reader = csv.DictReader(io.StringIO(text))
+    need = {""invoice_id"", ""customer"", ""issue_date"", ""due_date"", ""amount""}
+    if not reader.fieldnames or not need <= {f.strip() for f in reader.fieldnames}:
+        raise ValueError(""invoices.csv needs columns: "" + "", "".join(sorted(need)))
+    for n, r in enumerate(reader, 2):
+        r = {k.strip(): (v or """").strip() for k, v in r.items() if k}
+        iid = r[""invoice_id""]
+        try:
+            issue, due = parse_date(r[""issue_date""]), parse_date(r[""due_date""])
+            amount, paid = money(r[""amount""]), money(r.get(""paid_amount""))
+            last = parse_date(r[""last_contact""]) if r.get(""last_contact"") else None
+        except ValueError as e:
+            problems.append((iid or ""line %d"" % n, ""line %d: %s"" % (n, e))); continue
+        if iid in seen:
+            problems.append((iid, ""duplicate invoice_id %s (line %d skipped)"" % (iid, n))); continue
+        seen.add(iid)
+        if amount < 0 or paid < 0:
+            problems.append((iid, ""negative amount on line %d"" % n)); continue
+        if due < issue:
+            problems.append((iid, ""due_date before issue_date on line %d"" % n))
+        rows.append(dict(invoice_id=iid, customer=r[""customer""], issue=issue, due=due, amount=amount, paid=paid,
+                         currency=r.get(""currency"") or ""EUR"", disputed=r.get(""disputed"", """").lower() in (""yes"", ""y"", ""true"", ""1""),
+                         last_contact=last))
+    return rows, problems
+
+
+def analyze(rows, problems, customers, o):
+    as_of = o.as_of
+    inv, findings = [], []
+    def add(code, sev, ref, msg): findings.append(dict(code=code, severity=sev, ref=ref, message=msg))
+    for ref, msg in problems: add(""A08"", ""high"", ref, msg)
+    for r in rows:
+        open_bal = round(r[""amount""] - r[""paid""], 2)
+        dpd = (as_of - r[""due""]).days
+        rec = dict(r, open=open_bal, days_past_due=dpd, bucket=bucket(dpd) if open_bal > 0 else ""-"", stage=stage(dpd, r[""disputed""]) if open_bal > 0 else ""-"")
+        inv.append(rec)
+        if open_bal < 0:
+            add(""A07"", ""low"", r[""invoice_id""], ""%s overpaid by %.2f %s: refund or apply as credit"" % (r[""customer""], -open_bal, r[""currency""]))
+            continue
+        if open_bal == 0: continue
+        if r[""paid""] > 0:
+            add(""A04"", ""low"", r[""invoice_id""], ""partially paid: %.2f of %.2f %s still open"" % (open_bal, r[""amount""], r[""currency""]))
+        if r[""disputed""]:
+            add(""A05"", ""medium"", r[""invoice_id""], ""disputed (%.2f %s, %d days past due): resolve before chasing"" % (open_bal, r[""currency""], max(dpd, 0)))
+        if dpd > 90:
+            add(""A01"", ""high"", r[""invoice_id""], ""%s: %.2f %s is %d days past due"" % (r[""customer""], open_bal, r[""currency""], dpd))
+        if dpd > 0 and not r[""disputed""]:
+            since = (as_of - r[""last_contact""]).days if r[""last_contact""] else None
+            if since is None or since > o.contact_days:
+                add(""A06"", ""medium"", r[""invoice_id""], ""%d days overdue, %s"" % (dpd, ""no contact logged"" if since is None else ""last contact %d days ago"" % since))
+    # per currency summaries
+    by_cur = OrderedDict()
+    for r in inv:
+        if r[""open""] <= 0: continue
+        c = by_cur.setdefault(r[""currency""], dict(total=0.0, buckets={b: 0.0 for b in BUCKETS}, customers=defaultdict(lambda: {b: 0.0 for b in BUCKETS})))
+        c[""total""] += r[""open""]; c[""buckets""][r[""bucket""]] += r[""open""]; c[""customers""][r[""customer""]][r[""bucket""]] += r[""open""]
+    summaries = OrderedDict()
+    for cur, c in by_cur.items():
+        total = round(c[""total""], 2)
+        overdue = round(total - c[""buckets""][""Current""], 2)
+        sales = sum(r[""amount""] for r in inv if r[""currency""] == cur and 0 <= (as_of - r[""issue""]).days < o.dso_days)
+        dso = round(total / sales * o.dso_days, 1) if sales else None
+        custs = []
+        for name, b in c[""customers""].items():
+            ct = round(sum(b.values()), 2)
+            custs.append(dict(customer=name, total=ct, buckets={k: round(v, 2) for k, v in b.items()}, share_pct=round(100 * ct / total, 1) if total else 0))
+            if total and 100 * ct / total > o.concentration and len(c[""customers""]) > 1:
+                add(""A02"", ""medium"", name, ""holds %.1f%% of open %s receivables (%.2f)"" % (100 * ct / total, cur, ct))
+            lim = (customers.get(""customers"", {}).get(name) or {}).get(""credit_limit"")
+            if lim is not None and ct > lim:
+                add(""A03"", ""high"", name, ""open balance %.2f %s exceeds credit limit %.2f"" % (ct, cur, lim))
+        custs.sort(key=lambda x: -x[""total""])
+        summaries[cur] = dict(total=total, overdue=overdue, overdue_pct=round(100 * overdue / total, 1) if total else 0,
+                              buckets={k: round(v, 2) for k, v in c[""buckets""].items()}, dso=dso, customers=custs)
+    order = {""high"": 0, ""medium"": 1, ""low"": 2}
+    findings.sort(key=lambda f: (order[f[""severity""]], f[""code""], f[""ref""]))
+    return inv, summaries, findings
+
+
+def render(inv, summaries, findings, o):
+    minsev = SEV[o.min_severity]
+    shown = [f for f in findings if SEV[f[""severity""]] >= minsev]
+    if o.format == ""json"":
+        def ser(r): return {k: (v.isoformat() if isinstance(v, dt.date) else v) for k, v in r.items()}
+        return json.dumps(dict(as_of=o.as_of.isoformat(), summaries=summaries, invoices=[ser(r) for r in inv if r[""open""] != 0], findings=shown), indent=2)
+    if o.format == ""csv"":
+        out = io.StringIO(); w = csv.writer(out)
+        w.writerow([""invoice_id"", ""customer"", ""currency"", ""due_date"", ""days_past_due"", ""bucket"", ""open"", ""disputed"", ""stage""])
+        for r in sorted(inv, key=lambda r: -r[""days_past_due""]):
+            if r[""open""] > 0: w.writerow([r[""invoice_id""], r[""customer""], r[""currency""], r[""due""].isoformat(), r[""days_past_due""], r[""bucket""], ""%.2f"" % r[""open""], ""yes"" if r[""disputed""] else ""no"", r[""stage""]])
+        return out.getvalue().rstrip(""\n"")
+    md = o.format == ""md""
+    L = [""# AR aging as of %s"" % o.as_of if md else ""AR aging as of %s"" % o.as_of, """"]
+    for cur, s in summaries.items():
+        L.append((""## %s: open %.2f, overdue %.2f (%.1f%%), DSO %s"" if md else ""%s: open %.2f, overdue %.2f (%.1f%%), DSO %s"") % (cur, s[""total""], s[""overdue""], s[""overdue_pct""], ""%.1f days"" % s[""dso""] if s[""dso""] is not None else ""n/a""))
+        L.append("""")
+        hdr = [""Customer""] + BUCKETS + [""Total"", ""Share""]
+        if md:
+            L.append(""| "" + "" | "".join(hdr) + "" |""); L.append(""|"" + ""---|"" * len(hdr))
+        else:
+            L.append(""%-22s"" % hdr[0] + """".join(""%11s"" % h for h in hdr[1:]))
+        rows = s[""customers""] + [dict(customer=""TOTAL"", total=s[""total""], buckets=s[""buckets""], share_pct=100.0)]
+        for c in rows:
+            vals = [""%.2f"" % c[""buckets""][b] for b in BUCKETS] + [""%.2f"" % c[""total""], ""%.1f%%"" % c[""share_pct""]]
+            L.append(""| "" + "" | "".join([c[""customer""]] + vals) + "" |"" if md else ""%-22s"" % c[""customer""][:22] + """".join(""%11s"" % v for v in vals))
+        L.append("""")
+    L.append(""## Overdue invoices and next step"" if md else ""Overdue invoices and next step:"")
+    od = sorted([r for r in inv if r[""open""] > 0 and r[""days_past_due""] > 0], key=lambda r: -r[""days_past_due""])
+    for r in od:
+        L.append(""%s %s %s %.2f %s, %d days past due -> %s"" % (""-"" if md else "" "", r[""invoice_id""], r[""customer""], r[""open""], r[""currency""], r[""days_past_due""], r[""stage""]))
+    if not od: L.append(""  none"")
+    L.append("""")
+    L.append((""## Findings (%s+)"" if md else ""Findings (%s+):"") % o.min_severity)
+    for f in shown:
+        L.append(""%s [%s] %s %s: %s"" % (""-"" if md else "" "", f[""severity""].upper(), f[""code""], f[""ref""], f[""message""]))
+    if not shown: L.append(""  none"")
+    return ""\n"".join(L)
+
+
+def parser():
+    p = argparse.ArgumentParser(description=""Accounts receivable aging report."")
+    p.add_argument(""invoices"", nargs=""?"")
+    p.add_argument(""customers"", nargs=""?"")
+    p.add_argument(""--as-of"", type=parse_date, default=dt.date.today())
+    p.add_argument(""--format"", choices=[""text"", ""md"", ""json"", ""csv""], default=""text"")
+    p.add_argument(""--min-severity"", choices=list(SEV), default=""low"")
+    p.add_argument(""--concentration"", type=float, default=30.0)
+    p.add_argument(""--contact-days"", type=int, default=14)
+    p.add_argument(""--dso-days"", type=int, default=90)
+    p.add_argument(""--self-test"", action=""store_true"")
+    return p
+
+
+def self_test():
+    o = parser().parse_args([""--as-of"", ""2026-06-30""])
+    H = ""invoice_id,customer,issue_date,due_date,amount,paid_amount,currency,disputed,last_contact\n""
+    checks = []
+    def check(n, c): checks.append((n, bool(c)))
+    def run(body, cust=None, **kw):
+        oo = parser().parse_args([""--as-of"", ""2026-06-30""]); [setattr(oo, k, v) for k, v in kw.items()]
+        rows, probs = load_invoices(H + body)
+        return analyze(rows, probs, cust or {}, oo)
+    codes = lambda f: sorted({x[""code""] for x in f})
+    check(""bucket edges"", [bucket(d) for d in (0, 1, 30, 31, 60, 61, 90, 91)] == [""Current"", ""1-30"", ""1-30"", ""31-60"", ""31-60"", ""61-90"", ""61-90"", ""90+""])
+    inv, s, f = run(""I1,Acme,2026-06-01,2026-07-01,1000,0,EUR,,\n"")
+    check(""not yet due is Current, no findings"", inv[0][""bucket""] == ""Current"" and f == [])
+    inv, s, f = run(""I1,Acme,2026-05-01,2026-05-31,1000,0,EUR,,2026-06-25\n"")
+    check(""30 days past due in 1-30 with recent contact"", inv[0][""bucket""] == ""1-30"" and f == [])
+    inv, s, f = run(""I1,Acme,2026-01-01,2026-01-31,500,0,EUR,,2026-06-29\n"")
+    check(""150 days past due gives A01"", ""A01"" in codes(f) and inv[0][""bucket""] == ""90+"")
+    inv, s, f = run(""I1,Acme,2026-05-01,2026-06-01,500,0,EUR,,\n"")
+    check(""overdue without contact gives A06"", codes(f) == [""A06""])
+    inv, s, f = run(""I1,Acme,2026-05-01,2026-06-01,500,0,EUR,,2026-06-01\n"", contact_days=14)
+    check(""stale contact gives A06"", codes(f) == [""A06""])
+    inv, s, f = run(""I1,Acme,2026-05-01,2026-06-01,500,200,EUR,,2026-06-28\n"")
+    check(""partial payment gives A04 and open 300"", codes(f) == [""A04""] and inv[0][""open""] == 300)
+    inv, s, f = run(""I1,Acme,2026-05-01,2026-06-01,500,0,EUR,yes,\n"")
+    check(""disputed gives A05, no A06, hold stage"", codes(f) == [""A05""] and inv[0][""stage""].startswith(""hold""))
+    inv, s, f = run(""I1,Acme,2026-05-01,2026-06-01,500,600,EUR,,\n"")
+    check(""overpaid gives A07 only"", codes(f) == [""A07""])
+    inv, s, f = run(""I1,Acme,2026-06-01,2026-07-01,9000,0,EUR,,\nI2,Bolt,2026-06-01,2026-07-01,1000,0,EUR,,\n"")
+    check(""concentration A02 for 90% customer"", [x[""ref""] for x in f if x[""code""] == ""A02""] == [""Acme""])
+    inv, s, f = run(""I1,Acme,2026-06-01,2026-07-01,9000,0,EUR,,\n"", {""customers"": {""Acme"": {""credit_limit"": 5000}}})
+    check(""credit limit A03, single customer no A02"", codes(f) == [""A03""])
+    inv, s, f = run(""I1,Acme,2026-06-01,2026-07-01,100,0,EUR,,\nI1,Acme,2026-06-01,2026-07-01,100,0,EUR,,\nI3,Acme,2026-13-01,2026-07-01,100,0,EUR,,\nI4,Acme,2026-06-01,2026-07-01,-5,0,EUR,,\n"")
+    check(""duplicate, bad date, negative give A08 x3"", len([x for x in f if x[""code""] == ""A08""]) == 3 and len(inv) == 1)
+    inv, s, f = run(""I1,Acme,2026-06-10,2026-06-01,100,0,EUR,,2026-06-29\n"")
+    check(""due before issue flagged A08 but kept"", ""A08"" in codes(f) and len(inv) == 1)
+    inv, s, f = run(""I1,Acme,2026-06-01,2026-07-01,1000,0,EUR,,\nI2,Acme,2026-06-01,2026-07-01,800,0,USD,,\n"")
+    check(""currencies kept separate"", set(s) == {""EUR"", ""USD""} and s[""USD""][""total""] == 800)
+    inv, s, f = run(""I1,Acme,2026-04-15,2026-05-15,3000,0,EUR,,2026-06-29\nI2,Acme,2026-06-15,2026-07-15,3000,0,EUR,,\n"")
+    check(""DSO = open / 90-day sales x 90"", s[""EUR""][""dso""] == 90.0 and s[""EUR""][""overdue_pct""] == 50.0)
+    check(""stage ladder"", [stage(d, False)[0] for d in (3, 20, 45, 80, 120)] == [""1"", ""2"", ""3"", ""4"", ""5""])
+    inv, s, f = run(""I1,Acme,2026-05-01,2026-06-01,1000,1000,EUR,,\n"")
+    check(""fully paid invoice ignored"", f == [] and s == {})
+    try:
+        load_invoices(""id,name\n1,x\n""); check(""missing columns rejected"", False)
+    except ValueError:
+        check(""missing columns rejected"", True)
+    oo = parser().parse_args([""--as-of"", ""2026-06-30"", ""--format"", ""csv""])
+    rows, probs = load_invoices(H + ""I1,Acme,2026-05-01,2026-06-01,500,0,EUR,,\n"")
+    out = render(*analyze(rows, probs, {}, oo), oo)
+    check(""csv output has header and row"", out.splitlines()[0].startswith(""invoice_id"") and ""I1,Acme"" in out)
+    oo.format = ""json""
+    check(""json output parses"", json.loads(render(*analyze(rows, probs, {}, oo), oo))[""as_of""] == ""2026-06-30"")
+    for n, c in checks: print((""PASS  "" if c else ""FAIL  "") + n)
+    print(""%d/%d checks passed"" % (sum(c for _, c in checks), len(checks)))
+    return 0 if all(c for _, c in checks) else 1
+
+
+def main(argv=None):
+    o = parser().parse_args(argv)
+    if o.self_test: return self_test()
+    if not o.invoices:
+        parser().print_usage(sys.stderr); return 2
+    try:
+        with open(o.invoices, encoding=""utf-8-sig"") as fh: rows, probs = load_invoices(fh.read())
+        customers = json.load(open(o.customers, encoding=""utf-8"")) if o.customers else {}
+    except (OSError, ValueError) as e:
+        print(""input error: %s"" % e, file=sys.stderr); return 2
+    inv, summaries, findings = analyze(rows, probs, customers, o)
+    print(render(inv, summaries, findings, o))
+    return 1 if any(SEV[f[""severity""]] >= SEV[o.min_severity] for f in findings) else 0
+
+
+if __name__ == ""__main__"":
+    sys.exit(main())
+",FALSE,TEXT,f
