@@ -3042,5 +3042,24 @@
         "versionHistory": "Version history"
       }
     }
+  },
+  "dangerZone": {
+    "title": "Danger Zone",
+    "description": "Irreversible actions for your account and data",
+    "exportTitle": "Export Account Data",
+    "exportDescription": "Download your historical prompts library, versions, and usage artifacts as a formatted JSON document.",
+    "exportButton": "Download My Data",
+    "exporting": "Exporting...",
+    "exportSuccess": "Your prompts library has been downloaded",
+    "exportFailed": "Failed to export data",
+    "deleteTitle": "Delete Account",
+    "deleteDescription": "Permanently delete your account, API keys, and all authored prompts. This action cannot be undone.",
+    "deleteButton": "Delete Account",
+    "dialogTitle": "Are you absolutely sure?",
+    "dialogDescription": "This action cannot be undone. This will permanently delete your account profile, your API keys, and all prompts you have authored (including public, private, and unlisted prompts).",
+    "confirmPrompt": "To confirm, please type your username \"{username}\":",
+    "deleting": "Deleting account...",
+    "deleteSuccess": "Account deleted successfully",
+    "deleteFailed": "Failed to delete account"
   }
 }

@@ -3026,5 +3026,24 @@
         "versionHistory": "버전 기록"
       }
     }
+  },
+  "dangerZone": {
+    "title": "위험 구역",
+    "description": "계정 및 데이터에 대한 되돌릴 수 없는 작업",
+    "exportTitle": "계정 데이터 내보내기",
+    "exportDescription": "프롬프트 기록 라이브러리, 버전 및 사용 결과물을 형식화된 JSON 문서로 다운로드합니다.",
+    "exportButton": "내 데이터 다운로드",
+    "exporting": "내보내는 중...",
+    "exportSuccess": "프롬프트 라이브러리가 다운로드되었습니다",
+    "exportFailed": "데이터를 내보내지 못했습니다",
+    "deleteTitle": "계정 삭제",
+    "deleteDescription": "계정, API 키 및 작성한 모든 프롬프트를 영구적으로 삭제합니다. 이 작업은 되돌릴 수 없습니다.",
+    "deleteButton": "계정 삭제",
+    "dialogTitle": "정말 삭제하시겠습니까?",
+    "dialogDescription": "이 작업은 되돌릴 수 없습니다. 계정 프로필, API 키 및 작성한 모든 프롬프트(공개, 비공개 및 비공개 목록 포함)가 영구적으로 삭제됩니다.",
+    "confirmPrompt": "확인하려면 사용자 이름 \"{username}\"을 입력하세요:",
+    "deleting": "계정을 삭제하는 중...",
+    "deleteSuccess": "계정이 성공적으로 삭제되었습니다",
+    "deleteFailed": "계정을 삭제하지 못했습니다"
   }
 }

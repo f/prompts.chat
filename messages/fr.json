@@ -3041,5 +3041,24 @@
         "versionHistory": "Historique des versions"
       }
     }
+  },
+  "dangerZone": {
+    "title": "Zone de danger",
+    "description": "Actions irréversibles pour votre compte et vos données",
+    "exportTitle": "Exporter les données du compte",
+    "exportDescription": "Téléchargez votre bibliothèque historique d'invites, versions et artefacts au format JSON.",
+    "exportButton": "Télécharger mes données",
+    "exporting": "Exportation en cours...",
+    "exportSuccess": "Votre bibliothèque d'invites a été téléchargée",
+    "exportFailed": "Échec de l'exportation des données",
+    "deleteTitle": "Supprimer le compte",
+    "deleteDescription": "Supprimez définitivement votre compte, vos clés API et toutes les invites créées. Cette action est irréversible.",
+    "deleteButton": "Supprimer le compte",
+    "dialogTitle": "Êtes-vous absolument sûr ?",
+    "dialogDescription": "Cette action est irréversible. Cela supprimera définitivement votre profil, vos clés API et toutes les invites créées (publiques, privées et non répertoriées).",
+    "confirmPrompt": "Pour confirmer, veuillez saisir votre nom d'utilisateur \"{username}\" :",
+    "deleting": "Suppression du compte...",
+    "deleteSuccess": "Compte supprimé avec succès",
+    "deleteFailed": "Échec de la suppression du compte"
   }
 }

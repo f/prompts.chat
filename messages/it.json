@@ -3044,5 +3044,24 @@
         "versionHistory": "Cronologia versioni"
       }
     }
+  },
+  "dangerZone": {
+    "title": "Zona di pericolo",
+    "description": "Azioni irreversibili per il tuo account e i tuoi dati",
+    "exportTitle": "Esporta dati account",
+    "exportDescription": "Scarica la tua libreria cronologica di prompt, versioni e artefatti in formato JSON.",
+    "exportButton": "Scarica i miei dati",
+    "exporting": "Esportazione in corso...",
+    "exportSuccess": "La tua libreria di prompt è stata scaricata",
+    "exportFailed": "Impossibile esportare i dati",
+    "deleteTitle": "Elimina account",
+    "deleteDescription": "Elimina definitivamente il tuo account, le chiavi API e tutti i prompt creati. Questa azione non può essere annullata.",
+    "deleteButton": "Elimina account",
+    "dialogTitle": "Sei assolutamente sicuro?",
+    "dialogDescription": "Questa azione non può essere annullata. Verranno eliminati definitivamente il profilo del tuo account, le chiavi API e tutti i prompt creati (inclusi pubblici, privati e non in elenco).",
+    "confirmPrompt": "Per confermare, digita il tuo nome utente \"{username}\":",
+    "deleting": "Eliminazione account in corso...",
+    "deleteSuccess": "Account eliminato con successo",
+    "deleteFailed": "Impossibile eliminare l'account"
   }
 }

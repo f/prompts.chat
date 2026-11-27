@@ -3041,5 +3041,24 @@
         "versionHistory": "Historial de versiones"
       }
     }
+  },
+  "dangerZone": {
+    "title": "Zona de peligro",
+    "description": "Acciones irreversibles para tu cuenta y datos",
+    "exportTitle": "Exportar datos de la cuenta",
+    "exportDescription": "Descarga tu biblioteca histórica de prompts, versiones y artefactos como un documento JSON formateado.",
+    "exportButton": "Descargar mis datos",
+    "exporting": "Exportando...",
+    "exportSuccess": "Tu biblioteca de prompts ha sido descargada",
+    "exportFailed": "Error al exportar los datos",
+    "deleteTitle": "Eliminar cuenta",
+    "deleteDescription": "Elimina permanentemente tu cuenta, claves de API y todos los prompts creados. Esta acción no se puede deshacer.",
+    "deleteButton": "Eliminar cuenta",
+    "dialogTitle": "¿Estás absolutamente seguro?",
+    "dialogDescription": "Esta acción no se puede deshacer. Esto eliminará permanentemente el perfil de tu cuenta, tus claves de API y todos los prompts que hayas creado (incluidos los públicos, privados y no listados).",
+    "confirmPrompt": "Para confirmar, escribe tu nombre de usuario \"{username}\":",
+    "deleting": "Eliminando cuenta...",
+    "deleteSuccess": "Cuenta eliminada con éxito",
+    "deleteFailed": "Error al eliminar la cuenta"
   }
 }
