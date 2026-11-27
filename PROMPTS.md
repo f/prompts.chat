@@ -255774,3 +255774,19 @@ The bottle rests on a wooden cradle on an old sea chart spread over a walnut des
 
 </details>
 
+<details>
+<summary><strong>Italian Majolica Charger Plate of a Hare Among Wild Strawberries</strong></summary>
+
+## Italian Majolica Charger Plate of a Hare Among Wild Strawberries
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A top-down photograph of a large round hand-painted Italian majolica charger plate in the Renaissance tin-glazed style. In the center, inside a circular medallion, a brown hare sits upright among wild strawberry plants, with tiny white flowers, trefoil leaves and bright red berries, on a soft green meadow under a pale sky. Around the medallion, the wide rim is painted with a symmetrical border of curling acanthus leaves, little lemons and pomegranates, and thin concentric rings, all in the classic majolica palette: cobalt blue, copper green, antimony yellow, manganese purple-brown and warm orange on a thick milky-white tin glaze.
+
+Render it like real hand-painted earthenware: slightly uneven brushstrokes and pooled color where the glaze is thicker, fine crazing in the glaze, a softly glossy surface with one gentle window highlight, a few tiny chips and wear marks on the outer edge revealing the buff clay underneath. The plate lies on a rough natural linen cloth with soft daylight from the upper left and a subtle shadow under the rim. Even, sharp focus across the whole plate. No text, no signatures, no people. Square 1:1.
+
+```
+
+</details>
+
