@@ -257012,3 +257012,39 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Deno Project taste</strong></summary>
+
+## Deno Project taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Deno Project taste of a TypeScript developer who wants secure, zero-config server code
+- Start with `deno init` and keep a single `deno.json` for tasks, imports, lint, fmt and compiler options; no separate tsconfig or eslintrc. Confidence: 0.90
+- Pin dependencies in the `imports` map of `deno.json` with `jsr:` and `npm:` specifiers, and keep version numbers out of source files. Confidence: 0.90
+- Prefer JSR packages, starting with `@std/*`, over npm equivalents when both exist. Confidence: 0.80
+- Commit `deno.lock` and run CI with `--frozen` so a dependency can never change silently. Confidence: 0.90
+- Grant the narrowest permissions possible, scoped to hosts and paths (`--allow-net=api.example.com`, `--allow-read=./data`); never `-A` outside quick local experiments. Confidence: 0.95
+- Write the permission flags into the `deno.json` tasks so every developer runs the app with the same sandbox. Confidence: 0.85
+- Use `Deno.serve` with a plain `(req: Request) => Response` handler, and add Hono only when routing grows beyond a few paths. Confidence: 0.80
+- Stick to Web standard APIs (`fetch`, `Request`, `URL`, `crypto.subtle`, streams) before reaching for Deno-only or Node-compat APIs. Confidence: 0.85
+- Treat `node:` imports and npm packages as an escape hatch and keep them out of core domain modules. Confidence: 0.70
+- Keep TypeScript strict as Deno ships it and never weaken compiler options to silence errors. Confidence: 0.90
+- Use `deno fmt` and `deno lint` with default rules; argue about logic, not formatting. Confidence: 0.85
+- Write tests with `Deno.test` and `@std/assert` next to the code as `*_test.ts` files. Confidence: 0.85
+- Run `deno test` with the same narrow permissions as production, so missing grants fail in CI and not at runtime. Confidence: 0.75
+- Use `t.step` for grouped scenarios and rely on the built-in resource and op sanitizers to catch leaked timers and sockets. Confidence: 0.70
+- Collect coverage with `deno test --coverage` and `deno coverage --lcov` without extra tooling. Confidence: 0.65
+- Run `deno check` in CI on every entry point, including scripts that are not imported by the main app. Confidence: 0.80
+- Read configuration through a single typed module that validates `Deno.env` once at startup and fails fast on missing values. Confidence: 0.85
+- Use the `--env-file` flag for local `.env` files instead of a dotenv dependency. Confidence: 0.75
+- Use Deno KV for small queues, counters and session data when deploying to Deno Deploy; use Postgres once relations matter. Confidence: 0.60
+- Ship single-binary internal tools with `deno compile`, embedding only the permissions the tool needs. Confidence: 0.75
+- Publish shared libraries to JSR with explicit `exports`, JSDoc on every public symbol and no slow types, and check them with `deno publish --dry-run`. Confidence: 0.85
+- Handle shutdown by listening for `SIGTERM` with `Deno.addSignalListener` and awaiting `server.shutdown()`. Confidence: 0.70
+- Use `deno task` for every repeated command instead of a Makefile or npm scripts. Confidence: 0.80
+```
+
+</details>
+
