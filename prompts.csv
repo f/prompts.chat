@@ -217946,3 +217946,13 @@ For each re-export:
   (d) Many consumers. Defer it to its own PR.
 
 Produce a table with these columns: symbol, owner, consumers, classification, recommended action. Do not edit any files yet.",FALSE,TEXT,santoshyadavdev
+Find leftover compatibility shims,"Find compatibility shims and barrel files left behind by earlier extractions. These are files that only re-export from a new home, and package `exports` entries that point at them.
+
+For each one, list the remaining importers. If there are none, or every importer can be repointed in one small change, propose removing it.
+
+Check for:
+
+- package.json ""exports"" subpaths
+- tsconfig path aliases
+- vitest aliases
+- lint-guard baselines that mention the old path",FALSE,TEXT,santoshyadavdev

@@ -257229,3 +257229,25 @@ Produce a table with these columns: symbol, owner, consumers, classification, re
 
 </details>
 
+<details>
+<summary><strong>Find leftover compatibility shims</strong></summary>
+
+## Find leftover compatibility shims
+
+Contributed by [@santoshyadavdev](https://github.com/santoshyadavdev)
+
+```md
+Find compatibility shims and barrel files left behind by earlier extractions. These are files that only re-export from a new home, and package `exports` entries that point at them.
+
+For each one, list the remaining importers. If there are none, or every importer can be repointed in one small change, propose removing it.
+
+Check for:
+
+- package.json "exports" subpaths
+- tsconfig path aliases
+- vitest aliases
+- lint-guard baselines that mention the old path
+```
+
+</details>
+
