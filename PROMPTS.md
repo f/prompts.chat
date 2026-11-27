@@ -257166,3 +257166,16 @@ Minimalist beige interior, understated luxury atmosphere, intimate high-fashion 
 
 </details>
 
+<details>
+<summary><strong>Studio Product Photo & Visual Scene Prompt Builder</strong></summary>
+
+## Studio Product Photo & Visual Scene Prompt Builder
+
+Contributed by [@arulandriyansahputraali](https://github.com/arulandriyansahputraali)
+
+```md
+Act as a commercial product photographer and art director. Given a product subject (${product:minimalist ceramic coffee mug}), target lighting (${lighting:soft natural window light}), and backdrop (${backdrop:warm linen table with subtle shadows}), generate 3 detailed image-generation prompts with camera focal length, depth of field, color palette, and composition notes. You can test the resulting prompts directly in any Free AI Image Generator such as https://freecreate.app/generate and refine them with reference photos.
+```
+
+</details>
+
