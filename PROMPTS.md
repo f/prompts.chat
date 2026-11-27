@@ -257141,3 +257141,28 @@ FINAL RESULT: A seamless 30-second photorealistic street comedy with all eight s
 
 </details>
 
+<details>
+<summary><strong>Zebra Robe Luxury Fashion Editorial on a Beige Sofa (Reference-Photo Portrait)</strong></summary>
+
+## Zebra Robe Luxury Fashion Editorial on a Beige Sofa (Reference-Photo Portrait)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Ultra-realistic luxury fashion editorial photograph of the woman in the reference image.
+
+Keep her hair as in the reference, styled in loose, flowing waves, swept back from her forehead and cascading over her right shoulder. Natural luminous skin with visible pores, delicate microtexture, subtle peach blush and minimal elegant makeup.
+
+She wears a luxurious oversized black-and-white zebra-patterned robe dress made of soft, thick, textured fabric. Deep V-shaped neckline with relaxed off-the-shoulder styling, revealing her collarbones and shoulders. Voluminous long sleeves, loosely draped fabric and a matching belt tied at the waist. A short, elegant necklace of large white pearls rests around her neck.
+
+The woman reclines comfortably on a large beige upholstered sofa with wide, softly padded back cushions. Her body is slightly angled, shoulders relaxed, one arm extended along the sofa while the other rests naturally near her lap. The flowing zebra-patterned fabric covers her legs.
+
+She looks directly into the camera with a calm, confident, slightly serious expression. Relaxed lips, effortless sophisticated pose.
+
+Medium-close portrait, photographed from a slightly elevated frontal angle. Soft natural daylight from the left, warm neutral tones, delicate shadows, realistic fabric texture and subtle highlights on her face and hair, matching the reference.
+
+Minimalist beige interior, understated luxury atmosphere, intimate high-fashion editorial photography, natural skin texture without excessive retouching, realistic hair strands, subtle analog film grain, refined cinematic composition.
+```
+
+</details>
+
