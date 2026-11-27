@@ -256975,3 +256975,40 @@ if __name__ == "__main__":
 
 </details>
 
+<details>
+<summary><strong>Ruby Gem taste</strong></summary>
+
+## Ruby Gem taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Ruby Gem taste of a maintainer who ships small, dependable gems with boring releases
+- Scaffold new gems with `bundle gem <name> --test=rspec --ci=github --linter=rubocop` and keep the generated layout instead of inventing a custom one. Confidence: 0.80
+- Keep the gemspec as the single source of truth for metadata, required Ruby version and runtime dependencies; the Gemfile only adds development tools. Confidence: 0.90
+- Set `required_ruby_version` explicitly and support only Ruby versions that still receive security fixes. Confidence: 0.85
+- Build `spec.files` from `git ls-files` filtered to `lib`, `sig`, `exe`, LICENSE, README and CHANGELOG so tests and fixtures never ship in the package. Confidence: 0.85
+- Add as few runtime dependencies as possible and give each one a pessimistic constraint like `~> 2.3`, never an unbounded `>=`. Confidence: 0.90
+- Do not commit `Gemfile.lock` for a library; let CI resolve fresh dependencies so breakage shows up early. Confidence: 0.65
+- Namespace everything under one top-level module that matches the gem name, and never monkey-patch core classes from a library. Confidence: 0.95
+- Use Zeitwerk for gems with many files, and plain `require_relative` for small ones. Confidence: 0.70
+- Expose configuration through a `configure` block that yields a plain configuration object with documented defaults. Confidence: 0.80
+- Define a base `<GemName>::Error < StandardError` and raise specific subclasses so callers can rescue the whole family. Confidence: 0.90
+- Add `# frozen_string_literal: true` to every Ruby file. Confidence: 0.80
+- Write tests in RSpec with `--require spec_helper`, random order and `disable_monkey_patching!` turned on. Confidence: 0.80
+- Run CI on a matrix of all supported Rubies plus `head`, with `head` allowed to fail. Confidence: 0.85
+- Enforce style with RuboCop (or Standard) in CI, and keep project-wide disables in `.rubocop.yml` instead of inline comments. Confidence: 0.75
+- Ship RBS signatures in `sig/` for the public API, or at least YARD types, so editors and Steep can check callers. Confidence: 0.60
+- Document every public method with YARD and keep a runnable quick-start example at the top of the README. Confidence: 0.80
+- Follow Semantic Versioning strictly and keep `VERSION` in `lib/<gem>/version.rb` as the only place the version lives. Confidence: 0.95
+- Maintain a CHANGELOG in Keep a Changelog format and update it in the same pull request as the change. Confidence: 0.85
+- Deprecate before removing: warn through `Kernel#warn` with `category: :deprecated` for at least one minor release. Confidence: 0.85
+- Publish from CI with RubyGems trusted publishing on a tagged release instead of running `gem push` from a laptop. Confidence: 0.85
+- Require MFA for every owner by setting `rubygems_mfa_required` to "true" in the gemspec metadata. Confidence: 0.95
+- Set `source_code_uri`, `changelog_uri` and `bug_tracker_uri` in the metadata so rubygems.org links back to the repository. Confidence: 0.75
+- Keep optional integrations (Rails, Sidekiq) behind separate requires such as `require "<gem>/rails"` so they never load by default. Confidence: 0.80
+- Test the packaged gem, not only the repo: build it in CI, install it into a clean bundle and run a smoke script. Confidence: 0.70
+```
+
+</details>
+
