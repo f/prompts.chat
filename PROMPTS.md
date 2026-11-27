@@ -255790,3 +255790,19 @@ Render it like real hand-painted earthenware: slightly uneven brushstrokes and p
 
 </details>
 
+<details>
+<summary><strong>Red Maple Leaves Drifting Down a Mossy Mountain Stream in Autumn</strong></summary>
+
+## Red Maple Leaves Drifting Down a Mossy Mountain Stream in Autumn
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A photorealistic photograph of a small, clear mountain stream flowing through an autumn forest on a calm, misty morning. The water runs gently over smooth grey stones covered with bright green moss and cascades down a few low steps, forming small white ribbons of water and a quiet pool in the foreground. Japanese maple and beech trees lean over the stream from both banks, their leaves in glowing crimson, scarlet, orange and gold. Dozens of red maple leaves float on the dark surface of the pool, a few are caught against the mossy stones, and a few are falling through the air. Thin morning mist hangs between the trunks in the background, and soft rays of sunlight break through the canopy and touch the water.
+
+Shot like a professional nature photograph: 24 mm lens low near the water at the edge of the pool, looking upstream, strong depth with the stream leading back into the misty forest, sharp foreground stones and floating leaves, slightly softer background, rich red and gold against deep green moss and dark water, gentle natural light. No people, no animals, no buildings, no text. Landscape 16:9.
+
+```
+
+</details>
+
