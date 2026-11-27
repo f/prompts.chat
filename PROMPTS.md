@@ -257048,3 +257048,38 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Performance Profiling taste</strong></summary>
+
+## Performance Profiling taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Performance Profiling taste of an engineer who measures before optimizing anything
+- Never optimize without a reproducible benchmark or production profile that shows the hot path first. Confidence: 0.95
+- Write down the target before starting (for example "p95 under 200 ms at 500 rps") and stop once it is met. Confidence: 0.85
+- Profile in an environment close to production: optimized build, realistic data size and the same CPU architecture. Confidence: 0.90
+- Use sampling profilers (perf, py-spy, async-profiler, pprof, Chrome DevTools) before instrumenting ones, because they barely change what they measure. Confidence: 0.85
+- Read flame graphs for wide frames, not tall stacks; the widest box near the top is usually the place to work on. Confidence: 0.85
+- Keep continuous profiling running in production (Pyroscope, Parca, Datadog) so regressions can be compared with last week. Confidence: 0.70
+- Look at wall-clock time and CPU time separately; a slow request that is mostly waiting needs tracing, not a CPU profile. Confidence: 0.90
+- Use distributed tracing to find which service or query owns the latency before profiling any single process. Confidence: 0.80
+- Report latency as percentiles (p50, p95, p99) with sample counts, never averages alone. Confidence: 0.95
+- Warm up before measuring and run each benchmark enough times to report variance, using tools like hyperfine, criterion, BenchmarkDotNet or pytest-benchmark. Confidence: 0.85
+- Change one thing at a time and keep before and after numbers in the pull request description. Confidence: 0.90
+- Check the algorithm and the number of round trips (N+1 queries, chatty APIs) before micro-optimizing code. Confidence: 0.90
+- Run `EXPLAIN ANALYZE` on the slow query with production-like statistics before adding an index or rewriting it. Confidence: 0.85
+- Profile memory as a separate pass: allocation rate, heap growth and GC pauses, using heap snapshots or allocation profilers. Confidence: 0.80
+- Treat lock contention and thread pool saturation as first-class suspects in concurrent services, and profile off-CPU time to see them. Confidence: 0.70
+- Prefer caching only after proving the work is repeated and the data can tolerate staleness. Confidence: 0.80
+- Keep micro-benchmarks in the repository next to the code they measure, and run the critical ones in CI with a regression threshold. Confidence: 0.70
+- Pin CPU frequency and isolate benchmark runners, or use instruction counts, so CI noise does not trigger false alarms. Confidence: 0.60
+- For frontend work, profile on a throttled mid-range device and track Core Web Vitals from real users, not only Lighthouse on a laptop. Confidence: 0.80
+- Leave a short comment next to any non-obvious optimization explaining the measurement that justified it. Confidence: 0.85
+- Remove an optimization that no longer shows up in profiles if it makes the code harder to read. Confidence: 0.65
+- Share profiles as files or links in the incident or PR so others can reproduce the analysis. Confidence: 0.75
+```
+
+</details>
+
