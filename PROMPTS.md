@@ -258798,3 +258798,16 @@ This candid, unedited smartphone selfie shows the man from the attached referenc
 
 </details>
 
+<details>
+<summary><strong>Custom Learning Curriculum</strong></summary>
+
+## Custom Learning Curriculum
+
+Contributed by [@rutforcode](https://github.com/rutforcode)
+
+```md
+I want to self-educate on topics that help me solve the biggest problems I am currently facing. No shelf-help, no learning for the sake of learning. Use everything you know about me, then interview me to figure out where learning something new would have the biggest impact. Then do a deep research project to build me a list of resources to learn from. I believe in just-in-time learning, not just-in-case, only recommend things I can apply immediately. Don't give me the most popular resources. Give me the ones that fit my current struggles. Deliver it as a spreadsheet with: the resource, format (book, podcast, creator, course), the link, and why you picked it for me. If anything's unclear, ask before you start.
+```
+
+</details>
+
