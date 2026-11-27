@@ -255835,3 +255835,16 @@ Avoid: people, animals, leaves changing color or multiplying, leaves falling lik
 
 </details>
 
+<details>
+<summary><strong>PROFESSIONAL CURRICULUM VITAE REDESIGN</strong></summary>
+
+## PROFESSIONAL CURRICULUM VITAE REDESIGN
+
+Contributed by [@nkyacos](https://github.com/nkyacos)
+
+```md
+This prompt will improve not only visual presentation but also the quality of the CV content, professional impact, structure and readability.
+```
+
+</details>
+
