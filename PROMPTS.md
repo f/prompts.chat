@@ -257179,3 +257179,28 @@ Act as a commercial product photographer and art director. Given a product subje
 
 </details>
 
+<details>
+<summary><strong>Find packages that depend on apps</strong></summary>
+
+## Find packages that depend on apps
+
+Contributed by [@santoshyadavdev](https://github.com/santoshyadavdev)
+
+```md
+Audit the monorepo for shared packages (under packages/) that depend on an app or service, either directly or transitively.
+
+1. For every package.json under packages/, list the workspace dependencies that point to apps/*, services, or other non-package workspaces.
+2. Search source for imports of app modules. Use `git grep` with a pathspec rather than recursive grep. Search for both package-name imports and relative paths that escape the package.
+3. For each hit, record the importing file, the imported symbol, and whether it is used as a type or at runtime.
+4. Group the hits by root cause:
+    - a schema or generated types
+    - test support
+    - constants or headers
+    - real logic
+5. Rank the groups by how many consumers they unblock and how much build-graph weight they remove.
+
+Measure the improvement by comparing `turbo run build --dry=json --filter=<pkg>` before and after. Count tasks and dependency edges. Report numbers, not estimates. Do not change any code.
+```
+
+</details>
+
