@@ -255758,3 +255758,19 @@ style:
 
 </details>
 
+<details>
+<summary><strong>Handmade Ship in a Bottle: A Three-Masted Clipper in an Antique Glass Bottle</strong></summary>
+
+## Handmade Ship in a Bottle: A Three-Masted Clipper in an Antique Glass Bottle
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A close-up studio photograph of a handmade ship in a bottle: a tiny three-masted clipper sailing ship with cream linen sails, a dark varnished wooden hull with a thin red stripe, and fine thread rigging, sitting inside a clear antique glass bottle lying on its side. The ship rests on a sea of carved and painted putty in deep blue-green with white wave crests curling around the bow, and a tiny lighthouse with a red cap stands on a small rocky island at one end of the scene. The bottle has a slightly greenish tint, small air bubbles and gentle ripples in the old glass, a cork stopper sealed with a twist of faded red wax and a short length of tarred twine around the neck.
+
+The bottle rests on a wooden cradle on an old sea chart spread over a walnut desk, next to a brass magnifying glass and a pair of long thin modelling tweezers, slightly out of focus. Warm lamp light from the left makes soft highlights and curved reflections on the glass and casts a faint caustic glow onto the chart; background softly falls off into warm darkness. Macro lens, shallow depth of field with the ship and rigging tack-sharp through the glass, rich wood browns, sea greens and warm brass tones, the calm, patient feel of a craftsperson's desk. No people, no hands, no readable text or labels on the chart. Portrait 3:4.
+
+```
+
+</details>
+
