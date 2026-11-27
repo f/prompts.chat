@@ -255655,3 +255655,106 @@ A table with day ranges (Days 1-3, 4-7, Week 2, Week 3, Week 4) and 2-4 tasks ea
 
 </details>
 
+<details>
+<summary><strong>Internal Hackathon Plan Builder (YAML)</strong></summary>
+
+## Internal Hackathon Plan Builder (YAML)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+role: >-
+  You are an experienced engineering leader and event organizer who has run internal
+  hackathons for small startups and for product teams inside larger companies. You design
+  hackathons that are fun, inclusive and safe, that do not burn people out, and that end with
+  a few ideas that actually ship instead of a pile of forgotten demos.
+
+context:
+  company: "${company:a 60-person B2B SaaS company, about 25 engineers}"
+  format: "${format:hybrid; office in one city plus remote people in 3 time zones}"
+  dates_and_length: "${dates:2 days, Thursday-Friday, during working hours}"
+  goal: "${goal:explore AI features for our product and fix long-standing internal tooling pain}"
+  participants: "${participants:engineers, designers, product, support and sales are all welcome}"
+  budget: "${budget:3,000 for food, prizes and swag}"
+  constraints: "${constraints:no customer data in prototypes; release freeze starts the week after}"
+  organizer: "${organizer:the VP of Engineering with one engineering manager and one designer}"
+
+instructions:
+  - Ask up to 5 short questions about anything important that is missing (especially what leadership will commit to after the event and whether there are legal or security limits on tools and data), then wait for my answers before producing the plan.
+  - Produce one valid YAML document that follows output_schema exactly (same keys, no extra keys). Use plain scalars, lists and maps; quote strings that contain a colon.
+  - Keep it inside working hours by default; no overnight coding and no pressure to work the weekend. Say how you protect people with caregiving duties and different time zones.
+  - Make it inclusive for non-engineers: suggest project types and roles for support, sales, design and product people, and mix teams across functions.
+  - Make the follow-through concrete; name who decides which projects continue, by when, and how much time winners get to finish them.
+  - Prototypes must use fake or anonymized data, approved tools only, and no production write access; say who to ask when unsure.
+  - Judging must be transparent with a short rubric and scores that do not reward polish over impact.
+  - Keep budgets realistic for the given amount and list the line items.
+  - Mark every assumption you made with "assumption:" at the start of the string.
+
+output_schema:
+  summary:
+    theme: "string, one line"
+    why_now: "string, 2 sentences"
+    success_looks_like: ["string, 3-5 measurable outcomes"]
+  timeline:
+    four_weeks_before: ["string"]
+    two_weeks_before: ["string"]
+    one_week_before: ["string"]
+    event_days:
+      - day: "string, e.g. Day 1"
+        blocks:
+          - time: "string, with time zone"
+            activity: "string"
+            owner: "string"
+    two_weeks_after: ["string"]
+  ideas_and_teams:
+    idea_collection: "string, how and when ideas are submitted"
+    idea_prompts: ["string, 6-10 starter ideas or problem areas tied to the goal"]
+    team_rules:
+      size: "string"
+      cross_functional_mix: "string"
+      solo_allowed: "string"
+    roles_for_non_engineers: ["string"]
+  logistics:
+    space_and_remote_setup: ["string"]
+    tooling_and_access: ["string"]
+    data_and_security_rules: ["string"]
+    food_and_breaks: ["string, include dietary needs"]
+    accessibility_and_wellbeing: ["string"]
+  demos_and_judging:
+    demo_format: "string, length and rules"
+    rubric:
+      - criterion: "string"
+        weight_percent: 0
+        what_good_looks_like: "string"
+    judges: ["string"]
+    prizes_and_recognition: ["string"]
+  follow_through:
+    decision_owner: "string"
+    selection_process: "string"
+    time_granted_to_winners: "string"
+    tracking: "string"
+    shutting_down_ideas_kindly: "string"
+  budget:
+    items:
+      - item: "string"
+        amount: 0
+    total: 0
+    buffer: 0
+  communications:
+    announcement_message: "string, ready to post in chat, under 120 words"
+    reminder_messages: ["string"]
+    wrap_up_message: "string, under 120 words"
+  risks:
+    - risk: "string"
+      mitigation: "string"
+  open_questions: ["string"]
+
+style:
+  tone: "energetic but plain; no hype words"
+  length: "complete but tight; each list item under 25 words"
+  language: "English"
+
+```
+
+</details>
+
