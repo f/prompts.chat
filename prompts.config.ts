@@ -64,6 +64,8 @@ export default defineConfig({
     mcp: true,
     // Enable comments on prompts
     comments: true,
+    // Enable the AI Prompt Enhancer on /developers and the /api/improve-prompt endpoint (requires OPENAI_API_KEY)
+    promptEnhancer: false,
   },
 
   // Homepage customization

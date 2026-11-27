@@ -88,6 +88,10 @@ Ensure all strings are properly quoted and escaped.
 Numbers should not be quoted.
 ```
 
+<Callout type="tip" title="תנו ל-API לאכוף את הסכמה">
+כשאתם קוראים למודל דרך API, הניסוח אינו הכלי היחיד שלכם. OpenAI, Anthropic ו-Google מציעות כולן יכולות פלט מובנה שמקבלות JSON Schema ומגבילות את התגובה כך שתתאים לה. זה מונע את רוב כשלי הניתוח שבפרק הזה, כמו גדרות markdown תועות, פסיקים מיותרים ושדות חסרים. הגדרות "JSON mode" ותיקות יותר מבטיחות רק JSON תקין מבחינה תחבירית, לא את הסכמה שלכם, וכל ספק תומך בתת-קבוצה מעט שונה של JSON Schema. הטכניקות שבהמשך עדיין חשובות, כי סכמה שולטת בצורת התשובה, לא בשאלה אם הערכים שבתוכה נכונים.
+</Callout>
+
 ## יסודות הנחיית YAML
 
 YAML קריא יותר לבני אדם מ-JSON ותומך בהערות. הוא הסטנדרט לקבצי תצורה, במיוחד ב-DevOps (Docker, Kubernetes, GitHub Actions).
@@ -131,7 +135,7 @@ Generate a GitHub Actions workflow in YAML:
 Requirements:
 - Trigger on push to main and pull requests
 - Run on Ubuntu latest
-- Steps: checkout, setup Node 18, install dependencies, run tests
+- Steps: checkout, set up the current Node.js LTS release, install dependencies, run tests
 - Cache npm dependencies
 ```
 
@@ -141,7 +145,7 @@ Requirements:
 
 ### שימוש בטיפוסים בסגנון TypeScript
 
-ממשקי TypeScript מוכרים למפתחים ומתארים במדויק שדות אופציונליים, טיפוסי union ומערכים. פלטפורמת prompts.chat משתמשת בגישה זו להנחיות מובנות.
+ממשקי TypeScript מוכרים למפתחים ומתארים במדויק שדות אופציונליים, טיפוסי union ומערכים.
 
 <TryIt 
   title="חילוץ עם ממשק TypeScript"
@@ -203,7 +207,7 @@ Genres: Science Fiction, Political Fiction. Rated 4.8/5"
 
 ### מערכים באורך קבוע
 
-כשאתם צריכים בדיוק N פריטים, ציינו זאת במפורש. המודל יוודא שלמערך יש את האורך הנכון.
+כשאתם צריכים בדיוק N פריטים, ציינו זאת במפורש. מודלים בדרך כלל מצייתים לכך, אבל אם המספר חשוב, ספרו את הפריטים בקוד שלכם.
 
 ```
 Extract exactly 3 key points as JSON:
@@ -254,7 +258,7 @@ Enums מגבילים ערכים לקבוצה מוגדרת מראש. זה קרי�
 
 ### Enums של מחרוזות
 
-רשמו ערכים מותרים במפורש. השתמשו בשפת "חייב להיות אחד מ" לאכיפת התאמה קפדנית.
+רשמו ערכים מותרים במפורש. השתמשו בניסוח "חייב להיות אחד מ" לאכיפת התאמה קפדנית.
 
 ```
 Classify this text. The category MUST be one of these exact values:
@@ -391,13 +395,13 @@ Items: apple, carrot, bread, banana, broccoli, milk, orange, spinach
 
 ## YAML ליצירת תצורות
 
-YAML מצטיין בתצורות DevOps. המודל מכיר דפוסים סטנדרטיים לכלים נפוצים ויכול ליצור תצורות מוכנות לייצור.
+YAML מצטיין בתצורות DevOps. המודל מכיר דפוסים סטנדרטיים לכלים נפוצים ויכול להפיק תצורות התחלתיות טובות, שעדיין כדאי לבדוק לפני שהן מגיעות לסביבת הייצור.
 
 ### מה כן ומה לא: תצורות YAML
 
 <Compare 
   before={{ label: "❌ לא: דרישות מעורפלות", content: "צור קובץ docker-compose ליישום שלי." }}
-  after={{ label: "✓ כן: ציין רכיבים וצרכים", content: "צור docker-compose.yml עבור:\n- יישום Node.js (פורט 3000)\n- מסד נתונים PostgreSQL\n- מטמון Redis\n\nכלול: בדיקות תקינות, אחסון מתמיד, סביבה מקובץ .env" }}
+  after={{ label: "✓ כן: ציין רכיבים וצרכים", content: "צור docker-compose.yml עבור:\n- יישום Node.js (פורט 3000)\n- מסד נתונים PostgreSQL\n- מטמון Redis\n\nכלול: בדיקות תקינות, שמירת נתונים ב-volumes, סביבה מקובץ .env" }}
 />
 
 ### Docker Compose
@@ -438,11 +442,11 @@ Also generate matching Service (ClusterIP, port 8080)
 
 ## אימות וטיפול בשגיאות
 
-למערכות ייצור, בנו אימות לתוך ההנחיות שלכם. זה תופס שגיאות לפני שהן מתפשטות בצינור שלכם.
+למערכות ייצור, בנו אימות לתוך ההנחיות שלכם. כך מאתרים שגיאות לפני שהן מתפשטות בצינור שלכם.
 
 ### הנחיית אימות עצמי
 
-בקשו מהמודל לאמת את הפלט שלו מול כללים שאתם מציינים. זה תופס שגיאות פורמט וערכים לא תקינים.
+בקשו מהמודל לאמת את הפלט שלו מול כללים שאתם מציינים. כך מאתרים שגיאות פורמט וערכים לא תקינים.
 
 ```
 Extract data as JSON, then validate your output.
@@ -510,27 +514,14 @@ Error format:
   </div>
 </div>
 
-## הנחיות מובנות ב-Prompts.chat
+## שמירת הנחיות מובנות
 
-ב-prompts.chat, אתם יכולים ליצור הנחיות עם פורמטים של פלט מובנה:
-
-```
-When creating a prompt on prompts.chat, you can specify:
-
-Type: STRUCTURED
-Format: JSON or YAML
-
-The platform will:
-- Validate outputs against your schema
-- Provide syntax highlighting
-- Enable easy copying of structured output
-- Support template variables in your schema
-```
+כשהנחיית JSON או YAML עובדת היטב, שמרו אותה במקום שבו תוכלו למצוא אותה ולהשתמש בה שוב. ספריות הנחיות אחדות, ובהן prompts.chat, מאפשרות לשמור הנחיה שכתובה בעצמה ב-JSON או ב-YAML, להציג אותה עם הדגשת תחביר ולמלא משתני תבנית לפני שמעתיקים אותה. זכרו שזה שומר את ההנחיה; זה לא בודק את תשובת המודל מול סכמה. לשם כך, השתמשו ביכולת הפלט המובנה של ה-API שלכם, או אמתו את התגובה בקוד שלכם.
 
 ## מלכודות נפוצות
 
 <Callout type="warning" title="בדקו את אלה קודם">
-שלוש הבעיות האלה גורמות לרוב כשלי ניתוח JSON. חפשו אותן כשהקוד שלכם לא מצליח לנתח פלט AI.
+שלוש הבעיות האלה גורמות לרוב כשלי ניתוח JSON. חפשו אותן כשהקוד שלכם לא מצליח לנתח פלט AI. פלט מובנה שנאכף לפי סכמה מונע אותן ברובן, ולכן הן חשובות בעיקר כשאתם מסתמכים על ההנחיה בלבד.
 </Callout>
 
 ### 1. בלוקי קוד של Markdown
@@ -543,9 +534,9 @@ Return ONLY the JSON object. Do not wrap in markdown code blocks.
 Do not include ```json or ``` markers.
 ```
 
-### 2. פסיקים מסיימים
+### 2. פסיקים מיותרים בסוף
 
-**בעיה:** JSON לא תקין בגלל פסיקים מסיימים
+**בעיה:** JSON לא תקין בגלל פסיקים מיותרים בסוף רשימה
 
 **פתרון:**
 ```
@@ -553,7 +544,7 @@ Ensure valid JSON syntax. No trailing commas after the last
 element in arrays or objects.
 ```
 
-### 3. מחרוזות לא מוברחות
+### 3. מחרוזות ללא תווי בריחה
 
 **בעיה:** מרכאות או תווים מיוחדים שוברים JSON
 
@@ -568,11 +559,11 @@ Properly escape special characters in strings:
 ## סיכום
 
 <Callout type="tip" title="טכניקות מפתח">
-הגדירו סכמות במפורש באמצעות ממשקי TypeScript או JSON Schema. ציינו טיפוסים ואילוצים, טפלו ב-nulls וברירות מחדל, בקשו אימות עצמי, ובחרו את הפורמט הנכון לשימוש שלכם.
+הגדירו סכמות במפורש באמצעות ממשקי TypeScript או JSON Schema. ציינו טיפוסים ואילוצים, טפלו ב-nulls וברירות מחדל, בקשו אימות עצמי, ובחרו את הפורמט הנכון לשימוש שלכם. כשאתם עובדים דרך API, תנו ליכולת הפלט המובנה שלו לאכוף את הסכמה, והמשיכו לאמת את הערכים.
 </Callout>
 
 <Quiz 
-  question="מתי עדיף להעדיף YAML על פני JSON לפלטי AI?"
+  question="מתי עדיף YAML על פני JSON לפלטי AI?"
   options={[
     "כשבונים REST APIs",
     "כשהפלט צריך להיות קריא לבני אדם ועשוי לכלול הערות",

@@ -70,6 +70,15 @@ export function TagPicker({ tags, value, onChange }: TagPickerProps) {
             }}
             onFocus={() => setOpen(true)}
             onBlur={() => setTimeout(() => setOpen(false), 150)}
+            onKeyDown={(e) => {
+              // Enter picks the first suggestion instead of submitting the surrounding form
+              if (e.key !== "Enter") return;
+              e.preventDefault();
+              if (search && filteredTags[0]) {
+                toggle(filteredTags[0].id);
+                setSearch("");
+              }
+            }}
             className="pl-9"
             autoComplete="off"
             autoCorrect="off"

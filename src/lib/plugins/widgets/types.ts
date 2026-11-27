@@ -4,7 +4,17 @@
 
 import type { ReactNode } from "react";
 
+/** Listing surfaces a widget can be injected into */
+export type WidgetPlacement = "prompts" | "bots" | "teams";
+
+export const WIDGET_PLACEMENTS: readonly WidgetPlacement[] = ["prompts", "bots", "teams"];
+
+/** Surfaces a widget appears on when it doesn't declare `placements` */
+export const DEFAULT_WIDGET_PLACEMENTS: readonly WidgetPlacement[] = ["prompts"];
+
 export interface WidgetContext {
+  /** The surface being rendered. Default: "prompts" */
+  placement?: WidgetPlacement;
   filters?: {
     q?: string;
     type?: string;
@@ -12,9 +22,15 @@ export interface WidgetContext {
     categorySlug?: string;
     tag?: string; 
     sort?: string;
+    platform?: string;
   };
   page?: number;
   itemCount?: number;
+  /**
+   * Index of the first item in the overall listing, for paginated surfaces. Positions stay
+   * absolute across pages, so a widget at position 30 shows on the second page of 24.
+   */
+  offset?: number;
 }
 
 /**
@@ -57,10 +73,13 @@ export interface WidgetPrompt {
   position?: number;
   /** Widget positioning configuration */
   positioning?: WidgetPositionConfig;
+  /** Surfaces this widget is injected into. Default: ["prompts"] */
+  placements?: readonly WidgetPlacement[];
   shouldInject?: (context: WidgetContext) => boolean;
   /** Custom render function for completely custom widget designs.
-   * instanceIndex is provided for repeated widgets (0-based) to support unique IDs. */
-  render?: (instanceIndex: number) => ReactNode;
+   * instanceIndex is provided for repeated widgets (0-based) to support unique IDs,
+   * and placement is the surface the widget is rendered on. */
+  render?: (instanceIndex: number, placement: WidgetPlacement) => ReactNode;
 }
 
 export interface InjectedWidget extends WidgetPrompt {

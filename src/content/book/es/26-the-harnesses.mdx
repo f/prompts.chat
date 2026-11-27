@@ -134,6 +134,99 @@ Cambia un ajuste y avanza paso a paso. Observa qué cambia en el contexto, la so
 
 Estos son ejemplos de resultados, no reglas sobre lo que hará cada modelo. Un modelo puede hacer una pregunta útil incluso con un prompt impreciso. Las instrucciones claras facilitan seguir y comprobar tus expectativas.
 
+## Cuando el modelo escribe el bucle
+
+El bucle anterior tiene un ritmo constante: el modelo pide una herramienta, el harness la ejecuta y el resultado se suma al contexto del modelo. Para unos pocos pasos, funciona bien. Pero en una tarea que toca cientos de archivos, cada paso se convierte en otra solicitud completa al modelo, y el contexto se llena de salidas que el modelo solo necesitó una vez.
+
+Algunos harnesses ofrecen otra forma de trabajar. El modelo escribe un pequeño programa que llama a las herramientas por su cuenta. El programa se ejecuta en un sandbox; los datos en bruto, como archivos, logs y resultados de búsqueda, se quedan en sus variables, y solo lo que el programa imprime vuelve al modelo. Esto se llama **llamada programática de herramientas** (programmatic tool calling). La idea nace de investigaciones como [CodeAct](https://arxiv.org/abs/2402.01030) (Wang et al., 2024).
+
+<Compare
+  before={{ label: "Una llamada a la vez", content: "Lee el archivo A. Aquí está A. Lee el archivo B. Aquí está B. Después de cada resultado, se vuelve a llamar al modelo con sus instrucciones, su historial y todo lo que ha visto hasta ahora." }}
+  after={{ label: "Un programa que llama a las herramientas", content: "Busca en el proyecto, lee cada coincidencia, quédate con los archivos que aún usan la API antigua e imprime una lista breve. El harness ejecuta el programa y devuelve solo la lista." }}
+/>
+
+El contexto queda más limpio, porque el modelo razona sobre un resumen. Hacen falta menos solicitudes al modelo, porque las instrucciones y el historial no se reenvían cada pocas llamadas. Y los bucles y las comprobaciones se ejecutan en código, así que un caso que el modelo pensaba atender no se pierde en silencio.
+
+Factory convirtió esto en la opción predeterminada de [Droid 1.0](https://factory.com/news/frontier-harness), anunciado el 29 de octubre de 2026. Su herramienta Script ejecuta JavaScript en un sandbox y puede hacer cientos de llamadas a herramientas en una sola solicitud al modelo. Las llamadas independientes se ejecutan a la vez, y un script largo puede seguir en segundo plano y despertar al modelo cuando termina. Factory reconoce a CodeAct como antecedente y señala que Cloudflare y Anthropic llevaron la idea a producción a finales de 2025, y que Codex la llevó a los agentes de programación. En el propio ejemplo de Factory, al arreglar una prueba que fallaba, las mismas 15 llamadas a herramientas necesitaron 5 llamadas al modelo en lugar de 10. Son cifras que Factory reporta sobre su propio harness.
+
+También tiene costes. El sandbox no tiene acceso propio a archivos, red ni sistema; solo puede usar las herramientas que el harness expone. Los permisos y las aprobaciones deben seguir aplicándose a cada herramienta que el programa llame. La salida impresa tiene un límite. Y a una persona le cuesta más seguir un programa que una lista de pasos sueltos.
+
+### Flujos de trabajo: la misma idea, un nivel más arriba
+
+El mismo movimiento funciona con agentes completos. En [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/workflow-runs) (beta) y [Claude Code](https://code.claude.com/docs/en/workflows), de Anthropic, un agente puede escribir un **flujo de trabajo** (workflow): un programa que ejecuta muchos agentes por fases, reparte el trabajo en paralelo, pasa los resultados de un agente a otro, repite un paso hasta que una revisión lo aprueba y combina todo lo que recibe. Se ejecuta en segundo plano mientras la conversación principal queda libre.
+
+Con subagentes, el propio agente decide cada paso siguiente. En un flujo de trabajo, decide el programa. Aun así, es el agente quien elige cuándo iniciar uno, de modo que esa elección se orienta en el prompt de sistema o en las instrucciones. El presupuesto también importa: cada agente de una ejecución gasta tokens.
+
+### Escribir prompts para un programa
+
+Cuando el modelo planifica un programa, tu prompt se convierte en su especificación. Describe el trabajo completo: qué elementos cubrir, qué comprobaciones deben cumplirse en cada uno, qué hacer cuando uno falla y qué debe contener el informe final. Para acciones arriesgadas, pide ver antes un resumen del programa.
+
+<TryIt compact prompt={`Resuelve todo este trabajo con un programa en lugar de avanzar paso a paso.
+
+Trabajo: \${job:comprueba que cada ruta de la API que modifica datos exige un usuario con sesión iniciada}
+Elementos: \${items:todos los archivos de rutas en src/app/api}
+Comprobación para cada elemento: \${checks:la ruta verifica la sesión antes de leer o escribir nada}
+Si un elemento falla: \${failure:anota la ruta del archivo y el motivo, y continúa}
+Informe final: \${report:las rutas que fallaron, cuántas pasaron y cualquier archivo que no pudiste leer}
+
+Antes de ejecutar algo que modifique archivos, resúmeme el programa y espera mi aprobación.`} />
+
+No todas las tareas necesitan un programa. Cuando cada paso depende de juzgar el resultado anterior, una llamada a la vez suele ser más clara. Un programa brilla cuando el trabajo es grande, repetitivo y fácil de comprobar.
+
+### Ojos nuevos: revisores que empiezan en blanco
+
+El contexto vacío de un subagente suele presentarse como una forma de ahorrar espacio: el trabajo ruidoso ocurre en otra parte y solo vuelve un resumen. Pero también es una de las mejores herramientas de revisión que puede ofrecer un harness. Un agente que ha pasado una larga sesión con un problema lleva consigo cada suposición que hizo por el camino. Cuando relee su propio plan, rellena cada hueco con lo que recuerda y ni siquiera nota que el hueco estaba ahí. Un revisor que arranca en un contexto nuevo solo tiene el documento y los archivos a los que remite. Todo lo que el autor sabía pero nunca escribió aparece como confusión, y una confusión en el papel es mucho más barata de resolver que una confusión en el código.
+
+El plugin de código abierto [Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model) (EGM) de Google, [presentado en octubre de 2026](https://opensource.googleblog.com/2026/10/introducing-elephant-goldfish-model-plugin.html), está construido en torno a este reparto. El elefante es la sesión larga que guarda el contexto del proyecto y redacta una especificación; no escribe código. Los peces de colores son subagentes sin memoria que solo ven el borrador y el código fuente al que hace referencia. Tú resuelves los compromisos y apruebas el diseño. Antes de cualquier crítica, un pez de colores tiene que explicar el plan con sus propias palabras; si no puede, el documento es ambiguo y vuelve a redactarse. Otros revisores asumen papeles distintos y buscan casos límite, dependencias ocultas y todo lo que quien lo implemente aún tendría que decidir por su cuenta. Sus hallazgos se clasifican como bloqueantes, importantes o menores y se devuelven al elefante. Google dice que miles de sus ingenieros usan el plugin. No es un producto con soporte oficial de Google y no publica ninguna medición de su precisión.
+
+<Compare
+  before={{ label: "El autor relee su propio plan", content: "\"Reintentar las entregas fallidas con esperas crecientes.\" La frase parece completa, porque el autor recuerda haber decidido cuántos reintentos permitir y qué pasa si el mismo evento llega dos veces. Nada de eso está en la página." }}
+  after={{ label: "Un revisor nuevo lee solo el documento", content: "\"¿Cuántos reintentos, y qué pasa después del último? Si el mismo evento llega dos veces, ¿se entrega dos veces? Tuve que adivinar ambas cosas.\" Los huecos que el autor rellenó de memoria vuelven como preguntas." }}
+/>
+
+El patrón no pertenece a un solo producto. La [guía de buenas prácticas de Claude Code](https://code.claude.com/docs/en/best-practices), de Anthropic, describe `/code-review` como una revisión hecha en un subagente nuevo que nunca vio la conversación, de modo que no se deja llevar por el razonamiento que produjo el código. La guía traza la misma línea que esta sección: pasarle una tarea a un subagente no mejora la respuesta, pero un revisor que no ha visto tu razonamiento sí ayuda. También sugiere darle a ese revisor herramientas de solo lectura y pedirle que deje de lado el estilo, porque un revisor al que se le pide encontrar problemas siempre encuentra algo. El harness de código abierto [Code Copilot Team](https://github.com/gosha70/code-copilot-team), en cambio, deja la revisión en manos de un segundo modelo, que examina los cambios en un sandbox de solo lectura y responde PASS, FAIL o INCONCLUSIVE. Una fase no puede completarse con un FAIL.
+
+Dos advertencias mantienen honesta la idea. La primera: una revisión hecha en el mismo contexto no es una revisión independiente, por mucho que el prompt lo pida con firmeza. La [guía de harnesses](https://github.com/google/elephant-goldfish-model/blob/main/docs/harnesses.md) de EGM asocia "lanza un subagente" con la herramienta de subagentes propia de cada harness, y cuando un harness no tiene ninguna, la revisión se detiene en lugar de seguir en silencio dentro de la sesión del autor. La segunda: una conversación nueva no siempre es un contexto vacío, así que el aislamiento hay que comprobarlo, no suponerlo. Los archivos de instrucciones que un harness carga por su cuenta pueden colarse detrás del revisor. El [issue #237](https://github.com/google/elephant-goldfish-model/issues/237) informa de que los revisores de EGM en Codex y Antigravity nunca vieron la conversación principal, pero aun así recibieron el `AGENTS.md` del proyecto, con lo que las suposiciones del equipo entraron justo en la revisión que debía cuestionarlas. Y cada revisor adicional cuesta tokens y tiempo. Unos ojos nuevos ven lo que el autor ya no puede ver; no sustituyen a las pruebas ni a tu propio criterio.
+
+Para probarlo, abre una sesión nueva o un subagente sin historial y solo con herramientas de lectura, configuradas en el harness y no simplemente pedidas en el prompt. Indícale el documento, no la conversación que lo produjo, y pregúntale:
+
+<TryIt compact prompt={`Lee este plan como alguien que nunca lo ha visto. Usa solo el documento y los archivos que menciona: \${document:docs/designs/webhook-delivery.md}
+
+1. Explica el plan con tus propias palabras: qué construye, cómo encajan las piezas y cómo se va a comprobar.
+2. Enumera cada punto en el que tuviste que adivinar y qué adivinaste.
+3. Clasifica cada hueco como bloqueante, importante o menor, y di qué debería añadir el autor.
+
+No hagas comentarios de estilo y no edites ningún archivo.`} />
+
+### Un harness, varios modelos
+
+Es el harness quien decide qué modelo responde a cada llamada, y nada obliga a que sea siempre el mismo. Los pasos de una tarea larga no se parecen entre sí. Algunos piden criterio: elegir un enfoque, darse cuenta de que un plan se ha torcido, decidir cuándo el trabajo está de verdad terminado. Otros están bien acotados y se repiten: leer estos archivos, sacar estos campos, portar este módulo y ejecutar sus pruebas. Un harness puede asignar a cada paso el modelo que mejor le encaja, y el patrón aparece en dos direcciones.
+
+<InfoGrid columns={2} items={[
+  { label: "Delegar hacia abajo", description: "Un modelo más grande planifica y supervisa. Muchos modelos pequeños y baratos se reparten en paralelo partes acotadas del trabajo, cada uno con su propio encargo, y el modelo grande revisa lo que vuelve.", color: "blue" },
+  { label: "Consultar hacia arriba", description: "Un modelo más rápido y barato lleva toda la tarea. En los momentos difíciles pide consejo a un modelo más fuerte, que lee la transcripción y devuelve un plan o una corrección sin usar él mismo las herramientas.", color: "purple" }
+]} />
+
+Muse Ember, que Meta lanzó el 9 de noviembre de 2026, está pensado para la primera dirección. Meta [lo describe](https://research.meta.ai/blog/muse-ember) como hecho para «el trabajo que los agentes repiten todo el día: llamadas a herramientas, subtareas de programación, enrutamiento, extracción y análisis de documentos largos», y resume su pareja con un modelo mayor en una sola frase: «Muse Wonder planifica, Muse Ember se encarga del volumen». Su [artículo para desarrolladores](https://dev.meta.ai/resources/blog/build-with-muse-ember) esboza un flujo de programación en tres pasos. El modelo grande planifica un cambio en todo un repositorio. Cada worker de Ember toma una subtarea acotada, con sus propios archivos, restricciones y comprobaciones. Después, el modelo grande revisa el resultado combinado junto con un desarrollador. En el ejemplo del cookbook, 16 agentes de Ember portaron cada uno un lexer del resaltador de sintaxis Pygments de Python a Rust, cada uno en su propia copia del repositorio, mientras el planificador redactaba sus encargos sin abrir nunca el código fuente. Meta señala que es el harness el que elige el modelo de cada llamada y lleva el contexto de un paso al siguiente, y que un worker que encuentre una dependencia más amplia o un requisito poco claro debe devolverlo al planificador antes de seguir. Según Meta, los 16 lexers portados coincidieron con los originales de Python en sus pruebas, y la propia empresa advierte que los resultados varían de una ejecución a otra.
+
+La [estrategia del asesor](https://claude.com/resources/articles/the-advisor-strategy) de Anthropic va en sentido contrario, y la propia Anthropic la describe como una inversión del patrón habitual de un orquestador con muchos workers. Un modelo más rápido, llamado ejecutor (Sonnet o Haiku, por ejemplo), lleva toda la tarea: llama a herramientas, lee resultados y sigue adelante. Cuando llega a una decisión que no puede tomar razonablemente por sí solo, consulta a un modelo más fuerte, llamado asesor, como Opus. Según la [documentación de Claude Code](https://code.claude.com/docs/en/advisor), esto suele ocurrir antes de comprometerse con un enfoque, cuando un error vuelve una y otra vez y antes de dar una tarea por terminada. El asesor recibe la conversación completa, con cada llamada a herramientas y cada resultado, y devuelve un plan, una corrección o una señal para detenerse. Como explica la [documentación de la API](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool), nunca llama él mismo a herramientas, y al ejecutor solo le llega su consejo. No hay un grupo de workers que coordinar, y el modelo más fuerte solo entra en los momentos que lo requieren. Un consejo tampoco es una orden. En Claude Code, el ejecutor suele seguirlo, pero cuando un archivo o un paso fallido lo contradice, señala el conflicto en lugar de obedecer a ciegas.
+
+Las dos direcciones dan más peso al prompt, no menos. Al delegar hacia abajo, el encargo es todo el mundo del worker. Meta enumera lo que debe incluir: la tarea, el contexto relevante, los archivos que el worker puede cambiar, las comprobaciones que demuestran que ha terminado y lo que debe devolver. Un modelo pequeño con un encargo vago no puede tomar prestado el criterio del planificador para rellenar los huecos: adivina, rápido y muchas veces. Al consultar hacia arriba, tus instrucciones deciden cuándo se pide ayuda. Anthropic observa que, sin indicaciones en el prompt del sistema, los ejecutores consultan al asesor demasiado poco en tareas de programación, y recomienda decirles cuándo preguntar.
+
+El reparto funciona mejor cuando el trabajo se puede cortar en piezas acotadas y cada pieza se puede comprobar. Si cada paso depende de juzgar el anterior, o si cada paso necesita de todos modos el modelo más fuerte, los traspasos solo añaden coste y más sitios donde perder contexto. El ahorro tampoco está garantizado. Planificar, fusionar y cada llamada al asesor consumen tokens, y Anthropic observa que el beneficio se reduce a medida que la capacidad del modelo pequeño se acerca a la del asesor. La prueba honesta es tu propio trabajo: ejecuta las mismas tareas con las mismas comprobaciones solo con el modelo pequeño, con la pareja y solo con el modelo grande. Elegir qué modelo hace un paso es, además, un mando distinto de cuánto piensa un modelo, una diferencia que se trata en «El esfuerzo no es lo mismo que elegir modelo», dentro de [Desarrollo de software con IA](/book/28a-software-development-with-ai).
+
+Para practicar la primera dirección, escribe el encargo que un planificador daría a un solo worker y luego léelo como lo leería ese worker. ¿Podría alguien capaz, pero ajeno al proyecto, terminar el trabajo solo con esta página?
+
+<TryIt compact prompt={`Eres uno de varios workers en un cambio más grande. Haz solo esta tarea.
+
+Tarea: \${task:pasar el formato de fechas del módulo de facturas al helper compartido formatDate}
+Contexto: \${context:el helper ya existe en src/lib/format.ts; otros workers están actualizando los módulos de pedidos e informes}
+Archivos que puedes cambiar: \${files:src/invoices/ y sus pruebas}
+Comprobaciones: \${checks:las pruebas de facturas pasan y ningún archivo fuera de tu lista ha cambiado}
+Qué devolver: \${result:los archivos que cambiaste, cada comprobación que ejecutaste con su última línea de salida y todo lo que no pudiste terminar}
+
+Si la tarea necesita un archivo fuera de tu lista, o encuentras un problema más grande que esta tarea, detente e infórmalo en lugar de rodearlo.`} />
+
 ## Por qué importan los prompts dentro de un harness
 
 Un harness da al modelo una forma de actuar. Tus prompts explican qué acciones son útiles. Sin un objetivo claro, un agente puede dedicar muchos pasos a un trabajo que no necesitas.
@@ -211,6 +304,70 @@ La misma distinción importa para la información que devuelven las herramientas
   explanation="Los prompts orientan el comportamiento. La herramienta o el entorno deben aplicar el límite de acceso aunque el modelo solicite una acción no permitida."
 />
 
+## ¿Dónde vive el harness?
+
+Todo agente funciona dentro de un harness, pero alguien tiene que construirlo, alojarlo y mantenerlo en marcha. Quién se encargue de eso decide cuánto controlas tú y cuánto te toca mantener. Hoy un harness suele llegarte por uno de estos cuatro caminos:
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">De dónde viene</th>
+      <th scope="col">Quién ejecuta el bucle</th>
+      <th scope="col">Qué aportas tú</th>
+      <th scope="col">Lo que ganas y lo que cuesta</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Un bucle que escribes tú</td>
+      <td>Tú</td>
+      <td>Todo: contexto, manejo de herramientas, permisos, límites</td>
+      <td>Control total, y también todo el mantenimiento</td>
+    </tr>
+    <tr>
+      <td>Un SDK o framework</td>
+      <td>Tú, en local o en el alojamiento que elijas</td>
+      <td>El agente como archivos de tu proyecto: prompts, herramientas, pruebas</td>
+      <td>Los cambios pasan por la revisión de código habitual; desplegarlo y actualizarlo sigue siendo cosa tuya</td>
+    </tr>
+    <tr>
+      <td>Un servicio gestionado</td>
+      <td>El proveedor</td>
+      <td>Instrucciones, habilidades, herramientas y la elección del modelo</td>
+      <td>Poca maquinaria que mantener; el aislamiento y los límites del proveedor marcan los bordes</td>
+    </tr>
+    <tr>
+      <td>Parte de un sistema de automatización, como la CI</td>
+      <td>La plataforma de automatización, cuando ocurre un evento</td>
+      <td>Una descripción de la tarea y los resultados que se le permite producir</td>
+      <td>Encaja en los flujos que ya tienes; nadie está mirando un chat mientras se ejecuta</td>
+    </tr>
+  </tbody>
+</table>
+
+Finales de octubre de 2026 dejó un ejemplo claro de cada uno de los tres últimos. El [Agent SDK](https://cursor.com/blog/agent-sdk) de Cursor, disponible para todos desde el 20 de octubre, trata un agente como un pequeño proyecto: prompts en Markdown, herramientas como funciones de TypeScript y evaluaciones (evals) al lado. Puedes ejecutar el agente en local, desplegarlo en la infraestructura de Cursor o ejecutarlo en tus propios servidores como un único proceso de Node. El 28 de octubre, Microsoft lanzó en vista previa pública el [Copilot harness en Foundry Agent Service](https://devblogs.microsoft.com/foundry/microsoft-copilot-harness-in-foundry/). Es el [mismo harness](https://blogs.microsoft.com/blog/2026/10/28/introducing-the-microsoft-copilot-harness-unlocking-the-potential-of-truly-multi-model-agentic-work/) que impulsa GitHub Copilot en su aplicación, su CLI y VS Code. Microsoft ejecuta el bucle del agente y el entorno aislado; tú aportas habilidades, herramientas MCP y definiciones de agente que puedes guardar en el control de versiones. Ese mismo día, [GitHub Agentic Workflows](https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available/) pasó a estar disponible para todos. Describes un trabajo, como clasificar issues nuevas, en un archivo Markdown, y se compila en un flujo de trabajo corriente de GitHub Actions que ejecuta Copilot u otro agente de programación.
+
+El lugar donde vive el harness también decide dónde se hacen cumplir sus límites. Las instrucciones orientan; los permisos obligan. En tu propio bucle, esos controles los construyes tú. En un servicio gestionado o una plataforma de automatización, los pone la plataforma y tú los configuras. Agentic Workflows muestra cuántas capas puede implicar: los agentes tienen permisos de solo lectura por defecto y se ejecutan en un contenedor aislado detrás de un cortafuegos, y los cambios que proponen pasan por «salidas seguras» (safe outputs) validadas y por un análisis de amenazas aparte antes de aplicar nada. Tu prompt sigue diciendo qué hacer. La plataforma limita el daño que puede causar un error.
+
+Lo que escribes tú suele viajar mejor que el bucle. Las habilidades y MCP son estándares abiertos, y el anuncio de Microsoft considera que darles soporte es la marca de un harness serio. Una habilidad clara o una buena descripción de herramienta a menudo pasa a otro harness con pequeños ajustes; el código escrito alrededor de un bucle concreto, rara vez. Antes sugerimos mantener el mismo modelo al comparar harnesses. Un harness multimodelo permite el experimento contrario: Foundry te deja elegir un modelo compatible sin reescribir la orquestación, y Agentic Workflows permite que cada flujo elija su proveedor de modelos. Puedes cambiar el modelo y dejar todo lo demás quieto.
+
+Elijas el camino que elijas, hay cosas que nunca pasan al proveedor: el resultado que buscas, las instrucciones y habilidades que lo describen, las herramientas y accesos que concedes, y las comprobaciones que demuestran que el trabajo está hecho. Un harness puede ejecutar el bucle por ti. Lo que no puede es decidir qué significa «terminado».
+
+### Cuando un modelo se entrena para un harness
+
+Hasta aquí hemos tratado el modelo como una pieza que se puede cambiar. A menudo lo es, pero el encaje puede ser más profundo. Cada harness tiene sus propias herramientas, su propio prompt de sistema y su propio ritmo de pasos. Cuando un modelo se entrena con aprendizaje por refuerzo dentro de un harness concreto, aprende sus costumbres junto con el trabajo. Si lo llevas a otro harness, puede que use peor las herramientas, dé más pasos de los necesarios o se detenga antes de terminar.
+
+OpenAI lo dice abiertamente de sus modelos Codex. Describe GPT-5-Codex como un modelo ["purpose-built"](https://openai.com/index/introducing-upgrades-to-codex/), creado a propósito para Codex, y lo recomienda solo para programación agéntica en Codex o en entornos similares. Su [Codex Prompting Guide](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide) aconseja a quienes construyen su propio harness partir del prompt estándar de Codex y usar sus herramientas `apply_patch` y de shell, con las que se entrenó el modelo. También pide quitar cualquier instrucción que solicite un plan por adelantado o actualizaciones de estado durante la ejecución, porque eso puede hacer que el modelo se detenga de golpe antes de completar el trabajo. Cursor contó el mismo ajuste desde el otro lado cuando [adaptó su propio harness a estos modelos](https://cursor.com/blog/codex-model-harness): acercó los nombres de las herramientas a sus equivalentes de shell, como `rg`, y descubrió que la definición de una herramienta de lint no bastaba; el modelo necesitaba una instrucción literal sobre cuándo llamarla.
+
+Los modelos abiertos están recorriendo el mismo camino. El 6 de noviembre de 2026, Hugging Face presentó los [harness adapters](https://huggingface.co/blog/harness-hub/harness-adapters): un pequeño adaptador LoRA por cada modelo y harness, entrenado con aprendizaje por refuerzo en tareas verificables dentro de harnesses sin modificar (pi, opencode y hermes), y todos servidos desde un único modelo base. En lo que el equipo llama pruebas de humo (smoke tests), los adaptadores hicieron menos llamadas a herramientas que el modelo base en tareas reservadas para la evaluación, y mantuvieron o mejoraron su precisión. Durante el entrenamiento, un proxy llamado safeagents revisa cada llamada con reglas fijas y bloquea los intentos de hacer trampa con la recompensa, como editar las pruebas o buscar la respuesta. Una ejecución con una llamada bloqueada puntúa cero. Incluso mientras el modelo aprende, los controles pertenecen al harness.
+
+Para quien escribe prompts, la lección es práctica. Si usas un modelo en un harness para el que no fue creado, lee la guía de prompting del proveedor para ese modelo. Mantén los nombres y las descripciones de las herramientas cerca de lo que ya conoce, y elimina las instrucciones que van en contra de los hábitos de su entrenamiento. Describe el resultado y cuándo debe parar, en lugar de dictarle cómo informar por el camino. Y cuando compares harnesses, recuerda que un modelo puede favorecer aquel en el que se entrenó; prueba con tus propias tareas antes de decidir.
+
+<Compare
+  before={{ label: "Un prompt genérico de harness", content: "Primero escribe un plan y envíamelo. Después de cada paso, mándame una actualización de estado. Edita los archivos con la herramienta edit_file." }}
+  after={{ label: "Adaptado a un modelo entrenado en su harness", content: "Arregla las pruebas de búsqueda que fallan sin cambiar cómo se encuentran las coincidencias. Haz las ediciones con apply_patch. Sigue trabajando hasta que las pruebas pasen o te bloquees, y luego informa qué cambió, qué comprobaciones se ejecutaron y lo que no pudiste verificar." }}
+/>
+
 ## ¿Qué hace útil a un harness?
 
 Una mayor autonomía solo es útil cuando el sistema puede comprobar su trabajo y recuperarse de los problemas. Para una tarea larga, observa cómo gestiona el harness lo siguiente:
@@ -222,6 +379,23 @@ Una mayor autonomía solo es útil cuando el sistema puede comprobar su trabajo 
 - **Verificación:** Inspeccionar los archivos reales, los resultados de pruebas u otros resultados. Un mensaje final seguro de sí mismo no es suficiente.
 
 Al comparar configuraciones, prueba las mismas tareas reales e inspecciona tanto los resultados como los registros de ejecución. Mantén el mismo modelo cuando quieras estudiar un cambio en el harness. Cambia un solo prompt, habilidad o ajuste de herramienta a la vez, y repite las tareas porque cada ejecución puede variar.
+
+### Cuando un harness se hace más pequeño
+
+Los harnesses tienden a crecer. Cada función nueva llega con su propio camino, sus propias instrucciones y su propia idea de lo que significa «terminado», y cada una tenía sentido el día en que se añadió. A medida que los modelos se vuelven más capaces, algunos equipos hacen lo contrario y quitan piezas. Investigadores de Apple se preguntaron [How Much of a Harness Does a Strong Agent Need?](https://machinelearning.apple.com/research/harness-autonomous-ml-engineering) (octubre de 2026) y encontraron que, en tareas de ingeniería de aprendizaje automático, con el mismo modelo y el mismo tiempo, los harnesses de código abierto más elaborados no rendían mejor que una sola sesión de un agente de programación con un conjunto mínimo de herramientas. Quitar piezas, sin embargo, es fácil. Saber que el harness más pequeño sigue haciendo bien el trabajo exige medir.
+
+Pogl, donde la gente crea y edita juegos conversando con una IA, contó una de estas reconstrucciones en [We rebuilt our harness from scratch](https://about.pogl.com/blog/one-loop-harness) (11 de noviembre de 2026). Su antiguo harness se apoyaba en el agente de programación de código abierto OpenCode, y con el tiempo cada función nueva se había añadido como un camino nuevo a su alrededor, de modo que el mismo problema había que arreglarlo por separado en cada camino. El nuevo harness pasa cada solicitud por un único bucle cuyo núcleo tiene 715 líneas. Cada proyecto conserva un solo historial de conversación, y cada paso deja una línea en un registro, así que un proceso que se reinicia reconstruye la conversación a partir de ese registro y sigue adelante en lugar de empezar de cero.
+
+<Compare
+  before={{ label: "El harness heredado", content: "16 caminos para distintos tipos de solicitudes, 3 formas de juzgar si un trabajo está terminado, 6 o 7 documentos de contrato para el modelo y un prompt fijo de unos 14.000 tokens. El mismo problema hay que arreglarlo en cada camino." }}
+  after={{ label: "Un solo bucle", content: "Cada solicitud pasa por el mismo bucle. 13 herramientas están registradas en un solo lugar, y todas sus descripciones caben en unos 3.000 tokens. El material de referencia largo se lee solo cuando hace falta, y el prompt fijo queda por debajo de 6.000 tokens." }}
+/>
+
+Lo más instructivo es la medición. Los dos harnesses juzgaban «terminado» con criterios distintos, así que sus propios veredictos no se podían comparar. Pogl volvió a ejecutar 54 pares de solicitudes pasadas y puntuó ambos harnesses con el mismo evaluador. La calidad general fue parecida: el nuevo harness lo hizo mejor en 8 solicitudes y el antiguo en 5. Por cada edición, según Pogl, la entrada sin caché bajó cerca de un 65 % y la salida cerca de un 52 %, y desaparecieron los trabajos de más de 40 minutos. La empresa cuenta con la misma franqueza la otra cara. La mayor parte del ahorro vino de unos pocos trabajos muy grandes del harness antiguo, y en los trabajos típicos el nuevo releyó más desde la caché, escribió más salida y tardó más. Una de las repeticiones mostró algo que ningún promedio enseñaría: el harness antiguo había marcado como hecho un punto que no estaba arreglado, mientras que el nuevo lo informó como no hecho. Después, Pogl activó el nuevo harness para la mitad de sus usuarios, con la división hecha por persona para que nadie cambie de harness a mitad de una tarea, y con un único ajuste que devuelve a todos al antiguo en menos de un minuto.
+
+Framer llegó a un bucle más pequeño por otro camino en [Harness 2: executing agent code as it streams](https://www.framer.com/blog/harness-2/) (2 de noviembre de 2026). Parte de la llamada programática de herramientas que vimos antes en este capítulo, en «Cuando el modelo escribe el bucle»: el agente puede expresar todo un flujo de trabajo como un único programa en JavaScript. Framer ejecuta ese programa por celdas mientras el modelo todavía lo está escribiendo, de modo que una suposición fallida puede detener la generación pronto, en lugar de descubrirse cuando ya se ha generado el programa entero. Framer informa de la mitad de pasos de herramientas y un 39 % menos de tokens de entrada en caché por mensaje, sin una caída de calidad medible.
+
+Estas cifras son informes de las propias empresas, y tus tareas serán distintas. Aun así, las lecciones se pueden llevar a otros contextos. Menos caminos significa un solo lugar que arreglar: cuando cada solicitud pasa por el mismo bucle, un problema encontrado una vez se arregla una vez. Dos harnesses solo se pueden comparar con justicia cuando el mismo evaluador puntúa a ambos, porque la idea de «terminado» de cada harness forma parte de lo que estás poniendo a prueba. Los promedios esconden la cola lenta, ese trabajo raro que tarda cuarenta minutos, y esconden un único «terminado» falso, así que mira las ejecuciones más largas y lee algunos registros completos. Y un harness nuevo es más seguro cuando llega a la gente poco a poco, con una vuelta atrás que cueste un minuto y no una semana.
 
 <InteractiveChecklist
   title="Pruébalo con una tarea que ya hagas"

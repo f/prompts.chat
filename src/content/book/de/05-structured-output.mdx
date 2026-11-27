@@ -1,7 +1,7 @@
 Konsistente, gut formatierte Ausgaben zu bekommen ist essenziell für Produktionsanwendungen und effiziente Workflows. Dieses Kapitel behandelt Techniken zur genauen Kontrolle, wie KI-Modelle ihre Antworten formatieren.
 
 <Callout type="info" title="Von Prosa zu Daten">
-Strukturierte Ausgabe transformiert KI-Antworten von Freitext in handlungsfähige, parsierbare Daten.
+Strukturierte Ausgabe transformiert KI-Antworten von Freitext in verwertbare, parsebare Daten.
 </Callout>
 
 ## Warum Struktur wichtig ist
@@ -41,7 +41,7 @@ Formatiere als Markdown-Tabelle mit Spalten:
 />
 
 <Callout type="tip" title="Tabellen-Best-Practices">
-Spezifiziere Spaltennamen, erwartete Datentypen (Text, Zahlen, Bewertungen) und wie viele Zeilen du brauchst. Für komplexe Vergleiche beschränke dich auf 4-6 Spalten für Lesbarkeit.
+Spezifiziere Spaltennamen, erwartete Datentypen (Text, Zahlen, Bewertungen) und wie viele Zeilen du brauchst. Beschränke dich bei komplexen Vergleichen der Lesbarkeit halber auf 4-6 Spalten.
 </Callout>
 
 ### Überschriften und Abschnitte
@@ -170,9 +170,13 @@ Gib das Ergebnis als JSON-Code-Block zurück:
 ```
 ````
 
+<Callout type="info" title="Native strukturierte Ausgaben">
+Wenn du ein Modell über eine API aufrufst, musst du dich nicht allein auf deine Formulierung verlassen. OpenAI, Anthropic und Google bieten alle Modi für strukturierte Ausgaben an, die ein JSON Schema entgegennehmen und die Antwort darauf festlegen, sodass Pflichtfelder und erlaubte Werte erzwungen statt nur erbeten werden. Ältere Optionen wie der „JSON-Modus“ garantieren nur syntaktisch gültiges JSON, nicht aber dein Schema. Selbst wenn ein Schema erzwungen wird, können die Werte selbst noch falsch sein, also validiere weiterhin alles, worauf es ankommt.
+</Callout>
+
 ## YAML-Ausgabe
 
-YAML ist menschenlesbarer als JSON und verwendet Einrückung statt Klammern. Es ist der Standard für Konfigurationsdateien (Docker, Kubernetes, GitHub Actions) und funktioniert gut, wenn die Ausgabe von Menschen gelesen oder in DevOps-Kontexten verwendet wird. YAML ist empfindlich bei Einrückung, also sei spezifisch über Formatierungsanforderungen.
+YAML ist menschenlesbarer als JSON und verwendet Einrückung statt Klammern. Es ist der Standard für Konfigurationsdateien (Docker, Kubernetes, GitHub Actions) und funktioniert gut, wenn die Ausgabe von Menschen gelesen oder in DevOps-Kontexten verwendet wird. YAML reagiert empfindlich auf Einrückung, also mach genaue Angaben zu den Formatierungsanforderungen.
 
 <TryIt 
   compact
@@ -181,9 +185,9 @@ YAML ist menschenlesbarer als JSON und verwendet Einrückung statt Klammern. Es 
 
 Gib als gültiges YAML zurück:
 - Enthält: install, lint, test, build Stufen
-- Verwende Node.js 18
+- Verwende das aktuelle LTS-Release von Node.js
 - Cache npm-Abhängigkeiten
-- Laufe bei Push zu main und Pull Requests`}
+- Führe ihn bei Pushes auf main und bei Pull Requests aus`}
 />
 
 ## XML-Ausgabe
@@ -353,7 +357,7 @@ Protokoll: "[Meeting-Protokoll]"
 
 ## Validierungsanweisungen
 
-Selbstvalidierung fordert das Modell auf, seine eigene Ausgabe vor dem Antworten zu prüfen. Dies fängt häufige Probleme wie fehlende Abschnitte, Platzhaltertext oder Constraint-Verletzungen ab. Das Modell wird intern iterieren, um Probleme zu beheben, was die Ausgabequalität ohne zusätzliche API-Aufrufe verbessert.
+Selbstvalidierung fordert das Modell auf, seine eigene Ausgabe vor dem Antworten zu prüfen. Dies fängt häufige Probleme wie fehlende Abschnitte, Platzhaltertext oder Constraint-Verletzungen ab. Das verbessert die Qualität oft ohne zusätzlichen API-Aufruf, ist aber keine Garantie: Ein Modell kann melden, dass eine Prüfung bestanden wurde, obwohl das nicht stimmt, also überprüfe kritische Ausgaben trotzdem in deinem eigenen Code.
 
 ```
 Generiere den Bericht, dann:
@@ -393,16 +397,16 @@ WICHTIG:
 ## Zusammenfassung
 
 <Callout type="tip" title="Schlüsseltechniken">
-Sei explizit über das Format, verwende Beispiele, spezifiziere Typen, behandle Randfälle mit null-Werten und bitte das Modell, seine eigene Ausgabe zu validieren.
+Gib das Format explizit vor, verwende Beispiele, spezifiziere Typen, behandle Randfälle mit null-Werten und bitte das Modell, seine eigene Ausgabe zu validieren.
 </Callout>
 
 <Quiz 
   question="Was ist der Hauptvorteil strukturierter Ausgabe gegenüber unstrukturiertem Text?"
   options={[
-    "Es verwendet weniger Tokens",
-    "Es ist einfacher für die KI zu generieren",
-    "Es kann programmatisch geparst und validiert werden",
-    "Es produziert immer korrekte Informationen"
+    "Sie verbraucht weniger Tokens",
+    "Sie ist für die KI einfacher zu generieren",
+    "Sie kann programmatisch geparst und validiert werden",
+    "Sie liefert immer korrekte Informationen"
   ]}
   correctIndex={2}
   explanation="Strukturierte Ausgaben wie JSON können von Code geparst, über Abfragen hinweg verglichen, in Workflows integriert und auf Vollständigkeit validiert werden – Dinge, die mit Freitext schwierig oder unmöglich sind."

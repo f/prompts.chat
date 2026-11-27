@@ -1,7 +1,7 @@
-JSON və YAML kimi strukturlaşdırılmış məlumat formatları, süni intellekt çıxışlarını proqramatik olaraq istehlak edən tətbiqlər qurmaq üçün vacibdir. Bu bölmə etibarlı strukturlaşdırılmış çıxış istehsalı texnikalarını əhatə edir.
+JSON və YAML kimi strukturlaşdırılmış məlumat formatları süni intellekt çıxışlarını proqram vasitəsilə emal edən tətbiqlər qurmaq üçün vacibdir. Bu fəsil strukturlaşdırılmış çıxışın etibarlı şəkildə alınması texnikalarını əhatə edir.
 
 <Callout type="info" title="Mətndən Məlumata">
-JSON və YAML, süni intellekt çıxışlarını sərbəst formalı mətndən kodun birbaşa istehlak edə biləcəyi strukturlaşdırılmış, tip təhlükəsiz məlumata çevirir.
+JSON və YAML süni intellekt çıxışlarını sərbəst formalı mətndən kodun birbaşa istifadə edə biləcəyi strukturlaşdırılmış, tip təhlükəsiz məlumata çevirir.
 </Callout>
 
 ## Niyə Strukturlaşdırılmış Formatlar?
@@ -10,71 +10,71 @@ JSON və YAML, süni intellekt çıxışlarını sərbəst formalı mətndən ko
 
 ## JSON Prompting Əsasları
 
-JSON (JavaScript Object Notation), proqramatik süni intellekt çıxışları üçün ən geniş yayılmış formatdır. Ciddi sintaksis təhlili asanlaşdırır, amma eyni zamanda kiçik xətalar bütün pipeline-ınızı poza bilər deməkdir.
+JSON (JavaScript Object Notation) süni intellektin proqram tərəfindən emal olunan çıxışları üçün ən geniş yayılmış formatdır. Onun ciddi sintaksisi təhlili asanlaşdırır, amma bu həm də o deməkdir ki, kiçik xətalar bütün pipeline-ınızı poza bilər.
 
 ### Edilməli və Edilməməli: JSON İstəmə
 
 <Compare 
   before={{ label: "❌ Etmə: Qeyri-müəyyən istək", content: "İstifadəçi məlumatlarını JSON olaraq ver." }}
-  after={{ label: "✓ Et: Şemanı göstər", content: "İstifadəçi məlumatlarını bu şemaya uyğun JSON olaraq çıxar:\n\n{\n  \"ad\": \"string\",\n  \"yas\": number,\n  \"email\": \"string\"\n}\n\nYALNIZ etibarlı JSON qaytar, markdown yox." }}
+  after={{ label: "✓ Et: Sxemi göstər", content: "İstifadəçi məlumatlarını bu sxemə uyğun JSON olaraq çıxar:\n\n{\n  \"name\": \"string\",\n  \"age\": number,\n  \"email\": \"string\"\n}\n\nYALNIZ etibarlı JSON qaytar, markdown olmasın." }}
 />
 
 ### Sadə JSON Çıxış
 
-Gözlənilən strukturu göstərən bir şema ilə başlayın. Model giriş mətninə görə dəyərləri dolduracaq.
+Gözlənilən strukturu göstərən sxemlə başlayın. Model dəyərləri giriş mətninə əsasən dolduracaq.
 
 ```
 Aşağıdakı məlumatları JSON olaraq çıxar:
 
 {
-  "ad": "string",
-  "yas": number,
+  "name": "string",
+  "age": number,
   "email": "string"
 }
 
-Mətn: "Əhməd Yılmaz ilə əlaqə saxlayın, 34 yaşında, ahmet@example.com"
+Mətn: "Əhməd Məmmədovla əlaqə saxlayın, 34 yaşındadır, ahmed@example.com"
 ```
 
 Çıxış:
 ```json
 {
-  "ad": "Əhməd Yılmaz",
-  "yas": 34,
-  "email": "ahmet@example.com"
+  "name": "Əhməd Məmmədov",
+  "age": 34,
+  "email": "ahmed@example.com"
 }
 ```
 
 ### İç-içə JSON Strukturları
 
-Real dünya məlumatı adətən iç-içə əlaqələrə malikdir. Şemanızın hər səviyyəsini, xüsusilə obyekt massivləri üçün aydın şəkildə təyin edin.
+Real məlumatlarda çox vaxt iç-içə əlaqələr olur. Sxeminizin hər səviyyəsini, xüsusilə obyekt massivlərini aydın şəkildə təyin edin.
 
 ```
-Bu sifarişi JSON-a ayır:
+Bu sifarişi JSON-a çevir:
 
 {
-  "sifaris_id": "string",
-  "musteri": {
-    "ad": "string",
+  "order_id": "string",
+  "customer": {
+    "name": "string",
     "email": "string"
   },
-  "mehsullar": [
+  "items": [
     {
-      "mehsul": "string",
-      "miqdar": number,
-      "qiymet": number
+      "product": "string",
+      "quantity": number,
+      "price": number
     }
   ],
-  "toplam": number
+  "total": number
 }
 
-Sifariş: "Aynur Əliyeva (aynur@email.com) üçün #12345 sifariş: 2x Widget (ədədi 10 AZN), 
-1x Gadget (25 AZN). Toplam: 45 AZN"
+Sifariş: "Aynur Əliyeva (aynur@email.com) üçün #12345 nömrəli sifariş: 2x Widget (ədədi 10 AZN), 
+1x Gadget (25 AZN). Cəmi: 45 AZN"
 ```
 
-### Etibarlı JSON Təmin Etmə
+### Etibarlı JSON-u Təmin Etmə
 
-<Callout type="warning" title="Ümumi Uğursuzluq Nöqtəsi">
-Modellər adətən JSON-u markdown kod blokları içinə sarır və ya izahedici mətn əlavə edir. Yalnız xam JSON istədiyiniz barədə aydın olun.
+<Callout type="warning" title="Tez-tez Rast Gəlinən Xəta">
+Modellər çox vaxt JSON-u markdown kod bloklarına salır və ya izahedici mətn əlavə edir. Yalnız xam JSON istədiyinizi açıq şəkildə bildirin.
 </Callout>
 
 Açıq təlimatlar əlavə edin:
@@ -83,21 +83,25 @@ Açıq təlimatlar əlavə edin:
 KRİTİK: YALNIZ etibarlı JSON qaytar. Markdown yox, izahat yox, 
 JSON obyektindən əvvəl və ya sonra əlavə mətn yox.
 
-Bir sahə müəyyən edilə bilmirsə null istifadə et.
-Bütün string-lərin düzgün dırnaqlanmış və escape edilmiş olduğundan əmin ol.
-Rəqəmlər dırnaqlanmamalıdır.
+Bir sahəni müəyyən etmək mümkün deyilsə, null istifadə et.
+Bütün string-lərin düzgün dırnaqlanıb escape edildiyindən əmin ol.
+Rəqəmlər dırnaq içində olmamalıdır.
 ```
+
+<Callout type="tip" title="Sxemə Riayəti API-yə Həvalə Edin">
+Modeli API vasitəsilə çağırdığınız zaman yeganə alətiniz ifadələr deyil. OpenAI, Anthropic və Google JSON Schema qəbul edən və cavabı ona uyğun olmağa məcbur edən strukturlaşdırılmış çıxış funksiyaları təklif edir. Bu, bu fəsildə bəhs olunan təhlil xətalarının çoxunu, məsələn, artıq markdown işarələrini, sondakı artıq vergülləri və çatışmayan sahələri aradan qaldırır. Köhnə "JSON rejimi" parametrləri yalnız sintaktik cəhətdən etibarlı JSON-a zəmanət verir, sizin sxeminizə yox; üstəlik, hər provayder JSON Schema-nın bir qədər fərqli alt çoxluğunu dəstəkləyir. Aşağıdakı texnikalar yenə də vacibdir, çünki sxem cavabın formasını idarə edir, içindəki dəyərlərin düzgün olub-olmamasını yox.
+</Callout>
 
 ## YAML Prompting Əsasları
 
-YAML, JSON-dan daha insan tərəfindən oxuna biləndir və şərhləri dəstəkləyir. Konfiqurasiya faylları üçün standartdır, xüsusilə DevOps-da (Docker, Kubernetes, GitHub Actions).
+YAML insan üçün JSON-dan daha oxunaqlıdır və şərhləri dəstəkləyir. O, konfiqurasiya faylları üçün, xüsusilə DevOps-da (Docker, Kubernetes, GitHub Actions) standartdır.
 
 ### Sadə YAML Çıxış
 
-YAML mötərizələr əvəzinə girintidən istifadə edir. Gözlənilən strukturu göstərən bir şablon təmin edin.
+YAML mötərizələr əvəzinə sətir başındakı boşluqlardan (abzaslardan) istifadə edir. Gözlənilən strukturu göstərən şablon verin.
 
 ```
-YAML formatında bir konfiqurasiya faylı yarat:
+YAML formatında konfiqurasiya faylı yarat:
 
 server:
   host: string
@@ -107,7 +111,7 @@ database:
   type: string
   connection_string: string
 
-Tələblər: Port 443-də SSL ilə istehsal serveri, PostgreSQL verilənlər bazası
+Tələblər: 443-cü portda SSL ilə işləyən istehsal serveri, PostgreSQL verilənlər bazası
 ```
 
 Çıxış:
@@ -123,30 +127,30 @@ database:
 
 ### Mürəkkəb YAML Strukturları
 
-Mürəkkəb konfiqurasiyalar üçün tələblər haqqında spesifik olun. Model GitHub Actions, Docker Compose və Kubernetes kimi alətlər üçün ümumi nümunələri bilir.
+Mürəkkəb konfiqurasiyalar üçün tələbləri konkret göstərin. Model GitHub Actions, Docker Compose və Kubernetes kimi alətlər üçün geniş yayılmış qəlibləri bilir.
 
 ```
 YAML-da GitHub Actions iş axını yarat:
 
 Tələblər:
-- main-ə push və pull request-lərdə tetiklə
-- Ubuntu latest üzərində işlət
-- Addımlar: checkout, Node 18 quraşdırılması, asılılıqları yüklə, testləri işlət
+- main-ə push və pull request-lərdə işə düşsün
+- Ubuntu latest üzərində işləsin
+- Addımlar: checkout, Node.js-in cari LTS buraxılışının quraşdırılması, asılılıqların yüklənməsi, testlərin işə salınması
 - npm asılılıqlarını keşlə
 ```
 
 ## Promptlarda Tip Tərifləri
 
-Tip tərifləri, çıxış strukturu üçün modelə dəqiq bir müqavilə verir. Nümunələrdən daha aydındırlar və proqramatik olaraq doğrulamaq daha asandır.
+Tip tərifləri modelə çıxışın strukturu üçün dəqiq müqavilə verir. Onlar nümunələrdən daha açıqdır və proqram vasitəsilə yoxlanması daha asandır.
 
-### TypeScript Bənzəri Tiplər İstifadə Etmə
+### TypeScript Tipli Təriflərdən İstifadə
 
-TypeScript interfeysləri tərtibatçılara tanışdır və opsional sahələri, birləşmə tiplərini və massivləri dəqiq şəkildə təyin edir. prompts.chat platforması strukturlaşdırılmış promptlar üçün bu yanaşmanı istifadə edir.
+TypeScript interfeysləri tərtibatçılara tanışdır və opsional sahələri, birləşmə tiplərini və massivləri dəqiq təsvir edir.
 
 <TryIt 
-  title="TypeScript İnterfeys Çıxarışı"
-  description="Strukturlaşdırılmış məlumat çıxarmaq üçün bir TypeScript interfeysi istifadə edin."
-  prompt={`Bu tip tərifinə görə məlumat çıxar:
+  title="TypeScript İnterfeysi ilə Çıxarış"
+  description="Strukturlaşdırılmış məlumat çıxarmaq üçün TypeScript interfeysindən istifadə edin."
+  prompt={`Bu tip tərifinə əsasən məlumat çıxar:
 
 interface ChatPersona {
     name?: string;
@@ -157,35 +161,35 @@ interface ChatPersona {
     background?: string;
 }
 
-Bu interfeysə uyğun JSON olaraq qaytar.
+Bu interfeysə uyğun JSON qaytar.
 
-Təsvir: "Kod nəzərdən keçirən Alex adında baş proqram mühəndisi. Analitik və dəqiq, backend sistemləri və verilənlər bazalarında təcrübəyə malik. Peşəkar amma yaxınlaşa bilən ton."`}
+Təsvir: "Kodu nəzərdən keçirən Alex adlı baş proqram mühəndisi. Analitik və diqqətlidir, backend sistemləri və verilənlər bazaları üzrə təcrübəsi var. Tonu peşəkar, amma səmimidir."`}
 />
 
 ### JSON Schema Tərifi
 
 <Callout type="info" title="Sənaye Standartı">
-JSON Schema, JSON strukturunu təyin etmək üçün rəsmi bir spesifikasiyadır. Bir çox doğrulama kitabxanası və API aləti tərəfindən dəstəklənir.
+JSON Schema JSON strukturunu təsvir etmək üçün rəsmi spesifikasiyadır. Onu bir çox doğrulama kitabxanası və API aləti dəstəkləyir.
 </Callout>
 
-JSON Schema min/maks dəyərlər, məcburi sahələr və regex nümunələri kimi məhdudiyyətlər təmin edir:
+JSON Schema minimum/maksimum dəyərlər, məcburi sahələr və regex qəlibləri kimi məhdudiyyətlər qoymağa imkan verir:
 
 ```
-Bu JSON Schema-ya görə məlumat çıxar:
+Bu JSON Schema-ya əsasən məlumat çıxar:
 
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "required": ["baslik", "muellif", "il"],
+  "required": ["title", "author", "year"],
   "properties": {
-    "baslik": { "type": "string" },
-    "muellif": { "type": "string" },
-    "il": { "type": "integer", "minimum": 1000, "maximum": 2100 },
-    "janrlar": { 
+    "title": { "type": "string" },
+    "author": { "type": "string" },
+    "year": { "type": "integer", "minimum": 1000, "maximum": 2100 },
+    "genres": { 
       "type": "array", 
       "items": { "type": "string" }
     },
-    "bal": { 
+    "rating": { 
       "type": "number", 
       "minimum": 0, 
       "maximum": 5 
@@ -193,26 +197,26 @@ Bu JSON Schema-ya görə məlumat çıxar:
   }
 }
 
-Kitab: "George Orwell-in 1984-ü (1949) - Distopik bir şah əsər. 
-Janrlar: Elmi Fantastika, Siyasi Fantastika. 4.8/5 bal"
+Kitab: "Corc Oruellin «1984» romanı (1949) - Distopiyanın şah əsəri. 
+Janrlar: Elmi Fantastika, Siyasi Roman. Reytinq 4.8/5"
 ```
 
-## Massivləri İdarə Etmə
+## Massivlərlə İşləmə
 
-Massivlər xüsusi diqqət tələb edir. Sabit sayda elementə, yoxsa dəyişən uzunluqlu bir siyahıya ehtiyacınız olduğunu və boş halların necə idarə ediləcəyini göstərin.
+Massivlər xüsusi diqqət tələb edir. Sabit sayda elementə, yoxsa dəyişən uzunluqlu siyahıya ehtiyacınız olduğunu və element olmadıqda nə edilməli olduğunu göstərin.
 
 ### Sabit Uzunluqlu Massivlər
 
-Tam olaraq N elementə ehtiyacınız olduqda, bunu açıq şəkildə göstərin. Model massivin düzgün uzunluqda olmasını təmin edəcək.
+Sizə tam olaraq N element lazımdırsa, bunu açıq şəkildə bildirin. Modellər adətən buna əməl edir, amma say vacibdirsə, elementləri öz kodunuzda yoxlayın.
 
 ```
-Tam olaraq 3 əsas nöqtəni JSON olaraq çıxar:
+Tam olaraq 3 əsas fikri JSON olaraq çıxar:
 
 {
-  "esas_noqteler": [
-    "string (birinci nöqtə)",
-    "string (ikinci nöqtə)", 
-    "string (üçüncü nöqtə)"
+  "key_points": [
+    "string (birinci fikir)",
+    "string (ikinci fikir)", 
+    "string (üçüncü fikir)"
   ]
 }
 
@@ -221,206 +225,206 @@ Məqalə: [məqalə mətni]
 
 ### Dəyişən Uzunluqlu Massivlər
 
-Dəyişən uzunluqlu massivlər üçün sıfır element olduqda nə ediləcəyini göstərin. Sayı sahəsi əlavə etmək çıxarış tamlığını doğrulamağa kömək edir.
+Dəyişən uzunluqlu massivlər üçün heç bir element olmadıqda nə ediləcəyini göstərin. Say sahəsi əlavə etmək çıxarışın tamlığını yoxlamağa kömək edir.
 
 ```
-Bəhs edilən bütün şəxsləri JSON olaraq çıxar:
+Mətndə adı çəkilən bütün şəxsləri JSON olaraq çıxar:
 
 {
-  "sexsler": [
+  "people": [
     {
-      "ad": "string",
-      "rol": "string və ya bəhs edilməyibsə null"
+      "name": "string",
+      "role": "string və ya qeyd olunmayıbsa null"
     }
   ],
-  "sayi": number
+  "count": number
 }
 
-Heç bir şəxs bəhs edilməyibsə, boş massiv qaytar.
+Heç bir şəxsin adı çəkilməyibsə, boş massiv qaytar.
 
 Mətn: [mətn]
 ```
 
 ## Enum Dəyərləri və Məhdudiyyətlər
 
-Enum-lar dəyərləri əvvəlcədən təyin edilmiş bir dəstə ilə məhdudlaşdırır. Bu, təsnifat tapşırıqları və ardıcıl, proqnozlaşdırıla bilən çıxışlara ehtiyac duyduğunuz hər yerdə çox vacibdir.
+Enum-lar dəyərləri əvvəlcədən müəyyən edilmiş dəstlə məhdudlaşdırır. Bu, təsnifat tapşırıqlarında və ardıcıl, proqnozlaşdırıla bilən çıxış lazım olan hər yerdə çox vacibdir.
 
 ### Edilməli və Edilməməli: Enum Dəyərləri
 
 <Compare 
-  before={{ label: "❌ Etmə: Açıq uçlu kateqoriyalar", content: "Bu mətni bir kateqoriyaya təsnif et.\n\n{\n  \"kateqoriya\": \"string\"\n}" }}
-  after={{ label: "✓ Et: Etibarlı dəyərlərlə məhdudlaşdır", content: "Bu mətni təsnif et. Kateqoriya tam olaraq bunlardan biri OLMALIDIR:\n- \"texniki\"\n- \"biznes\"\n- \"yaradici\"\n- \"sexsi\"\n\n{\n  \"kateqoriya\": \"yuxarıdakı dəyərlərdən biri\"\n}" }}
+  before={{ label: "❌ Etmə: Açıq uclu kateqoriyalar", content: "Bu mətni bir kateqoriyaya aid et.\n\n{\n  \"category\": \"string\"\n}" }}
+  after={{ label: "✓ Et: Etibarlı dəyərlərlə məhdudlaşdır", content: "Bu mətni təsnif et. Kateqoriya tam olaraq bunlardan biri OLMALIDIR:\n- \"technical\"\n- \"business\"\n- \"creative\"\n- \"personal\"\n\n{\n  \"category\": \"yuxarıdakı dəyərlərdən biri\"\n}" }}
 />
 
 ### String Enum-ları
 
-İcazə verilən dəyərləri açıq şəkildə siyahılayın. Ciddi uyğunluğu məcbur etmək üçün "bunlardan biri OLMALIDIR" dilindən istifadə edin.
+İcazə verilən dəyərləri açıq şəkildə sadalayın. Ciddi uyğunluğu təmin etmək üçün "bunlardan biri OLMALIDIR" ifadəsindən istifadə edin.
 
 ```
 Bu mətni təsnif et. Kateqoriya tam olaraq bu dəyərlərdən biri OLMALIDIR:
-- "texniki"
-- "biznes" 
-- "yaradici"
-- "sexsi"
+- "technical"
+- "business" 
+- "creative"
+- "personal"
 
 JSON qaytar:
 {
-  "metn": "orijinal mətn (50 simvola qısaldılmış)",
-  "kateqoriya": "yuxarıdakı enum dəyərlərindən biri",
-  "etibar": 0 ilə 1 arasında rəqəm
+  "text": "orijinal mətn (50 simvola qədər qısaldılmış)",
+  "category": "yuxarıdakı enum dəyərlərindən biri",
+  "confidence": 0 ilə 1 arasında rəqəm
 }
 
 Mətn: [təsnif ediləcək mətn]
 ```
 
-### Doğrulanmış Rəqəmlər
+### Yoxlanılan Rəqəmlər
 
-Rəqəmsal məhdudiyyətlər aralıq xarici dəyərlərin qarşısını alır. Növü (tam ədəd vs onluq) və etibarlı aralığı göstərin.
+Rəqəm məhdudiyyətləri diapazondan kənar dəyərlərin qarşısını alır. Növü (tam ədəd və ya kəsr) və etibarlı diapazonu göstərin.
 
 ```
-Bu cəhətləri qiymətləndir. Hər bal 1 ilə 5 arasında tam ədəd OLMALIDIR.
+Bu cəhətləri qiymətləndir. Hər bal 1-dən 5-ə qədər tam ədəd OLMALIDIR.
 
 {
-  "keyfiyyet": 1-5,
-  "deyer": 1-5,
-  "xidmet": 1-5,
-  "umumi": 1-5
+  "quality": 1-5,
+  "value": 1-5,
+  "service": 1-5,
+  "overall": 1-5
 }
 
 Rəy: [rəy mətni]
 ```
 
-## Əksik Məlumatı İdarə Etmə
+## Çatışmayan Məlumatla İşləmə
 
-Real dünya mətni adətən bəzi məlumatlardan məhrumdur. Modelin əksik məlumatı necə idarə etməsi lazım olduğunu təyin edərək halüsinasiya ilə istehsal edilmiş dəyərlərdən qaçının.
+Real mətnlərdə çox vaxt hansısa məlumat olmur. Uydurulmuş dəyərlərin qarşısını almaq üçün modelin çatışmayan məlumatla necə davranmalı olduğunu müəyyən edin.
 
-### Edilməli və Edilməməli: Əksik Məlumat
+### Edilməli və Edilməməli: Çatışmayan Məlumat
 
 <Compare 
-  before={{ label: "❌ Etmə: Sİ-nin təxmin etməsinə icazə ver", content: "Bütün şirkət detallarını JSON olaraq çıxar:\n{\n  \"gelir\": number,\n  \"isciler\": number\n}" }}
-  after={{ label: "✓ Et: Açıq şəkildə null-a icazə ver", content: "Şirkət detallarını çıxar. Açıq şəkildə bəhs edilMƏYƏN sahələr üçün null istifadə et. Dəyər uyduRMA və ya təxmin etMƏ.\n\n{\n  \"gelir\": \"number və ya null\",\n  \"isciler\": \"number və ya null\"\n}" }}
+  before={{ label: "❌ Etmə: Sİ-nin təxmin etməsinə icazə ver", content: "Bütün şirkət detallarını JSON olaraq çıxar:\n{\n  \"revenue\": number,\n  \"employees\": number\n}" }}
+  after={{ label: "✓ Et: Açıq şəkildə null-a icazə ver", content: "Şirkət detallarını çıxar. Mətndə açıq şəkildə QEYD OLUNMAYAN hər sahə üçün null istifadə et. Dəyər UYDURMA və təxmin ETMƏ.\n\n{\n  \"revenue\": \"number və ya null\",\n  \"employees\": \"number və ya null\"\n}" }}
 />
 
 ### Null Dəyərlər
 
-Açıq şəkildə null-a icazə verin və modelə məlumat uydurmamasını söyləyin. Bu, modelin təxmin etməsindən daha təhlükəsizdir.
+Açıq şəkildə null-a icazə verin və modelə məlumat uydurmamağı tapşırın. Bu, modelin təxmin etməsindən daha təhlükəsizdir.
 
 ```
-Məlumat çıxar. Mətndən müəyyən edilə bilməyən sahələr üçün null istifadə et. 
-Məlumat uyduRMA.
+Məlumat çıxar. Mətndən müəyyən edilə bilməyən hər sahə üçün null istifadə et. 
+Məlumat UYDURMA.
 
 {
-  "sirket": "string və ya null",
-  "gelir": "number və ya null",
-  "isciler": "number və ya null",
-  "qurulus": "number (il) və ya null",
-  "merkez": "string və ya null"
+  "company": "string və ya null",
+  "revenue": "number və ya null",
+  "employees": "number və ya null",
+  "founded": "number (il) və ya null",
+  "headquarters": "string və ya null"
 }
 
-Mətn: "Mərkəzi Cupertino-da olan Apple, 1976-da quruldu."
+Mətn: "Mərkəzi Kupertinoda yerləşən Apple 1976-cı ildə yaradılıb."
 ```
 
 Çıxış:
 ```json
 {
-  "sirket": "Apple",
-  "gelir": null,
-  "isciler": null,
-  "qurulus": 1976,
-  "merkez": "Cupertino"
+  "company": "Apple",
+  "revenue": null,
+  "employees": null,
+  "founded": 1976,
+  "headquarters": "Kupertino"
 }
 ```
 
 ### Standart Dəyərlər
 
-Standartlar məntiqli olduqda, şemada göstərin. Bu, konfiqurasiya çıxarışı üçün ümumidır.
+Standart dəyərlər məntiqli olduqda, onları sxemdə göstərin. Bu, konfiqurasiya çıxarışında geniş yayılmış yanaşmadır.
 
 ```
-Göstərilməyibsə bu standartlarla parametrləri çıxar:
+Göstərilməyibsə, bu standart dəyərlərlə parametrləri çıxar:
 
 {
-  "tema": "aciq" (standart) | "qaranlig",
-  "dil": "az" (standart) | digər ISO kodu,
-  "bildirisler": true (standart) | false,
-  "yaziOlcusu": 14 (standart) | number
+  "theme": "light" (standart) | "dark",
+  "language": "az" (standart) | digər ISO kodu,
+  "notifications": true (standart) | false,
+  "fontSize": 14 (standart) | number
 }
 
-İstifadəçi tercihləri: "Qaranlıq rejim və daha böyük mətn (18px) istəyirəm"
+İstifadəçi istəkləri: "Qaranlıq rejim və daha böyük mətn (18px) istəyirəm"
 ```
 
 ## Çox Obyektli Cavablar
 
-Adətən tək bir girişdən bir neçə element çıxarmalısınız. Massiv strukturunu və hər hansı sıralama/qruplaşdırma tələbini təyin edin.
+Çox vaxt bir girişdən bir neçə element çıxarmaq lazım gəlir. Massivin strukturunu və sıralama/qruplaşdırma tələblərini müəyyən edin.
 
 ### Obyekt Massivi
 
-Oxşar elementlərin siyahıları üçün obyekt şemasını bir dəfə təyin edin və bunun bir massiv olduğunu göstərin.
+Oxşar elementlərin siyahıları üçün obyekt sxemini bir dəfə təyin edin və bunun massiv olduğunu göstərin.
 
 ```
-Bu siyahını JSON massivinə ayır:
+Bu siyahını JSON massivinə çevir:
 
 [
   {
-    "tapsirik": "string",
-    "oncelik": "yuksek" | "orta" | "asagi",
-    "sonTarix": "ISO tarix string və ya null"
+    "task": "string",
+    "priority": "high" | "medium" | "low",
+    "due": "ISO tarix string-i və ya null"
   }
 ]
 
-Ediləcəklər siyahısı:
-- Hesabatı bitir (təcili, sabah təhvil)
-- Dişçini çağır (aşağı öncelik)
-- PR #123-ü nəzərdən keçir (orta, Cümə təhvil)
+Görüləcək işlər:
+- Hesabatı bitir (təcili, sabaha qədər)
+- Diş həkiminə zəng et (aşağı prioritet)
+- PR #123-ə bax (orta, cüməyə qədər)
 ```
 
 ### Qruplaşdırılmış Obyektlər
 
-Qruplaşdırma tapşırıqları kateqoriyalandırma məntiqi tələb edir. Model elementləri təyin etdiyiniz kateqoriyalara sıralayacaq.
+Qruplaşdırma tapşırıqları kateqoriyalaşdırma məntiqi tələb edir. Model elementləri sizin müəyyən etdiyiniz kateqoriyalara ayıracaq.
 
 ```
-Bu elementləri JSON-a kateqoriyala:
+Bu elementləri kateqoriyalara ayırıb JSON-a çevir:
 
 {
-  "meyveler": ["string massivi"],
-  "terevezer": ["string massivi"],
-  "diger": ["string massivi"]
+  "fruits": ["string massivi"],
+  "vegetables": ["string massivi"],
+  "other": ["string massivi"]
 }
 
 Elementlər: alma, kök, çörək, banan, brokoli, süd, portağal, ispanaq
 ```
 
-## Konfiqurasiya İstehsalı üçün YAML
+## Konfiqurasiya Yaratmaq üçün YAML
 
-YAML, DevOps konfiqurasiyaları üçün parıldayır. Model ümumi alətlər üçün standart nümunələri bilir və istehsala hazır konfiqurasiyalar istehsal edə bilər.
+YAML DevOps konfiqurasiyaları üçün xüsusilə əlverişlidir. Model geniş yayılmış alətlərin standart qəliblərini bilir və etibarlı ilkin konfiqurasiyalar hazırlaya bilər, amma onlar istehsala çıxmazdan əvvəl yenə də nəzərdən keçirilməlidir.
 
 ### Edilməli və Edilməməli: YAML Konfiqurasiyaları
 
 <Compare 
-  before={{ label: "❌ Etmə: Qeyri-müəyyən tələblər", content: "Tətbiqim üçün bir docker-compose faylı yarat." }}
-  after={{ label: "✓ Et: Komponentləri və ehtiyacları göstər", content: "docker-compose.yml yarat:\n- Node.js tətbiq (port 3000)\n- PostgreSQL verilənlər bazası\n- Redis keş\n\nDaxil et: sağlamlıq yoxlamaları, volume davamlılığı, .env faylından mühit dəyişənləri" }}
+  before={{ label: "❌ Etmə: Qeyri-müəyyən tələblər", content: "Tətbiqim üçün docker-compose faylı yarat." }}
+  after={{ label: "✓ Et: Komponentləri və ehtiyacları göstər", content: "docker-compose.yml yarat:\n- Node.js tətbiqi (port 3000)\n- PostgreSQL verilənlər bazası\n- Redis keşi\n\nDaxil et: sağlamlıq yoxlamaları, volume-larda məlumatın saxlanması, .env faylından mühit dəyişənləri" }}
 />
 
 ### Docker Compose
 
-Ehtiyacınız olan xidmətləri və xüsusi tələbləri göstərin. Model YAML sintaksisini və ən yaxşı təcrübələri idarə edəcək.
+Ehtiyacınız olan xidmətləri və xüsusi tələbləri göstərin. YAML sintaksisini və ən yaxşı təcrübələri model öz üzərinə götürəcək.
 
 ```
 docker-compose.yml yarat:
-- Port 3000-də Node.js tətbiq
+- 3000-ci portda Node.js tətbiqi
 - PostgreSQL verilənlər bazası
-- Redis keş
+- Redis keşi
 - Nginx reverse proxy
 
 Daxil et:
 - Sağlamlıq yoxlamaları
-- Volume davamlılığı
+- Volume-larda məlumatın saxlanması
 - .env faylından mühit dəyişənləri
 - Şəbəkə izolyasiyası
 ```
 
 ### Kubernetes Manifestləri
 
-Kubernetes manifestləri ətraflıdır amma proqnozlaşdırıla bilən nümunələri izləyir. Açar parametrləri təmin edin, model uyğun YAML istehsal edəcək.
+Kubernetes manifestləri həcmlidir, amma proqnozlaşdırıla bilən qəliblərə əsaslanır. Əsas parametrləri verin, model tələblərə uyğun YAML yaradacaq.
 
 ```
 Kubernetes deployment YAML-ı yarat:
@@ -436,52 +440,52 @@ Deployment:
 Həmçinin uyğun Service yarat (ClusterIP, port 8080)
 ```
 
-## Doğrulama və Xəta İdarəetməsi
+## Doğrulama və Xətaların İdarə Edilməsi
 
-İstehsal sistemləri üçün promptlarınıza doğrulama daxil edin. Bu, xətalar pipeline-ınız boyunca yayılmadan əvvəl tutur.
+İstehsal sistemlərində doğrulamanı promptlarınızın içinə qurun. Bu, xətaları pipeline boyunca yayılmazdan əvvəl tutmağa imkan verir.
 
 ### Öz-Doğrulama Promptu
 
-Modeldən çıxışını göstərdiyiniz qaydalara görə doğrulamasını istəyin. Bu, format xətalarını və etibarsız dəyərləri tutur.
+Modeldən çıxışını sizin göstərdiyiniz qaydalara əsasən yoxlamasını istəyin. Bu, format xətalarını və etibarsız dəyərləri tutur.
 
 ```
-Məlumatı JSON olaraq çıxar, sonra çıxışını doğrula.
+Məlumatı JSON olaraq çıxar, sonra çıxışını yoxla.
 
-Şema:
+Sxem:
 {
   "email": "etibarlı email formatı",
-  "telefon": "E.164 formatı (+994123456789)",
-  "tarix": "ISO 8601 formatı (YYYY-AA-GG)"
+  "phone": "E.164 formatı (+994123456789)",
+  "date": "ISO 8601 formatı (YYYY-MM-DD)"
 }
 
 JSON yaratdıqdan sonra yoxla:
-1. Email @ və etibarlı domain ehtiva edir
-2. Telefon + ilə başlayır və yalnız rəqəmlər ehtiva edir
-3. Tarix etibarlı və təhlil edilə biləndir
+1. Email-də @ və etibarlı domen var
+2. Telefon + ilə başlayır və yalnız rəqəmlərdən ibarətdir
+3. Tarix etibarlıdır və təhlil edilə bilir
 
-Doğrulama uğursuz olarsa, cavab verməzdən əvvəl düzəlt.
+Yoxlama uğursuz olarsa, cavab verməzdən əvvəl problemləri düzəlt.
 
 Mətn: [əlaqə məlumatları]
 ```
 
-### Xəta Cavab Formatı
+### Xəta Cavabının Formatı
 
-Ayrı uğur və xəta formatları təyin edin. Bu, proqramatik işləməni çox asanlaşdırır.
+Uğurlu nəticə və xəta üçün ayrı formatlar təyin edin. Bu, proqram tərəfindən emalı xeyli asanlaşdırır.
 
 ```
-Məlumat çıxarmağa çalış. Çıxarış uğursuz olarsa, xəta formatı qaytar:
+Məlumatı çıxarmağa çalış. Çıxarış alınmasa, xəta formatını qaytar:
 
 Uğur formatı:
 {
-  "ugurlu": true,
-  "melumat": { ... çıxarılmış məlumat ... }
+  "success": true,
+  "data": { ... çıxarılmış məlumat ... }
 }
 
 Xəta formatı:
 {
-  "ugurlu": false,
-  "xeta": "nəyin səhv getdiyinin izahı",
-  "qismen_melumat": { ... çıxarıla bilən məlumat ... }
+  "success": false,
+  "error": "nəyin səhv getdiyinin izahı",
+  "partial_data": { ... çıxarıla bilən məlumat ... }
 }
 ```
 
@@ -491,65 +495,52 @@ Xəta formatı:
   <div className="p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
     <div className="font-semibold text-amber-700 dark:text-amber-300 mb-2">JSON İstifadə Et</div>
     <div className="text-sm space-y-1">
-      <p className="m-0!">Proqramatik təhlil tələb olunur</p>
+      <p className="m-0!">Proqram tərəfindən təhlil lazımdır</p>
       <p className="m-0!">API cavabları</p>
       <p className="m-0!">Ciddi tip tələbləri</p>
       <p className="m-0!">JavaScript/Web inteqrasiyası</p>
-      <p className="m-0!">Kompakt göstərim</p>
+      <p className="m-0!">Yığcam təqdimat</p>
     </div>
   </div>
   <div className="p-4 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200 dark:border-purple-800">
     <div className="font-semibold text-purple-700 dark:text-purple-300 mb-2">YAML İstifadə Et</div>
     <div className="text-sm space-y-1">
-      <p className="m-0!">İnsan oxuna bilənliyi vacibdir</p>
+      <p className="m-0!">İnsan üçün oxunaqlılıq vacibdir</p>
       <p className="m-0!">Konfiqurasiya faylları</p>
-      <p className="m-0!">Şərhlər tələb olunur</p>
+      <p className="m-0!">Şərhlər lazımdır</p>
       <p className="m-0!">DevOps/İnfrastruktur</p>
       <p className="m-0!">Dərin iç-içə strukturlar</p>
     </div>
   </div>
 </div>
 
-## Prompts.chat Strukturlaşdırılmış Promptları
+## Strukturlaşdırılmış Promptların Saxlanması
 
-prompts.chat-da strukturlaşdırılmış çıxış formatları ilə promptlar yarada bilərsiniz:
+JSON və ya YAML promptu yaxşı işləyəndə, onu tapıb yenidən istifadə edə biləcəyiniz yerdə saxlayın. Bəzi prompt kitabxanaları, o cümlədən prompts.chat, özü JSON və ya YAML ilə yazılmış promptu saxlamağa, onu sintaksis vurğulaması ilə göstərməyə və kopyalamazdan əvvəl şablon dəyişənlərini doldurmağa imkan verir. Yadda saxlayın ki, bu, yalnız promptu saxlayır; modelin cavabını sxemə uyğunluq baxımından yoxlamır. Bunun üçün API-nizin strukturlaşdırılmış çıxış funksiyasından istifadə edin və ya cavabı öz kodunuzda yoxlayın.
 
-```
-prompts.chat-da prompt yaradarkən göstərə bilərsiniz:
+## Tez-tez Rast Gəlinən Tələlər
 
-Növ: STRUCTURED
-Format: JSON və ya YAML
-
-Platforma:
-- Çıxışları şemanıza görə doğrulayır
-- Sintaksis vurğulama təmin edir
-- Strukturlaşdırılmış çıxışı asanlıqla kopyalamağı aktivləşdirir
-- Şemanızda şablon dəyişənlərini dəstəkləyir
-```
-
-## Ümumi Tələlər
-
-<Callout type="warning" title="Əvvəlcə Bunları Sazla">
-Bu üç problem JSON təhlil xətalarının çoxuna səbəb olur. Kodunuz süni intellekt çıxışını təhlil edə bilmədikdə bunları yoxlayın.
+<Callout type="warning" title="Əvvəlcə Bunları Yoxlayın">
+JSON təhlili xətalarının çoxuna bu üç problem səbəb olur. Kodunuz süni intellekt çıxışını təhlil edə bilmədikdə əvvəlcə bunları yoxlayın. Sxemə riayəti məcburi edən strukturlaşdırılmış çıxış bu problemlərin qarşısını əsasən alır, ona görə də onlar ən çox yalnız promptun özünə güvəndiyiniz hallarda önəmlidir.
 </Callout>
 
 ### 1. Markdown Kod Blokları
 
-**Problem:** Model JSON-u ```json blokları içinə sarır
+**Problem:** Model JSON-u ```json bloklarına salır
 
 **Həll:** 
 ```
-YALNIZ JSON obyektini qaytar. Markdown kod blokları içinə sarma.
-```json və ya ``` işarələri əlavə etmə.
+YALNIZ JSON obyektini qaytar. Onu markdown kod bloklarına salma.
+Cavaba ```json və ya ``` işarələrini əlavə etmə.
 ```
 
-### 2. Arxadan Gələn Vergüllər
+### 2. Sondakı Artıq Vergüllər
 
-**Problem:** Arxadan gələn vergüllər səbəbindən etibarsız JSON
+**Problem:** Sondakı artıq vergüllər səbəbindən etibarsız JSON
 
 **Həll:**
 ```
-Etibarlı JSON sintaksisi təmin et. Massivlərdə və ya obyektlərdə son 
+JSON sintaksisinin etibarlı olduğundan əmin ol. Massivlərdə və ya obyektlərdə son 
 elementdən sonra vergül olmamalıdır.
 ```
 
@@ -561,26 +552,26 @@ elementdən sonra vergül olmamalıdır.
 ```
 String-lərdəki xüsusi simvolları düzgün escape et:
 - \" dırnaq işarələri üçün
-- \\ əks slash-lar üçün
+- \\ tərs slash-lar üçün
 - \n yeni sətirlər üçün
 ```
 
 ## Xülasə
 
 <Callout type="tip" title="Əsas Texnikalar">
-TypeScript interfeysləri və ya JSON Schema istifadə edərək şemaları açıq şəkildə təyin et. Tipləri və məhdudiyyətləri göstər, null və standartları idarə et, öz-doğrulama istə və istifadə halınız üçün düzgün formatı seç.
+Sxemləri TypeScript interfeysləri və ya JSON Schema ilə açıq şəkildə təyin edin. Tipləri və məhdudiyyətləri göstərin, null və standart dəyərləri idarə edin, öz-doğrulama istəyin və istifadə halınıza uyğun formatı seçin. API ilə işləyərkən sxemə riayəti onun strukturlaşdırılmış çıxış funksiyasına həvalə edin və dəyərləri yoxlamağa davam edin.
 </Callout>
 
 <Quiz 
-  question="Süni intellekt çıxışları üçün JSON əvəzinə YAML-ı nə vaxt üstün tutmalısınız?"
+  question="Süni intellekt çıxışları üçün nə vaxt JSON əvəzinə YAML-a üstünlük verməlisiniz?"
   options={[
     "REST API-lər qurarkən",
-    "Çıxışın insan tərəfindən oxuna bilən olması və şərh ehtiva etməsi lazım olduqda",
+    "Çıxış insan üçün oxunaqlı olmalı və şərhlər ehtiva edə bildikdə",
     "JavaScript tətbiqləri ilə işləyərkən",
-    "Ən kompakt göstərimə ehtiyac duyduqda"
+    "Ən yığcam təqdimat lazım olduqda"
   ]}
   correctIndex={1}
-  explanation="YAML, konfiqurasiya faylları, DevOps manifestləri və sənədləşdirmə kimi insan oxuna bilənliyinin vacib olduğu hallarda üstün tutulur. Həmçinin JSON-dan fərqli olaraq şərhləri dəstəkləyir."
+  explanation="YAML konfiqurasiya faylları, DevOps manifestləri və sənədləşdirmə kimi insan üçün oxunaqlılığın vacib olduğu hallarda üstün tutulur. Üstəlik, JSON-dan fərqli olaraq şərhləri dəstəkləyir."
 />
 
-Bu, texnikalarla əlaqəli Bölmə II-ni tamamlayır. Bölmə III-də, fərqli sahələr arasındakı praktik tətbiqləri kəşf edəcəyik.
+Bununla texnikalara həsr olunmuş II Hissə başa çatır. III Hissədə müxtəlif sahələrdəki praktik tətbiqləri kəşf edəcəyik.

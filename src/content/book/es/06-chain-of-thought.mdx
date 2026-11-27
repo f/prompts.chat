@@ -1,7 +1,7 @@
-El prompting de Cadena de Pensamiento (CoT) es una técnica que mejora dramáticamente el rendimiento de la IA en tareas de razonamiento complejo al pedir al modelo que muestre su trabajo paso a paso.
+El prompting de Cadena de Pensamiento (CoT) es una técnica que mejora notablemente el rendimiento de la IA en tareas de razonamiento complejo al pedir al modelo que muestre su trabajo paso a paso.
 
 <Callout type="info" title="Muestra Tu Trabajo">
-Al igual que un maestro de matemáticas pidiendo a los estudiantes que muestren su trabajo, el prompting CoT pide a la IA que haga visible su razonamiento.
+Al igual que un profesor de matemáticas que pide a sus alumnos que muestren su trabajo, el prompting CoT pide a la IA que haga visible su razonamiento.
 </Callout>
 
 ## El Problema que Resuelve CoT
@@ -10,7 +10,7 @@ Los modelos de IA pueden tener dificultades con el razonamiento de múltiples pa
 
 <Compare 
   before={{ label: "Respuesta Directa (Frecuentemente Incorrecta)", content: "Pregunta: Una tienda vende manzanas por 2€ cada una. Si compras 5 o más, obtienes 20% de descuento. ¿Cuánto cuestan 7 manzanas?\n\nRespuesta: 14€ ❌" }}
-  after={{ label: "Cadena de Pensamiento (Correcta)", content: "Pregunta: Una tienda vende manzanas por 2€ cada una. Si compras 5 o más, obtienes 20% de descuento. ¿Cuánto cuestan 7 manzanas?\n\nVamos a resolver esto paso a paso:\n1. Precio regular por manzana: 2€\n2. Número de manzanas: 7\n3. Como 7 ≥ 5, aplica el descuento\n4. Total regular: 7 × 2€ = 14€\n5. Descuento: 20% de 14€ = 2,80€\n6. Precio final: 14€ - 2,80€ = 11,20€\n\nRespuesta: 11,20€ ✓" }}
+  after={{ label: "Cadena de Pensamiento (Correcta)", content: "Pregunta: Una tienda vende manzanas por 2€ cada una. Si compras 5 o más, obtienes 20% de descuento. ¿Cuánto cuestan 7 manzanas?\n\nVamos a resolver esto paso a paso:\n1. Precio normal por manzana: 2€\n2. Número de manzanas: 7\n3. Como 7 ≥ 5, se aplica el descuento\n4. Total sin descuento: 7 × 2€ = 14€\n5. Descuento: 20% de 14€ = 2,80€\n6. Precio final: 14€ - 2,80€ = 11,20€\n\nRespuesta: 11,20€ ✓" }}
 />
 
 ## Prompts CoT Básicos
@@ -21,11 +21,13 @@ Agrega una de estas a tus prompts:
 
 <div className="my-4 grid gap-2">
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Pensemos paso a paso."</div>
-  <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Piensa esto cuidadosamente."</div>
-  <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Trabaja este problema metódicamente."</div>
+  <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Piénsalo con cuidado."</div>
+  <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Resuelve este problema de forma metódica."</div>
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Muestra tu razonamiento en cada paso."</div>
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Explica tu proceso de pensamiento."</div>
 </div>
+
+Estas frases importan sobre todo con los modelos de chat estándar. Los modelos de razonamiento, que piensan antes de responder, las necesitan mucho menos; volveremos a ellos más adelante en este capítulo.
 
 ### Solicitud Explícita de Pasos
 
@@ -34,7 +36,7 @@ Agrega una de estas a tus prompts:
   description="Pide a la IA que resuelva un problema paso a paso."
   prompt={`Resuelve este problema:
 
-Un alquiler de coche cuesta 40€ por día más 0,25€ por kilómetro. Si alguien alquila un coche por 3 días y conduce 200 kilómetros, ¿cuál es el costo total?
+Un alquiler de coche cuesta 40€ por día más 0,25€ por kilómetro. Si alguien alquila un coche durante 3 días y conduce 200 kilómetros, ¿cuál es el costo total?
 
 Antes de dar tu respuesta final:
 1. Identifica qué información se da
@@ -46,7 +48,7 @@ Antes de dar tu respuesta final:
 
 ## CoT de Cero Ejemplos vs Pocos Ejemplos
 
-Hay dos enfoques principales para el prompting de Cadena de Pensamiento, cada uno con diferentes compensaciones entre simplicidad y control.
+Hay dos enfoques principales para el prompting de Cadena de Pensamiento, y cada uno equilibra de forma distinta la simplicidad y el control.
 
 ### CoT de Cero Ejemplos
 
@@ -64,7 +66,7 @@ Pensemos paso a paso.`}
 ```
 Pensemos paso a paso.
 - Juan comienza con 3 manzanas
-- La mitad de 3 es 1.5, pero no podemos dividir manzanas
+- La mitad de 3 es 1,5, pero no podemos dividir manzanas
 - Si redondeamos hacia abajo: Juan da 1 manzana, se queda con 2
 - Después de comprar 4 más: 2 + 4 = 6 manzanas
 
@@ -73,13 +75,13 @@ Respuesta: 6 manzanas
 
 ### CoT de Pocos Ejemplos
 
-Para resultados más consistentes, muestra al modelo exactamente cómo quieres que razone proporcionando ejemplos trabajados. Esto te da control sobre el estilo de razonamiento, formato y nivel de detalle. El modelo imitará tu patrón demostrado.
+Para resultados más consistentes, muestra al modelo exactamente cómo quieres que razone proporcionando ejemplos resueltos. Esto te da control sobre el estilo de razonamiento, el formato y el nivel de detalle. El modelo imitará el patrón que le muestres.
 
 <TryIt 
   compact
   title="CoT de Pocos Ejemplos"
   prompt={`Ejemplo 1:
-P: Una panadera tiene 24 cupcakes. Los pone igualmente en 4 cajas. Luego se come 2 cupcakes de una caja. ¿Cuántos cupcakes quedan en total?
+P: Una panadera tiene 24 cupcakes. Los reparte a partes iguales en 4 cajas. Luego se come 2 cupcakes de una caja. ¿Cuántos cupcakes quedan en total?
 
 R: Vamos a resolver esto:
 - Total de cupcakes: 24
@@ -88,7 +90,7 @@ R: Vamos a resolver esto:
 - Total restante: (3 cajas × 6) + 4 = 18 + 4 = 22 cupcakes
 
 Ejemplo 2:
-P: Un tren viaja a 60 km/h por 2 horas, luego 40 km/h por 3 horas. ¿Cuál es su velocidad promedio?
+P: Un tren viaja a 60 km/h durante 2 horas y luego a 40 km/h durante 3 horas. ¿Cuál es su velocidad promedio?
 
 R: Vamos a resolver esto:
 - Distancia a 60 km/h: 60 × 2 = 120 km
@@ -104,16 +106,16 @@ P: Una tienda vende cuadernos por 3€ cada uno. Si compras 10 o más, obtienes 
 **Salida de Ejemplo:**
 ```
 R: Vamos a resolver esto:
-- Precio regular: 3€, Cantidad: 12
-- Como 12 ≥ 10, aplica el descuento del 25%
-- Total regular: 12 × 3€ = 36€
+- Precio normal: 3€, Cantidad: 12
+- Como 12 ≥ 10, se aplica el descuento del 25%
+- Total sin descuento: 12 × 3€ = 36€
 - Descuento: 25% de 36€ = 9€
 - Precio final: 36€ - 9€ = 27€
 ```
 
 ## Formatos Estructurados de CoT
 
-Para razonamiento consistente y reproducible, usa formatos estructurados con pasos nombrados. Estos frameworks aseguran que el modelo no se salte etapas importantes y hacen las salidas más fáciles de parsear y verificar.
+Para razonamiento consistente y reproducible, usa formatos estructurados con pasos con nombre propio. Estos frameworks aseguran que el modelo no se salte etapas importantes y hacen las salidas más fáciles de parsear y verificar.
 
 ### El Formato BREAK
 
@@ -168,7 +170,7 @@ Los problemas matemáticos se benefician más de CoT porque cada paso se constru
   title="Matemáticas con CoT"
   prompt={`Los ingresos de una empresa fueron 1,2M€ en Q1. Crecieron 15% en Q2, bajaron 10% en Q3, y crecieron 25% en Q4. ¿Cuál fue el ingreso anual total?
 
-Piensa a través de cada trimestre, mostrando tus cálculos claramente.`}
+Analiza cada trimestre por separado y muestra tus cálculos con claridad.`}
 />
 
 **Salida de Ejemplo:**
@@ -195,8 +197,9 @@ Pistas:
 2. El ingeniero tiene perro
 3. Roberto es maestro
 4. Carolina no tiene pez
+5. El médico no tiene gato
 
-¿Quién tiene qué mascota y trabajo? Razona sistemáticamente, probando hipótesis y verificando contra todas las pistas.`}
+¿Quién tiene qué mascota y trabajo? Razona de forma sistemática, probando hipótesis y comprobando que se cumplen todas las pistas.`}
 />
 
 **Salida de Ejemplo:**
@@ -204,18 +207,23 @@ Pistas:
 De la pista 3: Roberto = maestro
 → Alicia y Carolina son ingeniera/médica
 
-Si Carolina = ingeniera:
-- Carolina tiene perro (pista 2)
-- Alicia = médica, tiene pez (pista 1)
+Hipótesis A: Alicia = ingeniera
+- Alicia tiene perro (pista 2), Carolina = médica
+- Carolina no puede tener pez (pista 4), así que Carolina tiene gato
+- Pero el médico no puede tener gato (pista 5) ✗
+
+Hipótesis B: Carolina = ingeniera
+- Carolina tiene perro (pista 2), Alicia = médica
+- Alicia no puede tener gato (pista 1), así que Alicia tiene pez
 - Roberto tiene gato
 
-Verificar: Las 4 pistas satisfechas ✓
+Verificar: Se cumplen las 5 pistas ✓
 Respuesta: Alicia (médica, pez), Roberto (maestro, gato), Carolina (ingeniera, perro)
 ```
 
 ### Depuración de Código
 
-La depuración se beneficia de CoT porque obliga al modelo a rastrear la ejecución en lugar de adivinar errores. Al caminar por el código con valores concretos, el comportamiento real se hace visible y las discrepancias con el comportamiento esperado se exponen.
+La depuración se beneficia de CoT porque obliga al modelo a rastrear la ejecución en lugar de adivinar errores. Al recorrer el código con valores concretos, el comportamiento real se hace visible y las discrepancias con el comportamiento esperado quedan al descubierto.
 
 <TryIt 
   compact
@@ -245,19 +253,19 @@ Esperado: 12, Obtenido: 3
 Corrección: Cambiar a "total += n"
 ```
 
-## Auto-Consistencia con CoT
+## Autoconsistencia con CoT
 
 Para problemas críticos, no te apoyes en una sola ruta de razonamiento. Genera múltiples soluciones independientes y compara resultados. Si diferentes enfoques convergen en la misma respuesta, la confianza es alta. El desacuerdo señala la necesidad de revisión cuidadosa.
 
 <TryIt 
   compact
-  title="Auto-Consistencia"
+  title="Autoconsistencia"
   prompt={`Resuelve este problema de 3 formas diferentes, luego da tu respuesta final basada en qué solución parece más correcta:
 
 Problema: Un granjero tiene gallinas y vacas. Juntas tienen 30 cabezas y 74 patas. ¿Cuántas gallinas y cuántas vacas tiene el granjero?
 
 Enfoque 1: Álgebra
-Enfoque 2: Prueba y error
+Enfoque 2: Ensayo y error
 Enfoque 3: Razonamiento lógico
 
 Luego compara y da tu respuesta final.`}
@@ -266,15 +274,17 @@ Luego compara y da tu respuesta final.`}
 **Salida de Ejemplo:**
 ```
 Enfoque 1 (Álgebra): g + v = 30, 2g + 4v = 74 → g=23, v=7
-Enfoque 2 (Prueba): Probar 23/7 → 46 + 28 = 74 ✓
+Enfoque 2 (Ensayo): Probar 23/7 → 46 + 28 = 74 ✓
 Enfoque 3 (Lógica): 30 gallinas = 60 patas, necesitamos 14 más → 7 vacas
 
 Todos coinciden: 23 gallinas, 7 vacas
 ```
 
+En su forma original, tal como se planteó en la investigación, la autoconsistencia va un paso más allá: envías el mismo prompt varias veces como peticiones independientes y te quedas con la respuesta que más se repite. Pedir varios enfoques en una sola respuesta, como arriba, es una versión más ligera de la misma idea. Resulta más barata, pero los intentos no son realmente independientes, porque cada uno puede ver los demás.
+
 ## CoT para Toma de Decisiones
 
-Las decisiones implican sopesar compensaciones a través de múltiples dimensiones. CoT asegura que todos los factores relevantes se consideren sistemáticamente en lugar de saltar a conclusiones. Este enfoque estructurado también documenta el razonamiento para referencia futura.
+Las decisiones implican sopesar pros y contras en múltiples dimensiones. CoT asegura que todos los factores relevantes se consideren sistemáticamente en lugar de sacar conclusiones precipitadas. Este enfoque estructurado también documenta el razonamiento para referencia futura.
 
 <TryIt 
   compact
@@ -282,10 +292,10 @@ Las decisiones implican sopesar compensaciones a través de múltiples dimension
   prompt={`¿Deberíamos adoptar arquitectura de microservicios para nuestra aplicación?
 
 Contexto:
-- Aplicación monolítica con 50,000 líneas de código
+- Aplicación monolítica con 50.000 líneas de código
 - Equipo de 5 desarrolladores
 - 100 usuarios activos diarios
-- Planeando crecimiento de 10x en 2 años
+- Prevemos multiplicar por 10 el tamaño en 2 años
 
 Piensa esto sistemáticamente:
 1. Lista el estado actual
@@ -300,7 +310,7 @@ FACTORES:
 - Tamaño de equipo (5): Muy pequeño para microservicios ❌
 - Escala (100 DAU): Sin necesidad de escalado ❌  
 - Velocidad: Monolito = iteración más rápida ❌
-- Crecimiento futuro: Cronología incierta ⚠️
+- Crecimiento futuro: Plazos inciertos ⚠️
 
 BALANCE: 3 fuertes en contra, 1 débil a favor
 
@@ -308,27 +318,42 @@ RECOMENDACIÓN: Quedarse con monolito, usar límites de módulos
 claros para facilitar transición futura.
 ```
 
+## Modelos de Razonamiento: CoT Integrado
+
+La cadena de pensamiento nació como un truco de prompting, pero desde entonces se ha trasladado al interior de los propios modelos. Muchos modelos actuales están entrenados para razonar antes de responder: los modelos de razonamiento de OpenAI, Claude de Anthropic con el modo de razonamiento activado, Gemini de Google y modelos de pesos abiertos como DeepSeek-R1 razonan sobre el problema en privado y después dan su respuesta. Normalmente solo ves la respuesta, o un breve resumen del razonamiento, aunque los tokens de razonamiento siguen contando para tu consumo.
+
+Esto no deja obsoleto el capítulo, pero sí cambia la forma de aplicarlo:
+
+- **Olvida la frase mágica.** Según las recomendaciones de OpenAI, pedir a sus modelos de razonamiento que "piensen paso a paso" es innecesario y a veces incluso perjudica. Anthropic señala que una instrucción general como "piensa a fondo" suele funcionar mejor que un plan paso a paso escrito a mano, porque el razonamiento propio del modelo con frecuencia llega más lejos de lo que llegaría ese plan.
+- **Describe la meta, no el camino.** Dedica tus palabras al problema, a las restricciones y a cómo es una buena respuesta, y deja que el modelo encuentre su propio camino.
+- **Gira el regulador en lugar de escribir más.** Estas API ofrecen ajustes como el esfuerzo de razonamiento o el nivel de pensamiento. Subirlos suele ser mejor forma de conseguir un razonamiento más profundo que pedir explicaciones más largas en el prompt.
+- **Mantén la estructura cuando necesites ver el trabajo.** Plantillas como BREAK o DADO/OBJETIVO/PASOS siguen siendo útiles cuando quieres un razonamiento que puedas leer, comprobar o procesar, y con modelos que no piensan por su cuenta. Algunos proveedores ya desaconsejan pedir a sus modelos que siempre razonan que escriban su razonamiento, así que consulta las recomendaciones del modelo que uses.
+
+<Callout type="warning" title="El Razonamiento Mostrado No Es una Ventana">
+El razonamiento que el modelo escribe, o el resumen de pensamiento que muestra, no tiene por qué ser el proceso que realmente produjo la respuesta. Una investigación de Anthropic descubrió que los modelos de razonamiento a menudo omiten factores que influyeron en ellos. Trata los pasos visibles como algo que comprobar, no como una prueba.
+</Callout>
+
 ## Cuándo Usar CoT
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
   <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
     <p className="text-sm font-semibold text-green-700 dark:text-green-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconCheck className="h-4 w-4" /> Usa CoT Para</p>
     <div className="text-sm p-4 pt-2 space-y-1">
-      <p className="m-0!">**Problemas matemáticos** — Reduce errores de cálculo</p>
-      <p className="m-0!">**Puzzles de lógica** — Previene pasos saltados</p>
-      <p className="m-0!">**Análisis complejos** — Organiza el pensamiento</p>
-      <p className="m-0!">**Depuración de código** — Rastrea la ejecución</p>
-      <p className="m-0!">**Toma de decisiones** — Sopesa compensaciones</p>
+      <p className="m-0!">**Problemas matemáticos**: reduce los errores de cálculo</p>
+      <p className="m-0!">**Puzzles de lógica**: evita que se salten pasos</p>
+      <p className="m-0!">**Análisis complejos**: organiza el pensamiento</p>
+      <p className="m-0!">**Depuración de código**: sigue la ejecución paso a paso</p>
+      <p className="m-0!">**Toma de decisiones**: sopesa pros y contras</p>
     </div>
   </div>
   <div className="border rounded-lg bg-red-50/50 dark:bg-red-950/20 border-red-200 dark:border-red-900">
     <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> Omite CoT Para</p>
     <div className="text-sm p-4 pt-2 space-y-1">
-      <p className="m-0!">**Preguntas y respuestas simples** — Overhead innecesario</p>
-      <p className="m-0!">**Escritura creativa** — Puede restringir la creatividad</p>
-      <p className="m-0!">**Búsquedas factuales** — No se necesita razonamiento</p>
-      <p className="m-0!">**Traducción** — Tarea directa</p>
-      <p className="m-0!">**Resumen** — Generalmente directo</p>
+      <p className="m-0!">**Preguntas y respuestas simples**: sobrecarga innecesaria</p>
+      <p className="m-0!">**Escritura creativa**: puede restringir la creatividad</p>
+      <p className="m-0!">**Consultas de datos concretos**: no requieren razonamiento</p>
+      <p className="m-0!">**Traducción**: tarea directa</p>
+      <p className="m-0!">**Resúmenes**: suelen ser sencillos</p>
     </div>
   </div>
 </div>
@@ -337,15 +362,15 @@ claros para facilitar transición futura.
 
 Aunque poderosa, la Cadena de Pensamiento no es una solución mágica. Entender sus limitaciones te ayuda a aplicarla apropiadamente.
 
-1. **Mayor uso de tokens** — Más salida significa costos más altos
-2. **No siempre necesaria** — Tareas simples no se benefician
-3. **Puede ser verbosa** — Puede necesitar pedir concisión
-4. **El razonamiento puede ser defectuoso** — CoT no garantiza corrección
+1. **Mayor uso de tokens**: más salida significa costos más altos
+2. **No siempre es necesaria**: las tareas simples no se benefician
+3. **Puede ser verbosa**: quizá tengas que pedir concisión
+4. **El razonamiento puede ser defectuoso**: CoT no garantiza que la respuesta sea correcta
 
 ## Resumen
 
 <Callout type="tip" title="Puntos Clave">
-CoT mejora dramáticamente el razonamiento complejo al hacer explícitos los pasos implícitos. Úsalo para matemáticas, lógica, análisis y depuración. Compensación: mejor precisión por más tokens.
+CoT mejora notablemente el razonamiento complejo al hacer explícitos los pasos implícitos. Úsalo para matemáticas, lógica, análisis y depuración. El precio: más precisión a cambio de más tokens. Con los modelos de razonamiento, que ya piensan antes de responder, centra el prompt en el objetivo y ajusta la configuración de razonamiento en su lugar.
 </Callout>
 
 <Quiz 
@@ -357,7 +382,7 @@ CoT mejora dramáticamente el razonamiento complejo al hacer explícitos los pas
     "Analizar una decisión de negocios"
   ]}
   correctIndex={1}
-  explanation="La Cadena de Pensamiento agrega overhead innecesario para preguntas y respuestas simples. Es mejor reservarla para tareas de razonamiento complejo como matemáticas, puzzles de lógica, depuración de código y análisis donde mostrar el trabajo mejora la precisión."
+  explanation="La Cadena de Pensamiento añade una sobrecarga innecesaria en preguntas y respuestas simples. Es mejor reservarla para tareas de razonamiento complejo como matemáticas, puzzles de lógica, depuración de código y análisis donde mostrar el trabajo mejora la precisión."
 />
 
-En el próximo capítulo, exploraremos el aprendizaje de pocos ejemplos—enseñando al modelo a través de ejemplos.
+En el próximo capítulo, exploraremos el aprendizaje con pocos ejemplos: cómo enseñar al modelo a través de ejemplos.

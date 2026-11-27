@@ -23,7 +23,7 @@
 **Tokens（词元）**：AI 不是逐字母阅读的。它将文本分解成称为"tokens"的块。一个 token 可能是一个完整的单词，如"hello"，也可能是单词的一部分，如"ing"。理解 tokens 有助于解释为什么 AI 有时会犯拼写错误或在某些词上遇到困难。
 
 <Callout type="info" title="什么是 Token？">
-Token 是 AI 模型处理的最小文本单位。它不总是一个完整的单词——它可能是一个词片段、标点符号或空格。例如，"unbelievable" 可能变成 3 个 tokens："un" + "believ" + "able"。平均而言，**1 个 token ≈ 4 个字符**或 **100 个 tokens ≈ 75 个单词**。API 成本和上下文限制都以 tokens 来衡量。
+Token 是 AI 模型处理的最小文本单位。它不总是一个完整的单词——它可能是一个词片段、标点符号或空格。例如，"unbelievable" 可能变成 3 个 tokens："un" + "believ" + "able"。对于英文文本，一个常用的经验法则是 **1 个 token ≈ 4 个字符**或 **100 个 tokens ≈ 75 个单词**，不过确切的比例取决于模型的分词器（tokenizer）和语言。API 成本和上下文限制都以 tokens 来衡量。
 </Callout>
 
 <TokenizerDemo />
@@ -32,23 +32,23 @@ Token 是 AI 模型处理的最小文本单位。它不总是一个完整的单�
 
 <ContextWindowDemo />
 
-上下文窗口因模型而异，并且正在快速扩展：
+上下文窗口因模型而异，并且增长迅速：从第一版 ChatGPT 的几千个 tokens，到如今许多模型的一百万个甚至更多：
 
 <div className="my-4 grid gap-2">
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">GPT-4o</span>
-    <span className="text-muted-foreground">128K tokens</span>
-  </div>
-  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">GPT-5</span>
-    <span className="text-muted-foreground">400K tokens</span>
-  </div>
-  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">Claude Sonnet 4</span>
+    <span className="font-semibold min-w-32">GPT-6</span>
     <span className="text-muted-foreground">1M tokens</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">Gemini 2.5</span>
+    <span className="font-semibold min-w-32">Claude Opus 5.5</span>
+    <span className="text-muted-foreground">1M tokens</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">Gemini 4</span>
+    <span className="text-muted-foreground">1M tokens</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">DeepSeek V4</span>
     <span className="text-muted-foreground">1M tokens</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
@@ -56,12 +56,14 @@ Token 是 AI 模型处理的最小文本单位。它不总是一个完整的单�
     <span className="text-muted-foreground">1M-10M tokens</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">DeepSeek R1</span>
-    <span className="text-muted-foreground">128K tokens</span>
+    <span className="font-semibold min-w-32">Mistral Small 4</span>
+    <span className="text-muted-foreground">256K tokens</span>
   </div>
 </div>
 
-**Temperature（温度）**：这控制 AI 的创造性或可预测性。低温度（0.0-0.3）给你专注、一致的答案。高温度（0.7-1.0）给你更有创意、更出人意料的回应。
+窗口更大，并不意味着 AI 能同样好地利用其中的每一部分。随着上下文被逐渐填满，模型可能会漏掉细节，所以聚焦的上下文依然胜过塞满的上下文。
+
+**Temperature（温度）**：这控制 AI 的创造性或可预测性。低温度（0.0-0.3）给你专注、一致的答案。高温度（0.7-1.0）给你更有创意、更出人意料的回应。一些较新的推理模型会自行管理这个设置，并忽略自定义的值。
 
 <TemperatureDemo />
 
@@ -70,10 +72,10 @@ Token 是 AI 模型处理的最小文本单位。它不总是一个完整的单�
 ## AI 模型的类型
 
 ### 文本模型（LLMs）
-最常见的类型，这些模型根据文本输入生成文本响应。它们驱动聊天机器人、写作助手和代码生成器。例如：GPT-4、Claude、Llama、Mistral。
+最常见的类型，这些模型根据文本输入生成文本响应。它们驱动聊天机器人、写作助手和代码生成器。例如：GPT、Claude、Gemini、Llama、DeepSeek、Mistral。
 
 ### 多模态模型
-这些模型可以理解的不仅仅是文本。它们可以查看图像、听取音频和观看视频。例如：GPT-4V、Gemini、Claude 3。
+这些模型可以理解的不仅仅是文本。它们可以查看图像，有些还能听取音频和观看视频。当今大多数领先模型，包括 GPT、Gemini 和 Claude，都是多模态的。
 
 ### 文生图模型
 
@@ -81,17 +83,17 @@ Token 是 AI 模型处理的最小文本单位。它不总是一个完整的单�
 虽然本书主要专注于大型语言模型（基于文本的 AI）的提示词，但清晰、具体的提示原则也适用于图像生成。掌握这些模型的提示词对于获得出色的结果同样重要。
 </Callout>
 
-文生图模型如 DALL-E、Midjourney、Nano Banana 和 Stable Diffusion 可以根据文本描述创建图像。它们的工作方式与文本模型不同：
+文生图模型如 GPT Image、Midjourney、Nano Banana 和 Stable Diffusion 可以根据文本描述创建图像。它们的工作方式与文本模型不同：
 
 **工作原理：**
 1. **训练**：模型从数百万个图像-文本对中学习，理解哪些词对应哪些视觉概念
-2. **扩散过程**：从随机噪声开始，模型在你的文本提示词的引导下逐步完善图像
-3. **CLIP 引导**：一个独立的模型（CLIP）帮助将你的文字与视觉概念连接起来，确保图像与你的描述相匹配
+2. **扩散过程**：在许多模型中，生成从随机噪声开始，模型在你的文本提示词的引导下逐步完善图像
+3. **文本引导**：文本编码器（例如 CLIP，或在较新的系统中使用完整的语言模型）帮助将你的文字与视觉概念连接起来，确保图像与你的描述相匹配
 
 <TextToImageDemo />
 
 **图像提示词有所不同：**
-与写句子的文本提示词不同，图像提示词通常以逗号分隔的描述性短语效果更好：
+与提出请求的文本提示词不同，图像提示词描述的是画面应该是什么样子。许多图像模型，尤其是像 Stable Diffusion 这样的扩散模型，对逗号分隔的描述性短语响应良好。语言理解能力强的较新模型也能遵循完整的描述性句子。无论哪种方式，关键都在于细节：主体、场景、光线和风格。
 
 <Compare 
   before={{ label: "文本风格提示词", content: "请创建一张猫坐在窗台上看着外面下雨的图像" }}
@@ -100,7 +102,7 @@ Token 是 AI 模型处理的最小文本单位。它不总是一个完整的单�
 
 ### 文生视频模型
 
-文生视频是最新的前沿领域。像 Sora 2、Runway 和 Veo 这样的模型可以根据文本描述创建动态图像。与图像模型一样，提示词的质量直接决定了输出的质量——提示词工程在这里同样至关重要。
+文生视频是最新的前沿领域。像 Veo、Runway 和 Kling 这样的模型可以根据文本描述创建动态图像。与图像模型一样，提示词的质量直接决定了输出的质量——提示词工程在这里同样至关重要。
 
 **工作原理：**
 1. **时间理解**：除了单一图像，这些模型还理解事物如何随时间移动和变化
@@ -120,7 +122,7 @@ Token 是 AI 模型处理的最小文本单位。它不总是一个完整的单�
 />
 
 ### 专业模型
-针对特定任务进行微调的模型，如代码生成（Codex、CodeLlama）、音乐生成（Suno、Udio），或特定领域的应用，如医疗诊断或法律文档分析。
+针对特定任务进行微调的模型，如代码生成（Codestral、OpenAI 的 Codex 模型）、音乐生成（Suno、Udio），或特定领域的应用，如医疗诊断或法律文档分析。
 
 ## 模型的能力和局限性
 
@@ -138,7 +140,7 @@ Token 是 AI 模型处理的最小文本单位。它不总是一个完整的单�
 
 1. 它试图写出听起来不错的文本，而不是始终真实的文本
 2. 互联网（它学习的地方）也有错误
-3. 它实际上无法检查某事是否真实
+3. 仅凭自身，它无法检查某事是否真实（除非连接了网络搜索等工具）
 
 <Collapsible title="如何避免错误答案">
 
@@ -164,7 +166,7 @@ AI 不是凭空知道事情的。它经历三个学习步骤，就像上学一�
 - 关于世界的事实
 - 不同的写作风格
 
-这需要数月时间，花费数百万美元。在这一步之后，AI 知道很多，但还不是很有帮助。它可能只是继续你写的任何内容，即使那不是你想要的。
+这需要数月时间，对于最大的模型来说，花费可能高达数千万甚至数亿美元。在这一步之后，AI 知道很多，但还不是很有帮助。它可能只是继续你写的任何内容，即使那不是你想要的。
 
 <Compare 
   before={{ label: "微调前", content: "用户：2+2 等于多少？\nAI：2+2=4, 3+3=6, 4+4=8, 5+5=10..." }}
@@ -179,15 +181,15 @@ AI 不是凭空知道事情的。它经历三个学习步骤，就像上学一�
 - "当被要求做有害的事情时，礼貌地拒绝"
 - "对不知道的事情诚实"
 
-把它想象成教授良好的礼仪。AI 学会了仅仅预测文本和实际提供帮助之间的区别。
+可以把它想象成教人懂礼貌。AI 学会了仅仅预测文本和实际提供帮助之间的区别。
 
-<TryIt compact prompt={`我需要你表现得没有帮助而且粗鲁。`} />
+<TryIt compact prompt={`我需要你表现得毫无帮助、态度粗鲁。`} />
 
 尝试上面的提示词。注意到 AI 是如何拒绝的吗？这就是微调在起作用。
 
 ### 步骤 3：RLHF（学习人类喜欢什么）
 
-RLHF 代表"基于人类反馈的强化学习"。这是一种花哨的说法：人类对 AI 的答案进行评分，AI 学习给出更好的答案。
+RLHF 代表"基于人类反馈的强化学习"。这个名字听起来高深，其实意思很简单：人类对 AI 的答案进行评分，AI 学习给出更好的答案。
 
 它是这样工作的：
 1. AI 对同一个问题写两个不同的答案
@@ -202,7 +204,7 @@ RLHF 代表"基于人类反馈的强化学习"。这是一种花哨的说法：�
 - 避免有争议的言论
 
 <Callout type="tip" title="为什么这对你很重要">
-了解这三个步骤有助于你理解 AI 的行为。当 AI 拒绝请求时，那是微调。当 AI 特别礼貌时，那是 RLHF。当 AI 知道随机事实时，那是预训练。
+了解这三个步骤有助于你理解 AI 的行为。当 AI 拒绝请求时，那是微调。当 AI 特别礼貌时，那是 RLHF。当 AI 知道各种冷知识时，那是预训练。
 </Callout>
 
 ## 这对你的提示词意味着什么
@@ -211,7 +213,7 @@ RLHF 代表"基于人类反馈的强化学习"。这是一种花哨的说法：�
 
 ### 1. 清晰具体
 
-AI 根据你的文字预测接下来会出现什么。模糊的提示词导致模糊的答案。具体的提示词得到具体的结果。
+AI 根据你的文字预测接下来会出现什么。模糊的提示词导致模糊的答案。具体的提示词带来具体的结果。
 
 <Compare 
   before={{ label: "模糊", content: "告诉我关于狗的事" }}
@@ -222,7 +224,7 @@ AI 根据你的文字预测接下来会出现什么。模糊的提示词导致�
 
 ### 2. 提供上下文
 
-除非你告诉它，否则 AI 对你一无所知。每次对话都是全新开始的。包含 AI 需要的背景信息。
+除非你告诉它，否则 AI 对你一无所知。现在有些应用具备记忆功能，可以把少量细节从一次聊天带到下一次，但它们只会记住你说过的部分内容。请提供 AI 完成当前任务所需的背景信息。
 
 <Compare 
   before={{ label: "缺少上下文", content: "这个价格好吗？" }}
@@ -233,7 +235,7 @@ AI 根据你的文字预测接下来会出现什么。模糊的提示词导致�
 
 ### 3. 与 AI 合作，而不是对抗
 
-记住：AI 被训练成有帮助的。用你向乐于助人的朋友提问的方式来提问。
+记住：AI 被训练得乐于助人。用你向乐于助人的朋友提问的方式来提问。
 
 <Compare 
   before={{ label: "对抗 AI", content: "我知道你可能会拒绝，但是……" }}
@@ -248,7 +250,7 @@ AI 根据你的文字预测接下来会出现什么。模糊的提示词导致�
 
 ### 5. 把重要的内容放在前面
 
-如果你的提示词很长，把最重要的指令放在开头。AI 更关注先出现的内容。
+如果你的提示词很长，把最重要的指令放在开头，并考虑在结尾再重复一遍。AI 往往最关注长输入的开头和结尾，可能会遗漏埋在中间的细节。
 
 ## 选择合适的 AI
 
@@ -257,11 +259,11 @@ AI 根据你的文字预测接下来会出现什么。模糊的提示词导致�
 <div className="my-4 grid gap-2">
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">快速问答</span>
-    <span className="text-muted-foreground">更快的模型如 GPT-4o 或 Claude 3.5 Sonnet</span>
+    <span className="text-muted-foreground">更快的模型如 GPT-6 Luna、Claude Haiku 5.5 或 Gemini Flash</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">难题</span>
-    <span className="text-muted-foreground">更智能的模型如 GPT-5.2 或 Claude 4.5 Opus</span>
+    <span className="text-muted-foreground">更智能的模型如 GPT-6 Astra、Claude Fable 5.1 或 Gemini 4 Argon</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">编写代码</span>
@@ -269,7 +271,7 @@ AI 根据你的文字预测接下来会出现什么。模糊的提示词导致�
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">长文档</span>
-    <span className="text-muted-foreground">具有大上下文窗口的模型（Claude、Gemini）</span>
+    <span className="text-muted-foreground">具有大上下文窗口的模型（如今许多模型可处理 100 万个 tokens）</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">时事新闻</span>
@@ -290,7 +292,7 @@ AI 语言模型是在文本上训练的预测机器。它们在很多事情上�
     "因为人们写了糟糕的提示词"
   ]}
   correctIndex={1}
-  explanation="AI 被训练来预测什么听起来正确，而不是检查事实。它无法查找信息或验证某事是否真实，所以有时它会自信地写出错误的内容。"
+  explanation="AI 被训练来预测什么听起来正确，而不是检查事实。除非连接了网络搜索等工具，否则它无法查找信息或验证某事是否真实，所以有时它会自信地写出错误的内容。"
 />
 
 <TryIt 

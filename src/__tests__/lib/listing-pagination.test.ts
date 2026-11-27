@@ -59,7 +59,7 @@ describe("tagPromptsWhere", () => {
       tags: { some: { tagId: "tag1" } },
       isUnlisted: false,
       deletedAt: null,
-      type: { not: "BOT" },
+      type: { notIn: ["BOT", "CLASSIFIER"] },
       OR: [{ isPrivate: false }],
     });
   });
@@ -72,7 +72,7 @@ describe("tagPromptsWhere", () => {
 describe("categoryPromptsWhere", () => {
   it("should list public non-bot prompts of the category", () => {
     const where = categoryPromptsWhere("cat1");
-    expect(where).toMatchObject({ categoryId: "cat1", isPrivate: false, isUnlisted: false, deletedAt: null, type: { not: "BOT" } });
+    expect(where).toMatchObject({ categoryId: "cat1", isPrivate: false, isUnlisted: false, deletedAt: null, type: { notIn: ["BOT", "CLASSIFIER"] } });
     expect(where.OR).toBeUndefined();
   });
 

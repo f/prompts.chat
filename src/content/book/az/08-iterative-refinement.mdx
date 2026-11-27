@@ -1,18 +1,18 @@
-Prompt mühəndisliyi nadir hallarda tək dəfəlik bir prosesdir. Ən yaxşı promptlar iterasiya ilə ortaya çıxır—istənilən nəticələri əldə edənə qədər test etmə, müşahidə etmə və yaxşılaşdırma.
+Prompt mühəndisliyi nadir hallarda bir cəhdlə başa çatır. Ən yaxşı promptlar iterasiyalarla yaranır: istədiyiniz nəticəni əldə edənə qədər sınaqdan keçirir, müşahidə edir və təkmilləşdirirsiniz.
 
 <Callout type="info" title="İlk Qaralama, Son Qaralama Deyil">
 İlk promptunuzu kobud bir qaralama olaraq düşünün. Təcrübəli prompt mühəndisləri belə nadir hallarda ilk cəhddə tutur.
 </Callout>
 
-## İterasiya Döngüsü
+## İterasiya Dövrü
 
-Effektiv prompt yaxşılaşdırma proqnozlaşdırıla bilən bir döngü izləyir: yaz, test et, analiz et və yaxşılaşdır. Hər iterasiya sizi etibarlı şəkildə ehtiyacınız olan nəticələri istehsal edən bir prompta yaxınlaşdırır.
+Effektiv prompt yaxşılaşdırma proqnozlaşdırıla bilən bir dövrə əsaslanır: yaz, test et, analiz et və yaxşılaşdır. Hər iterasiya sizi ehtiyacınız olan nəticələri etibarlı şəkildə verən prompta bir az da yaxınlaşdırır.
 
 <IterativeRefinementDemo />
 
-## Ümumi Yaxşılaşdırma Nümunələri
+## Tipik Yaxşılaşdırma Qəlibləri
 
-Əksər prompt uğursuzluqları bir ovuc kateqoriyaya düşür. Bu nümunələri tanımağı öyrənmək, sıfırdan başlamadan problemləri sürətlə diaqnoz etməyinizi və düzəltməyinizi təmin edir.
+Promptlarla bağlı uğursuzluqların çoxu bir neçə kateqoriyaya aiddir. Bu qəlibləri tanımağı öyrənsəniz, sıfırdan başlamadan problemləri tez müəyyən edib düzəldə bilərsiniz.
 
 ### Problem: Çıxış Çox Uzun
 
@@ -27,7 +27,7 @@ Effektiv prompt yaxşılaşdırma proqnozlaşdırıla bilən bir döngü izləyi
 
 ### Problem: Çıxış Çox Qeyri-müəyyən
 
-Qeyri-müəyyən promptlar qeyri-müəyyən çıxışlar istehsal edir. Model, "daha yaxşı"nın nə demək olduğunu və ya hansı cəhətlərin sizin üçün ən vacib olduğunu zehinizi oxuyaraq bilə bilməz.
+Qeyri-müəyyən promptlar qeyri-müəyyən çıxışlar verir. Model fikrinizi oxuya bilmir və "daha yaxşı"nın sizin üçün nə demək olduğunu, hansı cəhətlərin ən vacib olduğunu bilə bilməz.
 
 <DiffView 
   before="Daha yaxşı təqdimatlar üçün məsləhətlər ver."
@@ -42,14 +42,14 @@ Ton subyektiv və kontekstə görə dəyişir. Modelin "peşəkar" gördüyü ş
 
 <DiffView 
   before="Bir son tarix qaçırdığım üçün üzr e-poçtu yaz."
-  after={`Bir layihə son tarixini qaçırdığım üçün peşəkar amma isti bir üzr e-poçtu yaz. Ton həddən artıq üzr istəmədən hesabatlı olmalıdır. Gələcək gecikmələrin qarşısını almaq üçün konkret bir plan əlavə et.`}
+  after={`Bir layihə son tarixini qaçırdığım üçün peşəkar, amma səmimi bir üzr e-poçtu yaz. Ton həddən artıq üzrxahlıq etmədən məsuliyyəti qəbul etməlidir. Gələcək gecikmələrin qarşısını almaq üçün konkret bir plan əlavə et.`}
   beforeLabel="Orijinal"
   afterLabel="Yaxşılaşdırılmış"
 />
 
-### Problem: Açar Məlumat Əksik
+### Problem: Əsas Məlumat Çatışmır
 
-Açıq uçlu istəklər açıq uçlu cavablar alır. Müəyyən növ rəyə ehtiyacınız varsa, açıq şəkildə soruşmalısınız.
+Açıq uclu sorğular açıq uclu cavablar alır. Müəyyən növ rəyə ehtiyacınız varsa, bunu açıq şəkildə istəməlisiniz.
 
 <DiffView 
   before="Bu kodu nəzərdən keçir."
@@ -68,7 +68,7 @@ Tapılan hər problem üçün problemi izah et və bir düzəliş təklif et.
 
 ### Problem: Ardıcıl Olmayan Format
 
-Şablon olmadan, model hər cavabı fərqli strukturlaşdıracaq, müqayisəni çətinləşdirəcək və avtomatlaşdırmanı qeyri-mümkün edəcək.
+Şablon olmadan model hər cavabı fərqli strukturda quracaq; bu da müqayisəni çətinləşdirəcək, avtomatlaşdırmanı isə qeyri-mümkün edəcək.
 
 <DiffView 
   before="Bu üç məhsulu analiz et."
@@ -88,7 +88,7 @@ Tapılan hər problem üçün problemi izah et və bir düzəliş təklif et.
 
 ## Sistematik Yaxşılaşdırma Yanaşması
 
-Təsadüfi dəyişikliklər vaxt itirir. Sistematik bir yanaşma problemləri sürətlə müəyyən etməyinizə və səmərəli şəkildə düzəltməyinizə kömək edir.
+Təsadüfi dəyişikliklər vaxt itkisidir. Sistematik bir yanaşma problemləri sürətlə müəyyən etməyinizə və səmərəli şəkildə düzəltməyinizə kömək edir.
 
 ### Addım 1: Problemi Diaqnoz Et
 
@@ -107,11 +107,11 @@ Hər hansı bir şeyi dəyişdirməzdən əvvəl, həqiqətən nəyin yanlış o
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Çox qısa</span>
-    <span className="text-muted-foreground">Detal istəyi əksik</span>
+    <span className="text-muted-foreground">Ətraflı cavab istənməyib</span>
     <span className="text-green-600 dark:text-green-400">İzahat istə</span>
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
-    <span>Mövzu xarici</span>
+    <span>Mövzudan kənar</span>
     <span className="text-muted-foreground">Qeyri-müəyyən təlimatlar</span>
     <span className="text-green-600 dark:text-green-400">Daha spesifik ol</span>
   </div>
@@ -128,7 +128,7 @@ Hər hansı bir şeyi dəyişdirməzdən əvvəl, həqiqətən nəyin yanlış o
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Ardıcıl olmayan</span>
     <span className="text-muted-foreground">Nümunə verilməyib</span>
-    <span className="text-green-600 dark:text-green-400">Az nümunəli nümunələr əlavə et</span>
+    <span className="text-green-600 dark:text-green-400">Az nümunəli prompt üçün nümunələr əlavə et</span>
   </div>
 </div>
 
@@ -145,7 +145,7 @@ Hər şeyi yenidən yazmaq istəyinə müqavimət göstər. Bir neçə dəyişə
 
 ### Addım 3: İşləyəni Sənədləşdir
 
-Prompt mühəndisliyi biliyi asanlıqla itirilir. Nəyi sınadığınızın və niyənin qeydini saxlayın. Bu, promptu daha sonra yenidən ziyarət etdiyinizdə və ya oxşar çətinliklərlə qarşılaşdığınızda vaxt qazandırır:
+Prompt mühəndisliyi ilə bağlı bilik asanlıqla itir. Nəyi və nə üçün sınadığınızı qeyd edin. Bu, sonradan prompta yenidən qayıtdığınızda və ya oxşar çətinliklərlə qarşılaşdığınızda vaxt qazandırır:
 
 ```markdown
 ## Prompt: Müştəri E-poçt Cavabı
@@ -153,7 +153,7 @@ Prompt mühəndisliyi biliyi asanlıqla itirilir. Nəyi sınadığınızın və 
 ### Versiya 1 (çox rəsmi)
 "Bu müştəri şikayətinə bir cavab yaz."
 
-### Versiya 2 (daha yaxşı ton, hələ də struktur əksik)
+### Versiya 2 (ton daha yaxşıdır, amma struktur hələ yoxdur)
 "Bu şikayətə dostcasına amma peşəkar bir cavab yaz. 
 Əvvəlcə empatiya göstər."
 
@@ -167,9 +167,9 @@ Prompt mühəndisliyi biliyi asanlıqla itirilir. Nəyi sınadığınızın və 
 Ton: Dostcasına, peşəkar, empatik amma yaltaqlanmayan."
 ```
 
-## Real Dünya İterasiya Nümunəsi
+## Real Həyatdan İterasiya Nümunəsi
 
-Hər yaxşılaşdırmanın əvvəlkinin üzərində necə qurulduğunu görmək üçün tam bir iterasiya döngüsünü nəzərdən keçirək. Hər versiyanın əvvəlkinin spesifik çatışmazlıqlarını necə həll etdiyinə diqqət yetirin.
+Hər yaxşılaşdırmanın əvvəlkinin üzərində necə qurulduğunu görmək üçün tam bir iterasiya dövrünü nəzərdən keçirək. Hər versiyanın əvvəlkinin spesifik çatışmazlıqlarını necə həll etdiyinə diqqət yetirin.
 
 ### Tapşırıq: Məhsul Adları Yaratma
 
@@ -181,7 +181,7 @@ Hər yaxşılaşdırmanın əvvəlkinin üzərində necə qurulduğunu görmək 
   },
   {
     label: "Versiya 2",
-    content: `Yeni bir məhsuldarlıq tətbiqi üçün adlar yarat. Tətbiq enerji səviyyələrinə və təqvim mövcudluğuna görə tapşırıqlarınızı avtomatik olaraq planlamaq üçün süni intellekt istifadə edir.`,
+    content: `Yeni bir məhsuldarlıq tətbiqi üçün adlar yarat. Tətbiq enerji səviyyənizə və təqvimdəki boş vaxtlara görə tapşırıqlarınızı avtomatik olaraq planlamaq üçün süni intellekt istifadə edir.`,
     note: "Kontekst əlavə edildi, hələ də ümumi"
   },
   {
@@ -218,44 +218,44 @@ Ad | Tələffüz | Niyə İşləyir | Domen Mövcudluq Təxmini`,
 
 ## Tapşırıq Növünə Görə Yaxşılaşdırma Strategiyaları
 
-Fərqli tapşırıqlar proqnozlaşdırıla bilən şəkillərdə uğursuz olur. Ümumi uğursuzluq modlarını bilmək problemləri daha sürətli diaqnoz etməyinizə və düzəltməyinizə kömək edir.
+Fərqli tapşırıqlar proqnozlaşdırıla bilən şəkildə uğursuz olur. Tipik uğursuzluq növlərini bilmək problemləri daha sürətli diaqnoz etməyinizə və düzəltməyinizə kömək edir.
 
-### Məzmun İstehsalı Üçün
+### Məzmun Yaratma Üçün
 
-Məzmun istehsalı adətən ümumi, hədəf xarici və ya pis formatlanmış çıxış istehsal edir. Düzəliş adətən məhdudiyyətlər haqqında daha spesifik olmağı, konkret nümunələr verməyi və ya marka səsinizi açıq şəkildə təyin etməyi əhatə edir.
+Məzmun yaradarkən model çox vaxt ümumi, hədəfdən kənar və ya pis formatlanmış çıxış verir. Düzəliş adətən məhdudiyyətlər haqqında daha spesifik olmağı, konkret nümunələr verməyi və ya marka səsinizi açıq şəkildə təyin etməyi əhatə edir.
 
 <InfoGrid items={[
   { icon: "target", title: "Çox Ümumi", description: "Spesifik məhdudiyyətlər və kontekst əlavə et", example: "\"İtlər haqqında yaz\" → \"İlk dəfə sahiblənənlər üçün golden retriever-lar haqqında, təlim və hərəkət ehtiyaclarına diqqət edərək yaz\"" },
   { icon: "scissors", title: "Çox Uzun", description: "Söz/paraqraf limitləri qoy", example: "Əlavə et: \"Cavabı 150 sözdən az saxla\" və ya \"Maksimum 3 paraqraf\"" },
   { icon: "palette", title: "Yanlış Stil", description: "Stil nümunələri ver", example: "\"Bu nümunənin stilində yaz: [nümunə mətn yapışdır]\"" },
-  { icon: "megaphone", title: "Marka Xarici", description: "Marka səsi təlimatlarını daxil et", example: "\"Dostcasına, günlük ton istifadə et. Jarqondan qaçın. Oxucuya 'sən' deyə müraciət et.\"" }
+  { icon: "megaphone", title: "Brendə Uyğun Deyil", description: "Marka səsi təlimatlarını daxil et", example: "\"Dostcasına, qeyri-rəsmi ton istifadə et. Jarqondan qaçın. Oxucuya 'sən' deyə müraciət et.\"" }
 ]} />
 
-### Kod İstehsalı Üçün
+### Kod Yaratma Üçün
 
-Kod çıxışı texniki olaraq (sintaksis xətaları, yanlış dil xüsusiyyətləri) və ya memarlıq olaraq (pis nümunələr, əksik hallar) uğursuz ola bilər. Texniki problemlər versiya/mühit spesifikasiyaları tələb edir; memarlıq problemləri dizayn rəhbərliyi tələb edir.
+Kod çıxışı texniki olaraq (sintaksis xətaları, yanlış dil xüsusiyyətləri) və ya memarlıq baxımından (zəif həllər, nəzərə alınmamış hallar) uğursuz ola bilər. Texniki problemlər versiya/mühit spesifikasiyaları tələb edir; memarlıq problemləri isə dizayn üzrə göstərişlər tələb edir.
 
 <InfoGrid items={[
   { icon: "code", title: "Sintaksis Xətaları", description: "Dil versiyasını göstər", example: "\"Python 3.11+ sintaksisi istifadə et, type hints ilə\" və ya \"ES2022 JavaScript\"" },
-  { icon: "git-branch", title: "Yanlış Yanaşma", description: "Üstünlük verilən nümunələri təyin et", example: "\"Funksional yanaşma istifadə et, siniflərdən qaçın\" və ya \"Repository pattern izlə\"" },
-  { icon: "shield", title: "Əksik Uç Hallar", description: "Həll ediləcək ssenariləri siyahıla", example: "\"Həll et: boş giriş, null dəyərlər, şəbəkə zaman aşımları, etibarsız formatlar\"" },
+  { icon: "git-branch", title: "Yanlış Yanaşma", description: "Üstünlük verdiyiniz yanaşmaları təsvir et", example: "\"Funksional yanaşma istifadə et, siniflərdən qaçın\" və ya \"Repository pattern izlə\"" },
+  { icon: "shield", title: "Nəzərə Alınmamış Uç Hallar", description: "Həll ediləcək ssenariləri siyahıla", example: "\"Həll et: boş giriş, null dəyərlər, şəbəkə taym-autları, etibarsız formatlar\"" },
   { icon: "tag", title: "Pis Adlandırma", description: "Adlandırma qaydalarını daxil et", example: "\"Dəyişənlər üçün camelCase, siniflər üçün PascalCase, sabitlər üçün UPPER_SNAKE istifadə et\"" }
 ]} />
 
 ### Analiz Üçün
 
-Analiz tapşırıqları adətən səthï və ya strukturlaşdırılmamış nəticələr istehsal edir. Modeli spesifik çərçivələrlə (SWOT, Porter-in Beş Gücü), bir neçə baxış bucağı istəyi ilə və ya çıxış strukturu üçün bir şablon təmin edərək yönləndirin.
+Analiz tapşırıqları çox vaxt səthi və ya strukturlaşdırılmamış nəticələr verir. Modeli spesifik çərçivələrlə (SWOT, Porter-in Beş Gücü), bir neçə baxış bucağı istəyi ilə və ya çıxış strukturu üçün bir şablon təmin edərək yönləndirin.
 
 <InfoGrid items={[
   { icon: "layers", title: "Çox Səthi", description: "Spesifik çərçivələr istə", example: "\"SWOT çərçivəsi istifadə edərək analiz et\" və ya \"Porter-in Beş Gücünü tətbiq et\"" },
   { icon: "scale", title: "Tərəfli", description: "Bir neçə perspektiv istə", example: "\"Lehində və əleyhinə arqumentləri təqdim et\" və ya \"Şübhəçi baxış bucağını daxil et\"" },
-  { icon: "database", title: "Əksik Məlumat", description: "Nəyin analiz ediləcəyini göstər", example: "\"Bunlara diqqət yetir: bazar ölçüsü, böyümə sürəti, açar oyunçular, giriş maneələri\"" },
+  { icon: "database", title: "Məlumat Çatışmır", description: "Nəyin analiz ediləcəyini göstər", example: "\"Bunlara diqqət yetir: bazar ölçüsü, böyümə sürəti, açar oyunçular, giriş maneələri\"" },
   { icon: "layout", title: "Strukturlaşdırılmamış", description: "Analiz şablonu ver", example: "\"Belə formatla: Xülasə → Əsas Tapıntılar → Nəticələr → Tövsiyələr\"" }
 ]} />
 
-### S&C Üçün
+### Sual-Cavab Üçün
 
-Sual-cavab çox qısa və ya çox uzun ola bilər və əminlik göstəriciləri və ya mənbələr əksik ola bilər. Ehtiyacınız olan detal səviyyəsini və sitat və ya qeyri-müəyyənlik ifadəsi istəyib-istəmədiyinizi göstərin.
+Sual-cavab çox qısa və ya çox uzun ola bilər və onlarda əminlik göstəriciləri və ya mənbələr olmaya bilər. Ehtiyacınız olan detal səviyyəsini və sitat və ya qeyri-müəyyənlik ifadəsi istəyib-istəmədiyinizi göstərin.
 
 <InfoGrid items={[
   { icon: "plus", title: "Çox Qısa", description: "İzahat istə", example: "\"Nümunələrlə ətraflı izah et\" və ya \"Hər nöqtəni genişləndir\"" },
@@ -264,7 +264,7 @@ Sual-cavab çox qısa və ya çox uzun ola bilər və əminlik göstəriciləri 
   { icon: "link", title: "Mənbə Yox", description: "Sitat istə", example: "\"İddialar üçün mənbə göstər\" və ya \"Mümkünsə istinadlar əlavə et\"" }
 ]} />
 
-## Rəy Döngüsü Texnikası
+## Əks Əlaqə Dövrü Texnikası
 
 Budur bir meta-texnika: promptlarınızı yaxşılaşdırmaq üçün modelin özünü istifadə edin. Nəyi sınadığınızı, nə aldığınızı və nə istədiyinizi paylaşın. Model adətən düşünmədiyiniz yaxşılaşdırmalar təklif edə bilər.
 
@@ -296,7 +296,7 @@ Hər birini bir neçə dəfə işlət, müqayisə et:
 
 ## Nə Vaxt İterasiyanı Dayandırmalı
 
-Mükəmməllik kifayət qədər yaxşının düşmənidir. Promptunuzun istifadəyə hazır olduğu vaxtı və azalan gəlirlər üçün sadəcə cilaladığınız vaxtı bilin.
+Mükəmməllik kifayət qədər yaxşının düşmənidir. Promptunuzun nə vaxt istifadəyə hazır olduğunu və nə vaxt getdikcə azalan fayda üçün sadəcə cilaladığınızı ayırd edin.
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
   <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
@@ -321,10 +321,10 @@ Mükəmməllik kifayət qədər yaxşının düşmənidir. Promptunuzun istifad�
 
 ## Promptlar üçün Versiya Nəzarəti
 
-Promptlar koddur. İstehsalda istifadə edilən hər hansı bir prompt üçün eyni ciddiylə davranın: versiya nəzarəti, dəyişiklik jurnalları və bir şeylər pozularsa geri qaytarma qabiliyyəti.
+Promptlar da koddur. İstehsalda istifadə olunan istənilən prompta eyni ciddiyyətlə yanaşın: versiya nəzarəti, dəyişiklik jurnalları və bir şeylər pozularsa geri qaytarma qabiliyyəti.
 
 <Callout type="tip" title="Daxili Versiyalaşdırma">
-prompts.chat promptlarınız üçün avtomatik versiya tarixçəsi ehtiva edir. Hər redaktə qeyd olunur, beləliklə versiyaları müqayisə edə bilər və əvvəlki iterasiyaları bir kliklə bərpa edə bilərsiniz.
+Bir çox prompt aləti versiya tarixçəsini sizin əvəzinizə saxlayır. Məsələn, prompts.chat-da promptun mətnində edilən hər düzəliş yeni versiya kimi saxlanılır və istənilən iki versiyanı yan-yana müqayisə edə bilərsiniz.
 </Callout>
 
 Özünüz idarə etdiyiniz promptlar üçün qovluq strukturu istifadə edin:
@@ -346,7 +346,7 @@ Sadə başla, diqqətlə müşahidə et, bir dəfədə bir şeyi dəyişdir, iş
 </Callout>
 
 <Quiz 
-  question="Yanlış nəticələr istehsal edən bir promptu yaxşılaşdırarkən ən yaxşı yanaşma nədir?"
+  question="Yanlış nəticələr verən bir promptu yaxşılaşdırarkən ən yaxşı yanaşma nədir?"
   options={[
     "Bütün promptu sıfırdan yenidən yaz",
     "İşləyənə qədər daha çox nümunə əlavə et",
@@ -366,7 +366,7 @@ Bu zəif promptu özünüz yaxşılaşdırmağa çalışın. Redaktə edin, sonr
   badPrompt="Bir e-poçt yaz."
   idealPrompt={`Sən peşəkar bir iş yazarısan.
 
-Tapşırıq: Bir satış görüşündən sonra potensial bir müştəriyə izləmə e-poçtu yaz.
+Tapşırıq: Satış görüşündən sonra potensial müştəriyə təqib e-poçtu yaz.
 
 Kontekst:
 - TechCorp-da Marketinq VP-si Aynur Əliyeva ilə görüşdük
@@ -375,13 +375,13 @@ Kontekst:
 - Görüş dünən keçirildi
 
 Tələblər:
-- Peşəkar amma isti ton
+- Peşəkar, amma səmimi ton
 - Görüşümüzdən spesifik nöqtələrə istinad et
 - Aydın növbəti addım əlavə et (demo planla)
 - 150 sözdən az saxla
 
 Format: Mövzu sətri + e-poçt mətni`}
-  task="Bu qeyri-müəyyən e-poçt promptunu peşəkar, effektiv bir nəticə istehsal edəcək bir şeyə çevir."
+  task="Bu qeyri-müəyyən e-poçt promptunu peşəkar, effektiv nəticə verəcək bir prompta çevir."
 />
 
 Növbəti fəsildə, strukturlaşdırılmış məlumat tətbiqləri üçün JSON və YAML prompting-i kəşf edəcəyik.

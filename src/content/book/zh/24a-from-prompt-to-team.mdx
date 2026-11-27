@@ -1,0 +1,381 @@
+如今人们聊起 AI，总有五个词反复出现：**提示词**、**技能**、**智能体**、**机器人**和**团队**。大家用起这些词来常常很随意，有时甚至把它们当成一回事，结果反倒让它们比实际更难懂。这一章就像一个安静的小站，让我们在进入后面几章之前先歇一歇脚。我们会把这五个词从最简单到最复杂排好队，再一个个看看，它们骨子里到底是什么。
+
+顺序很重要，因为这五个词搭起的是一架梯子。每往上一级，都会保留下面那一级的全部本事，再多添一样新东西。只要弄明白每一级多出来的是什么，整幅图景你也就看懂了。
+
+为了说得接地气一些，我们会带着一个再平常不过的场景，一级一级往上爬：**把晚饭端上桌**。只要你给家人做过饭，或者吃过别人做的饭，对这件事就再熟悉不过了。
+
+<div className="my-8 p-6 bg-muted/30 rounded-xl border">
+  <p className="text-sm font-semibold text-center text-muted-foreground m-0! mb-4!">这架梯子：每一级多添一样东西</p>
+  <div className="flex flex-col items-center gap-2 max-w-md mx-auto">
+    <div className="w-full px-4 py-3 bg-amber-100 dark:bg-amber-900/50 border border-amber-300 dark:border-amber-700 rounded-lg text-center">
+      <p className="font-semibold text-amber-800 dark:text-amber-200 m-0!">1. 提示词</p>
+      <p className="text-xs text-amber-700 dark:text-amber-300 m-0!">一句吩咐，一个回答</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">加上一套存好的做法</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-purple-100 dark:bg-purple-900/50 border border-purple-300 dark:border-purple-700 rounded-lg text-center">
+      <p className="font-semibold text-purple-800 dark:text-purple-200 m-0!">2. 技能</p>
+      <p className="text-xs text-purple-700 dark:text-purple-300 m-0!">可以反复使用的指令，需要时才取出来</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">加上工具和循环</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border border-blue-300 dark:border-blue-700 rounded-lg text-center">
+      <p className="font-semibold text-blue-800 dark:text-blue-200 m-0!">3. 智能体</p>
+      <p className="text-xs text-blue-700 dark:text-blue-300 m-0!">朝着目标一步一步去做</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">加上时间：身份、记忆、例行任务</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-green-100 dark:bg-green-900/50 border border-green-300 dark:border-green-700 rounded-lg text-center">
+      <p className="font-semibold text-green-800 dark:text-green-200 m-0!">4. 机器人</p>
+      <p className="text-xs text-green-700 dark:text-green-300 m-0!">留下来、一直守着自己那份差事的智能体</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">加上其他成员和交接</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-rose-100 dark:bg-rose-900/50 border border-rose-300 dark:border-rose-700 rounded-lg text-center">
+      <p className="font-semibold text-rose-800 dark:text-rose-200 m-0!">5. 团队</p>
+      <p className="text-xs text-rose-700 dark:text-rose-300 m-0!">几位各有分工的成员，把工作一棒一棒传下去</p>
+    </div>
+  </div>
+</div>
+
+## 第一级：提示词
+
+想象一下，你肚子饿了，便去问一位很会做饭的朋友：“能告诉我怎么快手做一碗番茄蛋汤吗？”朋友告诉了你，事情就到此为止。你问了一件事，得到了一个回答。
+
+这就是**提示词**。它是你发给 AI 模型的一段文字：一个问题、一个请求，或者一句吩咐。我们在[理解AI模型](/book/01-understanding-ai-models)一章里看到过，模型读完这段文字后，会一小块一小块地写出回复，每一步都在预测接下来该写什么。写完，它就停下来等着。它哪儿也不去，什么也不打开，明天也不会记得你。有时聊天应用好像“记得”你们前面聊过的内容，那是因为应用每次都悄悄把整段对话连同你的新消息一起发给了模型。模型本身，每一次都是从零开始。
+
+这本书到目前为止讲的几乎都是这第一级，这样安排自有道理：上面每一级，归根结底都是由提示词搭成的。一句清楚的提示词，就是盖起整栋房子的那块砖。
+
+<InfoGrid columns={2} items={[
+  { label: "它是什么", description: "你发给 AI 模型的一段文字。模型读完，回你一个答案。", color: "amber" },
+  { label: "一个小例子", description: "比如这样一个请求：给我一份四人份的简单番茄蛋汤做法，用的都是家里厨房常有的东西。请它总结一封长邮件，或者想十个生日派对点子，也是一样的道理。", color: "amber" },
+  { label: "什么时候用", description: "你只需要一个答案，只要一次，而且你就在旁边，读完后自己决定下一步怎么做。", color: "amber" },
+  { label: "它不是什么", description: "提示词不会在现实世界里动手做事，回答完不会接着干活，下个星期也不会记得你。", color: "amber" }
+]} />
+
+<TryIt prompt="请用七岁孩子会喜欢的方式，讲讲番茄是怎么从绿色变成红色的。只用一个简短的比喻，全文不超过 120 个字。" description="一句吩咐，一个回答。留意一下：模型回复完，就只是安安静静地等着。" />
+
+## 第二级：技能
+
+再想象一下，你那位朋友每个星期都会被问到同样的问题。与其每次都从头讲起，不如把做法写在一张菜谱卡上，放进厨房的一个小盒子里。卡片上写着这道菜是做什么用的、要用哪些食材、按什么顺序做，还有让它做得恰到好处的小窍门。谁想喝番茄蛋汤，就把这张卡从盒子里拿出来；其余时候，它就安安稳稳地待在盒子里。
+
+这就是**技能**。技能是一套存好、打包好的指令，常常还附带几个辅助文件，模型在任务需要时可以把它加载进来。实际上，它通常是一个小文件夹。文件夹里有一个主文件，常叫 `SKILL.md`，开头写着一个简短的名字和一句话的说明，下面才是完整的做法。文件夹里还可以放例子、检查清单、模板或者小脚本。
+
+这套机制最巧妙的地方在这里：模型并不会一直把每个技能都读一遍，那样它的上下文会被一堆用不上的东西塞满。一开始，它只看得到那些简短的说明，就像菜谱卡上的标签。等到某个请求和其中一条说明对上了，完整的技能才被加载进上下文，模型便照着去做。技能说到底还是由提示词组成的，只不过这些提示词是你写过一次、试过、存好的，用不着再一遍遍重新敲。
+
+下面是一位家长或老师可能会写的一个小技能：
+
+```markdown
+---
+name: homework-helper
+description: 辅导孩子做作业时，用引导式的提问代替直接给出答案。
+---
+
+# 作业小帮手
+
+当孩子请你帮忙做作业时：
+1. 先问问孩子，关于这道题他已经知道些什么。
+2. 每次只给一个小提示，绝不直接给出完整答案。
+3. 如果给了三个提示孩子还是卡住，就举一道类似的例题，再让他自己试一次。
+4. 表扬孩子的努力，而不只是表扬答对。
+5. 用短句子，用十岁孩子认识的词。
+```
+
+<Compare
+  before={{ label: "每次都要重新敲一遍的提示词", content: "帮我儿子做数学作业，但别直接告诉他答案，要问他问题，给点小提示，说得简单些，表扬他的努力……" }}
+  after={{ label: "写一次就够的技能", content: "homework-helper 这个技能已经存好了。只要遇到作业问题，助手就会把它加载进来，每一次都按同样细致的方法去做。" }}
+/>
+
+现在，好几家公司推出的 AI 助手和编程工具，都能读取这样打包在文件夹里的技能，许多人也乐于彼此分享。各个工具的细节不尽相同，但思路处处一样：一套做法，写下一次，等到合适的时候随手取用。我们会在[代理和技能](/book/25-agents-and-skills)一章里更深入地讲技能。
+
+<InfoGrid columns={2} items={[
+  { label: "它是什么", description: "一套可以反复使用的指令包，有时还附带辅助文件，模型只在任务需要时才加载它。", color: "purple" },
+  { label: "一个小例子", description: "一个作业小帮手技能、一个帮你写客气的家校邮件的技能，或者一个把零散笔记整理成每周班级简报的技能。", color: "purple" },
+  { label: "什么时候用", description: "你发现自己总在重复交代同一套详细的要求，又希望每次都能照着同样细致的方式把事做好。", color: "purple" },
+  { label: "它不是什么", description: "技能自己什么也不会做。就像菜谱卡一样，得有人把它拿起来照着做。它也不是一个新模型，更不是被塞进 AI 脑子里的新知识。", color: "purple" }
+]} />
+
+## 第三级：智能体
+
+到这里为止，这位厨师还只是动动嘴。现在想象你说：“请在七点前把四个人的晚饭准备好。”这一回，你的朋友走进了厨房。打开冰箱看看有什么，发现没有洋葱了，瞄一眼时钟，挑一张菜谱卡，开火做饭，尝一口汤，加一点盐，再尝一口，最后把碗筷摆上桌。没有人告诉他每一步该怎么做。你给的是一个**目标**，他靠着看一看、动动手、再检查一下，自己把步骤摸索了出来。
+
+这就是**智能体**。智能体是一个 AI 模型，带着**工具**，在一个**循环**里朝着目标前进。工具就是厨师的双手：读取文件、上网搜索、打开日历、算一笔账、发出一份草稿。循环则是那种“看一看、动动手、查一查”的节奏。
+
+这套机制其实比听起来简单。模型外面包着一层软件，本书称它为[运行框架](/book/26-the-harnesses)，它交给模型一个目标，以及一份可以使用的工具清单。模型自己并不直接碰任何东西，而是回复一个请求，比如“用天气工具查一下周六里斯本的天气”。运行框架去运行这个工具，再把结果放回对话里。模型读了结果，决定下一步做什么。如此反复，直到目标达成，或者碰到某个上限叫停为止。这个循环转的每一圈，依然是一句提示词加一个回答。让它成为智能体的，是回答会变成行动，行动的结果又引出下一个回答。我们在[循环工程](/book/14a-loop-engineering)一章里就见过这种节奏。
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col items-center gap-2 max-w-sm mx-auto">
+    <div className="w-full px-4 py-2 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">目标：晚上七点前做好四人份晚饭</p>
+    </div>
+    <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+    <div className="w-full p-3 border border-dashed rounded-lg flex flex-col items-center gap-2">
+      <div className="w-full px-3 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded text-center">
+        <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">想一想：下一步该做什么？</p>
+      </div>
+      <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+      <div className="w-full px-3 py-2 bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800 rounded text-center">
+        <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">动动手：用一个工具（打开冰箱）</p>
+      </div>
+      <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+      <div className="w-full px-3 py-2 bg-teal-100 dark:bg-teal-900/50 border border-teal-200 dark:border-teal-800 rounded text-center">
+        <p className="text-sm font-medium text-teal-700 dark:text-teal-300 m-0!">查一查：看看结果（没有洋葱）</p>
+      </div>
+      <p className="text-xs text-muted-foreground m-0!">↻ 反复进行，直到做完，或者碰到上限叫停</p>
+    </div>
+    <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+    <div className="w-full px-4 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">完成：晚饭上桌了</p>
+    </div>
+  </div>
+</div>
+
+说不定你早就用过智能体，只是没这么叫它。一个编程助手读了你的项目，改了一个文件，跑了测试，再把没通过的地方修好，它就是智能体。聊天应用里那种先搜索许多网页、再动笔写报告的研究模式也是；替你填好网页表单的浏览器助手也是。智能体也常常用到技能：我们厨房里这位厨师，碰上合适的时候，照样会伸手去拿那张菜谱卡。
+
+<InfoGrid columns={2} items={[
+  { label: "它是什么", description: "一个带着工具、在循环里工作的 AI 模型。它看一看，动动手，检查结果，一直做下去，直到达成目标，或者被叫停。", color: "blue" },
+  { label: "一个小例子", description: "你请它安排一次周六野餐。它查天气，看你的日历，挑一个公园，再写好一张购物清单。", color: "blue" },
+  { label: "什么时候用", description: "这件事要分好几步做，需要真实的信息或真正动手，而你又很难事先把每一步都列出来。", color: "blue" },
+  { label: "它不是什么", description: "智能体并不是更聪明的模型，它还是同一类模型，只是多了双手和一个循环。它通常只在你开着它的时候工作，会话一结束就忘了。", color: "blue" }
+]} />
+
+<Callout type="warning" title="有了双手，也就可能出错">
+提示词最多只会给你一个错误的答案；智能体却可能做出一个错误的动作，比如删错了文件，或者把消息发得太早。所以好的智能体在做任何难以撤回的事之前都会先问一声，你也只该给它这项任务真正需要的工具。
+</Callout>
+
+## 第四级：机器人
+
+我们这位厨师手艺很好，可每天傍晚来的时候，都像第一次登门。他得重新问一遍谁对花生过敏、大锅放在哪儿、昨天吃的是什么。而且，你不叫他，他就不来。
+
+现在想象一位**住在家里的厨师**。他有名字，也有明确的差事：“全家的晚饭规划师”。他有一个小本子，记着自己了解到的事：朵朵对花生过敏，爷爷不吃辣，周四是包饺子的日子。他有储藏室的钥匙，也能用家里的买菜外送账号。每个星期天傍晚六点，不用任何人开口，他就会排好一周的晚饭，翻翻家庭日历看哪几天晚上大家都忙，再把一张购物清单贴在冰箱上，等大人来批准。
+
+这就是**机器人**，也就是本书所说的**常驻智能体**。智能体那一级的东西全都还在：模型、工具、循环。机器人多添的是**时间**。拆开来看，通常是多了下面四样东西：
+
+<InfoGrid items={[
+  { label: "身份", description: "一个长期不变的名字和角色，写在它常备的指令里，让它知道哪些细节和自己的差事有关。", color: "green" },
+  { label: "记忆", description: "保存在模型之外的笔记，常常就是普通文件或一个小数据库，每次会话开始时再加载回上下文。模型本身照样会忘，替它记事的是那个小本子。", color: "green" },
+  { label: "例行任务", description: "按时间表启动的工作（每个星期天傍晚六点），或者在某件事发生时启动的工作（来了一封新邮件），都不需要你再发一条新的提示词。", color: "green" },
+  { label: "连接器和工作的地方", description: "对各种应用和账号长期、经过许可的访问权限，再加上一台在你离开时也一直开着的电脑或服务器。", color: "green" }
+]} />
+
+<InfoGrid columns={2} items={[
+  { label: "它是什么", description: "一个留下来的智能体：它守着一个角色，在一次次对话之间记得事情，还能按自己的时间表开始干活。", color: "green" },
+  { label: "一个小例子", description: "一个规划三餐的机器人，每个星期天傍晚排好下一周的饭菜，避开花生，再请一位家长批准购物清单。", color: "green" },
+  { label: "什么时候用", description: "同一份职责一次又一次地回来，而且就算你不在屏幕前，它也应该照常进行。", color: "green" },
+  { label: "它不是什么", description: "它不是人，也不是什么都记得的大脑。它只记得被存下来的东西，而且照样可能出错。它也不是老式网站上那种照着脚本走、只会按固定菜单回答的聊天机器人。", color: "green" }
+]} />
+
+<Callout type="info" title="老词，新意思">
+多年来，“机器人”几乎可以指任何自动运行的程序：一个定时发天气预报的脚本、游戏里的一个角色、一个只给你四个固定按钮的客服小窗口。其中很多根本没有用到 AI 模型。在这本书里，机器人的意思更具体：一个常驻的智能体，有自己的身份、记忆和例行任务。在别处碰到这个词时，不妨问一问，说的是哪一种。
+</Callout>
+
+因为机器人在没人看着的时候也在干活，围绕它的规矩比下面任何一级都更要紧。好的机器人可以放开手脚起草和提建议，但在发送、购买、删除或发布任何东西之前，都会停下来等一个人点头。[常驻机器人：持续工作的智能体](/book/28-persistent-bots)一章会细细讲到记忆、例行任务，以及这些批准环节。
+
+## 第五级：团队
+
+一位厨师就能做好一顿家常晚饭。可想想一家生意火爆的餐馆后厨吧：有人负责接单，有人负责备菜，有人掌勺做主菜，还有人在每一盘菜端出厨房前检查一遍。每个人都有清清楚楚的差事，工作在他们之间按一套固定的路子流转：点菜单传到厨师手里，做好的菜传到检查的人手里。没有谁需要什么都懂，每个人只要懂自己那一块，知道该把什么交给谁就行。
+
+这就是**团队**：几个机器人或智能体，各有自己的**角色**，靠**交接**串在一起，朝着一个共同的**目的**努力。所谓交接，就是一个成员把一份有名字的工作成果传给下一个成员的那一刻，就像一张点菜单，或者一盘做好的菜。
+
+这套机制的关键，主要在于每个成员能看到什么。每个成员都有一套针对自己角色的指令。它做完以后，交出一份具体的成果，比如一张清单、一份草稿或一份报告；下一个成员收到的只有这份东西，而不是产生它的那一整段对话。这样每个成员都能专心做好自己的事，出了错也更容易顺藤摸瓜：要是最后那道菜太咸了，你可以沿着流水线一盘一盘查过去，看看盐是在哪一步放多的。
+
+一所学校可以组建这样一个小团队，每周为家长编一份简报：
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col items-center gap-2 max-w-sm mx-auto">
+    <div className="w-full px-4 py-2 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">收集员</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">从各个班级收集新鲜事</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">交出：一张新鲜事清单</p>
+    </div>
+    <div className="w-full px-4 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">撰稿人</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">把清单写成一份亲切的草稿</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">交出：一份简报草稿</p>
+    </div>
+    <div className="w-full px-4 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">校对员</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0!">核对名字、日期和语气</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">交出：一份核对过的草稿</p>
+    </div>
+    <div className="w-full px-4 py-2 bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">老师</p>
+      <p className="text-xs text-amber-600 dark:text-amber-400 m-0!">任何东西发出去之前都要先批准</p>
+    </div>
+  </div>
+</div>
+
+留意一下站在队伍最后的是谁：一个人。在设计得好的团队里，任何东西离开团队之前，至少有一次交接是通向一个真人的。
+
+<InfoGrid columns={2} items={[
+  { label: "它是什么", description: "几个角色分明的机器人或智能体，把一份份有名字的工作成果传来传去，朝着同一个共同目的努力。", color: "rose" },
+  { label: "一个小例子", description: "一个收集员、一个撰稿人和一个校对员一起准备班级简报，最后由老师批准定稿。", color: "rose" },
+  { label: "什么时候用", description: "这份工作本来就能自然地拆成几样不同的差事，每样差事都能用它收到什么、交出什么说清楚，而且只靠一个成员总是手忙脚乱、顾此失彼。", color: "rose" },
+  { label: "它不是什么", description: "它不是一群放任自流、自己去商量着办的智能体，也不会因为人多就自动变好。每多一个成员就多出几次交接，而每一次交接，都是意思可能走样的地方。", color: "rose" }
+]} />
+
+## 这是哪一级？
+
+既然已经把整架梯子爬了一遍，我们来练练怎么分辨这几级。遇到每种情况，都问问自己：这里多添的是什么？是一套存好的做法、工具和循环、时间，还是其他成员？
+
+<Quiz
+  question="一位老师输入：给一群九岁的孩子出三道关于火山的趣味题。AI 回答了，事情就这样结束了。这属于哪一种？"
+  options={["提示词", "技能", "智能体", "机器人"]}
+  correctIndex={0}
+  explanation="一句吩咐，一个回答，之后什么也没再发生。这就是提示词。在这里用它正合适，因为老师就在旁边，可以读完这些题目，直接拿去用。"
+/>
+
+<Quiz
+  question="一位家长存了一个叫 bedtime-stories 的文件夹，里面写着要求：语气永远温柔，五分钟以内讲完，结尾是孩子慢慢睡着。只要有人想听睡前故事，助手就会用上它。这属于哪一种？"
+  options={["提示词", "技能", "机器人", "团队"]}
+  correctIndex={1}
+  explanation="这是一套存好、可以反复使用的做法，助手只在有人要听睡前故事时才加载它。它自己什么也不做，也没有自己的时间表或记忆。所以它是一个技能。"
+/>
+
+<Quiz
+  question="你请一个助手在你住的城市找一家周一开门、适合小小孩去的博物馆。它搜索了好几个网站，比较了开放时间，查了票价，然后把它挑中的那家连同链接一起给你。这属于哪一种？"
+  options={["提示词", "技能", "智能体", "团队"]}
+  correctIndex={2}
+  explanation="它在循环里使用了工具（网页搜索），看了又查、查了又看，好几轮之后才完成。这就是智能体。它是在你在场的时候干的活，下个星期它不会自己再做一遍。"
+/>
+
+<Quiz
+  question="一个叫「图书小帮手」的助手记得班上每个孩子读过哪些书。每个星期五早上，不用任何人开口，它就会推荐下周要读的书，并把书单发给老师批准。这属于哪一种？"
+  options={["技能", "智能体", "机器人", "团队"]}
+  correctIndex={2}
+  explanation="它有名字，也有差事；它能把记忆保留好几个星期；它还会按自己的时间表开始干活。这些正是机器人在智能体之上多添的东西。"
+/>
+
+<Quiz
+  question="一个助手收集学校春游的照片，第二个助手给照片配文字说明，第三个助手检查有没有出现哪个孩子的全名。然后，相册交给校长。这属于哪一种？"
+  options={["智能体", "机器人", "技能", "团队"]}
+  correctIndex={3}
+  explanation="几个角色不同的成员，每个都把一份有名字的工作成果交给下一个，最后由一个人来批准。这就是团队。"
+/>
+
+## 五个放在一起看
+
+下面把整架梯子放在一处。每一行从左往右读，留意每一列都保留了它前面那些列的本事。
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">问题</th>
+      <th scope="col">提示词</th>
+      <th scope="col">技能</th>
+      <th scope="col">智能体</th>
+      <th scope="col">机器人</th>
+      <th scope="col">团队</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>一句话说，它是什么？</td>
+      <td>一句吩咐，一个回答</td>
+      <td>存好的做法，需要时才加载</td>
+      <td>带着工具、在循环里工作的模型</td>
+      <td>留下来的智能体</td>
+      <td>几位各有角色的成员</td>
+    </tr>
+    <tr>
+      <td>它多添了什么？</td>
+      <td>起点</td>
+      <td>复用</td>
+      <td>行动</td>
+      <td>时间</td>
+      <td>分工</td>
+    </tr>
+    <tr>
+      <td>放在厨房里</td>
+      <td>问人要一份菜谱</td>
+      <td>盒子里的一张菜谱卡</td>
+      <td>一位做今晚这顿饭的厨师</td>
+      <td>每周都替全家安排饭菜的家庭厨师</td>
+      <td>一家餐馆的后厨</td>
+    </tr>
+    <tr>
+      <td>它能动手做事吗？</td>
+      <td>不能，只会回答</td>
+      <td>不能，只负责指引</td>
+      <td>能，靠它的工具</td>
+      <td>能，你不在时也能</td>
+      <td>能，每个成员各司其职</td>
+    </tr>
+    <tr>
+      <td>它记得事情吗？</td>
+      <td>只记得这一次对话</td>
+      <td>它被记住，但它自己不记事</td>
+      <td>只记得这一次会话</td>
+      <td>记得，靠存下来的记忆</td>
+      <td>每个成员各记各的</td>
+    </tr>
+    <tr>
+      <td>谁让它开始？</td>
+      <td>你</td>
+      <td>模型，在任务对得上的时候</td>
+      <td>你，给它一个目标</td>
+      <td>你、一个时间表，或者某件事的发生</td>
+      <td>一个目的，然后是每一次交接</td>
+    </tr>
+  </tbody>
+</table>
+
+## 选最简单、够用的那一级
+
+人们很容易以为，在梯子上站得越高就越好。其实不然。每往上一级，本事是大了，但花费也多了，等待的时间也长了，出岔子的新花样也多了。提示词可能给出错误的答案；智能体可能做出错误的动作；机器人可能在凌晨三点做出错误的动作；团队则可能把一个错误从一个成员传到下一个成员，传到最后，看上去就像铁板钉钉的事实。
+
+所以，明智的习惯就是好厨师早就有的那一个：用最简单、够用的工具把事情办好。煮一个鸡蛋，用不着请一整个餐馆后厨。从梯子最底下开始，只有当你所在的这一级明明白白不够用时，再往上爬一级。
+
+<InfoGrid items={[
+  { label: "从提示词开始", description: "如果你只需要一个答案，而且你就在旁边读它，一句清楚的提示词就够了。", color: "amber" },
+  { label: "爬到技能", description: "当你发现自己一遍又一遍地敲着同样一长串要求的时候。", color: "purple" },
+  { label: "爬到智能体", description: "当这份工作需要真实的信息或真正动手，要分好几步完成，而这些步骤你又没法事先列出来的时候。", color: "blue" },
+  { label: "爬到机器人", description: "当同一份职责按着时间表一次次回来，而且在你不在时也该继续下去的时候。", color: "green" },
+  { label: "爬到团队", description: "当一个机器人总是把几样确实不同的差事搅在一起，而每样差事又都能用它收到什么、交出什么说清楚的时候。", color: "rose" }
+]} />
+
+<Checklist
+  title="往上爬一级之前"
+  items={[
+    { text: "我试过下面那一级，而且说得出它究竟哪里做不到" },
+    { text: "我能用一两句话说清楚我想要的结果" },
+    { text: "我知道新的这一级真正需要哪些工具或账号，多一样都不给" },
+    { text: "凡是难以撤回的事，都会先等一个人批准" },
+    { text: "我知道该怎么检查这份工作是不是真的做好了" },
+    { text: "万一出了岔子，我有办法让它暂停或停下来" }
+  ]}
+/>
+
+如果拿不准自己需要哪一级，你可以请 AI 帮你一起想一想。下面这条提示词，本身就是第一级的一个好例子：
+
+<TryIt compact prompt={`我想请你帮我处理这件事：\${task:每周为我的两个孩子安排健康的学校午餐}。
+
+请参照下面这架从最简单到最复杂的梯子：
+1. 提示词：一句吩咐，一个回答
+2. 技能：一套存好的做法，AI 在需要时加载
+3. 智能体：使用工具、在循环中朝目标前进的 AI
+4. 机器人：留下来的智能体，有记忆和例行任务
+5. 团队：几个各有角色、彼此交接的智能体或机器人
+
+告诉我，哪一级是能把我这件事办好的最简单的一级，以及为什么。然后再告诉我，要发生什么变化，我才需要再往上爬一级。请用平实、亲切的语言。`} />
+
+这五个词，从此不必再混成一团了。**提示词**负责问；**技能**记住怎么做；**智能体**动手去做；**机器人**留下来；**团队**一起分担。而在每一级上，手艺都是本书一开头讲的那一门：说清楚你想要什么，界限在哪里，以及你怎么知道事情办好了。
+
+接下来的几章，会一级一级细细地爬这架梯子。[代理和技能](/book/25-agents-and-skills)讲技能是怎么写的，以及智能体如何使用它们。[工具、MCP 与连接器](/book/27-tools-mcp-connectors)看的是智能体干活用的那双手，[运行框架（Harnesses）](/book/26-the-harnesses)看的是驱动它循环的软件。最后，[常驻机器人：持续工作的智能体](/book/28-persistent-bots)会跟着那些留下来的智能体，看看它们组成的团队。

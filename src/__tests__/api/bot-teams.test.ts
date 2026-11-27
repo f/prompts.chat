@@ -1,0 +1,454 @@
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { GET as LIST, POST } from "@/app/api/bots/teams/route";
+import { GET, PUT, PATCH, DELETE } from "@/app/api/bots/teams/[slug]/route";
+import { GET as TEAMS_ALIAS } from "@/app/api/teams/route";
+import { POST as VOTE, DELETE as UNVOTE } from "@/app/api/bots/teams/[slug]/vote/route";
+import { GET as INSTALL } from "@/app/api/bots/teams/[slug]/install/route";
+import { countTeamsByAuthor, getBotTeams, listTeams } from "@/lib/bots/teams";
+import { db } from "@/lib/db";
+import { auth } from "@/lib/auth";
+import { botTeamWriteLimiter } from "@/lib/rate-limit";
+
+vi.mock("@/lib/db", () => ({
+  db: {
+    $transaction: vi.fn(),
+    user: { findUnique: vi.fn() },
+    prompt: { findMany: vi.fn() },
+    botTeam: {
+      findMany: vi.fn(),
+      findUnique: vi.fn(),
+      count: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+    },
+    botTeamMember: { deleteMany: vi.fn(), createMany: vi.fn(), findMany: vi.fn() },
+    botTeamLink: { deleteMany: vi.fn(), createMany: vi.fn() },
+    botTeamVersion: { findFirst: vi.fn(), create: vi.fn() },
+    botTeamVote: { upsert: vi.fn(), deleteMany: vi.fn(), count: vi.fn() },
+    category: { findUnique: vi.fn() },
+    tag: { findMany: vi.fn() },
+  },
+}));
+
+vi.mock("@/lib/auth", () => ({ auth: vi.fn() }));
+vi.mock("@/lib/rate-limit", () => ({ botTeamWriteLimiter: { check: vi.fn() } }));
+vi.mock("@/lib/seo", () => ({ getBaseUrl: () => "https://prompts.chat" }));
+
+const params = { params: Promise.resolve({ slug: "research-crew" }) };
+
+function bot(id: string, overrides: Record<string, unknown> = {}) {
+  return {
+    id,
+    slug: id,
+    title: `Bot ${id}`,
+    description: null,
+    content: "Secret instructions",
+    type: "BOT",
+    botPlatform: "OPENCLAW",
+    botPlatforms: ["OPENCLAW"],
+    botIcon: null,
+    botColor: null,
+    installUrl: null,
+    computerRequirements: [],
+    botConfig: null,
+    isPrivate: false,
+    isUnlisted: false,
+    isFeatured: false,
+    trendingUntil: null,
+    delistReason: null,
+    deletedAt: null,
+    authorId: "owner",
+    createdAt: new Date("2026-01-01T00:00:00Z"),
+    updatedAt: new Date("2026-01-01T00:00:00Z"),
+    author: { username: "owner", name: null, avatar: null, verified: false },
+    _count: { votes: 0 },
+    category: null,
+    tags: [],
+    ...overrides,
+  };
+}
+
+const team = {
+  id: "team-1",
+  slug: "research-crew",
+  title: "Research crew",
+  description: null,
+  isFeatured: false,
+  isUnlisted: false,
+  unlistedAt: null,
+  authorId: "owner",
+  createdAt: new Date("2026-02-01T00:00:00Z"),
+  updatedAt: new Date("2026-02-01T00:00:00Z"),
+  author: { username: "owner", name: "Owner", avatar: null, verified: false },
+  _count: { votes: 0 },
+  members: [
+    { role: "Researcher", description: "Finds sources", bot: bot("a") },
+    { role: null, description: null, bot: bot("b") },
+  ],
+  links: [{ fromBotId: "a", toBotId: "b", label: "Brief" }],
+  category: null,
+  tags: [],
+};
+
+const validBody = {
+  title: "Research crew",
+  members: [{ botId: "a", role: "Researcher", description: "Finds sources" }, { botId: "b" }],
+  links: [{ fromBotId: "a", toBotId: "b", label: "Brief" }],
+};
+
+function jsonRequest(url: string, method: string, body: unknown) {
+  return new Request(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+}
+
+function signIn(id: string, role = "USER") {
+  vi.mocked(auth).mockResolvedValue({ user: { id, role } } as never);
+}
+
+describe("bot teams API", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(auth).mockResolvedValue(null as never);
+    vi.mocked(botTeamWriteLimiter.check).mockReturnValue({ allowed: true, remaining: 4, retryAfterSeconds: 0 } as never);
+    vi.mocked(db.$transaction).mockImplementation((async (fn: (tx: typeof db) => unknown) => fn(db)) as never);
+    vi.mocked(db.botTeam.findUnique).mockResolvedValue(team as never);
+    vi.mocked(db.botTeam.findMany).mockResolvedValue([]);
+    vi.mocked(db.prompt.findMany).mockResolvedValue([{ id: "a" }, { id: "b" }] as never);
+  });
+
+  describe("GET /api/bots/teams", () => {
+    it("lists team summaries without bot instructions", async () => {
+      vi.mocked(db.botTeam.findMany).mockResolvedValue([team] as never);
+      vi.mocked(db.botTeam.count).mockResolvedValue(1);
+      const response = await LIST(new Request("http://localhost/api/bots/teams?q=research&limit=5"));
+      const body = await response.json();
+      expect(body.total).toBe(1);
+      expect(body.teams[0]).toMatchObject({ slug: "research-crew", handoffCount: 1, link: "https://prompts.chat/bots/teams/research-crew" });
+      expect(JSON.stringify(body)).not.toContain("Secret instructions");
+      expect(vi.mocked(db.botTeam.findMany).mock.calls[0][0]).toMatchObject({ take: 5 });
+    });
+
+    it("filters by category and comma-separated tags", async () => {
+      vi.mocked(db.botTeam.count).mockResolvedValue(0);
+      await LIST(new Request("http://localhost/api/bots/teams?category=coding&tag=agents,ci"));
+      expect(vi.mocked(db.botTeam.findMany).mock.calls[0][0]!.where).toMatchObject({
+        category: { OR: [{ slug: "coding" }, { parent: { slug: "coding" } }] },
+        AND: [{ tags: { some: { tag: { slug: "agents" } } } }, { tags: { some: { tag: { slug: "ci" } } } }],
+      });
+    });
+  });
+
+  describe("POST /api/bots/teams", () => {
+    it("requires sign-in", async () => {
+      const response = await POST(jsonRequest("http://localhost/api/bots/teams", "POST", validBody));
+      expect(response.status).toBe(401);
+      expect(db.botTeam.create).not.toHaveBeenCalled();
+    });
+
+    it("rate limits writes per user", async () => {
+      signIn("owner");
+      vi.mocked(botTeamWriteLimiter.check).mockReturnValue({ allowed: false, remaining: 0, retryAfterSeconds: 30 } as never);
+      const response = await POST(jsonRequest("http://localhost/api/bots/teams", "POST", validBody));
+      expect(response.status).toBe(429);
+      expect(response.headers.get("Retry-After")).toBe("30");
+      expect(botTeamWriteLimiter.check).toHaveBeenCalledWith("user:owner");
+    });
+
+    it.each([
+      ["no title", { ...validBody, title: "" }],
+      ["one bot", { ...validBody, members: [{ botId: "a" }], links: [] }],
+      ["a handoff to a non-member", { ...validBody, links: [{ fromBotId: "a", toBotId: "z" }] }],
+    ])("rejects %s", async (_name, body) => {
+      signIn("owner");
+      const response = await POST(jsonRequest("http://localhost/api/bots/teams", "POST", body));
+      expect(response.status).toBe(400);
+      expect((await response.json()).error).toBe("validation_error");
+    });
+
+    it("rejects bots the user may not add", async () => {
+      signIn("owner");
+      vi.mocked(db.prompt.findMany).mockResolvedValue([{ id: "a" }] as never);
+      const response = await POST(jsonRequest("http://localhost/api/bots/teams", "POST", validBody));
+      expect(response.status).toBe(400);
+      expect(await response.json()).toMatchObject({ error: "invalid_bots", botIds: ["b"] });
+    });
+
+    it("rejects unknown categories and tags", async () => {
+      signIn("owner");
+      vi.mocked(db.category.findUnique).mockResolvedValue(null);
+      let response = await POST(jsonRequest("http://localhost/api/bots/teams", "POST", { ...validBody, categoryId: "nope" }));
+      expect(response.status).toBe(400);
+      expect((await response.json()).error).toBe("invalid_category");
+
+      vi.mocked(db.tag.findMany).mockResolvedValue([{ id: "tag-1" }] as never);
+      response = await POST(jsonRequest("http://localhost/api/bots/teams", "POST", { ...validBody, tagIds: ["tag-1", "tag-2"] }));
+      expect(response.status).toBe(400);
+      expect(await response.json()).toMatchObject({ error: "invalid_tags", tagIds: ["tag-2"] });
+      expect(db.botTeam.create).not.toHaveBeenCalled();
+    });
+
+    it("saves the category and tags on update", async () => {
+      signIn("owner");
+      vi.mocked(db.category.findUnique).mockResolvedValue({ id: "cat-1" } as never);
+      vi.mocked(db.tag.findMany).mockResolvedValue([{ id: "tag-1" }] as never);
+      const response = await PUT(
+        jsonRequest("http://localhost/api/bots/teams/research-crew", "PUT", { ...validBody, categoryId: "cat-1", tagIds: ["tag-1", "tag-1"] }),
+        params
+      );
+      expect(response.status).toBe(200);
+      expect(db.botTeam.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ categoryId: "cat-1", tags: { deleteMany: {}, create: [{ tagId: "tag-1" }] } }),
+        })
+      );
+    });
+
+    it("creates the team", async () => {
+      signIn("owner");
+      vi.mocked(db.botTeam.create).mockResolvedValue({ id: "team-1" } as never);
+      const response = await POST(jsonRequest("http://localhost/api/bots/teams", "POST", validBody));
+      expect(response.status).toBe(201);
+      expect(await response.json()).toEqual({ id: "team-1", slug: "research-crew" });
+      expect(db.botTeamLink.createMany).toHaveBeenCalled();
+    });
+  });
+
+  describe("/api/bots/teams/[slug]", () => {
+    it("returns the team", async () => {
+      const response = await GET(new Request("http://localhost/api/bots/teams/research-crew"), params);
+      const body = await response.json();
+      expect(body.handoffs).toEqual([{ from: "a", to: "b", fromName: "Bot a", toName: "Bot b", label: "Brief" }]);
+    });
+
+    it("returns 404 for unknown teams", async () => {
+      vi.mocked(db.botTeam.findUnique).mockResolvedValue(null);
+      const response = await GET(new Request("http://localhost/api/bots/teams/nope"), params);
+      expect(response.status).toBe(404);
+    });
+
+    it("only lets the owner update", async () => {
+      signIn("someone-else");
+      const response = await PUT(jsonRequest("http://localhost/api/bots/teams/research-crew", "PUT", validBody), params);
+      expect(response.status).toBe(403);
+      expect(db.botTeam.update).not.toHaveBeenCalled();
+    });
+
+    it("replaces members and handoffs on update", async () => {
+      signIn("owner");
+      const response = await PUT(jsonRequest("http://localhost/api/bots/teams/research-crew", "PUT", validBody), params);
+      expect(response.status).toBe(200);
+      expect(db.botTeamLink.deleteMany).toHaveBeenCalledWith({ where: { teamId: "team-1" } });
+      expect(db.botTeamMember.createMany).toHaveBeenCalledWith({
+        data: [
+          { botId: "a", role: "Researcher", description: "Finds sources", order: 0, teamId: "team-1" },
+          { botId: "b", role: null, description: null, order: 1, teamId: "team-1" },
+        ],
+      });
+    });
+
+    it("lets admins delete any team", async () => {
+      signIn("admin", "ADMIN");
+      const response = await DELETE(new Request("http://localhost/api/bots/teams/research-crew", { method: "DELETE" }), params);
+      expect(response.status).toBe(200);
+      expect(db.botTeam.delete).toHaveBeenCalledWith({ where: { id: "team-1" } });
+    });
+  });
+
+  describe("team votes", () => {
+    const voteRequest = (method: string) => new Request("http://localhost/api/bots/teams/research-crew/vote", { method });
+
+    it("require sign-in", async () => {
+      const response = await VOTE(voteRequest("POST"), params);
+      expect(response.status).toBe(401);
+      expect(db.botTeamVote.upsert).not.toHaveBeenCalled();
+    });
+
+    it("404 for unknown teams", async () => {
+      signIn("voter");
+      vi.mocked(db.botTeam.findUnique).mockResolvedValue(null);
+      expect((await VOTE(voteRequest("POST"), params)).status).toBe(404);
+    });
+
+    it("are added once per user and return the new count", async () => {
+      signIn("voter");
+      vi.mocked(db.botTeamVote.count).mockResolvedValue(4);
+      const response = await VOTE(voteRequest("POST"), params);
+      expect(await response.json()).toEqual({ voted: true, voteCount: 4 });
+      expect(db.botTeamVote.upsert).toHaveBeenCalledWith({
+        where: { userId_teamId: { userId: "voter", teamId: "team-1" } },
+        create: { userId: "voter", teamId: "team-1" },
+        update: {},
+      });
+    });
+
+    it("are removed with DELETE", async () => {
+      signIn("voter");
+      vi.mocked(db.botTeamVote.count).mockResolvedValue(3);
+      const response = await UNVOTE(voteRequest("DELETE"), params);
+      expect(await response.json()).toEqual({ voted: false, voteCount: 3 });
+      expect(db.botTeamVote.deleteMany).toHaveBeenCalledWith({ where: { userId: "voter", teamId: "team-1" } });
+    });
+  });
+
+  describe("GET /api/bots/teams/[slug]/install", () => {
+    it("returns the team's install options per platform", async () => {
+      const response = await INSTALL(new Request("http://localhost/api/bots/teams/research-crew/install"), params);
+      const body = await response.json();
+      expect(body.options.map((option: { platform: string }) => option.platform)).toEqual(["OPENCLAW"]);
+      expect(body.options[0].installPrompt).toContain("Research crew");
+    });
+
+    it("404 for unknown teams", async () => {
+      vi.mocked(db.botTeam.findUnique).mockResolvedValue(null);
+      expect((await INSTALL(new Request("http://localhost/api/bots/teams/x/install"), params)).status).toBe(404);
+    });
+  });
+
+  describe("team sorting", () => {
+    it("orders by upvotes, oldest, or strictly newest by default", async () => {
+      vi.mocked(db.botTeam.count).mockResolvedValue(0);
+      await listTeams({ sort: "upvotes" });
+      await listTeams({ sort: "oldest" });
+      await listTeams();
+      const orders = vi.mocked(db.botTeam.findMany).mock.calls.map((call) => call[0]!.orderBy);
+      expect(orders[0]).toEqual([{ votes: { _count: "desc" } }, { createdAt: "desc" }, { id: "desc" }]);
+      expect(orders[1]).toEqual([{ createdAt: "asc" }, { id: "asc" }]);
+      expect(orders[2]).toEqual([{ createdAt: "desc" }, { id: "desc" }]);
+    });
+  });
+
+  describe("team listing for moderation", () => {
+    it("paginates with perPage and page, strictly newest first for an explicit sort=newest", async () => {
+      vi.mocked(db.botTeam.count).mockResolvedValue(45);
+      const response = await LIST(new Request("http://localhost/api/bots/teams?perPage=10&page=3&sort=newest"));
+      const body = await response.json();
+      expect(body).toMatchObject({ total: 45, page: 3, perPage: 10, totalPages: 5 });
+      const args = vi.mocked(db.botTeam.findMany).mock.calls[0][0]!;
+      expect(args).toMatchObject({ skip: 20, take: 10, orderBy: [{ createdAt: "desc" }, { id: "desc" }] });
+      expect(args.where).toMatchObject({ isUnlisted: false });
+    });
+
+    it("orders strictly newest first when no sort is given", async () => {
+      vi.mocked(db.botTeam.count).mockResolvedValue(0);
+      await LIST(new Request("http://localhost/api/bots/teams"));
+      expect(vi.mocked(db.botTeam.findMany).mock.calls[0][0]!.orderBy).toEqual([{ createdAt: "desc" }, { id: "desc" }]);
+    });
+
+    it("is also served at /api/teams", async () => {
+      vi.mocked(db.botTeam.count).mockResolvedValue(0);
+      const response = await TEAMS_ALIAS(new Request("http://localhost/api/teams?perPage=5"));
+      expect(response.status).toBe(200);
+      expect(vi.mocked(db.botTeam.findMany).mock.calls[0][0]).toMatchObject({ take: 5 });
+    });
+
+    it("ignores includeUnlisted for non-admins", async () => {
+      signIn("someone");
+      vi.mocked(db.botTeam.count).mockResolvedValue(0);
+      await LIST(new Request("http://localhost/api/bots/teams?includeUnlisted=true"));
+      expect(vi.mocked(db.botTeam.findMany).mock.calls[0][0]!.where).toMatchObject({ isUnlisted: false });
+    });
+
+    it("lets admins include unlisted teams", async () => {
+      signIn("admin", "ADMIN");
+      vi.mocked(db.botTeam.count).mockResolvedValue(0);
+      await LIST(new Request("http://localhost/api/bots/teams?includeUnlisted=true&sort=newest"));
+      const where = vi.mocked(db.botTeam.findMany).mock.calls[0][0]!.where!;
+      expect(where).not.toHaveProperty("isUnlisted");
+      expect(where).not.toHaveProperty("members");
+    });
+
+    it("hides unlisted teams and unlisted member bots from public listings", async () => {
+      vi.mocked(db.botTeam.count).mockResolvedValue(0);
+      await listTeams();
+      expect(vi.mocked(db.botTeam.findMany).mock.calls[0][0]!.where).toMatchObject({
+        isUnlisted: false,
+        members: { some: { bot: { type: "BOT", deletedAt: null, isPrivate: false, isUnlisted: false } } },
+      });
+    });
+
+    it("counts a profile's teams, unlisted ones only when asked", async () => {
+      vi.mocked(db.botTeam.count).mockResolvedValue(2);
+      await countTeamsByAuthor("owner");
+      await countTeamsByAuthor("owner", { includeUnlisted: true });
+      const [visible, all] = vi.mocked(db.botTeam.count).mock.calls.map((call) => call[0]!.where);
+      expect(visible).toMatchObject({ authorId: "owner", isUnlisted: false });
+      expect(all).toEqual({ authorId: "owner" });
+    });
+  });
+
+  describe("unlisted teams", () => {
+    const unlisted = { ...team, isUnlisted: true, unlistedAt: new Date("2026-03-01T00:00:00Z") };
+
+    it("404 for anonymous viewers and other users", async () => {
+      vi.mocked(db.botTeam.findUnique).mockResolvedValue(unlisted as never);
+      expect((await GET(new Request("http://localhost/api/bots/teams/research-crew"), params)).status).toBe(404);
+      signIn("someone");
+      expect((await GET(new Request("http://localhost/api/bots/teams/research-crew"), params)).status).toBe(404);
+      expect((await INSTALL(new Request("http://localhost/api/bots/teams/research-crew/install"), params)).status).toBe(404);
+    });
+
+    it("stays visible to the author and admins", async () => {
+      vi.mocked(db.botTeam.findUnique).mockResolvedValue(unlisted as never);
+      signIn("owner");
+      const own = await GET(new Request("http://localhost/api/bots/teams/research-crew"), params);
+      expect(own.status).toBe(200);
+      expect((await own.json()).isUnlisted).toBe(true);
+      signIn("admin", "ADMIN");
+      expect((await GET(new Request("http://localhost/api/bots/teams/research-crew"), params)).status).toBe(200);
+    });
+
+    it("hides unlisted teams from a bot's Teams section except for admins and the team author", async () => {
+      vi.mocked(db.botTeamMember.findMany).mockResolvedValue([]);
+      await getBotTeams("b");
+      await getBotTeams("b", { id: "owner", role: "USER" });
+      await getBotTeams("b", { id: "admin", role: "ADMIN" });
+      const [anonymous, owner, admin] = vi.mocked(db.botTeamMember.findMany).mock.calls.map((call) => call[0]!.where);
+      expect(anonymous).toMatchObject({ team: { isUnlisted: false } });
+      expect(owner).toMatchObject({ team: { OR: [{ isUnlisted: false }, { authorId: "owner" }] } });
+      expect(admin).toEqual({ botId: "b", team: {} });
+    });
+
+    it("lets the author keep a member bot that was unlisted after it joined", async () => {
+      signIn("owner");
+      await PUT(jsonRequest("http://localhost/api/bots/teams/research-crew", "PUT", validBody), params);
+      const where = vi.mocked(db.prompt.findMany).mock.calls[0][0]!.where as { OR: unknown[] };
+      expect(where.OR).toEqual([
+        { isPrivate: false, isUnlisted: false },
+        { authorId: "owner" },
+        { isPrivate: false, botTeamMemberships: { some: { teamId: "team-1" } } },
+      ]);
+    });
+  });
+
+  describe("PATCH /api/bots/teams/[slug]", () => {
+    it("requires sign-in", async () => {
+      const response = await PATCH(jsonRequest("http://localhost/api/bots/teams/research-crew", "PATCH", { isUnlisted: true }), params);
+      expect(response.status).toBe(401);
+    });
+
+    it("is admin only, even for the author", async () => {
+      signIn("owner");
+      const response = await PATCH(jsonRequest("http://localhost/api/bots/teams/research-crew", "PATCH", { isUnlisted: true }), params);
+      expect(response.status).toBe(403);
+      expect(db.botTeam.update).not.toHaveBeenCalled();
+    });
+
+    it("validates the body", async () => {
+      signIn("admin", "ADMIN");
+      const response = await PATCH(jsonRequest("http://localhost/api/bots/teams/research-crew", "PATCH", { isUnlisted: "yes" }), params);
+      expect(response.status).toBe(400);
+    });
+
+    it("unlists a team for admins", async () => {
+      signIn("admin", "ADMIN");
+      vi.mocked(db.botTeam.update).mockResolvedValue({ id: "team-1", slug: "research-crew", isUnlisted: true, unlistedAt: new Date() } as never);
+      const response = await PATCH(jsonRequest("http://localhost/api/bots/teams/research-crew", "PATCH", { isUnlisted: true }), params);
+      expect(response.status).toBe(200);
+      expect((await response.json()).isUnlisted).toBe(true);
+      const call = vi.mocked(db.botTeam.update).mock.calls[0][0];
+      expect(call.where).toEqual({ id: "team-1" });
+      expect(call.data).toMatchObject({ isUnlisted: true });
+      expect((call.data as { unlistedAt: unknown }).unlistedAt).toBeInstanceOf(Date);
+    });
+  });
+});

@@ -3,7 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { canViewPrompt } from "@/lib/prompt-access";
-import { getBotUrl, getPromptUrl } from "@/lib/urls";
+import { getBotUrl, getClassifierUrl, getPromptUrl } from "@/lib/urls";
 
 interface PromptLayoutProps {
   children: React.ReactNode;
@@ -32,7 +32,7 @@ export default async function PromptLayout({ children, params }: PromptLayoutPro
 
   const prompt = await db.prompt.findUnique({
     where: { id },
-    select: { slug: true, type: true, isPrivate: true, deletedAt: true, authorId: true },
+    select: { slug: true, type: true, isPrivate: true, deletedAt: true, authorId: true, classifierSlug: true },
   });
 
   if (!prompt) {
@@ -56,6 +56,10 @@ export default async function PromptLayout({ children, params }: PromptLayoutPro
     const botPath = getBotUrl(id, prompt.slug);
     const nested = pathname.match(/^\/prompts\/[^/]+(\/(?:edit|changes(?:\/[^/]+)?))\/?$/)?.[1] ?? "";
     permanentRedirect(`${botPath}${nested}`);
+  }
+  if (prompt.type === "CLASSIFIER" && prompt.classifierSlug) {
+    const nested = pathname.match(/^\/prompts\/[^/]+(\/(?:edit|changes(?:\/[^/]+)?))\/?$/)?.[1] ?? "";
+    permanentRedirect(`${getClassifierUrl(prompt.classifierSlug)}${nested}`);
   }
 
   // Serve every prompt from a single URL: /prompts/{id} and outdated slugs

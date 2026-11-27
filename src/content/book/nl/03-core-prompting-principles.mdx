@@ -21,7 +21,7 @@ Woorden kunnen meerdere betekenissen hebben. Kies precieze taal.
 
 <Compare 
   before={{ label: "Dubbelzinnig", content: "Geef me een korte samenvatting.\n(Hoe kort? 1 zin? 1 paragraaf? 1 pagina?)" }}
-  after={{ label: "Precies", content: "Vat samen in exact 3 opsommingstekens, elk onder de 20 woorden." }}
+  after={{ label: "Precies", content: "Vat samen in exact 3 opsommingspunten, elk onder de 20 woorden." }}
 />
 
 ### Benoem het Vanzelfsprekende
@@ -84,13 +84,13 @@ Elk niveau voegt specificiteit toe en verbetert de outputkwaliteit drastisch.
 
 ## Principe 3: Context Is Koning
 
-Modellen hebben geen geheugen, geen toegang tot je bestanden en geen kennis van je situatie. Alles wat relevant is, moet in de prompt staan.
+Een model weet van jouw situatie niets meer dan wat het via het gesprek bereikt. Zelfs assistenten met geheugenfuncties, geüploade bestanden of gekoppelde tools zien alleen wat daadwerkelijk met ze is gedeeld, en ze halen dat selectief terug. Is iets belangrijk, zet het dan in de prompt.
 
 ### Geef Voldoende Context
 
 <Compare 
   before={{ label: "Onvoldoende context", content: "Waarom werkt mijn functie niet?" }}
-  after={{ label: "Voldoende context", content: "Ik heb een Python-functie die een lijst van dictionaries moet filteren op een specifieke sleutelwaarde. Het retourneert een lege lijst terwijl het 3 items zou moeten retourneren.\n\nFunctie:\ndef filter_items(items, key, value):\n    return [item for item in items if item[key] = value]\n\nAanroep: filter_items(items, 'status', 'active')\nVerwacht: 2 items, Gekregen: lege lijst" }}
+  after={{ label: "Voldoende context", content: "Ik heb een Python-functie die een lijst van dictionaries moet filteren op een specifieke sleutelwaarde. Hij retourneert een lege lijst terwijl hij 3 items zou moeten retourneren.\n\nFunctie:\ndef filter_items(items, key, value):\n    return [item for item in items if item.get(key) == value]\n\nVoorbeelditem: {'id': 7, 'status': 'active'}\nAanroep: filter_items(items, 'Status', 'active')\nVerwacht: 3 items, Gekregen: lege lijst" }}
 />
 
 ### De Context Checklist
@@ -123,7 +123,7 @@ Vraag niet alleen om een antwoord—begeleid het model naar het antwoord dat je 
 
 ### Bied Redeneerstructuren
 
-Voor complexe taken, begeleid het redeneerproces:
+Begeleid bij complexe taken het redeneerproces:
 
 <TryIt 
   title="Voorbeeld van Redeneerstructuur"
@@ -221,21 +221,21 @@ Waarom je het geweldig zult vinden: [1 zin hook]
 ---`}
 />
 
-### Modellen Kunnen Rollenspel
+### Modellen Kunnen Rollen Spelen
 
 Gebruik persona's om verschillende "modi" van respons te activeren:
 
 ```
-Als advocaat van de duivel, argumenteer tegen mijn voorstel...
-Als ondersteunende mentor, help me te verbeteren...
-Als sceptische investeerder, bekritiseer dit businessplan...
+Argumenteer als advocaat van de duivel tegen mijn voorstel...
+Help me als ondersteunende mentor om te verbeteren...
+Bekritiseer als sceptische investeerder dit businessplan...
 ```
 
 ## Principe 7: Beheers de Outputstructuur
 
 Gestructureerde outputs zijn nuttiger dan vrije tekst.
 
-### Vraag Specifieke Formaten
+### Vraag om Specifieke Formaten
 
 ```
 Retourneer je analyse als:
@@ -267,7 +267,7 @@ Scheid secties van je prompt duidelijk:
 [Gewenst formaat hier]
 ```
 
-### Vraag Machine-Leesbare Output
+### Vraag om Machineleesbare Output
 
 Voor programmatisch gebruik:
 
@@ -291,7 +291,7 @@ Los dit probleem op en toon je werk stap voor stap.
 Controleer na het oplossen je antwoord door [controlemethode].
 ```
 
-### Vraag Meerdere Perspectieven
+### Vraag om Meerdere Perspectieven
 
 ```
 Geef me drie verschillende benaderingen om dit probleem op te lossen.
@@ -301,7 +301,7 @@ Leg voor elke benadering de afwegingen uit.
 ### Bouw Zelfcontrole In
 
 ```
-Na het genereren van de code, review deze op:
+Review de code na het genereren op:
 - Syntaxfouten
 - Randgevallen
 - Beveiligingskwetsbaarheden
@@ -321,7 +321,7 @@ Noem eventuele gevonden problemen.
     "Itereer en Verfijn"
   ]}
   correctIndex={2}
-  explanation="Context Is Koning benadrukt dat AI-modellen geen geheugen hebben tussen sessies en je gedachten niet kunnen lezen. Het opnemen van relevante achtergrond, beperkingen en doelen helpt het model je behoeften te begrijpen."
+  explanation="Context Is Koning benadrukt dat AI-modellen je gedachten niet kunnen lezen: ze weten alleen wat hen via het gesprek bereikt. Het opnemen van relevante achtergrond, beperkingen en doelen helpt het model je behoeften te begrijpen."
 />
 
 ## Oefening: Vul de Lege Plekken In
@@ -353,7 +353,7 @@ Formaat: Retourneer je antwoord als {{format}}.`}
     { id: "focus", correctAnswers: [], hint: "Welk aspect moet prioriteit krijgen?", context: "Een kwaliteit of aspect relevant voor de taak" },
     { id: "format", correctAnswers: [], hint: "Hoe moet de output gestructureerd zijn?", context: "Een type outputformaat" }
   ]}
-  explanation="Een goed gestructureerde prompt bevat: een duidelijke rol (Principe 1), voldoende context (Principe 3), specifieke taak (Principe 2), beperkingen (Principe 4) en outputformaat (Principe 5). De AI controleert of je keuzes intern consistent zijn."
+  explanation="Een goed gestructureerde prompt bevat een duidelijke rol (Principe 6), voldoende context (Principe 3), een specifieke taak met beperkingen (Principe 2) en een expliciet outputformaat (Principe 7). De AI controleert of je keuzes intern consistent zijn."
 />
 
 <InteractiveChecklist
@@ -362,10 +362,10 @@ Formaat: Retourneer je antwoord als {{format}}.`}
     { id: "clarity", label: "Duidelijkheid Boven Slimheid", description: "Is je prompt expliciet en ondubbelzinnig?" },
     { id: "specificity", label: "Specificiteit Levert Kwaliteit", description: "Heb je doelgroep, lengte, toon en formaat opgenomen?" },
     { id: "context", label: "Context Is Koning", description: "Bevat de prompt alle benodigde achtergrondinformatie?" },
-    { id: "examples", label: "Voorbeelden Overtreffen Uitleg", description: "Heb je getoond wat je wilt, niet alleen beschreven?" },
-    { id: "constraints", label: "Beperkingen Focussen Output", description: "Zijn er duidelijke grenzen aan omvang en formaat?" },
+    { id: "guide", label: "Begeleid, Vraag Niet Alleen", description: "Heb je de stappen of redenering uitgestippeld die je wilt, in plaats van alleen om een antwoord te vragen?" },
     { id: "iteration", label: "Itereer en Verfijn", description: "Ben je bereid te verbeteren op basis van resultaten?" },
-    { id: "persona", label: "Persona Bepaalt Perspectief", description: "Weet de AI welke rol hij moet spelen?" },
+    { id: "strengths", label: "Benut de Sterke Punten van het Model", description: "Laat je patronen zien en gebruik je rollen waar het model goed mee overweg kan?" },
+    { id: "structure", label: "Beheers de Outputstructuur", description: "Heb je precies het formaat gespecificeerd dat je nodig hebt?" },
     { id: "verify", label: "Verifieer en Valideer", description: "Heb je controles voor nauwkeurigheid ingebouwd?" }
   ]}
 />

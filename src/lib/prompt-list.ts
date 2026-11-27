@@ -2,14 +2,14 @@ import type { Prisma, PromptType } from "@prisma/client";
 import { trendingWhere } from "@/lib/trending";
 
 /**
- * Bots have their own listing at /bots, so general prompt listings leave them
- * out. Spread into a where clause.
+ * Bots and classifiers have their own listings at /bots and /classifiers, so
+ * general prompt listings leave them out. Spread into a where clause.
  */
-export const NON_BOT_PROMPTS = { type: { not: "BOT" } } satisfies Prisma.PromptWhereInput;
+export const NON_BOT_PROMPTS = { type: { notIn: ["BOT", "CLASSIFIER"] } } satisfies Prisma.PromptWhereInput;
 
 /**
  * The type condition for a general prompt listing: the requested type when one
- * is given (including BOT), otherwise every type except BOT
+ * is given (including BOT), otherwise every type except BOT and CLASSIFIER
  */
 export function promptListTypeWhere(type?: string | null): Pick<Prisma.PromptWhereInput, "type"> {
   return type ? { type: type as PromptType } : NON_BOT_PROMPTS;

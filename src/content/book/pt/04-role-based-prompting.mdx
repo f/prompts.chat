@@ -11,15 +11,15 @@ Quando você atribui um papel, você está essencialmente dizendo ao modelo: "Fi
 - **Vocabulário**: Usando terminologia apropriada ao papel
 - **Perspectiva**: Considerando problemas daquele ponto de vista
 - **Profundidade de expertise**: Fornecendo níveis de detalhe apropriados ao papel
-- **Estilo de comunicação**: Combinando com como aquele papel se comunicaria
+- **Estilo de comunicação**: Adequando-se à forma como aquele papel se comunicaria
 
 ### A Explicação Técnica
 
-LLMs funcionam prevendo o token mais provável baseado no contexto que recebem. Quando você especifica um papel, você está fundamentalmente mudando o que "provável" significa.
+LLMs funcionam prevendo o próximo token mais provável baseado no contexto que recebem. Quando você especifica um papel, você está fundamentalmente mudando o que "provável" significa.
 
 **Ativando Conhecimento Relevante**: O papel prepara regiões específicas das associações aprendidas do modelo. Dizer "Você é um médico" ativa terminologia médica, padrões de raciocínio diagnóstico e estilos de comunicação clínica dos dados de treinamento.
 
-**Condicionamento Estatístico**: LLMs aprenderam de milhões de documentos escritos por especialistas reais. Quando você atribui um papel, o modelo condiciona suas distribuições de probabilidade para combinar padrões que viu daquele tipo de autor.
+**Condicionamento Estatístico**: LLMs aprenderam com milhões de documentos escritos por especialistas reais. Quando você atribui um papel, o modelo condiciona suas distribuições de probabilidade para combinar padrões que viu daquele tipo de autor.
 
 **Reduzindo Ambiguidade**: Sem um papel, o modelo calcula a média entre todos os possíveis respondentes. Com um papel, ele restringe a um subconjunto específico, tornando respostas mais focadas e consistentes.
 
@@ -28,7 +28,9 @@ LLMs funcionam prevendo o token mais provável baseado no contexto que recebem. 
 Pense assim: se você perguntar "O que devo fazer sobre essa tosse?" o modelo poderia responder como um médico, um amigo, um farmacêutico ou um pai preocupado. Cada um daria conselhos diferentes. Ao especificar o papel antecipadamente, você está dizendo ao modelo qual "voz" usar dos seus dados de treinamento.
 
 <Callout type="info" title="Por Que Isso Importa">
-O modelo não está fingindo ou fazendo role-play em sentido teatral. Ele está estatisticamente enviesando suas saídas em direção a padrões que aprendeu de especialistas, profissionais e especialistas reais durante o treinamento. Um papel de "médico" ativa caminhos de conhecimento médico; um papel de "poeta" ativa padrões literários.
+O modelo não está fingindo ou fazendo role-play em sentido teatral. Ele está estatisticamente enviesando suas saídas em direção a padrões que aprendeu de experts, profissionais e especialistas reais durante o treinamento. Um papel de "médico" ativa caminhos de conhecimento médico; um papel de "poeta" ativa padrões literários.
+
+Papéis moldam principalmente o tom, o vocabulário e o foco. Eles não conseguem acrescentar conhecimento que o modelo nunca aprendeu, e pesquisas mostram que uma persona, por si só, raramente torna mais precisas as respostas a perguntas factuais. Combine papéis com um bom contexto e verifique tudo o que for importante.
 </Callout>
 
 ## Padrões Básicos de Papel

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { botToJson, botToMarkdown, botToSkill, extractBotId, getBotById } from "@/lib/bots";
+import { botPairingsJson, getBotPairings } from "@/lib/bots/pairings";
 import { checkPromptAccess } from "@/lib/prompt-access";
 import { getBaseUrl } from "@/lib/seo";
 
@@ -27,7 +28,8 @@ export async function GET(
   };
 
   if (format === "json") {
-    return NextResponse.json(botToJson(bot, baseUrl), { headers });
+    const betterTogetherWith = botPairingsJson(await getBotPairings(bot.id), baseUrl);
+    return NextResponse.json({ ...botToJson(bot, baseUrl), betterTogetherWith }, { headers });
   }
 
   const output = format === "skill" ? botToSkill(bot, baseUrl) : botToMarkdown(bot, baseUrl);

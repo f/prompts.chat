@@ -19,31 +19,32 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import SQL_EXAMPLES from "@/data/sql-examples.json";
-
-const DEFAULT_SQL = SQL_EXAMPLES[0].sql;
-
-const HF_DATASET_URL = "https://huggingface.co/datasets/fka/prompts.chat/viewer";
+import { HF_DATASET_URL, HF_LISTING_QUERIES, hfQueryUrl, type HFListingType } from "@/lib/hf-data-studio";
 
 interface HFDataStudioDropdownProps {
   aiGenerationEnabled?: boolean;
+  /** Opens with a query for this listing's items instead of the prompt examples */
+  listing?: HFListingType;
 }
 
-export function HFDataStudioDropdown({ aiGenerationEnabled = false }: HFDataStudioDropdownProps) {
+export function HFDataStudioDropdown({ aiGenerationEnabled = false, listing }: HFDataStudioDropdownProps) {
   const t = useTranslations("prompts.hfDataStudio");
   const { resolvedTheme } = useTheme();
-  const [sql, setSql] = useState(DEFAULT_SQL);
+  const listingSql = listing ? HF_LISTING_QUERIES[listing] : undefined;
+  const examples = listing && listingSql
+    ? [{ label: t(`listingQuery.${listing}`), sql: listingSql }, ...SQL_EXAMPLES]
+    : SQL_EXAMPLES;
+  const [sql, setSql] = useState(examples[0].sql);
   const [aiPrompt, setAiPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [showAiInput, setShowAiInput] = useState(false);
 
   const handleOpenDataset = () => {
-    window.open(HF_DATASET_URL, "_blank");
+    window.open(listingSql ? hfQueryUrl(listingSql) : HF_DATASET_URL, "_blank");
   };
 
   const handleRun = () => {
-    const encodedSql = encodeURIComponent(sql);
-    const url = `${HF_DATASET_URL}?views[]=train&sql=${encodedSql}`;
-    window.open(url, "_blank");
+    window.open(hfQueryUrl(sql), "_blank");
   };
 
   const handleGenerateSQL = async () => {
@@ -98,7 +99,7 @@ export function HFDataStudioDropdown({ aiGenerationEnabled = false }: HFDataStud
                     <SelectValue placeholder={t("selectExample")} />
                   </SelectTrigger>
                   <SelectContent>
-                    {SQL_EXAMPLES.map((example, index) => (
+                    {examples.map((example, index) => (
                       <SelectItem key={index} value={example.sql} className="text-xs">
                         {example.label}
                       </SelectItem>

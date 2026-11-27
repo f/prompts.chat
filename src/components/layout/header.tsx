@@ -39,7 +39,6 @@ import { useSession, signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import {
   Menu,
-  Plus,
   User,
   Settings,
   LogOut,
@@ -76,10 +75,11 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { NotificationBell } from "@/components/layout/notification-bell";
+import { CreateMenu } from "@/components/layout/create-menu";
 import { setLocale } from "@/lib/i18n/client";
 import { useBranding } from "@/components/providers/branding-provider";
 import { analyticsAuth, analyticsSettings, analyticsExternal } from "@/lib/analytics";
-import { isChromeBrowser, isFirefoxBrowser } from "@/lib/utils";
+import { cn, isChromeBrowser, isFirefoxBrowser } from "@/lib/utils";
 
 const FIREFOX_ADDON_URL = "https://addons.mozilla.org/firefox/downloads/file/4675190/prompts_chat-1.4.1.xpi";
 
@@ -117,7 +117,34 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
   const router = useRouter();
   const pathname = usePathname();
 
+  const isNavActive = (href: string) => {
+    if (href === "/bots" && (pathname === "/bots/teams" || pathname.startsWith("/bots/teams/"))) {
+      return false;
+    }
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
+  const mobileNavClass = (href: string) =>
+    cn(
+      "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium hover:text-foreground hover:bg-accent transition-colors",
+      isNavActive(href) ? "text-foreground bg-accent" : "text-muted-foreground"
+    );
+  const desktopNavClass = (href: string, className?: string) =>
+    cn(
+      "px-3 py-1.5 rounded-md whitespace-nowrap transition-colors hover:text-foreground hover:bg-accent",
+      isNavActive(href) ? "text-foreground bg-accent" : "text-muted-foreground",
+      className
+    );
+
   const user = session?.user;
+  const moreNavItems = [
+    ...(user ? [{ href: "/feed", label: t("nav.feed") }] : []),
+    { href: "/workflows", label: t("nav.workflows") },
+    { href: "/classifiers", label: t("nav.classifiers") },
+    { href: "/categories", label: t("nav.categories") },
+    { href: "/tags", label: t("nav.tags") },
+    { href: "/taste", label: t("nav.taste") },
+  ];
+  const isMoreNavActive = moreNavItems.some((item) => isNavActive(item.href));
   const isAdmin = user?.role === "ADMIN";
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [browserType, setBrowserType] = useState<"chrome" | "firefox" | null>(null);
@@ -186,72 +213,86 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
                       <Link 
                         href="/collection" 
                         onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                        className={mobileNavClass("/collection")}
                       >
                         {t("nav.collection")}
                       </Link>
                       <Link 
                         href="/feed" 
                         onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                        className={mobileNavClass("/feed")}
                       >
                         {t("nav.feed")}
                       </Link>
                     </>
                   )}
                   <Link 
+                    href="/bots/teams" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={mobileNavClass("/bots/teams")}
+                  >
+                    {t("nav.teams")}
+                  </Link>
+                  <Link 
                     href="/bots" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    className={mobileNavClass("/bots")}
                   >
                     {t("nav.bots")}
                   </Link>
                   <Link 
-                    href="/prompts" 
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                  >
-                    {t("nav.prompts")}
-                  </Link>
-                  <Link 
                     href="/skills" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    className={mobileNavClass("/skills")}
                   >
                     {t("nav.skills")}
                   </Link>
                   <Link 
+                    href="/prompts" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={mobileNavClass("/prompts")}
+                  >
+                    {t("nav.prompts")}
+                  </Link>
+                  <Link 
                     href="/workflows" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    className={mobileNavClass("/workflows")}
                   >
                     {t("nav.workflows")}
                   </Link>
                   <Link 
+                    href="/classifiers" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={mobileNavClass("/classifiers")}
+                  >
+                    {t("nav.classifiers")}
+                  </Link>
+                  <Link 
                     href="/categories" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    className={mobileNavClass("/categories")}
                   >
                     {t("nav.categories")}
                   </Link>
                   <Link 
                     href="/tags" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    className={mobileNavClass("/tags")}
                   >
                     {t("nav.tags")}
                   </Link>
                   <Link 
                     href="/discover" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    className={mobileNavClass("/discover")}
                   >
                     {t("feed.discover")}
                   </Link>
                   <Link 
                     href="/promptmasters" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    className={mobileNavClass("/promptmasters")}
                   >
                     {t("nav.promptmasters")}
                   </Link>
@@ -280,7 +321,7 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
                   <Link 
                     href="/taste" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    className={mobileNavClass("/taste")}
                   >
                     {t("nav.taste")}
                   </Link>
@@ -361,120 +402,78 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-1 text-sm">
           {user && (
-            <>
-              <Link
-                href="/collection"
-                className="px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
-              >
-                {t("nav.collection")}
-              </Link>
-              <Link
-                href="/feed"
-                className="px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
-              >
-                {t("nav.feed")}
-              </Link>
-            </>
+            <Link
+              href="/collection"
+              className={desktopNavClass("/collection")}
+            >
+              {t("nav.collection")}
+            </Link>
           )}
           <Link
+            href="/bots/teams"
+            className={desktopNavClass("/bots/teams")}
+          >
+            {t("nav.teams")}
+          </Link>
+          <Link
             href="/bots"
-            className="px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
+            className={desktopNavClass("/bots")}
           >
             {t("nav.bots")}
           </Link>
           <Link
-            href="/prompts"
-            className="px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
-          >
-            {t("nav.prompts")}
-          </Link>
-          <Link
             href="/skills"
-            className="hidden xl:block px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
+            className={desktopNavClass("/skills")}
           >
             {t("nav.skills")}
           </Link>
           <Link
-            href="/workflows"
-            className="hidden xl:block px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
+            href="/prompts"
+            className={desktopNavClass("/prompts")}
           >
-            {t("nav.workflows")}
-          </Link>
-          {/* Categories, Tags, Promptmasters, Taste - visible on 2xl+ screens */}
-          <Link
-            href="/categories"
-            className="hidden 2xl:block px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
-          >
-            {t("nav.categories")}
-          </Link>
-          <Link
-            href="/tags"
-            className="hidden 2xl:block px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
-          >
-            {t("nav.tags")}
+            {t("nav.prompts")}
           </Link>
           <Link
             href="/promptmasters"
-            className="hidden 2xl:block px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
+            className={desktopNavClass("/promptmasters")}
           >
             {t("nav.promptmasters")}
           </Link>
-          <Link
-            href="/taste"
-            className="hidden 2xl:block px-3 py-1.5 rounded-md text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
-          >
-            {t("nav.taste")}
-          </Link>
-          {/* Three-dot dropdown for collapsed nav items */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="2xl:hidden h-8 w-8">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label={t("nav.more")}
+                className={cn(
+                  "h-8 w-8 shrink-0 hover:text-foreground hover:bg-accent",
+                  isMoreNavActive ? "text-foreground bg-accent" : "text-muted-foreground"
+                )}
+              >
                 <MoreHorizontal className="h-4 w-4" />
-                <span className="sr-only">{t("nav.more")}</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-              <DropdownMenuItem asChild className="xl:hidden">
-                <Link href="/skills">
-                  {t("nav.skills")}
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild className="xl:hidden">
-                <Link href="/workflows">
-                  {t("nav.workflows")}
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator className="xl:hidden" />
-              <DropdownMenuItem asChild>
-                <Link href="/categories">
-                  {t("nav.categories")}
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/tags">
-                  {t("nav.tags")}
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/promptmasters">
-                  {t("nav.promptmasters")}
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/taste">
-                  {t("nav.taste")}
-                </Link>
-              </DropdownMenuItem>
+              {moreNavItems.map((item) => (
+                <DropdownMenuItem
+                  key={item.href}
+                  asChild
+                  className={cn(isNavActive(item.href) && "bg-accent text-accent-foreground")}
+                >
+                  <Link href={item.href}>{item.label}</Link>
+                </DropdownMenuItem>
+              ))}
+              {/* Shown in the right-side actions on 2xl+ screens */}
+              <DropdownMenuSeparator className="2xl:hidden" />
               {!branding.useCloneBranding && (
                 <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem asChild className="2xl:hidden">
                     <Link href="https://fka.gumroad.com/l/art-of-chatgpt-prompting">
                       <BookOpen className="mr-2 h-4 w-4" />
                       {t("nav.book")}
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem asChild className="2xl:hidden">
                     <a href="/kids" className={kidsFont.className}>
                       <MiniPromi className="mr-2 h-4 w-4" />
                       <span className="font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent">
@@ -484,7 +483,7 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
                   </DropdownMenuItem>
                 </>
               )}
-              <DropdownMenuItem asChild>
+              <DropdownMenuItem asChild className="2xl:hidden">
                 <Link href="/developers">
                   <Hammer className="mr-2 h-4 w-4" />
                   {t("nav.developers")}
@@ -530,15 +529,7 @@ export function Header({ authProvider = "credentials", allowRegistration = true 
             </Link>
           </Button>
 
-          {/* Create prompt button */}
-          {user && (
-            <Button asChild variant="ghost" size="icon" className="h-8 w-8">
-              <Link href="/prompts/new">
-                <Plus className="h-4 w-4" />
-                <span className="sr-only">{t("prompts.create")}</span>
-              </Link>
-            </Button>
-          )}
+          {user && <CreateMenu />}
 
           {/* Notifications */}
           {user && <NotificationBell />}

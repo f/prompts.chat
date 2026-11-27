@@ -20,7 +20,7 @@ Las listas son perfectas para instrucciones paso a paso, elementos clasificados 
   prompt={`Proporciona 5 consejos para dormir mejor.
 
 Formato: Lista numerada con una breve explicación para cada uno.
-Cada consejo debe estar en negrita, seguido de un guión y explicación.`}
+Cada consejo debe estar en negrita, seguido de un guion y una explicación.`}
 />
 
 <Callout type="tip" title="Mejores Prácticas para Listas">
@@ -72,7 +72,7 @@ Las palabras en mayúsculas actúan como señales fuertes para el modelo, enfati
 <InfoGrid items={[
   { label: "NUNCA", description: "Prohibición absoluta: \"NUNCA incluyas opiniones personales\"", color: "red" },
   { label: "SIEMPRE", description: "Requisito obligatorio: \"SIEMPRE cita fuentes\"", color: "green" },
-  { label: "IMPORTANTE", description: "Instrucción crítica: \"IMPORTANTE: Mantén las respuestas bajo 100 palabras\"", color: "amber" },
+  { label: "IMPORTANTE", description: "Instrucción crítica: \"IMPORTANTE: Mantén las respuestas por debajo de 100 palabras\"", color: "amber" },
   { label: "NO", description: "Prohibición fuerte: \"NO inventes estadísticas\"", color: "red" },
   { label: "DEBE", description: "Acción requerida: \"La salida DEBE ser JSON válido\"", color: "blue" },
   { label: "SOLO", description: "Restricción: \"Devuelve SOLO el código, sin explicaciones\"", color: "purple" },
@@ -81,7 +81,7 @@ Las palabras en mayúsculas actúan como señales fuertes para el modelo, enfati
 ```
 Resume este artículo.
 
-IMPORTANTE: Mantén el resumen bajo 100 palabras.
+IMPORTANTE: Mantén el resumen por debajo de 100 palabras.
 NUNCA agregues información que no esté presente en el original.
 SIEMPRE mantén el tono y perspectiva original.
 NO incluyas tus propias opiniones o análisis.
@@ -170,6 +170,10 @@ Devuelve el resultado como un bloque de código JSON:
 ```
 ````
 
+<Callout type="info" title="Salidas Estructuradas Nativas">
+Si llamas a un modelo a través de una API, no tienes que depender solo de cómo redactas la petición. OpenAI, Anthropic y Google ofrecen modos de salida estructurada que reciben un JSON Schema y obligan a la respuesta a ajustarse a él, de modo que los campos obligatorios y los valores permitidos se imponen en lugar de simplemente pedirse. Las opciones más antiguas de "modo JSON" solo garantizan un JSON sintácticamente válido, no tu esquema. Incluso con un esquema impuesto, los valores en sí pueden seguir siendo incorrectos, así que sigue validando lo que importa.
+</Callout>
+
 ## Salida YAML
 
 YAML es más legible para humanos que JSON, usando indentación en lugar de corchetes. Es el estándar para archivos de configuración (Docker, Kubernetes, GitHub Actions) y funciona bien cuando la salida será leída por humanos o usada en contextos DevOps. YAML es sensible a la indentación, así que sé específico sobre los requisitos de formato.
@@ -181,7 +185,7 @@ YAML es más legible para humanos que JSON, usando indentación en lugar de corc
 
 Devuelve como YAML válido:
 - Incluye: etapas de instalación, lint, test, build
-- Usa Node.js 18
+- Usa la versión LTS actual de Node.js
 - Cachea dependencias npm
 - Ejecuta en push a main y pull requests`}
 />
@@ -280,7 +284,7 @@ Texto: "Tim Cook anunció que Apple invertirá 1.000 millones de euros en una nu
 
 ## Respuestas Estructuradas de Múltiples Partes
 
-Cuando necesitas salida comprensiva cubriendo múltiples aspectos, define partes distintas con límites claros. Especifica exactamente qué va en cada parte—formato, longitud y tipo de contenido. Esto previene que el modelo mezcle secciones u omita partes.
+Cuando necesitas una salida exhaustiva que cubra múltiples aspectos, define partes distintas con límites claros. Especifica exactamente qué va en cada parte: formato, longitud y tipo de contenido. Esto evita que el modelo mezcle secciones u omita partes.
 
 ```
 Investiga este tema y proporciona:
@@ -324,7 +328,7 @@ Si MEDIO (un solo usuario afectado, existe solución alternativa):
 Si BAJO (preguntas, solicitudes de funciones):
   Devuelve: 🟢 BAJO | [Categoría] | [Acción Sugerida]
 
-Ticket: "No puedo iniciar sesión en mi cuenta. He intentado restablecer mi contraseña dos veces pero sigo recibiendo un error. Esto está bloqueando a todo mi equipo de acceder al panel de control."`}
+Ticket: "No puedo iniciar sesión en mi cuenta. He intentado restablecer mi contraseña dos veces pero sigo recibiendo un error. Esto está impidiendo que todo mi equipo acceda al panel de control."`}
 />
 
 ## Arrays y Listas en JSON
@@ -340,7 +344,7 @@ Devuelve como array JSON:
     {
       "tarea": "string describiendo la tarea",
       "asignado": "nombre de persona o 'Sin asignar'",
-      "fecha_limite": "fecha si se menciona, sino null",
+      "fecha_limite": "fecha si se menciona, si no, null",
       "prioridad": "alta" | "media" | "baja",
       "contexto": "cita relevante de la transcripción"
     }
@@ -353,7 +357,7 @@ Transcripción: "[transcripción de reunión]"
 
 ## Instrucciones de Validación
 
-La auto-validación hace que el modelo verifique su propia salida antes de responder. Esto captura problemas comunes como secciones faltantes, texto de marcador de posición, o violaciones de restricciones. El modelo iterará internamente para arreglar problemas, mejorando la calidad de salida sin llamadas API adicionales.
+La auto-validación hace que el modelo verifique su propia salida antes de responder. Esto captura problemas comunes como secciones faltantes, texto de marcador de posición, o violaciones de restricciones. A menudo mejora la calidad sin una llamada adicional a la API, pero no es una garantía: un modelo puede afirmar que una verificación se superó cuando no fue así, así que sigue verificando las salidas críticas en tu propio código.
 
 ```
 Genera el informe, luego:

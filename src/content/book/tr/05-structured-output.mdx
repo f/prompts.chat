@@ -1,7 +1,7 @@
-Tutarlı, iyi formatlanmış çıktı almak üretim uygulamaları ve verimli iş akışları için esastır. Bu bölüm, yapay zeka modellerinin yanıtlarını tam olarak nasıl formatladığını kontrol etme tekniklerini kapsar.
+Tutarlı ve düzgün biçimlendirilmiş çıktı almak, canlı ortamdaki uygulamalar ve verimli iş akışları için vazgeçilmezdir. Bu bölüm, yapay zeka modellerinin yanıtlarını tam olarak nasıl formatladığını kontrol etme tekniklerini kapsar.
 
 <Callout type="info" title="Düz Yazıdan Veriye">
-Yapılandırılmış çıktı, yapay zeka yanıtlarını serbest biçimli metinden eyleme dönüştürülebilir, ayrıştırılabilir veriye dönüştürür.
+Yapılandırılmış çıktı, yapay zeka yanıtlarını serbest biçimli metinden üzerinde işlem yapılabilen, ayrıştırılabilir veriye çevirir.
 </Callout>
 
 ## Yapı Neden Önemli
@@ -41,7 +41,7 @@ Tablolar, birden fazla öğeyi aynı boyutlar üzerinden karşılaştırmada mü
 />
 
 <Callout type="tip" title="Tablo En İyi Uygulamaları">
-Sütun adlarını, beklenen veri türlerini (metin, sayılar, derecelendirmeler) ve kaç satıra ihtiyacınız olduğunu belirtin. Karmaşık karşılaştırmalar için okunabilirlik açısından 4-6 sütunla sınırlayın.
+Sütun adlarını, beklenen veri türlerini (metin, sayılar, derecelendirmeler) ve kaç satıra ihtiyacınız olduğunu belirtin. Karmaşık karşılaştırmalarda okunabilirlik için sütun sayısını 4-6 ile sınırlayın.
 </Callout>
 
 ### Başlıklar ve Bölümler
@@ -65,7 +65,7 @@ Bölümlerinizi istediğiniz sırada listeleyin. Tutarlılık için her bölüm�
 
 ### Büyük Harfli Direktiflerle Vurgulama
 
-Büyük harfli kelimeler modele güçlü sinyaller olarak davranır, kritik kısıtlamaları veya gereksinimleri vurgular. Maksimum etki için onları idareli kullanın—aşırı kullanım etkilerini azaltır.
+Büyük harfli kelimeler model için güçlü birer sinyal işlevi görür ve kritik kısıtlamaları ya da gereksinimleri vurgular. En yüksek etkiyi almak için onları idareli kullanın: aşırı kullanım etkilerini azaltır.
 
 **Yaygın Büyük Harfli Direktifler:**
 
@@ -112,12 +112,12 @@ JSON (JavaScript Object Notation), yapılandırılmış yapay zeka çıktısı i
     "sektor": "string"
 }
 
-Metin: "1976'da kurulan Apple Inc., merkezi Cupertino, California'dadır. Teknoloji devi dünya çapında yaklaşık 164.000 kişi istihdam etmektedir."`}
+Metin: "1976'da kurulan Apple Inc.'in merkezi Cupertino, Kaliforniya'dadır. Teknoloji devi dünya çapında yaklaşık 164.000 kişi istihdam etmektedir."`}
 />
 
 ### Karmaşık JSON Yapıları
 
-İç içe veri için, nesneler içinde nesneler, nesne dizileri ve karma türlerle hiyerarşik JSON kullanın. Her seviyeyi net bir şekilde tanımlayın ve değerleri kısıtlamak için TypeScript stili açıklamalar (`"pozitif" | "negatif"`) kullanın.
+İç içe veri için, nesneler içinde nesneler, nesne dizileri ve karma türlerle hiyerarşik JSON kullanın. Her seviyeyi net bir şekilde tanımlayın ve değerleri kısıtlamak için TypeScript tarzı tür gösterimleri (`"pozitif" | "negatif"`) kullanın.
 
 ```
 Bu ürün yorumunu analiz et ve JSON döndür:
@@ -142,26 +142,26 @@ Bu ürün yorumunu analiz et ve JSON döndür:
   "anahtar_ifadeler": ["dikkat çekici ifadelerin string dizisi"]
 }
 
-SADECE geçerli JSON döndür, ek metin yok.
+SADECE geçerli JSON döndür, ek metin ekleme.
 
 Yorum: "[yorum metni]"
 ```
 
 ### Geçerli JSON Sağlama
 
-Modeller bazen JSON etrafına açıklayıcı metin veya markdown formatlaması ekler. Çıktı formatı hakkında açık talimatlarla bunu önleyin. Ham JSON veya kod blokları içinde JSON isteyebilirsiniz—ayrıştırma ihtiyaçlarınıza göre seçin.
+Modeller bazen JSON etrafına açıklayıcı metin veya markdown formatlaması ekler. Çıktı formatı hakkında açık talimatlarla bunu önleyin. Ham JSON da isteyebilirsiniz, kod bloğu içinde JSON da: ayrıştırma ihtiyaçlarınıza göre seçin.
 
 Açık talimatlar ekleyin:
 
 ```
 ÖNEMLİ:
-- SADECE JSON nesnesini döndür, markdown kod blokları yok
+- SADECE JSON nesnesini döndür, markdown kod bloğu kullanma
 - Tüm stringlerin düzgün escape edildiğinden emin ol
 - Eksik değerler için undefined değil null kullan
 - Çıktının ayrıştırılabilir JSON olduğunu doğrula
 ```
 
-Veya modelden çıktısını sarmasını isteyerek kod blokları isteyin:
+Ya da modelden çıktıyı bir kod bloğu içine almasını isteyin:
 
 ````
 Sonucu JSON kod bloğu olarak döndür:
@@ -170,9 +170,13 @@ Sonucu JSON kod bloğu olarak döndür:
 ```
 ````
 
+<Callout type="info" title="Yerleşik Yapılandırılmış Çıktı">
+Bir modeli API üzerinden çağırıyorsanız yalnızca prompttaki ifadelere güvenmek zorunda değilsiniz. OpenAI, Anthropic ve Google'ın hepsi, bir JSON Şeması alıp yanıtı bu şemaya uymaya zorlayan yapılandırılmış çıktı modları sunar. Böylece zorunlu alanlar ve izin verilen değerler yalnızca rica edilmekle kalmaz, garanti altına alınır. Eski "JSON modu" seçenekleri ise şemanıza uyumu değil, yalnızca sözdizimi açısından geçerli JSON'u garanti eder. Şema zorunlu kılınsa bile değerlerin kendisi yine yanlış olabilir; bu yüzden önemli olanı doğrulamayı sürdürün.
+</Callout>
+
 ## YAML Çıktı
 
-YAML, parantezler yerine girinti kullanarak JSON'dan daha insan tarafından okunabilirdir. Yapılandırma dosyaları (Docker, Kubernetes, GitHub Actions) için standarttır ve çıktı insanlar tarafından okunacaksa veya DevOps bağlamlarında kullanılacaksa iyi çalışır. YAML girintiye duyarlıdır, bu yüzden formatlama gereksinimleri hakkında spesifik olun.
+YAML, parantezler yerine girinti kullandığı için insanlar tarafından JSON'dan daha kolay okunur. Yapılandırma dosyaları (Docker, Kubernetes, GitHub Actions) için standarttır ve çıktı insanlar tarafından okunacaksa veya DevOps bağlamlarında kullanılacaksa iyi çalışır. YAML girintiye duyarlıdır, bu yüzden biçimlendirme gereksinimlerini açıkça belirtin.
 
 <TryIt 
   compact
@@ -181,7 +185,7 @@ YAML, parantezler yerine girinti kullanarak JSON'dan daha insan tarafından okun
 
 Geçerli YAML olarak döndür:
 - Dahil et: yükle, lint, test, build aşamaları
-- Node.js 18 kullan
+- Güncel Node.js LTS sürümünü kullan
 - npm bağımlılıklarını önbelleğe al
 - main'e push ve pull request'lerde çalıştır`}
 />
@@ -237,7 +241,7 @@ Test Kapsamı: [tahmini %]
 
 ### Boşluk Doldurma Formatı
 
-Boşluklu (___) şablonlar, modeli tam formatlama korurken belirli alanları doldurmaya yönlendirir. Bu yaklaşım, tutarlılığın önemli olduğu formlar, özetler ve standartlaştırılmış belgeler için mükemmeldir.
+Boşluklu (___) şablonlar, modeli biçimi birebir koruyarak belirli alanları doldurmaya yönlendirir. Bu yaklaşım, tutarlılığın önemli olduğu formlar, özetler ve standartlaştırılmış belgeler için mükemmeldir.
 
 ```
 Verilen ürün için bu şablonu tamamla:
@@ -259,7 +263,7 @@ Farklılaştırıcı: _______________
 
 ## Tipli Yanıtlar
 
-Tipli yanıtlar, modelin tanıması ve etiketlemesi gereken kategorileri veya varlık türlerini tanımlar. Bu teknik, Named Entity Recognition (NER), sınıflandırma görevleri ve bilgiyi tutarlı bir şekilde kategorize etmeniz gereken herhangi bir çıkarma için esastır. Türlerinizi örneklerle net bir şekilde tanımlayın.
+Tipli yanıtlar, modelin tanıması ve etiketlemesi gereken kategorileri veya varlık türlerini tanımlar. Bu teknik, Adlandırılmış Varlık Tanıma (NER), sınıflandırma görevleri ve bilgiyi tutarlı bir şekilde kategorize etmeniz gereken herhangi bir çıkarma için esastır. Türlerinizi örneklerle net bir şekilde tanımlayın.
 
 <TryIt 
   compact
@@ -280,7 +284,7 @@ Metin: "Tim Cook, Apple'ın Aralık 2024'e kadar yeni bir Austin tesisine 1 mily
 
 ## Çok Parçalı Yapılandırılmış Yanıtlar
 
-Birden fazla yönü kapsayan kapsamlı çıktıya ihtiyacınız olduğunda, net sınırlarla ayrı parçalar tanımlayın. Her parçaya tam olarak neyin gideceğini belirtin—format, uzunluk ve içerik türü. Bu, modelin bölümleri karıştırmasını veya parçaları atlamasını önler.
+Birden fazla yönü kapsayan kapsamlı çıktıya ihtiyacınız olduğunda, net sınırlarla ayrı parçalar tanımlayın. Her parçaya tam olarak neyin gireceğini belirtin: format, uzunluk ve içerik türü. Bu, modelin bölümleri karıştırmasını veya parçaları atlamasını önler.
 
 ```
 Bu konuyu araştır ve şunları sağla:
@@ -294,7 +298,7 @@ Bu konuyu araştır ve şunları sağla:
 ### BÖLÜM 3: VERİ TABLOSU
 | Metrik | Değer | Kaynak |
 |--------|-------|--------|
-[Minimum 5 satır dahil et]
+[En az 5 satır ekle]
 
 ### BÖLÜM 4: ÖNERİLER
 [3 eyleme dönüştürülebilir önerinin numaralı listesi]
@@ -309,8 +313,8 @@ Koşullu formatlama, girdinin özelliklerine göre farklı çıktı formatları 
 
 <TryIt 
   compact
-  title="Bilet Sınıflandırma"
-  prompt={`Bu destek biletini sınıflandır.
+  title="Destek Talebi Sınıflandırma"
+  prompt={`Bu destek talebini sınıflandır.
 
 ACİL ise (sistem çökmüş, güvenlik sorunu, veri kaybı):
   Döndür: 🔴 ACİL | [Kategori] | [Önerilen Eylem]
@@ -324,7 +328,7 @@ ORTA ise (tek kullanıcı etkileniyor, geçici çözüm mevcut):
 DÜŞÜK ise (sorular, özellik istekleri):
   Döndür: 🟢 DÜŞÜK | [Kategori] | [Önerilen Eylem]
 
-Bilet: "Hesabıma giriş yapamıyorum. Şifremi iki kez sıfırlamayı denedim ama hâlâ hata alıyorum. Bu, tüm ekibimin panoya erişmesini engelliyor."`}
+Talep: "Hesabıma giriş yapamıyorum. Şifremi iki kez sıfırlamayı denedim ama hâlâ hata alıyorum. Bu, tüm ekibimin panoya erişmesini engelliyor."`}
 />
 
 ## JSON'da Diziler ve Listeler
@@ -332,7 +336,7 @@ Bilet: "Hesabıma giriş yapamıyorum. Şifremi iki kez sıfırlamayı denedim a
 Birden fazla öğeyi dizilere çıkarmak dikkatli şema tanımı gerektirir. Dizi yapısını, her öğenin ne içermesi gerektiğini ve uç durumları nasıl ele alacağınızı (boş diziler, tek öğeler) belirtin. Sayı alanı eklemek tamlığı doğrulamaya yardımcı olur.
 
 ```
-Bu toplantı transkriptinden tüm eylem öğelerini çıkar.
+Bu toplantı transkriptinden yapılacak tüm işleri çıkar.
 
 JSON dizisi olarak döndür:
 {
@@ -353,7 +357,7 @@ Transkript: "[toplantı transkripti]"
 
 ## Doğrulama Talimatları
 
-Öz doğrulama, modeli yanıt vermeden önce kendi çıktısını kontrol etmeye yönlendirir. Bu, eksik bölümler, yer tutucu metin veya kısıtlama ihlalleri gibi yaygın sorunları yakalar. Model, ek API çağrıları olmadan çıktı kalitesini iyileştirerek sorunları düzeltmek için dahili olarak yineler.
+Öz denetim, modeli yanıt vermeden önce kendi çıktısını kontrol etmeye yönlendirir. Bu, eksik bölümler, yer tutucu metin veya kısıtlama ihlalleri gibi yaygın sorunları yakalar. Çoğu zaman ek bir API çağrısına gerek kalmadan kaliteyi artırır, ama bir garanti değildir: model aslında geçmediği bir kontrolü geçti diye bildirebilir, bu yüzden kritik çıktıları yine de kendi kodunuzda doğrulayın.
 
 ```
 Raporu oluştur, sonra:
@@ -370,7 +374,7 @@ Herhangi bir kontrol başarısız olursa, yanıt vermeden önce düzelt.
 
 ## Opsiyonel Alanları İşleme
 
-Gerçek dünya verilerinde genellikle eksik değerler bulunur. Modele opsiyonel alanları nasıl işleyeceği konusunda açıkça talimat verin—`null` kullanmak boş stringlerden daha temizdir ve programatik olarak işlenmesi daha kolaydır. Ayrıca modelin eksik veriyi "halüsinasyonla" üretmesini önlemek için bilgi uydurmamesi gerektiğini vurgulayın.
+Gerçek dünya verilerinde genellikle eksik değerler bulunur. Modele opsiyonel alanları nasıl işleyeceği konusunda açıkça talimat verin: `null` kullanmak boş stringlerden daha temizdir ve programatik olarak işlenmesi daha kolaydır. Ayrıca modelin eksik veriyi "halüsinasyonla" üretmesini önlemek için asla bilgi uydurmaması gerektiğini vurgulayın.
 
 ```
 İletişim bilgilerini çıkar. Eksik alanlar için null kullan.
@@ -385,7 +389,7 @@ Gerçek dünya verilerinde genellikle eksik değerler bulunur. Modele opsiyonel 
 }
 
 ÖNEMLİ: 
-- Kaynakta olmayan bilgi asla uydurma
+- Kaynakta olmayan bilgiyi asla uydurma
 - Eksik veri için boş string değil null kullan
 - Telefon numaraları mümkünse E.164 formatında
 ```

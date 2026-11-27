@@ -10,19 +10,23 @@ import { toast } from "sonner";
 import { RunPromptButton } from "@/components/prompts/run-prompt-button";
 import { analyticsWidget } from "@/lib/analytics";
 import type { InjectedWidget } from "@/lib/plugins/widgets";
+import { cn } from "@/lib/utils";
 
 export interface WidgetCardProps {
   prompt: InjectedWidget;
+  /** "compact" leaves out the content preview to match bot and team cards. Default: "prompt" */
+  variant?: "prompt" | "compact";
 }
 
-export function WidgetCard({ prompt }: WidgetCardProps) {
+export function WidgetCard({ prompt, variant = "prompt" }: WidgetCardProps) {
   const t = useTranslations("prompts");
   const tCommon = useTranslations("common");
   const [copied, setCopied] = useState(false);
+  const isCompact = variant === "compact";
 
   // If widget has a custom render function, use it
   if (prompt.render) {
-    return <>{prompt.render(prompt.instanceIndex)}</>;
+    return <>{prompt.render(prompt.instanceIndex, "prompts")}</>;
   }
 
   const copyToClipboard = async () => {
@@ -38,7 +42,12 @@ export function WidgetCard({ prompt }: WidgetCardProps) {
   };
 
   return (
-    <div className="group border rounded-[var(--radius)] overflow-hidden hover:border-foreground/20 transition-colors flex flex-col p-4 bg-gradient-to-br from-background to-muted/30">
+    <div
+      className={cn(
+        "group border rounded-[var(--radius)] overflow-hidden hover:border-foreground/20 transition-colors flex flex-col p-4",
+        isCompact ? "h-full min-w-0 bg-card" : "bg-gradient-to-br from-background to-muted/30"
+      )}
+    >
       {/* Sponsor Header */}
       {prompt.sponsor && (
         <div className="flex items-center justify-between mb-3 pb-2 border-b border-dashed">
@@ -101,11 +110,13 @@ export function WidgetCard({ prompt }: WidgetCardProps) {
       )}
 
       {/* Content Preview */}
-      <div className="relative flex-1 mb-3 min-h-0">
-        <pre className="text-xs text-muted-foreground bg-muted p-2 rounded overflow-y-auto font-mono whitespace-pre-wrap break-words max-h-48">
-          {prompt.content}
-        </pre>
-      </div>
+      {!isCompact && (
+        <div className="relative flex-1 mb-3 min-h-0">
+          <pre className="text-xs text-muted-foreground bg-muted p-2 rounded overflow-y-auto font-mono whitespace-pre-wrap break-words max-h-48">
+            {prompt.content}
+          </pre>
+        </div>
+      )}
 
       {/* Tags */}
       {prompt.tags && prompt.tags.length > 0 && (
@@ -137,12 +148,14 @@ export function WidgetCard({ prompt }: WidgetCardProps) {
           )}
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={copyToClipboard}
-            className="p-1 rounded hover:bg-accent"
-          >
-            <Copy className="h-3 w-3" />
-          </button>
+          {prompt.content && (
+            <button
+              onClick={copyToClipboard}
+              className="p-1 rounded hover:bg-accent"
+            >
+              <Copy className="h-3 w-3" />
+            </button>
+          )}
           {prompt.actionUrl ? (
             <Link
               href={prompt.actionUrl}

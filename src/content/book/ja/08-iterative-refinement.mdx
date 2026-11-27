@@ -38,7 +38,7 @@
 
 ### 問題：トーンが間違っている
 
-トーンは主観的であり、文脈によって異なります。モデルが「プロフェッショナル」と判断するものが、あなたの組織の声や受信者との関係性に合わないこともあります。
+トーンは主観的であり、文脈によって異なります。モデルが「プロフェッショナル」と判断するものが、あなたの組織らしい語り口や、受信者との関係性に合わないこともあります。
 
 <DiffView 
   before="Write an apology email for missing a deadline."
@@ -169,7 +169,7 @@ Tone: Friendly, professional, empathetic but not groveling."
 
 ## 実践的な反復の例
 
-完全な反復サイクルを見ていきましょう。各改良が前のバージョンの特定の欠点にどのように対処しているかに注目してください。
+完全な反復サイクルをたどり、各改良が前回の改良の上にどう積み重なっていくかを見ていきましょう。各バージョンが前のバージョンの特定の欠点にどう対処しているかに注目してください。
 
 ### タスク：製品名の生成
 
@@ -218,17 +218,17 @@ Name | Pronunciation | Why It Works | Domain Availability Guess`,
 
 ## タスクタイプ別の改良戦略
 
-異なるタスクは予測可能な方法で失敗します。一般的な失敗パターンを知っておくことで、問題をより早く診断し修正できます。
+タスクの種類によって、失敗の仕方にはおおよその傾向があります。一般的な失敗パターンを知っておくことで、問題をより早く診断し修正できます。
 
 ### コンテンツ生成の場合
 
-コンテンツ生成は、一般的、的外れ、またはフォーマットが不適切な出力を生成することがよくあります。修正には通常、制約をより具体的にする、具体的な例を提供する、またはブランドの声を明示的に定義することが含まれます。
+コンテンツ生成は、一般的、的外れ、またはフォーマットが不適切な出力を生成することがよくあります。修正には通常、制約をより具体的にする、具体的な例を提供する、またはブランドボイスを明示的に定義することが含まれます。
 
 <InfoGrid items={[
   { icon: "target", title: "一般的すぎる", description: "具体的な制約とコンテキストを追加", example: "\"Write about dogs\" → \"Write about golden retrievers for first-time owners, focusing on training and exercise needs\"" },
   { icon: "scissors", title: "長すぎる", description: "単語数/段落数の制限を設定", example: "Add: \"Keep response under 150 words\" or \"Maximum 3 paragraphs\"" },
   { icon: "palette", title: "スタイルが違う", description: "スタイルの例を提供", example: "\"Write in the style of this example: [paste sample text]\"" },
-  { icon: "megaphone", title: "ブランドに合わない", description: "ブランドの声のガイドラインを含める", example: "\"Use friendly, casual tone. Avoid jargon. Address reader as 'you'.\"" }
+  { icon: "megaphone", title: "ブランドに合わない", description: "ブランドボイスのガイドラインを含める", example: "\"Use friendly, casual tone. Avoid jargon. Address reader as 'you'.\"" }
 ]} />
 
 ### コード生成の場合
@@ -281,7 +281,7 @@ my prompt to get better results?
 
 ## プロンプトのA/Bテスト
 
-繰り返し使用されるプロンプトや大規模に使用されるプロンプトについては、最初にうまくいったものを選ぶだけでなく、バリエーションをテストして、最も信頼性が高く高品質なアプローチを見つけましょう。
+繰り返し使用されるプロンプトや大規模に使用されるプロンプトについては、最初にうまくいったものに飛びつかず、バリエーションをテストして、最も信頼性が高く高品質なアプローチを見つけましょう。
 
 ```
 Prompt A: "Summarize this article in 3 bullet points."
@@ -296,7 +296,7 @@ Prompt C: "What are the key takeaways from this article? List 3."
 
 ## 反復をいつ止めるか
 
-完璧は十分の敵です。プロンプトがいつ使用準備完了なのか、いつ収穫逓減のためにただ磨いているだけなのかを見極めましょう。
+完璧を求めすぎると、「十分に良い」ものを逃してしまいます。プロンプトがいつ実用に耐える状態になったのか、いつ効果の薄い磨き上げを続けているだけなのかを見極めましょう。
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
   <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
@@ -305,7 +305,7 @@ Prompt C: "What are the key takeaways from this article? List 3."
       <p className="m-0!">出力が一貫して要件を満たしている</p>
       <p className="m-0!">エッジケースが適切に処理されている</p>
       <p className="m-0!">フォーマットが信頼でき、パース可能</p>
-      <p className="m-0!">さらなる改善は収穫逓減を示している</p>
+      <p className="m-0!">これ以上改善しても効果が小さくなっている</p>
     </div>
   </div>
   <div className="border rounded-lg bg-red-50/50 dark:bg-red-950/20 border-red-200 dark:border-red-900">
@@ -324,7 +324,7 @@ Prompt C: "What are the key takeaways from this article? List 3."
 プロンプトはコードです。本番環境で使用されるプロンプトについては、同じ厳密さで扱いましょう：バージョン管理、変更履歴、そして何か問題が発生した場合にロールバックできる機能。
 
 <Callout type="tip" title="組み込みのバージョン管理">
-prompts.chatにはプロンプトの自動バージョン履歴機能が含まれています。すべての編集が保存されるため、バージョンを比較したり、ワンクリックで以前の反復を復元したりできます。
+多くのプロンプトツールは、バージョン履歴を自動で残してくれます。たとえばprompts.chatでは、プロンプトの本文を編集するたびに新しいバージョンとして保存され、任意の2つのバージョンを並べて比較できます。
 </Callout>
 
 自己管理のプロンプトには、フォルダ構造を使用してください：

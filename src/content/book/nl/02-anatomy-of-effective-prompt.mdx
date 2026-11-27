@@ -230,6 +230,10 @@ Structureer de documentatie als:
 3. Response (succes- en foutvoorbeelden)
 4. Codevoorbeeld (in JavaScript/Node.js)
 
+# Voorbeeld
+Sluit aan bij de toon van deze foutbeschrijving uit onze bestaande documentatie:
+"card_declined: De bank van de klant heeft de betaling geweigerd. Vraag de klant een andere betaalmethode te proberen."
+
 # Endpoint Details
 POST /v1/payments/intents
 Body: { "amount": 1000, "currency": "usd", "description": "Order #1234" }`}
@@ -293,7 +297,7 @@ Formaat: Geef voor elke functie:
 1. Functienaam
 2. Beschrijving in één zin
 3. Waarom het belangrijk is voor remote teams`}
-  description="Deze prompt gebruikt alle zes componenten. Probeer het en zie hoe de gestructureerde aanpak gerichte, bruikbare resultaten oplevert."
+  description="Deze prompt gebruikt vijf van de zes componenten (alles behalve voorbeelden). Probeer het en zie hoe de gestructureerde aanpak gerichte, bruikbare resultaten oplevert."
 />
 
 ## Bouw Je Eigen Prompt
@@ -316,7 +320,7 @@ Nu ben jij aan de beurt! Gebruik deze interactieve promptbouwer om je eigen prom
   ]}
   hints={[
     "Denk na over welke expertise een code reviewer moet hebben",
-    "Wees specifiek over welke beveiligingsproblemen te zoeken",
+    "Wees specifiek over naar welke beveiligingsproblemen gezocht moet worden",
     "Overweeg om een gestructureerd antwoordformaat te vragen"
   ]}
   exampleSolution={`Je bent een senior security engineer met expertise in webapplicatiebeveiliging en OWASP Top 10 kwetsbaarheden.
@@ -327,7 +331,7 @@ Focus op:
 - SQL-injectierisico's
 - XSS-kwetsbaarheden
 - Authenticatie/autorisatieproblemen
-- Input validatie hiaten
+- Hiaten in inputvalidatie
 
 Outputformaat:
 Voor elk gevonden probleem:

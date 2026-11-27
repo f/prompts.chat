@@ -1,0 +1,381 @@
+요즘 AI 이야기를 하다 보면 다섯 단어가 자꾸만 등장합니다. **프롬프트**, **스킬**, **에이전트**, **봇**, 그리고 **팀**입니다. 이 말들은 꽤 느슨하게 쓰이고, 때로는 마치 같은 뜻인 것처럼 섞여 쓰이기도 합니다. 그래서 실제보다 훨씬 어렵게 느껴지지요. 이번 장은 뒤에 이어질 장들로 넘어가기 전에 잠시 숨을 고르는 쉼터입니다. 다섯 단어를 가장 단순한 것부터 가장 정교한 것까지 차례로 늘어놓고, 각각의 속을 들여다보며 정말로 무엇인지 살펴보겠습니다.
+
+순서에는 이유가 있습니다. 다섯 단어가 하나의 사다리를 이루기 때문입니다. 사다리의 칸마다 바로 아래 칸에 있던 것을 모두 그대로 가진 채, 딱 한 가지를 새로 더합니다. 칸마다 무엇이 더해지는지 알면 전체 그림이 한눈에 들어옵니다.
+
+이야기가 붕 뜨지 않도록, 흔한 일상의 한 장면을 사다리 꼭대기까지 줄곧 따라가 보겠습니다. 바로 **저녁상 차리기**입니다. 가족을 위해 밥을 지어 본 사람, 혹은 누군가 차려 준 밥을 먹어 본 사람이라면 누구나 그 흐름을 잘 압니다.
+
+<div className="my-8 p-6 bg-muted/30 rounded-xl border">
+  <p className="text-sm font-semibold text-center text-muted-foreground m-0! mb-4!">사다리: 한 칸 오를 때마다 한 가지가 더해집니다</p>
+  <div className="flex flex-col items-center gap-2 max-w-md mx-auto">
+    <div className="w-full px-4 py-3 bg-amber-100 dark:bg-amber-900/50 border border-amber-300 dark:border-amber-700 rounded-lg text-center">
+      <p className="font-semibold text-amber-800 dark:text-amber-200 m-0!">1. 프롬프트</p>
+      <p className="text-xs text-amber-700 dark:text-amber-300 m-0!">지시 하나에 답 하나</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">저장해 둔 방법을 더하면</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-purple-100 dark:bg-purple-900/50 border border-purple-300 dark:border-purple-700 rounded-lg text-center">
+      <p className="font-semibold text-purple-800 dark:text-purple-200 m-0!">2. 스킬</p>
+      <p className="text-xs text-purple-700 dark:text-purple-300 m-0!">다시 쓸 수 있는 지침, 필요할 때 불러옵니다</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">도구와 루프를 더하면</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border border-blue-300 dark:border-blue-700 rounded-lg text-center">
+      <p className="font-semibold text-blue-800 dark:text-blue-200 m-0!">3. 에이전트</p>
+      <p className="text-xs text-blue-700 dark:text-blue-300 m-0!">목표를 향해 한 걸음씩 행동합니다</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">시간을 더하면: 정체성, 메모리, 루틴</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-green-100 dark:bg-green-900/50 border border-green-300 dark:border-green-700 rounded-lg text-center">
+      <p className="font-semibold text-green-800 dark:text-green-200 m-0!">4. 봇</p>
+      <p className="text-xs text-green-700 dark:text-green-300 m-0!">곁에 머물며 자기 일을 계속 맡는 에이전트</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">다른 구성원과 인계를 더하면</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-rose-100 dark:bg-rose-900/50 border border-rose-300 dark:border-rose-700 rounded-lg text-center">
+      <p className="font-semibold text-rose-800 dark:text-rose-200 m-0!">5. 팀</p>
+      <p className="text-xs text-rose-700 dark:text-rose-300 m-0!">역할을 맡은 여러 구성원이 일을 주고받습니다</p>
+    </div>
+  </div>
+</div>
+
+## 첫 번째 칸: 프롬프트
+
+배가 고픈 여러분이 요리 잘하는 친구에게 이렇게 묻는다고 해 봅시다. "간단한 토마토 수프 만드는 법 좀 알려 줄래?" 친구가 대답해 주고, 이야기는 거기서 끝납니다. 하나를 물었고, 답을 하나 받았습니다. 그게 전부입니다.
+
+이것이 **프롬프트**입니다. AI 모델에게 보내는 글, 그러니까 질문이나 부탁이나 지시를 말합니다. [AI 모델 이해하기](/book/01-understanding-ai-models)에서 보았듯이, 모델은 그 글을 읽고 다음에 무엇이 와야 할지 예측하면서 답을 한 조각씩 써 내려갑니다. 그러고는 멈춰서 기다립니다. 어디로 가지도, 무언가를 열어 보지도, 내일 여러분을 기억하지도 않습니다. 채팅 앱이 앞서 나눈 대화를 "기억하는" 것처럼 보이는 건, 새 메시지를 보낼 때마다 앱이 지금까지의 대화 전체를 모델에게 조용히 다시 보내기 때문입니다. 모델 자체는 매번 처음부터 새로 시작합니다.
+
+이 책이 지금까지 다룬 내용은 거의 다 이 첫 번째 칸에 관한 것이었고, 거기에는 그럴 만한 이유가 있습니다. 위에 있는 칸들도 모두 여전히 프롬프트로 만들어져 있기 때문입니다. 분명한 프롬프트는 다른 모든 것을 쌓아 올리는 벽돌입니다.
+
+<InfoGrid columns={2} items={[
+  { label: "무엇인가요", description: "AI 모델에게 보내는 글 한 편입니다. 모델은 그것을 읽고 답 하나를 돌려줍니다.", color: "amber" },
+  { label: "작은 예", description: "웬만한 부엌에 다 있는 재료로 4인분 토마토 수프를 끓이는 간단한 레시피를 알려 달라는 부탁 같은 것입니다. 긴 이메일을 요약해 달라거나, 생일 파티 아이디어를 열 가지 달라고 하는 것도 마찬가지입니다.", color: "amber" },
+  { label: "이럴 때 쓰세요", description: "답이 한 번, 하나만 필요하고, 여러분이 그 자리에서 읽고 다음에 무엇을 할지 정할 수 있을 때.", color: "amber" },
+  { label: "오해하지 마세요", description: "프롬프트는 바깥세상에서 무언가를 실행하지 않고, 답한 뒤에도 계속 일하지 않으며, 다음 주에 여러분을 기억하지도 않습니다.", color: "amber" }
+]} />
+
+<TryIt prompt="토마토가 초록색에서 빨간색으로 바뀌는 이유를 일곱 살 아이가 재미있어할 만하게 설명해 줘. 짧은 비유를 하나 쓰고, 200자 안으로 써 줘." description="지시 하나에 답 하나. 모델이 답한 뒤에는 그저 조용히 기다린다는 점을 눈여겨보세요." />
+
+## 두 번째 칸: 스킬
+
+이번에는 그 친구가 매주 같은 질문을 받는다고 상상해 보세요. 친구는 매번 처음부터 설명하는 대신, 만드는 법을 레시피 카드에 적어 부엌의 상자에 넣어 둡니다. 카드에는 이 요리가 어떤 자리에 어울리는지, 어떤 재료를 쓰는지, 순서대로 밟을 단계, 그리고 맛있게 완성하는 작은 요령이 적혀 있습니다. 누군가 토마토 수프를 먹고 싶어 하면 카드가 상자에서 나옵니다. 그 밖의 시간에는 상자 안에서 가만히 차례를 기다립니다.
+
+이것이 **스킬**입니다. 스킬은 저장해 두고 하나로 묶어 둔 지침 모음으로, 도움이 되는 파일 몇 개가 함께 들어 있는 경우가 많습니다. 모델은 어떤 작업에 그것이 필요할 때 불러옵니다. 실제로는 대개 작은 폴더입니다. 그 안에는 흔히 `SKILL.md`라는 이름의 주 파일이 있는데, 짧은 이름과 한 줄 설명으로 시작하고 그 뒤에 방법 전체가 이어집니다. 폴더에는 예시, 체크리스트, 템플릿, 작은 스크립트를 함께 넣어 둘 수도 있습니다.
+
+이 구조의 영리한 점은 여기에 있습니다. 모델은 모든 스킬을 늘 읽고 있지 않습니다. 그랬다가는 필요 없는 내용으로 컨텍스트가 가득 차 버릴 테니까요. 처음에 모델은 레시피 카드에 붙은 라벨 같은 짧은 설명만 봅니다. 요청이 그중 하나와 맞아떨어지면 그 스킬 전체가 컨텍스트로 불려 들어오고, 모델은 그대로 따릅니다. 스킬도 여전히 프롬프트로 이루어져 있습니다. 다만 한 번 써 보고, 시험해 보고, 저장해 둔 프롬프트라서 다시 입력할 필요가 없을 뿐입니다.
+
+부모님이나 선생님이 쓸 법한 작은 스킬을 하나 보겠습니다.
+
+```markdown
+---
+name: homework-helper
+description: 답을 알려 주는 대신 생각을 이끄는 질문을 던지며 아이의 숙제를 돕는다.
+---
+
+# 숙제 도우미
+
+아이가 숙제를 도와 달라고 하면:
+1. 그 문제에 대해 이미 알고 있는 것이 무엇인지 물어본다.
+2. 힌트는 한 번에 하나씩 작게 주고, 정답 전체는 절대 알려 주지 않는다.
+3. 힌트를 세 번 주어도 막혀 있으면, 비슷한 예를 보여 주고 다시 해 보게 한다.
+4. 정답만이 아니라 애쓴 과정을 칭찬한다.
+5. 짧은 문장과 열 살 아이가 아는 단어를 쓴다.
+```
+
+<Compare
+  before={{ label: "매번 입력하는 프롬프트", content: "우리 아들 수학 숙제 좀 도와줘. 그런데 답은 알려 주지 말고, 질문을 해 주고, 작은 힌트를 주고, 쉽게 설명하고, 애쓴 걸 칭찬해 줘..." }}
+  after={{ label: "한 번만 써 두는 스킬", content: "homework-helper 스킬이 저장되어 있습니다. 숙제 질문이 나올 때마다 어시스턴트가 이 스킬을 불러와, 매번 똑같이 세심한 방법으로 돕습니다." }}
+/>
+
+이제는 여러 회사의 AI 어시스턴트와 코딩 도구들이 이렇게 폴더로 묶인 스킬을 읽을 수 있고, 많은 사람이 스킬을 서로 나누고 있습니다. 세부 사항은 도구마다 다르지만 생각은 어디서나 같습니다. 한 번 적어 둔 방법을, 들어맞을 때 언제든 꺼내 쓸 수 있게 준비해 두는 것이지요. 스킬은 [에이전트와 스킬](/book/25-agents-and-skills)에서 훨씬 깊이 살펴봅니다.
+
+<InfoGrid columns={2} items={[
+  { label: "무엇인가요", description: "다시 쓸 수 있도록 묶어 둔 지침이고, 도움이 되는 파일이 함께 들어 있기도 합니다. 모델은 작업에 필요할 때만 이것을 불러옵니다.", color: "purple" },
+  { label: "작은 예", description: "숙제 도우미 스킬, 학교에 보낼 정중한 이메일을 쓰는 스킬, 메모를 주간 학급 소식지로 다듬는 스킬 같은 것입니다.", color: "purple" },
+  { label: "이럴 때 쓰세요", description: "똑같이 자세한 지시를 자꾸 되풀이하고 있고, 매번 같은 세심한 방식으로 일이 처리되기를 바랄 때.", color: "purple" },
+  { label: "오해하지 마세요", description: "스킬은 그 자체로는 아무것도 하지 않습니다. 레시피 카드처럼, 누군가 집어 들고 따라 해야 합니다. 새로운 모델도 아니고, AI 속에 새로 심어진 지식도 아닙니다.", color: "purple" }
+]} />
+
+## 세 번째 칸: 에이전트
+
+지금까지 요리사는 말만 했습니다. 이번에는 이렇게 부탁해 봅니다. "일곱 시까지 네 사람 먹을 저녁 좀 차려 줄래?" 그러자 친구가 부엌으로 들어갑니다. 냉장고를 열어 무엇이 있는지 보고, 양파가 없다는 걸 알아차리고, 시계를 확인하고, 레시피 카드를 하나 골라 요리를 시작합니다. 수프 맛을 보고 소금을 조금 넣고, 다시 맛을 본 뒤, 마지막으로 상을 차립니다. 단계 하나하나를 일러 준 사람은 아무도 없습니다. 여러분이 건넨 것은 **목표**였고, 친구는 보고, 움직이고, 확인하면서 단계를 스스로 찾아냈습니다.
+
+이것이 **에이전트**입니다. 에이전트는 목표를 향해 **도구**를 쓰며 **루프** 안에서 일하는 AI 모델입니다. 도구는 요리사의 손에 해당합니다. 파일 읽기, 웹 검색, 캘린더 열기, 계산하기, 초안 보내기 같은 것들이지요. 루프는 보고, 움직이고, 확인하는 그 리듬입니다.
+
+작동 방식은 들리는 것보다 단순합니다. 모델을 감싸고 있는 소프트웨어가 있는데, 이 책에서는 그것을 [하네스](/book/26-the-harnesses)라고 부릅니다. 하네스는 모델에게 목표와 써도 되는 도구 목록을 건넵니다. 모델은 무언가를 직접 건드리지 않습니다. 대신 "날씨 도구로 토요일 리스본 날씨를 알아봐 줘" 같은 요청을 답으로 내놓습니다. 그러면 하네스가 그 도구를 실행하고 결과를 대화에 다시 넣어 줍니다. 모델은 결과를 읽고 다음 단계를 정합니다. 이 과정이 목표에 닿을 때까지, 혹은 한도에 걸려 멈출 때까지 되풀이됩니다. 루프의 한 바퀴 한 바퀴는 여전히 프롬프트와 답입니다. 그것을 에이전트로 만드는 것은, 답이 행동으로 이어지고 그 행동의 결과가 다시 다음 답으로 이어진다는 점입니다. 이 리듬은 [루프 엔지니어링](/book/14a-loop-engineering)에서 이미 만나 보았습니다.
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col items-center gap-2 max-w-sm mx-auto">
+    <div className="w-full px-4 py-2 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">목표: 저녁 7시까지 4인분 저녁상</p>
+    </div>
+    <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+    <div className="w-full p-3 border border-dashed rounded-lg flex flex-col items-center gap-2">
+      <div className="w-full px-3 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded text-center">
+        <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">생각하기: 다음엔 뭘 하지?</p>
+      </div>
+      <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+      <div className="w-full px-3 py-2 bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800 rounded text-center">
+        <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">움직이기: 도구 쓰기 (냉장고 열기)</p>
+      </div>
+      <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+      <div className="w-full px-3 py-2 bg-teal-100 dark:bg-teal-900/50 border border-teal-200 dark:border-teal-800 rounded text-center">
+        <p className="text-sm font-medium text-teal-700 dark:text-teal-300 m-0!">확인하기: 결과 살피기 (양파가 없음)</p>
+      </div>
+      <p className="text-xs text-muted-foreground m-0!">↻ 다 끝날 때까지, 또는 한도에 걸려 멈출 때까지 되풀이</p>
+    </div>
+    <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+    <div className="w-full px-4 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">완료: 저녁상이 차려졌습니다</p>
+    </div>
+  </div>
+</div>
+
+그렇게 부르지 않았을 뿐, 여러분은 이미 에이전트를 써 보았을지도 모릅니다. 프로젝트를 읽고, 파일을 고치고, 테스트를 돌리고, 실패한 부분을 바로잡는 코딩 도우미가 에이전트입니다. 보고서를 쓰기 전에 여러 페이지를 검색하는 채팅 앱의 리서치 모드나, 여러분 대신 양식을 채워 주는 브라우저 도우미도 그렇습니다. 에이전트는 스킬도 자주 씁니다. 우리 부엌의 요리사도 들어맞을 때면 여전히 레시피 카드에 손을 뻗습니다.
+
+<InfoGrid columns={2} items={[
+  { label: "무엇인가요", description: "도구를 가지고 루프 안에서 일하는 AI 모델입니다. 보고, 움직이고, 결과를 확인하며, 목표에 닿거나 그만하라는 말을 들을 때까지 계속합니다.", color: "blue" },
+  { label: "작은 예", description: "토요일 소풍 계획을 부탁하면 날씨를 확인하고, 여러분의 캘린더를 보고, 공원을 고르고, 장보기 목록을 써 줍니다.", color: "blue" },
+  { label: "이럴 때 쓰세요", description: "일이 여러 단계로 이루어져 있고, 실제 정보나 실제 행동이 필요하며, 모든 단계를 미리 적어 두기 어려울 때.", color: "blue" },
+  { label: "오해하지 마세요", description: "에이전트는 더 똑똑한 모델이 아닙니다. 같은 종류의 모델에 손과 루프가 달린 것입니다. 대개 여러분이 열어 둔 동안에만 일하고, 세션이 끝나면 잊어버립니다.", color: "blue" }
+]} />
+
+<Callout type="warning" title="손은 실수할 수도 있습니다">
+프롬프트가 틀리면 틀린 답을 받을 뿐입니다. 하지만 에이전트는 틀린 행동을 할 수 있습니다. 엉뚱한 파일을 지우거나, 메시지를 너무 일찍 보내 버리는 식으로요. 그래서 좋은 에이전트는 되돌리기 어려운 일을 하기 전에 꼭 먼저 묻고, 여러분도 그 작업에 정말 필요한 도구만 건네는 것이 좋습니다.
+</Callout>
+
+## 네 번째 칸: 봇
+
+우리 요리사는 솜씨가 아주 좋지만, 저녁마다 처음 온 사람처럼 찾아옵니다. 땅콩 알레르기가 있는 사람이 누구인지, 큰 냄비가 어디 있는지, 어제 무엇을 먹었는지를 다시 처음부터 물어야 하지요. 게다가 불러야만 옵니다.
+
+이번에는 **가족과 함께 사는** 요리사를 떠올려 보세요. 이 요리사에게는 이름과 분명한 일이 있습니다. "우리 집 저녁 담당"이지요. 그동안 알게 된 것들을 공책에 꼬박꼬박 적어 둡니다. 서아는 땅콩 알레르기가 있다, 할아버지는 매운 음식을 싫어하신다, 목요일은 피자 먹는 날이다. 식료품 창고 열쇠도, 장보기 배달 앱 계정도 맡고 있습니다. 그리고 매주 일요일 저녁 여섯 시가 되면 누가 시키지 않아도 한 주 저녁 메뉴를 짜고, 가족 캘린더에서 바쁜 저녁을 확인하고, 어른이 승인할 수 있도록 장보기 목록을 냉장고에 붙여 둡니다.
+
+이것이 이 책에서 말하는 **봇**, 곧 **지속형 에이전트**입니다. 에이전트 칸에 있던 모델, 도구, 루프는 모두 그대로 있습니다. 봇이 더하는 것은 **시간**입니다. 속을 들여다보면 대개 다음 네 가지 부품이 더해져 있습니다.
+
+<InfoGrid items={[
+  { label: "정체성", description: "오래 유지되는 이름과 역할입니다. 늘 따르는 기본 지침 속에 적혀 있어서, 자기 일에 어떤 정보가 중요한지 압니다.", color: "green" },
+  { label: "메모리", description: "모델 바깥에 저장된 메모입니다. 흔히 평범한 파일이나 작은 데이터베이스에 담기고, 세션이 시작될 때마다 컨텍스트로 다시 불려 옵니다. 모델 자체는 여전히 잊어버립니다. 기억은 공책이 맡습니다.", color: "green" },
+  { label: "루틴", description: "정해진 시각(매주 일요일 저녁 6시)이나 어떤 일이 생겼을 때(새 이메일 도착) 시작되는 일입니다. 여러분이 새 프롬프트를 보내지 않아도 움직입니다.", color: "green" },
+  { label: "커넥터와 일할 공간", description: "앱과 계정에 대한, 허락받은 지속적인 접근 권한입니다. 그리고 여러분이 자리를 비운 동안에도 켜져 있는 컴퓨터나 서버입니다.", color: "green" }
+]} />
+
+<InfoGrid columns={2} items={[
+  { label: "무엇인가요", description: "곁에 머무는 에이전트입니다. 역할을 계속 지키고, 대화가 바뀌어도 기억하며, 자기 일정에 따라 스스로 일을 시작할 수 있습니다.", color: "green" },
+  { label: "작은 예", description: "매주 일요일 저녁 한 주 식단을 짜고, 땅콩을 피하고, 장보기 목록을 부모에게 승인받는 식단 봇.", color: "green" },
+  { label: "이럴 때 쓰세요", description: "같은 책임이 거듭 돌아오고, 여러분이 화면 앞에 없을 때도 그 일이 계속되어야 할 때.", color: "green" },
+  { label: "오해하지 마세요", description: "사람이 아니고, 모든 것을 기억하는 마음도 아닙니다. 저장된 것만 기억하며, 여전히 틀릴 수 있습니다. 정해진 메뉴만 따라가던 옛날 웹사이트의 각본형 챗봇과도 다릅니다.", color: "green" }
+]} />
+
+<Callout type="info" title="오래된 단어, 새로운 뜻">
+오랫동안 "봇"은 거의 모든 자동 프로그램을 가리켰습니다. 날씨를 올리는 스크립트, 게임 속 캐릭터, 정해진 버튼 네 개만 보여 주는 고객 센터 창 같은 것들이지요. 그중 상당수에는 AI 모델이 아예 없었습니다. 이 책에서 봇은 더 좁은 뜻입니다. 자기만의 정체성, 메모리, 루틴을 가지고 곁에 머무는 에이전트를 말합니다. 다른 곳에서 이 단어를 만나면 어느 쪽 뜻인지 한번 따져 보면 좋습니다.
+</Callout>
+
+봇은 아무도 지켜보지 않을 때 일하기 때문에, 봇을 둘러싼 규칙은 아래 어느 칸에서보다 중요해집니다. 좋은 봇은 초안을 쓰고 제안하는 일은 마음껏 하지만, 무언가를 보내거나, 사거나, 지우거나, 게시하기 전에는 사람의 판단을 기다립니다. [상시 가동 봇: 계속 일하는 에이전트](/book/28-persistent-bots) 장에서 메모리와 루틴, 그리고 이런 승인을 자세히 살펴봅니다.
+
+## 다섯 번째 칸: 팀
+
+요리사 한 사람이면 가족 저녁상은 차릴 수 있습니다. 하지만 북적이는 식당 주방을 떠올려 보세요. 주문을 받는 사람이 있고, 채소를 손질하는 사람이 있고, 메인 요리를 만드는 사람이 있고, 접시가 주방을 나서기 전에 하나하나 살피는 사람이 있습니다. 저마다 분명한 일이 있고, 일은 정해진 흐름을 따라 사람에서 사람으로 옮겨 갑니다. 주문서는 요리사에게, 완성된 접시는 확인하는 사람에게 갑니다. 모두가 모든 것을 알 필요는 없습니다. 자기 몫과, 무엇을 누구에게 넘길지만 알면 됩니다.
+
+이것이 **팀**입니다. 저마다 **역할**을 맡은 여러 봇이나 에이전트가 **인계**로 이어져, 함께하는 **목적**을 향해 일합니다. 인계란 한 구성원이 이름이 붙은 작업 결과물을 다음 구성원에게 넘기는 순간을 말합니다. 주문서나 완성된 접시처럼요.
+
+핵심은 각 구성원이 무엇을 볼 수 있느냐에 있습니다. 구성원마다 자기 역할을 위한 지침이 따로 있습니다. 일을 마치면 목록, 초안, 보고서처럼 정해진 결과물을 넘기고, 다음 구성원은 딱 그것만 받습니다. 그 결과물이 나오기까지 오간 대화 전체를 받지는 않습니다. 덕분에 구성원은 저마다 자기 일에 집중할 수 있고, 실수가 어디서 생겼는지 거슬러 찾기도 쉬워집니다. 완성된 요리가 너무 짜다면, 흐름을 따라 접시를 하나씩 확인해 보면 어디서 소금이 들어갔는지 알 수 있습니다.
+
+예를 들어 학교라면, 학부모에게 보낼 주간 소식지를 만들기 위해 이런 작은 팀을 꾸릴 수 있겠지요.
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col items-center gap-2 max-w-sm mx-auto">
+    <div className="w-full px-4 py-2 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">수집 담당</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">반마다 소식을 모읍니다</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">넘기는 것: 소식 목록</p>
+    </div>
+    <div className="w-full px-4 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">작성 담당</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">목록을 다정한 초안으로 바꿉니다</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">넘기는 것: 소식지 초안</p>
+    </div>
+    <div className="w-full px-4 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">검토 담당</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0!">이름, 날짜, 말투를 확인합니다</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">넘기는 것: 검토를 마친 초안</p>
+    </div>
+    <div className="w-full px-4 py-2 bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">선생님</p>
+      <p className="text-xs text-amber-600 dark:text-amber-400 m-0!">무엇이든 보내기 전에 승인합니다</p>
+    </div>
+  </div>
+</div>
+
+줄의 맨 끝에 누가 서 있는지 보셨나요? 사람입니다. 잘 설계된 팀에서는 무엇이든 팀 밖으로 나가기 전에, 적어도 한 번의 인계가 사람에게 닿도록 되어 있습니다.
+
+<InfoGrid columns={2} items={[
+  { label: "무엇인가요", description: "역할이 분명한 여러 봇이나 에이전트가, 이름이 붙은 작업 결과물을 서로 넘기며 하나의 공동 목적을 향해 나아갑니다.", color: "rose" },
+  { label: "작은 예", description: "수집 담당, 작성 담당, 검토 담당이 학급 소식지를 준비하고, 최종본은 선생님이 승인합니다.", color: "rose" },
+  { label: "이럴 때 쓰세요", description: "일이 자연스럽게 서로 다른 몫으로 나뉘고, 각 몫을 ‘무엇을 받아서 무엇을 넘기는지’로 설명할 수 있으며, 구성원 하나로는 자꾸 헷갈릴 때.", color: "rose" },
+  { label: "오해하지 마세요", description: "알아서 정리하라고 내버려 둔 에이전트 무리가 아니며, 하나보다 저절로 더 나은 것도 아닙니다. 구성원이 하나 늘 때마다 인계가 늘고, 인계 하나하나가 의미가 새어 나갈 수 있는 틈이 됩니다.", color: "rose" }
+]} />
+
+## 이건 어느 칸일까요?
+
+사다리를 끝까지 올라왔으니, 이제 칸을 구별하는 연습을 해 봅시다. 상황마다 무엇이 더해졌는지 스스로 물어보세요. 저장된 방법인가요, 도구와 루프인가요, 시간인가요, 아니면 다른 구성원인가요?
+
+<Quiz
+  question="선생님이 ‘아홉 살 반 아이들을 위한 화산 퀴즈를 재미있게 세 개 만들어 줘’라고 입력합니다. AI가 답하고, 그것으로 끝입니다. 이건 무엇일까요?"
+  options={["프롬프트", "스킬", "에이전트", "봇"]}
+  correctIndex={0}
+  explanation="지시 하나에 답 하나, 그 뒤로는 아무 일도 일어나지 않습니다. 프롬프트입니다. 여기에는 딱 맞는 도구이기도 합니다. 선생님이 바로 그 자리에서 질문을 읽고 쓸 수 있으니까요."
+/>
+
+<Quiz
+  question="한 부모가 bedtime-stories라는 폴더에 지침을 저장해 둡니다. 늘 다정하게, 5분 안으로, 마지막에는 아이가 잠드는 장면으로 끝낼 것. 누군가 잠자리 이야기를 부탁할 때마다 어시스턴트는 이 지침을 씁니다. 이건 무엇일까요?"
+  options={["프롬프트", "스킬", "봇", "팀"]}
+  correctIndex={1}
+  explanation="저장해 두고 다시 쓰는 방법이고, 어시스턴트는 잠자리 이야기를 부탁받을 때만 이것을 불러옵니다. 혼자서는 아무것도 하지 않고, 자기만의 일정이나 메모리도 없습니다. 그래서 스킬입니다."
+/>
+
+<Quiz
+  question="우리 동네에서 월요일에 문을 열고 어린아이와 가기 좋은 박물관을 찾아 달라고 어시스턴트에게 부탁합니다. 어시스턴트는 여러 웹사이트를 검색하고, 운영 시간을 비교하고, 입장료를 확인한 뒤, 링크와 함께 한 곳을 골라 알려 줍니다. 이건 무엇일까요?"
+  options={["프롬프트", "스킬", "에이전트", "팀"]}
+  correctIndex={2}
+  explanation="도구(웹 검색)를 루프 안에서 쓰며, 일을 마치기 전에 여러 번 살펴보고 확인했습니다. 에이전트입니다. 여러분이 있는 동안 일했고, 다음 주에 스스로 이 일을 다시 하지는 않습니다."
+/>
+
+<Quiz
+  question="도서관 도우미라는 어시스턴트가 반 아이들이 저마다 어떤 책을 읽었는지 기억합니다. 매주 금요일 아침, 아무도 부탁하지 않았는데 다음 주에 읽을 책을 추천하고 그 목록을 선생님께 보내 승인을 받습니다. 이건 무엇일까요?"
+  options={["스킬", "에이전트", "봇", "팀"]}
+  correctIndex={2}
+  explanation="이름과 맡은 일이 있고, 몇 주에 걸쳐 메모리를 이어 가며, 자기 일정에 따라 스스로 시작합니다. 바로 이것들이 봇이 에이전트 위에 더하는 것입니다."
+/>
+
+<Quiz
+  question="어시스턴트 하나는 현장 체험 학습 사진을 모으고, 또 하나는 설명 글을 쓰고, 세 번째는 아이의 이름 전체가 드러나지 않았는지 확인합니다. 그런 다음 앨범은 교장 선생님께 전달됩니다. 이건 무엇일까요?"
+  options={["에이전트", "봇", "스킬", "팀"]}
+  correctIndex={3}
+  explanation="역할이 서로 다른 여러 구성원이 이름이 붙은 결과물을 다음 구성원에게 넘기고, 마지막에는 사람이 승인합니다. 팀입니다."
+/>
+
+## 다섯 가지를 나란히
+
+사다리 전체를 한자리에 모아 보았습니다. 각 줄을 왼쪽에서 오른쪽으로 읽으며, 열마다 앞에 있던 것을 그대로 지니고 있다는 점을 눈여겨보세요.
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">질문</th>
+      <th scope="col">프롬프트</th>
+      <th scope="col">스킬</th>
+      <th scope="col">에이전트</th>
+      <th scope="col">봇</th>
+      <th scope="col">팀</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>한 줄로 말하면?</td>
+      <td>지시 하나에 답 하나</td>
+      <td>저장해 둔 방법, 필요할 때 불러옴</td>
+      <td>도구를 들고 루프 안에서 일하는 모델</td>
+      <td>곁에 머무는 에이전트</td>
+      <td>역할을 맡은 여러 구성원</td>
+    </tr>
+    <tr>
+      <td>무엇을 더하나요?</td>
+      <td>출발점</td>
+      <td>재사용</td>
+      <td>행동</td>
+      <td>시간</td>
+      <td>일의 분담</td>
+    </tr>
+    <tr>
+      <td>부엌에 비유하면</td>
+      <td>레시피 물어보기</td>
+      <td>상자 속 레시피 카드</td>
+      <td>오늘 저녁을 차리는 요리사</td>
+      <td>매주 식단을 짜는 우리 집 요리사</td>
+      <td>식당 주방</td>
+    </tr>
+    <tr>
+      <td>행동할 수 있나요?</td>
+      <td>아니요, 답만 합니다</td>
+      <td>아니요, 안내만 합니다</td>
+      <td>네, 도구로</td>
+      <td>네, 여러분이 없을 때도</td>
+      <td>네, 구성원마다 자기 역할 안에서</td>
+    </tr>
+    <tr>
+      <td>기억하나요?</td>
+      <td>이번 대화만</td>
+      <td>기억되는 쪽이지, 기억하는 쪽은 아닙니다</td>
+      <td>이번 세션만</td>
+      <td>네, 저장된 메모리로</td>
+      <td>구성원마다 자기 몫을</td>
+    </tr>
+    <tr>
+      <td>누가 시작하나요?</td>
+      <td>여러분</td>
+      <td>작업이 맞아떨어질 때 모델이</td>
+      <td>목표를 가진 여러분</td>
+      <td>여러분, 일정, 또는 어떤 사건</td>
+      <td>먼저 목적이, 그다음엔 인계 하나하나가</td>
+    </tr>
+  </tbody>
+</table>
+
+## 통하는 칸 중 가장 단순한 칸을 고르세요
+
+사다리 위쪽일수록 더 좋다고 생각하기 쉽습니다. 그렇지 않습니다. 칸을 오를 때마다 힘이 더해지지만, 비용과 기다리는 시간, 그리고 일이 틀어질 새로운 길도 함께 늘어납니다. 프롬프트는 틀린 답을 줄 수 있습니다. 에이전트는 틀린 행동을 할 수 있습니다. 봇은 새벽 세 시에 틀린 행동을 할 수 있습니다. 팀은 하나의 실수를 구성원에서 구성원으로 넘기다가 결국 사실처럼 보이게 만들 수 있습니다.
+
+그러니 현명한 습관은 솜씨 좋은 요리사들이 이미 지닌 습관과 같습니다. 일을 해낼 수 있는 가장 단순한 도구를 쓰는 것이지요. 달걀 하나 삶자고 식당 주방을 통째로 빌릴 필요는 없습니다. 사다리 맨 아래에서 시작하고, 지금 있는 칸으로는 분명히 부족할 때만 한 칸 올라가세요.
+
+<InfoGrid items={[
+  { label: "프롬프트로 시작하세요", description: "답 하나가 필요하고 여러분이 그 자리에서 읽을 수 있다면, 분명한 프롬프트 하나로 충분합니다.", color: "amber" },
+  { label: "스킬로 올라가세요", description: "똑같이 긴 지시를 몇 번이고 다시 입력하고 있다는 걸 알아차렸을 때.", color: "purple" },
+  { label: "에이전트로 올라가세요", description: "실제 정보나 실제 행동이 필요하고, 그 일이 미리 적어 둘 수 없는 여러 단계로 이루어져 있을 때.", color: "blue" },
+  { label: "봇으로 올라가세요", description: "같은 책임이 일정에 맞춰 거듭 돌아오고, 여러분이 없는 동안에도 이어져야 할 때.", color: "green" },
+  { label: "팀으로 올라가세요", description: "봇 하나가 정말로 성격이 다른 일들을 자꾸 뒤섞고, 각 일을 ‘무엇을 받아서 무엇을 넘기는지’로 설명할 수 있을 때.", color: "rose" }
+]} />
+
+<Checklist
+  title="다음 칸으로 오르기 전에"
+  items={[
+    { text: "바로 아래 칸을 써 보았고, 그것이 무엇을 못 했는지 정확히 말할 수 있다" },
+    { text: "원하는 결과를 한두 문장으로 설명할 수 있다" },
+    { text: "새 칸에 정말 필요한 도구나 계정이 무엇인지 알고, 그 이상은 주지 않는다" },
+    { text: "되돌리기 어려운 일은 무엇이든 사람의 승인을 기다리게 해 두었다" },
+    { text: "일이 실제로 잘 끝났는지 어떻게 확인할지 알고 있다" },
+    { text: "일이 잘못되면 잠시 멈추거나 중단할 방법이 있다" }
+  ]}
+/>
+
+어느 칸이 필요할지 잘 모르겠다면, AI에게 함께 생각해 달라고 부탁할 수도 있습니다. 아래 프롬프트는 그 자체로 첫 번째 칸의 좋은 예이기도 합니다.
+
+<TryIt compact prompt={`이 일을 도와줬으면 해: \${task:매주 우리 두 아이의 건강한 도시락 메뉴 짜기}.
+
+가장 단순한 것부터 가장 복잡한 것까지 늘어놓은 아래 사다리를 기준으로 생각해 줘.
+1. 프롬프트: 지시 하나에 답 하나
+2. 스킬: AI가 필요할 때 불러오는, 저장해 둔 방법
+3. 에이전트: 목표를 향해 도구를 루프 안에서 쓰는 AI
+4. 봇: 메모리와 루틴을 가지고 곁에 머무는 에이전트
+5. 팀: 역할과 인계를 갖춘 여러 에이전트나 봇
+
+내 일에 잘 맞는 가장 단순한 칸이 무엇인지, 그 이유와 함께 알려 줘. 그다음, 무엇이 달라져야 바로 위 칸이 필요해지는지도 알려 줘. 쉽고 다정한 말로 설명해 줘.`} />
+
+이제 다섯 단어가 더는 뒤섞일 필요가 없습니다. **프롬프트**는 묻습니다. **스킬**은 방법을 기억합니다. **에이전트**는 움직입니다. **봇**은 곁에 머뭅니다. **팀**은 일을 나눕니다. 그리고 어느 칸에서든 필요한 솜씨는 이 책이 처음에 다룬 바로 그것입니다. 원하는 것이 무엇인지, 어디까지가 한계인지, 잘 되었는지를 어떻게 알아볼지 분명하게 말하는 것이지요.
+
+이어지는 장들에서는 사다리를 한 칸씩 자세히 올라갑니다. [에이전트와 스킬](/book/25-agents-and-skills)에서는 스킬을 어떻게 쓰는지, 에이전트가 스킬을 어떻게 활용하는지 보여 줍니다. [도구, MCP, 커넥터](/book/27-tools-mcp-connectors)에서는 에이전트가 쓰는 손을, [하네스](/book/26-the-harnesses)에서는 그 루프를 돌리는 소프트웨어를 살펴봅니다. 마지막으로 [상시 가동 봇: 계속 일하는 에이전트](/book/28-persistent-bots)에서는 곁에 머무는 에이전트와, 그들이 이루는 팀을 따라가 봅니다.

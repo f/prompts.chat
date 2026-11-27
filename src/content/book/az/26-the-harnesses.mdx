@@ -134,6 +134,99 @@ Bir ayarı dəyişin, sonra icranı addım-addım izləyin. Kontekstin, alət so
 
 Bunlar nümunə nəticələrdir, hər modelin nə edəcəyini müəyyən edən qaydalar deyil. Model qeyri-müəyyən prompt ilə də faydalı sual verə bilər. Aydın təlimatlar gözləntilərinizi izləməyi və yoxlamağı asanlaşdırır.
 
+## Dövrü Model Yazanda
+
+Yuxarıdakı dövrün sabit bir ritmi var: model bir alət istəyir, harness onu işə salır, nəticə isə modelin kontekstinə əlavə olunur. Bir neçə addımlıq işlərdə bu ritm yaxşı işləyir. Amma yüzlərlə fayla toxunan bir tapşırıqda hər addım yeni, tam bir model sorğusuna çevrilir və kontekst modelin cəmi bir dəfə ehtiyac duyduğu çıxışlarla dolur.
+
+Bəzi harness-lər başqa yol təklif edir: model alətləri bir-bir istəmək əvəzinə onları özü çağıran kiçik bir proqram yazır. Proqram sandbox içində işləyir. Fayllar, loglar və axtarış nəticələri kimi xam məlumatlar proqramın dəyişənlərində qalır, modelə isə yalnız proqramın çap etdiyi çıxış qayıdır. Buna **proqramlı alət çağırışı** (programmatic tool calling) deyilir. İdeyanın kökündə [CodeAct](https://arxiv.org/abs/2402.01030) (Wang və həmkarları, 2024) kimi tədqiqatlar dayanır.
+
+<Compare
+  before={{ label: "Hər dəfə bir alət çağırışı", content: "A faylını oxu. Budur A. B faylını oxu. Budur B. Hər nəticədən sonra model öz təlimatları, tarixçəsi və indiyədək gördüyü hər şeylə birlikdə yenidən çağırılır." }}
+  after={{ label: "Alətləri çağıran proqram", content: "Layihədə axtar, hər uyğun faylı oxu, hələ köhnə API-dən istifadə edənləri ayır və qısa siyahı çap et. Harness proqramı işə salır və geri yalnız siyahını qaytarır." }}
+/>
+
+Kontekst daha təmiz qalır, çünki model xam çıxışlar əvəzinə xülasə üzərində düşünür. Model sorğularının sayı azalır, çünki təlimatlar və tarixçə bir neçə çağırışdan bir yenidən göndərilmir. Dövrlər və yoxlamalar isə kodun içində işləyir, beləliklə modelin baxmağı planlaşdırdığı bir hal səssizcə yaddan çıxmır.
+
+Factory 29 oktyabr 2026-cı ildə elan etdiyi [Droid 1.0](https://factory.com/news/frontier-harness) ilə bu yanaşmanı standart etdi. Onun Script adlı aləti JavaScript kodunu sandbox içində işə salır və tək bir model sorğusunda yüzlərlə alət çağırışı edə bilir. Bir-birindən asılı olmayan çağırışlar eyni vaxtda işləyir, uzun çəkən script isə arxa planda davam edib iş bitəndə modeli oyada bilir. Factory ideyanın mənbəyi kimi CodeAct-i göstərir və qeyd edir ki, 2025-ci ilin sonunda Cloudflare və Anthropic bu ideyanı real məhsullara gətirib, Codex isə onu kodlaşdırma agentlərinə daşıyıb. Factory-nin öz nümunəsində, uğursuz bir testi düzəldərkən eyni 15 alət çağırışı 10 yox, 5 model çağırışı ilə tamamlanıb. Bunlar Factory-nin öz harness-i üçün açıqladığı rəqəmlərdir.
+
+Bu yanaşmanın da öz qiyməti var. Sandbox-un özünə məxsus fayl, şəbəkə və ya sistem girişi yoxdur, o yalnız harness-in təqdim etdiyi alətlərdən istifadə edə bilir. İcazələr və təsdiqlər proqramın çağırdığı hər alətə yenə də tətbiq olunmalıdır. Çap olunan çıxışın həcmi məhduddur. Proqramı izləmək isə insan üçün ayrı-ayrı addımlardan ibarət siyahını izləməkdən çətindir.
+
+### İş Axınları: Eyni İdeya Bir Səviyyə Yuxarıda
+
+Eyni addım bütöv agentlərlə də atıla bilər. Anthropic-in [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/workflow-runs) (beta) və [Claude Code](https://code.claude.com/docs/en/workflows) məhsullarında agent **iş axını** (workflow) yaza bilər: çoxlu agenti mərhələlərlə işlədən, işi paralel qollara bölən, bir agentin nəticəsini digərinə ötürən, bir addımı yoxlamadan keçənədək təkrarlayan və gələn nəticələri birləşdirən proqram. İş axını arxa planda işləyir, əsas söhbət isə bu müddətdə sərbəst qalır.
+
+Subagentlərdə hər növbəti addıma agentin özü qərar verir. İş axınında isə qərarı proqram verir. Bununla belə, iş axınını nə vaxt başladacağını agent seçir, ona görə də bu seçimi sistem promptunda və ya təlimatlarda istiqamətləndirirsiniz. Büdcəni də nəzərə almaq lazımdır: bir icradakı hər agent token xərcləyir.
+
+### Proqram Üçün Prompt Yazmaq
+
+Model proqram planlaşdıranda promptunuz həmin proqramın texniki tapşırığına çevrilir. İşin hamısını təsvir edin: hansı elementlərin əhatə olunacağını, hər biri üçün hansı yoxlamaların ödənməli olduğunu, biri uğursuz olsa nə ediləcəyini və yekun hesabatda nələrin olmalı olduğunu. Riskli əməliyyatlarda əvvəlcə proqramın xülasəsini görmək istədiyinizi bildirin.
+
+<TryIt compact prompt={`Bu işin hamısını addım-addım getmək əvəzinə bir proqramla həll et.
+
+İş: \${job:məlumat dəyişən hər API marşrutunun daxil olmuş istifadəçi tələb etdiyini yoxla}
+Elementlər: \${items:src/app/api altındakı bütün marşrut faylları}
+Hər element üçün yoxlama: \${checks:marşrut nəyisə oxumazdan və ya yazmazdan əvvəl sessiyanı yoxlayır}
+Element uğursuz olsa: \${failure:fayl yolunu və səbəbi qeyd et, sonra davam et}
+Yekun hesabat: \${report:uğursuz olan marşrutlar, neçəsinin keçdiyi və oxuya bilmədiyin fayllar}
+
+Faylları dəyişən hər hansı bir şeyi işə salmazdan əvvəl proqramı mənə qısaca izah et və təsdiqimi gözlə.`} />
+
+Hər tapşırığa proqram lazım deyil. Hər addım əvvəlki nəticəni dəyərləndirməkdən asılıdırsa, çağırışları bir-bir etmək çox vaxt daha aydın olur. Proqram ən çox iş böyük, təkrarlanan və yoxlanması asan olduqda öz gücünü göstərir.
+
+### Təzə Baxış: Sıfırdan Başlayan Rəyçilər
+
+Subagentin boş konteksti adətən yer qənaəti üsulu kimi təqdim olunur: səs-küylü iş başqa yerdə görülür, geri yalnız qısa xülasə qayıdır. Amma bu boşluq həm də harness-in təklif edə biləcəyi ən yaxşı yoxlama vasitələrindən biridir. Bir problem üzərində uzun sessiya keçirmiş agent yol boyu etdiyi hər fərziyyəni özü ilə daşıyır. Öz planını yenidən oxuyanda hər boşluğu yaddaşından doldurur və orada boşluq olduğunu heç hiss etmir. Təzə kontekstlə başladılan rəyçinin əlində isə yalnız sənəd və sənədin göstərdiyi fayllar olur. Müəllifin bildiyi, amma heç yerə yazmadığı nə varsa, anlaşılmazlıq kimi üzə çıxır. Kağız üzərindəki anlaşılmazlığı aradan qaldırmaq isə koddakından qat-qat ucuz başa gəlir.
+
+Google-un açıq mənbəli [Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model) plagini (EGM), [2026-cı ilin oktyabrında təqdim olunub](https://opensource.googleblog.com/2026/10/introducing-elephant-goldfish-model-plugin.html) və məhz bu iş bölgüsü üzərində qurulub. "Fil" (Elephant) layihənin kontekstini saxlayan və texniki tapşırığı yazan uzun sessiyadır; kod yazmır. "Qızıl balıqlar" (Goldfish) isə yalnız qaralamanı və onun istinad etdiyi mənbə kodunu görən, yaddaşı olmayan subagentlərdir. Kompromisləri həll edən və dizaynı təsdiqləyən sizsiniz. Hər hansı tənqiddən əvvəl bir qızıl balıq planı öz sözləri ilə geri danışmalıdır; danışa bilmirsə, sənəd qeyri-müəyyəndir və yenidən yazılmağa qayıdır. Digər rəyçilər fərqli rollar götürür: sərhəd hallarını, gizli asılılıqları və planı həyata keçirəcək şəxsin hələ də təkbaşına qərar verməli olacağı hər şeyi axtarırlar. Onların tapıntıları bloklayıcı, ciddi və ya xırda kimi sıralanır və Fil-ə geri göndərilir. Google deyir ki, plagindən minlərlə mühəndisi istifadə edir. Bu, Google-un rəsmi dəstəklədiyi məhsul deyil və dəqiqliyinə dair heç bir ölçmə dərc olunmayıb.
+
+<Compare
+  before={{ label: "Müəllif öz planını yenidən oxuyur", content: "\"Uğursuz çatdırılmaları artan fasilələrlə yenidən sına.\" Cümlə tam görünür, çünki müəllif neçə cəhdə icazə verəcəyini və eyni hadisə iki dəfə gələndə nə olacağını artıq qərara aldığını xatırlayır. Bunların heç biri səhifədə yoxdur." }}
+  after={{ label: "Təzə rəyçi yalnız sənədi oxuyur", content: "\"Neçə cəhd olacaq, sonuncudan sonra nə baş verəcək? Eyni hadisə iki dəfə gəlsə, iki dəfə çatdırılacaq? Hər ikisini təxmin etməli oldum.\" Müəllifin yaddaşdan doldurduğu boşluqlar sual kimi geri qayıdır." }}
+/>
+
+Bu yanaşma tək bir məhsula aid deyil. Anthropic-in [Claude Code üçün ən yaxşı təcrübələr bələdçisi](https://code.claude.com/docs/en/best-practices) `/code-review` əmrini söhbəti heç görməmiş təzə subagentdə aparılan yoxlama kimi təsvir edir; belə rəyçi kodu yaradan mühakimənin təsirinə düşmür. Bələdçi bu bölmədəki fərqi eynilə qoyur: işi subagentə ötürmək cavabı yaxşılaşdırmır, amma sizin mühakimənizi görməmiş rəyçi həqiqətən kömək edir. O, həmçinin bu rəyçiyə yalnız oxuma alətləri verməyi və üsluba qarışmamağı tapşırmağı tövsiyə edir, çünki problem tapmaq tapşırılan rəyçi həmişə nəsə tapır. Açıq mənbəli [Code Copilot Team](https://github.com/gosha70/code-copilot-team) harness-i isə yoxlamanı ikinci modelə həvalə edir: həmin model dəyişiklikləri yalnız oxunan sandbox-da nəzərdən keçirir və PASS, FAIL və ya INCONCLUSIVE qərarı ilə qayıdır. FAIL alan mərhələ tamamlana bilmir.
+
+İdeyanı dürüst saxlayan iki xəbərdarlıq var. Birincisi, eyni kontekstdə aparılan yoxlama, prompt onu nə qədər qətiyyətlə istəsə də, müstəqil yoxlama deyil. EGM-in [harness bələdçisi](https://github.com/google/elephant-goldfish-model/blob/main/docs/harnesses.md) "subagent başlat" ifadəsini hər harness-in öz subagent alətinə bağlayır; harness-də belə alət yoxdursa, yoxlama müəllifin sessiyasında səssizcə davam etmək əvəzinə dayanır. İkincisi, təzə söhbət həmişə boş kontekst demək deyil, ona görə də izolyasiyanı fərz etmək yox, yoxlamaq lazımdır. Harness-in özbaşına yüklədiyi təlimat faylları rəyçinin ardınca içəri keçə bilər. [237 nömrəli issue](https://github.com/google/elephant-goldfish-model/issues/237) bildirir ki, Codex və Antigravity-dəki EGM rəyçiləri əsas söhbəti heç görməyib, amma layihənin `AGENTS.md` faylını yenə də alıblar. Beləcə komandanın fərziyyələri məhz onları sorğulamalı olan yoxlamanın içinə düşüb. Üstəlik hər əlavə rəyçi token və vaxt aparır. Təzə göz müəllifin artıq görə bilmədiyini görür, amma testləri və ya sizin öz mühakimənizi əvəz etmir.
+
+Sınamaq üçün yeni sessiya və ya tarixçəsi olmayan, yalnız oxuma alətləri olan bir subagent açın; bunu promptda xahiş etməyin, harness-in ayarlarında təyin edin. Sonra onu sənədə yönəldin, sənədi yaradan söhbətə yox, və soruşun:
+
+<TryIt compact prompt={`Bu planı onu əvvəllər heç görməmiş biri kimi oxu. Yalnız sənəddən və onun adını çəkdiyi fayllardan istifadə et: \${document:docs/designs/webhook-delivery.md}
+
+1. Planı öz sözlərinlə danış: nəyi qurur, hissələr bir-birinə necə bağlanır və necə yoxlanılacaq.
+2. Təxmin etməli olduğun hər məqamı və nəyi təxmin etdiyini sadala.
+3. Hər boşluğu bloklayıcı, ciddi və ya xırda kimi sırala və müəllifin nəyi əlavə etməli olduğunu de.
+
+Üslubla bağlı şərh yazma və heç bir faylı redaktə etmə.`} />
+
+### Bir Harness, Bir Neçə Model
+
+Hər çağırışa hansı modelin cavab verəcəyini harness həll edir və heç yerdə yazılmayıb ki, bu, hər dəfə eyni model olmalıdır. Uzun bir tapşırığın addımları bir-birinə bənzəmir. Bəziləri mühakimə tələb edir: yanaşma seçmək, planın yoldan çıxdığını görmək, işin həqiqətən bitib-bitmədiyinə qərar vermək. Digərləri isə sərhədləri bəlli olan və təkrarlanan işlərdir: bu faylları oxu, bu sahələri çıxar, bu modulu köçür və testlərini işə sal. Harness hər addımı ona uyğun gələn modellə tutuşdura bilər və bu yanaşma iki istiqamətdə görünür.
+
+<InfoGrid columns={2} items={[
+  { label: "Aşağıya həvalə etmək", description: "Böyük model planlayır və nəzarət edir. Çoxlu kiçik və ucuz model işin sərhədləri bəlli hissələrini paralel olaraq, hər biri öz tapşırığı ilə üzərinə götürür, geri qayıdanları isə böyük model yoxlayır.", color: "blue" },
+  { label: "Yuxarıya müraciət etmək", description: "Daha sürətli və ucuz model bütün tapşırığı aparır. Çətin anlarda daha güclü bir modeldən məsləhət alır. Güclü model gedişatın qeydini oxuyur və alətlərə özü toxunmadan plan ya da düzəliş qaytarır.", color: "purple" }
+]} />
+
+Meta-nın 9 noyabr 2026-cı ildə təqdim etdiyi Muse Ember birinci istiqamət üçün yaradılıb. Meta onu "agentlərin bütün günü təkrarladığı işlər, yəni alət çağırışları, kodlaşdırma alt tapşırıqları, yönləndirmə, məlumat çıxarma və uzun sənədlərin təhlili" üçün hazırlandığını deyərək [təqdim edir](https://research.meta.ai/blog/muse-ember) və daha böyük modellə birgə işini bir cümlə ilə ümumiləşdirir: "Muse Wonder planlayır, Muse Ember iş həcmini daşıyır." Şirkətin [tərtibatçılar üçün yazısı](https://dev.meta.ai/resources/blog/build-with-muse-ember) üç addımlı kodlaşdırma axını təsvir edir. Böyük model bütün repozitoriya üzrə dəyişikliyi planlayır. Ember işçilərinin hər biri öz faylları, məhdudiyyətləri və yoxlamaları olan, sərhədləri bəlli bir alt tapşırıq götürür. Sonra böyük model bir tərtibatçı ilə birlikdə birləşmiş nəticəni nəzərdən keçirir. Cookbook-dakı nümunədə 16 Ember agentinin hər biri Pygments sintaksis vurğulayıcısının bir lexer-ini Python-dan Rust-a köçürdü, hər biri repozitoriyanın öz nüsxəsində işlədi. Planlayıcı isə onların tapşırıqlarını yazdı, amma mənbə kodunu özü heç vaxt açmadı. Meta xatırladır ki, hər çağırış üçün modeli harness seçir və addımlar arasında konteksti də o daşıyır. Daha geniş asılılıq və ya aydın olmayan tələblə qarşılaşan işçi isə davam etməzdən əvvəl bunu planlayıcıya qaytarmalıdır. Meta-nın məlumatına görə, köçürülmüş 16 lexer-in hamısı testlərdə Python-dakı orijinalları ilə eyni nəticə verdi; şirkət nəticələrin bir işə salınmadan digərinə dəyişdiyini də qeyd edir.
+
+Anthropic-in [məsləhətçi strategiyası](https://claude.com/resources/articles/the-advisor-strategy) isə əks istiqamətdə işləyir və Anthropic özü onu bir orkestratorun çoxlu işçini idarə etdiyi adi sxemin tərsinə çevrilmiş forması kimi təsvir edir. İcraçı adlanan daha sürətli model (məsələn, Sonnet və ya Haiku) bütün tapşırığı aparır: alətləri çağırır, nəticələri oxuyur və irəliləyir. Tək başına ağlabatan şəkildə verə bilməyəcəyi bir qərarla qarşılaşanda məsləhətçi adlanan daha güclü bir modelə, məsələn Opus-a müraciət edir. [Claude Code sənədlərinə](https://code.claude.com/docs/en/advisor) görə, bu adətən bir yanaşmada qərarlaşmazdan əvvəl, eyni xəta təkrar-təkrar qayıdanda və tapşırığın bitdiyini elan etməzdən əvvəl baş verir. Məsləhətçi hər alət çağırışı və nəticəsi daxil olmaqla bütün söhbəti alır və plan, düzəliş və ya dayanmaq siqnalı qaytarır. [API sənədlərində](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool) təsvir olunduğu kimi, o, alətləri özü heç vaxt çağırmır və icraçıya yalnız onun məsləhəti çatır. Burada koordinasiya ediləsi işçi hovuzu yoxdur, güclü model isə yalnız həqiqətən lazım olan anlarda işə qoşulur. Məsləhət əmr də deyil. Claude Code-da icraçı adətən məsləhətə əməl edir, amma bir fayl və ya uğursuz addım ona zidd çıxanda kor-koranə tabe olmaq əvəzinə bu ziddiyyəti açıq deyir.
+
+Hər iki istiqamət prompta düşən yükü azaltmır, artırır. Aşağıya həvalə edəndə işçinin bütün dünyası ona verilən tapşırıqdır. Meta bu tapşırıqda nələrin olmalı olduğunu sadalayır: tapşırığın özü, lazımi kontekst, işçinin dəyişə biləcəyi fayllar, işin bitdiyini göstərən yoxlamalar və geri nəyin göndəriləcəyi. Qeyri-müəyyən tapşırıq almış kiçik model boşluqları doldurmaq üçün planlayıcının mühakiməsini borc ala bilməz; o, təxmin edəcək, həm də sürətlə və dəfələrlə. Yuxarıya müraciət edəndə isə köməyin nə vaxt istəniləcəyini sizin təlimatlarınız müəyyən edir. Anthropic qeyd edir ki, sistem promptunda yönləndirmə olmayanda icraçılar kodlaşdırma tapşırıqlarında məsləhətçiyə lazım olduğundan az müraciət edir və onlara nə vaxt soruşmalı olduqlarını deməyi tövsiyə edir.
+
+Bu bölgü ən yaxşı halda işi sərhədləri bəlli hissələrə ayırmaq və hər hissəni yoxlamaq mümkün olanda işləyir. Hər addım əvvəlkinin qiymətləndirilməsindən asılıdırsa və ya hər addıma onsuz da ən güclü model lazımdırsa, ötürmələr yalnız xərci və kontekstin itə biləcəyi yerləri artırır. Qənaət də zəmanətli deyil. Planlama, birləşdirmə və məsləhətçiyə hər müraciət token xərcləyir, Anthropic isə kiçik modelin öz bacarığı məsləhətçininkinə yaxınlaşdıqca faydanın azaldığını müşahidə edir. Ən dürüst sınaq sizin öz işinizdir: eyni tapşırıqları eyni yoxlamalarla əvvəlcə yalnız kiçik modellə, sonra cütlüklə, sonra da yalnız böyük modellə işə salıb müqayisə edin. Addımı hansı modelin götürəcəyini seçmək, həm də bir modelin nə qədər dərindən düşünəcəyindən fərqli bir tənzimləmədir; bu fərq [Süni İntellektlə Proqram Təminatı Hazırlamaq](/book/28a-software-development-with-ai) fəslinin "Səy Model Seçimi ilə Eyni Şey Deyil" bölməsində izah olunur.
+
+Birinci istiqaməti sınamaq üçün planlayıcının tək bir işçiyə verəcəyi tapşırığı yazın, sonra onu həmin işçinin gözü ilə oxuyun. Bacarıqlı, amma layihəyə kənar biri yalnız bu səhifəyə baxaraq işi bitirə bilərdimi?
+
+<TryIt compact prompt={`Sən daha böyük bir dəyişiklik üzərində çalışan bir neçə işçidən birisən. Yalnız bu tapşırığı yerinə yetir.
+
+Tapşırıq: \${task:faktura modulundakı tarix formatlamasını ortaq formatDate köməkçisinə keçir}
+Kontekst: \${context:köməkçi artıq src/lib/format.ts faylında var; digər işçilər sifariş və hesabat modullarını yeniləyir}
+Dəyişə biləcəyin fayllar: \${files:src/invoices/ və onun testləri}
+Yoxlamalar: \${checks:faktura testləri keçir və siyahından kənar heç bir fayl dəyişməyib}
+Geri qaytaracaqların: \${result:dəyişdiyin fayllar, işə saldığın hər yoxlama və onun çıxışının son sətri, bitirə bilmədiyin hər şey}
+
+Tapşırıq siyahında olmayan bir fayl tələb edirsə və ya bu tapşırıqdan böyük bir problem tapsan, onu yan keçmə; dayan və bu barədə xəbər ver.`} />
+
 ## Harness Daxilində Promptlar Niyə Vacibdir?
 
 Harness modelə hərəkət etmək üçün yol verir. Promptlarınız faydalı hərəkətin necə olmalı olduğunu izah edir. Aydın məqsəd olmadıqda agent ehtiyacınız olmayan işlərə çoxlu addım sərf edə bilər.
@@ -211,6 +304,70 @@ Eyni fərq alətlərdən qayıdan məlumat üçün də vacibdir. Veb səhifə v�
   explanation="Promptlar davranışı istiqamətləndirir. Model icazəsiz əməliyyat istəsə belə, alət və ya mühit giriş sərhədini tətbiq etməlidir."
 />
 
+## Harness Harada Yaşayır?
+
+Hər agent bir harness-in içində işləyir, amma həmin harness-i kimsə qurmalı, yerləşdirməli və işlək saxlamalıdır. Bu işi kimin gördüyü nəyin sizin nəzarətinizdə olacağını və nəyin baxımını özünüzün aparacağınızı müəyyən edir. Bu gün harness adətən sizə bu dörd yoldan biri ilə gəlir:
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Haradan gəlir?</th>
+      <th scope="col">Dövrü kim işlədir?</th>
+      <th scope="col">Siz nə təqdim edirsiniz?</th>
+      <th scope="col">Qazanc və bədəl</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Özünüzün yazdığınız dövr</td>
+      <td>Siz</td>
+      <td>Hər şey: kontekst, alət sorğularının emalı, icazələr, limitlər</td>
+      <td>Tam nəzarət, eləcə də bütün baxım işi</td>
+    </tr>
+    <tr>
+      <td>SDK və ya framework</td>
+      <td>Siz, öz kompüterinizdə və ya seçdiyiniz hostinqdə</td>
+      <td>Layihənizdəki fayllar şəklində agentin özü: promptlar, alətlər, testlər</td>
+      <td>Dəyişikliklər adi kod yoxlamasından keçir; yayımlamaq və yeniləmək yenə sizin işinizdir</td>
+    </tr>
+    <tr>
+      <td>İdarə olunan xidmət</td>
+      <td>Provayder</td>
+      <td>Təlimatlar, bacarıqlar, alətlər və model seçimi</td>
+      <td>Baxım tələb edən mexanizm azdır; sərhədləri provayderin izolyasiya mühiti və limitləri müəyyən edir</td>
+    </tr>
+    <tr>
+      <td>CI kimi avtomatlaşdırma sisteminin bir hissəsi</td>
+      <td>Hadisə baş verəndə avtomatlaşdırma platforması</td>
+      <td>Tapşırığın təsviri və onun yaratmağa icazəsi olan nəticələr</td>
+      <td>Mövcud pipeline-larınıza uyğunlaşır; o işləyərkən heç kim söhbət pəncərəsinə baxmır</td>
+    </tr>
+  </tbody>
+</table>
+
+2026-cı ilin oktyabr ayının sonu son üç yolun hər biri üçün aydın nümunə gətirdi. Cursor-un 20 oktyabrdan bəri hamı üçün əlçatan olan [Agent SDK](https://cursor.com/blog/agent-sdk) aləti agenti kiçik bir layihə kimi qəbul edir: promptlar Markdown-da, alətlər TypeScript funksiyaları kimi yazılır, qiymətləndirmələr (eval) isə onların yanında durur. Agenti öz kompüterinizdə işlədə, Cursor-un infrastrukturunda yayımlaya və ya tək Node prosesi kimi öz serverlərinizdə işlədə bilərsiniz. 28 oktyabrda Microsoft [Foundry Agent Service-dəki Copilot harness-ini](https://devblogs.microsoft.com/foundry/microsoft-copilot-harness-in-foundry/) ictimai ilkin baxış (public preview) kimi təqdim etdi. Bu, GitHub Copilot-u tətbiqində, CLI-da və VS Code-da işlədən [həmin harness-dir](https://blogs.microsoft.com/blog/2026/10/28/introducing-the-microsoft-copilot-harness-unlocking-the-potential-of-truly-multi-model-agentic-work/). Agent dövrünü və izolyasiya mühitini Microsoft idarə edir; siz isə bacarıqları, MCP alətlərini və versiya nəzarətində saxlaya biləcəyiniz agent təriflərini gətirirsiniz. Həmin gün [GitHub Agentic Workflows](https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available/) da hamı üçün əlçatan oldu. Burada yeni issue-ları çeşidləmək kimi bir işi Markdown faylında təsvir edirsiniz, fayl isə Copilot-u və ya başqa bir kodlaşdırma agentini işə salan adi GitHub Actions iş axınına kompilyasiya olunur.
+
+Harness-in harada yaşadığı onun sərhədlərinin harada məcburi tətbiq olunduğunu da müəyyən edir. Təlimatlar istiqamət verir, icazələr isə buna əməl olunmasını təmin edir. Öz dövrünüzdə bu nəzarəti özünüz qurursunuz. İdarə olunan xidmətdə və ya avtomatlaşdırma platformasında isə onu platforma təmin edir, siz də tənzimləyirsiniz. Agentic Workflows bunun neçə qat demək ola biləcəyini yaxşı göstərir: agentlərə standart olaraq yalnız oxuma icazəsi verilir və onlar firewall arxasındakı izolyasiya olunmuş konteynerdə işləyir. Təklif etdikləri dəyişikliklər isə nəsə tətbiq olunmazdan əvvəl yoxlanılmış "təhlükəsiz nəticələr" (safe outputs) mərhələsindən və ayrıca təhdid yoxlamasından keçir. Nə ediləcəyini yenə də promptunuz deyir. Səhvin nə qədər zərər verə biləcəyini isə platforma məhdudlaşdırır.
+
+Sizin yazdığınız hissələr adətən dövrün özündən daha asan köçürülür. Bacarıqlar və MCP açıq standartlardır və Microsoft-un elanı onları dəstəkləməyi ciddi harness-in əlaməti sayır. Aydın yazılmış bacarıq və ya alət təsviri çox vaxt kiçik düzəlişlərlə başqa harness-ə keçə bilir; müəyyən bir dövrün ətrafında yazılmış kod isə nadir hallarda. Əvvəlcə harness-ləri müqayisə edərkən modeli sabit saxlamağı tövsiyə etmişdik. Çox modelli harness bunun əksini sınamağa imkan verir: Foundry orkestrasiyanı yenidən yazmadan dəstəklənən modeli seçməyə imkan verir, Agentic Workflows isə hər iş axınının öz model provayderini seçməsinə. Modeli dəyişib qalan hər şeyi olduğu kimi saxlaya bilərsiniz.
+
+Hansı yolu seçsəniz də, bəzi şeylər heç vaxt provayderə keçmir: istədiyiniz nəticə, onu təsvir edən təlimatlar və bacarıqlar, verdiyiniz alətlər və giriş hüquqları, işin bitdiyini göstərən yoxlamalar. Harness dövrü sizin əvəzinizə işlədə bilər. Amma "hazırdır" sözünün nə demək olduğuna o qərar verə bilməz.
+
+### Model Müəyyən Harness Üçün Öyrədiləndə
+
+İndiyədək modeli istənilən vaxt dəyişdirilə bilən bir hissə kimi götürdük. Çox vaxt belədir, amma model ilə harness arasındakı uyğunluq bəzən daha dərinə gedir. Hər harness-in öz alətləri, öz sistem prompt-u və addımlarının özünəməxsus ritmi var. Model gücləndirici öyrənmə ilə bir harness-in içində öyrədiləndə, işlə yanaşı həmin harness-in vərdişlərini də mənimsəyir. Onu başqa harness-ə köçürsəniz, alətləri əvvəlki qədər yaxşı çağırmaya, lazım olandan çox addım ata və ya iş bitmədən dayana bilər.
+
+OpenAI Codex modelləri barədə bunu açıq deyir. GPT-5-Codex-i Codex üçün ["purpose-built"](https://openai.com/index/introducing-upgrades-to-codex/), yəni xüsusi hazırlanmış model kimi təqdim edir və onu yalnız Codex-də və ya Codex-ə bənzər mühitlərdə agent əsaslı kodlaşdırma üçün tövsiyə edir. [Codex Prompting Guide](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide) öz harness-ini quranlara standart Codex prompt-undan başlamağı və modelin istifadə etmək üçün öyrədildiyi `apply_patch` və shell alətlərindən istifadə etməyi məsləhət görür. Həmçinin modeldən əvvəlcədən plan və ya iş zamanı status yeniləmələri istəyən göstərişləri çıxarmağı xahiş edir, çünki bu, modelin iş tamamlanmadan qəfil dayanmasına səbəb ola bilər. Cursor da eyni uyğunlaşdırmanı o biri tərəfdən, [öz harness-ini bu modellərə uyğunlaşdırarkən](https://cursor.com/blog/codex-model-harness) təsvir etdi. Alət adlarını `rg` kimi shell qarşılıqlarına yaxınlaşdırdı və lint alətinin təkcə təsvirinin kifayət etmədiyini gördü: modelə onu nə vaxt çağırmalı olduğunu açıq deyən göstəriş lazım idi.
+
+Açıq modellər də eyni yoldan keçir. Hugging Face 6 noyabr 2026-cı ildə [harness adapterlərini](https://huggingface.co/blog/harness-hub/harness-adapters) təqdim etdi: hər model və harness üçün bir kiçik LoRA adapteri. Onlar dəyişdirilməmiş harness-lərin (pi, opencode və hermes) içində yoxlanıla bilən tapşırıqlar üzərində gücləndirici öyrənmə ilə öyrədilir və hamısı bir baza modeldən təqdim olunur. Komandanın "smoke test" adlandırdığı ilkin sınaqlarda adapterlər öyrətmədə istifadə olunmamış tapşırıqlarda baza modeldən daha az alət çağırışı etdi, dəqiqliyi isə ya qorudu, ya da artırdı. Öyrətmə zamanı safeagents adlı proxy hər alət çağırışını sabit qaydalarla yoxlayır və testləri redaktə etmək və ya cavabı haradansa tapmaq kimi mükafatı aldatma cəhdlərini bloklayır. Bloklanmış çağırış olan cəhd sıfır bal alır. Yəni model hələ öyrənərkən belə yoxlamaların yeri harness-dir.
+
+Prompt yazanlar üçün dərs praktikdir. Modeli onun üçün qurulmamış harness-də işlədirsinizsə, əvvəlcə provayderin həmin model üçün prompt bələdçisini oxuyun. Alət adlarını və təsvirlərini modelin artıq tanıdığına yaxın saxlayın, öyrədilmiş vərdişləri ilə toqquşan göstərişləri çıxarın. Yol boyu necə hesabat verəcəyini addım-addım diktə etmək əvəzinə, istədiyiniz nəticəni və nə vaxt dayanmalı olduğunu deyin. Harness-ləri müqayisə edərkən isə unutmayın ki, model içində öyrədildiyi harness-ə meylli ola bilər; qərar verməzdən əvvəl öz tapşırıqlarınızla sınayın.
+
+<Compare
+  before={{ label: "Ümumi harness prompt-u", content: "Əvvəlcə plan yaz və mənə göndər. Hər addımdan sonra mənə status yeniləməsi göndər. Faylları edit_file aləti ilə redaktə et." }}
+  after={{ label: "Harness-i ilə öyrədilmiş modelə uyğunlaşdırılmış", content: "Axtarışın uyğun nəticələri necə tapdığını dəyişmədən uğursuz axtarış testlərini düzəlt. Redaktələri apply_patch ilə et. Testlər keçənə və ya maneə ilə qarşılaşana qədər davam et, sonra nəyin dəyişdiyini, hansı yoxlamaların işlədiyini və yoxlaya bilmədiyin hər şeyi bildir." }}
+/>
+
 ## Harness-i Faydalı Edən Nədir?
 
 Daha çox müstəqillik yalnız sistem öz işini yoxlaya və problemlərdən sonra bərpa oluna bildikdə faydalıdır. Uzun tapşırıq üçün harness-in bunları necə idarə etdiyinə baxın:
@@ -222,6 +379,23 @@ Daha çox müstəqillik yalnız sistem öz işini yoxlaya və problemlərdən so
 - **Yoxlama:** Həqiqi faylları, test nəticələrini və ya digər nəticələri araşdırmaq. Özündən əmin yekun mesaj kifayət deyil.
 
 Quraşdırmaları müqayisə edərkən eyni real tapşırıqları sınayın və həm nəticələri, həm də icra qeydlərini yoxlayın. Harness dəyişikliyini araşdırmaq istəyirsinizsə, modeli sabit saxlayın. Hər dəfə bir prompt, bacarıq və ya alət ayarını dəyişin. Ayrı-ayrı icralar fərqləndiyinə görə tapşırıqları təkrarlayın.
+
+### Harness Kiçiləndə
+
+Harness-lər zamanla böyüməyə meyillidir. Hər yeni funksiya özü ilə öz yolunu, öz təlimatlarını və "hazırdır" sözünün nə demək olduğuna dair öz anlayışını gətirir; əlavə edildiyi gün onların hər birinin məntiqli səbəbi olur. Modellər gücləndikcə bəzi komandalar bunun əksini edir və hissələri söküb çıxarır. Apple tədqiqatçıları [How Much of a Harness Does a Strong Agent Need?](https://machinelearning.apple.com/research/harness-autonomous-ml-engineering) (oktyabr 2026) sualını araşdırdı və gördü ki, maşın öyrənməsi mühəndisliyi tapşırıqlarında eyni model və eyni vaxt verildikdə mürəkkəb açıq mənbəli harness-lər az sayda alətlə işləyən tək bir kodlaşdırma agenti sessiyasından yaxşı nəticə göstərmir. Amma hissələri çıxarmaq işin asan tərəfidir. Kiçilmiş harness-in işi hələ də görüb-görmədiyini bilmək üçün ölçmək lazımdır.
+
+İnsanların süni intellektlə danışaraq oyun yaradıb redaktə etdiyi Pogl belə bir yenidənqurmanı [We rebuilt our harness from scratch](https://about.pogl.com/blog/one-loop-harness) (11 noyabr 2026) yazısında təsvir etdi. Köhnə harness açıq mənbəli kodlaşdırma agenti OpenCode üzərində qurulmuşdu. Zamanla hər yeni funksiya onun ətrafında yeni bir yol kimi əlavə olunmuşdu və eyni problemi hər yolda ayrıca düzəltmək lazım gəlirdi. Yeni harness isə hər sorğunu nüvəsi 715 sətirdən ibarət olan tək bir dövrdən keçirir. Hər layihənin bir söhbət tarixçəsi var və hər addım jurnalda bir sətir qoyur. Buna görə yenidən başladılan iş prosesi söhbəti həmin jurnaldan bərpa edir və işə sıfırdan başlamaq əvəzinə qaldığı yerdən davam edir.
+
+<Compare
+  before={{ label: "Miras qalan harness", content: "Müxtəlif sorğu növləri üçün 16 ayrı yol, işin bitib-bitmədiyini qiymətləndirməyin 3 fərqli üsulu, model üçün 6-7 müqavilə sənədi və təxminən 14.000 tokenlik sabit prompt. Eyni problemi hər yolda ayrıca düzəltmək lazımdır." }}
+  after={{ label: "Tək dövr", content: "Hər sorğu eyni dövrdən keçir. 13 alət bir yerdə qeydiyyatdadır və hamısının təsviri təxminən 3.000 tokenə sığır. Uzun arayış materialları yalnız lazım olanda oxunur, sabit prompt isə 6.000 tokendən azdır." }}
+/>
+
+Ən ibrətamiz hissə ölçmədir. İki harness "hazırdır" anlayışını fərqli meyarlarla qiymətləndirirdi, ona görə də onların öz hökmlərini müqayisə etmək olmazdı. Pogl keçmiş sorğulardan 54 cütü yenidən icra etdi və hər iki harness-in nəticələrini eyni qiymətləndirici ilə ballandırdı. Ümumi keyfiyyət oxşar çıxdı: yeni harness 8 sorğuda, köhnəsi isə 5 sorğuda daha yaxşı idi. Pogl-un bildirdiyinə görə, hər redaktədə keşlənməmiş giriş təxminən 65%, çıxış isə təxminən 52% azaldı, 40 dəqiqədən uzun çəkən işlər isə yox oldu. Şirkət medalın o biri üzünü də açıq yazır. Qənaətin böyük hissəsi köhnə harness-dəki bir neçə çox böyük işdən gəlirdi; adi işlərdə isə yeni harness keşdən daha çox oxudu, daha çox çıxış yazdı və daha uzun çəkdi. Təkrar icralardan biri heç bir ortalamanın göstərə bilməyəcəyi bir şeyi üzə çıxardı: köhnə harness düzəldilməmiş bir bəndi "hazırdır" kimi qeyd etmişdi, yeni harness isə həmin bəndi "hazır deyil" kimi bildirdi. Sonra Pogl yeni harness-i istifadəçilərinin yarısı üçün işə saldı. Bölgünü şəxs əsasında etdi ki, heç kim tapşırığın ortasında harness dəyişməsin. Tək bir ayarla hamını bir dəqiqə ərzində köhnə harness-ə qaytarmaq da mümkündür.
+
+Framer isə daha kiçik dövrə başqa yolla gəldi: [Harness 2: executing agent code as it streams](https://www.framer.com/blog/harness-2/) (2 noyabr 2026). Bu yanaşma bu fəslin əvvəlində, "Dövrü Model Yazanda" bölməsində təsvir olunan proqramlı alət çağırışı üzərində qurulur: agent bütöv iş axınını tək bir JavaScript proqramı kimi ifadə edə bilir. Framer həmin proqramı model hələ yazmağı bitirmədən hissə-hissə icra edir. Belə olanda yanlış çıxan fərziyyə axını bütün proqram yaradıldıqdan sonra deyil, erkən dayandıra bilir. Framer-in bildirdiyinə görə, hər mesajda alət addımları iki dəfə azalır, keşlənmiş giriş tokenləri 39% azalır və ölçülən keyfiyyət itkisi olmur.
+
+Bu rəqəmlər şirkətlərin öz hesabatlarıdır və sizin tapşırıqlarınız fərqli olacaq. Yenə də dərslər başqa yerlərə də aiddir. Yol nə qədər azdırsa, düzəltmə yeri də bir o qədər azdır: hər sorğu eyni dövrdən keçəndə bir dəfə tapılan problem bir dəfə düzəldilir. İki harness-i yalnız hər ikisini eyni qiymətləndirici ballandıranda ədalətli müqayisə etmək olar, çünki hər harness-in öz "hazırdır" anlayışı da sınadığınız şeyin bir hissəsidir. Ortalamalar ən yavaş işləri, yəni arabir qırx dəqiqə çəkən o nadir işi gizlədir; tək bir yanlış "hazırdır" qeydini də gizlədir. Ona görə də ən uzun icralara baxın və bir neçə icra qeydini əvvəldən axıra oxuyun. Və nəhayət, yeni harness insanlara tədricən çatanda və geri dönüş bir həftə yox, bir dəqiqə çəkəndə ən təhlükəsiz olur.
 
 <InteractiveChecklist
   title="Bunu artıq etdiyiniz bir tapşırıqda sınayın"

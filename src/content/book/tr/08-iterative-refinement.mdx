@@ -1,65 +1,65 @@
-Prompt mühendisliği nadiren tek seferlik bir süreçtir. En iyi promptlar iterasyonla ortaya çıkar—istenen sonuçları elde edene kadar test etme, gözlemleme ve iyileştirme.
+Prompt mühendisliğinde işler nadiren tek seferde biter. En iyi promptlar iterasyonla ortaya çıkar: istediğiniz sonuca ulaşana kadar dener, gözlemler ve iyileştirirsiniz.
 
 <Callout type="info" title="İlk Taslak, Son Taslak Değil">
-İlk promptunuzu kaba bir taslak olarak düşünün. Deneyimli prompt mühendisleri bile nadiren ilk denemede tutturur.
+İlk promptunuzu kaba bir taslak olarak düşünün. Deneyimli prompt mühendisleri bile ilk denemede nadiren tam isabet ettirir.
 </Callout>
 
 ## İterasyon Döngüsü
 
-Etkili prompt iyileştirme öngörülebilir bir döngü izler: yaz, test et, analiz et ve iyileştir. Her iterasyon sizi güvenilir şekilde ihtiyacınız olan sonuçları üreten bir prompta yaklaştırır.
+Etkili prompt iyileştirme öngörülebilir bir döngü izler: yaz, test et, analiz et ve iyileştir. Her iterasyon sizi, ihtiyacınız olan sonuçları güvenilir biçimde üreten bir prompta biraz daha yaklaştırır.
 
 <IterativeRefinementDemo />
 
 ## Yaygın İyileştirme Kalıpları
 
-Çoğu prompt başarısızlığı bir avuç kategoriye düşer. Bu kalıpları tanımayı öğrenmek, sıfırdan başlamadan sorunları hızla teşhis etmenizi ve düzeltmenizi sağlar.
+Başarısız promptların çoğu birkaç kategoriden birine girer. Bu kalıpları tanımayı öğrendiğinizde, sıfırdan başlamadan sorunları hızla teşhis edip düzeltebilirsiniz.
 
 ### Problem: Çıktı Çok Uzun
 
-En yaygın sorunlardan biri. Açık kısıtlamalar olmadan, modeller öz olmak yerine kapsamlı olma eğilimindedir.
+En sık karşılaşılan sorunlardan biridir. Açık bir sınır koymazsanız modeller kısa ve öz olmak yerine her şeyi anlatma eğilimindedir.
 
 <DiffView 
-  before="Fotosentezin nasıl çalıştığını açıkla."
-  after={`Fotosentezin nasıl çalıştığını 10 yaşındaki bir çocuğa uygun 3-4 cümlede açıkla.`}
+  before="Fotosentezin nasıl işlediğini açıkla."
+  after={`Fotosentezin nasıl işlediğini 10 yaşındaki bir çocuğun anlayacağı şekilde 3-4 cümleyle açıkla.`}
   beforeLabel="Orijinal"
   afterLabel="İyileştirilmiş"
 />
 
 ### Problem: Çıktı Çok Belirsiz
 
-Belirsiz promptlar belirsiz çıktılar üretir. Model, "daha iyi"nin ne anlama geldiğini veya hangi yönlerin sizin için en önemli olduğunu aklınızı okuyarak bilemez.
+Belirsiz promptlar belirsiz çıktılar üretir. Model, sizin için "daha iyi"nin ne anlama geldiğini ya da hangi yönlerin en önemli olduğunu aklınızdan okuyamaz.
 
 <DiffView 
   before="Daha iyi sunumlar için ipuçları ver."
-  after={`Teknik olmayan paydaşlara yapılan teknik sunumları iyileştirmek için 5 spesifik, uygulanabilir ipucu ver. Her ipucu için somut bir örnek ekle.`}
+  after={`Teknik olmayan paydaşlara yapılan teknik sunumları iyileştirmek için 5 net ve uygulanabilir ipucu ver. Her ipucuna somut bir örnek ekle.`}
   beforeLabel="Orijinal"
   afterLabel="İyileştirilmiş"
 />
 
 ### Problem: Yanlış Ton
 
-Ton öznel ve bağlama göre değişir. Modelin "profesyonel" gördüğü şey organizasyonunuzun sesiyle veya alıcıyla ilişkinizle eşleşmeyebilir.
+Ton özneldir ve bağlama göre değişir. Modele "profesyonel" gelen bir üslup, kurumunuzun sesine ya da alıcıyla aranızdaki ilişkiye uymayabilir.
 
 <DiffView 
   before="Bir teslim tarihini kaçırdığım için özür e-postası yaz."
-  after={`Bir proje teslim tarihini kaçırdığım için profesyonel ama sıcak bir özür e-postası yaz. Ton aşırı özür dilemeden hesap verebilir olmalı. Gelecekteki gecikmeleri önlemek için somut bir plan ekle.`}
+  after={`Bir projenin teslim tarihini kaçırdığım için profesyonel ama sıcak bir özür e-postası yaz. E-posta sorumluluğu üstlenmeli ama aşırı özür dilememeli. Gelecekte gecikme yaşanmaması için somut bir plan ekle.`}
   beforeLabel="Orijinal"
   afterLabel="İyileştirilmiş"
 />
 
-### Problem: Anahtar Bilgi Eksik
+### Problem: Önemli Bilgi Eksik
 
-Açık uçlu istekler açık uçlu yanıtlar alır. Belirli türde geri bildirime ihtiyacınız varsa, açıkça sormalısınız.
+Açık uçlu isteklere açık uçlu yanıtlar gelir. Belirli türde bir geri bildirim istiyorsanız bunu açıkça belirtmelisiniz.
 
 <DiffView 
   before="Bu kodu incele."
-  after={`Bu Python kodunu şunlar için incele:
-1. Hatalar ve mantıksal hatalar
+  after={`Bu Python kodunu şu açılardan incele:
+1. Hatalar ve mantık hataları
 2. Performans sorunları
 3. Güvenlik açıkları
 4. Kod stili (PEP 8)
 
-Bulunan her sorun için problemi açıkla ve bir düzeltme öner.
+Bulduğun her sorun için problemi açıkla ve bir düzeltme öner.
 
 [kod]`}
   beforeLabel="Orijinal"
@@ -68,17 +68,17 @@ Bulunan her sorun için problemi açıkla ve bir düzeltme öner.
 
 ### Problem: Tutarsız Format
 
-Şablon olmadan, model her yanıtı farklı yapılandıracak, karşılaştırmayı zorlaştıracak ve otomasyonu imkansız hale getirecektir.
+Şablon vermezseniz model her yanıtı farklı bir yapıda kurar; bu da karşılaştırmayı zorlaştırır, otomasyonu ise imkânsız hale getirir.
 
 <DiffView 
   before="Bu üç ürünü analiz et."
-  after={`Bu üç ürünü her biri için tam olarak şu formatı kullanarak analiz et:
+  after={`Bu üç ürünü analiz et ve her biri için tam olarak şu formatı kullan:
 
 ## [Ürün Adı]
 **Fiyat:** X TL
 **Artıları:** [madde listesi]
 **Eksileri:** [madde listesi]
-**En İyi Kullanım:** [tek cümle]
+**En Uygun Olduğu Kullanım:** [tek cümle]
 **Puan:** X/10
 
 [ürünler]`}
@@ -88,11 +88,11 @@ Bulunan her sorun için problemi açıkla ve bir düzeltme öner.
 
 ## Sistematik İyileştirme Yaklaşımı
 
-Rastgele değişiklikler zaman kaybettirir. Sistematik bir yaklaşım sorunları hızla belirlemenize ve verimli şekilde düzeltmenize yardımcı olur.
+Rastgele değişiklikler zaman kaybettirir. Sistematik bir yaklaşım, sorunları hızla belirlemenize ve verimli biçimde düzeltmenize yardımcı olur.
 
 ### Adım 1: Sorunu Teşhis Et
 
-Herhangi bir şeyi değiştirmeden önce, gerçekte neyin yanlış olduğunu belirleyin. Belirtileri çözümlere eşlemek için bu tanı tablosunu kullanın:
+Bir şeyi değiştirmeden önce asıl sorunun ne olduğunu tespit edin. Hangi belirtinin hangi çözümü gerektirdiğini görmek için bu tanı tablosunu kullanın:
 
 <div className="my-4 grid gap-2">
   <div className="grid grid-cols-3 gap-2 p-3 bg-muted/50 rounded-lg text-sm">
@@ -102,239 +102,239 @@ Herhangi bir şeyi değiştirmeden önce, gerçekte neyin yanlış olduğunu bel
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Çok uzun</span>
-    <span className="text-muted-foreground">Uzunluk kısıtlaması yok</span>
-    <span className="text-green-600 dark:text-green-400">Kelime/cümle limitleri ekle</span>
+    <span className="text-muted-foreground">Uzunluk sınırı yok</span>
+    <span className="text-green-600 dark:text-green-400">Kelime/cümle sınırı koy</span>
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Çok kısa</span>
-    <span className="text-muted-foreground">Detay isteği eksik</span>
-    <span className="text-green-600 dark:text-green-400">Açıklama iste</span>
+    <span className="text-muted-foreground">Ayrıntı istenmemiş</span>
+    <span className="text-green-600 dark:text-green-400">Ayrıntılı anlatmasını iste</span>
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Konu dışı</span>
     <span className="text-muted-foreground">Belirsiz talimatlar</span>
-    <span className="text-green-600 dark:text-green-400">Daha spesifik ol</span>
+    <span className="text-green-600 dark:text-green-400">Daha net ol</span>
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Yanlış format</span>
     <span className="text-muted-foreground">Format belirtilmemiş</span>
-    <span className="text-green-600 dark:text-green-400">Tam yapıyı tanımla</span>
+    <span className="text-green-600 dark:text-green-400">Yapıyı tam olarak tanımla</span>
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Yanlış ton</span>
     <span className="text-muted-foreground">Hedef kitle net değil</span>
-    <span className="text-green-600 dark:text-green-400">Hedef kitle/stili belirt</span>
+    <span className="text-green-600 dark:text-green-400">Hedef kitleyi/üslubu belirt</span>
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Tutarsız</span>
     <span className="text-muted-foreground">Örnek verilmemiş</span>
-    <span className="text-green-600 dark:text-green-400">Az örnekli örnekler ekle</span>
+    <span className="text-green-600 dark:text-green-400">Birkaç örnek ekle (az örnekli)</span>
   </div>
 </div>
 
 ### Adım 2: Hedefli Değişiklikler Yap
 
-Her şeyi yeniden yazma dürtüsüne diren. Birden fazla değişkeni aynı anda değiştirmek neyin yardımcı olduğunu ve neyin zarar verdiğini bilmeyi imkansız hale getirir. Bir değişiklik yap, test et, sonra devam et:
+Her şeyi baştan yazma isteğine direnin. Birden fazla değişkeni aynı anda değiştirirseniz neyin işe yaradığını, neyin işleri bozduğunu bilemezsiniz. Bir değişiklik yapın, test edin, sonra devam edin:
 
 ```
-İterasyon 1: Uzunluk kısıtlaması ekle
-İterasyon 2: Format belirle
+İterasyon 1: Uzunluk sınırı ekle
+İterasyon 2: Formatı belirle
 İterasyon 3: Örnek ekle
 İterasyon 4: Ton talimatlarını iyileştir
 ```
 
 ### Adım 3: İşe Yarayanı Belgele
 
-Prompt mühendisliği bilgisi kolayca kaybolur. Ne denediğinizin ve nedeninin kaydını tutun. Bu, promptu daha sonra yeniden ziyaret ettiğinizde veya benzer zorluklarla karşılaştığınızda zaman kazandırır:
+Prompt mühendisliğinde edinilen bilgi kolayca unutulur. Neyi neden denediğinizi kaydedin. Böylece promptu daha sonra yeniden ele aldığınızda ya da benzer bir sorunla karşılaştığınızda zaman kazanırsınız:
 
 ```markdown
-## Prompt: Müşteri E-posta Yanıtı
+## Prompt: Müşteri E-postasına Yanıt
 
-### Versiyon 1 (çok resmi)
+### Versiyon 1 (fazla resmi)
 "Bu müşteri şikayetine bir yanıt yaz."
 
-### Versiyon 2 (daha iyi ton, hâlâ yapı eksik)
-"Bu şikayete arkadaşça ama profesyonel bir yanıt yaz. 
+### Versiyon 2 (ton daha iyi, yapı hâlâ eksik)
+"Bu şikayete samimi ama profesyonel bir yanıt yaz. 
 Önce empati göster."
 
-### Versiyon 3 (final - iyi sonuçlar)
+### Versiyon 3 (son hâli: iyi sonuçlar)
 "Bu müşteri şikayetine bir yanıt yaz. Yapı:
-1. Hayal kırıklıklarını kabul et (1 cümle)
-2. Spesifik olarak özür dile (1 cümle)  
+1. Müşterinin yaşadığı hayal kırıklığını kabul et (1 cümle)
+2. Neden özür dilediğini açıkça belirt (1 cümle)  
 3. Çözümü açıkla (2-3 cümle)
-4. Ek yardım teklif et (1 cümle)
+4. Başka bir konuda yardım teklif et (1 cümle)
 
-Ton: Arkadaşça, profesyonel, empatik ama yaltaklanmayan."
+Ton: Samimi, profesyonel, empatik ama yaltaklanmayan."
 ```
 
-## Gerçek Dünya İterasyon Örneği
+## Gerçek Dünyadan Bir İterasyon Örneği
 
-Her iyileştirmenin bir öncekinin üzerine nasıl inşa edildiğini görmek için tam bir iterasyon döngüsünü inceleyelim. Her versiyonun öncekinin spesifik eksikliklerini nasıl ele aldığına dikkat edin.
+Her iyileştirmenin bir öncekinin üzerine nasıl kurulduğunu görmek için eksiksiz bir iterasyon döngüsünü adım adım inceleyelim. Her versiyonun, bir öncekinin belirli eksiklerini nasıl giderdiğine dikkat edin.
 
-### Görev: Ürün Adları Oluşturma
+### Görev: Ürün İsmi Bulma
 
 <VersionDiff versions={[
   {
     label: "Versiyon 1",
-    content: "Yeni bir üretkenlik uygulaması için adlar oluştur.",
-    note: "Çok genel, bağlam yok"
+    content: "Yeni bir üretkenlik uygulaması için isim öner.",
+    note: "Fazla genel, bağlam yok"
   },
   {
     label: "Versiyon 2",
-    content: `Yeni bir üretkenlik uygulaması için adlar oluştur. Uygulama enerji seviyelerine ve takvim uygunluğuna göre görevlerinizi otomatik olarak planlamak için yapay zeka kullanıyor.`,
+    content: `Yeni bir üretkenlik uygulaması için isim öner. Uygulama, yapay zekayla görevlerinizi enerji düzeyinize ve takviminizdeki boşluklara göre otomatik olarak planlıyor.`,
     note: "Bağlam eklendi, hâlâ genel"
   },
   {
     label: "Versiyon 3",
-    content: `Şu özelliklere sahip bir üretkenlik uygulaması için 10 benzersiz, akılda kalıcı ad oluştur:
-- Enerji seviyelerine göre görevleri planlamak için yapay zeka kullanıyor
+    content: `Şu özelliklere sahip bir üretkenlik uygulaması için 10 özgün ve akılda kalıcı isim öner:
+- Yapay zekayla görevleri enerji düzeyine göre planlıyor
 - Hedef kitle: 25-40 yaş arası yoğun profesyoneller
-- Marka tonu: modern, akıllı, hafif eğlenceli
-- Kaçın: "pro", "akıllı", "AI", "görev" gibi genel kelimeler
+- Marka tonu: modern, akıllı, biraz da eğlenceli
+- "pro", "akıllı", "AI", "görev" gibi sıradan kelimelerden kaçın
 
-Her ad için neden işe yaradığını açıkla.`,
-    note: "Kısıtlamalar ve muhakeme eklendi"
+Her ismin neden işe yaradığını açıkla.`,
+    note: "Kısıtlar ve gerekçe eklendi"
   },
   {
-    label: "Versiyon 4 (final)",
-    content: `Bir üretkenlik uygulaması için 10 benzersiz, akılda kalıcı ad oluştur.
+    label: "Versiyon 4 (son hâli)",
+    content: `Bir üretkenlik uygulaması için 10 özgün ve akılda kalıcı isim öner.
 
 Bağlam:
-- Enerji seviyelerine göre görevleri planlamak için yapay zeka kullanıyor
-- Hedef: yoğun profesyoneller, 25-40
-- Ton: modern, akıllı, hafif eğlenceli
+- Yapay zekayla görevleri enerji düzeyine göre planlıyor
+- Hedef kitle: yoğun profesyoneller, 25-40 yaş
+- Ton: modern, akıllı, biraz da eğlenceli
 
 Gereksinimler:
-- Maksimum 2-3 hece
-- Telaffuzu ve yazımı kolay
-- .com domain olarak müsait (makul olup olmadığını kontrol et)
-- Kaçın: genel kelimeler (pro, akıllı, AI, görev, flow)
+- En fazla 2-3 hece
+- Kolay yazılıp telaffuz edilebilmeli
+- .com alan adı boşta olabilmeli (makul görünüp görünmediğini değerlendir)
+- Sıradan kelimelerden kaçın (pro, akıllı, AI, görev, flow)
 
 Format:
-Ad | Telaffuz | Neden İşe Yarıyor | Domain Müsaitlik Tahmini`,
-    note: "Yapılandırılmış format, spesifik gereksinimler"
+İsim | Telaffuz | Neden İşe Yarıyor | Alan Adı Boşta mı? (Tahmin)`,
+    note: "Yapılandırılmış format, net gereksinimler"
   }
 ]} />
 
 ## Görev Türüne Göre İyileştirme Stratejileri
 
-Farklı görevler öngörülebilir şekillerde başarısız olur. Yaygın başarısızlık modlarını bilmek sorunları daha hızlı teşhis etmenize ve düzeltmenize yardımcı olur.
+Her görev türünün kendine özgü ve tahmin edilebilir aksama biçimleri vardır. Bunları bilmek, sorunları daha hızlı teşhis edip düzeltmenizi sağlar.
 
 ### İçerik Üretimi İçin
 
-İçerik üretimi genellikle genel, hedef dışı veya kötü formatlanmış çıktı üretir. Düzeltme genellikle kısıtlamalar hakkında daha spesifik olmayı, somut örnekler vermeyi veya marka sesinizi açıkça tanımlamayı içerir.
+İçerik üretiminde çıktı çoğu zaman sıradan, hedefi tutturamayan ya da kötü biçimlendirilmiş olur. Çözüm genellikle kısıtları daha net belirtmekten, somut örnekler vermekten ya da marka sesinizi açıkça tanımlamaktan geçer.
 
 <InfoGrid items={[
-  { icon: "target", title: "Çok Genel", description: "Spesifik kısıtlamalar ve bağlam ekle", example: "\"Köpekler hakkında yaz\" → \"İlk kez sahiplenenler için golden retriever'lar hakkında, eğitim ve egzersiz ihtiyaçlarına odaklanarak yaz\"" },
-  { icon: "scissors", title: "Çok Uzun", description: "Kelime/paragraf limitleri koy", example: "Ekle: \"Yanıtı 150 kelimenin altında tut\" veya \"Maksimum 3 paragraf\"" },
-  { icon: "palette", title: "Yanlış Stil", description: "Stil örnekleri ver", example: "\"Bu örneğin stilinde yaz: [örnek metin yapıştır]\"" },
-  { icon: "megaphone", title: "Marka Dışı", description: "Marka sesi yönergelerini dahil et", example: "\"Arkadaşça, günlük ton kullan. Jargondan kaçın. Okuyucuya 'sen' diye hitap et.\"" }
+  { icon: "target", title: "Fazla Genel", description: "Net kısıtlar ve bağlam ekle", example: "\"Köpekler hakkında yaz\" → \"İlk kez köpek sahiplenecekler için golden retriever'lar hakkında, eğitim ve egzersiz ihtiyaçlarına odaklanarak yaz\"" },
+  { icon: "scissors", title: "Çok Uzun", description: "Kelime/paragraf sınırı koy", example: "Ekle: \"Yanıtı 150 kelimenin altında tut\" veya \"En fazla 3 paragraf\"" },
+  { icon: "palette", title: "Yanlış Üslup", description: "Üslup örnekleri ver", example: "\"Bu örneğin üslubuyla yaz: [örnek metni yapıştır]\"" },
+  { icon: "megaphone", title: "Markaya Uymuyor", description: "Marka sesi yönergelerini ekle", example: "\"Samimi, gündelik bir ton kullan. Jargondan kaçın. Okura 'sen' diye hitap et.\"" }
 ]} />
 
 ### Kod Üretimi İçin
 
-Kod çıktısı teknik olarak (sözdizimi hataları, yanlış dil özellikleri) veya mimari olarak (kötü kalıplar, eksik durumlar) başarısız olabilir. Teknik sorunlar versiyon/ortam özellikleri gerektirir; mimari sorunlar tasarım rehberliği gerektirir.
+Üretilen kod teknik açıdan (sözdizimi hataları, yanlış dil özellikleri) ya da mimari açıdan (kötü kalıplar, gözden kaçan durumlar) sorunlu olabilir. Teknik sorunlar için versiyon ve ortam bilgisini belirtmek, mimari sorunlar için ise tasarım yönlendirmesi yapmak gerekir.
 
 <InfoGrid items={[
   { icon: "code", title: "Sözdizimi Hataları", description: "Dil versiyonunu belirt", example: "\"Python 3.11+ sözdizimi kullan, type hints ile\" veya \"ES2022 JavaScript\"" },
-  { icon: "git-branch", title: "Yanlış Yaklaşım", description: "Tercih edilen kalıpları tanımla", example: "\"Fonksiyonel yaklaşım kullan, sınıflardan kaçın\" veya \"Repository pattern takip et\"" },
-  { icon: "shield", title: "Eksik Uç Durumlar", description: "Ele alınacak senaryoları listele", example: "\"Ele al: boş girdi, null değerler, ağ zaman aşımları, geçersiz formatlar\"" },
-  { icon: "tag", title: "Kötü İsimlendirme", description: "Adlandırma kurallarını dahil et", example: "\"Değişkenler için camelCase, sınıflar için PascalCase, sabitler için UPPER_SNAKE kullan\"" }
+  { icon: "git-branch", title: "Yanlış Yaklaşım", description: "Tercih ettiğin kalıpları tarif et", example: "\"Fonksiyonel yaklaşım kullan, sınıflardan kaçın\" veya \"Repository pattern'i uygula\"" },
+  { icon: "shield", title: "Gözden Kaçan Uç Durumlar", description: "Ele alınacak senaryoları listele", example: "\"Şunları ele al: boş girdi, null değerler, ağ zaman aşımları, geçersiz formatlar\"" },
+  { icon: "tag", title: "Kötü İsimlendirme", description: "İsimlendirme kurallarını ekle", example: "\"Değişkenler için camelCase, sınıflar için PascalCase, sabitler için UPPER_SNAKE kullan\"" }
 ]} />
 
 ### Analiz İçin
 
-Analiz görevleri genellikle yüzeysel veya yapılandırılmamış sonuçlar üretir. Modeli spesifik çerçevelerle (SWOT, Porter'ın Beş Gücü), birden fazla bakış açısı isteğiyle veya çıktı yapısı için bir şablon sağlayarak yönlendirin.
+Analiz görevlerinde sonuçlar çoğu zaman yüzeysel ya da dağınık olur. Modeli belirli çerçevelerle (SWOT, Porter'ın Beş Gücü) yönlendirin, birden fazla bakış açısı isteyin ya da çıktının yapısı için bir şablon verin.
 
 <InfoGrid items={[
-  { icon: "layers", title: "Çok Yüzeysel", description: "Spesifik çerçeveler iste", example: "\"SWOT çerçevesi kullanarak analiz et\" veya \"Porter'ın Beş Gücü'nü uygula\"" },
-  { icon: "scale", title: "Taraflı", description: "Birden fazla perspektif iste", example: "\"Lehine ve aleyhine argümanları sun\" veya \"Şüpheci bakış açısını dahil et\"" },
-  { icon: "database", title: "Eksik Veri", description: "Neyin analiz edileceğini belirt", example: "\"Şunlara odaklan: pazar büyüklüğü, büyüme oranı, anahtar oyuncular, giriş engelleri\"" },
-  { icon: "layout", title: "Yapılandırılmamış", description: "Analiz şablonu ver", example: "\"Şöyle formatla: Özet → Ana Bulgular → Çıkarımlar → Öneriler\"" }
+  { icon: "layers", title: "Fazla Yüzeysel", description: "Belirli bir çerçeve iste", example: "\"SWOT çerçevesiyle analiz et\" veya \"Porter'ın Beş Gücü modelini uygula\"" },
+  { icon: "scale", title: "Taraflı", description: "Birden fazla bakış açısı iste", example: "\"Lehte ve aleyhte argümanları sun\" veya \"Şüpheci bir bakış açısına da yer ver\"" },
+  { icon: "database", title: "Eksik Veri", description: "Neyin analiz edileceğini belirt", example: "\"Şunlara odaklan: pazar büyüklüğü, büyüme oranı, başlıca oyuncular, giriş engelleri\"" },
+  { icon: "layout", title: "Dağınık", description: "Analiz şablonu ver", example: "\"Şu düzende yaz: Özet → Ana Bulgular → Çıkarımlar → Öneriler\"" }
 ]} />
 
-### S&C İçin
+### Soru-Cevap İçin
 
-Soru-cevap çok kısa veya çok uzun olabilir ve güven göstergeleri veya kaynaklar eksik olabilir. İhtiyacınız olan detay seviyesini ve alıntı veya belirsizlik ifadesi isteyip istemediğinizi belirtin.
+Soru-cevap görevlerinde yanıtlar fazla kısa ya da fazla uzun olabilir; modelin ne kadar emin olduğu veya bilgiyi nereden aldığı da çoğu zaman belirtilmez. İhtiyacınız olan ayrıntı düzeyini, kaynak göstermesini ya da emin olmadığı yerleri belirtmesini isteyip istemediğinizi açıkça yazın.
 
 <InfoGrid items={[
-  { icon: "plus", title: "Çok Kısa", description: "Açıklama iste", example: "\"Örneklerle detaylı açıkla\" veya \"Her noktayı genişlet\"" },
-  { icon: "minus", title: "Çok Uzun", description: "Öz cevap iste", example: "\"2-3 cümlede cevapla\" veya \"TL;DR ver\"" },
-  { icon: "help-circle", title: "Belirsiz", description: "Güven seviyesi iste", example: "\"Güvenini 1-10 puanla\" veya \"Yapılan varsayımları not et\"" },
-  { icon: "link", title: "Kaynak Yok", description: "Alıntı iste", example: "\"İddialar için kaynak göster\" veya \"Mümkünse referanslar ekle\"" }
+  { icon: "plus", title: "Çok Kısa", description: "Ayrıntı iste", example: "\"Örneklerle ayrıntılı açıkla\" veya \"Her noktayı biraz aç\"" },
+  { icon: "minus", title: "Çok Uzun", description: "Kısa ve öz cevap iste", example: "\"2-3 cümleyle cevapla\" veya \"Bana TL;DR ver\"" },
+  { icon: "help-circle", title: "Belirsiz", description: "Ne kadar emin olduğunu sor", example: "\"Ne kadar emin olduğunu 1-10 arası puanla\" veya \"Yaptığın varsayımları belirt\"" },
+  { icon: "link", title: "Kaynaksız", description: "Kaynak iste", example: "\"İddiaların için kaynak göster\" veya \"Mümkünse referans ekle\"" }
 ]} />
 
 ## Geri Bildirim Döngüsü Tekniği
 
-İşte bir meta-teknik: promptlarınızı iyileştirmek için modelin kendisini kullanın. Ne denediğinizi, ne aldığınızı ve ne istediğinizi paylaşın. Model genellikle düşünmediğiniz iyileştirmeler önerebilir.
+Size bir meta-teknik: promptlarınızı iyileştirmek için modelin kendisinden yardım alın. Ne denediğinizi, ne sonuç aldığınızı ve aslında ne istediğinizi anlatın. Model çoğu zaman aklınıza gelmeyen iyileştirmeler önerebilir.
 
 ```
-Bu promptu kullandım:
+Şu promptu kullandım:
 "[promptunuz]"
 
-Ve bu çıktıyı aldım:
+Ve şu çıktıyı aldım:
 "[model çıktısı]"
 
-Daha [boşluğu tanımla] bir şey istedim. Daha iyi sonuçlar almak 
+Daha [eksik olanı tarif et] bir şey istiyordum. Daha iyi sonuç almak 
 için promptumu nasıl değiştirmeliyim?
 ```
 
-## A/B Testi Promptları
+## Promptları A/B Testinden Geçirme
 
-Tekrar tekrar veya ölçekte kullanılacak promptlar için sadece işe yarayan ilkini seçmeyin. En güvenilir ve en yüksek kaliteli yaklaşımı bulmak için varyasyonları test edin.
+Tekrar tekrar ya da büyük ölçekte kullanılacak promptlarda, işe yarayan ilk promptla yetinmeyin. En güvenilir ve en kaliteli yaklaşımı bulmak için farklı varyasyonları test edin.
 
 ```
-Prompt A: "Bu makaleyi 3 madde işaretinde özetle."
+Prompt A: "Bu makaleyi 3 maddede özetle."
 Prompt B: "Bu makaleden en önemli 3 içgörüyü çıkar."
-Prompt C: "Bu makaleden ana çıkarımlar neler? 3 tanesini listele."
+Prompt C: "Bu makalenin ana çıkarımları neler? 3 tanesini listele."
 ```
 
-Her birini birden fazla kez çalıştırın, karşılaştırın:
-- Çıktı tutarlılığı
-- Bilgi kalitesi
-- İhtiyaçlarınızla ilgililik
+Her birini birkaç kez çalıştırıp şunları karşılaştırın:
+- Çıktının tutarlılığı
+- Bilginin kalitesi
+- İhtiyaçlarınıza uygunluk
 
-## Ne Zaman İterasyon Durmalı
+## İterasyonu Ne Zaman Bırakmalı
 
-Mükemmellik yeterince iyinin düşmanıdır. Promptunuzun kullanıma hazır olduğu zamanı ve azalan getiriler için sadece parlatma yaptığınız zamanı bilin.
+Mükemmel, iyinin düşmanıdır. Promptunuzun ne zaman kullanıma hazır olduğunu, ne zaman artık emeğinizin karşılığını pek almadığınız bir cilalamaya geçtiğinizi fark edin.
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
   <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
-    <p className="text-sm font-semibold text-green-700 dark:text-green-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconCheck className="h-4 w-4" /> Göndermeye Hazır</p>
+    <p className="text-sm font-semibold text-green-700 dark:text-green-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconCheck className="h-4 w-4" /> Kullanıma Hazır</p>
     <div className="text-sm p-4 pt-2 space-y-1">
-      <p className="m-0!">Çıktı tutarlı olarak gereksinimleri karşılıyor</p>
-      <p className="m-0!">Uç durumlar uygun şekilde ele alınıyor</p>
+      <p className="m-0!">Çıktı gereksinimleri tutarlı biçimde karşılıyor</p>
+      <p className="m-0!">Uç durumlar düzgün ele alınıyor</p>
       <p className="m-0!">Format güvenilir ve ayrıştırılabilir</p>
-      <p className="m-0!">Daha fazla iyileştirme azalan getiri gösteriyor</p>
+      <p className="m-0!">Yeni iyileştirmeler artık pek fark yaratmıyor</p>
     </div>
   </div>
   <div className="border rounded-lg bg-red-50/50 dark:bg-red-950/20 border-red-200 dark:border-red-900">
     <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> İterasyona Devam Et</p>
     <div className="text-sm p-4 pt-2 space-y-1">
-      <p className="m-0!">Çıktı çalıştırmalar arasında tutarsız</p>
-      <p className="m-0!">Uç durumlar başarısızlıklara neden oluyor</p>
-      <p className="m-0!">Kritik gereksinimler kaçırılıyor</p>
-      <p className="m-0!">Yeterince varyasyon test etmediniz</p>
+      <p className="m-0!">Çıktı her çalıştırmada farklı</p>
+      <p className="m-0!">Uç durumlarda hatalar çıkıyor</p>
+      <p className="m-0!">Kritik gereksinimler karşılanmıyor</p>
+      <p className="m-0!">Yeterince varyasyon denemediniz</p>
     </div>
   </div>
 </div>
 
 ## Promptlar için Versiyon Kontrolü
 
-Promptlar koddur. Üretimde kullanılan herhangi bir prompt için aynı titizlikle davranın: versiyon kontrolü, değişiklik günlükleri ve bir şeyler bozulursa geri alma yeteneği.
+Promptlar da koddur. Canlı ortamda kullandığınız her prompta kod kadar titiz davranın: versiyon kontrolü, değişiklik günlükleri ve bir şeyler bozulduğunda eski hâle dönebilme imkânı.
 
 <Callout type="tip" title="Yerleşik Versiyonlama">
-prompts.chat promptlarınız için otomatik versiyon geçmişi içerir. Her düzenleme kaydedilir, böylece versiyonları karşılaştırabilir ve önceki iterasyonları tek tıklamayla geri yükleyebilirsiniz.
+Pek çok prompt aracı versiyon geçmişini sizin yerinize tutar. Örneğin prompts.chat'te bir promptun metninde yaptığınız her düzenleme yeni bir versiyon olarak kaydedilir ve herhangi iki versiyonu yan yana karşılaştırabilirsiniz.
 </Callout>
 
-Kendi yönettiğiniz promptlar için klasör yapısı kullanın:
+Promptlarınızı kendiniz yönetiyorsanız şöyle bir klasör yapısı kullanabilirsiniz:
 
 ```
 promptlar/
 ├── musteri-yaniti/
 │   ├── v1.0.txt    # İlk versiyon
 │   ├── v1.1.txt    # Ton sorunu düzeltildi
-│   ├── v2.0.txt    # Büyük yeniden yapılandırma
+│   ├── v2.0.txt    # Kapsamlı yeniden yapılandırma
 │   └── current.txt # Aktif versiyona symlink
 └── degisiklik-gunlugu.md    # Değişiklikleri belgele
 ```
@@ -342,46 +342,46 @@ promptlar/
 ## Özet
 
 <Callout type="tip" title="Ana Çıkarımlar">
-Basit başla, dikkatle gözlemle, bir seferde bir şeyi değiştir, işe yarayanı belgele ve ne zaman duracağını bil. En iyi promptlar yazılmaz—sistematik iterasyonla keşfedilir.
+Basit başla, dikkatle gözlemle, her seferinde tek bir şeyi değiştir, işe yarayanı belgele ve ne zaman duracağını bil. En iyi promptlar yazılmaz; sistematik iterasyonla keşfedilir.
 </Callout>
 
 <Quiz 
   question="Yanlış sonuçlar üreten bir promptu iyileştirirken en iyi yaklaşım nedir?"
   options={[
-    "Tüm promptu sıfırdan yeniden yaz",
-    "İşe yarayana kadar daha fazla örnek ekle",
-    "Bir seferde bir şeyi değiştir ve her değişikliği test et",
-    "Promptu mümkün olduğunca uzun yap"
+    "Promptun tamamını sıfırdan yeniden yazmak",
+    "İşe yarayana kadar örnek eklemeye devam etmek",
+    "Her seferinde tek bir şeyi değiştirip her değişikliği test etmek",
+    "Promptu olabildiğince uzun tutmak"
   ]}
   correctIndex={2}
-  explanation="Bir seferde bir şeyi değiştirmek neyin işe yarayıp yaramadığını ayırmanızı sağlar. Birden fazla şeyi aynı anda değiştirirseniz, hangi değişikliğin sorunu düzelttiğini veya hangisinin daha kötü yaptığını bilemezsiniz."
+  explanation="Her seferinde tek bir şeyi değiştirmek, neyin işe yarayıp neyin yaramadığını ayırt etmenizi sağlar. Birden fazla şeyi aynı anda değiştirirseniz, sorunu hangi değişikliğin çözdüğünü ya da hangisinin durumu kötüleştirdiğini bilemezsiniz."
 />
 
 ## Pratik: Bu Promptu İyileştir
 
-Bu zayıf promptu kendiniz iyileştirmeyi deneyin. Düzenleyin, sonra versiyonunuzu orijinalle karşılaştırmak için yapay zeka kullanın:
+Bu zayıf promptu kendiniz iyileştirmeyi deneyin. Önce düzenleyin, ardından kendi versiyonunuzu yapay zekaya orijinaliyle karşılaştırtın:
 
 <BeforeAfterEditor
   title="Bu E-posta Promptunu İyileştir"
   badPrompt="Bir e-posta yaz."
-  idealPrompt={`Sen profesyonel bir iş yazarısın.
+  idealPrompt={`Sen profesyonel bir iş yazışmaları yazarısın.
 
-Görev: Bir satış toplantısından sonra potansiyel bir müşteriye takip e-postası yaz.
+Görev: Bir satış toplantısının ardından potansiyel bir müşteriye takip e-postası yaz.
 
 Bağlam:
-- TechCorp'ta Pazarlama VP'si Ayşe Kaya ile görüştük
-- Analitik platformumuzu tartıştık
+- TechCorp'un Pazarlama Başkan Yardımcısı Ayşe Kaya ile görüştük
+- Analitik platformumuzu konuştuk
 - Raporlama özelliklerine ilgi gösterdi
 - Toplantı dün yapıldı
 
 Gereksinimler:
-- Profesyonel ama sıcak ton
-- Toplantımızdan spesifik noktalara referans ver
-- Net bir sonraki adım ekle (demo planla)
+- Profesyonel ama sıcak bir ton
+- Toplantıda konuştuğumuz belirli noktalara değin
+- Bir sonraki adımı net olarak belirt (demo ayarlamak)
 - 150 kelimenin altında tut
 
 Format: Konu satırı + e-posta gövdesi`}
-  task="Bu belirsiz e-posta promptunu profesyonel, etkili bir sonuç üretecek bir şeye dönüştür."
+  task="Bu belirsiz e-posta promptunu, profesyonel ve etkili bir sonuç üretecek hale getir."
 />
 
-Bir sonraki bölümde, yapılandırılmış veri uygulamaları için JSON ve YAML promptlamayı keşfedeceğiz.
+Bir sonraki bölümde, yapılandırılmış veriyle çalışan uygulamalar için JSON ve YAML promptlamayı ele alacağız.

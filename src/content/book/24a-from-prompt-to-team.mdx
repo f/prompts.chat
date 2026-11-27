@@ -1,0 +1,381 @@
+Five words come up again and again when people talk about AI today: **prompt**, **skill**, **agent**, **bot**, and **team**. They are often used loosely, sometimes as if they meant the same thing, and that makes them harder to learn than they need to be. This chapter is a gentle stop before the chapters that follow. We will put the five words in order, from the simplest to the most elaborate, and look at what each one really is underneath.
+
+The order matters, because the five words form a ladder. Each rung keeps everything from the rung below it and adds exactly one new thing. If you understand what gets added at each step, you understand the whole picture.
+
+To keep things down to earth, we will follow one everyday scene all the way up the ladder: **getting dinner on the table**. Anyone who has ever cooked for a family, or been cooked for, already knows how this goes.
+
+<div className="my-8 p-6 bg-muted/30 rounded-xl border">
+  <p className="text-sm font-semibold text-center text-muted-foreground m-0! mb-4!">The ladder: each rung adds one thing</p>
+  <div className="flex flex-col items-center gap-2 max-w-md mx-auto">
+    <div className="w-full px-4 py-3 bg-amber-100 dark:bg-amber-900/50 border border-amber-300 dark:border-amber-700 rounded-lg text-center">
+      <p className="font-semibold text-amber-800 dark:text-amber-200 m-0!">1. Prompt</p>
+      <p className="text-xs text-amber-700 dark:text-amber-300 m-0!">One instruction, one answer</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">add a saved method</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-purple-100 dark:bg-purple-900/50 border border-purple-300 dark:border-purple-700 rounded-lg text-center">
+      <p className="font-semibold text-purple-800 dark:text-purple-200 m-0!">2. Skill</p>
+      <p className="text-xs text-purple-700 dark:text-purple-300 m-0!">Reusable instructions, loaded when needed</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">add tools and a loop</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border border-blue-300 dark:border-blue-700 rounded-lg text-center">
+      <p className="font-semibold text-blue-800 dark:text-blue-200 m-0!">3. Agent</p>
+      <p className="text-xs text-blue-700 dark:text-blue-300 m-0!">Acts step by step toward a goal</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">add time: identity, memory, routines</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-green-100 dark:bg-green-900/50 border border-green-300 dark:border-green-700 rounded-lg text-center">
+      <p className="font-semibold text-green-800 dark:text-green-200 m-0!">4. Bot</p>
+      <p className="text-xs text-green-700 dark:text-green-300 m-0!">An agent that stays and keeps its job</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">add other members and handoffs</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-rose-100 dark:bg-rose-900/50 border border-rose-300 dark:border-rose-700 rounded-lg text-center">
+      <p className="font-semibold text-rose-800 dark:text-rose-200 m-0!">5. Team</p>
+      <p className="text-xs text-rose-700 dark:text-rose-300 m-0!">Several members with roles, passing work along</p>
+    </div>
+  </div>
+</div>
+
+## Rung One: The Prompt
+
+Imagine you are hungry and you ask a friend who is a good cook: "Could you tell me how to make a quick tomato soup?" Your friend answers, and that is the end of it. You asked one thing, you got one answer.
+
+That is a **prompt**. It is the text you send to an AI model: a question, a request, an instruction. As we saw in [Understanding AI Models](/book/01-understanding-ai-models), the model reads that text and writes a reply, one small piece at a time, predicting what should come next. Then it stops and waits. It does not go anywhere, open anything, or remember you tomorrow. When a chat app seems to "remember" the earlier part of your conversation, it is because the app quietly sends the whole conversation back to the model with every new message. The model itself starts fresh each time.
+
+Almost everything in this book so far has been about this first rung, and for good reason. Every rung above it is still made of prompts. A clear prompt is the brick that everything else is built from.
+
+<InfoGrid columns={2} items={[
+  { label: "What it is", description: "A piece of text you send to an AI model. The model reads it and writes back one answer.", color: "amber" },
+  { label: "A tiny example", description: "A request like: give me a simple tomato soup recipe for four, using what most kitchens already have. Asking for a summary of a long email, or ten ideas for a birthday party, works the same way.", color: "amber" },
+  { label: "Use it when", description: "You need one answer, once, and you are there to read it and decide what to do next.", color: "amber" },
+  { label: "What it is not", description: "A prompt does not act in the world, does not keep working after it answers, and does not remember you next week.", color: "amber" }
+]} />
+
+<TryIt prompt="Explain how a tomato turns from green to red, in a way a seven-year-old would enjoy. Use one short comparison and keep it under 80 words." description="One instruction, one answer. Notice that the model replies and then simply waits." />
+
+## Rung Two: The Skill
+
+Now imagine your friend gets this question every week. Instead of explaining from scratch each time, they write the method down on a recipe card and put it in a box in the kitchen. The card says what the dish is for, which ingredients to use, the steps in order, and the little tricks that make it come out right. Whenever someone wants tomato soup, the card comes out of the box. The rest of the time, it stays put.
+
+That is a **skill**. A skill is a saved, packaged set of instructions, often with a few helper files, that a model can load when a task calls for it. In practice it is usually a small folder. Inside is a main file, often called `SKILL.md`, which starts with a short name and a one-line description, followed by the full method. The folder can also hold examples, checklists, templates, or small scripts.
+
+Here is the clever part of the mechanism. The model does not read every skill all the time; that would fill its context with things it doesn't need. At first it sees only the short descriptions, like the labels on the recipe cards. When a request matches one of them, the full skill is loaded into the context, and the model follows it. A skill is still made of prompts, but they are prompts you wrote once, tested, and saved, so you don't have to type them again.
+
+Here is a small skill a parent or a teacher might write:
+
+```markdown
+---
+name: homework-helper
+description: Help a child with homework by asking guiding questions instead of giving the answer.
+---
+
+# Homework Helper
+
+When a child asks for help with homework:
+1. Ask what they already know about the question.
+2. Give one small hint at a time, never the full answer.
+3. If they are stuck after three hints, show a similar example and let them try again.
+4. Praise the effort, not just the right answer.
+5. Use short sentences and words a ten-year-old knows.
+```
+
+<Compare
+  before={{ label: "A prompt you type every time", content: "Help my son with his math homework, but don't give him the answer, ask him questions, give small hints, keep it simple, praise his effort..." }}
+  after={{ label: "A skill you write once", content: "The homework-helper skill is saved. Whenever a homework question comes up, the assistant loads it and follows the same careful method, every time." }}
+/>
+
+Several AI assistants and coding tools, from different companies, can now read skills packaged in folders like this, and many people share them with one another. The details differ from tool to tool, but the idea is the same everywhere: a method, written down once, ready to be picked up when it fits. We look at skills in much more depth in [Agents & Skills](/book/25-agents-and-skills).
+
+<InfoGrid columns={2} items={[
+  { label: "What it is", description: "A reusable package of instructions, and sometimes helper files, that a model loads only when a task needs it.", color: "purple" },
+  { label: "A tiny example", description: "A homework-helper skill, a skill for writing polite school emails, or a skill that turns notes into a weekly class newsletter.", color: "purple" },
+  { label: "Use it when", description: "You keep giving the same detailed instructions, and you want the work done the same careful way each time.", color: "purple" },
+  { label: "What it is not", description: "A skill does nothing by itself. Like a recipe card, it needs someone to pick it up and follow it. It is also not a new model and not new knowledge baked into the AI.", color: "purple" }
+]} />
+
+## Rung Three: The Agent
+
+So far, the cook only talks. Now imagine you say: "Please get dinner ready for four people by seven o'clock." This time your friend walks into the kitchen. They open the fridge to see what is there, notice there are no onions, check the clock, choose a recipe card, start cooking, taste the soup, add a little salt, taste again, and finally set the table. Nobody told them each step. You gave them a **goal**, and they worked out the steps by looking, acting, and checking.
+
+That is an **agent**. An agent is an AI model working in a **loop**, with **tools**, toward a goal. The tools are the cook's hands: reading a file, searching the web, opening a calendar, running a calculation, sending a draft. The loop is the rhythm of looking, acting, and checking.
+
+The mechanism is simpler than it sounds. A piece of software around the model, which the book calls the [harness](/book/26-the-harnesses), gives the model a goal and a list of tools it may use. The model does not touch anything directly. Instead, it answers with a request such as "use the weather tool for Saturday in Lisbon." The harness runs that tool and puts the result back into the conversation. The model reads the result and decides on the next step. This repeats until the goal is reached, or until a limit says stop. Each turn of that loop is still a prompt and an answer. What makes it an agent is that the answers lead to actions, and the results of those actions lead to the next answer. We met this rhythm in [Loop Engineering](/book/14a-loop-engineering).
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col items-center gap-2 max-w-sm mx-auto">
+    <div className="w-full px-4 py-2 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">Goal: dinner for four by 7 PM</p>
+    </div>
+    <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+    <div className="w-full p-3 border border-dashed rounded-lg flex flex-col items-center gap-2">
+      <div className="w-full px-3 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded text-center">
+        <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">Think: what should I do next?</p>
+      </div>
+      <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+      <div className="w-full px-3 py-2 bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800 rounded text-center">
+        <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">Act: use a tool (open the fridge)</p>
+      </div>
+      <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+      <div className="w-full px-3 py-2 bg-teal-100 dark:bg-teal-900/50 border border-teal-200 dark:border-teal-800 rounded text-center">
+        <p className="text-sm font-medium text-teal-700 dark:text-teal-300 m-0!">Check: look at the result (no onions)</p>
+      </div>
+      <p className="text-xs text-muted-foreground m-0!">↻ repeat until done, or until a limit says stop</p>
+    </div>
+    <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+    <div className="w-full px-4 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">Done: dinner is on the table</p>
+    </div>
+  </div>
+</div>
+
+You may already have used agents without calling them that. A coding assistant that reads your project, edits a file, runs the tests, and fixes what failed is an agent. So is a research mode in a chat app that searches many pages before writing its report, or a browser assistant that fills in a form for you. Agents often use skills, too: the cook in our kitchen still reaches for the recipe card when it fits.
+
+<InfoGrid columns={2} items={[
+  { label: "What it is", description: "An AI model in a loop with tools. It looks, acts, checks the result, and keeps going until the goal is reached or it is told to stop.", color: "blue" },
+  { label: "A tiny example", description: "You ask it to plan a Saturday picnic. It checks the weather, looks at your calendar, picks a park, and writes a shopping list.", color: "blue" },
+  { label: "Use it when", description: "The job has several steps, needs real information or actions, and you can't easily list every step in advance.", color: "blue" },
+  { label: "What it is not", description: "An agent is not a smarter model; it is the same kind of model with hands and a loop. It usually works only while you have it open, and it forgets once the session ends.", color: "blue" }
+]} />
+
+<Callout type="warning" title="Hands can make mistakes">
+A prompt can only give you a wrong answer. An agent can take a wrong action, such as deleting the wrong file or sending a message too early. That is why good agents ask before anything that is hard to undo, and why you should give them only the tools the task really needs.
+</Callout>
+
+## Rung Four: The Bot
+
+Our cook is very good, but every evening they arrive as if for the first time. They have to ask again who is allergic to peanuts, where the big pot is, and what you ate yesterday. And they only come when you call them.
+
+Now imagine a cook who **lives with the family**. They have a name and a clear job: "the family's dinner planner." They keep a notebook of what they have learned: Ada is allergic to peanuts, Grandpa doesn't like spicy food, Thursday is pizza night. They have a key to the pantry and access to the grocery delivery account. And every Sunday at six, without anyone asking, they plan the week's dinners, check the family calendar for busy evenings, and leave a shopping list on the fridge for a grown-up to approve.
+
+That is a **bot**, in the sense this book uses the word: a **persistent agent**. Everything from the agent rung is still there, the model, the tools, the loop. What the bot adds is **time**. Under the hood, that usually means four extra pieces:
+
+<InfoGrid items={[
+  { label: "Identity", description: "A lasting name and role, written into its standing instructions, so it knows which details matter for its job.", color: "green" },
+  { label: "Memory", description: "Notes saved outside the model, often in plain files or a small database, and loaded back into the context at the start of each session. The model itself still forgets; the notebook does the remembering.", color: "green" },
+  { label: "Routines", description: "Jobs that start on a schedule (every Sunday at 6 PM) or when something happens (a new email arrives), without a fresh prompt from you.", color: "green" },
+  { label: "Connectors and a place to work", description: "Lasting, permitted access to apps and accounts, and a computer or server that stays on while you are away.", color: "green" }
+]} />
+
+<InfoGrid columns={2} items={[
+  { label: "What it is", description: "An agent that stays: it keeps a role, remembers across conversations, and can start work on its own schedule.", color: "green" },
+  { label: "A tiny example", description: "A meal-planning bot that every Sunday evening plans the week, avoids peanuts, and asks a parent to approve the shopping list.", color: "green" },
+  { label: "Use it when", description: "The same responsibility comes back again and again, and it should keep happening even when you aren't at your screen.", color: "green" },
+  { label: "What it is not", description: "Not a person, and not a mind that remembers everything. It remembers only what was saved, and it can still be wrong. Nor is it the scripted chatbot of older websites, which only followed fixed menus.", color: "green" }
+]} />
+
+<Callout type="info" title="An old word with a new meaning">
+For years, "bot" meant almost any automatic program: a script that posts the weather, a game character, a help-desk window that offers four fixed buttons. Many of those had no AI model at all. In this book, a bot means something more specific: an agent that persists, with its own identity, memory, and routines. When you meet the word elsewhere, it is worth asking which kind is meant.
+</Callout>
+
+Because a bot works while nobody is watching, the rules around it matter more than at any lower rung. A good bot drafts and suggests freely, but waits for a person before it sends, buys, deletes, or publishes anything. The chapter on [Always-On Bots](/book/28-persistent-bots) looks closely at memory, routines, and these approvals.
+
+## Rung Five: The Team
+
+One cook can make a family dinner. But think of a busy restaurant kitchen. One person takes the order. One prepares the vegetables. One cooks the main dish. One checks every plate before it leaves the kitchen. Each has a clear job, and work moves between them in a known way: the order ticket goes to the cook, the finished plate goes to the person who checks it. Nobody needs to know everything; each needs to know their part, and what to pass to whom.
+
+That is a **team**: several bots or agents, each with a **role**, linked by **handoffs**, working toward a shared **purpose**. A handoff is the moment one member passes a named piece of work to the next, like an order ticket or a finished plate.
+
+The mechanism is mostly about what each member gets to see. Each member has its own instructions for its role. When it finishes, it hands on a specific result, such as a list, a draft, or a report, and the next member receives only that, not the whole conversation that produced it. This keeps each member focused and makes mistakes easier to trace: if the final dish is too salty, you can check each plate along the line and see where the salt went in.
+
+A school could run a small team like this to put together a weekly newsletter for parents:
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col items-center gap-2 max-w-sm mx-auto">
+    <div className="w-full px-4 py-2 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">Collector</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">Gathers news from each class</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">hands on: a list of news items</p>
+    </div>
+    <div className="w-full px-4 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">Writer</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">Turns the list into a friendly draft</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">hands on: a draft newsletter</p>
+    </div>
+    <div className="w-full px-4 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">Checker</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0!">Checks names, dates, and tone</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">hands on: a checked draft</p>
+    </div>
+    <div className="w-full px-4 py-2 bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">Teacher</p>
+      <p className="text-xs text-amber-600 dark:text-amber-400 m-0!">Approves before anything is sent</p>
+    </div>
+  </div>
+</div>
+
+Notice who stands at the end of the line: a person. In a well-designed team, at least one handoff leads to a human before anything leaves the team.
+
+<InfoGrid columns={2} items={[
+  { label: "What it is", description: "Several bots or agents with clear roles, passing named pieces of work to one another toward one shared purpose.", color: "rose" },
+  { label: "A tiny example", description: "A collector, a writer, and a checker who prepare the class newsletter, with a teacher approving the final version.", color: "rose" },
+  { label: "Use it when", description: "The work naturally splits into different jobs, each job is clear enough to describe by what it receives and what it hands on, and one member alone keeps getting confused.", color: "rose" },
+  { label: "What it is not", description: "Not a crowd of agents left to sort things out among themselves, and not automatically better than one. Every extra member adds handoffs, and every handoff is a place where meaning can get lost.", color: "rose" }
+]} />
+
+## Which One Is This?
+
+Now that we have climbed the whole ladder, let's practice telling the rungs apart. For each situation, ask yourself what is being added: a saved method, tools and a loop, time, or other members.
+
+<Quiz
+  question="A teacher types: Write three fun questions about volcanoes for a class of nine-year-olds. The AI answers, and that is all. Which is this?"
+  options={["A prompt", "A skill", "An agent", "A bot"]}
+  correctIndex={0}
+  explanation="One instruction, one answer, and nothing happens afterwards. That is a prompt. It is the right tool here, because the teacher is right there to read the questions and use them."
+/>
+
+<Quiz
+  question="A parent saves a folder called bedtime-stories with instructions: always gentle, under five minutes, ending with the child falling asleep. The assistant uses it whenever someone asks for a bedtime story. Which is this?"
+  options={["A prompt", "A skill", "A bot", "A team"]}
+  correctIndex={1}
+  explanation="It is a saved, reusable method that the assistant loads only when a bedtime story is requested. It does nothing on its own, and it has no schedule or memory of its own. That makes it a skill."
+/>
+
+<Quiz
+  question="You ask an assistant to find a museum in your city that is open on Monday and suitable for small children. It searches several websites, compares opening hours, checks the ticket prices, and gives you its pick with links. Which is this?"
+  options={["A prompt", "A skill", "An agent", "A team"]}
+  correctIndex={2}
+  explanation="It used tools (web search) in a loop, looking and checking several times before it finished. That is an agent. It worked while you were there, and it will not do this again by itself next week."
+/>
+
+<Quiz
+  question="An assistant called Library Helper remembers which books each child in the class has read. Every Friday morning, without anyone asking, it suggests next week's books and sends the list to the teacher to approve. Which is this?"
+  options={["A skill", "An agent", "A bot", "A team"]}
+  correctIndex={2}
+  explanation="It has a name and a job, it keeps memory across weeks, and it starts on its own schedule. Those are the things a bot adds on top of an agent."
+/>
+
+<Quiz
+  question="One assistant collects photos from a school trip, a second one writes captions, and a third one checks that no child's full name appears. Then the album goes to the principal. Which is this?"
+  options={["An agent", "A bot", "A skill", "A team"]}
+  correctIndex={3}
+  explanation="Several members with different roles, each passing a named piece of work to the next, with a person approving at the end. That is a team."
+/>
+
+## All Five Side by Side
+
+Here is the whole ladder in one place. Read each row from left to right, and notice how every column keeps what came before it.
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Question</th>
+      <th scope="col">Prompt</th>
+      <th scope="col">Skill</th>
+      <th scope="col">Agent</th>
+      <th scope="col">Bot</th>
+      <th scope="col">Team</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>What is it, in one line?</td>
+      <td>One instruction, one answer</td>
+      <td>A saved method, loaded when needed</td>
+      <td>A model in a loop with tools</td>
+      <td>An agent that stays</td>
+      <td>Several members with roles</td>
+    </tr>
+    <tr>
+      <td>What does it add?</td>
+      <td>The starting point</td>
+      <td>Reuse</td>
+      <td>Actions</td>
+      <td>Time</td>
+      <td>Division of work</td>
+    </tr>
+    <tr>
+      <td>In the kitchen</td>
+      <td>Asking for a recipe</td>
+      <td>A recipe card in the box</td>
+      <td>A cook who makes tonight's dinner</td>
+      <td>The family cook who plans every week</td>
+      <td>A restaurant kitchen</td>
+    </tr>
+    <tr>
+      <td>Can it act?</td>
+      <td>No, it only answers</td>
+      <td>No, it only guides</td>
+      <td>Yes, with its tools</td>
+      <td>Yes, even while you are away</td>
+      <td>Yes, each member in its role</td>
+    </tr>
+    <tr>
+      <td>Does it remember?</td>
+      <td>Only this conversation</td>
+      <td>It is remembered, but it doesn't remember</td>
+      <td>Only this session</td>
+      <td>Yes, through saved memory</td>
+      <td>Each member keeps its own</td>
+    </tr>
+    <tr>
+      <td>Who starts it?</td>
+      <td>You</td>
+      <td>The model, when a task matches</td>
+      <td>You, with a goal</td>
+      <td>You, a schedule, or an event</td>
+      <td>A purpose, then each handoff</td>
+    </tr>
+  </tbody>
+</table>
+
+## Pick the Simplest Rung That Works
+
+It is tempting to think that higher on the ladder means better. It doesn't. Every rung adds power, and every rung also adds cost, waiting time, and new ways for things to go wrong. A prompt can give a wrong answer. An agent can take a wrong action. A bot can take a wrong action at three in the morning. A team can pass a mistake from member to member until it looks like a fact.
+
+So the wise habit is the one good cooks already have: use the simplest tool that does the job. Don't hire a restaurant kitchen to boil an egg. Start at the bottom of the ladder, and climb one rung only when the rung you are on clearly isn't enough.
+
+<InfoGrid items={[
+  { label: "Start with a prompt", description: "If you need one answer and you are there to read it, a clear prompt is enough.", color: "amber" },
+  { label: "Climb to a skill", description: "When you notice you are typing the same long instructions again and again.", color: "purple" },
+  { label: "Climb to an agent", description: "When the work needs real information or real actions, in several steps you can't list ahead of time.", color: "blue" },
+  { label: "Climb to a bot", description: "When the same responsibility returns on a schedule, and it should carry on while you are away.", color: "green" },
+  { label: "Climb to a team", description: "When one bot keeps mixing up genuinely different jobs, and each job can be described by what it receives and what it hands on.", color: "rose" }
+]} />
+
+<Checklist
+  title="Before you climb to the next rung"
+  items={[
+    { text: "I tried the rung below, and I can say exactly what it couldn't do" },
+    { text: "I can describe the result I want in one or two sentences" },
+    { text: "I know which tools or accounts the new rung really needs, and nothing more" },
+    { text: "Anything that is hard to undo will wait for a person to approve it" },
+    { text: "I know how I will check that the work was actually done well" },
+    { text: "I have a way to pause or stop it if it goes wrong" }
+  ]}
+/>
+
+If you are not sure which rung you need, you can ask an AI to help you think it through. The prompt below is itself a good example of the first rung:
+
+<TryIt compact prompt={`I want help with this task: \${task:planning healthy school lunches for my two children every week}.
+
+Using this ladder, from simplest to most complex:
+1. Prompt: one instruction, one answer
+2. Skill: a saved method the AI loads when needed
+3. Agent: an AI that uses tools in a loop toward a goal
+4. Bot: an agent that stays, with memory and routines
+5. Team: several agents or bots with roles and handoffs
+
+Tell me the simplest rung that would work well for my task, and why. Then tell me what would have to change before I needed the next rung up. Use plain, friendly language.`} />
+
+The five words no longer need to blur together. A **prompt** asks. A **skill** remembers how. An **agent** acts. A **bot** stays. A **team** shares the work. And at every rung, the craft is the same one this book began with: say clearly what you want, where the limits are, and how you will know it went well.
+
+The next chapters climb the ladder in detail. [Agents & Skills](/book/25-agents-and-skills) shows how skills are written and how agents use them. [Tools, MCP and Connectors](/book/27-tools-mcp-connectors) looks at the hands an agent works with, and [The Harnesses](/book/26-the-harnesses) at the software that runs its loop. Finally, [Always-On Bots](/book/28-persistent-bots) follows agents that stay, and the teams they form.

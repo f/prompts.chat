@@ -13,6 +13,10 @@ import { SkillDiffViewer } from "@/components/prompts/skill-diff-viewer";
 import { ChangeRequestActions } from "@/components/prompts/change-request-actions";
 import { ReopenChangeRequestButton } from "@/components/prompts/reopen-change-request-button";
 import { DismissChangeRequestButton } from "@/components/prompts/dismiss-change-request-button";
+import { BotDiff } from "@/components/bots/bot-diff";
+import { parseBotFields } from "@/lib/bots/change-snapshot";
+import { ClassifierDiff } from "@/components/classifiers/classifier-diff";
+import { parseClassifierFields } from "@/lib/classifiers/change-snapshot";
 
 interface ChangeRequestDetailProps {
   promptId: string;
@@ -73,10 +77,12 @@ export async function ChangeRequestDetail({ promptId, changeId, basePath, backLa
   };
 
   const StatusIcon = statusConfig[changeRequest.status].icon;
-  const hasTitleChange = changeRequest.proposedTitle && changeRequest.proposedTitle !== changeRequest.originalTitle;
+  const isBot = changeRequest.prompt.type === "BOT";
+  const isClassifier = changeRequest.prompt.type === "CLASSIFIER";
+  const hasTitleChange = !isBot && !isClassifier && changeRequest.proposedTitle && changeRequest.proposedTitle !== changeRequest.originalTitle;
 
   return (
-    <div className="container max-w-3xl py-6">
+    <div className="container max-w-3xl pt-6 pb-24 sm:pb-6">
       {/* Header */}
       <div className="mb-6">
         <Button variant="ghost" size="sm" asChild className="mb-4 -ml-2">
@@ -141,7 +147,39 @@ export async function ChangeRequestDetail({ promptId, changeId, basePath, backLa
         </div>
       )}
 
+      {/* Bots: every changed field */}
+      {isBot && (
+        <div className="mb-6">
+          <BotDiff
+            original={{
+              title: changeRequest.originalTitle,
+              instructions: changeRequest.originalContent,
+              fields: parseBotFields(changeRequest.originalBot),
+            }}
+            modified={{
+              title: changeRequest.proposedTitle || changeRequest.originalTitle,
+              instructions: changeRequest.proposedContent,
+              fields: parseBotFields(changeRequest.proposedBot),
+            }}
+          />
+        </div>
+      )}
+
+      {/* Classifiers: every changed structured field */}
+      {isClassifier && (
+        <div className="mb-6">
+          <ClassifierDiff
+            original={{ title: changeRequest.originalTitle, fields: parseClassifierFields(changeRequest.originalClassifier) }}
+            modified={{
+              title: changeRequest.proposedTitle || changeRequest.originalTitle,
+              fields: parseClassifierFields(changeRequest.proposedClassifier),
+            }}
+          />
+        </div>
+      )}
+
       {/* Content diff */}
+      {!isBot && !isClassifier && (
       <div className="mb-6">
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">{t("contentChanges")}</p>
         {changeRequest.prompt.type === "SKILL" ? (
@@ -156,6 +194,7 @@ export async function ChangeRequestDetail({ promptId, changeId, basePath, backLa
           />
         )}
       </div>
+      )}
 
       {/* Review note (if exists) */}
       {changeRequest.reviewNote && (

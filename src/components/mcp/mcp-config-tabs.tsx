@@ -1,13 +1,23 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Check, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { analyticsMcp } from "@/lib/analytics";
+import {
+  MCP_CLIENTS,
+  MCP_CLIENT_LABELS,
+  MCP_NPM_PACKAGE,
+  buildLocalEnv,
+  getMcpClientConfig,
+  type McpClient,
+  type McpMode,
+} from "@/lib/mcp/client-config";
+import { McpClientLogo } from "./mcp-client-logo";
 
-type Client = "cursor" | "claude-code" | "vscode" | "codex" | "windsurf" | "gemini";
-type Mode = "remote" | "local";
+const API_KEY_PLACEHOLDER = "<click to reveal>";
 
 interface McpConfigTabsProps {
   baseUrl?: string;
@@ -25,170 +35,15 @@ interface McpConfigTabsProps {
   showOfficialBranding?: boolean;
 }
 
-const CLIENT_LABELS: Record<Client, string> = {
-  cursor: "Cursor",
-  "claude-code": "Claude",
-  vscode: "VS Code",
-  codex: "Codex",
-  windsurf: "Windsurf",
-  gemini: "Gemini",
-};
-
-const NPM_PACKAGE = "@fkadev/prompts.chat-mcp";
-
-function buildLocalEnv(apiKey?: string | null, queryParams?: string): Record<string, string> | undefined {
-  const env: Record<string, string> = {};
-  if (apiKey) env.PROMPTS_API_KEY = apiKey;
-  if (queryParams) env.PROMPTS_QUERY = queryParams;
-  return Object.keys(env).length > 0 ? env : undefined;
-}
-
-function getConfig(client: Client, mode: Mode, mcpUrl: string, apiKey?: string | null, queryParams?: string): string {
-  const packageName = NPM_PACKAGE;
-  const localEnv = buildLocalEnv(apiKey, queryParams);
-  
-  switch (client) {
-    case "cursor":
-      if (mode === "remote") {
-        const config: Record<string, unknown> = {
-          mcpServers: {
-            "prompts.chat": {
-              url: mcpUrl,
-              ...(apiKey && { headers: { "PROMPTS_API_KEY": apiKey } }),
-            },
-          },
-        };
-        return JSON.stringify(config, null, 2);
-      } else {
-        const config: Record<string, unknown> = {
-          mcpServers: {
-            "prompts.chat": {
-              command: "npx",
-              args: ["-y", packageName],
-              ...(localEnv && { env: localEnv }),
-            },
-          },
-        };
-        return JSON.stringify(config, null, 2);
-      }
-
-    case "claude-code":
-      if (mode === "remote") {
-        if (apiKey) {
-          return `claude mcp add --transport http prompts.chat ${mcpUrl} --header "PROMPTS_API_KEY: ${apiKey}"`;
-        }
-        return `claude mcp add --transport http prompts.chat ${mcpUrl}`;
-      } else {
-        const envPrefix = localEnv 
-          ? Object.entries(localEnv).map(([k, v]) => `${k}="${v}"`).join(" ") + " "
-          : "";
-        return `${envPrefix}claude mcp add prompts.chat -- npx -y ${packageName}`;
-      }
-
-    case "vscode":
-      if (mode === "remote") {
-        const config: Record<string, unknown> = {
-          mcp: {
-            servers: {
-              "prompts.chat": {
-                type: "http",
-                url: mcpUrl,
-                ...(apiKey && { headers: { "PROMPTS_API_KEY": apiKey } }),
-              },
-            },
-          },
-        };
-        return JSON.stringify(config, null, 2);
-      } else {
-        const config: Record<string, unknown> = {
-          mcp: {
-            servers: {
-              "prompts.chat": {
-                type: "stdio",
-                command: "npx",
-                args: ["-y", packageName],
-                ...(localEnv && { env: localEnv }),
-              },
-            },
-          },
-        };
-        return JSON.stringify(config, null, 2);
-      }
-
-    case "codex":
-      if (mode === "remote") {
-        if (apiKey) {
-          return `[mcp_servers.prompts_chat]
-url = "${mcpUrl}"
-
-[mcp_servers.prompts_chat.headers]
-PROMPTS_API_KEY = "${apiKey}"`;
-        }
-        return `[mcp_servers.prompts_chat]
-url = "${mcpUrl}"`;
-      } else {
-        let config = `[mcp_servers.prompts_chat]
-command = "npx"
-args = ["-y", "${packageName}"]`;
-        if (localEnv) {
-          config += "\n\n[mcp_servers.prompts_chat.env]";
-          for (const [key, value] of Object.entries(localEnv)) {
-            config += `\n${key} = "${value}"`;
-          }
-        }
-        return config;
-      }
-
-    case "windsurf":
-      if (mode === "remote") {
-        const config: Record<string, unknown> = {
-          mcpServers: {
-            "prompts.chat": {
-              serverUrl: mcpUrl,
-              ...(apiKey && { headers: { "PROMPTS_API_KEY": apiKey } }),
-            },
-          },
-        };
-        return JSON.stringify(config, null, 2);
-      } else {
-        const config: Record<string, unknown> = {
-          mcpServers: {
-            "prompts.chat": {
-              command: "npx",
-              args: ["-y", packageName],
-              ...(localEnv && { env: localEnv }),
-            },
-          },
-        };
-        return JSON.stringify(config, null, 2);
-      }
-
-    case "gemini":
-      if (mode === "remote") {
-        if (apiKey) {
-          return `PROMPTS_API_KEY=${apiKey} gemini mcp add prompts.chat --transport sse ${mcpUrl}`;
-        }
-        return `gemini mcp add prompts.chat --transport sse ${mcpUrl}`;
-      } else {
-        const envPrefix = localEnv 
-          ? Object.entries(localEnv).map(([k, v]) => `${k}="${v}"`).join(" ") + " "
-          : "";
-        return `${envPrefix}gemini mcp add prompts.chat -- npx -y ${packageName}`;
-      }
-
-    default:
-      return "";
-  }
-}
-
 export function McpConfigTabs({ baseUrl, queryParams, className, mode, onModeChange, hideModeToggle, apiKey, showOfficialBranding = false }: McpConfigTabsProps) {
-  const [selectedClient, setSelectedClient] = useState<Client>("vscode");
-  const [internalMode, setInternalMode] = useState<Mode>("remote");
+  const t = useTranslations("mcp");
+  const [selectedClient, setSelectedClient] = useState<McpClient>("claude-code");
+  const [internalMode, setInternalMode] = useState<McpMode>("remote");
   const [copied, setCopied] = useState(false);
   const [showApiKey, setShowApiKey] = useState(false);
   
   const selectedMode = mode ?? internalMode;
-  const handleModeChange = (newMode: Mode) => {
+  const handleModeChange = (newMode: McpMode) => {
     if (onModeChange) {
       onModeChange(newMode);
     } else {
@@ -200,39 +55,40 @@ export function McpConfigTabs({ baseUrl, queryParams, className, mode, onModeCha
   const mcpUrl = queryParams ? `${base}/api/mcp?${queryParams}` : `${base}/api/mcp`;
   
   // Full config with actual API key (for copying)
-  const config = getConfig(selectedClient, selectedMode, mcpUrl, apiKey, queryParams);
+  const config = getMcpClientConfig(selectedClient, selectedMode, { mcpUrl, apiKey, queryParams });
   
   // Display config: show full key if revealed, otherwise show placeholder (queryParams always visible)
   const displayApiKey = apiKey 
-    ? (showApiKey ? apiKey : "<click to reveal>")
+    ? (showApiKey ? apiKey : API_KEY_PLACEHOLDER)
     : null;
-  const displayConfig = getConfig(selectedClient, selectedMode, mcpUrl, displayApiKey, queryParams);
+  const displayConfig = getMcpClientConfig(selectedClient, selectedMode, { mcpUrl, apiKey: displayApiKey, queryParams }).code;
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(config);
+    await navigator.clipboard.writeText(config.code);
     analyticsMcp.copyCommand(`${selectedClient}-${selectedMode}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const clients: Client[] = ["vscode", "windsurf", "cursor", "claude-code", "codex", "gemini"];
-
   return (
     <div className={cn("space-y-2", className)}>
       {/* Client Tabs */}
-      <div className="flex gap-0.5 overflow-x-auto">
-        {clients.map((client) => (
+      <div className="flex flex-wrap gap-0.5" role="tablist">
+        {MCP_CLIENTS.map((client) => (
           <button
             key={client}
+            role="tab"
+            aria-selected={selectedClient === client}
             onClick={() => setSelectedClient(client)}
             className={cn(
-              "px-2 py-1 text-[11px] font-medium rounded transition-colors whitespace-nowrap",
+              "flex items-center gap-1 px-2 py-1 text-[11px] font-medium rounded transition-colors whitespace-nowrap",
               selectedClient === client
                 ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:text-foreground hover:bg-muted"
             )}
           >
-            {CLIENT_LABELS[client]}
+            <McpClientLogo client={client} className="h-3 w-3" />
+            {MCP_CLIENT_LABELS[client]}
           </button>
         ))}
       </div>
@@ -277,7 +133,7 @@ export function McpConfigTabs({ baseUrl, queryParams, className, mode, onModeCha
           <pre className="whitespace-pre">
             {apiKey && !showApiKey ? (
               <>
-                {displayConfig.split("<click to reveal>").map((part, i, arr) => (
+                {displayConfig.split(API_KEY_PLACEHOLDER).map((part, i, arr) => (
                   <span key={i}>
                     {part}
                     {i < arr.length - 1 && (
@@ -285,7 +141,7 @@ export function McpConfigTabs({ baseUrl, queryParams, className, mode, onModeCha
                         onClick={() => setShowApiKey(true)}
                         className="text-primary underline cursor-pointer hover:text-primary/80"
                       >
-                        {"<click to reveal>"}
+                        {API_KEY_PLACEHOLDER}
                       </span>
                     )}
                   </span>
@@ -310,6 +166,14 @@ export function McpConfigTabs({ baseUrl, queryParams, className, mode, onModeCha
         </Button>
       </div>
 
+      {(config.note || config.omitsApiKey) && (
+        <p className="text-[10px] text-muted-foreground">
+          {config.note && t(`clientNotes.${config.note}`)}
+          {config.note && config.omitsApiKey && " "}
+          {config.omitsApiKey && t("clientNotes.urlOnlyApiKey")}
+        </p>
+      )}
+
       {/* Cursor Install Button - only for official branding */}
       {showOfficialBranding && selectedClient === "cursor" && (
         <div className="flex flex-col gap-2">
@@ -320,7 +184,7 @@ export function McpConfigTabs({ baseUrl, queryParams, className, mode, onModeCha
             onClick={() => {
               const cursorConfig: Record<string, unknown> = {
                 command: "npx",
-                args: ["-y", NPM_PACKAGE],
+                args: ["-y", MCP_NPM_PACKAGE],
               };
               const localEnv = buildLocalEnv(apiKey, queryParams);
               if (localEnv) cursorConfig.env = localEnv;
@@ -328,9 +192,7 @@ export function McpConfigTabs({ baseUrl, queryParams, className, mode, onModeCha
               window.open(`cursor://anysphere.cursor-deeplink/mcp/install?name=${encodeURIComponent("prompts.chat")}&config=${configBase64}`, "_self");
             }}
           >
-            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" />
-            </svg>
+            <McpClientLogo client="cursor" className="h-3.5 w-3.5" />
             Cursor
           </Button>
         </div>

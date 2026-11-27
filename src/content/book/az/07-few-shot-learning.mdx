@@ -1,19 +1,19 @@
-Az nümunəli öyrənmə, ən güclü prompt texnikalarından biridir. Nə istədiyinizə dair nümunələr təmin edərək, modelə hər hansı bir fine-tuning etmədən mürəkkəb tapşırıqları öyrədə bilərsiniz.
+Az nümunəli öyrənmə ən güclü prompt texnikalarından biridir. Nə istədiyinizə dair nümunələr verməklə, modelə heç bir fine-tuning etmədən mürəkkəb tapşırıqları öyrədə bilərsiniz.
 
 <Callout type="info" title="Nümunə ilə Öyrən">
-İnsanların nümunələri görərək öyrənməsi kimi, süni intellekt modelləri də promptunuzda təmin etdiyiniz nümunələrdən nümunələri öyrənə bilər.
+İnsanlar nümunələri görərək öyrəndiyi kimi, süni intellekt modelləri də promptunuzda verdiyiniz nümunələrdən qanunauyğunluqları öyrənə bilər.
 </Callout>
 
 ## Az Nümunəli Öyrənmə Nədir?
 
-Az nümunəli öyrənmə, eyni tapşırığı yerinə yetirməsini istəməzdən əvvəl modelə giriş-çıxış cütlərinin nümunələrini göstərir. Model nümunələrinizdən nümunəni öyrənir və yeni girişlərə tətbiq edir.
+Az nümunəli öyrənmədə modeldən tapşırığı yerinə yetirməsini istəməzdən əvvəl ona giriş-çıxış cütlərindən nümunələr göstərilir. Model nümunələrinizdəki qanunauyğunluğu öyrənir və onu yeni girişlərə tətbiq edir.
 
 <Compare 
   before={{ 
     label: "Sıfır Nümunə (Nümunə Yox)", 
     content: `Bu rəyi pozitiv və ya neqativ olaraq təsnif et:
 
-"Batareya ömrü əladır amma ekran çox qaranlıqdır."
+"Batareya ömrü əladır, amma ekran çox tutqundur."
 
 → Model uç hallarda ardıcıl olmaya bilər` 
   }}
@@ -21,12 +21,12 @@ Az nümunəli öyrənmə, eyni tapşırığı yerinə yetirməsini istəməzdən
     label: "Az Nümunə (Nümunələrlə)", 
     content: `"Çox bəyəndim!" → Pozitiv
 "Dəhşətli keyfiyyət" → Neqativ  
-"Yaxşıdır amma bahalıdır" → Qarışıq
+"Yaxşıdır, amma bahalıdır" → Qarışıq
 
 İndi təsnif et:
-"Batareya ömrü əladır amma ekran çox qaranlıqdır."
+"Batareya ömrü əladır, amma ekran çox tutqundur."
 
-→ Model tam olaraq sənin kateqoriyalarını öyrənir` 
+→ Model məhz sizin kateqoriyalarınızı öyrənir` 
   }}
 />
 
@@ -54,14 +54,14 @@ Az nümunəli öyrənmə, eyni tapşırığı yerinə yetirməsini istəməzdən
 <FewShotDemo />
 
 Nümunələr bunları çatdırır:
-- **Format**: Çıxışın necə strukturlaşdırılması lazım olduğu
-- **Stil**: Ton, uzunluq, lüğət
-- **Məntiq**: İzləniləcək mühakimə nümunəsi
+- **Format**: Çıxışın necə strukturlaşdırılmalı olduğu
+- **Üslub**: Ton, uzunluq, söz ehtiyatı
+- **Məntiq**: İzləniləcək mühakimə qaydası
 - **Uç hallar**: Xüsusi vəziyyətlərin necə idarə ediləcəyi
 
-## Əsas Az Nümunə Nümunəsi
+## Az Nümunəli Promptun Əsas Quruluşu
 
-Az nümunəli prompting-in əsas strukturu sadə bir nümunə izləyir: nümunələri göstər, sonra yeni tapşırığı istə. Nümunələr arasında formatlama ardıcıllığı çox vacibdir. Model qurduğunuz nümunədən öyrənir.
+Az nümunəli prompting-in əsas strukturu sadə bir qəlibə əsaslanır: əvvəlcə nümunələri göstər, sonra yeni tapşırığı ver. Nümunələr arasında formatın eyni olması çox vacibdir. Model sizin qurduğunuz qəlibdən öyrənir.
 
 ```
 [Nümunə 1]
@@ -83,89 +83,89 @@ Giriş: [yeni giriş]
 
 ## Təsnifat üçün Az Nümunə
 
-Təsnifat, az nümunəli öyrənmənin ən güclü istifadə sahələrindən biridir. Hər kateqoriyadan nümunələr göstərərək, siniflər arasındakı sərhədləri yalnız təlimatların başara biləcəyindən daha dəqiq şəkildə təyin edirsiniz.
+Təsnifat az nümunəli öyrənmənin ən güclü tətbiq sahələrindən biridir. Hər kateqoriyadan nümunələr göstərməklə siniflər arasındakı sərhədləri yalnız təlimatlarla mümkün olandan daha dəqiq müəyyən edirsiniz.
 
 ### Hiss Analizi
 
 <Callout type="info" title="Hiss Analizi Nədir?">
-Hiss analizi, mətni emosional tonuna görə təsnif edir: pozitiv, neqativ, neytral və ya qarışıq. Müştəri rəyi, sosial media izləmə və marka qavrayışı izləməsi üçün geniş istifadə olunur.
+Hiss analizi mətni emosional tonuna görə təsnif edir: pozitiv, neqativ, neytral və ya qarışıq. O, müştəri rəylərinin təhlili, sosial medianın izlənməsi və brendin necə qəbul edildiyinin izlənməsi üçün geniş istifadə olunur.
 </Callout>
 
-Hiss təsnifatı, hər hiss növündən nümunələr göstərməkdən faydalanır, xüsusilə qeyri-müəyyən ola biləcək "qarışıq" hiss kimi uç hallar.
+Hiss təsnifatında hər hiss növündən nümunələr göstərmək faydalıdır, xüsusilə də qeyri-müəyyən ola biləcək "qarışıq" hiss kimi uç halları.
 
 <TryIt compact prompt={`Bu müştəri rəylərinin hissini təsnif et.
 
-Rəy: "Bu məhsul bütün gözləntilərimi aşdı! Yenidən alacağam."
+Rəy: "Bu məhsul bütün gözləntilərimi aşdı! Yenə alacağam."
 Hiss: Pozitiv
 
-Rəy: "Sınıq gəldi və müştəri xidmətləri kömək etmədi."
+Rəy: "Sınıq gəldi, müştəri xidməti də kömək etmədi."
 Hiss: Neqativ
 
-Rəy: "İşini görür, xüsusi bir şey yoxdur amma işləyir."
+Rəy: "Normal işləyir, xüsusi bir şey yoxdur, amma işini görür."
 Hiss: Neytral
 
-Rəy: "Keyfiyyət əladır amma çatdırılma çox uzun sürdü."
+Rəy: "Keyfiyyət əladır, amma çatdırılma çox uzun çəkdi."
 Hiss: Qarışıq
 
 İndi təsnif et:
-Rəy: "Dizaynı çox bəyəndim amma batareya ömrü məyusledici."
+Rəy: "Dizaynı çox bəyəndim, amma batareya ömrü məyusedicidir."
 Hiss:`} />
 
 ### Mövzu Təsnifatı
 
-Çox sinifli kateqoriyalandırma üçün hər kateqoriyadan ən azı bir nümunə əlavə edin. Bu, modelin standart anlayışından fərqli ola biləcək xüsusi taksonomiyanızı başa düşməsinə kömək edir.
+Çox sinifli kateqoriyalaşdırma üçün hər kateqoriyadan ən azı bir nümunə əlavə edin. Bu, modelə sizin xüsusi taksonomiyanızı başa düşməyə kömək edir; o, modelin standart təsəvvüründən fərqli ola bilər.
 
-<TryIt compact prompt={`Bu dəstək biletlərini kateqoriyalara ayır.
+<TryIt compact prompt={`Bu dəstək müraciətlərini kateqoriyalara ayır.
 
-Bilet: "Hesabıma daxil ola bilmirəm, şifrə sıfırlama işləmir"
-Kateqoriya: Kimlik Doğrulama
+Müraciət: "Hesabıma daxil ola bilmirəm, şifrənin sıfırlanması işləmir"
+Kateqoriya: Autentifikasiya
 
-Bilet: "Premium plana necə yüksəldə bilərəm?"
-Kateqoriya: Faturalandırma
+Müraciət: "Premium plana necə keçə bilərəm?"
+Kateqoriya: Ödənişlər
 
-Bilet: "Məlumat ixrac etməyə çalışdıqda tətbiq çökür"
+Müraciət: "Məlumatları ixrac etməyə çalışanda tətbiq çökür"
 Kateqoriya: Xəta Hesabatı
 
-Bilet: "Mobil tətbiqə qaranlıq rejim əlavə edə bilərsinizmi?"
-Kateqoriya: Xüsusiyyət İstəyi
+Müraciət: "Mobil tətbiqə qaranlıq rejim əlavə edə bilərsinizmi?"
+Kateqoriya: Funksiya İstəyi
 
 İndi kateqoriyalara ayır:
-Bilet: "Ödənişim rədd edildi amma kartımda ödəniş görürəm"
+Müraciət: "Ödənişim rədd edildi, amma kartımdan pulun çıxıldığını görürəm"
 Kateqoriya:`} />
 
 ## Çevirmə üçün Az Nümunə
 
-Çevirmə tapşırıqları, mənasını qoruyaraq girişi bir formadan digərinə çevirir. Nümunələr burada vacibdir çünki istifadə halınız üçün tam olaraq "çevirmə"nin nə demək olduğunu təyin edirlər.
+Çevirmə tapşırıqları mənanı qoruyaraq girişi bir formadan digərinə salır. Nümunələr burada vacibdir, çünki sizin istifadə halınız üçün "çevirmə"nin tam olaraq nə demək olduğunu onlar müəyyən edir.
 
-### Mətn Yenidən Yazma
+### Mətnin Yenidən Yazılması
 
-Stil çevirməsi, istədiyiniz tam ton dəyişikliyini göstərən nümunələr tələb edir. "Peşəkar et" kimi mücərrəd təlimatlar fərqli şərh olunur. Nümunələr konkretləşdirir.
+Üslubun dəyişdirilməsi istədiyiniz ton dəyişikliyini dəqiq göstərən nümunələr tələb edir. "Peşəkar et" kimi mücərrəd təlimatlar fərqli şərh olunur. Nümunələr isə bunu konkretləşdirir.
 
 <TryIt compact prompt={`Bu cümlələri peşəkar tonda yenidən yaz.
 
-Günlük: "Salam, e-poçtumu aldın mı deyə maraqlanırdım?"
-Peşəkar: "Əvvəlki e-poçtumla bağlı izləmə etmək istədim."
+Qeyri-rəsmi: "Salam, e-poçtumu aldın, ya yox, bilmək istəyirdim?"
+Peşəkar: "Əvvəlki e-poçtumla bağlı vəziyyəti dəqiqləşdirmək istərdim."
 
-Günlük: "Bu çox vacibdir və dərhal edilməlidir!"
-Peşəkar: "Bu mövzu təcili diqqət tələb edir və sürətli hərəkət istəyir."
+Qeyri-rəsmi: "Bu çox vacibdir və dərhal edilməlidir!"
+Peşəkar: "Bu məsələ təcili diqqət və operativ tədbir tələb edir."
 
-Günlük: "Gec cavab üçün üzr, çox məşğul idim!"
-Peşəkar: "Gecikmiş cavab üçün üzr istəyirəm. Xüsusilə məşğul bir dövrdən keçirdim."
+Qeyri-rəsmi: "Gec cavab üçün üzr, başım çox qarışıq idi!"
+Peşəkar: "Gecikmiş cavaba görə üzr istəyirəm. Son vaxtlar iş qrafikim xüsusilə gərgin olub."
 
 İndi yenidən yaz:
-Günlük: "Görüşə gələ bilmirəm, bir iş çıxdı."
+Qeyri-rəsmi: "Görüşə gələ bilməyəcəm, bir iş çıxdı."
 Peşəkar:`} />
 
 ### Format Çevirməsi
 
-Format çevirmə tapşırıqları, uç halları və qeyri-müəyyən girişləri göstərən nümunələrdən faydalanır. Model, çətin vəziyyətləri idarə etmə barədə xüsusi konvensiyalarınızı öyrənir.
+Format çevirmə tapşırıqlarında uç halları və qeyri-müəyyən girişləri göstərən nümunələr faydalıdır. Model çətin halların idarə edilməsi ilə bağlı sizin xüsusi qaydalarınızı öyrənir.
 
-<TryIt compact prompt={`Bu təbii dil tarixlərini ISO formatına çevir.
+<TryIt compact prompt={`Təbii dildə yazılmış bu tarixləri ISO formatına çevir.
 
-Giriş: "gələn Çərşənbə axşamı"
-Çıxış: 2024-01-16 (bu gün 2024-01-11, Cümə axşamı fərz edərək)
+Giriş: "gələn çərşənbə axşamı"
+Çıxış: 2024-01-16 (bu günün 2024-01-11, cümə axşamı olduğunu fərz edərək)
 
-Giriş: "sabahdan sonrakı gün"
+Giriş: "birigün"
 Çıxış: 2024-01-13
 
 Giriş: "bu ayın son günü"
@@ -175,92 +175,92 @@ Giriş: "iki həftə sonra"
 Çıxış: 2024-01-25
 
 İndi çevir:
-Giriş: "gələn ayın ilk Bazar ertəsi"
+Giriş: "gələn ayın ilk bazar ertəsi"
 Çıxış:`} />
 
-## İstehsal üçün Az Nümunə
+## Məzmun Yaratma üçün Az Nümunə
 
-İstehsal tapşırıqları, öyrənilmiş bir nümunəni izləyərək yeni məzmun yaradır. Nümunələr uzunluğu, strukturu, tonu və hansı detalların vurğulanacağını müəyyən edir. Bunları tək başına təlimatlarda göstərmək çətindir.
+Məzmun yaratma tapşırıqları öyrənilmiş qəlibə uyğun olaraq yeni məzmun hazırlayır. Nümunələr uzunluğu, strukturu, tonu və hansı detalların önə çəkiləcəyini müəyyən edir. Bunları yalnız təlimatlarla ifadə etmək çətindir.
 
 ### Məhsul Təsvirləri
 
-Marketinq mətni, mücərrəd olaraq təyin edilməsi çətin olan marka səsi, xüsusiyyət vurğusu və inandırma texnikalarını tutduğu üçün nümunələrdən böyük ölçüdə faydalanır.
+Marketinq mətnləri nümunələrdən çox böyük fayda görür, çünki nümunələr brendin səsini, xüsusiyyətlərin vurğulanmasını və mücərrəd təsvir etməsi çətin olan inandırma üsullarını özündə əks etdirir.
 
-<TryIt compact prompt={`Bu stildə məhsul təsvirləri yaz:
+<TryIt compact prompt={`Bu üslubda məhsul təsvirləri yaz:
 
 Məhsul: Simsiz Bluetooth Qulaqlıq
-Təsvir: Yüngül simsiz qulaqlıqlarımızla kristal aydınlığında səsə özünüzü qaptırın. 40 saatlıq batareya ömrü, aktiv səs-küy ləğvi və gün boyu rahatlıq üçün yumşaq yaddaş köpüklü qulaq yastıqları.
+Təsvir: Yüngül simsiz qulaqlıqlarımızla büllur kimi təmiz səsə qərq olun. 40 saatlıq batareya ömrü, aktiv səs-küyü azaltma və gün boyu rahatlıq üçün yaddaşlı köpükdən yumşaq qulaq yastıqları.
 
-Məhsul: Paslanmayan Polad Su Şüşəsi
-Təsvir: İkiqat divarlı izolyasiyalı şüşəmizlə zərifliklə hidratasiyanızı qoruyun. İçkiləri 24 saat soyuq və ya 12 saat isti saxlayır. Sızdırmaz qapaq və standart avtomobil bardaklarına sığır.
+Məhsul: Paslanmayan Poladdan Su Butulkası
+Təsvir: İkiqat divarlı termo-butulkamızla həm şık görünün, həm də susuz qalmayın. İçkiləri 24 saat soyuq və ya 12 saat isti saxlayır. Sızdırmayan qapağı var və avtomobillərdəki standart stəkan yuvalarına yerləşir.
 
-Məhsul: Erqonomik Ofis Stulu
-Təsvir: Tənzimlənən erqonomik stulumuzla iş sahənizi dəyişdirin. Nəfəs alan tor arxa, bel dəstəyi və 360° fırlanma, uzun iş seanslarında rahat qalmağınızı təmin edir.
+Məhsul: Erqonomik Ofis Kreslosu
+Təsvir: Tənzimlənən erqonomik kreslomuzla iş yerinizi yeniləyin. Hava keçirən tor arxalıq, bel dəstəyi və 360° fırlanma uzun iş saatlarında rahat qalmağınızı təmin edir.
 
 İndi yaz:
 Məhsul: Portativ Telefon Şarj Cihazı
 Təsvir:`} />
 
-### Kod Sənədləşdirilməsi
+### Kodun Sənədləşdirilməsi
 
-<Callout type="info" title="Niyə Kod Sənədləşdirilir?">
-Yaxşı sənədləşdirmə kodun nə etdiyini, parametrlərini, qaytarma dəyərlərini və istifadə nümunələrini izah edir. Ardıcıl docstring-lər avtomatik yaradılan API sənədlərini aktivləşdirir və IDE-lərin daha yaxşı kod tamamlama təmin etməsinə kömək edir.
+<Callout type="info" title="Kod Niyə Sənədləşdirilir?">
+Yaxşı sənədləşdirmə kodun nə etdiyini, parametrlərini, qaytardığı dəyərləri və istifadə nümunələrini izah edir. Ardıcıl docstring-lər API sənədlərini avtomatik yaratmağa imkan verir və IDE-lərə daha yaxşı kod tamamlama təklif etməyə kömək edir.
 </Callout>
 
-Sənədləşdirmə stili layihələr arasında böyük ölçüdə dəyişir. Nümunələr, xüsusi formatınızı, nəyin daxil ediləcəyini (args, returns, examples) və gözlənilən detal səviyyəsini öyrədir.
+Sənədləşdirmə üslubu layihədən layihəyə çox dəyişir. Nümunələr sizin xüsusi formatınızı, nələrin daxil ediləcəyini (args, returns, examples) və gözlənilən təfərrüat səviyyəsini öyrədir.
 
 <TryIt compact prompt={`Bu funksiyalar üçün sənədləşdirmə şərhləri yaz:
 
 Funksiya:
-def beden_kutle_indeksi_hesabla(ceki_kq, boy_m):
-    return ceki_kq / (boy_m ** 2)
+def calculate_bmi(weight_kg, height_m):
+    return weight_kg / (height_m ** 2)
 
 Sənədləşdirmə:
 """
-Çəki və boydan Bədən Kütlə İndeksi (BKİ) hesablayır.
+Çəki və boya əsasən Bədən Kütlə İndeksini (BKİ) hesablayır.
 
 Args:
-    ceki_kq (float): Kiloqram ilə çəki
-    boy_m (float): Metr ilə boy
+    weight_kg (float): Kiloqramla çəki
+    height_m (float): Metrlə boy
 
 Returns:
     float: BKİ dəyəri (çəki/boy²)
 
-Nümunə:
-    >>> beden_kutle_indeksi_hesabla(70, 1.75)
+Example:
+    >>> calculate_bmi(70, 1.75)
     22.86
 """
 
 İndi sənədləşdir:
 Funksiya:
-def palindromdur(metin):
-    temiz = ''.join(c.lower() for c in metin if c.isalnum())
-    return temiz == temiz[::-1]
+def is_palindrome(text):
+    cleaned = ''.join(c.lower() for c in text if c.isalnum())
+    return cleaned == cleaned[::-1]
 
 Sənədləşdirmə:`} />
 
 ## Çıxarış üçün Az Nümunə
 
-Çıxarış tapşırıqları, strukturlaşdırılmamış mətndən strukturlaşdırılmış məlumat çəkir. Nümunələr hansı varlıqların vacib olduğunu, çıxışın necə formatlanacağını və məlumatın əksik və ya qeyri-müəyyən olduğu halların necə idarə ediləcəyini təyin edir.
+Çıxarış tapşırıqları strukturlaşdırılmamış mətndən strukturlaşdırılmış məlumat çıxarır. Nümunələr hansı varlıqların vacib olduğunu, çıxışın necə formatlanacağını və məlumat çatışmayanda və ya qeyri-müəyyən olanda nə edilməli olduğunu müəyyən edir.
 
 ### Varlıq Çıxarışı
 
 <Callout type="info" title="Named Entity Recognition Nədir?">
-Named Entity Recognition (NER), mətndəki adlandırılmış varlıqları şəxslər, təşkilatlar, yerlər, tariXlər və məhsullar kimi kateqoriyalara müəyyən edir və təsnif edir. Məlumat əldə etmə və bilik qrafikləri üçün əsasdır.
+Named Entity Recognition (NER) mətndəki adlandırılmış varlıqları müəyyən edib şəxslər, təşkilatlar, yerlər, tarixlər və məhsullar kimi kateqoriyalara ayırır. Bu, məlumat axtarışı və bilik qrafları üçün əsas texnologiyadır.
 </Callout>
 
-NER, xüsusi varlıq növlərinizi və bir neçə kateqoriyaya sığa biləcək varlıqların necə idarə ediləcəyini göstərən nümunələrdən faydalanır.
+NER üçün sizin xüsusi varlıq növlərinizi və bir neçə kateqoriyaya aid ola biləcək varlıqların necə idarə ediləcəyini göstərən nümunələr faydalıdır.
 
 <TryIt compact prompt={`Bu cümlələrdən adlandırılmış varlıqları çıxar.
 
-Mətn: "Apple CEO-su Tim Cook, iPhone 15-i Cupertinoda elan etdi."
+Mətn: "Apple-ın baş icraçı direktoru Tim Cook iPhone 15-i Kupertinoda təqdim etdi."
 Varlıqlar:
 - ŞİRKƏT: Apple
 - ŞƏXS: Tim Cook
 - MƏHSUL: iPhone 15
-- YER: Cupertino
+- YER: Kupertino
 
-Mətn: "Avropa İttifaqı 2018-də Google-a 4,34 milyard € cərimə verdi."
+Mətn: "Avropa İttifaqı 2018-ci ildə Google-u 4,34 milyard € cərimələdi."
 Varlıqlar:
 - TƏŞKİLAT: Avropa İttifaqı
 - ŞİRKƏT: Google
@@ -268,104 +268,104 @@ Varlıqlar:
 - TARİX: 2018
 
 İndi bundan çıxar:
-Mətn: "Elon Musk-ın SpaceX-i 3 Dekabrda Cape Canaveral-dan 23 Starlink peykit buraxdı."
+Mətn: "İlon Maskın SpaceX şirkəti 3 dekabrda Kanaveral burnundan 23 Starlink peyki buraxdı."
 Varlıqlar:`} />
 
 ### Strukturlaşdırılmış Məlumat Çıxarışı
 
-Təbii dildən strukturlaşdırılmış məlumat çıxarmaq, əksik sahələri, gizli məlumatları və dəyişən giriş formatlarını necə idarə edəcəyinizi göstərən nümunələr tələb edir.
+Təbii dildən strukturlaşdırılmış məlumat çıxarmaq üçün çatışmayan sahələrin, dolayı ifadə olunmuş məlumatların və müxtəlif giriş formatlarının necə idarə ediləcəyini göstərən nümunələr lazımdır.
 
-<TryIt compact prompt={`E-poçtlardan görüş detallarını strukturlaşdırılmış formata çıxar.
+<TryIt compact prompt={`Görüş detallarını strukturlaşdırılmış formata çıxar.
 
-E-poçt: "Sabah saat 15:00-da Konfrans Otağı B-də R4 büdcəsini müzakirə etmək üçün görüşək. Zəhmət olmasa noutbukunuzu gətirin."
+E-poçt: "Sabah saat 15:00-da B Konfrans Zalında görüşüb 4-cü rübün büdcəsini müzakirə edək. Zəhmət olmasa, noutbukunuzu gətirin."
 
 Görüş:
 - Tarix: [sabahın tarixi]
 - Saat: 15:00
-- Yer: Konfrans Otağı B
-- Mövzu: R4 büdcə müzakirəsi
-- Tələblər: Noutbuk gətir
+- Yer: B Konfrans Zalı
+- Mövzu: 4-cü rübün büdcəsinin müzakirəsi
+- Tələblər: Noutbuk gətirmək
 
-E-poçt: "Komanda sinxronizasiyası Cümə səhər 10-a köçürüldü, əvəzinə Zoom istifadə edəcəyik. Link təqvim dəvətindədir. Maksimum 30 dəqiqə."
+E-poçt: "Komanda görüşü cümə günü saat 10-a keçirildi, bu dəfə Zoom-da olacaq. Link təqvim dəvətindədir. Ən çoxu 30 dəqiqə."
 
 Görüş:
 - Tarix: Cümə
 - Saat: 10:00
-- Yer: Zoom (virtual)
-- Mövzu: Komanda sinxronizasiyası
+- Yer: Zoom (onlayn)
+- Mövzu: Komanda görüşü
 - Müddət: 30 dəqiqə
 
 İndi bundan çıxar:
-E-poçt: "Bazar ertəsi səhər 9:30 ətrafında müştəri təqdimatını nəzərdən keçirmək üçün qısa görüş edə bilərikmi? Teams linki göndərəcəyəm."
+E-poçt: "Bazar ertəsi səhər 9:30 radələrində qısa zəng edib müştəri təqdimatına baxa bilərikmi? Teams linkini göndərəcəyəm."
 
 Görüş:`} />
 
 ## Qabaqcıl Az Nümunə Texnikaları
 
-Əsas az nümunəli öyrənmənin ötəsində, mürəkkəb tapşırıqlar üçün nəticələri yaxşılaşdıra biləcək bir neçə texnika var.
+Əsas az nümunəli yanaşmadan əlavə, mürəkkəb tapşırıqlarda nəticələri yaxşılaşdıra biləcək bir neçə texnika da var.
 
 ### Müxtəlif Nümunələr
 
-Nümunələrdə müxtəliflik, miqdardan daha dəyərlidir. Oxşar nümunələri təkrar-təkrar göstərmək əvəzinə fərqli ssenariləri, uç halları və potensial qeyri-müəyyənlikləri əhatə edin.
+Nümunələrin müxtəlifliyi onların sayından daha dəyərlidir. Oxşar nümunələri dəfələrlə göstərmək əvəzinə fərqli ssenariləri, uç halları və mümkün qeyri-müəyyənlikləri əhatə edin.
 
 <TryIt compact prompt={`Müştəri şikayətlərinə cavab ver.
 
 Nümunə 1 (Məhsul Problemi):
-Müştəri: "Sifarişim zədəli gəldi."
-Cavab: "Zədəli çatdırılma üçün səmimi üzr istəyirəm. Dərhal pulsuz dəyişdirmə göndərəcəyəm. Zədəli məhsulu qaytarmağınıza ehtiyac yoxdur. Çatdırılma ünvanınızı təsdiqləyə bilərsinizmi?"
+Müştəri: "Sifarişim zədələnmiş halda gəldi."
+Cavab: "Sifarişin zədələnmiş çatdırılmasına görə səmimi qəlbdən üzr istəyirəm. Dərhal ödənişsiz əvəzedici məhsul göndərəcəyəm. Zədələnmiş məhsulu geri qaytarmağınıza ehtiyac yoxdur. Çatdırılma ünvanınızı təsdiqləyə bilərsinizmi?"
 
 Nümunə 2 (Xidmət Problemi):
-Müştəri: "2 saatdır xəttdə gözləyirəm!"
-Cavab: "Uzun gözləmə müddəti üçün çox üzr istəyirəm. Bu qəbuledilməzdir. İndi buradayam və probleminizin həll olunduğundan şəxsən əmin olacağam. Sizə necə kömək edə bilərəm?"
+Müştəri: "2 saatdır xətdə gözləyirəm!"
+Cavab: "Bu qədər uzun gözlədiyiniz üçün çox üzr istəyirəm. Bu yolverilməzdir. İndi buradayam və probleminizin həll olunmasına şəxsən nəzarət edəcəyəm. Bu gün sizə necə kömək edə bilərəm?"
 
-Nümunə 3 (Faturalandırma Problemi):
-Müştəri: "Eyni sifariş üçün məni iki dəfə ödəniş etmisiniz!"
-Cavab: "Bu faturalandırma xətası üçün üzr istəyirəm. Dublikat ödənişi təsdiqlədim və orijinal ödəniş metodunuza XX AZN geri qaytarma başlatdım. 3-5 iş günü ərzində görməlisiniz."
+Nümunə 3 (Ödəniş Problemi):
+Müştəri: "Eyni sifarişə görə məndən iki dəfə pul tutmusunuz!"
+Cavab: "Bu ödəniş xətasına görə üzr istəyirəm. Təkrar ödənişi yoxlayıb təsdiqlədim və XX AZN-in ilkin ödəniş üsulunuza qaytarılması prosesinə başladım. Məbləği 3-5 iş günü ərzində görməlisiniz."
 
 İndi cavab ver:
-Müştəri: "Məhsul veb saytda göstərilənlə uyğun gəlmir."
+Müştəri: "Məhsul saytda göstərilənə uyğun gəlmir."
 Cavab:`} />
 
 ### Neqativ Nümunələr
 
-<Callout type="tip" title="Ziddiyyətli Öyrənmə">
-"Yaxşı" vs "pis" nümunələr göstərmək ziddiyyətli öyrənmə adlanır. Modelin yalnız nə istədiyinizi deyil, nələrdən qaçınması lazım olduğunu başa düşməsinə kömək edir. Bu xüsusilə stil və keyfiyyət mühakimələri üçün faydalıdır.
+<Callout type="tip" title="Kontrast Nümunələr">
+"Yaxşı" və "pis" nümunələri yan-yana qoymağa çox vaxt kontrast nümunələrdən istifadə deyilir. (Bunu modellərin öyrədilməsi üsulu olan "contrastive learning" ilə qarışdırmayın.) Bu, modelə yalnız nə istədiyinizi deyil, nədən qaçmalı olduğunu da başa düşməyə kömək edir. Xüsusilə üslub və keyfiyyət qiymətləndirmələrində faydalıdır.
 </Callout>
 
-Bəzən nə *edilməməli* olduğunu göstərmək, düzgün nümunələr göstərmək qədər dəyərlidir. Neqativ nümunələr modelin sərhədləri başa düşməsinə və ümumi səhvlərdən qaçınmasına kömək edir.
+Bəzən nəyin *edilməməli* olduğunu göstərmək düzgün nümunələr göstərmək qədər dəyərlidir. Neqativ nümunələr modelə sərhədləri başa düşməyə və tipik səhvlərdən qaçmağa kömək edir.
 
 <TryIt compact prompt={`Qısa e-poçt mövzu sətirləri yaz.
 
-Yaxşı: "R3 Hesabatı Nəzərdən Keçirməyə Hazırdır"
+Yaxşı: "3-cü Rüb Hesabatı Baxış üçün Hazırdır"
 Pis: "Salam, bax o danışdığımız hesabat işini bitirdim"
 
-Yaxşı: "Hərəkət Tələb Olunur: İcazəni Cüməyə Qədər Təsdiqlə"
-Pis: "Mənim üçün bir şey etməni istəyirəm zəhmət olmasa bunu oxu"
+Yaxşı: "Tədbir Tələb Olunur: Məzuniyyəti Cüməyədək Təsdiqləyin"
+Pis: "Mənim üçün bir şey etməyini istəyirəm, zəhmət olmasa, bunu oxu"
 
-Yaxşı: "Görüş Yenidən Planlandı: Layihə Sinx → Cümə axşamı 14:00"
-Pis: "Plan dəyişikliyi!!!!!"
+Yaxşı: "Görüşün Vaxtı Dəyişdi: Layihə Görüşü → Cümə axşamı 14:00"
+Pis: "Planlar dəyişdi!!!!!"
 
 İndi bunun üçün mövzu sətri yaz:
-E-poçt haqqında: Təklif qaralamasi haqqında rəy istəmə
+E-poçtun mövzusu: Təklifin qaralaması ilə bağlı rəy istəmək
 Mövzu:`} />
 
 ### Uç Hal Nümunələri
 
-Uç hallar adətən bir həllin istehsalda işləyib-işləmədiyini müəyyən edir. Nümunələrinizə qeyri-adi girişlər daxil etmək, modelin "xoşbəxt yol"a uyğun gəlməyən real dünya məlumatlarında uğursuz olmasının qarşısını alır.
+Uç hallar çox vaxt həllin real istifadədə işləyib-işləməyəcəyini müəyyən edir. Nümunələrinizə qeyri-adi girişləri daxil etmək modelin "ideal ssenari"yə uyğun gəlməyən real məlumatlarda uğursuz olmasının qarşısını alır. Diqqət edin: aşağıdakı nümunələrin hamısında eyni sahələr istifadə olunur, hansısa hissə olmayanda isə null yazılır. Bu ardıcıllıq da modelin öyrəndiyi şeyin bir hissəsidir.
 
 <TryIt compact prompt={`Adları strukturlaşdırılmış formata ayır.
 
-Giriş: "Əhməd Yılmaz"
-Çıxış: {"ad": "Əhməd", "soyad": "Yılmaz", "ortaAd": null, "sonEk": null}
+Giriş: "Əhməd Məmmədov"
+Çıxış: {"prefix": null, "first": "Əhməd", "middle": null, "last": "Məmmədov", "suffix": null}
 
 Giriş: "Aynur Fatma Əliyeva-Hüseynova"
-Çıxış: {"ad": "Aynur", "ortaAd": "Fatma", "soyad": "Əliyeva-Hüseynova", "sonEk": null}
+Çıxış: {"prefix": null, "first": "Aynur", "middle": "Fatma", "last": "Əliyeva-Hüseynova", "suffix": null}
 
-Giriş: "Prof. Dr. Məhəmməd Əli Rəsulzadə"
-Çıxış: {"onEk": "Prof. Dr.", "ad": "Məhəmməd", "ortaAd": "Əli", "soyad": "Rəsulzadə", "sonEk": null}
+Giriş: "Dr. Məhəmməd Əmin Rəsulzadə"
+Çıxış: {"prefix": "Dr.", "first": "Məhəmməd", "middle": "Əmin", "last": "Rəsulzadə", "suffix": null}
 
 Giriş: "Azər"
-Çıxış: {"ad": "Azər", "soyad": null, "ortaAd": null, "sonEk": null, "tekAd": true}
+Çıxış: {"prefix": null, "first": "Azər", "middle": null, "last": null, "suffix": null}
 
 İndi ayır:
 Giriş: "Akad. Lütfi Zadə"
@@ -377,24 +377,26 @@ Giriş: "Akad. Lütfi Zadə"
   <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Sadə təsnifat</span>
     <span className="text-primary font-mono">2-3</span>
-    <span className="text-muted-foreground">Kateqoriya başına minimum bir</span>
+    <span className="text-muted-foreground">Hər kateqoriyaya ən azı bir</span>
   </div>
   <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Mürəkkəb formatlama</span>
     <span className="text-primary font-mono">3-5</span>
-    <span className="text-muted-foreground">Variasiyaları göstər</span>
+    <span className="text-muted-foreground">Variasiyaları göstərin</span>
   </div>
   <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-40">İncə stil</span>
+    <span className="font-semibold min-w-40">İncə üslub</span>
     <span className="text-primary font-mono">4-6</span>
-    <span className="text-muted-foreground">Tam yelpazəni tut</span>
+    <span className="text-muted-foreground">Bütün spektri əhatə edin</span>
   </div>
   <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Uç hallar</span>
     <span className="text-primary font-mono">1-2</span>
-    <span className="text-muted-foreground">Normal nümunələrin yanında</span>
+    <span className="text-muted-foreground">Adi nümunələrlə yanaşı</span>
   </div>
 </div>
+
+Bu rəqəmlər tavan deyil, başlanğıc nöqtəsidir. Uzun kontekst pəncərəsi olan modellər bəzi tapşırıqlarda onlarla, hətta yüzlərlə nümunə ilə də yaxşılaşmağa davam edə bilir; tədqiqatçılar bu yanaşmanı many-shot prompting adlandırır. Lakin gündəlik promptların çoxunda yaxşı seçilmiş bir neçə nümunə xərcin kiçik bir hissəsinə faydanın böyük qismini verir. Mühakimə modellərinə isə çox vaxt daha az nümunə lazımdır: OpenAI onları əvvəlcə ümumiyyətlə nümunəsiz sınamağı, yalnız ehtiyac olarsa bir neçə nümunə əlavə etməyi və həmin nümunələrin təlimatlarınızla uzlaşdığından əmin olmağı məsləhət görür.
 
 ## Nümunə Keyfiyyəti Vacibdir
 
@@ -405,16 +407,16 @@ Giriş: "Akad. Lütfi Zadə"
 "Gözəl xidmət" → Yaxşı
 "Gözəl qiymət" → Yaxşı
 
-✗ Hamısı çox oxşar
+✗ Hamısı çox oxşardır
 ✗ Eyni söz təkrarlanır
-✗ Uç hal yox` 
+✗ Uç hallar göstərilməyib` 
   }}
   after={{ 
     label: "Yaxşı Nümunələr", 
     content: `"Gözləntiləri aşdı!" → Pozitiv
 "Sınıq gəldi" → Neqativ
-"İşini görür, xüsusi bir şey yox" → Neytral
-"Əla keyfiyyət amma bahalı" → Qarışıq
+"Normal işləyir, xüsusi bir şey yoxdur" → Neytral
+"Keyfiyyət əladır, amma qiyməti baha" → Qarışıq
 
 ✓ Müxtəlif ssenarilər
 ✓ Aydın sərhədlər
@@ -424,55 +426,55 @@ Giriş: "Akad. Lütfi Zadə"
 
 ## Az Nümunəli Öyrənməni Digər Texnikalarla Birləşdirmə
 
-Az nümunəli öyrənmə, digər prompt texnikaları ilə güclü şəkildə birləşir. Nümunələr "nə"ni təmin edərkən digər texnikalar kontekst, mühakimə və ya struktur əlavə edə bilər.
+Az nümunəli öyrənmə digər prompt texnikaları ilə çox yaxşı birləşir. Nümunələr "nə"ni göstərir, digər texnikalar isə kontekst, mühakimə və ya struktur əlavə edə bilər.
 
 ### Az Nümunə + Rol
 
-Rol əlavə etmək, modelə tapşırığı *niyə* etdiyinə dair kontekst təmin edir, bu da keyfiyyəti və ardıcıllığı yaxşılaşdıra bilər.
+Rol əlavə etmək modelə tapşırığı *nə üçün* yerinə yetirdiyini anladır və bu, keyfiyyəti və ardıcıllığı yaxşılaşdıra bilər.
 
 ```
-Sən hüquqi müqavilə nəzərdən keçirənisən.
+Sən hüquqi müqavilələri yoxlayan mütəxəssissən.
 
-[müqavilə maddəsi analizi nümunələri]
+[müqavilə bəndlərinin təhlilinə dair nümunələr]
 
-İndi analiz et: [yeni maddə]
+İndi təhlil et: [yeni bənd]
 ```
 
 ### Az Nümunə + CoT
 
-Az nümunəli öyrənməni Düşüncə Zənciri ilə birləşdirmək, yalnız *hansı* cavabın veriləcəyini deyil, o cavaba *necə* çatılacağını göstərir. Bu, mühakimə tələb edən tapşırıqlar üçün güclüdür.
+Az nümunəli öyrənməni Düşüncə Zənciri ilə birləşdirmək yalnız *hansı* cavabın veriləcəyini deyil, həmin cavaba *necə* gəlib çatmağı da göstərir. Bu, dəyərləndirmə tələb edən tapşırıqlar üçün güclü yanaşmadır.
 
 ```
 Təsnif et və mühakiməni izah et.
 
-Rəy: "Əla xüsusiyyətlər amma bahalı"
-Düşüncə: Rəy müsbət cəhətlərdən ("əla xüsusiyyətlər") 
-amma eyni zamanda əhəmiyyətli bir mənfi cəhətdən ("bahalı") bəhs edir. 
-"Amma" bağlayıcısına görə mənfi, müsbətdən ağır basır kimi görünür.
+Rəy: "Funksiyaları əladır, amma bahadır"
+Düşüncə: Rəydə müsbət cəhətlə ("funksiyaları əladır") 
+yanaşı ciddi bir mənfi cəhət də ("bahadır") qeyd olunur. 
+"Amma" bağlayıcısına görə mənfi cəhət müsbətdən ağır basır.
 Təsnifat: Qarışıq-Neqativ
 
 [mühakiməli daha çox nümunə]
 
 İndi mühakimə ilə təsnif et:
-Rəy: "Tam ehtiyacım olan, gözlənildən tez gəldi"
+Rəy: "Məhz ehtiyacım olan şeydir, gözlədiyimdən tez gəldi"
 ```
 
 ## Xülasə
 
 <Callout type="tip" title="Əsas Çıxarışlar">
-Az nümunəli öyrənmə nümayiş yolu ilə öyrədir və adətən tək başına təlimatlardan daha effektivdir. 2-5 müxtəlif, düzgün nümunə istifadə edin və ən yaxşı nəticələr üçün digər texnikalarla birləşdirin.
+Az nümunəli öyrənmə nümayiş yolu ilə öyrədir və çox vaxt yalnız təlimatlardan daha effektivdir. 2-5 müxtəlif, düzgün nümunədən istifadə edin və ən yaxşı nəticə üçün onu digər texnikalarla birləşdirin.
 </Callout>
 
 <Quiz 
-  question="Az nümunəli öyrənmədə adətən neçə nümunə təmin etməlisiniz?"
+  question="Az nümunəli öyrənmədə adətən neçə nümunə verməlisiniz?"
   options={[
     "Mümkün qədər çox (10+)",
     "Yalnız 1 nümunə həmişə kifayətdir",
     "2-5 müxtəlif, düzgün nümunə",
-    "Təlimatlar aydındırsa nümunələr lazım deyil"
+    "Təlimatlar aydındırsa, nümunələr lazım deyil"
   ]}
   correctIndex={2}
-  explanation="2-5 müxtəlif, düzgün nümunə adətən ən yaxşı nəticəni verir. Çox az nümunəni tuta bilməyə bilər, çox çox isə token israfı edir və modeli qarışdıra bilər. Keyfiyyət və müxtəliflik, miqdardan daha vacibdir."
+  explanation="Adətən 2-5 müxtəlif, düzgün nümunə ən yaxşı nəticə verir. Nümunə çox az olduqda model qanunauyğunluğu tuta bilməyə bilər, nümunələrin sayını artırmaq isə token tələb edir və gündəlik tapşırıqlarda adətən az fayda verir. Keyfiyyət və müxtəliflik saydan daha vacibdir."
 />
 
-Növbəti fəsildə, iterativ təkmilləşdirməni kəşf edəcəyik: ardıcıl cəhdlərlə promptları yaxşılaşdırma sənəti.
+Növbəti fəsildə iterativ təkmilləşdirməni kəşf edəcəyik: ardıcıl cəhdlərlə promptları yaxşılaşdırma sənəti.

@@ -1,0 +1,381 @@
+Cinq mots reviennent sans cesse dès qu'on parle d'IA aujourd'hui : **prompt**, **skill**, **agent**, **bot** et **équipe**. On les emploie souvent un peu au hasard, parfois comme s'ils voulaient dire la même chose, et c'est justement ce qui les rend plus difficiles à apprendre qu'ils ne devraient l'être. Ce chapitre est une petite halte avant ceux qui suivent. Nous allons ranger ces cinq mots dans l'ordre, du plus simple au plus élaboré, et regarder ce que chacun recouvre vraiment.
+
+L'ordre compte, car ces cinq mots forment une échelle. Chaque barreau garde tout ce que contient celui du dessous et n'y ajoute qu'une seule chose. Si vous comprenez ce qui s'ajoute à chaque étape, vous comprenez le tableau tout entier.
+
+Pour garder les pieds sur terre, nous suivrons une seule scène de tous les jours, du bas jusqu'en haut de l'échelle : **mettre le dîner sur la table**. Quiconque a déjà cuisiné pour sa famille, ou s'est simplement assis pour manger, sait déjà comment cela se passe.
+
+<div className="my-8 p-6 bg-muted/30 rounded-xl border">
+  <p className="text-sm font-semibold text-center text-muted-foreground m-0! mb-4!">L'échelle : chaque barreau ajoute une chose</p>
+  <div className="flex flex-col items-center gap-2 max-w-md mx-auto">
+    <div className="w-full px-4 py-3 bg-amber-100 dark:bg-amber-900/50 border border-amber-300 dark:border-amber-700 rounded-lg text-center">
+      <p className="font-semibold text-amber-800 dark:text-amber-200 m-0!">1. Prompt</p>
+      <p className="text-xs text-amber-700 dark:text-amber-300 m-0!">Une consigne, une réponse</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">on ajoute une méthode enregistrée</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-purple-100 dark:bg-purple-900/50 border border-purple-300 dark:border-purple-700 rounded-lg text-center">
+      <p className="font-semibold text-purple-800 dark:text-purple-200 m-0!">2. Skill</p>
+      <p className="text-xs text-purple-700 dark:text-purple-300 m-0!">Des instructions réutilisables, chargées au besoin</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">on ajoute des outils et une boucle</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border border-blue-300 dark:border-blue-700 rounded-lg text-center">
+      <p className="font-semibold text-blue-800 dark:text-blue-200 m-0!">3. Agent</p>
+      <p className="text-xs text-blue-700 dark:text-blue-300 m-0!">Agit pas à pas pour atteindre un but</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">on ajoute le temps : identité, mémoire, routines</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-green-100 dark:bg-green-900/50 border border-green-300 dark:border-green-700 rounded-lg text-center">
+      <p className="font-semibold text-green-800 dark:text-green-200 m-0!">4. Bot</p>
+      <p className="text-xs text-green-700 dark:text-green-300 m-0!">Un agent qui reste et garde son poste</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">on ajoute d'autres membres et des passations</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-rose-100 dark:bg-rose-900/50 border border-rose-300 dark:border-rose-700 rounded-lg text-center">
+      <p className="font-semibold text-rose-800 dark:text-rose-200 m-0!">5. Équipe</p>
+      <p className="text-xs text-rose-700 dark:text-rose-300 m-0!">Plusieurs membres avec des rôles, qui se passent le travail</p>
+    </div>
+  </div>
+</div>
+
+## Premier barreau : le prompt
+
+Imaginez que vous avez faim et que vous demandez à un ami bon cuisinier : « Tu pourrais m'expliquer comment faire une soupe de tomates rapide ? » Votre ami vous répond, et l'histoire s'arrête là. Vous avez demandé une chose, vous avez obtenu une réponse.
+
+Voilà ce qu'est un **prompt**. C'est le texte que vous envoyez à un modèle d'IA : une question, une demande, une consigne. Comme nous l'avons vu dans [Comprendre les Modèles IA](/book/01-understanding-ai-models), le modèle lit ce texte et rédige une réponse, petit morceau par petit morceau, en prédisant ce qui doit venir ensuite. Puis il s'arrête et attend. Il ne va nulle part, n'ouvre rien et ne se souviendra pas de vous demain. Quand une application de chat semble « se rappeler » le début de votre conversation, c'est parce qu'elle renvoie discrètement toute la conversation au modèle à chaque nouveau message. Le modèle, lui, repart de zéro à chaque fois.
+
+Presque tout ce que ce livre a raconté jusqu'ici concernait ce premier barreau, et ce n'est pas un hasard. Tous les barreaux du dessus sont encore faits de prompts. Un prompt clair, c'est la brique avec laquelle tout le reste se construit.
+
+<InfoGrid columns={2} items={[
+  { label: "Ce que c'est", description: "Un morceau de texte que vous envoyez à un modèle d'IA. Le modèle le lit et vous renvoie une réponse.", color: "amber" },
+  { label: "Un petit exemple", description: "Une demande comme : donne-moi une recette simple de soupe de tomates pour quatre, avec ce qu'on trouve dans la plupart des cuisines. Demander le résumé d'un long e-mail, ou dix idées pour un anniversaire, fonctionne de la même façon.", color: "amber" },
+  { label: "À utiliser quand", description: "Vous avez besoin d'une seule réponse, une seule fois, et vous êtes là pour la lire et décider de la suite.", color: "amber" },
+  { label: "Ce que ce n'est pas", description: "Un prompt n'agit pas dans le monde, ne continue pas à travailler une fois qu'il a répondu et ne se souviendra pas de vous la semaine prochaine.", color: "amber" }
+]} />
+
+<TryIt prompt="Explique comment une tomate passe du vert au rouge, d'une façon qui amuserait un enfant de sept ans. Utilise une seule comparaison courte et reste sous les 80 mots." description="Une consigne, une réponse. Remarquez que le modèle répond, puis attend tout simplement." />
+
+## Deuxième barreau : le skill
+
+Imaginez maintenant que votre ami reçoive cette question chaque semaine. Plutôt que de tout réexpliquer à chaque fois, il note la méthode sur une fiche recette et la range dans une boîte, dans la cuisine. La fiche indique à quoi sert le plat, quels ingrédients prendre, les étapes dans l'ordre et les petites astuces qui le font réussir. Chaque fois que quelqu'un veut une soupe de tomates, la fiche sort de la boîte. Le reste du temps, elle y reste sagement.
+
+Voilà ce qu'est un **skill**. Un skill est un ensemble d'instructions enregistré et bien emballé, souvent accompagné de quelques fichiers d'appoint, qu'un modèle peut charger quand une tâche le demande. En pratique, c'est généralement un petit dossier. On y trouve un fichier principal, souvent appelé `SKILL.md`, qui commence par un nom court et une description d'une ligne, suivis de la méthode complète. Le dossier peut aussi contenir des exemples, des listes de vérification, des modèles ou de petits scripts.
+
+Et voici l'astuce du mécanisme. Le modèle ne lit pas tous les skills en permanence : cela remplirait son contexte de choses dont il n'a pas besoin. Au départ, il ne voit que les courtes descriptions, comme les étiquettes collées sur les fiches recettes. Quand une demande correspond à l'une d'elles, le skill complet est chargé dans le contexte, et le modèle le suit. Un skill est toujours fait de prompts, mais de prompts que vous avez écrits une fois, testés et enregistrés, pour ne plus avoir à les retaper.
+
+Voici un petit skill qu'un parent ou un enseignant pourrait écrire :
+
+```markdown
+---
+name: homework-helper
+description: Aider un enfant à faire ses devoirs en lui posant des questions qui le guident, plutôt qu'en lui donnant la réponse.
+---
+
+# Aide aux devoirs
+
+Quand un enfant demande de l'aide pour ses devoirs :
+1. Demande-lui ce qu'il sait déjà sur la question.
+2. Donne un petit indice à la fois, jamais la réponse complète.
+3. S'il bloque encore après trois indices, montre-lui un exemple similaire et laisse-le réessayer.
+4. Félicite l'effort, pas seulement la bonne réponse.
+5. Utilise des phrases courtes et des mots qu'un enfant de dix ans connaît.
+```
+
+<Compare
+  before={{ label: "Un prompt que vous tapez à chaque fois", content: "Aide mon fils pour ses devoirs de maths, mais ne lui donne pas la réponse, pose-lui des questions, donne de petits indices, reste simple, félicite ses efforts..." }}
+  after={{ label: "Un skill que vous écrivez une fois", content: "Le skill homework-helper est enregistré. Dès qu'une question de devoirs se présente, l'assistant le charge et suit la même méthode attentive, à chaque fois." }}
+/>
+
+Plusieurs assistants d'IA et outils de programmation, venus d'entreprises différentes, savent désormais lire des skills rangés dans des dossiers de ce genre, et beaucoup de gens se les échangent. Les détails varient d'un outil à l'autre, mais l'idée reste partout la même : une méthode, écrite une bonne fois pour toutes, prête à être reprise quand elle convient. Nous explorons les skills bien plus en profondeur dans [Agents et Compétences](/book/25-agents-and-skills).
+
+<InfoGrid columns={2} items={[
+  { label: "Ce que c'est", description: "Un paquet d'instructions réutilisable, parfois accompagné de fichiers d'appoint, qu'un modèle ne charge que lorsqu'une tâche en a besoin.", color: "purple" },
+  { label: "Un petit exemple", description: "Un skill homework-helper, un skill pour écrire des e-mails polis à l'école, ou un skill qui transforme des notes en lettre d'information hebdomadaire pour la classe.", color: "purple" },
+  { label: "À utiliser quand", description: "Vous donnez sans cesse les mêmes instructions détaillées et vous voulez que le travail soit fait avec le même soin à chaque fois.", color: "purple" },
+  { label: "Ce que ce n'est pas", description: "Un skill ne fait rien tout seul. Comme une fiche recette, il faut que quelqu'un le prenne et le suive. Ce n'est pas non plus un nouveau modèle, ni un nouveau savoir gravé dans l'IA.", color: "purple" }
+]} />
+
+## Troisième barreau : l'agent
+
+Jusqu'ici, notre cuisinier ne fait que parler. Imaginez maintenant que vous lui disiez : « S'il te plaît, prépare le dîner pour quatre personnes pour sept heures. » Cette fois, votre ami entre dans la cuisine. Il ouvre le frigo pour voir ce qu'il y a, remarque qu'il n'y a plus d'oignons, jette un œil à l'horloge, choisit une fiche recette, se met aux fourneaux, goûte la soupe, ajoute une pincée de sel, goûte encore, et finit par mettre la table. Personne ne lui a dicté chaque étape. Vous lui avez donné un **but**, et il a trouvé les étapes lui-même, en regardant, en agissant et en vérifiant.
+
+Voilà ce qu'est un **agent**. Un agent est un modèle d'IA qui travaille dans une **boucle**, avec des **outils**, pour atteindre un but. Les outils sont les mains du cuisinier : lire un fichier, chercher sur le web, ouvrir un agenda, faire un calcul, envoyer un brouillon. La boucle, c'est ce rythme où l'on regarde, agit et vérifie.
+
+Le mécanisme est plus simple qu'il n'y paraît. Un logiciel placé autour du modèle, que ce livre appelle le [harness](/book/26-the-harnesses), lui donne un but et une liste d'outils qu'il a le droit d'utiliser. Le modèle ne touche à rien directement. Il répond plutôt par une demande du genre « utilise l'outil météo pour samedi à Lisbonne ». Le harness exécute l'outil et remet le résultat dans la conversation. Le modèle lit ce résultat et choisit l'étape suivante. Et ainsi de suite, jusqu'à ce que le but soit atteint ou qu'une limite dise stop. Chaque tour de cette boucle reste un prompt et une réponse. Ce qui en fait un agent, c'est que les réponses mènent à des actions, et que le résultat de ces actions mène à la réponse suivante. Nous avons déjà rencontré ce rythme dans [Ingénierie de Boucle](/book/14a-loop-engineering).
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col items-center gap-2 max-w-sm mx-auto">
+    <div className="w-full px-4 py-2 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">But : un dîner pour quatre à 19 h</p>
+    </div>
+    <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+    <div className="w-full p-3 border border-dashed rounded-lg flex flex-col items-center gap-2">
+      <div className="w-full px-3 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded text-center">
+        <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">Réfléchir : que faire ensuite ?</p>
+      </div>
+      <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+      <div className="w-full px-3 py-2 bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800 rounded text-center">
+        <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">Agir : utiliser un outil (ouvrir le frigo)</p>
+      </div>
+      <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+      <div className="w-full px-3 py-2 bg-teal-100 dark:bg-teal-900/50 border border-teal-200 dark:border-teal-800 rounded text-center">
+        <p className="text-sm font-medium text-teal-700 dark:text-teal-300 m-0!">Vérifier : regarder le résultat (plus d'oignons)</p>
+      </div>
+      <p className="text-xs text-muted-foreground m-0!">↻ recommencer jusqu'à la fin, ou jusqu'à ce qu'une limite dise stop</p>
+    </div>
+    <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+    <div className="w-full px-4 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">Terminé : le dîner est sur la table</p>
+    </div>
+  </div>
+</div>
+
+Vous avez peut-être déjà utilisé des agents sans les appeler ainsi. Un assistant de programmation qui lit votre projet, modifie un fichier, lance les tests et corrige ce qui a échoué est un agent. Tout comme le mode recherche d'une application de chat, qui parcourt de nombreuses pages avant de rédiger son rapport, ou un assistant de navigateur qui remplit un formulaire à votre place. Les agents se servent souvent de skills, eux aussi : le cuisinier de notre cuisine attrape encore la fiche recette quand elle tombe à pic.
+
+<InfoGrid columns={2} items={[
+  { label: "Ce que c'est", description: "Un modèle d'IA dans une boucle, avec des outils. Il regarde, agit, vérifie le résultat et continue jusqu'à atteindre le but ou recevoir l'ordre de s'arrêter.", color: "blue" },
+  { label: "Un petit exemple", description: "Vous lui demandez d'organiser un pique-nique samedi. Il consulte la météo, regarde votre agenda, choisit un parc et écrit une liste de courses.", color: "blue" },
+  { label: "À utiliser quand", description: "Le travail comporte plusieurs étapes, demande de vraies informations ou de vraies actions, et vous ne pouvez pas facilement prévoir chaque étape à l'avance.", color: "blue" },
+  { label: "Ce que ce n'est pas", description: "Un agent n'est pas un modèle plus intelligent : c'est le même genre de modèle, avec des mains et une boucle. En général, il ne travaille que tant que vous le gardez ouvert, et il oublie tout une fois la session terminée.", color: "blue" }
+]} />
+
+<Callout type="warning" title="Les mains aussi peuvent se tromper">
+Un prompt ne peut, au pire, que vous donner une mauvaise réponse. Un agent, lui, peut faire une mauvaise action : supprimer le mauvais fichier ou envoyer un message trop tôt, par exemple. C'est pourquoi les bons agents demandent la permission avant tout ce qui est difficile à défaire, et pourquoi vous ne devriez leur donner que les outils dont la tâche a vraiment besoin.
+</Callout>
+
+## Quatrième barreau : le bot
+
+Notre cuisinier est très doué, mais chaque soir, il arrive comme si c'était la première fois. Il doit redemander qui est allergique aux cacahuètes, où se trouve la grande marmite et ce que vous avez mangé la veille. Et il ne vient que lorsque vous l'appelez.
+
+Imaginez maintenant un cuisinier qui **vit avec la famille**. Il a un nom et un rôle bien défini : « le planificateur des dîners de la famille ». Il tient un carnet de tout ce qu'il a appris : Ada est allergique aux cacahuètes, Papi n'aime pas les plats épicés, le jeudi, c'est soirée pizza. Il a une clé du garde-manger et accès au compte de livraison de courses. Et chaque dimanche à dix-huit heures, sans que personne le lui demande, il prévoit les dîners de la semaine, repère dans l'agenda familial les soirées chargées et laisse sur le frigo une liste de courses qu'un adulte devra valider.
+
+Voilà ce qu'est un **bot**, au sens où ce livre emploie le mot : un **agent persistant**. Tout ce que contenait le barreau de l'agent est toujours là : le modèle, les outils, la boucle. Ce que le bot ajoute, c'est le **temps**. Sous le capot, cela veut généralement dire quatre pièces supplémentaires :
+
+<InfoGrid items={[
+  { label: "Identité", description: "Un nom et un rôle durables, inscrits dans ses instructions permanentes, pour qu'il sache quels détails comptent dans son travail.", color: "green" },
+  { label: "Mémoire", description: "Des notes enregistrées en dehors du modèle, souvent dans de simples fichiers ou une petite base de données, et rechargées dans le contexte au début de chaque session. Le modèle, lui, oublie toujours : c'est le carnet qui se souvient.", color: "green" },
+  { label: "Routines", description: "Des tâches qui démarrent selon un planning (chaque dimanche à 18 h) ou quand quelque chose se produit (un nouvel e-mail arrive), sans nouveau prompt de votre part.", color: "green" },
+  { label: "Des connecteurs et un endroit où travailler", description: "Un accès durable et autorisé à des applications et à des comptes, et un ordinateur ou un serveur qui reste allumé pendant votre absence.", color: "green" }
+]} />
+
+<InfoGrid columns={2} items={[
+  { label: "Ce que c'est", description: "Un agent qui reste : il garde un rôle, se souvient d'une conversation à l'autre et peut se mettre au travail selon son propre planning.", color: "green" },
+  { label: "Un petit exemple", description: "Un bot de planification des repas qui, chaque dimanche soir, organise la semaine, évite les cacahuètes et demande à un parent de valider la liste de courses.", color: "green" },
+  { label: "À utiliser quand", description: "La même responsabilité revient encore et encore, et elle doit continuer d'être assurée même quand vous n'êtes pas devant votre écran.", color: "green" },
+  { label: "Ce que ce n'est pas", description: "Ce n'est pas une personne, ni un esprit qui se souvient de tout. Il ne se rappelle que ce qui a été enregistré, et il peut encore se tromper. Ce n'est pas non plus le chatbot scripté des anciens sites web, qui se contentait de suivre des menus figés.", color: "green" }
+]} />
+
+<Callout type="info" title="Un vieux mot, un sens nouveau">
+Pendant des années, « bot » désignait à peu près n'importe quel programme automatique : un script qui publie la météo, un personnage de jeu vidéo, une fenêtre d'assistance qui propose quatre boutons figés. Beaucoup d'entre eux n'avaient aucun modèle d'IA. Dans ce livre, un bot désigne quelque chose de plus précis : un agent qui persiste, avec sa propre identité, sa mémoire et ses routines. Quand vous croiserez le mot ailleurs, demandez-vous de quel genre de bot on parle.
+</Callout>
+
+Comme un bot travaille pendant que personne ne regarde, les règles qui l'encadrent comptent davantage qu'à n'importe quel barreau inférieur. Un bon bot rédige et suggère librement, mais il attend une personne avant d'envoyer, d'acheter, de supprimer ou de publier quoi que ce soit. Le chapitre [Bots toujours actifs : des agents qui continuent de travailler](/book/28-persistent-bots) s'attarde sur la mémoire, les routines et ces validations.
+
+## Cinquième barreau : l'équipe
+
+Un seul cuisinier suffit pour un dîner de famille. Mais pensez à la cuisine d'un restaurant en plein coup de feu. Une personne prend la commande. Une autre prépare les légumes. Une autre cuit le plat principal. Une dernière vérifie chaque assiette avant qu'elle ne quitte la cuisine. Chacun a un rôle clair, et le travail circule entre eux d'une façon connue de tous : le bon de commande va au cuisinier, l'assiette terminée va à celui qui la vérifie. Personne n'a besoin de tout savoir ; chacun doit connaître sa part, et savoir quoi transmettre à qui.
+
+Voilà ce qu'est une **équipe** : plusieurs bots ou agents, chacun avec un **rôle**, reliés par des **passations**, qui travaillent vers un **objectif** commun. Une passation, c'est le moment où un membre transmet au suivant un travail bien identifié, comme un bon de commande ou une assiette terminée.
+
+Le mécanisme tient surtout à ce que chaque membre a le droit de voir. Chaque membre a ses propres instructions pour son rôle. Quand il a fini, il transmet un résultat précis, une liste, un brouillon ou un rapport par exemple, et le membre suivant ne reçoit que cela, pas toute la conversation qui l'a produit. Chacun reste ainsi concentré, et les erreurs sont plus faciles à retrouver : si le plat final est trop salé, vous pouvez examiner chaque assiette le long de la chaîne et voir où le sel a été ajouté.
+
+Une école pourrait faire tourner une petite équipe de ce genre pour préparer chaque semaine une lettre d'information destinée aux parents :
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col items-center gap-2 max-w-sm mx-auto">
+    <div className="w-full px-4 py-2 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">Collecteur</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">Rassemble les nouvelles de chaque classe</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">transmet : une liste de nouvelles</p>
+    </div>
+    <div className="w-full px-4 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">Rédacteur</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">Transforme la liste en un brouillon chaleureux</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">transmet : un brouillon de la lettre</p>
+    </div>
+    <div className="w-full px-4 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">Vérificateur</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0!">Vérifie les noms, les dates et le ton</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">transmet : un brouillon vérifié</p>
+    </div>
+    <div className="w-full px-4 py-2 bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">Enseignant</p>
+      <p className="text-xs text-amber-600 dark:text-amber-400 m-0!">Valide avant tout envoi</p>
+    </div>
+  </div>
+</div>
+
+Remarquez qui se tient au bout de la chaîne : une personne. Dans une équipe bien conçue, au moins une passation mène à un humain avant que quoi que ce soit ne sorte de l'équipe.
+
+<InfoGrid columns={2} items={[
+  { label: "Ce que c'est", description: "Plusieurs bots ou agents aux rôles clairs, qui se transmettent des travaux bien identifiés au service d'un même objectif.", color: "rose" },
+  { label: "Un petit exemple", description: "Un collecteur, un rédacteur et un vérificateur qui préparent la lettre d'information de la classe, avec un enseignant qui valide la version finale.", color: "rose" },
+  { label: "À utiliser quand", description: "Le travail se découpe naturellement en tâches différentes, chacune assez claire pour être décrite par ce qu'elle reçoit et ce qu'elle transmet, et un seul membre finit toujours par s'y perdre.", color: "rose" },
+  { label: "Ce que ce n'est pas", description: "Ce n'est pas une foule d'agents livrés à eux-mêmes pour s'arranger entre eux, ni une solution forcément meilleure qu'un seul agent. Chaque membre de plus ajoute des passations, et chaque passation est un endroit où le sens peut se perdre.", color: "rose" }
+]} />
+
+## Lequel est-ce ?
+
+Maintenant que nous avons gravi toute l'échelle, entraînons-nous à distinguer les barreaux. Pour chaque situation, demandez-vous ce qui est ajouté : une méthode enregistrée, des outils et une boucle, le temps, ou d'autres membres.
+
+<Quiz
+  question="Une enseignante tape : Écris trois questions amusantes sur les volcans pour une classe d'enfants de neuf ans. L'IA répond, et c'est tout. De quoi s'agit-il ?"
+  options={["D'un prompt", "D'un skill", "D'un agent", "D'un bot"]}
+  correctIndex={0}
+  explanation="Une consigne, une réponse, et rien ne se passe ensuite : c'est un prompt. C'est d'ailleurs le bon outil ici, puisque l'enseignante est là pour lire les questions et s'en servir."
+/>
+
+<Quiz
+  question="Un parent enregistre un dossier appelé bedtime-stories avec des instructions : toujours tendre, moins de cinq minutes, et une fin où l'enfant s'endort. L'assistant s'en sert chaque fois qu'on lui demande une histoire du soir. De quoi s'agit-il ?"
+  options={["D'un prompt", "D'un skill", "D'un bot", "D'une équipe"]}
+  correctIndex={1}
+  explanation="C'est une méthode enregistrée et réutilisable, que l'assistant ne charge que lorsqu'on lui demande une histoire du soir. Elle ne fait rien d'elle-même, et elle n'a ni planning ni mémoire propres. C'est donc un skill."
+/>
+
+<Quiz
+  question="Vous demandez à un assistant de trouver dans votre ville un musée ouvert le lundi et adapté aux jeunes enfants. Il cherche sur plusieurs sites, compare les horaires d'ouverture, vérifie le prix des billets et vous propose son choix avec des liens. De quoi s'agit-il ?"
+  options={["D'un prompt", "D'un skill", "D'un agent", "D'une équipe"]}
+  correctIndex={2}
+  explanation="Il a utilisé des outils (la recherche sur le web) dans une boucle, en regardant et en vérifiant plusieurs fois avant de conclure. C'est un agent. Il a travaillé pendant que vous étiez là, et il ne recommencera pas tout seul la semaine prochaine."
+/>
+
+<Quiz
+  question="Un assistant nommé Aide-Bibliothèque se souvient des livres que chaque enfant de la classe a lus. Chaque vendredi matin, sans que personne le lui demande, il suggère les livres de la semaine suivante et envoie la liste à l'enseignante pour qu'elle la valide. De quoi s'agit-il ?"
+  options={["D'un skill", "D'un agent", "D'un bot", "D'une équipe"]}
+  correctIndex={2}
+  explanation="Il a un nom et un rôle, il garde une mémoire d'une semaine à l'autre et il démarre selon son propre planning. Ce sont justement les choses qu'un bot ajoute à un agent."
+/>
+
+<Quiz
+  question="Un premier assistant rassemble les photos d'une sortie scolaire, un deuxième écrit les légendes, et un troisième vérifie qu'aucun nom complet d'enfant n'apparaît. Puis l'album part chez la directrice. De quoi s'agit-il ?"
+  options={["D'un agent", "D'un bot", "D'un skill", "D'une équipe"]}
+  correctIndex={3}
+  explanation="Plusieurs membres aux rôles différents, chacun transmettant au suivant un travail bien identifié, avec une personne qui valide à la fin : c'est une équipe."
+/>
+
+## Les cinq côte à côte
+
+Voici toute l'échelle réunie en un seul endroit. Lisez chaque ligne de gauche à droite, et remarquez comme chaque colonne garde ce qui la précède.
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Question</th>
+      <th scope="col">Prompt</th>
+      <th scope="col">Skill</th>
+      <th scope="col">Agent</th>
+      <th scope="col">Bot</th>
+      <th scope="col">Équipe</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Qu'est-ce que c'est, en une ligne ?</td>
+      <td>Une consigne, une réponse</td>
+      <td>Une méthode enregistrée, chargée au besoin</td>
+      <td>Un modèle dans une boucle, avec des outils</td>
+      <td>Un agent qui reste</td>
+      <td>Plusieurs membres avec des rôles</td>
+    </tr>
+    <tr>
+      <td>Qu'est-ce que cela ajoute ?</td>
+      <td>Le point de départ</td>
+      <td>La réutilisation</td>
+      <td>L'action</td>
+      <td>Le temps</td>
+      <td>La répartition du travail</td>
+    </tr>
+    <tr>
+      <td>Dans la cuisine</td>
+      <td>Demander une recette</td>
+      <td>Une fiche recette dans la boîte</td>
+      <td>Un cuisinier qui prépare le dîner de ce soir</td>
+      <td>Le cuisinier de la famille qui planifie chaque semaine</td>
+      <td>La cuisine d'un restaurant</td>
+    </tr>
+    <tr>
+      <td>Peut-il agir ?</td>
+      <td>Non, il ne fait que répondre</td>
+      <td>Non, il ne fait que guider</td>
+      <td>Oui, avec ses outils</td>
+      <td>Oui, même en votre absence</td>
+      <td>Oui, chaque membre dans son rôle</td>
+    </tr>
+    <tr>
+      <td>Se souvient-il ?</td>
+      <td>Seulement de cette conversation</td>
+      <td>On se souvient de lui, mais lui ne se souvient de rien</td>
+      <td>Seulement de cette session</td>
+      <td>Oui, grâce à une mémoire enregistrée</td>
+      <td>Chaque membre garde la sienne</td>
+    </tr>
+    <tr>
+      <td>Qui le met en route ?</td>
+      <td>Vous</td>
+      <td>Le modèle, quand une tâche correspond</td>
+      <td>Vous, avec un but</td>
+      <td>Vous, un planning ou un événement</td>
+      <td>Un objectif, puis chaque passation</td>
+    </tr>
+  </tbody>
+</table>
+
+## Choisir le barreau le plus simple qui suffit
+
+On est tenté de croire que plus on monte sur l'échelle, mieux c'est. Ce n'est pas le cas. Chaque barreau ajoute de la puissance, mais chaque barreau ajoute aussi un coût, du temps d'attente et de nouvelles façons de mal tourner. Un prompt peut donner une mauvaise réponse. Un agent peut faire une mauvaise action. Un bot peut faire une mauvaise action à trois heures du matin. Une équipe peut se passer une erreur de main en main jusqu'à ce qu'elle ait l'air d'un fait.
+
+La sagesse, c'est donc l'habitude qu'ont déjà les bons cuisiniers : prendre l'outil le plus simple qui fait l'affaire. On ne réserve pas la cuisine d'un restaurant pour faire cuire un œuf. Commencez en bas de l'échelle, et ne montez d'un barreau que lorsque celui sur lequel vous êtes ne suffit clairement plus.
+
+<InfoGrid items={[
+  { label: "Commencez par un prompt", description: "Si vous avez besoin d'une seule réponse et que vous êtes là pour la lire, un prompt clair suffit.", color: "amber" },
+  { label: "Montez vers un skill", description: "Quand vous vous surprenez à taper encore et encore les mêmes longues instructions.", color: "purple" },
+  { label: "Montez vers un agent", description: "Quand le travail demande de vraies informations ou de vraies actions, en plusieurs étapes que vous ne pouvez pas lister à l'avance.", color: "blue" },
+  { label: "Montez vers un bot", description: "Quand la même responsabilité revient selon un planning et doit continuer pendant votre absence.", color: "green" },
+  { label: "Montez vers une équipe", description: "Quand un seul bot n'arrête pas de mélanger des tâches réellement différentes, et que chacune peut être décrite par ce qu'elle reçoit et ce qu'elle transmet.", color: "rose" }
+]} />
+
+<Checklist
+  title="Avant de monter d'un barreau"
+  items={[
+    { text: "J'ai essayé le barreau du dessous, et je peux dire exactement ce qu'il ne savait pas faire" },
+    { text: "Je peux décrire le résultat que je veux en une ou deux phrases" },
+    { text: "Je sais de quels outils ou comptes le nouveau barreau a vraiment besoin, et rien de plus" },
+    { text: "Tout ce qui est difficile à défaire attendra la validation d'une personne" },
+    { text: "Je sais comment je vérifierai que le travail a vraiment été bien fait" },
+    { text: "J'ai un moyen de le mettre en pause ou de l'arrêter si les choses tournent mal" }
+  ]}
+/>
+
+Si vous ne savez pas de quel barreau vous avez besoin, vous pouvez demander à une IA de vous aider à y réfléchir. Le prompt ci-dessous est d'ailleurs lui-même un bel exemple du premier barreau :
+
+<TryIt compact prompt={`J'aimerais de l'aide pour cette tâche : \${task:préparer chaque semaine des repas de cantine équilibrés pour mes deux enfants}.
+
+En t'appuyant sur cette échelle, du plus simple au plus complexe :
+1. Prompt : une consigne, une réponse
+2. Skill : une méthode enregistrée que l'IA charge au besoin
+3. Agent : une IA qui utilise des outils dans une boucle pour atteindre un but
+4. Bot : un agent qui reste, avec une mémoire et des routines
+5. Équipe : plusieurs agents ou bots avec des rôles et des passations
+
+Dis-moi quel est le barreau le plus simple qui conviendrait bien à ma tâche, et pourquoi. Puis dis-moi ce qui devrait changer pour que j'aie besoin du barreau suivant. Utilise un langage simple et chaleureux.`} />
+
+Ces cinq mots n'ont plus besoin de se mélanger. Un **prompt** demande. Un **skill** se souvient de la manière de faire. Un **agent** agit. Un **bot** reste. Une **équipe** partage le travail. Et à chaque barreau, le savoir-faire est celui par lequel ce livre a commencé : dire clairement ce que vous voulez, où sont les limites, et comment vous saurez que tout s'est bien passé.
+
+Les prochains chapitres gravissent l'échelle en détail. [Agents et Compétences](/book/25-agents-and-skills) montre comment on écrit des skills et comment les agents s'en servent. [Outils, MCP et connecteurs](/book/27-tools-mcp-connectors) s'intéresse aux mains avec lesquelles travaille un agent, et [Les harnesses](/book/26-the-harnesses) au logiciel qui fait tourner sa boucle. Enfin, [Bots toujours actifs : des agents qui continuent de travailler](/book/28-persistent-bots) suit les agents qui restent, et les équipes qu'ils forment.

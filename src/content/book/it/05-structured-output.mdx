@@ -1,4 +1,4 @@
-Ottenere output consistente e ben formattato è essenziale per applicazioni in produzione e flussi di lavoro efficienti. Questo capitolo copre tecniche per controllare esattamente come i modelli IA formattano le loro risposte.
+Ottenere output coerente e ben formattato è essenziale per applicazioni in produzione e flussi di lavoro efficienti. Questo capitolo copre tecniche per controllare esattamente come i modelli IA formattano le loro risposte.
 
 <Callout type="info" title="Dalla Prosa ai Dati">
 L'output strutturato trasforma le risposte dell'IA da testo libero in dati azionabili e parsabili.
@@ -20,7 +20,7 @@ Le liste sono perfette per istruzioni passo-passo, elementi classificati o colle
   prompt={`Fornisci 5 consigli per dormire meglio.
 
 Formato: Lista numerata con una breve spiegazione per ciascuno.
-Ogni consiglio dovrebbe essere in grassetto, seguito da un trattino e spiegazione.`}
+Ogni consiglio dovrebbe essere in grassetto, seguito da un trattino e dalla spiegazione.`}
 />
 
 <Callout type="tip" title="Best Practice per Liste">
@@ -29,12 +29,12 @@ Specifica il numero esatto di elementi che vuoi, se includere spiegazioni, e se 
 
 ### Tabelle
 
-Le tabelle eccellono nel confrontare elementi multipli sulle stesse dimensioni. Sono ideali per confronti di funzionalità, riepiloghi di dati e qualsiasi informazione con attributi consistenti. Definisci sempre esplicitamente le intestazioni delle colonne.
+Le tabelle eccellono nel confrontare elementi multipli sulle stesse dimensioni. Sono ideali per confronti di funzionalità, riepiloghi di dati e qualsiasi informazione con attributi coerenti. Definisci sempre esplicitamente le intestazioni delle colonne.
 
 <TryIt 
   compact
   title="Formattazione Tabelle"
-  prompt={`Confronta i top 4 framework web Python.
+  prompt={`Confronta i 4 migliori framework web Python.
 
 Formatta come tabella markdown con colonne:
 | Framework | Migliore Per | Curva di Apprendimento | Performance |`}
@@ -60,7 +60,7 @@ Struttura la tua risposta con queste sezioni:
 ```
 
 <Callout type="tip" title="Best Practice per Sezioni">
-Elenca le tue sezioni nell'ordine che vuoi. Per consistenza, specifica cosa dovrebbe contenere ogni sezione (es. "Executive Summary: solo 2-3 frasi").
+Elenca le tue sezioni nell'ordine che vuoi. Per coerenza, specifica cosa dovrebbe contenere ogni sezione (es. "Executive Summary: solo 2-3 frasi").
 </Callout>
 
 ### Enfasi con Direttive Maiuscole
@@ -161,7 +161,7 @@ IMPORTANTE:
 - Valida che l'output sia JSON parsabile
 ```
 
-Oppure richiedi blocchi di codice chiedendo al modello di wrappare il suo output:
+Oppure richiedi blocchi di codice chiedendo al modello di racchiudere il suo output:
 
 ````
 Restituisci il risultato come blocco codice JSON:
@@ -169,6 +169,10 @@ Restituisci il risultato come blocco codice JSON:
 { ... }
 ```
 ````
+
+<Callout type="info" title="Output Strutturati Nativi">
+Se chiami un modello tramite API, non devi affidarti solo alla formulazione. OpenAI, Anthropic e Google offrono tutti modalità di output strutturato che accettano un JSON Schema e vincolano la risposta a rispettarlo, così i campi obbligatori e i valori ammessi vengono imposti anziché semplicemente richiesti. Le vecchie opzioni "JSON mode" garantiscono solo un JSON sintatticamente valido, non il rispetto del tuo schema. Anche con uno schema imposto, i valori stessi possono comunque essere sbagliati, quindi continua a validare ciò che conta.
+</Callout>
 
 ## Output YAML
 
@@ -181,8 +185,8 @@ YAML è più leggibile di JSON, usando indentazione invece di parentesi. È lo s
 
 Restituisci come YAML valido:
 - Includi: stage install, lint, test, build
-- Usa Node.js 18
-- Cachea le dipendenze npm
+- Usa l'attuale release LTS di Node.js
+- Metti in cache le dipendenze npm
 - Esegui su push a main e pull request`}
 />
 
@@ -195,7 +199,7 @@ Converti questi dati in formato XML:
 
 Requisiti:
 - Elemento root: <catalogo>
-- Ogni elemento in elemento <libro>
+- Ogni elemento in un elemento <libro>
 - Includi attributi dove appropriato
 - Usa CDATA per testo descrizione
 
@@ -237,7 +241,7 @@ Copertura Test: [% stimata]
 
 ### Formato Riempi gli Spazi
 
-Template con spazi vuoti (___) guidano il modello a riempire campi specifici mantenendo la formattazione esatta. Questo approccio è eccellente per moduli, brief e documenti standardizzati dove la consistenza conta.
+I template con spazi vuoti (___) guidano il modello a riempire campi specifici mantenendo la formattazione esatta. Questo approccio è eccellente per moduli, brief e documenti standardizzati dove la coerenza conta.
 
 ```
 Completa questo template per il prodotto dato:
@@ -259,7 +263,7 @@ Prodotto: [descrizione prodotto]
 
 ## Risposte Tipizzate
 
-Le risposte tipizzate definiscono categorie o tipi di entità che il modello dovrebbe riconoscere ed etichettare. Questa tecnica è essenziale per Named Entity Recognition (NER), compiti di classificazione e qualsiasi estrazione dove devi categorizzare informazioni consistentemente. Definisci i tuoi tipi chiaramente con esempi.
+Le risposte tipizzate definiscono categorie o tipi di entità che il modello dovrebbe riconoscere ed etichettare. Questa tecnica è essenziale per Named Entity Recognition (NER), compiti di classificazione e qualsiasi estrazione dove devi categorizzare informazioni in modo coerente. Definisci i tuoi tipi chiaramente con esempi.
 
 <TryIt 
   compact
@@ -280,7 +284,7 @@ Testo: "Tim Cook ha annunciato che Apple investirà 1 miliardo di dollari in una
 
 ## Risposte Strutturate Multi-Parte
 
-Quando hai bisogno di output completo che copre molteplici aspetti, definisci parti distinte con confini chiari. Specifica esattamente cosa va in ogni parte—formato, lunghezza e tipo di contenuto. Questo previene che il modello mescoli sezioni o ometta parti.
+Quando hai bisogno di output completo che copre molteplici aspetti, definisci parti distinte con confini chiari. Specifica esattamente cosa va in ogni parte: formato, lunghezza e tipo di contenuto. Questo evita che il modello mescoli sezioni o ometta parti.
 
 ```
 Ricerca questo argomento e fornisci:
@@ -324,7 +328,7 @@ Se MEDIO (singolo utente colpito, esiste workaround):
 Se BASSO (domande, richieste di funzionalità):
   Restituisci: 🟢 BASSO | [Categoria] | [Azione Suggerita]
 
-Ticket: "Non riesco ad accedere al mio account. Ho provato a reimpostare la password due volte ma ricevo ancora un errore. Questo sta bloccando tutto il mio team dall'accesso alla dashboard."`}
+Ticket: "Non riesco ad accedere al mio account. Ho provato a reimpostare la password due volte ma ricevo ancora un errore. Questo impedisce a tutto il mio team di accedere alla dashboard."`}
 />
 
 ## Array e Liste in JSON
@@ -353,7 +357,7 @@ Trascrizione: "[trascrizione riunione]"
 
 ## Istruzioni di Validazione
 
-L'auto-validazione spinge il modello a controllare il proprio output prima di rispondere. Questo cattura problemi comuni come sezioni mancanti, testo segnaposto o violazioni di vincoli. Il modello itererà internamente per correggere problemi, migliorando la qualità dell'output senza chiamate API aggiuntive.
+L'auto-validazione spinge il modello a controllare il proprio output prima di rispondere. Questo intercetta problemi comuni come sezioni mancanti, testo segnaposto o violazioni di vincoli. Spesso migliora la qualità senza una chiamata API aggiuntiva, ma non è una garanzia: un modello può dichiarare superato un controllo che in realtà è fallito, quindi verifica comunque l'output critico nel tuo codice.
 
 ```
 Genera il report, poi:
@@ -385,7 +389,7 @@ Estrai informazioni di contatto. Usa null per campi mancanti.
 }
 
 IMPORTANTE: 
-- Mai inventare informazioni non nella fonte
+- Mai inventare informazioni non presenti nella fonte
 - Usa null, non stringhe vuote, per dati mancanti
 - Numeri di telefono in formato E.164 se possibile
 ```

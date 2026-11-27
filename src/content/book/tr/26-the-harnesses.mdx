@@ -134,6 +134,99 @@ Bir ayarı değiştirin, ardından çalışmayı adım adım ilerletin. Bağlam�
 
 Bunlar örnek sonuçlardır; her modelin ne yapacağını belirleyen kurallar değildir. Bir model, belirsiz bir prompt ile bile faydalı bir soru sorabilir. Açık talimatlar, beklentilerinizin izlenmesini ve kontrol edilmesini kolaylaştırır.
 
+## Döngüyü Model Yazınca
+
+Yukarıdaki döngünün belli bir ritmi var: model bir araç ister, harness onu çalıştırır, sonuç da modelin bağlamına eklenir. Birkaç adımlık işlerde bu ritim gayet iyi işler. Ama yüzlerce dosyaya dokunan bir görevde her adım baştan sona yeni bir model isteğine dönüşür ve bağlam, modelin yalnızca bir kez baktığı çıktılarla dolup taşar.
+
+Bazı harness'ler başka bir yol sunar: model araçları tek tek istemek yerine onları kendisi çağıran küçük bir program yazar. Program bir sandbox içinde çalışır. Dosyalar, loglar ve arama sonuçları gibi ham veriler programın değişkenlerinde kalır; modele yalnızca programın yazdırdığı çıktı döner. Buna **programlı araç çağırma** (programmatic tool calling) denir. Fikrin kökeninde [CodeAct](https://arxiv.org/abs/2402.01030) (Wang ve diğerleri, 2024) gibi araştırmalar var.
+
+<Compare
+  before={{ label: "Her seferinde tek araç çağrısı", content: "A dosyasını oku. İşte A. B dosyasını oku. İşte B. Her sonuçtan sonra model; talimatları, geçmişi ve o ana kadar gördüğü her şeyle birlikte yeniden çağrılır." }}
+  after={{ label: "Araçları çağıran bir program", content: "Projede ara, eşleşen her dosyayı oku, hâlâ eski API'yi kullananları ayır ve kısa bir liste yazdır. Harness programı çalıştırır ve geriye yalnızca listeyi döndürür." }}
+/>
+
+Bağlam daha temiz kalır, çünkü model ham çıktılar yerine bir özet üzerinden düşünür. Model isteği sayısı azalır, çünkü talimatlar ve geçmiş birkaç çağrıda bir yeniden gönderilmez. Döngüler ve kontroller de kodun içinde çalışır; böylece modelin ele almayı planladığı bir durum sessizce gözden kaçmaz.
+
+Factory, 29 Ekim 2026'da duyurduğu [Droid 1.0](https://factory.com/news/frontier-harness) ile bu yaklaşımı varsayılan hâle getirdi. Script adlı aracı JavaScript kodunu bir sandbox içinde çalıştırıyor ve tek bir model isteğinde yüzlerce araç çağrısı yapabiliyor. Birbirine bağlı olmayan çağrılar aynı anda çalışıyor; uzun süren bir script arka planda devam edip iş bitince modeli uyandırabiliyor. Factory fikrin kaynağı olarak CodeAct'i gösteriyor ve 2025'in sonlarında Cloudflare ile Anthropic'in bu fikri ürünlere taşıdığını, Codex'in ise kodlama ajanlarına getirdiğini belirtiyor. Factory'nin kendi örneğinde, başarısız bir testi düzeltirken aynı 15 araç çağrısı 10 yerine 5 model çağrısıyla tamamlanmış. Bunlar Factory'nin kendi harness'i için açıkladığı rakamlar.
+
+Bu yaklaşımın bedeli de var. Sandbox'ın kendine ait dosya, ağ ya da sistem erişimi yoktur; yalnızca harness'in sunduğu araçları kullanabilir. İzinler ve onaylar, programın çağırdığı her araç için yine geçerli olmalıdır. Yazdırılan çıktının bir üst sınırı vardır. Bir programı takip etmek de insan için tek tek adımlardan oluşan bir listeyi takip etmekten daha zordur.
+
+### İş Akışları: Aynı Fikir Bir Kat Yukarıda
+
+Aynı hamle bütün ajanlarla da yapılabilir. Anthropic'in [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/workflow-runs) (beta) ve [Claude Code](https://code.claude.com/docs/en/workflows) ürünlerinde bir ajan **iş akışı** (workflow) yazabilir: birçok ajanı aşamalar hâlinde çalıştıran, işi paralel kollara dağıtan, bir ajanın sonucunu diğerine aktaran, bir adımı inceleme olumlu sonuçlanana kadar tekrarlayan ve gelen sonuçları birleştiren bir program. İş akışı arka planda çalışır; ana sohbet bu sırada serbest kalır.
+
+Alt ajanlarda bir sonraki adıma her seferinde ajanın kendisi karar verir. İş akışında ise kararı program verir. Yine de bir iş akışını ne zaman başlatacağını ajan seçer; bu yüzden bu seçimi sistem promptunda ya da talimatlarda yönlendirirsiniz. Bütçeyi de hesaba katmak gerekir: bir çalıştırmadaki her ajan token harcar.
+
+### Program İçin Prompt Yazmak
+
+Model bir program planladığında, promptunuz o programın şartnamesine dönüşür. İşin tamamını anlatın: hangi öğelerin ele alınacağını, her biri için hangi kontrollerin sağlanması gerektiğini, biri başarısız olursa ne yapılacağını ve son raporda neler olması gerektiğini. Riskli işlemlerde, önce programın bir özetini görmek istediğinizi söyleyin.
+
+<TryIt compact prompt={`Bu işin tamamını adım adım ilerlemek yerine bir programla hallet.
+
+İş: \${job:veri değiştiren her API rotasının oturum açmış bir kullanıcı gerektirdiğini kontrol et}
+Öğeler: \${items:src/app/api altındaki tüm rota dosyaları}
+Her öğe için kontrol: \${checks:rota, bir şey okumadan ya da yazmadan önce oturumu doğruluyor}
+Bir öğe başarısız olursa: \${failure:dosya yolunu ve nedenini not et, sonra devam et}
+Son rapor: \${report:başarısız olan rotalar, kaç tanesinin geçtiği ve okuyamadığın dosyalar}
+
+Dosyaları değiştiren herhangi bir şeyi çalıştırmadan önce programı bana kısaca özetle ve onayımı bekle.`} />
+
+Her görev bir program gerektirmez. Her adım bir öncekinin sonucunu değerlendirmeye bağlıysa, tek tek çağrılar çoğu zaman daha anlaşılırdır. Program asıl gücünü iş büyük, tekrarlı ve kontrolü kolay olduğunda gösterir.
+
+### Taze Bir Bakış: Sıfırdan Başlayan İnceleyiciler
+
+Bir alt ajanın boş bağlamı genellikle yer kazanmanın bir yolu olarak anlatılır: Gürültülü iş başka bir yerde yapılır, geriye yalnızca bir özet döner. Oysa bu boşluk, bir harness'in sunabileceği en iyi inceleme araçlarından biridir. Bir sorun üzerinde uzun bir oturum geçirmiş ajan, yol boyunca yaptığı her varsayımı da yanında taşır. Kendi planını yeniden okurken her boşluğu hafızasından doldurur ve orada bir boşluk olduğunu fark etmez bile. Taze bir bağlamla başlatılan inceleyicinin elinde ise yalnızca belge ve belgenin gösterdiği dosyalar vardır. Yazarın bildiği ama hiçbir yere yazmadığı ne varsa, kafa karışıklığı olarak ortaya çıkar. Kâğıt üzerindeki bir kafa karışıklığını gidermek de koddakini gidermekten çok daha ucuzdur.
+
+Google'ın açık kaynaklı [Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model) eklentisi (EGM), [Ekim 2026'da duyurulan](https://opensource.googleblog.com/2026/10/introducing-elephant-goldfish-model-plugin.html) bu iş bölümü üzerine kurulu. "Fil" (Elephant), projenin bağlamını taşıyan ve şartnameyi yazan uzun oturumdur; tek satır kod yazmaz. "Japon balıkları" (Goldfish) ise yalnızca taslağı ve taslağın başvurduğu kaynak kodu gören, hafızasız alt ajanlardır. Ödünleşimleri çözen ve tasarımı onaylayan sizsiniz. Eleştiri başlamadan önce bir Japon balığı planı kendi sözleriyle geri anlatmak zorundadır; anlatamıyorsa belge muğlaktır ve yeniden yazılmaya döner. Diğer inceleyiciler farklı roller üstlenir: uç durumları, gizli bağımlılıkları ve uygulayacak kişinin hâlâ tek başına karar vermek zorunda kalacağı her noktayı ararlar. Buldukları şeyler engelleyici, önemli ya da küçük kusur diye sıralanır ve Fil'e geri gönderilir. Google, eklentiyi binlerce mühendisinin kullandığını söylüyor. Eklenti resmî olarak desteklenen bir Google ürünü değil ve yayımlanmış bir doğruluk ölçümü de yok.
+
+<Compare
+  before={{ label: "Yazar kendi planını yeniden okur", content: "\"Başarısız teslimatları artan bekleme süreleriyle yeniden dene.\" Cümle eksiksiz görünür, çünkü yazar kaç deneme yapılacağına ve aynı olay iki kez gelirse ne olacağına çoktan karar verdiğini hatırlar. Ama bunların hiçbiri sayfada yazmaz." }}
+  after={{ label: "Taze bir inceleyici yalnızca belgeyi okur", content: "\"Kaç deneme yapılacak, sonuncusu da başarısız olursa ne olacak? Aynı olay iki kez gelirse iki kez mi teslim edilecek? İkisini de tahmin etmek zorunda kaldım.\" Yazarın hafızasından doldurduğu boşluklar soru olarak geri döner." }}
+/>
+
+Bu yaklaşım tek bir ürüne özgü değil. Anthropic'in [Claude Code için en iyi uygulamalar rehberi](https://code.claude.com/docs/en/best-practices), `/code-review` komutunu sohbeti hiç görmemiş taze bir alt ajanda yapılan bir inceleme olarak tanımlıyor; böylece inceleyici, kodu ortaya çıkaran akıl yürütmenin etkisinde kalmıyor. Rehber, bu bölümdeki ayrımın aynısını yapıyor: Bir işi alt ajana devretmek cevabı daha iyi yapmaz, ama sizin akıl yürütmenizi görmemiş bir inceleyici gerçekten işe yarar. Rehber ayrıca bu inceleyiciye yalnızca okuma yetkisi olan araçlar verilmesini ve üsluba takılmamasının söylenmesini öneriyor; çünkü sorun bulması istenen bir inceleyici her zaman bir şey bulur. Açık kaynaklı [Code Copilot Team](https://github.com/gosha70/code-copilot-team) harness'i ise incelemeyi ikinci bir modele bırakıyor: Bu model, yalnızca okunabilen bir sandbox içinde değişiklikleri inceliyor ve PASS, FAIL ya da INCONCLUSIVE kararıyla dönüyor. FAIL alan bir aşama tamamlanamıyor.
+
+Fikri dürüst tutan iki uyarı var. Birincisi, aynı bağlamda yapılan bir inceleme, prompt bunu ne kadar kesin bir dille isterse istesin, bağımsız bir inceleme değildir. EGM'nin [harness rehberi](https://github.com/google/elephant-goldfish-model/blob/main/docs/harnesses.md), "bir alt ajan başlat" ifadesini her harness'in kendi alt ajan aracına bağlıyor; harness'te böyle bir araç yoksa inceleme, yazarın oturumunda sessizce sürdürülmek yerine duruyor. İkincisi, taze bir sohbet her zaman boş bir bağlam anlamına gelmez; yalıtımın varsayılmaması, denetlenmesi gerekir. Harness'in kendiliğinden yüklediği talimat dosyaları inceleyicinin peşinden içeri girebilir. [GitHub'daki 237 numaralı issue](https://github.com/google/elephant-goldfish-model/issues/237), Codex ve Antigravity'deki EGM inceleyicilerinin ana sohbeti hiç görmediğini ama projenin `AGENTS.md` dosyasını yine de aldığını bildiriyor. Yani ekibin varsayımları, tam da onları sorgulamak için yapılan incelemenin içine taşınmış oluyor. Üstelik her ek inceleyici token ve zaman harcar. Taze gözler, yazarın artık göremediğini görür; ama testlerin ya da sizin muhakemenizin yerini tutmaz.
+
+Denemek için yeni bir oturum ya da geçmişi olmayan, yalnızca okuma araçlarına sahip bir alt ajan açın; bunu prompt'ta rica ederek değil, harness'in ayarlarından sağlayın. Sonra onu belgeyi doğuran sohbete değil, belgenin kendisine yönlendirin ve şunu sorun:
+
+<TryIt compact prompt={`Bu planı daha önce hiç görmemiş biri gibi oku. Yalnızca belgeyi ve belgenin adını andığı dosyaları kullan: \${document:docs/designs/webhook-delivery.md}
+
+1. Planı kendi sözlerinle anlat: neyi inşa ediyor, parçalar birbirine nasıl bağlanıyor ve nasıl kontrol edilecek.
+2. Tahmin yürütmek zorunda kaldığın her noktayı ve neyi tahmin ettiğini listele.
+3. Her boşluğu engelleyici, önemli ya da küçük kusur olarak sırala ve yazarın neyi eklemesi gerektiğini söyle.
+
+Üslupla ilgili yorum yapma ve hiçbir dosyayı düzenleme.`} />
+
+### Tek Harness, Birden Çok Model
+
+Her çağrıyı hangi modelin yanıtlayacağına harness karar verir ve bunun her seferinde aynı model olması gerekmez. Uzun bir görevin adımları birbirine benzemez. Bazıları muhakeme ister: bir yaklaşım seçmek, planın yoldan çıktığını fark etmek, işin gerçekten bitip bitmediğine karar vermek. Bazılarıysa sınırları belli, tekrar tekrar yapılan işlerdir: şu dosyaları oku, şu alanları çıkar, şu modülü taşı ve testlerini çalıştır. Harness her adımı ona en uygun modelle eşleştirebilir ve bu düzen iki yönde karşımıza çıkar.
+
+<InfoGrid columns={2} items={[
+  { label: "Aşağıya devretmek", description: "Büyük bir model planlar ve gözetir. Çok sayıda küçük ve ucuz model, işin sınırları belli parçalarını kendi talimatlarıyla paralel olarak üstlenir; geri gelenleri büyük model inceler.", color: "blue" },
+  { label: "Yukarıya danışmak", description: "Daha hızlı ve ucuz bir model görevin tamamını yürütür. Zor anlarda daha güçlü bir modele danışır. Güçlü model dökümü okur ve araçlara kendisi dokunmadan bir plan ya da düzeltme önerir.", color: "purple" }
+]} />
+
+Meta'nın 9 Kasım 2026'da yayımladığı Muse Ember, ilk yön için tasarlandı. Meta modeli, "ajanların gün boyu tekrarladığı işler, yani araç çağrıları, kodlama alt görevleri, yönlendirme, bilgi çıkarma ve uzun belgelerin ayrıştırılması" için geliştirdiğini söyleyerek [tanıtıyor](https://research.meta.ai/blog/muse-ember) ve daha büyük bir modelle kurduğu ortaklığı tek cümlede özetliyor: "Muse Wonder planlar, Muse Ember iş yükünü sırtlanır." Şirketin [geliştiricilere yönelik yazısı](https://dev.meta.ai/resources/blog/build-with-muse-ember) üç adımlı bir kodlama akışı çiziyor. Büyük model, depo genelinde yapılacak bir değişikliği planlıyor. Ember işçilerinin her biri, kendi dosyaları, kısıtları ve kontrolleriyle sınırları belli bir alt görev alıyor. Ardından büyük model, bir geliştiriciyle birlikte ortaya çıkan bütünü gözden geçiriyor. Tarif kitabındaki örnekte 16 Ember ajanının her biri, deponun kendi kopyasında çalışarak Pygments sözdizimi renklendiricisinin bir lexer'ını Python'dan Rust'a taşıdı. Planlayıcı ise onların talimatlarını yazdı ama kaynak kodu kendisi hiç açmadı. Meta, her çağrı için modeli harness'in seçtiğini ve adımlar arasında bağlamı da onun taşıdığını hatırlatıyor. Daha geniş bir bağımlılığa ya da belirsiz bir gereksinime rastlayan işçinin ise devam etmeden önce bunu planlayıcıya geri göndermesi gerektiğini ekliyor. Meta'nın aktardığına göre taşınan 16 lexer'ın hepsi testlerde Python'daki asıllarıyla aynı sonucu verdi; şirket, sonuçların bir çalıştırmadan ötekine değişebildiğini de not düşüyor.
+
+Anthropic'in [danışman stratejisi](https://claude.com/resources/articles/the-advisor-strategy) ise ters yönde işliyor. Anthropic de bunu, tek bir orkestratörün çok sayıda işçiyi yönettiği alışılmış düzenin tersyüz edilmiş hali olarak tanımlıyor. Yürütücü denen daha hızlı bir model (örneğin Sonnet ya da Haiku) görevin tamamını üstlenir: araçları çağırır, sonuçları okur ve yoluna devam eder. Tek başına makul biçimde veremeyeceği bir kararla karşılaştığında, danışman denen daha güçlü bir modele, örneğin Opus'a başvurur. [Claude Code belgelerine](https://code.claude.com/docs/en/advisor) göre bu genellikle bir yaklaşımda karar kılmadan önce, aynı hata dönüp dolaşıp geldiğinde ve görevin bittiğini söylemeden önce olur. Danışman, her araç çağrısı ve sonucu dahil sohbetin tamamını görür; karşılığında bir plan, bir düzeltme ya da durma işareti verir. [API belgelerinin](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool) anlattığı gibi araçları kendisi hiç çağırmaz ve yürütücüye yalnızca tavsiyesi ulaşır. Koordine edilecek bir işçi havuzu yoktur; güçlü model yalnızca gerçekten gerektiği anlarda devreye girer. Tavsiye bir emir de değildir. Claude Code'da yürütücü tavsiyeye genellikle uyar, ama bir dosya ya da başarısız olan bir adım tavsiyeyle çelişirse körü körüne uymak yerine bu çelişkiyi açıkça dile getirir.
+
+İki yön de prompt'a daha az değil, daha fazla yük bindirir. Aşağıya devrederken işçinin bütün dünyası, eline verilen talimattır. Meta bu talimatta nelerin bulunması gerektiğini sıralıyor: görev, ilgili bağlam, işçinin değiştirebileceği dosyalar, işin bittiğini gösterecek kontroller ve geriye ne gönderileceği. Belirsiz bir talimat alan küçük bir model, boşlukları doldurmak için planlayıcının muhakemesini ödünç alamaz; tahmin yürütür, hem de hızla ve defalarca. Yukarıya danışırken ise yardımın ne zaman isteneceğini sizin talimatlarınız belirler. Anthropic, sistem prompt'unda bir yönlendirme olmadığında yürütücülerin kodlama görevlerinde danışmana gereğinden seyrek başvurduğunu belirtiyor ve ne zaman sormaları gerektiğinin onlara açıkça söylenmesini öneriyor.
+
+Bu iş bölümü en iyi, iş sınırları belli parçalara ayrılabildiğinde ve her parça kontrol edilebildiğinde sonuç verir. Her adım bir öncekinin değerlendirilmesine bağlıysa ya da her adım zaten en güçlü modeli gerektiriyorsa, devir teslimler yalnızca maliyeti ve bağlamın yolda kaybolabileceği noktaları çoğaltır. Tasarruf da garanti değildir. Planlama, birleştirme ve her danışman çağrısı token harcar; Anthropic de küçük modelin kendi yeteneği danışmanınkine yaklaştıkça kazancın azaldığını gözlemliyor. En dürüst sınav, kendi işinizdir: Aynı görevleri aynı kontrollerle önce yalnızca küçük modelle, sonra ikiliyle, sonra da yalnızca büyük modelle çalıştırıp karşılaştırın. Bir adımı hangi modelin üstleneceğini seçmek, bir modelin ne kadar derin düşüneceğinden ayrı bir ayardır; bu ayrımı [AI ile Yazılım Geliştirme](/book/28a-software-development-with-ai) bölümündeki "Çaba, Model Seçimiyle Aynı Şey Değildir" kısmında ele alıyoruz.
+
+İlk yönü denemek için bir planlayıcının tek bir işçiye vereceği talimatı yazın, sonra onu o işçinin gözüyle okuyun. Yetenekli ama işe yabancı biri, yalnızca bu sayfaya bakarak işi bitirebilir miydi?
+
+<TryIt compact prompt={`Daha büyük bir değişiklik üzerinde çalışan birkaç işçiden birisin. Yalnızca bu görevi yap.
+
+Görev: \${task:fatura modülündeki tarih biçimlendirmesini ortak formatDate yardımcısına taşı}
+Bağlam: \${context:yardımcı zaten src/lib/format.ts içinde var; diğer işçiler sipariş ve rapor modüllerini güncelliyor}
+Değiştirebileceğin dosyalar: \${files:src/invoices/ ve testleri}
+Kontroller: \${checks:fatura testleri geçiyor ve listendeki dosyalar dışında hiçbir şey değişmemiş}
+Teslim edeceklerin: \${result:değiştirdiğin dosyalar, çalıştırdığın her kontrol ve çıktısının son satırı, bitiremediğin her şey}
+
+Görev listende olmayan bir dosyaya ihtiyaç duyarsa ya da bu görevden daha büyük bir sorun bulursan, etrafından dolaşmaya çalışma; dur ve bunu bildir.`} />
+
 ## Harness İçinde Promptlar Neden Önemlidir?
 
 Harness, modele işlem yapabileceği bir yol sağlar. Promptlarınız ise faydalı bir işlemin nasıl olması gerektiğini anlatır. Açık bir hedef olmadan ajan, ihtiyaç duymadığınız işler için birçok adım harcayabilir.
@@ -211,6 +304,70 @@ Aynı ayrım, araçlardan dönen bilgiler için de önemlidir. Bir web sayfası 
   explanation="Promptlar davranışa yön verir. Model izin verilmeyen bir işlem istese bile araç veya ortam erişim sınırını uygulamalıdır."
 />
 
+## Harness Nerede Yaşar?
+
+Her ajan bir harness'in içinde çalışır; ama o harness'i birinin kurması, barındırması ve ayakta tutması gerekir. Bu işi kimin üstlendiği, neyin sizin kontrolünüzde olacağını ve neyin bakımını sizin yapacağınızı belirler. Bugün bir harness karşınıza genellikle şu dört yoldan biriyle çıkar:
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Nereden gelir?</th>
+      <th scope="col">Döngüyü kim çalıştırır?</th>
+      <th scope="col">Siz ne sağlarsınız?</th>
+      <th scope="col">Kazanç ve bedel</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Kendi yazdığınız bir döngü</td>
+      <td>Siz</td>
+      <td>Her şey: bağlam, araç isteklerinin işlenmesi, izinler, sınırlar</td>
+      <td>Kontrol tamamen sizde, bakım yükü de</td>
+    </tr>
+    <tr>
+      <td>Bir SDK ya da framework</td>
+      <td>Siz; kendi bilgisayarınızda ya da seçtiğiniz bir sunucuda</td>
+      <td>Projenizdeki dosyalar olarak ajanın kendisi: promptlar, araçlar, testler</td>
+      <td>Değişiklikler alışılmış kod incelemesinden geçer; yayına almak ve güncel tutmak yine size düşer</td>
+    </tr>
+    <tr>
+      <td>Yönetilen bir hizmet</td>
+      <td>Sağlayıcı</td>
+      <td>Talimatlar, beceriler, araçlar ve model tercihi</td>
+      <td>Bakımını yapacağınız düzenek azdır; sınırları sağlayıcının yalıtılmış ortamı ve limitleri çizer</td>
+    </tr>
+    <tr>
+      <td>CI gibi bir otomasyon sisteminin parçası</td>
+      <td>Bir olay tetiklendiğinde otomasyon platformu</td>
+      <td>Bir görev tanımı ve üretmesine izin verilen çıktılar</td>
+      <td>Hâlihazırdaki iş akışlarınıza oturur; o çalışırken kimse bir sohbet ekranının başında beklemez</td>
+    </tr>
+  </tbody>
+</table>
+
+2026 Ekim'inin sonu, son üç yolun her birine açık birer örnek getirdi. Cursor'ın [Agent SDK](https://cursor.com/blog/agent-sdk) aracı 20 Ekim'den beri herkesin kullanımına açık ve bir ajanı küçük bir proje gibi ele alıyor: promptlar Markdown ile, araçlar TypeScript fonksiyonları olarak yazılıyor, değerlendirmeler (eval) de hemen yanlarında duruyor. Ajanı kendi bilgisayarınızda çalıştırabilir, Cursor'ın altyapısında yayına alabilir ya da tek bir Node süreci olarak kendi sunucularınızda çalıştırabilirsiniz. 28 Ekim'de Microsoft, [Foundry Agent Service'teki Copilot harness'ini](https://devblogs.microsoft.com/foundry/microsoft-copilot-harness-in-foundry/) genel önizleme olarak kullanıma sundu. Bu, GitHub Copilot'u uygulamasında, CLI'ında ve VS Code'da çalıştıran [harness'in ta kendisi](https://blogs.microsoft.com/blog/2026/10/28/introducing-the-microsoft-copilot-harness-unlocking-the-potential-of-truly-multi-model-agentic-work/). Ajan döngüsünü ve yalıtılmış ortamı Microsoft işletiyor; becerileri, MCP araçlarını ve sürüm kontrolünde saklayabileceğiniz ajan tanımlarını ise siz getiriyorsunuz. Aynı gün [GitHub Agentic Workflows](https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available/) da herkesin kullanımına açıldı. Burada yeni issue'ları ayıklamak gibi bir işi bir Markdown dosyasında anlatıyorsunuz; dosya, Copilot'u ya da başka bir kodlama ajanını çalıştıran sıradan bir GitHub Actions iş akışına derleniyor.
+
+Harness'in nerede yaşadığı, sınırlarının nerede zorla uygulandığını da belirler. Talimatlar yön gösterir; izinler ise uyulmasını sağlar. Kendi döngünüzde bu denetimi kendiniz kurarsınız. Yönetilen bir hizmette ya da bir otomasyon platformunda ise denetimi platform sağlar, siz de ayarlarını yaparsınız. Agentic Workflows bunun kaç katman anlamına gelebileceğini iyi gösteriyor: ajanlar varsayılan olarak yalnızca okuma iznine sahip ve bir güvenlik duvarının arkasındaki yalıtılmış bir konteynerde çalışıyor. Önerdikleri değişiklikler de bir şey uygulanmadan önce doğrulanmış "güvenli çıktılar" (safe outputs) adımından ve ayrı bir tehdit taramasından geçiyor. Ne yapılacağını yine prompt'unuz söyler. Bir hatanın ne kadar zarar verebileceğini ise platform sınırlar.
+
+Sizin yazdığınız parçalar, genellikle döngünün kendisinden daha kolay taşınır. Beceriler ve MCP açık standartlardır; Microsoft'un duyurusu da bunları desteklemeyi ciddi bir harness'in alameti farikası sayıyor. İyi yazılmış bir beceri ya da araç açıklaması çoğu zaman küçük ayarlamalarla başka bir harness'e geçebilir; belirli bir döngünün etrafında yazılmış kod ise nadiren. Daha önce harness'leri karşılaştırırken modeli sabit tutmanızı önermiştik. Çok modelli bir harness, tam tersini denemenize imkân verir: Foundry, orkestrasyonu yeniden yazmadan desteklenen bir modeli seçmenize izin veriyor; Agentic Workflows ise her iş akışının kendi model sağlayıcısını seçmesine. Modeli değiştirip geri kalan her şeyi olduğu gibi bırakabilirsiniz.
+
+Hangi yolu seçerseniz seçin, bazı şeyler hiçbir zaman sağlayıcıya geçmez: ulaşmak istediğiniz sonuç, onu anlatan talimatlar ve beceriler, verdiğiniz araçlar ve erişimler, işin bittiğini gösteren kontroller. Harness döngüyü sizin yerinize çalıştırabilir. Ama "bitti"nin ne anlama geldiğine o karar veremez.
+
+### Bir Model Belirli Bir Harness İçin Eğitildiğinde
+
+Buraya kadar modeli, istediğimiz zaman değiştirebileceğimiz bir parça gibi ele aldık. Çoğu zaman öyledir de; ama model ile harness arasındaki uyum bazen çok daha derine iner. Her harness'in kendine ait araçları, kendi sistem prompt'u ve adımlarının kendine özgü bir ritmi vardır. Bir model pekiştirmeli öğrenmeyle tek bir harness'in içinde eğitildiğinde, işi öğrenirken o harness'in alışkanlıklarını da edinir. Onu başka bir harness'e taşıdığınızda araçları eskisi kadar iyi kullanamayabilir, gereğinden fazla adım atabilir ya da iş bitmeden duruverebilir.
+
+OpenAI, Codex modelleri için bunu açıkça söylüyor. GPT-5-Codex'i Codex için ["purpose-built"](https://openai.com/index/introducing-upgrades-to-codex/), yani özel olarak tasarlanmış bir model diye tanıtıyor ve yalnızca Codex'te ya da Codex benzeri ortamlarda, ajan tabanlı kodlama işlerinde kullanılmasını öneriyor. [Codex Prompting Guide](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide), kendi harness'ini kuranlara standart Codex prompt'undan yola çıkmalarını ve modelin kullanmak üzere eğitildiği `apply_patch` ile shell araçlarını kullanmalarını tavsiye ediyor. Modelden en başta bir plan ya da çalışma sırasında durum güncellemeleri isteyen yönlendirmelerin de çıkarılmasını istiyor; çünkü bunlar modelin iş tamamlanmadan aniden durmasına yol açabiliyor. Cursor da aynı uyum çabasını öbür taraftan, [kendi harness'ini bu modellere göre uyarlarken](https://cursor.com/blog/codex-model-harness) anlattı. Araç adlarını `rg` gibi shell karşılıklarına yaklaştırdı ve bir lint aracının yalnızca tanımını vermenin yetmediğini gördü: Modelin, o aracı ne zaman çağıracağını açık açık söyleyen bir talimata ihtiyacı vardı.
+
+Açık modeller de aynı yoldan geçiyor. Hugging Face, 6 Kasım 2026'da [harness adaptörlerini](https://huggingface.co/blog/harness-hub/harness-adapters) tanıttı: Her model ve harness için bir tane olmak üzere, hiç değiştirilmemiş harness'lerin (pi, opencode ve hermes) içinde, doğrulanabilir görevler üzerinde pekiştirmeli öğrenmeyle eğitilmiş küçük LoRA adaptörleri. Hepsi tek bir temel modelin üzerinden sunuluyor. Ekibin "smoke test" dediği ilk denemelerde adaptörler, eğitimde kullanılmamış görevlerde temel modelden daha az araç çağrısı yaptı; doğruluk ise ya korundu ya da arttı. Eğitim sırasında safeagents adlı bir proxy her araç çağrısını sabit kurallara göre denetliyor ve testleri değiştirmek ya da cevabı bir yerden bulup getirmek gibi ödülü kandırma girişimlerini engelliyor. Engellenen bir çağrı içeren deneme sıfır puan alıyor. Yani model daha öğrenirken bile denetimin yeri harness'tir.
+
+Prompt yazanlar için çıkarılacak ders son derece pratik. Bir modeli, kendisi için yapılmamış bir harness'te kullanacaksanız önce sağlayıcının o modele özel prompt rehberini okuyun. Araç adlarını ve açıklamalarını modelin zaten tanıdığı biçimlere yakın tutun; eğitimle edindiği alışkanlıklarla çatışan talimatları ayıklayın. Yol boyunca nasıl rapor vereceğini tek tek dikte etmek yerine, ulaşmak istediğiniz sonucu ve ne zaman durması gerektiğini anlatın. Harness'leri karşılaştırırken de bir modelin, içinde eğitildiği harness'e yatkın olabileceğini unutmayın; karar vermeden önce kendi görevlerinizle deneyin.
+
+<Compare
+  before={{ label: "Genel bir harness prompt'u", content: "Önce bir plan yaz ve bana gönder. Her adımdan sonra bana bir durum güncellemesi gönder. Dosyaları edit_file aracıyla düzenle." }}
+  after={{ label: "Harness'iyle eğitilmiş bir modele göre uyarlanmış", content: "Aramanın eşleşmeleri nasıl bulduğunu değiştirmeden, başarısız olan arama testlerini düzelt. Düzenlemeleri apply_patch ile yap. Testler geçene ya da bir engele takılana kadar devam et; sonra neyin değiştiğini, hangi kontrollerin çalıştığını ve doğrulayamadığın her şeyi bildir." }}
+/>
+
 ## Bir Harness'i Faydalı Yapan Nedir?
 
 Daha fazla özerklik, ancak sistem çalışmasını kontrol edebiliyor ve sorunlardan sonra toparlanabiliyorsa faydalıdır. Uzun bir görev için harness'in şunları nasıl yönettiğine bakın:
@@ -222,6 +379,23 @@ Daha fazla özerklik, ancak sistem çalışmasını kontrol edebiliyor ve sorunl
 - **Doğrulama:** Gerçek dosyaları, test sonuçlarını veya diğer çıktıları incelemek. Kendinden emin bir son mesaj yeterli değildir.
 
 Kurulumları karşılaştırırken aynı gerçek görevleri deneyin; hem sonuçları hem de çalışma kayıtlarını inceleyin. Bir harness değişikliğini incelemek istediğinizde modeli sabit tutun. Her seferinde yalnızca bir prompt'u, beceriyi veya araç ayarını değiştirin. Tekil çalışmalar farklı sonuçlar verebildiği için görevleri tekrarlayın.
+
+### Harness Küçüldüğünde
+
+Harness'ler zamanla büyümeye meyillidir. Her yeni özellik kendi yolunu, kendi talimatlarını ve "bitti"nin ne anlama geldiğine dair kendi fikrini de beraberinde getirir; eklendiği gün her birinin makul bir gerekçesi vardır. Modeller güçlendikçe bazı ekipler bunun tersini yapıp parçaları söküyor. Apple araştırmacıları [How Much of a Harness Does a Strong Agent Need?](https://machinelearning.apple.com/research/harness-autonomous-ml-engineering) (Ekim 2026) sorusunun peşine düştü ve makine öğrenmesi mühendisliği görevlerinde, aynı model ve aynı süre verildiğinde, karmaşık açık kaynak harness'lerin az sayıda araçla çalışan tek bir kodlama ajanı oturumundan daha iyi sonuç vermediğini gördü. Yine de parça sökmek işin kolay kısmı. Küçülen harness'in işi hâlâ görüp görmediğini anlamak için ölçmek gerekir.
+
+İnsanların yapay zekâyla konuşarak oyun yapıp düzenlediği Pogl, böyle bir yeniden yapımı [We rebuilt our harness from scratch](https://about.pogl.com/blog/one-loop-harness) (11 Kasım 2026) yazısında anlattı. Eski harness açık kaynak kodlama ajanı OpenCode üzerine kuruluydu. Zamanla her yeni özellik onun etrafına yeni bir yol olarak eklenmiş, aynı sorunu her yolda ayrı ayrı düzeltmek gerekir olmuştu. Yeni harness ise her isteği, çekirdeği 715 satırdan oluşan tek bir döngüden geçiriyor. Her projenin tek bir konuşma geçmişi var ve her adım kayda tek bir satır olarak düşüyor. Böylece yeniden başlatılan bir iş süreci konuşmayı bu kayıttan yeniden kuruyor ve işe sıfırdan başlamak yerine kaldığı yerden devam ediyor.
+
+<Compare
+  before={{ label: "Devralınan harness", content: "Farklı istek türleri için 16 ayrı yol, bir işin bitip bitmediğine karar vermenin 3 farklı yolu, model için 6-7 sözleşme belgesi ve yaklaşık 14.000 token'lık sabit bir prompt. Aynı sorunu her yolda ayrı ayrı düzeltmek gerekiyor." }}
+  after={{ label: "Tek döngü", content: "Her istek aynı döngüden geçiyor. 13 araç tek bir yerde tanımlı ve hepsinin açıklaması yaklaşık 3.000 token'a sığıyor. Uzun başvuru belgeleri yalnızca gerektiğinde okunuyor; sabit prompt 6.000 token'ın altında." }}
+/>
+
+Asıl öğretici olan, ölçümün nasıl yapıldığı. İki harness "bitti"yi farklı ölçütlerle değerlendiriyordu, bu yüzden kendi verdikleri kararlar birbiriyle karşılaştırılamazdı. Pogl geçmişteki 54 istek çiftini yeniden çalıştırdı ve iki harness'in sonuçlarını aynı değerlendiriciyle puanladı. Genel kalite birbirine yakın çıktı: yeni harness 8 istekte, eskisi 5 istekte daha iyiydi. Pogl'un bildirdiğine göre düzenleme başına önbelleğe alınmamış girdi yaklaşık %65, çıktı ise yaklaşık %52 azaldı; 40 dakikadan uzun süren işler de ortadan kalktı. Şirket madalyonun öbür yüzünü de saklamıyor. Tasarrufun büyük kısmı eski harness'teki birkaç çok büyük işten geliyordu; sıradan işlerde ise yeni harness önbellekten daha çok okudu, daha çok çıktı üretti ve daha uzun sürdü. Yeniden çalıştırmalardan biri, hiçbir ortalamanın gösteremeyeceği bir şeyi ortaya çıkardı: eski harness düzeltilmemiş bir maddeyi "bitti" diye işaretlemişti, yeni harness ise aynı maddeyi "bitmedi" olarak bildirdi. Pogl ardından yeni harness'i kullanıcılarının yarısına açtı. Ayrımı kişi bazında yaptı ki kimse bir işin ortasında harness değiştirmek zorunda kalmasın. Tek bir ayarla herkesi bir dakika içinde eski harness'e döndürmek de mümkün.
+
+Framer ise daha küçük bir döngüye başka bir yoldan vardı: [Harness 2: executing agent code as it streams](https://www.framer.com/blog/harness-2/) (2 Kasım 2026). Bu yaklaşım, bu bölümün önceki kısımlarında, "Döngüyü Model Yazınca" başlığı altında anlatılan programlı araç çağırmanın üzerine kuruluyor: ajan bütün bir iş akışını tek bir JavaScript programı olarak ifade edebiliyor. Framer bu programı, model daha yazmayı bitirmeden parça parça çalıştırıyor. Böylece yanlış çıkan bir varsayım, program baştan sona üretildikten sonra değil, akış sürerken işi erkenden durdurabiliyor. Framer'ın bildirdiğine göre mesaj başına araç adımlarının sayısı yarıya iniyor, önbellekten okunan girdi token'ları %39 azalıyor ve ölçülebilen bir kalite kaybı görülmüyor.
+
+Bu rakamlar şirketlerin kendi raporlarına dayanıyor ve sizin görevleriniz farklı olacaktır. Yine de çıkarılacak dersler başka yerlere de taşınabilir. Yol azaldıkça düzeltilecek yer de teke iner: her istek aynı döngüden geçtiğinde, bir kez bulunan sorun bir kez düzeltilir. İki harness ancak ikisini de aynı değerlendirici puanladığında adil biçimde karşılaştırılabilir, çünkü her harness'in kendi "bitti" anlayışı da sınadığınız şeyin bir parçasıdır. Ortalamalar en yavaş işleri, yani ara sıra kırk dakika süren o nadir işi gizler; tek bir yanlış "bitti"yi de gizler. Bu yüzden en uzun süren çalışmalara bakın ve birkaç çalışma kaydını baştan sona okuyun. Son olarak, yeni bir harness insanlara adım adım ulaştığında ve geri dönüş bir hafta değil bir dakika sürdüğünde en güvenlisidir.
 
 <InteractiveChecklist
   title="Bunu zaten yaptığınız bir görevde deneyin"

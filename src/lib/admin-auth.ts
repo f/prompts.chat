@@ -1,12 +1,24 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { isValidApiKeyFormat } from "@/lib/api-key";
+import { getRequestApiKey, isValidApiKeyFormat } from "@/lib/api-key";
 
-export function getRequestApiKey(request: Request): string | null {
-  const authorization = request.headers.get("authorization");
-  const bearer = authorization?.startsWith("Bearer ") ? authorization.slice("Bearer ".length).trim() : null;
-  return request.headers.get("x-api-key") || bearer || request.headers.get("prompts-api-key");
+export { getRequestApiKey };
+
+/**
+ * The signed-in user, or else an admin authenticated by API key, for endpoints that
+ * any user can call from the UI and admins can also call from scripts. Keys of
+ * non-admin users are not accepted.
+ */
+export async function getSessionOrAdminApiKeyUser(request: Request): Promise<{ id: string; role: string } | null> {
+  const session = await auth();
+  if (session?.user?.id) {
+    return { id: session.user.id, role: session.user.role ?? "USER" };
+  }
+  const apiKey = getRequestApiKey(request);
+  if (!apiKey || !isValidApiKeyFormat(apiKey)) return null;
+  const user = await db.user.findUnique({ where: { apiKey }, select: { id: true, role: true } });
+  return user?.role === "ADMIN" ? user : null;
 }
 
 /**

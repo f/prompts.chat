@@ -1,27 +1,27 @@
 Formatos de dados estruturados como JSON e YAML são essenciais para construir aplicações que consomem saídas de IA programaticamente. Este capítulo cobre técnicas para geração confiável de saída estruturada.
 
 <Callout type="info" title="De Texto para Dados">
-JSON e YAML transformam saídas de IA de texto livre em dados estruturados e type-safe que código pode consumir diretamente.
+JSON e YAML transformam saídas de IA de texto livre em dados estruturados e type-safe que o código pode consumir diretamente.
 </Callout>
 
 ## Por Que Formatos Estruturados?
 
 <JsonYamlDemo />
 
-## Básicos de Prompting JSON
+## Fundamentos de Prompting JSON
 
-JSON (JavaScript Object Notation) é o formato mais comum para saídas programáticas de IA. Sua sintaxe estrita torna fácil de parsear, mas também significa que pequenos erros podem quebrar todo seu pipeline.
+JSON (JavaScript Object Notation) é o formato mais comum para saídas programáticas de IA. Sua sintaxe estrita o torna fácil de parsear, mas também significa que pequenos erros podem quebrar todo o seu pipeline.
 
 ### O Que Fazer e Não Fazer: Solicitando JSON
 
 <Compare 
-  before={{ label: "❌ Não Faça: Requisição vaga", content: "Me dê as info do usuário como JSON." }}
-  after={{ label: "✓ Faça: Mostre o schema", content: "Extraia info do usuário como JSON seguindo este schema:\n\n{\n  \"nome\": \"string\",\n  \"idade\": number,\n  \"email\": \"string\"\n}\n\nRetorne APENAS JSON válido, sem markdown." }}
+  before={{ label: "❌ Não Faça: Requisição vaga", content: "Me dê as informações do usuário como JSON." }}
+  after={{ label: "✓ Faça: Mostre o schema", content: "Extraia as informações do usuário como JSON seguindo este schema:\n\n{\n  \"nome\": \"string\",\n  \"idade\": number,\n  \"email\": \"string\"\n}\n\nRetorne APENAS JSON válido, sem markdown." }}
 />
 
 ### Saída JSON Simples
 
-Comece com um schema mostrando a estrutura esperada. O modelo vai preencher valores baseado no texto de entrada.
+Comece com um schema que mostre a estrutura esperada. O modelo vai preencher os valores com base no texto de entrada.
 
 ```
 Extraia as seguintes informações como JSON:
@@ -49,7 +49,7 @@ Saída:
 Dados do mundo real frequentemente têm relacionamentos aninhados. Defina cada nível do seu schema claramente, especialmente para arrays de objetos.
 
 ```
-Parse este pedido em JSON:
+Faça o parse deste pedido para JSON:
 
 {
   "pedido_id": "string",
@@ -74,7 +74,7 @@ Pedido: "Pedido #12345 para Maria Silva (maria@email.com): 2x Widget (R$20 cada)
 ### Garantindo JSON Válido
 
 <Callout type="warning" title="Ponto de Falha Comum">
-Modelos frequentemente envolvem JSON em blocos de código markdown ou adicionam texto explicativo. Seja explícito sobre querer apenas JSON puro.
+Modelos frequentemente envolvem JSON em blocos de código markdown ou adicionam texto explicativo. Deixe claro que você quer apenas JSON puro.
 </Callout>
 
 Adicione instruções explícitas:
@@ -84,17 +84,21 @@ CRÍTICO: Retorne APENAS JSON válido. Sem markdown, sem explicação,
 sem texto adicional antes ou depois do objeto JSON.
 
 Se um campo não puder ser determinado, use null.
-Garanta que todas as strings estejam corretamente com aspas e escapadas.
-Números não devem ter aspas.
+Garanta que todas as strings estejam entre aspas e escapadas corretamente.
+Números não devem ficar entre aspas.
 ```
 
-## Básicos de Prompting YAML
+<Callout type="tip" title="Deixe a API Impor o Schema">
+Quando você chama um modelo por meio de uma API, a redação não é sua única ferramenta. OpenAI, Anthropic e Google oferecem recursos de saída estruturada que recebem um JSON Schema e restringem a resposta para que siga esse schema. Isso elimina a maioria das falhas de parsing deste capítulo, como blocos de markdown perdidos, vírgulas finais e campos ausentes. As opções mais antigas de "modo JSON" garantem apenas um JSON sintaticamente válido, não o seu schema, e cada provedor suporta um subconjunto um pouco diferente de JSON Schema. As técnicas a seguir continuam importantes, porque um schema controla a forma da resposta, não se os valores dentro dela estão corretos.
+</Callout>
+
+## Fundamentos de Prompting YAML
 
 YAML é mais legível por humanos que JSON e suporta comentários. É o padrão para arquivos de configuração, especialmente em DevOps (Docker, Kubernetes, GitHub Actions).
 
 ### Saída YAML Simples
 
-YAML usa indentação em vez de chaves. Forneça um template mostrando a estrutura esperada.
+YAML usa indentação em vez de chaves. Forneça um template que mostre a estrutura esperada.
 
 ```
 Gere um arquivo de configuração em formato YAML:
@@ -131,7 +135,7 @@ Gere um workflow do GitHub Actions em YAML:
 Requisitos:
 - Trigger em push para main e pull requests
 - Executar em Ubuntu latest
-- Passos: checkout, setup Node 18, instalar dependências, rodar testes
+- Passos: checkout, configurar a versão LTS atual do Node.js, instalar dependências, rodar testes
 - Cache de dependências npm
 ```
 
@@ -141,7 +145,7 @@ Definições de tipo dão ao modelo um contrato preciso para estrutura de saída
 
 ### Usando Tipos Estilo TypeScript
 
-Interfaces TypeScript são familiares para desenvolvedores e descrevem precisamente campos opcionais, tipos union e arrays. A plataforma prompts.chat usa esta abordagem para prompts estruturados.
+Interfaces TypeScript são familiares para desenvolvedores e descrevem com precisão campos opcionais, tipos union e arrays.
 
 <TryIt 
   title="Extração com Interface TypeScript"
@@ -165,7 +169,7 @@ Descrição: "Um engenheiro de software sênior chamado Alex que faz code review
 ### Definição JSON Schema
 
 <Callout type="info" title="Padrão da Indústria">
-JSON Schema é uma especificação formal para descrever estrutura JSON. É suportado por muitas bibliotecas de validação e ferramentas de API.
+JSON Schema é uma especificação formal para descrever estrutura JSON. Muitas bibliotecas de validação e ferramentas de API oferecem suporte a ela.
 </Callout>
 
 JSON Schema fornece restrições como valores min/max, campos obrigatórios e padrões regex:
@@ -194,7 +198,7 @@ Extraia dados de acordo com este JSON Schema:
 }
 
 Livro: "1984 de George Orwell (1949) - Uma obra-prima distópica. 
-Gêneros: Ficção Científica, Ficção Política. Nota 4.8/5"
+Gêneros: Ficção Científica, Ficção Política. Nota 4,8/5"
 ```
 
 ## Lidando com Arrays
@@ -203,7 +207,7 @@ Arrays requerem atenção especial. Especifique se você precisa de um número f
 
 ### Arrays de Tamanho Fixo
 
-Quando você precisa de exatamente N itens, declare explicitamente. O modelo vai garantir que o array tenha o tamanho certo.
+Quando você precisa de exatamente N itens, diga isso explicitamente. Os modelos costumam respeitar essa instrução, mas conte os itens no seu código se o número for importante.
 
 ```
 Extraia exatamente 3 pontos-chave como JSON:
@@ -221,7 +225,7 @@ Artigo: [texto do artigo]
 
 ### Arrays de Tamanho Variável
 
-Para arrays de tamanho variável, especifique o que fazer quando há zero itens. Incluir um campo de contagem ajuda a verificar completude da extração.
+Para arrays de tamanho variável, especifique o que fazer quando há zero itens. Incluir um campo de contagem ajuda a verificar a completude da extração.
 
 ```
 Extraia todas as pessoas mencionadas como JSON:
@@ -243,7 +247,7 @@ Texto: [texto]
 
 ## Valores Enum e Restrições
 
-Enums restringem valores a um conjunto predefinido. Isso é crucial para tarefas de classificação e qualquer lugar onde você precisa de saídas consistentes e previsíveis.
+Enums restringem valores a um conjunto predefinido. Isso é crucial para tarefas de classificação e para qualquer situação em que você precise de saídas consistentes e previsíveis.
 
 ### O Que Fazer e Não Fazer: Valores Enum
 
@@ -254,7 +258,7 @@ Enums restringem valores a um conjunto predefinido. Isso é crucial para tarefas
 
 ### Enums de String
 
-Liste valores permitidos explicitamente. Use linguagem "DEVE ser um de" para forçar correspondência estrita.
+Liste valores permitidos explicitamente. Use formulações como "DEVE ser um de" para exigir correspondência estrita.
 
 ```
 Classifique este texto. A categoria DEVE ser um destes valores exatos:
@@ -275,7 +279,7 @@ Texto: [texto para classificar]
 
 ### Números Validados
 
-Restrições numéricas previnem valores fora do range. Especifique o tipo (inteiro vs float) e range válido.
+Restrições numéricas evitam valores fora do intervalo. Especifique o tipo (inteiro vs float) e o intervalo válido.
 
 ```
 Avalie estes aspectos. Cada nota DEVE ser um inteiro de 1 a 5.
@@ -348,7 +352,7 @@ Extraia configurações com estes padrões se não especificado:
 Preferências do usuário: "Quero modo escuro e texto maior (18px)"
 ```
 
-## Respostas Multi-Objeto
+## Respostas com Múltiplos Objetos
 
 Frequentemente você precisa extrair múltiplos itens de uma única entrada. Defina a estrutura do array e quaisquer requisitos de ordenação/agrupamento.
 
@@ -357,7 +361,7 @@ Frequentemente você precisa extrair múltiplos itens de uma única entrada. Def
 Para listas de itens similares, defina o schema do objeto uma vez e especifique que é um array.
 
 ```
-Parse esta lista em array JSON:
+Faça o parse desta lista para um array JSON:
 
 [
   {
@@ -369,7 +373,7 @@ Parse esta lista em array JSON:
 
 Lista de tarefas:
 - Terminar relatório (urgente, prazo amanhã)
-- Ligar dentista (baixa prioridade)
+- Ligar para o dentista (baixa prioridade)
 - Revisar PR #123 (média, prazo sexta)
 ```
 
@@ -391,7 +395,7 @@ Itens: maçã, cenoura, pão, banana, brócolis, leite, laranja, espinafre
 
 ## YAML para Geração de Configuração
 
-YAML brilha para configurações DevOps. O modelo conhece padrões comuns para ferramentas populares e pode gerar configs prontas para produção.
+YAML brilha em configurações DevOps. O modelo conhece padrões comuns para ferramentas populares e pode gerar boas configs iniciais, que você ainda deve revisar antes de chegarem à produção.
 
 ### O Que Fazer e Não Fazer: Configs YAML
 
@@ -402,7 +406,7 @@ YAML brilha para configurações DevOps. O modelo conhece padrões comuns para f
 
 ### Docker Compose
 
-Especifique os serviços que você precisa e quaisquer requisitos especiais. O modelo vai cuidar da sintaxe YAML e boas práticas.
+Especifique os serviços que você precisa e quaisquer requisitos especiais. O modelo vai cuidar da sintaxe YAML e das boas práticas.
 
 ```
 Gere um docker-compose.yml para:
@@ -420,7 +424,7 @@ Inclua:
 
 ### Manifests Kubernetes
 
-Manifests Kubernetes são verbosos mas seguem padrões previsíveis. Forneça os parâmetros chave e o modelo vai gerar YAML compatível.
+Manifests Kubernetes são verbosos mas seguem padrões previsíveis. Forneça os parâmetros-chave e o modelo vai gerar um YAML que segue esses padrões.
 
 ```
 Gere YAML de deployment Kubernetes:
@@ -433,16 +437,16 @@ Deployment:
 - Health checks: endpoint /health
 - Environment de ConfigMap: api-config
 
-Também gere Service correspondente (ClusterIP, porta 8080)
+Gere também o Service correspondente (ClusterIP, porta 8080)
 ```
 
 ## Validação e Tratamento de Erros
 
-Para sistemas de produção, incorpore validação nos seus prompts. Isso captura erros antes que propaguem pelo seu pipeline.
+Para sistemas de produção, incorpore validação nos seus prompts. Isso detecta erros antes que se propaguem pelo seu pipeline.
 
-### Prompt de Auto-Validação
+### Prompt de Autovalidação
 
-Peça ao modelo para validar sua própria saída contra regras que você especifica. Isso captura erros de formato e valores inválidos.
+Peça ao modelo que valide a própria saída com base em regras definidas por você. Isso detecta erros de formato e valores inválidos.
 
 ```
 Extraia dados como JSON, depois valide sua saída.
@@ -466,7 +470,7 @@ Texto: [informação de contato]
 
 ### Formato de Resposta de Erro
 
-Defina formatos de sucesso e erro separados. Isso torna tratamento programático muito mais fácil.
+Defina formatos de sucesso e erro separados. Isso torna o tratamento programático muito mais fácil.
 
 ```
 Tente extrair dados. Se extração falhar, retorne formato de erro:
@@ -510,27 +514,14 @@ Formato de erro:
   </div>
 </div>
 
-## Prompts Estruturados prompts.chat
+## Salvando Prompts Estruturados
 
-No prompts.chat, você pode criar prompts com formatos de saída estruturados:
-
-```
-Ao criar um prompt no prompts.chat, você pode especificar:
-
-Tipo: STRUCTURED
-Formato: JSON ou YAML
-
-A plataforma vai:
-- Validar saídas contra seu schema
-- Fornecer syntax highlighting
-- Permitir cópia fácil de saída estruturada
-- Suportar variáveis de template no seu schema
-```
+Quando um prompt em JSON ou YAML funcionar bem, guarde-o em um lugar onde você possa encontrá-lo e reutilizá-lo. Algumas bibliotecas de prompts, entre elas o prompts.chat, permitem salvar um prompt escrito em JSON ou YAML, exibi-lo com destaque de sintaxe e preencher variáveis de template antes de copiá-lo. Lembre-se de que isso armazena o prompt; não verifica a resposta do modelo em relação a um schema. Para isso, use o recurso de saída estruturada da sua API ou valide a resposta no seu próprio código.
 
 ## Armadilhas Comuns
 
-<Callout type="warning" title="Debug Estes Primeiro">
-Estes três problemas causam a maioria das falhas de parsing JSON. Verifique-os quando seu código não conseguir parsear saída de IA.
+<Callout type="warning" title="Verifique Estes Primeiro">
+Estes três problemas causam a maioria das falhas de parsing JSON. Verifique-os quando seu código não conseguir parsear a saída da IA. Saídas estruturadas com schema imposto praticamente os evitam, então eles importam mais quando você depende apenas do prompt.
 </Callout>
 
 ### 1. Blocos de Código Markdown
@@ -568,7 +559,7 @@ Escape corretamente caracteres especiais em strings:
 ## Resumo
 
 <Callout type="tip" title="Técnicas Principais">
-Defina schemas explicitamente usando interfaces TypeScript ou JSON Schema. Especifique tipos e restrições, lide com nulls e padrões, solicite auto-validação e escolha o formato certo para seu caso de uso.
+Defina schemas explicitamente usando interfaces TypeScript ou JSON Schema. Especifique tipos e restrições, lide com nulls e padrões, solicite autovalidação e escolha o formato certo para seu caso de uso. Quando trabalhar por meio de uma API, deixe que o recurso de saída estruturada imponha o schema e continue validando os valores.
 </Callout>
 
 <Quiz 
@@ -580,7 +571,7 @@ Defina schemas explicitamente usando interfaces TypeScript ou JSON Schema. Espec
     "Quando você precisa da representação mais compacta"
   ]}
   correctIndex={1}
-  explanation="YAML é preferido quando legibilidade humana importa, como arquivos de configuração, manifests DevOps e documentação. Também suporta comentários, diferente de JSON."
+  explanation="Prefere-se YAML quando a legibilidade humana importa, como arquivos de configuração, manifests DevOps e documentação. Também suporta comentários, diferente de JSON."
 />
 
 Isso completa a Parte II sobre técnicas. Na Parte III, exploraremos aplicações práticas em diferentes domínios.

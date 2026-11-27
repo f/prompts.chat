@@ -49,7 +49,7 @@
 
 ### المشكلة: معلومات أساسية مفقودة
 
-الطلبات المفتوحة تحصل على ردود مفتوحة. إذا كنت بحاجة إلى أنواع محددة من الملاحظات، يجب أن تطلبها صراحة.
+الطلبات المفتوحة تقابلها ردود مفتوحة. إذا كنت بحاجة إلى أنواع محددة من الملاحظات، يجب أن تطلبها صراحة.
 
 <DiffView 
   before="Review this code."
@@ -103,7 +103,7 @@ For each issue found, explain the problem and suggest a fix.
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>طويل جداً</span>
     <span className="text-muted-foreground">لا يوجد قيد على الطول</span>
-    <span className="text-green-600 dark:text-green-400">أضف حدود للكلمات/الجمل</span>
+    <span className="text-green-600 dark:text-green-400">أضف حدوداً للكلمات/الجمل</span>
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>قصير جداً</span>
@@ -218,7 +218,7 @@ Name | Pronunciation | Why It Works | Domain Availability Guess`,
 
 ## استراتيجيات التحسين حسب نوع المهمة
 
-المهام المختلفة تفشل بطرق يمكن التنبؤ بها. معرفة أوضاع الفشل الشائعة تساعدك على تشخيص المشكلات وإصلاحها بشكل أسرع.
+المهام المختلفة تفشل بطرق يمكن التنبؤ بها. معرفة أنماط الفشل الشائعة تساعدك على تشخيص المشكلات وإصلاحها بشكل أسرع.
 
 ### لتوليد المحتوى
 
@@ -233,10 +233,10 @@ Name | Pronunciation | Why It Works | Domain Availability Guess`,
 
 ### لتوليد الكود
 
-يمكن أن يفشل مخرج الكود تقنياً (أخطاء نحوية، ميزات لغة خاطئة) أو معمارياً (أنماط سيئة، حالات مفقودة). المشكلات التقنية تحتاج تحديد الإصدار/البيئة؛ المشكلات المعمارية تحتاج توجيهات التصميم.
+يمكن أن يفشل مخرج الكود تقنياً (أخطاء صياغية، ميزات لغة خاطئة) أو معمارياً (أنماط سيئة، حالات مفقودة). المشكلات التقنية تحتاج تحديد الإصدار/البيئة؛ المشكلات المعمارية تحتاج توجيهات التصميم.
 
 <InfoGrid items={[
-  { icon: "code", title: "أخطاء نحوية", description: "حدد إصدار اللغة", example: "\"Use Python 3.11+ syntax with type hints\" or \"ES2022 JavaScript\"" },
+  { icon: "code", title: "أخطاء صياغية", description: "حدد إصدار اللغة", example: "\"Use Python 3.11+ syntax with type hints\" or \"ES2022 JavaScript\"" },
   { icon: "git-branch", title: "نهج خاطئ", description: "صف الأنماط المفضلة", example: "\"Use functional approach, avoid classes\" or \"Follow repository pattern\"" },
   { icon: "shield", title: "حالات حدية مفقودة", description: "اذكر السيناريوهات للتعامل معها", example: "\"Handle: empty input, null values, network timeouts, invalid formats\"" },
   { icon: "tag", title: "تسمية سيئة", description: "ضمّن اتفاقيات التسمية", example: "\"Use camelCase for variables, PascalCase for classes, UPPER_SNAKE for constants\"" }
@@ -255,18 +255,18 @@ Name | Pronunciation | Why It Works | Domain Availability Guess`,
 
 ### للأسئلة والأجوبة
 
-الإجابة على الأسئلة يمكن أن تكون موجزة جداً أو مطولة جداً، وقد تفتقر لمؤشرات الثقة أو المصادر. حدد مستوى التفصيل الذي تحتاجه وما إذا كنت تريد اقتباسات أو التعبير عن عدم اليقين.
+الإجابة على الأسئلة يمكن أن تكون موجزة جداً أو مطولة جداً، وقد تفتقر لمؤشرات الثقة أو المصادر. حدد مستوى التفصيل الذي تحتاجه وما إذا كنت تريد ذكر المصادر أو التعبير عن عدم اليقين.
 
 <InfoGrid items={[
   { icon: "plus", title: "قصير جداً", description: "اطلب التوسع", example: "\"Explain in detail with examples\" or \"Elaborate on each point\"" },
   { icon: "minus", title: "طويل جداً", description: "اطلب إجابة موجزة", example: "\"Answer in 2-3 sentences\" or \"Give me the TL;DR\"" },
   { icon: "help-circle", title: "غير مؤكد", description: "اطلب مستوى الثقة", example: "\"Rate your confidence 1-10\" or \"Note any assumptions made\"" },
-  { icon: "link", title: "بدون مصادر", description: "اطلب اقتباسات", example: "\"Cite sources for claims\" or \"Include references where possible\"" }
+  { icon: "link", title: "بدون مصادر", description: "اطلب ذكر المصادر", example: "\"Cite sources for claims\" or \"Include references where possible\"" }
 ]} />
 
 ## تقنية حلقة التغذية الراجعة
 
-إليك تقنية وصفية: استخدم النموذج نفسه لمساعدتك في تحسين أوامرك. شارك ما جربته، وما حصلت عليه، وما أردته. غالباً ما يستطيع النموذج اقتراح تحسينات لم تفكر فيها.
+إليك تقنية من مستوى أعلى: استخدم النموذج نفسه لمساعدتك في تحسين أوامرك. شارك ما جربته، وما حصلت عليه، وما أردته. غالباً ما يستطيع النموذج اقتراح تحسينات لم تفكر فيها.
 
 ```
 I used this prompt:
@@ -281,7 +281,7 @@ my prompt to get better results?
 
 ## اختبار A/B للأوامر
 
-للأوامر التي ستُستخدم بشكل متكرر أو على نطاق واسع، لا تختر فقط أول أمر يعمل. اختبر الاختلافات لإيجاد النهج الأكثر موثوقية وأعلى جودة.
+للأوامر التي ستُستخدم بشكل متكرر أو على نطاق واسع، لا تكتفِ باختيار أول أمر ينجح. اختبر صيغاً مختلفة لإيجاد النهج الأكثر موثوقية وأعلى جودة.
 
 ```
 Prompt A: "Summarize this article in 3 bullet points."
@@ -296,7 +296,7 @@ Prompt C: "What are the key takeaways from this article? List 3."
 
 ## متى تتوقف عن التكرار
 
-الكمال عدو الجيد الكافي. اعرف متى يكون أمرك جاهزاً للاستخدام ومتى تكون مجرد تلميع مع عوائد متناقصة.
+الكمال عدو الجيد الكافي. اعرف متى يكون أمرك جاهزاً للاستخدام ومتى لا تفعل سوى التلميع مقابل عوائد متناقصة.
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
   <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
@@ -314,7 +314,7 @@ Prompt C: "What are the key takeaways from this article? List 3."
       <p className="m-0!">المخرجات غير متسقة عبر التشغيلات</p>
       <p className="m-0!">الحالات الحدية تسبب فشلاً</p>
       <p className="m-0!">المتطلبات الحرجة مفقودة</p>
-      <p className="m-0!">لم تختبر اختلافات كافية</p>
+      <p className="m-0!">لم تختبر صيغاً كافية</p>
     </div>
   </div>
 </div>
@@ -324,7 +324,7 @@ Prompt C: "What are the key takeaways from this article? List 3."
 الأوامر هي كود. لأي أمر يُستخدم في الإنتاج، عامله بنفس الصرامة: التحكم في الإصدارات، وسجلات التغييرات، والقدرة على التراجع إذا تعطل شيء.
 
 <Callout type="tip" title="إدارة الإصدارات المدمجة">
-prompts.chat يتضمن سجل إصدارات تلقائي لأوامرك. كل تعديل يُحفظ، لذا يمكنك مقارنة الإصدارات واستعادة التكرارات السابقة بنقرة واحدة.
+تحتفظ كثير من أدوات الأوامر بسجل إصدارات نيابة عنك. ففي prompts.chat مثلاً، يُحفظ كل تعديل على نص الأمر كإصدار جديد، ويمكنك مقارنة أي إصدارين جنباً إلى جنب.
 </Callout>
 
 للأوامر التي تديرها بنفسك، استخدم هيكل مجلدات:

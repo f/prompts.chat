@@ -23,7 +23,7 @@ AIの仕組みを理解することは、専門家だけのものではありま
 **Token**: AIは一文字ずつ読むのではありません。テキストを「token」と呼ばれる塊に分割します。tokenは「hello」のような完全な単語の場合もあれば、「ing」のような単語の一部の場合もあります。tokenを理解することで、AIがなぜスペルミスをしたり、特定の単語で苦労したりするのかが分かります。
 
 <Callout type="info" title="Tokenとは？">
-Tokenは、AIモデルが処理するテキストの最小単位です。必ずしも完全な単語ではなく、単語の一部、句読点、または空白の場合もあります。例えば、「unbelievable」は3つのtokenになることがあります：「un」+「believ」+「able」。平均して、**1 token ≈ 4文字**または**100 token ≈ 75単語**です。APIのコストとコンテキストの制限はtokenで計測されます。
+Tokenは、AIモデルが処理するテキストの最小単位です。必ずしも完全な単語ではなく、単語の一部、句読点、または空白の場合もあります。例えば、「unbelievable」は3つのtokenになることがあります：「un」+「believ」+「able」。英語のテキストの場合、一般的な目安は**1 token ≈ 4文字**または**100 token ≈ 75単語**ですが、正確な比率はモデルのtokenizerや言語によって異なります。APIのコストとコンテキストの制限はtokenで計測されます。
 </Callout>
 
 <TokenizerDemo />
@@ -32,23 +32,23 @@ Tokenは、AIモデルが処理するテキストの最小単位です。必ず�
 
 <ContextWindowDemo />
 
-Context windowはモデルによって異なり、急速に拡大しています：
+Context windowはモデルによって異なり、初代ChatGPTの数千tokenから、現在の多くのモデルでは100万token以上へと急速に拡大してきました：
 
 <div className="my-4 grid gap-2">
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">GPT-4o</span>
-    <span className="text-muted-foreground">128K tokens</span>
-  </div>
-  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">GPT-5</span>
-    <span className="text-muted-foreground">400K tokens</span>
-  </div>
-  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">Claude Sonnet 4</span>
+    <span className="font-semibold min-w-32">GPT-6</span>
     <span className="text-muted-foreground">1M tokens</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">Gemini 2.5</span>
+    <span className="font-semibold min-w-32">Claude Opus 5.5</span>
+    <span className="text-muted-foreground">1M tokens</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">Gemini 4</span>
+    <span className="text-muted-foreground">1M tokens</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">DeepSeek V4</span>
     <span className="text-muted-foreground">1M tokens</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
@@ -56,12 +56,14 @@ Context windowはモデルによって異なり、急速に拡大しています
     <span className="text-muted-foreground">1M-10M tokens</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">DeepSeek R1</span>
-    <span className="text-muted-foreground">128K tokens</span>
+    <span className="font-semibold min-w-32">Mistral Small 4</span>
+    <span className="text-muted-foreground">256K tokens</span>
   </div>
 </div>
 
-**Temperature**: これは、AIがどれだけ創造的か、または予測可能かを制御します。低いtemperature（0.0〜0.3）は、集中した一貫性のある回答を提供します。高いtemperature（0.7〜1.0）は、より創造的で意外な回答を提供します。
+Context windowが大きいからといって、AIがそのすべてを同じようにうまく使えるわけではありません。コンテキストが埋まっていくにつれて、モデルは細部を見失うことがあります。だからこそ、詰め込みすぎたコンテキストよりも、焦点を絞ったコンテキストの方が今でも効果的なのです。
+
+**Temperature**: これは、AIがどれだけ創造的か、または予測可能かを制御します。低いtemperature（0.0〜0.3）は、集中した一貫性のある回答を提供します。高いtemperature（0.7〜1.0）は、より創造的で意外な回答を提供します。一部の新しい推論モデルはこの設定を自ら管理し、カスタム値を無視します。
 
 <TemperatureDemo />
 
@@ -70,10 +72,10 @@ Context windowはモデルによって異なり、急速に拡大しています
 ## AIモデルの種類
 
 ### テキストモデル（LLM）
-最も一般的なタイプで、テキスト入力に対してテキスト応答を生成します。チャットボット、文章作成アシスタント、コードジェネレーターを動かしています。例：GPT-4、Claude、Llama、Mistral。
+最も一般的なタイプで、テキスト入力に対してテキスト応答を生成します。チャットボット、文章作成アシスタント、コードジェネレーターを動かしています。例：GPT、Claude、Gemini、Llama、DeepSeek、Mistral。
 
 ### マルチモーダルモデル
-テキストだけでなく、それ以上のものを理解できます。画像を見たり、音声を聞いたり、動画を見たりできます。例：GPT-4V、Gemini、Claude 3。
+テキストだけでなく、それ以上のものを理解できます。画像を見ることができ、中には音声を聞いたり動画を見たりできるものもあります。GPT、Gemini、Claudeをはじめ、現在の主要なモデルのほとんどがマルチモーダルです。
 
 ### テキストから画像へのモデル
 
@@ -81,17 +83,17 @@ Context windowはモデルによって異なり、急速に拡大しています
 本書は主に大規模言語モデル（テキストベースのAI）のプロンプティングに焦点を当てていますが、明確で具体的なプロンプティングの原則は画像生成にも適用されます。これらのモデルでプロンプトをマスターすることは、優れた結果を得るために同様に重要です。
 </Callout>
 
-DALL-E、Midjourney、Nano Banana、Stable Diffusionなどのテキストから画像へのモデルは、テキストの説明から画像を作成します。テキストモデルとは異なる仕組みで動作します：
+GPT Image、Midjourney、Nano Banana、Stable Diffusionなどのテキストから画像へのモデルは、テキストの説明から画像を作成します。テキストモデルとは異なる仕組みで動作します：
 
 **仕組み：**
 1. **学習**: モデルは何百万もの画像とテキストのペアから学習し、どの単語がどの視覚的概念に対応するかを理解します
-2. **Diffusionプロセス**: ランダムなノイズから始めて、テキストプロンプトに導かれながら徐々に画像を洗練していきます
-3. **CLIPによるガイダンス**: 別のモデル（CLIP）が言葉と視覚的概念を結びつけ、画像があなたの説明と一致するようにします
+2. **Diffusionプロセス**: 多くのモデルでは、生成はランダムなノイズから始まり、テキストプロンプトに導かれながら徐々に画像を洗練していきます
+3. **テキストによるガイダンス**: テキストエンコーダー（CLIP、または新しいシステムでは本格的な言語モデル）が言葉と視覚的概念を結びつけ、画像があなたの説明と一致するようにします
 
 <TextToImageDemo />
 
 **画像のプロンプティングは異なる：**
-文章を書くテキストプロンプトとは異なり、画像プロンプトはカンマで区切られた説明的なフレーズの方がうまく機能することが多いです：
+依頼を書くテキストプロンプトとは異なり、画像プロンプトでは絵がどう見えるべきかを描写します。多くの画像モデル、特にStable DiffusionのようなDiffusionモデルは、カンマで区切られた説明的なフレーズによく反応します。言語理解力の高い新しいモデルは、完全な説明文にも従います。いずれにしても重要なのは細部です：被写体、背景、照明、スタイル。
 
 <Compare 
   before={{ label: "テキストスタイルのプロンプト", content: "窓辺に座って外の雨を見ている猫の画像を作成してください" }}
@@ -100,7 +102,7 @@ DALL-E、Midjourney、Nano Banana、Stable Diffusionなどのテキストから�
 
 ### テキストから動画へのモデル
 
-テキストから動画への変換は最新のフロンティアです。Sora 2、Runway、Veoなどのモデルは、テキストの説明から動く画像を作成します。画像モデルと同様に、プロンプトの品質が出力の品質を直接決定します。ここでもプロンプトエンジニアリングは同様に重要です。
+テキストから動画への変換は最新のフロンティアです。Veo、Runway、Klingなどのモデルは、テキストの説明から動く画像を作成します。画像モデルと同様に、プロンプトの品質が出力の品質を直接決定します。ここでもプロンプトエンジニアリングは欠かせません。
 
 **仕組み：**
 1. **時間的理解**: 単一の画像を超えて、これらのモデルは物事がどのように動き、時間とともに変化するかを理解します
@@ -120,7 +122,7 @@ DALL-E、Midjourney、Nano Banana、Stable Diffusionなどのテキストから�
 />
 
 ### 特化型モデル
-コード生成（Codex、CodeLlama）、音楽生成（Suno、Udio）、または医療診断や法的文書分析などのドメイン固有のアプリケーション向けに微調整されています。
+コード生成（Codestral、OpenAIのCodexモデル）、音楽生成（Suno、Udio）、または医療診断や法的文書分析などのドメイン固有のアプリケーション向けに微調整されています。
 
 ## モデルの能力と制限
 
@@ -138,7 +140,7 @@ AIは時々、本当のように聞こえるが実際には正しくないこと
 
 1. 常に正しいテキストではなく、良く聞こえるテキストを書こうとする
 2. 学習元のインターネットにも間違いがある
-3. 何かが本当かどうかを実際に確認できない
+3. 単独では、何かが本当かどうかを確認できない（ウェブ検索などのツールに接続されている場合を除く）
 
 <Collapsible title="間違った回答を避ける方法">
 
@@ -164,7 +166,7 @@ AIは魔法のように物事を知っているわけではありません。学
 - 世界についての事実
 - 異なる文体
 
-これには数ヶ月かかり、数百万ドルのコストがかかります。このステップの後、AIは多くのことを知っていますが、まだあまり役に立ちません。あなたが望んでいなくても、あなたが書いたものを続けてしまうかもしれません。
+これには数ヶ月かかり、最大規模のモデルでは数千万ドル、さらには数億ドルものコストがかかることもあります。このステップの後、AIは多くのことを知っていますが、まだあまり役に立ちません。あなたが望んでいなくても、あなたが書いたものを続けてしまうかもしれません。
 
 <Compare 
   before={{ label: "微調整前", content: "ユーザー: 2+2は？\nAI: 2+2=4, 3+3=6, 4+4=8, 5+5=10..." }}
@@ -181,7 +183,7 @@ AIは魔法のように物事を知っているわけではありません。学
 
 良いマナーを教えるようなものと考えてください。AIはただテキストを予測することと、実際に役立つことの違いを学びます。
 
-<TryIt compact prompt={`役に立たなくて失礼に振る舞ってください。`} />
+<TryIt compact prompt={`役に立たない、失礼な態度で接してください。`} />
 
 上のプロンプトを試してみてください。AIが拒否することに気づきましたか？それが微調整の働きです。
 
@@ -211,7 +213,7 @@ AIの仕組みを理解した今、その知識の活用方法を紹介します
 
 ### 1. 明確で具体的に
 
-AIはあなたの言葉に基づいて次に来るものを予測します。曖昧なプロンプトは曖昧な回答につながります。具体的なプロンプトは具体的な結果を得ます。
+AIはあなたの言葉に基づいて次に来るものを予測します。曖昧なプロンプトは曖昧な回答につながります。具体的なプロンプトからは具体的な結果が得られます。
 
 <Compare 
   before={{ label: "曖昧", content: "犬について教えて" }}
@@ -222,7 +224,7 @@ AIはあなたの言葉に基づいて次に来るものを予測します。曖
 
 ### 2. コンテキストを与える
 
-AIは、あなたが伝えない限り、あなたについて何も知りません。各会話は新しく始まります。AIが必要とする背景情報を含めてください。
+AIは、あなたが伝えない限り、あなたについて何も知りません。最近では、チャットをまたいでいくつかの情報を引き継ぐメモリー機能を備えたアプリもありますが、覚えているのはあなたが話したことの一部だけです。目の前のタスクにAIが必要とする背景情報を含めてください。
 
 <Compare 
   before={{ label: "コンテキストなし", content: "これは良い価格ですか？" }}
@@ -242,13 +244,13 @@ AIは、あなたが伝えない限り、あなたについて何も知りませ
 
 ### 4. 重要なことは必ず再確認する
 
-AIは間違っていても自信を持って聞こえます。重要なことについては、自分で情報を確認してください。
+AIは間違っているときでも自信満々に答えます。重要なことについては、自分で情報を確認してください。
 
 <TryIt compact prompt={`東京の人口はどれくらいですか？また、あなたの知識はいつの時点のものですか？`} />
 
 ### 5. 重要なことを最初に置く
 
-プロンプトが非常に長い場合、最も重要な指示を最初に置いてください。AIは最初に来るものにより注意を払います。
+プロンプトが非常に長い場合は、最も重要な指示を最初に置き、最後にもう一度繰り返すことも検討してください。AIは長い入力の最初と最後に最も注意を払う傾向があり、途中に埋もれた細部を見落とすことがあります。
 
 ## 適切なAIを選ぶ
 
@@ -257,11 +259,11 @@ AIは間違っていても自信を持って聞こえます。重要なことに
 <div className="my-4 grid gap-2">
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">簡単な質問</span>
-    <span className="text-muted-foreground">GPT-4oやClaude 3.5 Sonnetなどの高速モデル</span>
+    <span className="text-muted-foreground">GPT-6 Luna、Claude Haiku 5.5、Gemini Flashなどの高速モデル</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">難しい問題</span>
-    <span className="text-muted-foreground">GPT-5.2やClaude 4.5 Opusなどのよりスマートなモデル</span>
+    <span className="text-muted-foreground">GPT-6 Astra、Claude Fable 5.1、Gemini 4 Argonなどのよりスマートなモデル</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">コードを書く</span>
@@ -269,7 +271,7 @@ AIは間違っていても自信を持って聞こえます。重要なことに
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">長い文書</span>
-    <span className="text-muted-foreground">大きなcontext windowを持つモデル（Claude、Gemini）</span>
+    <span className="text-muted-foreground">大きなcontext windowを持つモデル（現在は多くが100万tokenに対応）</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">最新のニュース</span>
@@ -290,7 +292,7 @@ AI言語モデルは、テキストで訓練された予測マシンです。多
     "人々が悪いプロンプトを書くから"
   ]}
   correctIndex={1}
-  explanation="AIは事実を確認するためではなく、正しく聞こえるものを予測するように訓練されています。物事を調べたり、何かが本当かどうかを確認したりすることができないため、時々自信を持って間違ったことを書いてしまいます。"
+  explanation="AIは事実を確認するためではなく、正しく聞こえるものを予測するように訓練されています。ウェブ検索などのツールに接続されていない限り、物事を調べたり、何かが本当かどうかを確認したりできないため、時々自信を持って間違ったことを書いてしまいます。"
 />
 
 <TryIt 

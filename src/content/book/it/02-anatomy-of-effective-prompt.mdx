@@ -1,7 +1,7 @@
 Ogni grande prompt condivide elementi strutturali comuni. Comprendere questi componenti ti permette di costruire prompt sistematicamente invece che per tentativi ed errori.
 
 <Callout type="tip" title="I Blocchi di Costruzione">
-Pensa a questi componenti come mattoncini LEGO. Non ne hai bisogno tutti per ogni prompt, ma sapere cosa è disponibile ti aiuta a costruire esattamente ciò di cui hai bisogno.
+Pensa a questi componenti come mattoncini LEGO. Non ti servono tutti per ogni prompt, ma sapere cosa è disponibile ti aiuta a costruire esattamente ciò di cui hai bisogno.
 </Callout>
 
 ## I Componenti Principali
@@ -31,7 +31,7 @@ Impostare un ruolo focalizza le risposte del modello attraverso la lente di una 
 Il ruolo prepara il modello a:
 - Usare vocabolario appropriato
 - Applicare competenze rilevanti
-- Mantenere una prospettiva consistente
+- Mantenere una prospettiva coerente
 - Considerare il pubblico appropriatamente
 
 ### Pattern di Ruolo Efficaci
@@ -44,7 +44,7 @@ Il ruolo prepara il modello a:
 
 ## 2. Contesto / Background
 
-Il contesto fornisce le informazioni di cui il modello ha bisogno per capire la tua situazione. Ricorda: il modello non sa nulla di te, del tuo progetto o dei tuoi obiettivi a meno che non glielo dici.
+Il contesto fornisce le informazioni di cui il modello ha bisogno per capire la tua situazione. Ricorda: il modello non sa nulla di te, del tuo progetto o dei tuoi obiettivi a meno che non glielo dica.
 
 <Compare 
   before={{ label: "Contesto Debole", content: "Correggi questo bug nel mio codice." }}
@@ -132,7 +132,7 @@ I vincoli delimitano l'output del modello. Prevengono problemi comuni e assicura
 
 ## 5. Formato di Output
 
-Specificare il formato di output assicura che ricevi risposte in una struttura utilizzabile.
+Specificare il formato di output assicura che tu riceva risposte in una struttura utilizzabile.
 
 ### Formati Comuni
 
@@ -212,7 +212,7 @@ Ecco un prompt completo che usa tutti i componenti:
 Sei un technical writer senior con 10 anni di esperienza nella creazione di documentazione per sviluppatori.
 
 # Contesto
-Sto documentando un'API REST per un servizio di elaborazione pagamenti. Il pubblico sono sviluppatori che integrano la nostra API nelle loro applicazioni. Hanno conoscenze di programmazione intermedie ma potrebbero essere nuovi ai concetti di elaborazione pagamenti.
+Sto documentando un'API REST per un servizio di elaborazione pagamenti. Il pubblico sono sviluppatori che integrano la nostra API nelle loro applicazioni. Hanno conoscenze di programmazione intermedie ma potrebbero non conoscere ancora i concetti dell'elaborazione dei pagamenti.
 
 # Compito
 Scrivi la documentazione per il seguente endpoint API che crea un nuovo payment intent.
@@ -230,6 +230,10 @@ Struttura la documentazione come:
 3. Risposta (esempi di successo e errore)
 4. Esempio di Codice (in JavaScript/Node.js)
 
+# Esempio
+Riprendi il tono di questa descrizione di errore tratta dalla nostra documentazione esistente:
+"card_declined: La banca del cliente ha rifiutato l'addebito. Chiedi al cliente di provare un altro metodo di pagamento."
+
 # Dettagli Endpoint
 POST /v1/payments/intents
 Body: { "amount": 1000, "currency": "eur", "description": "Ordine #1234" }`}
@@ -237,7 +241,7 @@ Body: { "amount": 1000, "currency": "eur", "description": "Ordine #1234" }`}
 
 ## Il Prompt Minimo Efficace
 
-Non ogni prompt ha bisogno di tutti i componenti. Per compiti semplici, un'istruzione chiara può bastare:
+Non tutti i prompt hanno bisogno di tutti i componenti. Per compiti semplici, un'istruzione chiara può bastare:
 
 ```
 Traduci "Ciao, come stai?" in inglese.
@@ -247,7 +251,7 @@ Usa componenti aggiuntivi quando:
 - Il compito è complesso o ambiguo
 - Hai bisogno di formattazione specifica
 - I risultati non corrispondono alle aspettative
-- La consistenza tra molteplici query è importante
+- La coerenza tra più query è importante
 
 ## Pattern di Prompt Comuni
 
@@ -293,7 +297,7 @@ Formato: Per ogni funzionalità, fornisci:
 1. Nome della funzionalità
 2. Descrizione in una frase
 3. Perché è importante per i team remoti`}
-  description="Questo prompt usa tutti e sei i componenti. Provalo e guarda come l'approccio strutturato produce risultati focalizzati e azionabili."
+  description="Questo prompt usa cinque dei sei componenti (tutti tranne gli esempi). Provalo e guarda come l'approccio strutturato produce risultati focalizzati e azionabili."
 />
 
 ## Costruisci il Tuo Prompt
@@ -307,7 +311,7 @@ Ora tocca a te! Usa questo costruttore di prompt interattivo per creare il tuo p
 
 <PromptChallenge
   title="Sfida del Capitolo: Costruisci un Prompt per Code Review"
-  task="Scrivi un prompt che chiede a un'IA di revisionare codice per vulnerabilità di sicurezza. Il tuo prompt dovrebbe essere abbastanza specifico da ottenere feedback azionabile."
+  task="Scrivi un prompt che chieda a un'IA di revisionare codice per vulnerabilità di sicurezza. Il tuo prompt dovrebbe essere abbastanza specifico da ottenere feedback azionabile."
   criteria={[
     "Include un ruolo o livello di competenza chiaro",
     "Specifica che tipo di code review (focus sulla sicurezza)",

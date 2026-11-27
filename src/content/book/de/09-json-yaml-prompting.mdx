@@ -1,7 +1,7 @@
-Strukturierte Datenformate wie JSON und YAML sind essenziell für den Aufbau von Anwendungen, die KI-Ausgaben programmatisch konsumieren. Dieses Kapitel behandelt Techniken für zuverlässige strukturierte Ausgabegenerierung.
+Strukturierte Datenformate wie JSON und YAML sind essenziell für Anwendungen, die KI-Ausgaben programmatisch weiterverarbeiten. Dieses Kapitel zeigt Techniken, mit denen du zuverlässig strukturierte Ausgaben erzeugst.
 
 <Callout type="info" title="Von Text zu Daten">
-JSON und YAML transformieren KI-Ausgaben von Freitext in strukturierte, typsichere Daten, die Code direkt konsumieren kann.
+JSON und YAML verwandeln KI-Ausgaben von Freitext in strukturierte, typsichere Daten, die Code direkt verarbeiten kann.
 </Callout>
 
 ## Warum strukturierte Formate?
@@ -10,7 +10,7 @@ JSON und YAML transformieren KI-Ausgaben von Freitext in strukturierte, typsiche
 
 ## JSON-Prompting-Grundlagen
 
-JSON (JavaScript Object Notation) ist das häufigste Format für programmatische KI-Ausgaben. Seine strikte Syntax macht es einfach zu parsen, bedeutet aber auch, dass kleine Fehler deine gesamte Pipeline brechen können.
+JSON (JavaScript Object Notation) ist das häufigste Format für programmatische KI-Ausgaben. Seine strikte Syntax macht es einfach zu parsen, bedeutet aber auch, dass schon kleine Fehler deine gesamte Pipeline lahmlegen können.
 
 ### Do's und Don'ts: JSON anfordern
 
@@ -21,7 +21,7 @@ JSON (JavaScript Object Notation) ist das häufigste Format für programmatische
 
 ### Einfache JSON-Ausgabe
 
-Beginne mit einem Schema, das die erwartete Struktur zeigt. Das Modell wird Werte basierend auf dem Eingabetext ausfüllen.
+Beginne mit einem Schema, das die erwartete Struktur zeigt. Das Modell füllt die Werte anhand des Eingabetexts aus.
 
 ```
 Extrahiere die folgenden Informationen als JSON:
@@ -46,10 +46,10 @@ Ausgabe:
 
 ### Verschachtelte JSON-Strukturen
 
-Reale Daten haben oft verschachtelte Beziehungen. Definiere jede Ebene deines Schemas klar, besonders für Arrays von Objekten.
+Reale Daten haben oft verschachtelte Beziehungen. Definiere jede Ebene deines Schemas klar, besonders bei Arrays von Objekten.
 
 ```
-Parse diese Bestellung in JSON:
+Wandle diese Bestellung in JSON um:
 
 {
   "order_id": "string",
@@ -74,7 +74,7 @@ Bestellung: "Bestellung #12345 für Jana Schmidt (jana@email.com): 2x Widget (je
 ### Gültiges JSON sicherstellen
 
 <Callout type="warning" title="Häufiger Fehlergrund">
-Modelle wrappen JSON oft in Markdown-Code-Blöcke oder fügen erklärenden Text hinzu. Sei explizit darüber, dass du nur rohes JSON willst.
+Modelle verpacken JSON oft in Markdown-Codeblöcke oder fügen erklärenden Text hinzu. Sag ausdrücklich, dass du nur reines JSON willst.
 </Callout>
 
 Füge explizite Anweisungen hinzu:
@@ -84,9 +84,13 @@ KRITISCH: Gib NUR gültiges JSON zurück. Kein Markdown, keine Erklärung,
 kein zusätzlicher Text vor oder nach dem JSON-Objekt.
 
 Wenn ein Feld nicht bestimmt werden kann, verwende null.
-Stelle sicher, dass alle Strings korrekt quoted und escaped sind.
-Zahlen sollten nicht gequoted werden.
+Stelle sicher, dass alle Strings korrekt in Anführungszeichen stehen und escaped sind.
+Zahlen gehören nicht in Anführungszeichen.
 ```
+
+<Callout type="tip" title="Lass die API das Schema durchsetzen">
+Wenn du ein Modell über eine API aufrufst, ist die Formulierung nicht dein einziges Werkzeug. OpenAI, Anthropic und Google bieten alle Funktionen für strukturierte Ausgaben (Structured Outputs), die ein JSON Schema entgegennehmen und die Antwort zwingen, ihm zu entsprechen. Damit verschwinden die meisten Parsing-Fehler aus diesem Kapitel, etwa verirrte Markdown-Codeblöcke, nachgestellte Kommas und fehlende Felder. Ältere „JSON-Modus“-Einstellungen garantieren nur syntaktisch gültiges JSON, nicht dein Schema, und jeder Anbieter unterstützt eine etwas andere Teilmenge von JSON Schema. Die folgenden Techniken bleiben trotzdem wichtig, denn ein Schema bestimmt die Form der Antwort, nicht, ob die Werte darin stimmen.
+</Callout>
 
 ## YAML-Prompting-Grundlagen
 
@@ -123,15 +127,15 @@ database:
 
 ### Komplexe YAML-Strukturen
 
-Für komplexe Konfigurationen sei spezifisch über Anforderungen. Das Modell kennt gängige Muster für Tools wie GitHub Actions, Docker Compose und Kubernetes.
+Formuliere bei komplexen Konfigurationen die Anforderungen genau. Das Modell kennt gängige Muster für Tools wie GitHub Actions, Docker Compose und Kubernetes.
 
 ```
-Generiere einen GitHub Actions Workflow in YAML:
+Generiere einen GitHub-Actions-Workflow in YAML:
 
 Anforderungen:
-- Auslösen bei Push zu main und Pull Requests
+- Auslösen bei Push auf main und bei Pull Requests
 - Auf Ubuntu latest laufen
-- Schritte: checkout, Node 18 einrichten, Abhängigkeiten installieren, Tests ausführen
+- Schritte: checkout, die aktuelle Node.js-LTS-Version einrichten, Abhängigkeiten installieren, Tests ausführen
 - npm-Abhängigkeiten cachen
 ```
 
@@ -141,7 +145,7 @@ Typdefinitionen geben dem Modell einen präzisen Vertrag für die Ausgabestruktu
 
 ### TypeScript-ähnliche Typen verwenden
 
-TypeScript-Interfaces sind Entwicklern vertraut und beschreiben präzise optionale Felder, Union-Types und Arrays. Die prompts.chat-Plattform nutzt diesen Ansatz für strukturierte Prompts.
+TypeScript-Interfaces sind Entwicklern vertraut und beschreiben präzise optionale Felder, Union-Types und Arrays.
 
 <TryIt 
   title="TypeScript-Interface-Extraktion"
@@ -203,7 +207,7 @@ Arrays erfordern besondere Aufmerksamkeit. Spezifiziere, ob du eine feste Anzahl
 
 ### Arrays fester Länge
 
-Wenn du genau N Elemente brauchst, sage es explizit. Das Modell wird sicherstellen, dass das Array die richtige Länge hat.
+Wenn du genau N Elemente brauchst, sag es ausdrücklich. Modelle halten sich meist daran, aber zähle die Elemente in deinem Code nach, wenn die Anzahl wichtig ist.
 
 ```
 Extrahiere genau 3 Kernpunkte als JSON:
@@ -221,7 +225,7 @@ Artikel: [Artikeltext]
 
 ### Arrays variabler Länge
 
-Für Arrays variabler Länge spezifiziere, was zu tun ist, wenn es null Elemente gibt. Ein Zählfeld hilft, die Vollständigkeit der Extraktion zu verifizieren.
+Lege bei Arrays variabler Länge fest, was passieren soll, wenn es keine Elemente gibt. Ein Zählfeld hilft, die Vollständigkeit der Extraktion zu verifizieren.
 
 ```
 Extrahiere alle erwähnten Personen als JSON:
@@ -230,13 +234,13 @@ Extrahiere alle erwähnten Personen als JSON:
   "people": [
     {
       "name": "string",
-      "role": "string oder null wenn nicht erwähnt"
+      "role": "string oder null, wenn nicht erwähnt"
     }
   ],
   "count": number
 }
 
-Wenn keine Personen erwähnt werden, gib leeres Array zurück.
+Wenn keine Personen erwähnt werden, gib ein leeres Array zurück.
 
 Text: [Text]
 ```
@@ -254,7 +258,7 @@ Enums beschränken Werte auf eine vordefinierte Menge. Das ist entscheidend für
 
 ### String-Enums
 
-Liste erlaubte Werte explizit auf. Verwende „MUSS einer der folgenden sein"-Sprache, um strikte Übereinstimmung zu erzwingen.
+Liste erlaubte Werte explizit auf. Verwende Formulierungen wie „MUSS einer der folgenden sein“, um eine exakte Übereinstimmung zu erzwingen.
 
 ```
 Klassifiziere diesen Text. Die Kategorie MUSS einer dieser exakten Werte sein:
@@ -275,7 +279,7 @@ Text: [zu klassifizierender Text]
 
 ### Validierte Zahlen
 
-Numerische Einschränkungen verhindern Out-of-Range-Werte. Spezifiziere den Typ (Integer vs Float) und gültigen Bereich.
+Numerische Einschränkungen verhindern Werte außerhalb des zulässigen Bereichs. Gib den Typ (Integer oder Float) und den gültigen Bereich an.
 
 ```
 Bewerte diese Aspekte. Jede Punktzahl MUSS eine Ganzzahl von 1 bis 5 sein.
@@ -292,7 +296,7 @@ Bewertung: [Bewertungstext]
 
 ## Umgang mit fehlenden Daten
 
-Reale Texte haben oft fehlende Informationen. Definiere, wie das Modell fehlende Daten behandeln soll, um halluzinierte Werte zu vermeiden.
+In realen Texten fehlen oft Informationen. Definiere, wie das Modell fehlende Daten behandeln soll, um halluzinierte Werte zu vermeiden.
 
 ### Do's und Don'ts: Fehlende Informationen
 
@@ -333,7 +337,7 @@ Ausgabe:
 
 ### Standardwerte
 
-Wenn Standardwerte sinnvoll sind, spezifiziere sie im Schema. Das ist üblich für Konfigurationsextraktion.
+Wenn Standardwerte sinnvoll sind, spezifiziere sie im Schema. Das ist bei der Extraktion von Konfigurationen üblich.
 
 ```
 Extrahiere Einstellungen mit diesen Standardwerten, wenn nicht angegeben:
@@ -345,7 +349,7 @@ Extrahiere Einstellungen mit diesen Standardwerten, wenn nicht angegeben:
   "fontSize": 14 (Standard) | number
 }
 
-Benutzereinstellungen: "Ich möchte Dunkelmodus und größeren Text (18px)"
+Benutzereinstellungen: "Ich möchte den Dunkelmodus und größeren Text (18px)"
 ```
 
 ## Mehrobjekt-Antworten
@@ -357,7 +361,7 @@ Oft musst du mehrere Elemente aus einer einzelnen Eingabe extrahieren. Definiere
 Für Listen ähnlicher Elemente definiere das Objektschema einmal und spezifiziere, dass es ein Array ist.
 
 ```
-Parse diese Liste in ein JSON-Array:
+Wandle diese Liste in ein JSON-Array um:
 
 [
   {
@@ -375,7 +379,7 @@ Aufgabenliste:
 
 ### Gruppierte Objekte
 
-Gruppierungsaufgaben erfordern Kategorisierungslogik. Das Modell wird Elemente in die Kategorien sortieren, die du definierst.
+Gruppierungsaufgaben erfordern Kategorisierungslogik. Das Modell sortiert die Elemente in die Kategorien ein, die du festlegst.
 
 ```
 Kategorisiere diese Elemente in JSON:
@@ -391,7 +395,7 @@ Elemente: Apfel, Karotte, Brot, Banane, Brokkoli, Milch, Orange, Spinat
 
 ## YAML für Konfigurationsgenerierung
 
-YAML glänzt bei DevOps-Konfigurationen. Das Modell kennt Standardmuster für gängige Tools und kann produktionsreife Configs generieren.
+YAML glänzt bei DevOps-Konfigurationen. Das Modell kennt Standardmuster für gängige Tools und kann solide Ausgangskonfigurationen erstellen, die du aber trotzdem prüfen solltest, bevor sie in Produktion gehen.
 
 ### Do's und Don'ts: YAML-Configs
 
@@ -402,7 +406,7 @@ YAML glänzt bei DevOps-Konfigurationen. Das Modell kennt Standardmuster für g�
 
 ### Docker Compose
 
-Spezifiziere die Services, die du brauchst, und alle speziellen Anforderungen. Das Modell wird die YAML-Syntax und Best Practices handhaben.
+Spezifiziere die Services, die du brauchst, und alle speziellen Anforderungen. Um YAML-Syntax und Best Practices kümmert sich das Modell.
 
 ```
 Generiere eine docker-compose.yml für:
@@ -420,10 +424,10 @@ Enthalten:
 
 ### Kubernetes-Manifeste
 
-Kubernetes-Manifeste sind ausführlich, folgen aber vorhersehbaren Mustern. Liefere die Schlüsselparameter und das Modell wird konformes YAML generieren.
+Kubernetes-Manifeste sind ausführlich, folgen aber vorhersehbaren Mustern. Gib die wichtigsten Parameter vor, dann erzeugt das Modell konformes YAML.
 
 ```
-Generiere Kubernetes Deployment YAML:
+Generiere Kubernetes-Deployment-YAML:
 
 Deployment:
 - Name: api-server
@@ -438,14 +442,14 @@ Generiere auch passenden Service (ClusterIP, Port 8080)
 
 ## Validierung und Fehlerbehandlung
 
-Für Produktionssysteme baue Validierung in deine Prompts ein. Das fängt Fehler ab, bevor sie sich durch deine Pipeline verbreiten.
+Baue bei Produktionssystemen Validierung in deine Prompts ein. So fängst du Fehler ab, bevor sie sich durch deine Pipeline ziehen.
 
 ### Selbstvalidierungs-Prompt
 
 Bitte das Modell, seine eigene Ausgabe gegen Regeln zu validieren, die du spezifizierst. Das fängt Formatfehler und ungültige Werte ab.
 
 ```
-Extrahiere Daten als JSON, dann validiere deine Ausgabe.
+Extrahiere Daten als JSON und validiere dann deine Ausgabe.
 
 Schema:
 {
@@ -454,22 +458,22 @@ Schema:
   "date": "ISO 8601-Format (JJJJ-MM-TT)"
 }
 
-Nach der JSON-Generierung prüfe:
+Prüfe nach dem Erzeugen des JSON:
 1. E-Mail enthält @ und gültige Domain
 2. Telefon beginnt mit + und enthält nur Ziffern
 3. Datum ist gültig und parsebar
 
-Wenn Validierung fehlschlägt, behebe die Probleme vor dem Antworten.
+Wenn die Validierung fehlschlägt, behebe die Probleme, bevor du antwortest.
 
 Text: [Kontaktinformationen]
 ```
 
 ### Fehlerantwort-Format
 
-Definiere separate Erfolgs- und Fehlerformate. Das macht programmatische Behandlung viel einfacher.
+Definiere separate Erfolgs- und Fehlerformate. Das macht die programmatische Verarbeitung viel einfacher.
 
 ```
-Versuche Daten zu extrahieren. Wenn Extraktion fehlschlägt, gib Fehlerformat zurück:
+Versuche, die Daten zu extrahieren. Wenn die Extraktion fehlschlägt, gib das Fehlerformat zurück:
 
 Erfolgsformat:
 {
@@ -480,18 +484,18 @@ Erfolgsformat:
 Fehlerformat:
 {
   "success": false,
-  "error": "Beschreibung was schief ging",
-  "partial_data": { ... Daten die extrahiert werden konnten ... }
+  "error": "Beschreibung, was schiefgelaufen ist",
+  "partial_data": { ... Daten, die extrahiert werden konnten ... }
 }
 ```
 
-## JSON vs YAML: Wann welches verwenden
+## JSON oder YAML: Wann was verwenden?
 
 <div className="my-4 grid md:grid-cols-2 gap-4">
   <div className="p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
-    <div className="font-semibold text-amber-700 dark:text-amber-300 mb-2">JSON verwenden wenn</div>
+    <div className="font-semibold text-amber-700 dark:text-amber-300 mb-2">JSON verwenden, wenn</div>
     <div className="text-sm space-y-1">
-      <p className="m-0!">Programmatisches Parsing benötigt</p>
+      <p className="m-0!">Programmatisches Parsing nötig ist</p>
       <p className="m-0!">API-Antworten</p>
       <p className="m-0!">Strikte Typanforderungen</p>
       <p className="m-0!">JavaScript/Web-Integration</p>
@@ -499,7 +503,7 @@ Fehlerformat:
     </div>
   </div>
   <div className="p-4 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200 dark:border-purple-800">
-    <div className="font-semibold text-purple-700 dark:text-purple-300 mb-2">YAML verwenden wenn</div>
+    <div className="font-semibold text-purple-700 dark:text-purple-300 mb-2">YAML verwenden, wenn</div>
     <div className="text-sm space-y-1">
       <p className="m-0!">Menschliche Lesbarkeit wichtig ist</p>
       <p className="m-0!">Konfigurationsdateien</p>
@@ -510,36 +514,23 @@ Fehlerformat:
   </div>
 </div>
 
-## Prompts.chat Strukturierte Prompts
+## Strukturierte Prompts speichern
 
-Auf prompts.chat kannst du Prompts mit strukturierten Ausgabeformaten erstellen:
-
-```
-Beim Erstellen eines Prompts auf prompts.chat kannst du angeben:
-
-Typ: STRUCTURED
-Format: JSON oder YAML
-
-Die Plattform wird:
-- Ausgaben gegen dein Schema validieren
-- Syntax-Highlighting bereitstellen
-- Einfaches Kopieren strukturierter Ausgaben ermöglichen
-- Template-Variablen in deinem Schema unterstützen
-```
+Sobald ein JSON- oder YAML-Prompt gut funktioniert, bewahre ihn so auf, dass du ihn wiederfinden und wiederverwenden kannst. Manche Prompt-Bibliotheken, darunter prompts.chat, lassen dich einen Prompt speichern, der selbst in JSON oder YAML geschrieben ist, zeigen ihn mit Syntax-Highlighting an und lassen dich Template-Variablen ausfüllen, bevor du ihn kopierst. Bedenke dabei: Gespeichert wird nur der Prompt; die Antwort des Modells wird nicht gegen ein Schema geprüft. Dafür nutzt du die Funktion deiner API für strukturierte Ausgaben oder validierst die Antwort in deinem eigenen Code.
 
 ## Häufige Fallstricke
 
 <Callout type="warning" title="Diese zuerst debuggen">
-Diese drei Probleme verursachen die meisten JSON-Parsing-Fehler. Prüfe sie, wenn dein Code KI-Ausgabe nicht parsen kann.
+Diese drei Probleme verursachen die meisten JSON-Parsing-Fehler. Prüfe zuerst auf sie, wenn dein Code eine KI-Ausgabe nicht parsen kann. Strukturierte Ausgaben mit erzwungenem Schema verhindern sie weitgehend, daher spielen sie vor allem dann eine Rolle, wenn du dich allein auf den Prompt verlässt.
 </Callout>
 
 ### 1. Markdown-Code-Blöcke
 
-**Problem:** Modell wrappt JSON in ```json-Blöcke
+**Problem:** Modell verpackt JSON in ```json-Blöcke
 
 **Lösung:** 
 ```
-Gib NUR das JSON-Objekt zurück. Wrappe nicht in Markdown-Code-Blöcke.
+Gib NUR das JSON-Objekt zurück. Verpacke es nicht in Markdown-Codeblöcke.
 Füge keine ```json oder ``` Marker ein.
 ```
 
@@ -555,7 +546,7 @@ letzten Element in Arrays oder Objekten.
 
 ### 3. Nicht-escapte Strings
 
-**Problem:** Anführungszeichen oder Sonderzeichen brechen JSON
+**Problem:** Anführungszeichen oder Sonderzeichen machen JSON ungültig
 
 **Lösung:**
 ```
@@ -568,13 +559,13 @@ Escape Sonderzeichen in Strings korrekt:
 ## Zusammenfassung
 
 <Callout type="tip" title="Schlüsseltechniken">
-Definiere Schemas explizit mit TypeScript-Interfaces oder JSON Schema. Spezifiziere Typen und Einschränkungen, behandle Nulls und Standardwerte, fordere Selbstvalidierung an und wähle das richtige Format für deinen Anwendungsfall.
+Definiere Schemas explizit mit TypeScript-Interfaces oder JSON Schema. Spezifiziere Typen und Einschränkungen, behandle Null-Werte und Standardwerte, fordere Selbstvalidierung an und wähle das richtige Format für deinen Anwendungsfall. Wenn du über eine API arbeitest, lass deren Funktion für strukturierte Ausgaben das Schema durchsetzen und prüfe die Werte trotzdem weiterhin.
 </Callout>
 
 <Quiz 
   question="Wann solltest du YAML gegenüber JSON für KI-Ausgaben bevorzugen?"
   options={[
-    "Beim Bauen von REST-APIs",
+    "Beim Entwickeln von REST-APIs",
     "Wenn die Ausgabe menschenlesbar sein muss und Kommentare enthalten kann",
     "Bei der Arbeit mit JavaScript-Anwendungen",
     "Wenn du die kompakteste Darstellung brauchst"

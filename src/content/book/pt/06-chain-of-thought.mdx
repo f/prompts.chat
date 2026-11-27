@@ -1,12 +1,12 @@
-Prompting Chain of Thought (CoT) é uma técnica que melhora dramaticamente o desempenho da IA em tarefas de raciocínio complexo pedindo ao modelo para mostrar seu trabalho passo a passo.
+O prompting Chain of Thought (CoT) é uma técnica que melhora drasticamente o desempenho da IA em tarefas de raciocínio complexo ao pedir que o modelo mostre seu trabalho passo a passo.
 
 <Callout type="info" title="Mostre Seu Trabalho">
-Assim como um professor de matemática pedindo aos alunos para mostrar seu trabalho, prompting CoT pede à IA para tornar seu raciocínio visível.
+Assim como um professor de matemática que pede aos alunos que mostrem seu trabalho, o prompting CoT pede à IA que torne seu raciocínio visível.
 </Callout>
 
 ## O Problema Que CoT Resolve
 
-Modelos de IA podem ter dificuldade com raciocínio de múltiplos passos quando pedidos para pular diretamente para uma resposta.
+Modelos de IA podem ter dificuldade com raciocínio de múltiplos passos quando se pede que pulem diretamente para uma resposta.
 
 <Compare 
   before={{ label: "Resposta Direta (Frequentemente Errada)", content: "Pergunta: Uma loja vende maçãs por R$4 cada. Se você comprar 5 ou mais, ganha 20% de desconto. Quanto custam 7 maçãs?\n\nResposta: R$28 ❌" }}
@@ -22,12 +22,14 @@ Adicione uma dessas aos seus prompts:
 <div className="my-4 grid gap-2">
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Vamos pensar passo a passo."</div>
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Pense nisso cuidadosamente."</div>
-  <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Trabalhe neste problema metodicamente."</div>
+  <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Resolva este problema de forma metódica."</div>
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Mostre seu raciocínio a cada passo."</div>
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Explique seu processo de pensamento."</div>
 </div>
 
-### Requisição Explícita de Passos
+Essas frases fazem mais diferença com modelos de chat comuns. Os modelos de raciocínio, que pensam antes de responder, precisam muito menos delas; voltaremos a eles mais adiante neste capítulo.
+
+### Pedido Explícito de Passos
 
 <TryIt 
   title="Experimente Chain of Thought"
@@ -79,7 +81,7 @@ Para resultados mais consistentes, mostre ao modelo exatamente como você quer q
   compact
   title="CoT Few-Shot"
   prompt={`Exemplo 1:
-P: Uma confeiteira tem 24 cupcakes. Ela coloca igualmente em 4 caixas. Depois come 2 cupcakes de uma caixa. Quantos cupcakes restam no total?
+P: Uma confeiteira tem 24 cupcakes. Ela os divide igualmente em 4 caixas. Depois come 2 cupcakes de uma caixa. Quantos cupcakes restam no total?
 
 R: Vamos resolver isso:
 - Total de cupcakes: 24
@@ -113,7 +115,7 @@ R: Vamos resolver isso:
 
 ## Formatos CoT Estruturados
 
-Para raciocínio consistente e reproduzível, use formatos estruturados com passos nomeados. Esses frameworks garantem que o modelo não pule estágios importantes e torna saídas mais fáceis de parsear e verificar.
+Para raciocínio consistente e reproduzível, use formatos estruturados com passos nomeados. Esses frameworks garantem que o modelo não pule etapas importantes e tornam as saídas mais fáceis de parsear e verificar.
 
 ### O Formato BREAK
 
@@ -161,7 +163,7 @@ Diferentes tipos de problemas se beneficiam de diferentes abordagens CoT. Aqui e
 
 ### Raciocínio Matemático
 
-Problemas matemáticos se beneficiam mais de CoT porque cada passo constrói sobre o anterior. Erros se acumulam, então mostrar trabalho ajuda a capturar erros cedo. O modelo deve rotular claramente cada cálculo.
+Problemas matemáticos se beneficiam mais de CoT porque cada passo se apoia no anterior. Erros se acumulam, então mostrar o trabalho ajuda a detectar falhas cedo. O modelo deve rotular claramente cada cálculo.
 
 <TryIt 
   compact
@@ -183,7 +185,7 @@ Total: R$5.374.500
 
 ### Raciocínio Lógico
 
-Quebra-cabeças lógicos requerem eliminação sistemática e teste de hipóteses. CoT ajuda o modelo a rastrear restrições, testar possibilidades e verificar que todas as condições são satisfeitas. A chave é exploração metódica em vez de adivinhar.
+Quebra-cabeças lógicos requerem eliminação sistemática e teste de hipóteses. CoT ajuda o modelo a acompanhar as restrições, testar possibilidades e verificar se todas as condições são satisfeitas. A chave é exploração metódica em vez de adivinhar.
 
 <TryIt 
   compact
@@ -195,8 +197,9 @@ Pistas:
 2. O engenheiro tem cachorro
 3. Bob é professor
 4. Carol não tem peixe
+5. O médico não tem gato
 
-Quem tem qual animal e emprego? Raciocine sistematicamente, testando hipóteses e verificando contra todas as pistas.`}
+Quem tem qual animal e emprego? Raciocine sistematicamente, testando hipóteses e conferindo se todas as pistas são atendidas.`}
 />
 
 **Exemplo de Saída:**
@@ -204,12 +207,17 @@ Quem tem qual animal e emprego? Raciocine sistematicamente, testando hipóteses 
 Da pista 3: Bob = professor
 → Alice e Carol são engenheiro/médico
 
-Se Carol = engenheira:
-- Carol tem cachorro (pista 2)
-- Alice = médica, tem peixe (pista 1)
+Hipótese A: Alice = engenheira
+- Alice tem cachorro (pista 2), Carol = médica
+- Carol não pode ter peixe (pista 4), então Carol tem gato
+- Mas o médico não pode ter gato (pista 5) ✗
+
+Hipótese B: Carol = engenheira
+- Carol tem cachorro (pista 2), Alice = médica
+- Alice não pode ter gato (pista 1), então Alice tem peixe
 - Bob tem gato
 
-Verificar: Todas 4 pistas satisfeitas ✓
+Verificar: Todas as 5 pistas satisfeitas ✓
 Resposta: Alice (médica, peixe), Bob (professor, gato), Carol (engenheira, cachorro)
 ```
 
@@ -220,7 +228,7 @@ Debugging se beneficia de CoT porque força o modelo a rastrear execução em ve
 <TryIt 
   compact
   title="Debug com CoT"
-  prompt={`Esta função deveria retornar a soma de números pares em uma lista, mas está retornando valores errados. Debug passo a passo rastreando com a entrada [2, 3, 4, 6]:
+  prompt={`Esta função deveria retornar a soma de números pares em uma lista, mas está retornando valores errados. Depure passo a passo, rastreando a execução com a entrada [2, 3, 4, 6]:
 
 def sum_evens(numbers):
     total = 0
@@ -235,7 +243,7 @@ Rastreie cada passo, encontre o bug e forneça a correção.`}
 **Exemplo de Saída:**
 ```
 Rastrear [2, 3, 4, 6]:
-n=2: total += 1 → 1 (espera, adicionando 1 não n!)
+n=2: total += 1 → 1 (opa, somando 1 e não n!)
 n=3: pular (ímpar)
 n=4: total = 2
 n=6: total = 3
@@ -245,13 +253,13 @@ Esperado: 12, Obtido: 3
 Correção: Mudar para "total += n"
 ```
 
-## Auto-Consistência com CoT
+## Autoconsistência com CoT
 
 Para problemas críticos, não confie em um único caminho de raciocínio. Gere múltiplas soluções independentes e compare resultados. Se diferentes abordagens convergem na mesma resposta, a confiança é alta. Desacordo sinaliza necessidade de revisão cuidadosa.
 
 <TryIt 
   compact
-  title="Auto-Consistência"
+  title="Autoconsistência"
   prompt={`Resolva este problema de 3 formas diferentes, depois dê sua resposta final baseada em qual solução parece mais correta:
 
 Problema: Um fazendeiro tem galinhas e vacas. Juntos têm 30 cabeças e 74 pernas. Quantas galinhas e quantas vacas o fazendeiro tem?
@@ -267,14 +275,16 @@ Depois compare e dê sua resposta final.`}
 ```
 Abordagem 1 (Álgebra): g + v = 30, 2g + 4v = 74 → g=23, v=7
 Abordagem 2 (Tentativa): Tentar 23/7 → 46 + 28 = 74 ✓
-Abordagem 3 (Lógica): 30 galinhas = 60 pernas, precisa mais 14 → 7 vacas
+Abordagem 3 (Lógica): 30 galinhas = 60 pernas, faltam 14 → 7 vacas
 
 Todos concordam: 23 galinhas, 7 vacas
 ```
 
+Na forma original proposta pelas pesquisas, a autoconsistência vai um passo além: você envia o mesmo prompt várias vezes, como requisições separadas, e fica com a resposta que aparece com mais frequência. Pedir várias abordagens em uma única resposta, como acima, é uma versão mais leve da mesma ideia. Sai mais barato, mas as tentativas não são de fato independentes, porque cada uma consegue ver as outras.
+
 ## CoT para Tomada de Decisão
 
-Decisões envolvem pesar trade-offs em múltiplas dimensões. CoT garante que todos os fatores relevantes sejam considerados sistematicamente em vez de pular para conclusões. Esta abordagem estruturada também documenta o raciocínio para referência futura.
+Decisões envolvem pesar trade-offs em múltiplas dimensões. CoT garante que todos os fatores relevantes sejam considerados sistematicamente em vez de tirar conclusões precipitadas. Esta abordagem estruturada também documenta o raciocínio para referência futura.
 
 <TryIt 
   compact
@@ -285,7 +295,7 @@ Contexto:
 - Aplicação monolítica com 50.000 linhas de código
 - Equipe de 5 desenvolvedores
 - 100 usuários ativos diários
-- Planejando crescimento de 10x em 2 anos
+- Previsão de crescer 10x em 2 anos
 
 Pense nisso sistematicamente:
 1. Liste o estado atual
@@ -298,15 +308,30 @@ Pense nisso sistematicamente:
 ```
 FATORES:
 - Tamanho equipe (5): Muito pequena para microserviços ❌
-- Escala (100 DAU): Sem necessidade de escala ❌  
+- Escala (100 DAU): Sem necessidade de escalar ❌  
 - Velocidade: Monolito = iteração mais rápida ❌
-- Crescimento futuro: Timeline incerto ⚠️
+- Crescimento futuro: Prazo incerto ⚠️
 
-PESAGEM: 3 fortes contra, 1 fraco a favor
+BALANÇO: 3 fortes contra, 1 fraco a favor
 
 RECOMENDAÇÃO: Manter monolito, usar limites claros 
 de módulos para facilitar transição futura.
 ```
+
+## Modelos de Raciocínio: CoT Embutido
+
+O Chain of Thought nasceu como um truque de prompting, mas desde então passou para dentro dos próprios modelos. Muitos modelos atuais são treinados para raciocinar antes de responder: os modelos de raciocínio da OpenAI, o Claude da Anthropic com o modo de raciocínio ativado, o Gemini do Google e modelos de pesos abertos como o DeepSeek-R1 trabalham o problema internamente e só então dão a resposta. Normalmente você vê apenas a resposta, ou um breve resumo do raciocínio, mas os tokens de raciocínio continuam contando no seu consumo.
+
+Isso não torna este capítulo obsoleto, mas muda a forma de aplicá-lo:
+
+- **Deixe de lado a frase mágica.** Segundo as orientações da OpenAI, pedir aos seus modelos de raciocínio que "pensem passo a passo" é desnecessário e às vezes até atrapalha. A Anthropic observa que uma instrução geral como "pense a fundo" costuma funcionar melhor do que um plano passo a passo escrito à mão, porque o raciocínio do próprio modelo muitas vezes vai além do que o plano iria.
+- **Descreva o destino, não o caminho.** Gaste suas palavras com o problema, as restrições e como é uma boa resposta, e deixe o modelo encontrar o próprio caminho.
+- **Ajuste o controle em vez de escrever mais.** Essas APIs oferecem configurações como esforço de raciocínio ou nível de pensamento. Aumentá-las costuma ser uma forma melhor de obter um raciocínio mais profundo do que pedir explicações mais longas no prompt.
+- **Mantenha a estrutura quando precisar ver o trabalho.** Templates como BREAK ou DADO/OBJETIVO/PASSOS continuam valendo a pena quando você quer um raciocínio que possa ler, conferir ou parsear, e com modelos que não pensam por conta própria. Alguns fornecedores já desaconselham pedir aos seus modelos que sempre raciocinam que escrevam o raciocínio por extenso, então confira as orientações do modelo que você usa.
+
+<Callout type="warning" title="Raciocínio Exibido Não É uma Janela">
+O raciocínio que o modelo escreve, ou o resumo de pensamento que ele exibe, não é necessariamente o processo que de fato produziu a resposta. Uma pesquisa da Anthropic descobriu que modelos de raciocínio muitas vezes omitem fatores que os influenciaram. Trate os passos visíveis como algo a ser conferido, não como prova.
+</Callout>
 
 ## Quando Usar CoT
 
@@ -345,19 +370,19 @@ Embora poderoso, Chain of Thought não é uma bala de prata. Entender suas limit
 ## Resumo
 
 <Callout type="tip" title="Principais Conclusões">
-CoT melhora dramaticamente raciocínio complexo tornando passos implícitos explícitos. Use para matemática, lógica, análise e debugging. Trade-off: melhor precisão por mais tokens.
+CoT melhora drasticamente o raciocínio complexo ao tornar explícitos os passos implícitos. Use para matemática, lógica, análise e debugging. Trade-off: mais precisão em troca de mais tokens. Com modelos de raciocínio, que já pensam antes de responder, mantenha o prompt focado no objetivo e ajuste as configurações de raciocínio em vez disso.
 </Callout>
 
 <Quiz 
   question="Quando você NÃO deve usar prompting Chain of Thought?"
   options={[
-    "Problemas matemáticos requerendo múltiplos passos",
+    "Problemas matemáticos que exigem múltiplos passos",
     "Perguntas factuais simples como 'Qual é a capital da França?'",
     "Debugging de código com lógica complexa",
-    "Analisando uma decisão de negócio"
+    "Analisar uma decisão de negócio"
   ]}
   correctIndex={1}
-  explanation="Chain of Thought adiciona overhead desnecessário para perguntas simples. É melhor reservá-lo para tarefas de raciocínio complexo como matemática, quebra-cabeças lógicos, debugging de código e análise onde mostrar trabalho melhora precisão."
+  explanation="Chain of Thought adiciona overhead desnecessário para perguntas simples. É melhor reservá-lo para tarefas de raciocínio complexo como matemática, quebra-cabeças lógicos, debugging de código e análise, em que mostrar o raciocínio melhora a precisão."
 />
 
-No próximo capítulo, exploraremos few-shot learning—ensinando o modelo através de exemplos.
+No próximo capítulo, exploraremos o few-shot learning: como ensinar o modelo por meio de exemplos.

@@ -84,13 +84,13 @@ Ogni livello aggiunge specificità e migliora drasticamente la qualità dell'out
 
 ## Principio 3: Il Contesto È Re
 
-I modelli non hanno memoria, nessun accesso ai tuoi file e nessuna conoscenza della tua situazione. Tutto ciò che è rilevante deve essere nel prompt.
+Un modello non sa nulla della tua situazione al di là di ciò che gli arriva nella conversazione. Anche gli assistenti con funzioni di memoria, file caricati o strumenti collegati vedono solo ciò che è stato effettivamente condiviso con loro, e lo ricordano in modo selettivo. Quando qualcosa conta, mettilo nel prompt.
 
 ### Fornisci Contesto Sufficiente
 
 <Compare 
   before={{ label: "Contesto insufficiente", content: "Perché la mia funzione non funziona?" }}
-  after={{ label: "Contesto sufficiente", content: "Ho una funzione Python che dovrebbe filtrare una lista di dizionari per un valore di chiave specifico. Sta restituendo una lista vuota quando dovrebbe restituire 3 elementi.\n\nFunzione:\ndef filter_items(items, key, value):\n    return [item for item in items if item[key] = value]\n\nChiamata: filter_items(items, 'status', 'active')\nAtteso: 2 elementi, Ottenuto: lista vuota" }}
+  after={{ label: "Contesto sufficiente", content: "Ho una funzione Python che dovrebbe filtrare una lista di dizionari per un valore di chiave specifico. Sta restituendo una lista vuota quando dovrebbe restituire 3 elementi.\n\nFunzione:\ndef filter_items(items, key, value):\n    return [item for item in items if item.get(key) == value]\n\nElemento di esempio: {'id': 7, 'status': 'active'}\nChiamata: filter_items(items, 'Status', 'active')\nAtteso: 3 elementi, Ottenuto: lista vuota" }}
 />
 
 ### La Checklist del Contesto
@@ -112,7 +112,7 @@ Chiediti: Uno sconosciuto intelligente capirebbe questa richiesta? Se no, aggiun
 
 ## Principio 4: Guida, Non Solo Chiedere
 
-Non solo chiedere una risposta—guida il modello verso la risposta che vuoi.
+Non limitarti a chiedere una risposta: guida il modello verso la risposta che vuoi.
 
 ### Usa l'Inquadramento Istruttivo
 
@@ -193,7 +193,7 @@ Finale: [Salva il prompt di successo come template]
 
 ## Principio 6: Sfrutta i Punti di Forza del Modello
 
-Lavora con come i modelli sono addestrati, non contro.
+Asseconda il modo in cui i modelli sono addestrati, invece di andargli contro.
 
 ### I Modelli Vogliono Essere Utili
 
@@ -201,12 +201,12 @@ Inquadra le richieste come cose che un assistente utile farebbe naturalmente:
 
 <Compare 
   before={{ label: "Contro corrente", content: "So che non puoi farlo, ma prova a..." }}
-  after={{ label: "A favore di corrente", content: "Aiutami a capire...\nSto lavorando su X e ho bisogno di assistenza con...\nPotresti guidarmi attraverso..." }}
+  after={{ label: "Seguendo la corrente", content: "Aiutami a capire...\nSto lavorando su X e ho bisogno di assistenza con...\nPotresti guidarmi attraverso..." }}
 />
 
 ### I Modelli Eccellono nei Pattern
 
-Se hai bisogno di output consistente, mostra il pattern:
+Se hai bisogno di output coerente, mostra il pattern:
 
 <TryIt 
   title="Esempio di Pattern"
@@ -321,7 +321,7 @@ Elenca tutti i problemi trovati.
     "Itera e Raffina"
   ]}
   correctIndex={2}
-  explanation="Il Contesto È Re enfatizza che i modelli IA non hanno memoria tra le sessioni e non possono leggere la tua mente. Includere background rilevante, vincoli e obiettivi aiuta il modello a capire le tue esigenze."
+  explanation="Il Contesto È Re sottolinea che i modelli IA non possono leggerti nel pensiero: sanno solo ciò che arriva loro nella conversazione. Includere background rilevante, vincoli e obiettivi aiuta il modello a capire le tue esigenze."
 />
 
 ## Pratica: Riempi gli Spazi Vuoti
@@ -353,7 +353,7 @@ Formato: Restituisci la tua risposta come {{format}}.`}
     { id: "focus", correctAnswers: [], hint: "Quale aspetto dovrebbe essere prioritizzato?", context: "Una qualità o aspetto rilevante per il compito" },
     { id: "format", correctAnswers: [], hint: "Come dovrebbe essere strutturato l'output?", context: "Un tipo di formato di output" }
   ]}
-  explanation="Un prompt ben strutturato include: un ruolo chiaro (Principio 1), contesto sufficiente (Principio 3), compito specifico (Principio 2), vincoli (Principio 4) e formato di output (Principio 5). L'IA controlla se le tue scelte sono internamente coerenti."
+  explanation="Un prompt ben strutturato include un ruolo chiaro (Principio 6), contesto sufficiente (Principio 3), un compito specifico con vincoli (Principio 2) e un formato di output esplicito (Principio 7). L'IA controlla se le tue scelte sono internamente coerenti."
 />
 
 <InteractiveChecklist
@@ -362,10 +362,10 @@ Formato: Restituisci la tua risposta come {{format}}.`}
     { id: "clarity", label: "Chiarezza Prima dell'Astuzia", description: "Il tuo prompt è esplicito e non ambiguo?" },
     { id: "specificity", label: "La Specificità Produce Qualità", description: "Hai incluso pubblico, lunghezza, tono e formato?" },
     { id: "context", label: "Il Contesto È Re", description: "Il prompt include tutte le informazioni di background necessarie?" },
-    { id: "examples", label: "Gli Esempi Battono le Spiegazioni", description: "Hai mostrato cosa vuoi, non solo descritto?" },
-    { id: "constraints", label: "I Vincoli Focalizzano l'Output", description: "Ci sono confini chiari su ambito e formato?" },
+    { id: "guide", label: "Guida, Non Solo Chiedere", description: "Hai delineato i passaggi o il ragionamento che vuoi, invece di chiedere soltanto una risposta?" },
     { id: "iteration", label: "Itera e Raffina", description: "Sei pronto a migliorare basandoti sui risultati?" },
-    { id: "persona", label: "La Persona Modella la Prospettiva", description: "L'IA sa quale ruolo interpretare?" },
+    { id: "strengths", label: "Sfrutta i Punti di Forza del Modello", description: "Stai mostrando pattern e usando ruoli che il modello gestisce bene?" },
+    { id: "structure", label: "Controlla la Struttura dell'Output", description: "Hai specificato il formato esatto di cui hai bisogno?" },
     { id: "verify", label: "Verifica e Valida", description: "Hai incorporato controlli per l'accuratezza?" }
   ]}
 />

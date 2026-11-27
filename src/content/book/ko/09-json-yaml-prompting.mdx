@@ -1,7 +1,7 @@
-JSON과 YAML 같은 구조화된 데이터 형식은 AI 출력을 프로그래밍 방식으로 소비하는 애플리케이션을 구축하는 데 필수적입니다. 이 장에서는 신뢰할 수 있는 구조화된 출력 생성 기법을 다룹니다.
+JSON과 YAML 같은 구조화된 데이터 형식은 AI 출력을 프로그래밍 방식으로 활용하는 애플리케이션을 구축하는 데 필수적입니다. 이 장에서는 신뢰할 수 있는 구조화된 출력 생성 기법을 다룹니다.
 
 <Callout type="info" title="텍스트에서 데이터로">
-JSON과 YAML은 AI 출력을 자유 형식 텍스트에서 코드가 직접 소비할 수 있는 구조화되고 타입 안전한 데이터로 변환합니다.
+JSON과 YAML은 AI 출력을 자유 형식 텍스트에서 코드가 바로 사용할 수 있는 구조화되고 타입 안전한 데이터로 변환합니다.
 </Callout>
 
 ## 구조화된 형식을 사용하는 이유
@@ -88,9 +88,13 @@ Ensure all strings are properly quoted and escaped.
 Numbers should not be quoted.
 ```
 
+<Callout type="tip" title="스키마 강제는 API에 맡기세요">
+API를 통해 모델을 호출한다면 프롬프트 문구만이 유일한 수단은 아닙니다. OpenAI, Anthropic, Google은 모두 JSON Schema를 받아 응답이 그 스키마를 따르도록 제한하는 structured output 기능을 제공합니다. 이 기능을 쓰면 불필요한 마크다운 코드 펜스, 후행 쉼표, 누락된 필드처럼 이 장에서 다루는 파싱 실패 대부분이 사라집니다. 예전의 "JSON mode" 설정은 문법적으로 유효한 JSON만 보장할 뿐 여러분의 스키마까지 보장하지는 않으며, 제공업체마다 지원하는 JSON Schema 범위도 조금씩 다릅니다. 그래도 아래 기법들은 여전히 중요합니다. 스키마가 정하는 것은 답의 형태일 뿐, 그 안에 담긴 값이 맞는지는 보장하지 않기 때문입니다.
+</Callout>
+
 ## YAML 프롬프팅 기초
 
-YAML은 JSON보다 사람이 읽기 쉽고 주석을 지원합니다. DevOps(Docker, Kubernetes, GitHub Actions)에서 특히 구성 파일의 표준입니다.
+YAML은 JSON보다 사람이 읽기 쉽고 주석을 지원합니다. 특히 DevOps 분야(Docker, Kubernetes, GitHub Actions)에서 구성 파일의 표준으로 쓰입니다.
 
 ### 간단한 YAML 출력
 
@@ -131,7 +135,7 @@ Generate a GitHub Actions workflow in YAML:
 Requirements:
 - Trigger on push to main and pull requests
 - Run on Ubuntu latest
-- Steps: checkout, setup Node 18, install dependencies, run tests
+- Steps: checkout, set up the current Node.js LTS release, install dependencies, run tests
 - Cache npm dependencies
 ```
 
@@ -141,7 +145,7 @@ Requirements:
 
 ### TypeScript 스타일 타입 사용하기
 
-TypeScript 인터페이스는 개발자에게 친숙하며 선택적 필드, 유니온 타입, 배열을 정확하게 설명합니다. prompts.chat 플랫폼은 구조화된 프롬프트에 이 접근 방식을 사용합니다.
+TypeScript 인터페이스는 개발자에게 친숙하며 선택적 필드, 유니온 타입, 배열을 정확하게 설명합니다.
 
 <TryIt 
   title="TypeScript 인터페이스 추출"
@@ -203,7 +207,7 @@ Genres: Science Fiction, Political Fiction. Rated 4.8/5"
 
 ### 고정 길이 배열
 
-정확히 N개의 항목이 필요할 때 명시적으로 언급하세요. 모델은 배열이 올바른 길이를 갖도록 보장합니다.
+정확히 N개의 항목이 필요할 때 명시적으로 언급하세요. 모델은 대개 이를 따르지만, 개수가 중요하다면 코드에서 항목 수를 직접 확인하세요.
 
 ```
 Extract exactly 3 key points as JSON:
@@ -391,7 +395,7 @@ Items: apple, carrot, bread, banana, broccoli, milk, orange, spinach
 
 ## 구성 생성을 위한 YAML
 
-YAML은 DevOps 구성에서 빛을 발합니다. 모델은 일반적인 도구의 표준 패턴을 알고 있으며 프로덕션 수준의 구성을 생성할 수 있습니다.
+YAML은 DevOps 구성에서 빛을 발합니다. 모델은 일반적인 도구의 표준 패턴을 알고 있어 출발점으로 삼기 좋은 구성을 만들어 낼 수 있지만, 프로덕션에 반영하기 전에는 반드시 검토해야 합니다.
 
 ### 해야 할 것과 하지 말아야 할 것: YAML 구성
 
@@ -510,27 +514,14 @@ Error format:
   </div>
 </div>
 
-## Prompts.chat 구조화된 프롬프트
+## 구조화된 프롬프트 저장하기
 
-prompts.chat에서 구조화된 출력 형식으로 프롬프트를 만들 수 있습니다:
-
-```
-When creating a prompt on prompts.chat, you can specify:
-
-Type: STRUCTURED
-Format: JSON or YAML
-
-The platform will:
-- Validate outputs against your schema
-- Provide syntax highlighting
-- Enable easy copying of structured output
-- Support template variables in your schema
-```
+JSON이나 YAML 프롬프트가 잘 작동한다면, 나중에 찾아서 다시 쓸 수 있는 곳에 보관하세요. prompts.chat을 비롯한 일부 프롬프트 라이브러리에서는 JSON이나 YAML로 작성된 프롬프트 자체를 저장하고, 구문 강조로 보여 주며, 복사하기 전에 템플릿 변수를 채울 수 있습니다. 다만 이는 프롬프트를 보관하는 기능일 뿐, 모델의 응답을 스키마에 맞춰 검증해 주지는 않는다는 점을 기억하세요. 검증이 필요하다면 API의 structured output 기능을 사용하거나 직접 작성한 코드에서 응답을 검증하세요.
 
 ## 일반적인 함정
 
 <Callout type="warning" title="먼저 이것들을 디버그하세요">
-이 세 가지 문제가 대부분의 JSON 파싱 실패를 유발합니다. 코드가 AI 출력을 파싱할 수 없을 때 이것들을 확인하세요.
+이 세 가지 문제가 대부분의 JSON 파싱 실패를 유발합니다. 코드가 AI 출력을 파싱할 수 없을 때 이것들을 확인하세요. 스키마를 강제하는 structured output을 쓰면 이런 문제는 대부분 예방되므로, 프롬프트에만 의존할 때 특히 신경 써야 합니다.
 </Callout>
 
 ### 1. 마크다운 코드 블록
@@ -568,7 +559,7 @@ Properly escape special characters in strings:
 ## 요약
 
 <Callout type="tip" title="핵심 기법">
-TypeScript 인터페이스나 JSON Schema를 사용하여 스키마를 명시적으로 정의하세요. 타입과 제약 조건을 지정하고, null과 기본값을 처리하고, 자체 검증을 요청하고, 사용 사례에 맞는 올바른 형식을 선택하세요.
+TypeScript 인터페이스나 JSON Schema를 사용하여 스키마를 명시적으로 정의하세요. 타입과 제약 조건을 지정하고, null과 기본값을 처리하고, 자체 검증을 요청하고, 사용 사례에 맞는 올바른 형식을 선택하세요. API를 통해 작업할 때는 structured output 기능에 스키마 강제를 맡기고, 값 검증은 계속하세요.
 </Callout>
 
 <Quiz 

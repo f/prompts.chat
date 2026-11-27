@@ -114,3 +114,5 @@ export function getClientIdentifier(headers: Headers): string {
     "unknown"
   );
 }
+/** Creating, editing and deleting bot teams on the website – 5 req / min per user */
+export const botTeamWriteLimiter = new RateLimiter({ max: 5, windowSeconds: 60 });

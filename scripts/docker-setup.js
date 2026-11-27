@@ -29,6 +29,7 @@
  *   FEATURE_AI_SEARCH         - Enable AI search (default: "false")
  *   FEATURE_AI_GENERATION     - Enable AI generation (default: "false")
  *   FEATURE_MCP               - Enable MCP (default: "false")
+ *   FEATURE_PROMPT_ENHANCER   - Enable Prompt Enhancer (default: "false")
  */
 
 const fs = require('fs');
@@ -100,6 +101,7 @@ export default defineConfig({
     aiSearch: ${config.features.aiSearch},
     aiGeneration: ${config.features.aiGeneration},
     mcp: ${config.features.mcp},
+    promptEnhancer: ${config.features.promptEnhancer},
   },
 
   // Homepage customization (clone branding mode)
@@ -151,6 +153,7 @@ function main() {
       aiSearch: envBool('FEATURE_AI_SEARCH', false),
       aiGeneration: envBool('FEATURE_AI_GENERATION', false),
       mcp: envBool('FEATURE_MCP', false),
+      promptEnhancer: envBool('FEATURE_PROMPT_ENHANCER', false),
     },
   };
 

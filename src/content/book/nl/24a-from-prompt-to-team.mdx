@@ -1,0 +1,381 @@
+Er zijn vijf woorden die steeds weer opduiken als mensen het tegenwoordig over AI hebben: **prompt**, **skill**, **agent**, **bot** en **team**. Ze worden vaak nogal losjes gebruikt, soms alsof ze allemaal hetzelfde betekenen, en daardoor zijn ze lastiger te leren dan nodig is. Dit hoofdstuk is een rustig moment om even stil te staan voordat de volgende hoofdstukken beginnen. We zetten de vijf woorden op volgorde, van het eenvoudigste tot het meest uitgebreide, en kijken wat elk ervan eigenlijk is als je eronder kijkt.
+
+Die volgorde doet ertoe, want de vijf woorden vormen samen een ladder. Elke sport houdt alles van de sport eronder en voegt er precies één nieuw ding aan toe. Als je snapt wat er bij elke stap bijkomt, snap je het hele plaatje.
+
+Om het met beide benen op de grond te houden, volgen we één alledaags tafereel de hele ladder op: **het avondeten op tafel krijgen**. Iedereen die weleens voor een gezin heeft gekookt, of voor wie weleens is gekookt, weet al hoe dat gaat.
+
+<div className="my-8 p-6 bg-muted/30 rounded-xl border">
+  <p className="text-sm font-semibold text-center text-muted-foreground m-0! mb-4!">De ladder: elke sport voegt één ding toe</p>
+  <div className="flex flex-col items-center gap-2 max-w-md mx-auto">
+    <div className="w-full px-4 py-3 bg-amber-100 dark:bg-amber-900/50 border border-amber-300 dark:border-amber-700 rounded-lg text-center">
+      <p className="font-semibold text-amber-800 dark:text-amber-200 m-0!">1. Prompt</p>
+      <p className="text-xs text-amber-700 dark:text-amber-300 m-0!">Eén instructie, één antwoord</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">plus een opgeslagen werkwijze</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-purple-100 dark:bg-purple-900/50 border border-purple-300 dark:border-purple-700 rounded-lg text-center">
+      <p className="font-semibold text-purple-800 dark:text-purple-200 m-0!">2. Skill</p>
+      <p className="text-xs text-purple-700 dark:text-purple-300 m-0!">Herbruikbare instructies, geladen wanneer nodig</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">plus tools en een loop</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-blue-100 dark:bg-blue-900/50 border border-blue-300 dark:border-blue-700 rounded-lg text-center">
+      <p className="font-semibold text-blue-800 dark:text-blue-200 m-0!">3. Agent</p>
+      <p className="text-xs text-blue-700 dark:text-blue-300 m-0!">Werkt stap voor stap naar een doel toe</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">plus tijd: identiteit, geheugen, routines</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-green-100 dark:bg-green-900/50 border border-green-300 dark:border-green-700 rounded-lg text-center">
+      <p className="font-semibold text-green-800 dark:text-green-200 m-0!">4. Bot</p>
+      <p className="text-xs text-green-700 dark:text-green-300 m-0!">Een agent die blijft en zijn taak houdt</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">plus andere leden en overdrachten</p>
+    </div>
+    <div className="w-full px-4 py-3 bg-rose-100 dark:bg-rose-900/50 border border-rose-300 dark:border-rose-700 rounded-lg text-center">
+      <p className="font-semibold text-rose-800 dark:text-rose-200 m-0!">5. Team</p>
+      <p className="text-xs text-rose-700 dark:text-rose-300 m-0!">Meerdere leden met rollen, die werk aan elkaar doorgeven</p>
+    </div>
+  </div>
+</div>
+
+## Sport één: de prompt
+
+Stel je voor dat je honger hebt en een vriendin die goed kan koken vraagt: 'Kun je me vertellen hoe je snel tomatensoep maakt?' Ze geeft antwoord, en daarmee is het klaar. Je vroeg één ding en kreeg één antwoord.
+
+Dat is een **prompt**. Het is de tekst die je naar een AI-model stuurt: een vraag, een verzoek, een instructie. Zoals we zagen in [AI-Modellen Begrijpen](/book/01-understanding-ai-models), leest het model die tekst en schrijft het een antwoord, stukje voor stukje, door te voorspellen wat er waarschijnlijk volgt. Daarna stopt het en wacht. Het gaat nergens heen, opent niets en weet morgen niet meer wie je bent. Als een chat-app het eerdere deel van jullie gesprek lijkt te 'onthouden', komt dat doordat de app bij elk nieuw bericht stilletjes het hele gesprek opnieuw naar het model stuurt. Het model zelf begint elke keer weer bij nul.
+
+Bijna alles in dit boek ging tot nu toe over deze eerste sport, en dat is niet voor niets. Elke sport erboven is namelijk nog steeds gemaakt van prompts. Een heldere prompt is de baksteen waarmee al het andere wordt gebouwd.
+
+<InfoGrid columns={2} items={[
+  { label: "Wat het is", description: "Een stukje tekst dat je naar een AI-model stuurt. Het model leest het en schrijft één antwoord terug.", color: "amber" },
+  { label: "Een klein voorbeeld", description: "Een verzoek als: geef me een eenvoudig recept voor tomatensoep voor vier personen, met dingen die in de meeste keukens al in huis zijn. Vragen om een samenvatting van een lange e-mail, of om tien ideeën voor een kinderfeestje, werkt precies zo.", color: "amber" },
+  { label: "Gebruik het als", description: "je één keer één antwoord nodig hebt en je er zelf bij bent om het te lezen en te beslissen wat je daarna doet.", color: "amber" },
+  { label: "Wat het niet is", description: "Een prompt doet niets in de wereld, werkt niet door nadat hij heeft geantwoord en weet volgende week niet meer wie je bent.", color: "amber" }
+]} />
+
+<TryIt prompt="Leg uit hoe een tomaat van groen naar rood kleurt, op een manier waar een kind van zeven plezier aan heeft. Gebruik één korte vergelijking en blijf onder de 80 woorden." description="Eén instructie, één antwoord. Let erop dat het model antwoordt en daarna gewoon wacht." />
+
+## Sport twee: de skill
+
+Stel je nu voor dat je vriendin deze vraag elke week krijgt. In plaats van alles steeds opnieuw uit te leggen, schrijft ze de werkwijze op een receptkaartje en stopt dat in een doosje in de keuken. Op het kaartje staat waar het gerecht voor bedoeld is, welke ingrediënten erin gaan, welke stappen in welke volgorde komen en welke kleine trucjes ervoor zorgen dat het lukt. Wil iemand tomatensoep, dan komt het kaartje uit het doosje. De rest van de tijd blijft het gewoon liggen.
+
+Dat is een **skill**. Een skill is een opgeslagen, netjes verpakte set instructies, vaak met een paar hulpbestanden erbij, die een model kan laden als een taak erom vraagt. In de praktijk is het meestal een kleine map. Daarin zit een hoofdbestand, vaak `SKILL.md` genoemd, dat begint met een korte naam en een beschrijving van één regel, gevolgd door de volledige werkwijze. De map kan ook voorbeelden, checklists, sjablonen of kleine scripts bevatten.
+
+En nu het slimme deel. Het model leest niet de hele tijd elke skill; dan zou zijn context vollopen met dingen die het niet nodig heeft. Eerst ziet het alleen de korte beschrijvingen, net als de etiketjes op de receptkaartjes. Past een verzoek bij een van die beschrijvingen, dan wordt de volledige skill in de context geladen en volgt het model hem. Een skill is nog steeds gemaakt van prompts, maar dan van prompts die je één keer hebt geschreven, getest en bewaard, zodat je ze niet opnieuw hoeft te typen.
+
+Hier is een kleine skill zoals een ouder of leerkracht die zou kunnen schrijven:
+
+```markdown
+---
+name: homework-helper
+description: Help een kind met huiswerk door sturende vragen te stellen in plaats van het antwoord te geven.
+---
+
+# Huiswerkhulp
+
+Als een kind om hulp vraagt bij zijn huiswerk:
+1. Vraag wat het al weet over de vraag.
+2. Geef steeds één kleine hint, nooit het hele antwoord.
+3. Komt het na drie hints nog niet verder, laat dan een vergelijkbaar voorbeeld zien en laat het opnieuw proberen.
+4. Prijs de inzet, niet alleen het goede antwoord.
+5. Gebruik korte zinnen en woorden die een kind van tien kent.
+```
+
+<Compare
+  before={{ label: "Een prompt die je elke keer typt", content: "Help mijn zoon met zijn rekenhuiswerk, maar geef hem niet het antwoord, stel hem vragen, geef kleine hints, houd het simpel, prijs zijn inzet..." }}
+  after={{ label: "Een skill die je één keer schrijft", content: "De skill homework-helper is opgeslagen. Komt er een huiswerkvraag voorbij, dan laadt de assistent hem en volgt hij elke keer dezelfde zorgvuldige werkwijze." }}
+/>
+
+Verschillende AI-assistenten en programmeertools, van verschillende bedrijven, kunnen inmiddels skills lezen die in zulke mappen zijn verpakt, en veel mensen delen ze met elkaar. De details verschillen per tool, maar het idee is overal hetzelfde: een werkwijze, één keer opgeschreven en klaar om tevoorschijn te halen wanneer die past. In [Agents en Skills](/book/25-agents-and-skills) gaan we veel dieper op skills in.
+
+<InfoGrid columns={2} items={[
+  { label: "Wat het is", description: "Een herbruikbaar pakketje instructies, soms met hulpbestanden, dat een model alleen laadt als een taak erom vraagt.", color: "purple" },
+  { label: "Een klein voorbeeld", description: "Een skill voor huiswerkhulp, een skill voor beleefde e-mails aan school, of een skill die aantekeningen omzet in een wekelijkse klassennieuwsbrief.", color: "purple" },
+  { label: "Gebruik het als", description: "je steeds weer dezelfde uitgebreide instructies geeft en je wilt dat het werk elke keer op dezelfde zorgvuldige manier gebeurt.", color: "purple" },
+  { label: "Wat het niet is", description: "Een skill doet uit zichzelf niets. Net als een receptkaartje heeft hij iemand nodig die hem oppakt en volgt. Het is ook geen nieuw model en geen nieuwe kennis die in de AI is ingebakken.", color: "purple" }
+]} />
+
+## Sport drie: de agent
+
+Tot nu toe praat de kok alleen maar. Stel je nu voor dat je zegt: 'Wil je om zeven uur het avondeten klaar hebben voor vier personen?' Deze keer loopt je vriendin de keuken in. Ze opent de koelkast om te zien wat er is, merkt dat de uien op zijn, kijkt op de klok, kiest een receptkaartje, begint te koken, proeft de soep, doet er wat zout bij, proeft nog eens en dekt ten slotte de tafel. Niemand heeft haar elke stap verteld. Je gaf haar een **doel**, en zij bedacht zelf de stappen door te kijken, te doen en te controleren.
+
+Dat is een **agent**. Een agent is een AI-model dat in een **loop**, met **tools**, naar een doel toe werkt. De tools zijn de handen van de kok: een bestand lezen, op internet zoeken, een agenda openen, iets uitrekenen, een concept versturen. De loop is het ritme van kijken, doen en controleren.
+
+Het mechanisme is eenvoudiger dan het klinkt. Een stuk software rond het model, dat dit boek de [harness](/book/26-the-harnesses) noemt, geeft het model een doel en een lijst met tools die het mag gebruiken. Het model raakt zelf niets direct aan. In plaats daarvan antwoordt het met een verzoek als 'gebruik de weertool voor zaterdag in Lissabon'. De harness voert die tool uit en zet het resultaat terug in het gesprek. Het model leest het resultaat en kiest de volgende stap. Dat herhaalt zich tot het doel bereikt is, of tot een limiet zegt dat het genoeg is. Elke ronde van die loop is nog steeds een prompt en een antwoord. Wat er een agent van maakt, is dat de antwoorden tot acties leiden, en dat de resultaten van die acties weer tot het volgende antwoord leiden. Dit ritme kwamen we al tegen in [Loop Engineering](/book/14a-loop-engineering).
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col items-center gap-2 max-w-sm mx-auto">
+    <div className="w-full px-4 py-2 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">Doel: avondeten voor vier om 19.00 uur</p>
+    </div>
+    <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+    <div className="w-full p-3 border border-dashed rounded-lg flex flex-col items-center gap-2">
+      <div className="w-full px-3 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded text-center">
+        <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">Denken: wat doe ik nu?</p>
+      </div>
+      <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+      <div className="w-full px-3 py-2 bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800 rounded text-center">
+        <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">Doen: een tool gebruiken (de koelkast openen)</p>
+      </div>
+      <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+      <div className="w-full px-3 py-2 bg-teal-100 dark:bg-teal-900/50 border border-teal-200 dark:border-teal-800 rounded text-center">
+        <p className="text-sm font-medium text-teal-700 dark:text-teal-300 m-0!">Controleren: het resultaat bekijken (geen uien)</p>
+      </div>
+      <p className="text-xs text-muted-foreground m-0!">↻ herhalen tot het klaar is, of tot een limiet zegt dat het genoeg is</p>
+    </div>
+    <p className="text-lg text-muted-foreground m-0! leading-none">↓</p>
+    <div className="w-full px-4 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">Klaar: het eten staat op tafel</p>
+    </div>
+  </div>
+</div>
+
+Misschien heb je al agents gebruikt zonder ze zo te noemen. Een programmeerassistent die je project leest, een bestand aanpast, de tests draait en herstelt wat misging, is een agent. Dat geldt ook voor een onderzoeksmodus in een chat-app die eerst veel pagina's doorzoekt voordat hij zijn verslag schrijft, of voor een browserassistent die een formulier voor je invult. Agents gebruiken vaak ook skills: de kok in onze keuken pakt nog steeds het receptkaartje erbij als dat past.
+
+<InfoGrid columns={2} items={[
+  { label: "Wat het is", description: "Een AI-model in een loop met tools. Het kijkt, doet iets, controleert het resultaat en gaat door tot het doel bereikt is of het te horen krijgt dat het moet stoppen.", color: "blue" },
+  { label: "Een klein voorbeeld", description: "Je vraagt hem een picknick voor zaterdag te plannen. Hij bekijkt het weerbericht, kijkt in je agenda, kiest een park en schrijft een boodschappenlijstje.", color: "blue" },
+  { label: "Gebruik het als", description: "de klus uit meerdere stappen bestaat, echte informatie of echte acties nodig heeft, en je niet zomaar elke stap van tevoren kunt opschrijven.", color: "blue" },
+  { label: "Wat het niet is", description: "Een agent is geen slimmer model; het is hetzelfde soort model, maar dan met handen en een loop. Meestal werkt hij alleen zolang jij hem open hebt staan, en vergeet hij alles zodra de sessie voorbij is.", color: "blue" }
+]} />
+
+<Callout type="warning" title="Handen kunnen fouten maken">
+Een prompt kan je hooguit een verkeerd antwoord geven. Een agent kan iets verkeerds doen, zoals het verkeerde bestand verwijderen of een bericht te vroeg versturen. Daarom vragen goede agents eerst toestemming voordat ze iets doen wat moeilijk terug te draaien is, en daarom geef je ze het best alleen de tools die de taak echt nodig heeft.
+</Callout>
+
+## Sport vier: de bot
+
+Onze kok is heel goed, maar komt elke avond binnen alsof het de eerste keer is. Ze moet opnieuw vragen wie er allergisch is voor pinda's, waar de grote pan staat en wat jullie gisteren hebben gegeten. En ze komt alleen als je haar roept.
+
+Stel je nu een kok voor die **bij het gezin inwoont**. Ze heeft een naam en een duidelijke taak: 'de maaltijdplanner van het gezin'. Ze houdt een notitieboekje bij met alles wat ze heeft geleerd: Ada is allergisch voor pinda's, opa houdt niet van pittig eten, donderdag is pizza-avond. Ze heeft een sleutel van de voorraadkast en toegang tot het account van de boodschappenbezorger. En elke zondag om zes uur plant ze, zonder dat iemand erom vraagt, de maaltijden voor de week, kijkt ze in de gezinsagenda welke avonden druk zijn en hangt ze een boodschappenlijstje op de koelkast, dat een volwassene nog moet goedkeuren.
+
+Dat is een **bot**, in de betekenis waarin dit boek het woord gebruikt: een **persistente agent**. Alles van de agent-sport is er nog: het model, de tools, de loop. Wat de bot toevoegt, is **tijd**. Onder de motorkap betekent dat meestal vier extra onderdelen:
+
+<InfoGrid items={[
+  { label: "Identiteit", description: "Een blijvende naam en rol, vastgelegd in zijn vaste instructies, zodat hij weet welke details voor zijn taak belangrijk zijn.", color: "green" },
+  { label: "Geheugen", description: "Notities die buiten het model worden bewaard, vaak in gewone bestanden of een kleine database, en aan het begin van elke sessie weer in de context worden geladen. Het model zelf vergeet nog steeds; het notitieboekje doet het onthouden.", color: "green" },
+  { label: "Routines", description: "Taken die starten volgens een schema (elke zondag om 18.00 uur) of wanneer er iets gebeurt (er komt een nieuwe e-mail binnen), zonder dat jij een nieuwe prompt stuurt.", color: "green" },
+  { label: "Connectors en een werkplek", description: "Blijvende, toegestane toegang tot apps en accounts, en een computer of server die aan blijft staan terwijl jij weg bent.", color: "green" }
+]} />
+
+<InfoGrid columns={2} items={[
+  { label: "Wat het is", description: "Een agent die blijft: hij houdt een rol, onthoudt dingen over gesprekken heen en kan op zijn eigen schema aan het werk gaan.", color: "green" },
+  { label: "Een klein voorbeeld", description: "Een maaltijdplanbot die elke zondagavond de week plant, pinda's vermijdt en een ouder vraagt het boodschappenlijstje goed te keuren.", color: "green" },
+  { label: "Gebruik het als", description: "dezelfde verantwoordelijkheid steeds terugkomt en het werk ook door moet gaan als jij niet achter je scherm zit.", color: "green" },
+  { label: "Wat het niet is", description: "Geen mens, en geen geest die alles onthoudt. Hij onthoudt alleen wat is opgeslagen, en hij kan zich nog steeds vergissen. Het is ook niet de gescripte chatbot van oudere websites, die alleen vaste menu's volgde.", color: "green" }
+]} />
+
+<Callout type="info" title="Een oud woord met een nieuwe betekenis">
+Jarenlang betekende 'bot' bijna elk automatisch programma: een script dat het weerbericht plaatst, een personage in een game, een helpdeskvenster met vier vaste knoppen. Veel daarvan hadden helemaal geen AI-model. In dit boek bedoelen we met een bot iets specifiekers: een agent die blijft bestaan, met een eigen identiteit, geheugen en routines. Kom je het woord ergens anders tegen, dan is het de moeite waard om je af te vragen welke soort er bedoeld wordt.
+</Callout>
+
+Omdat een bot werkt terwijl niemand meekijkt, zijn de regels eromheen belangrijker dan op welke lagere sport ook. Een goede bot maakt vrijuit concepten en doet voorstellen, maar wacht op een mens voordat hij iets verstuurt, koopt, verwijdert of publiceert. Het hoofdstuk [Altijd-aan-bots: agents die blijven werken](/book/28-persistent-bots) gaat uitgebreid in op geheugen, routines en die goedkeuringen.
+
+## Sport vijf: het team
+
+Eén kok kan een gezinsmaaltijd klaarmaken. Maar denk eens aan een drukke restaurantkeuken. Iemand neemt de bestelling op. Iemand anders snijdt de groente. Weer een ander kookt het hoofdgerecht. En iemand controleert elk bord voordat het de keuken uitgaat. Iedereen heeft een duidelijke taak, en het werk gaat op een vaste manier van hand tot hand: de bestelbon gaat naar de kok, het volle bord naar degene die het controleert. Niemand hoeft alles te weten; iedereen moet zijn eigen deel kennen, en weten wat hij aan wie doorgeeft.
+
+Dat is een **team**: meerdere bots of agents, elk met een **rol**, verbonden door **overdrachten** en samen op weg naar een gedeeld **doel**. Een overdracht is het moment waarop het ene lid een benoemd stuk werk doorgeeft aan het volgende, zoals een bestelbon of een opgemaakt bord.
+
+Het mechanisme draait vooral om wat elk lid te zien krijgt. Elk lid heeft zijn eigen instructies voor zijn rol. Als het klaar is, geeft het een specifiek resultaat door, zoals een lijst, een concept of een verslag, en het volgende lid krijgt alleen dat, niet het hele gesprek waaruit het is ontstaan. Zo blijft elk lid gefocust en zijn fouten makkelijker terug te vinden: is het eindgerecht te zout, dan kun je elk bord langs de lijn nakijken en zien waar het zout erin kwam.
+
+Een school zou met een klein team als dit een wekelijkse nieuwsbrief voor ouders kunnen maken:
+
+<div className="my-6 p-6 bg-muted/30 rounded-lg border">
+  <div className="flex flex-col items-center gap-2 max-w-sm mx-auto">
+    <div className="w-full px-4 py-2 bg-blue-100 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 m-0!">Verzamelaar</p>
+      <p className="text-xs text-blue-600 dark:text-blue-400 m-0!">Haalt nieuws op uit elke klas</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">geeft door: een lijst met nieuwtjes</p>
+    </div>
+    <div className="w-full px-4 py-2 bg-purple-100 dark:bg-purple-900/50 border border-purple-200 dark:border-purple-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-purple-700 dark:text-purple-300 m-0!">Schrijver</p>
+      <p className="text-xs text-purple-600 dark:text-purple-400 m-0!">Maakt van de lijst een vriendelijk concept</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">geeft door: een conceptnieuwsbrief</p>
+    </div>
+    <div className="w-full px-4 py-2 bg-green-100 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-green-700 dark:text-green-300 m-0!">Controleur</p>
+      <p className="text-xs text-green-600 dark:text-green-400 m-0!">Controleert namen, data en toon</p>
+    </div>
+    <div className="text-center text-muted-foreground">
+      <p className="text-lg m-0! leading-none">↓</p>
+      <p className="text-xs m-0!">geeft door: een gecontroleerd concept</p>
+    </div>
+    <div className="w-full px-4 py-2 bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800 rounded-lg text-center">
+      <p className="text-sm font-medium text-amber-700 dark:text-amber-300 m-0!">Leerkracht</p>
+      <p className="text-xs text-amber-600 dark:text-amber-400 m-0!">Keurt goed voordat er iets wordt verstuurd</p>
+    </div>
+  </div>
+</div>
+
+Kijk eens wie er aan het eind van de lijn staat: een mens. In een goed ontworpen team leidt minstens één overdracht naar een mens voordat er iets het team verlaat.
+
+<InfoGrid columns={2} items={[
+  { label: "Wat het is", description: "Meerdere bots of agents met duidelijke rollen, die elkaar benoemde stukken werk doorgeven, allemaal voor één gedeeld doel.", color: "rose" },
+  { label: "Een klein voorbeeld", description: "Een verzamelaar, een schrijver en een controleur die samen de klassennieuwsbrief voorbereiden, terwijl een leerkracht de eindversie goedkeurt.", color: "rose" },
+  { label: "Gebruik het als", description: "het werk zich vanzelf in verschillende taken opsplitst, elke taak duidelijk genoeg is om te beschrijven aan de hand van wat hij ontvangt en wat hij doorgeeft, en één lid in zijn eentje steeds in de war raakt.", color: "rose" },
+  { label: "Wat het niet is", description: "Geen menigte agents die het onderling maar moeten uitzoeken, en niet automatisch beter dan één. Elk extra lid brengt overdrachten mee, en bij elke overdracht kan er betekenis verloren gaan.", color: "rose" }
+]} />
+
+## Welke is dit?
+
+Nu we de hele ladder hebben beklommen, gaan we oefenen om de sporten uit elkaar te houden. Vraag je bij elke situatie af wat er wordt toegevoegd: een opgeslagen werkwijze, tools en een loop, tijd, of andere leden.
+
+<Quiz
+  question="Een leerkracht typt: Schrijf drie leuke vragen over vulkanen voor een klas met kinderen van negen. De AI antwoordt, en dat is alles. Welke is dit?"
+  options={["Een prompt", "Een skill", "Een agent", "Een bot"]}
+  correctIndex={0}
+  explanation="Eén instructie, één antwoord, en daarna gebeurt er niets meer. Dat is een prompt. Hier is dat precies het goede gereedschap, want de leerkracht zit er zelf bij om de vragen te lezen en te gebruiken."
+/>
+
+<Quiz
+  question="Een ouder slaat een map op die bedtime-stories heet, met instructies: altijd zacht en rustig, korter dan vijf minuten, en aan het eind valt het kind in slaap. De assistent gebruikt die map telkens als iemand om een verhaaltje voor het slapengaan vraagt. Welke is dit?"
+  options={["Een prompt", "Een skill", "Een bot", "Een team"]}
+  correctIndex={1}
+  explanation="Het is een opgeslagen, herbruikbare werkwijze die de assistent alleen laadt als er om een verhaaltje voor het slapengaan wordt gevraagd. Uit zichzelf doet hij niets, en hij heeft geen eigen schema of geheugen. Dat maakt het een skill."
+/>
+
+<Quiz
+  question="Je vraagt een assistent een museum in je stad te vinden dat op maandag open is en geschikt is voor kleine kinderen. Hij doorzoekt een paar websites, vergelijkt openingstijden, bekijkt de toegangsprijzen en geeft je zijn keuze met links. Welke is dit?"
+  options={["Een prompt", "Een skill", "Een agent", "Een team"]}
+  correctIndex={2}
+  explanation="Hij gebruikte tools (zoeken op internet) in een loop en keek en controleerde meerdere keren voordat hij klaar was. Dat is een agent. Hij werkte terwijl jij erbij was, en hij gaat dit volgende week niet uit zichzelf opnieuw doen."
+/>
+
+<Quiz
+  question="Een assistent die Bibliotheekhulp heet, onthoudt welke boeken elk kind in de klas al heeft gelezen. Elke vrijdagochtend stelt hij, zonder dat iemand erom vraagt, boeken voor de volgende week voor en stuurt hij de lijst ter goedkeuring naar de leerkracht. Welke is dit?"
+  options={["Een skill", "Een agent", "Een bot", "Een team"]}
+  correctIndex={2}
+  explanation="Hij heeft een naam en een taak, houdt zijn geheugen wekenlang vast en begint op zijn eigen schema. Dat zijn precies de dingen die een bot bovenop een agent toevoegt."
+/>
+
+<Quiz
+  question="Eén assistent verzamelt foto's van een schoolreisje, een tweede schrijft bijschriften, en een derde controleert dat nergens de volledige naam van een kind staat. Daarna gaat het album naar de directeur. Welke is dit?"
+  options={["Een agent", "Een bot", "Een skill", "Een team"]}
+  correctIndex={3}
+  explanation="Meerdere leden met verschillende rollen, die elk een benoemd stuk werk aan de volgende doorgeven, met aan het eind een mens die goedkeurt. Dat is een team."
+/>
+
+## Alle vijf naast elkaar
+
+Hier staat de hele ladder op één plek. Lees elke rij van links naar rechts en let erop hoe elke kolom bewaart wat ervoor kwam.
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Vraag</th>
+      <th scope="col">Prompt</th>
+      <th scope="col">Skill</th>
+      <th scope="col">Agent</th>
+      <th scope="col">Bot</th>
+      <th scope="col">Team</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Wat is het, in één regel?</td>
+      <td>Eén instructie, één antwoord</td>
+      <td>Een opgeslagen werkwijze, geladen wanneer nodig</td>
+      <td>Een model in een loop met tools</td>
+      <td>Een agent die blijft</td>
+      <td>Meerdere leden met rollen</td>
+    </tr>
+    <tr>
+      <td>Wat voegt het toe?</td>
+      <td>Het beginpunt</td>
+      <td>Hergebruik</td>
+      <td>Acties</td>
+      <td>Tijd</td>
+      <td>Taakverdeling</td>
+    </tr>
+    <tr>
+      <td>In de keuken</td>
+      <td>Om een recept vragen</td>
+      <td>Een receptkaartje in het doosje</td>
+      <td>Een kok die vanavond het eten maakt</td>
+      <td>De gezinskok die elke week plant</td>
+      <td>Een restaurantkeuken</td>
+    </tr>
+    <tr>
+      <td>Kan het iets doen?</td>
+      <td>Nee, het antwoordt alleen</td>
+      <td>Nee, het wijst alleen de weg</td>
+      <td>Ja, met zijn tools</td>
+      <td>Ja, zelfs als jij weg bent</td>
+      <td>Ja, elk lid in zijn eigen rol</td>
+    </tr>
+    <tr>
+      <td>Onthoudt het iets?</td>
+      <td>Alleen dit gesprek</td>
+      <td>Hij wordt onthouden, maar onthoudt zelf niets</td>
+      <td>Alleen deze sessie</td>
+      <td>Ja, via opgeslagen geheugen</td>
+      <td>Elk lid houdt zijn eigen geheugen bij</td>
+    </tr>
+    <tr>
+      <td>Wie zet het in gang?</td>
+      <td>Jij</td>
+      <td>Het model, als een taak past</td>
+      <td>Jij, met een doel</td>
+      <td>Jij, een schema of een gebeurtenis</td>
+      <td>Een doel, en daarna elke overdracht</td>
+    </tr>
+  </tbody>
+</table>
+
+## Kies de eenvoudigste sport die werkt
+
+Het is verleidelijk om te denken dat hoger op de ladder ook beter is. Dat klopt niet. Elke sport voegt kracht toe, maar ook kosten, wachttijd en nieuwe manieren waarop het mis kan gaan. Een prompt kan een verkeerd antwoord geven. Een agent kan iets verkeerds doen. Een bot kan om drie uur 's nachts iets verkeerds doen. Een team kan een fout van lid naar lid doorgeven tot hij eruitziet als een feit.
+
+De verstandige gewoonte is dus dezelfde die goede koks al hebben: gebruik het eenvoudigste gereedschap dat de klus klaart. Je huurt geen restaurantkeuken in om een eitje te koken. Begin onderaan de ladder en klim pas een sport hoger als de sport waar je op staat duidelijk niet genoeg is.
+
+<InfoGrid items={[
+  { label: "Begin met een prompt", description: "Heb je één antwoord nodig en ben je erbij om het te lezen, dan is een heldere prompt genoeg.", color: "amber" },
+  { label: "Klim naar een skill", description: "Als je merkt dat je steeds weer dezelfde lange instructies typt.", color: "purple" },
+  { label: "Klim naar een agent", description: "Als het werk echte informatie of echte acties nodig heeft, in meerdere stappen die je niet van tevoren kunt opsommen.", color: "blue" },
+  { label: "Klim naar een bot", description: "Als dezelfde verantwoordelijkheid volgens een schema terugkomt en moet doorlopen terwijl jij weg bent.", color: "green" },
+  { label: "Klim naar een team", description: "Als één bot echt verschillende taken steeds door elkaar haalt, en elke taak te beschrijven is aan de hand van wat hij ontvangt en wat hij doorgeeft.", color: "rose" }
+]} />
+
+<Checklist
+  title="Voordat je een sport hoger klimt"
+  items={[
+    { text: "Ik heb de sport eronder geprobeerd en kan precies zeggen wat die niet kon" },
+    { text: "Ik kan het resultaat dat ik wil in een of twee zinnen beschrijven" },
+    { text: "Ik weet welke tools of accounts de nieuwe sport echt nodig heeft, en niets meer" },
+    { text: "Alles wat moeilijk terug te draaien is, wacht tot een mens het goedkeurt" },
+    { text: "Ik weet hoe ik ga controleren of het werk echt goed is gedaan" },
+    { text: "Ik heb een manier om het te pauzeren of te stoppen als het misgaat" }
+  ]}
+/>
+
+Weet je niet zeker welke sport je nodig hebt? Dan kun je een AI vragen om met je mee te denken. De prompt hieronder is zelf een mooi voorbeeld van de eerste sport:
+
+<TryIt compact prompt={`Ik wil hulp bij deze taak: \${task:elke week gezonde lunches voor school plannen voor mijn twee kinderen}.
+
+Gebruik deze ladder, van eenvoudig naar ingewikkeld:
+1. Prompt: één instructie, één antwoord
+2. Skill: een opgeslagen werkwijze die de AI laadt wanneer nodig
+3. Agent: een AI die in een loop tools gebruikt om een doel te bereiken
+4. Bot: een agent die blijft, met geheugen en routines
+5. Team: meerdere agents of bots met rollen en overdrachten
+
+Vertel me wat de eenvoudigste sport is die goed zou werken voor mijn taak, en waarom. Vertel me daarna wat er zou moeten veranderen voordat ik de volgende sport nodig zou hebben. Gebruik eenvoudige, vriendelijke taal.`} />
+
+De vijf woorden hoeven nu niet meer door elkaar te lopen. Een **prompt** vraagt. Een **skill** weet hoe het moet. Een **agent** doet. Een **bot** blijft. Een **team** verdeelt het werk. En op elke sport is het vakmanschap hetzelfde als waarmee dit boek begon: zeg duidelijk wat je wilt, waar de grenzen liggen en hoe je weet dat het goed is gegaan.
+
+De volgende hoofdstukken beklimmen de ladder in detail. [Agents en Skills](/book/25-agents-and-skills) laat zien hoe skills worden geschreven en hoe agents ze gebruiken. [Tools, MCP en connectors](/book/27-tools-mcp-connectors) kijkt naar de handen waarmee een agent werkt, en [De harnesses](/book/26-the-harnesses) naar de software die zijn loop laat draaien. Tot slot volgt [Altijd-aan-bots: agents die blijven werken](/book/28-persistent-bots) agents die blijven, en de teams die ze vormen.

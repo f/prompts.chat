@@ -27,6 +27,8 @@ AI 모델은 답을 바로 도출하라고 요청받으면 다단계 추론에 �
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Explain your thought process."</div>
 </div>
 
+이런 문구가 가장 큰 효과를 내는 것은 일반적인 채팅 모델입니다. 답하기 전에 먼저 생각하는 추론 모델에는 이런 문구가 훨씬 덜 필요한데, 이 내용은 이 장의 뒷부분에서 다시 다룹니다.
+
 ### 명시적 단계 요청
 
 <TryIt 
@@ -73,7 +75,7 @@ Answer: 6 apples
 
 ### Few-Shot CoT
 
-더 일관된 결과를 위해, 작업된 예시를 제공하여 모델에게 원하는 추론 방식을 정확히 보여줍니다. 이를 통해 추론 스타일, 형식, 세부 수준을 제어할 수 있습니다. 모델은 제시된 패턴을 따라합니다.
+더 일관된 결과를 위해, 풀이 예시를 제공하여 모델에게 원하는 추론 방식을 정확히 보여줍니다. 이를 통해 추론 스타일, 형식, 세부 수준을 제어할 수 있습니다. 모델은 제시된 패턴을 따라합니다.
 
 <TryIt 
   compact
@@ -195,6 +197,7 @@ Clues:
 2. The engineer has a dog
 3. Bob is a teacher
 4. Carol doesn't have a fish
+5. The doctor doesn't have a cat
 
 Who has which pet and job? Reason through this systematically, testing hypotheses and verifying against all clues.`}
 />
@@ -204,12 +207,17 @@ Who has which pet and job? Reason through this systematically, testing hypothese
 From clue 3: Bob = teacher
 → Alice and Carol are engineer/doctor
 
-If Carol = engineer:
-- Carol has dog (clue 2)
-- Alice = doctor, has fish (clue 1)
+Hypothesis A: Alice = engineer
+- Alice has dog (clue 2), Carol = doctor
+- Carol can't have fish (clue 4), so Carol has cat
+- But the doctor can't have a cat (clue 5) ✗
+
+Hypothesis B: Carol = engineer
+- Carol has dog (clue 2), Alice = doctor
+- Alice can't have cat (clue 1), so Alice has fish
 - Bob has cat
 
-Verify: All 4 clues satisfied ✓
+Verify: All 5 clues satisfied ✓
 Answer: Alice (doctor, fish), Bob (teacher, cat), Carol (engineer, dog)
 ```
 
@@ -272,6 +280,8 @@ Approach 3 (Logic): 30 chickens = 60 legs, need 14 more → 7 cows
 All agree: 23 chickens, 7 cows
 ```
 
+원래 연구에서 제안된 self-consistency는 한 걸음 더 나아갑니다. 같은 프롬프트를 별도의 요청으로 여러 번 보낸 뒤 가장 자주 나온 답을 택하는 방식입니다. 위의 예처럼 한 번의 응답 안에서 여러 접근법을 요청하는 것은 같은 아이디어를 가볍게 적용한 버전입니다. 비용은 더 적게 들지만, 각 시도가 서로를 볼 수 있으므로 진정으로 독립적이라고 할 수는 없습니다.
+
 ## 의사결정을 위한 CoT
 
 의사결정은 여러 차원에서 트레이드오프를 저울질하는 것을 포함합니다. CoT는 성급하게 결론에 도달하지 않고 모든 관련 요소를 체계적으로 고려하도록 보장합니다. 이러한 구조화된 접근법은 또한 향후 참조를 위해 추론 과정을 문서화합니다.
@@ -307,6 +317,21 @@ WEIGHING: 3 strong against, 1 weak for
 RECOMMENDATION: Stay monolith, use clear module 
 boundaries to ease future transition.
 ```
+
+## 추론 모델: CoT가 내장된 모델
+
+Chain of Thought는 프롬프팅 요령으로 시작했지만, 이제는 모델 내부로 옮겨갔습니다. 오늘날 많은 모델은 답하기 전에 추론하도록 훈련되어 있습니다. OpenAI의 추론 모델, thinking 기능을 켠 Anthropic의 Claude, Google의 Gemini, 그리고 DeepSeek-R1 같은 오픈 웨이트 모델은 모두 문제를 내부적으로 풀어본 뒤 답을 내놓습니다. 보통 사용자에게는 답이나 사고 과정의 짧은 요약만 보이지만, 추론에 쓰인 토큰도 사용량에 그대로 포함됩니다.
+
+그렇다고 이 장의 내용이 쓸모없어지는 것은 아니지만, 적용하는 방식은 달라집니다.
+
+- **마법의 문구는 버리세요.** OpenAI의 가이드에 따르면 자사 추론 모델에 "think step by step"이라고 지시할 필요가 없으며, 오히려 성능을 떨어뜨릴 때도 있습니다. Anthropic은 직접 작성한 단계별 계획보다 "think thoroughly" 같은 일반적인 지시가 더 잘 통하는 경우가 많다고 설명합니다. 모델 스스로의 추론이 사람이 짠 계획보다 더 멀리 나아가는 경우가 많기 때문입니다.
+- **경로가 아니라 목표를 설명하세요.** 문제, 제약 조건, 좋은 답의 모습을 설명하는 데 글을 쓰고, 길은 모델이 스스로 찾게 하세요.
+- **더 길게 쓰는 대신 설정을 조절하세요.** 이런 API는 reasoning effort나 thinking level 같은 설정을 제공합니다. 더 깊은 추론이 필요하다면 프롬프트에서 더 긴 설명을 요구하기보다 이 값을 높이는 편이 대개 더 효과적입니다.
+- **풀이 과정을 봐야 할 때는 구조를 유지하세요.** BREAK나 GIVEN/GOAL/STEPS 같은 템플릿은 읽고, 확인하고, 파싱할 수 있는 추론이 필요할 때나 스스로 생각하지 않는 모델을 쓸 때 여전히 제 몫을 합니다. 일부 업체는 항상 생각하는 자사 모델에게 추론 과정을 글로 써달라고 요청하지 말라고 권하기도 하므로, 사용하는 모델의 가이드를 확인하세요.
+
+<Callout type="warning" title="보이는 추론이 내부를 보여주는 창은 아닙니다">
+모델이 글로 써낸 추론이나 화면에 표시하는 사고 요약이 실제로 답을 만들어낸 과정이라는 보장은 없습니다. Anthropic의 연구에 따르면 추론 모델은 자신에게 영향을 준 요인을 빠뜨리는 경우가 많았습니다. 눈에 보이는 단계는 증거가 아니라 검토할 대상으로 다루세요.
+</Callout>
 
 ## CoT 사용 시점
 
@@ -345,7 +370,7 @@ boundaries to ease future transition.
 ## 요약
 
 <Callout type="tip" title="핵심 요점">
-CoT는 암묵적인 단계를 명시적으로 만들어 복잡한 추론을 획기적으로 향상시킵니다. 수학, 논리, 분석, 디버깅에 사용하세요. 트레이드오프: 더 많은 토큰으로 더 나은 정확성을 얻습니다.
+CoT는 암묵적인 단계를 명시적으로 만들어 복잡한 추론을 획기적으로 향상시킵니다. 수학, 논리, 분석, 디버깅에 사용하세요. 트레이드오프: 더 많은 토큰으로 더 나은 정확성을 얻습니다. 답하기 전에 이미 생각하는 추론 모델에서는 프롬프트를 목표에 집중시키고, 대신 추론 설정을 조절하세요.
 </Callout>
 
 <Quiz 

@@ -12,7 +12,7 @@ Die besten Prompts sind klar, nicht clever. KI-Modelle sind wörtliche Interpret
 
 <Compare 
   before={{ label: "Implizit (problematisch)", content: "Mach das besser." }}
-  after={{ label: "Explizit (effektiv)", content: "Verbessere diese E-Mail durch:\n1. Mache die Betreffzeile überzeugender\n2. Kürze Absätze auf maximal 2-3 Sätze\n3. Füge am Ende einen klaren Call-to-Action hinzu" }}
+  after={{ label: "Explizit (effektiv)", content: "Verbessere diese E-Mail:\n1. Mache die Betreffzeile überzeugender\n2. Kürze Absätze auf maximal 2-3 Sätze\n3. Füge am Ende einen klaren Call-to-Action hinzu" }}
 />
 
 ### Vermeide Mehrdeutigkeit
@@ -26,7 +26,7 @@ Wörter können mehrere Bedeutungen haben. Wähle präzise Sprache.
 
 ### Nenne das Offensichtliche
 
-Was für dich offensichtlich ist, ist nicht offensichtlich für das Modell. Buchstabiere Annahmen aus.
+Was für dich offensichtlich ist, ist nicht offensichtlich für das Modell. Sprich Annahmen ausdrücklich aus.
 
 ```
 Du hilfst mir, ein Anschreiben zu schreiben.
@@ -84,13 +84,13 @@ Jede Stufe fügt Spezifität hinzu und verbessert die Ausgabequalität dramatisc
 
 ## Prinzip 3: Kontext ist König
 
-Modelle haben kein Gedächtnis, keinen Zugriff auf deine Dateien und kein Wissen über deine Situation. Alles Relevante muss im Prompt sein.
+Ein Modell weiß über deine Situation nur das, was im Gespräch bei ihm ankommt. Selbst Assistenten mit Gedächtnisfunktionen, hochgeladenen Dateien oder angebundenen Tools sehen nur, was tatsächlich mit ihnen geteilt wurde, und sie erinnern sich nur selektiv daran. Wenn etwas wichtig ist, gehört es in den Prompt.
 
 ### Liefere ausreichend Kontext
 
 <Compare 
   before={{ label: "Unzureichender Kontext", content: "Warum funktioniert meine Funktion nicht?" }}
-  after={{ label: "Ausreichender Kontext", content: "Ich habe eine Python-Funktion, die eine Liste von Dictionaries nach einem bestimmten Schlüsselwert filtern soll. Sie gibt eine leere Liste zurück, obwohl sie 3 Elemente zurückgeben sollte.\n\nFunktion:\ndef filter_items(items, key, value):\n    return [item for item in items if item[key] = value]\n\nAufruf: filter_items(items, 'status', 'active')\nErwartet: 2 Elemente, Bekommen: leere Liste" }}
+  after={{ label: "Ausreichender Kontext", content: "Ich habe eine Python-Funktion, die eine Liste von Dictionaries nach einem bestimmten Schlüsselwert filtern soll. Sie gibt eine leere Liste zurück, obwohl sie 3 Elemente zurückgeben sollte.\n\nFunktion:\ndef filter_items(items, key, value):\n    return [item for item in items if item.get(key) == value]\n\nBeispielelement: {'id': 7, 'status': 'active'}\nAufruf: filter_items(items, 'Status', 'active')\nErwartet: 3 Elemente, Bekommen: leere Liste" }}
 />
 
 ### Die Kontext-Checkliste
@@ -123,7 +123,7 @@ Frag nicht nur nach einer Antwort – leite das Modell zur gewünschten Antwort.
 
 ### Liefere Denkgerüste
 
-Für komplexe Aufgaben, leite den Denkprozess:
+Leite bei komplexen Aufgaben den Denkprozess an:
 
 <TryIt 
   title="Denkgerüst-Beispiel"
@@ -131,8 +131,8 @@ Für komplexe Aufgaben, leite den Denkprozess:
   prompt={`Ich muss zwischen PostgreSQL und MongoDB für mein E-Commerce-Projekt wählen.
 
 Denke systematisch durch:
-1. Zuerst, liste die typischen Anforderungen für eine E-Commerce-Datenbank auf
-2. Dann, bewerte jede Datenbank gegen jede Anforderung
+1. Liste zuerst die typischen Anforderungen für eine E-Commerce-Datenbank auf
+2. Bewerte dann jede Datenbank anhand jeder Anforderung
 3. Berücksichtige Kompromisse spezifisch für meinen Anwendungsfall
 4. Gib eine Empfehlung mit klarer Begründung`}
 />
@@ -176,7 +176,7 @@ Prompt Engineering ist ein iterativer Prozess. Dein erster Prompt ist selten dei
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-32">Ungenau</span>
-    <span className="text-muted-foreground">Fordere Zitate oder Schritt-für-Schritt-Begründung an</span>
+    <span className="text-muted-foreground">Fordere Quellenangaben oder Schritt-für-Schritt-Begründung an</span>
   </div>
 </div>
 
@@ -226,9 +226,9 @@ Warum du es lieben wirst: [1 Satz Hook]
 Verwende Personas, um verschiedene „Modi" der Antwort zu aktivieren:
 
 ```
-Als Advocatus Diaboli, argumentiere gegen meinen Vorschlag...
-Als unterstützender Mentor, hilf mir zu verbessern...
-Als skeptischer Investor, hinterfrage diesen Businessplan...
+Argumentiere als Advocatus Diaboli gegen meinen Vorschlag...
+Hilf mir als unterstützender Mentor, mich zu verbessern...
+Hinterfrage als skeptischer Investor diesen Businessplan...
 ```
 
 ## Prinzip 7: Kontrolliere die Ausgabestruktur
@@ -288,7 +288,7 @@ Vertraue Modellausgaben nie blind, besonders bei wichtigen Aufgaben.
 
 ```
 Löse dieses Problem und zeige deine Arbeit Schritt für Schritt.
-Nach dem Lösen, verifiziere deine Antwort durch [Prüfmethode].
+Verifiziere nach dem Lösen deine Antwort durch [Prüfmethode].
 ```
 
 ### Fordere mehrere Perspektiven an
@@ -301,7 +301,7 @@ Erkläre für jeden die Kompromisse.
 ### Baue Selbstprüfung ein
 
 ```
-Nach dem Generieren des Codes, überprüfe ihn auf:
+Überprüfe den Code nach dem Generieren auf:
 - Syntaxfehler
 - Randfälle
 - Sicherheitslücken
@@ -321,7 +321,7 @@ Liste alle gefundenen Probleme auf.
     "Iterieren und Verfeinern"
   ]}
   correctIndex={2}
-  explanation="Kontext ist König betont, dass KI-Modelle kein Gedächtnis zwischen Sitzungen haben und deine Gedanken nicht lesen können. Das Einschließen relevanter Hintergründe, Einschränkungen und Ziele hilft dem Modell, deine Bedürfnisse zu verstehen."
+  explanation="Kontext ist König betont, dass KI-Modelle deine Gedanken nicht lesen können: Sie wissen nur, was im Gespräch bei ihnen ankommt. Das Einschließen relevanter Hintergründe, Einschränkungen und Ziele hilft dem Modell, deine Bedürfnisse zu verstehen."
 />
 
 ## Übung: Fülle die Lücken
@@ -353,7 +353,7 @@ Format: Gib deine Antwort als {{format}} zurück.`}
     { id: "focus", correctAnswers: [], hint: "Welcher Aspekt sollte priorisiert werden?", context: "Eine Qualität oder ein Aspekt, der für die Aufgabe relevant ist" },
     { id: "format", correctAnswers: [], hint: "Wie sollte die Ausgabe strukturiert sein?", context: "Ein Ausgabeformattyp" }
   ]}
-  explanation="Ein gut strukturierter Prompt enthält: eine klare Rolle (Prinzip 1), ausreichend Kontext (Prinzip 3), spezifische Aufgabe (Prinzip 2), Einschränkungen (Prinzip 4) und Ausgabeformat (Prinzip 5). Die KI prüft, ob deine Entscheidungen intern konsistent sind."
+  explanation="Ein gut strukturierter Prompt enthält eine klare Rolle (Prinzip 6), ausreichend Kontext (Prinzip 3), eine spezifische Aufgabe mit Einschränkungen (Prinzip 2) und ein explizites Ausgabeformat (Prinzip 7). Die KI prüft, ob deine Entscheidungen intern konsistent sind."
 />
 
 <InteractiveChecklist
@@ -362,10 +362,10 @@ Format: Gib deine Antwort als {{format}} zurück.`}
     { id: "clarity", label: "Klarheit vor Cleverness", description: "Ist dein Prompt explizit und eindeutig?" },
     { id: "specificity", label: "Spezifität liefert Qualität", description: "Hast du Publikum, Länge, Ton und Format eingeschlossen?" },
     { id: "context", label: "Kontext ist König", description: "Enthält der Prompt alle notwendigen Hintergrundinformationen?" },
-    { id: "examples", label: "Beispiele schlagen Erklärungen", description: "Hast du gezeigt, was du willst, nicht nur beschrieben?" },
-    { id: "constraints", label: "Einschränkungen fokussieren Ausgabe", description: "Gibt es klare Grenzen für Umfang und Format?" },
+    { id: "guide", label: "Leite an, frag nicht nur", description: "Hast du die gewünschten Schritte oder Überlegungen vorgegeben, statt nur nach einer Antwort zu fragen?" },
     { id: "iteration", label: "Iterieren und Verfeinern", description: "Bist du bereit, basierend auf Ergebnissen zu verbessern?" },
-    { id: "persona", label: "Persona formt Perspektive", description: "Weiß die KI, welche Rolle sie spielen soll?" },
+    { id: "strengths", label: "Nutze die Stärken des Modells", description: "Zeigst du Muster und nutzt du Rollen, mit denen das Modell gut umgehen kann?" },
+    { id: "structure", label: "Kontrolliere die Ausgabestruktur", description: "Hast du genau das Format angegeben, das du brauchst?" },
     { id: "verify", label: "Verifizieren und Validieren", description: "Hast du Prüfungen für Genauigkeit eingebaut?" }
   ]}
 />

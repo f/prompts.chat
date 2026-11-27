@@ -207,9 +207,14 @@ export interface SemanticSearchResult {
   createdAt: Date;
 }
 
+/**
+ * Public prompts ranked by embedding similarity to the query. `where` narrows the candidates and
+ * defaults to every type except bots, which have their own listing.
+ */
 export async function semanticSearch(
   query: string,
-  limit: number = 20
+  limit: number = 20,
+  { where = NON_BOT_PROMPTS }: { where?: Prisma.PromptWhereInput } = {}
 ): Promise<SemanticSearchResult[]> {
   const config = await getConfig();
   if (!config.features.aiSearch) {
@@ -231,7 +236,7 @@ export async function semanticSearch(
       isPrivate: false,
       deletedAt: null,
       embedding: { not: Prisma.DbNull },
-      ...NON_BOT_PROMPTS,
+      ...where,
     },
     select: {
       id: true,

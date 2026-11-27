@@ -1,4 +1,4 @@
-Prompt texnikalarını öyrənmədən əvvəl, süni intellekt dil modellərinin həqiqətən necə işlədiyini anlamaq faydalıdır. Bu bilik sizi prompt yazmaqda daha yaxşı edəcək.
+Prompt texnikalarını öyrənmədən əvvəl, süni intellekt dil modellərinin həqiqətən necə işlədiyini anlamaq faydalıdır. Bu bilik daha yaxşı promptlar yazmağınıza kömək edəcək.
 
 <Callout type="info" title="Bu Niyə Vacibdir">
 Süni intellektin necə işlədiyini anlamaq yalnız ekspertlər üçün deyil. Birbaşa daha yaxşı promptlar yazmağınıza kömək edir. Süni intellektin sonra nə gələcəyini proqnozlaşdırdığını öyrəndiyinizdə, təbii olaraq daha aydın təlimatlar verəcəksiniz.
@@ -6,24 +6,24 @@ Süni intellektin necə işlədiyini anlamaq yalnız ekspertlər üçün deyil. 
 
 ## Böyük Dil Modelləri Nədir?
 
-Böyük Dil Modelləri (LLM-lər), böyük miqdarda mətn oxuyaraq öyrənən süni intellekt sistemləridir. Yaza, suallara cavab verə və insana bənzər söhbətlər edə bilərlər. "Böyük" adlandırılırlar çünki öyrətmə zamanı tənzimlənən milyardlarla kiçik parametrə (parametr adlanır) malikdirlər.
+Böyük Dil Modelləri (LLM-lər), böyük miqdarda mətn oxuyaraq öyrənən süni intellekt sistemləridir. Yaza, suallara cavab verə və insana bənzər söhbətlər edə bilərlər. "Böyük" adlandırılırlar, çünki öyrətmə zamanı tənzimlənən milyardlarla kiçik dəyərə (parametr adlanır) malikdirlər.
 
 ### LLM-lər Necə İşləyir (Sadələşdirilmiş)
 
-Əsasında, LLM-lər proqnoz maşınlarıdır. Onlara bir mətn verirsiniz və sonra nə gəlməli olduğunu proqnozlaşdırırlar.
+Mahiyyətcə, LLM-lər proqnoz maşınlarıdır. Onlara bir mətn verirsiniz və sonra nə gəlməli olduğunu proqnozlaşdırırlar.
 
 <TryIt compact prompt={`Bu cümləni tamamla: "Yeni bir şey öyrənməyin ən yaxşı yolu..."`} />
 
-"Fransanın paytaxtı..." yazdığınızda, süni intellekt "Paris" proqnozlaşdırır çünki Fransa haqqında mətnlərdə adətən bundan sonra bu gəlir. Böyük miqdarda məlumatla milyardlarla dəfə təkrarlanan bu sadə fikir, heyrətamiz dərəcədə ağıllı davranış yaradır.
+"Fransanın paytaxtı..." yazdığınızda, süni intellekt "Paris" proqnozlaşdırır, çünki Fransa haqqında mətnlərdə adətən bundan sonra bu gəlir. Böyük miqdarda məlumatla milyardlarla dəfə təkrarlanan bu sadə fikir, heyrətamiz dərəcədə ağıllı davranış yaradır.
 
 <TokenPredictionDemo />
 
 ### Əsas Anlayışlar
 
-**Tokenlər**: Süni intellekt hərf-hərf oxumur. Mətni "token" adlanan parçalara ayırır. Bir token "salam" kimi tam bir söz və ya "lar" kimi bir sözün hissəsi ola bilər. Tokenləri anlamaq, süni intellektin niyə bəzən yazım səhvləri etdiyini və ya müəyyən sözlərlə niyə çətinlik çəkdiyini izah etməyə kömək edir.
+**Tokenlər**: Süni intellekt hərf-hərf oxumur. Mətni "token" adlanan parçalara ayırır. Bir token "salam" kimi tam bir söz və ya "lar" kimi bir sözün hissəsi ola bilər. Tokenləri anlamaq, süni intellektin niyə bəzən orfoqrafik səhvlər etdiyini və ya müəyyən sözlərlə niyə çətinlik çəkdiyini izah etməyə kömək edir.
 
 <Callout type="info" title="Token Nədir?">
-Token, süni intellekt modelinin işlədiyi ən kiçik mətn vahididir. Həmişə tam bir söz deyil—bir söz hissəsi, durğu işarəsi və ya boşluq ola bilər. Məsələn, "inanılmaz" 3 token ola bilər: "inan" + "ıl" + "maz". Orta hesabla, **1 token ≈ 4 simvol** və ya **100 token ≈ 75 söz**. API xərcləri və kontekst limitləri tokenlərlə ölçülür.
+Token, süni intellekt modelinin işlədiyi ən kiçik mətn vahididir. Həmişə tam bir söz deyil—bir söz hissəsi, durğu işarəsi və ya boşluq ola bilər. Məsələn, "inanılmaz" 3 token ola bilər: "inan" + "ıl" + "maz". İngilis dilli mətn üçün geniş yayılmış təxmini qayda belədir: **1 token ≈ 4 simvol** və ya **100 token ≈ 75 söz**, lakin dəqiq nisbət modelin tokenizatorundan və dildən asılıdır. API xərcləri və kontekst limitləri tokenlərlə ölçülür.
 </Callout>
 
 <TokenizerDemo />
@@ -32,23 +32,23 @@ Token, süni intellekt modelinin işlədiyi ən kiçik mətn vahididir. Həmiş�
 
 <ContextWindowDemo />
 
-Kontekst pəncərələri modelə görə dəyişir və sürətlə genişlənir:
+Kontekst pəncərələri modelə görə dəyişir və sürətlə böyüyüb — ChatGPT-nin ilk versiyasındakı bir neçə min tokendən bu günün bir çox modelində bir milyon və daha artıq tokenə qədər:
 
 <div className="my-4 grid gap-2">
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">GPT-4o</span>
-    <span className="text-muted-foreground">128K token</span>
-  </div>
-  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">GPT-5</span>
-    <span className="text-muted-foreground">400K token</span>
-  </div>
-  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">Claude Sonnet 4</span>
+    <span className="font-semibold min-w-32">GPT-6</span>
     <span className="text-muted-foreground">1M token</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">Gemini 2.5</span>
+    <span className="font-semibold min-w-32">Claude Opus 5.5</span>
+    <span className="text-muted-foreground">1M token</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">Gemini 4</span>
+    <span className="text-muted-foreground">1M token</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">DeepSeek V4</span>
     <span className="text-muted-foreground">1M token</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
@@ -56,55 +56,57 @@ Kontekst pəncərələri modelə görə dəyişir və sürətlə genişlənir:
     <span className="text-muted-foreground">1M-10M token</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">DeepSeek R1</span>
-    <span className="text-muted-foreground">128K token</span>
+    <span className="font-semibold min-w-32">Mistral Small 4</span>
+    <span className="text-muted-foreground">256K token</span>
   </div>
 </div>
 
-**Temperatur**: Bu, süni intellektin nə qədər yaradıcı və ya proqnozlaşdırıla bilən olduğunu idarə edir. Aşağı temperatur (0.0-0.3) fokuslanmış, ardıcıl cavablar verir. Yüksək temperatur (0.7-1.0) daha yaradıcı, sürprizli cavablar verir.
+Daha böyük pəncərə o demək deyil ki, süni intellekt onun hər hissəsindən eyni dərəcədə yaxşı istifadə edir. Kontekst dolduqca modellər detalları gözdən qaçıra bilər, ona görə də fokuslanmış kontekst hələ də həddindən artıq doldurulmuş kontekstdən üstündür.
+
+**Temperatur**: Bu, süni intellektin nə qədər yaradıcı və ya proqnozlaşdırıla bilən olduğunu idarə edir. Aşağı temperatur (0.0-0.3) fokuslanmış, ardıcıl cavablar verir. Yüksək temperatur (0.7-1.0) daha yaradıcı, gözlənilməz cavablar verir. Bəzi yeni mühakimə (reasoning) modelləri bu parametri özləri idarə edir və fərdi dəyərləri nəzərə almır.
 
 <TemperatureDemo />
 
-**Sistem Promptu**: Süni intellektə bütün söhbət boyu necə davranacağını söyləyən xüsusi təlimatlar. Məsələn, "Sən mövzuları sadə şəkildə izah edən dost bir müəllimsən." Bütün süni intellekt alətləri bunu tənzimləməyə imkan vermir, amma mövcud olduqda çox güclüdür.
+**Sistem Promptu**: Süni intellektə bütün söhbət boyu necə davranacağını söyləyən xüsusi təlimatlar. Məsələn, "Sən mövzuları sadə şəkildə izah edən mehriban bir müəllimsən." Bütün süni intellekt alətləri bunu tənzimləməyə imkan vermir, amma mövcud olduqda çox güclüdür.
 
 ## Süni İntellekt Model Növləri
 
 ### Mətn Modelləri (LLM-lər)
-Ən geniş yayılmış növ, bunlar mətn girişlərinə mətn cavabları istehsal edirlər. Chatbotlara, yazı köməkçilərinə və kod yaradıcılarına güc verirlər. Nümunələr: GPT-4, Claude, Llama, Mistral.
+Ən geniş yayılmış növdür: mətn girişlərinə mətn cavabları yaradırlar. Çatbotlar, yazı köməkçiləri və kod generatorları məhz bunların əsasında işləyir. Nümunələr: GPT, Claude, Gemini, Llama, DeepSeek, Mistral.
 
 ### Multimodal Modellər
-Bunlar yalnız mətndən artığını anlaya bilərlər. Şəkillərə baxa, səs dinləyə və video izləyə bilərlər. Nümunələr: GPT-4V, Gemini, Claude 3.
+Bunlar yalnız mətndən artığını anlaya bilərlər. Şəkillərə baxa bilirlər, bəziləri isə həm də səs dinləyə və video izləyə bilir. GPT, Gemini və Claude da daxil olmaqla, bu günün aparıcı modellərinin əksəriyyəti multimodaldır.
 
-### Mətndən Şəkilə Modellər
+### Mətndən Şəklə Modellər
 
 <Callout type="info" title="Bu Kitab Haqqında">
 Bu kitab əsasən Böyük Dil Modelləri (mətn əsaslı süni intellekt) üçün prompt yazmağa fokuslanır, amma aydın və spesifik prompt yazma prinsipləri şəkil yaratmağa da tətbiq olunur. Bu modellər üçün promptlarda ustalıq əldə etmək, əla nəticələr almaq üçün eyni dərəcədə vacibdir.
 </Callout>
 
-DALL-E, Midjourney, Nano Banana və Stable Diffusion kimi mətndən şəkilə modellər, mətn təsvirlərindən şəkillər yaradırlar. Mətn modellərindən fərqli işləyirlər:
+GPT Image, Midjourney, Nano Banana və Stable Diffusion kimi mətndən şəklə modellər, mətn təsvirlərindən şəkillər yaradırlar. Mətn modellərindən fərqli işləyirlər:
 
 **Necə İşləyirlər:**
 1. **Öyrətmə**: Model milyonlarla şəkil-mətn cütündən öyrənir, hansı sözlərin hansı vizual anlayışlara uyğun gəldiyini başa düşür
-2. **Diffuziya Prosesi**: Təsadüfi səs-küydən başlayaraq, model mətn promptunuz tərəfindən istiqamətləndirilərək şəkili tədricən yaxşılaşdırır
-3. **CLIP Rəhbərliyi**: Ayrı bir model (CLIP) sözlərinizi vizual anlayışlara bağlamağa kömək edir, şəkilin təsvirinizlə uyğun gəlməsini təmin edir
+2. **Diffuziya Prosesi**: Bir çox modeldə generasiya təsadüfi səs-küydən başlayır və model mətn promptunuzun istiqamətləndirməsi ilə şəkli tədricən təkmilləşdirir
+3. **Mətnlə İstiqamətləndirmə**: Mətn kodlayıcısı (məsələn, CLIP və ya daha yeni sistemlərdə tam dil modeli) sözlərinizi vizual anlayışlarla əlaqələndirməyə kömək edir və şəklin təsvirinizə uyğun gəlməsini təmin edir
 
 <TextToImageDemo />
 
 **Şəkillər üçün Prompt Yazmaq Fərqlidir:**
-Cümlələr yazdığınız mətn promptlarından fərqli olaraq, şəkil promptları adətən vergüllərlə ayrılmış təsviri ifadələr kimi daha yaxşı işləyir:
+İstəklərinizi yazdığınız mətn promptlarından fərqli olaraq, şəkil promptları şəklin necə görünməli olduğunu təsvir edir. Bir çox şəkil modeli, xüsusən Stable Diffusion kimi diffuziya modelləri, vergüllə ayrılmış təsviri ifadələrə yaxşı cavab verir. Güclü dil anlayışına malik yeni modellər isə tam təsviri cümlələrə də əməl edir. Hər iki halda əsas olan detallardır: obyekt, mühit, işıqlandırma və üslub.
 
 <Compare 
   before={{ label: "Mətn Tərzi Prompt", content: "Zəhmət olmasa pəncərə kənarında oturub çöldəki yağışa baxan bir pişik şəkli yarat" }}
-  after={{ label: "Şəkil Tərzi Prompt", content: "narıncı zolaqlı pişik, pəncərə kənarında oturan, yağış izləyən, rahat iç məkan, yumşaq təbii işıq, fotorealistik, dayaz sahə dərinliyi, 4K" }}
+  after={{ label: "Şəkil Tərzi Prompt", content: "narıncı zolaqlı pişik, pəncərə kənarında oturan, yağış izləyən, rahat interyer, yumşaq təbii işıq, fotorealistik, dayaz sahə dərinliyi, 4K" }}
 />
 
 ### Mətndən Videoya Modellər
 
-Mətndən videoya ən yeni sərhəddir. Sora 2, Runway və Veo kimi modellər mətn təsvirlərindən hərəkətli şəkillər yaradırlar. Şəkil modelləri kimi, promptunuzun keyfiyyəti birbaşa çıxışınızın keyfiyyətini müəyyən edir—prompt mühəndisliyi burada da eyni dərəcədə vacibdir.
+Mətndən videoya generasiya ən yeni istiqamətdir. Veo, Runway və Kling kimi modellər mətn təsvirlərindən hərəkətli şəkillər yaradırlar. Şəkil modelləri kimi, promptunuzun keyfiyyəti birbaşa çıxışınızın keyfiyyətini müəyyən edir—prompt mühəndisliyi burada da eyni dərəcədə vacibdir.
 
 **Necə İşləyirlər:**
-1. **Zamansal Anlayış**: Tək şəkillərdən kənarda, bu modellər şeylərin zaman içində necə hərəkət etdiyini və dəyişdiyini anlayırlar
-2. **Fizika Simulyasiyası**: Əsas fizikanı öyrənirlər—obyektlərin necə düşdüyünü, suyun necə axdığını, insanların necə yeridiyi
+1. **Zaman Anlayışı**: Tək şəkillərdən əlavə, bu modellər şeylərin zaman içində necə hərəkət etdiyini və dəyişdiyini anlayırlar
+2. **Fizika Simulyasiyası**: Əsas fizikanı öyrənirlər—obyektlərin necə düşdüyünü, suyun necə axdığını, insanların necə yeridiyini
 3. **Kadr Ardıcıllığı**: Bir çox kadr boyunca ardıcıl mövzular və səhnələr saxlayırlar
 4. **Zamanda Diffuziya**: Şəkil modellərinə bənzər, amma tək kadrlər əvəzinə ardıcıl seriyalar istehsal edir
 
@@ -120,7 +122,7 @@ Video promptları statik bir səhnə deyil, zaman içində hərəkəti təsvir e
 />
 
 ### İxtisaslaşmış Modellər
-Kod yaratma (Codex, CodeLlama), musiqi yaratma (Suno, Udio) və ya tibbi diaqnoz və ya hüquqi sənəd analizi kimi sahəyə xas tətbiqlər üçün incə tənzimlənmiş.
+Kod yaratma (Codestral, OpenAI-nin Codex modelləri), musiqi yaratma (Suno, Udio) kimi xüsusi tapşırıqlar və ya tibbi diaqnoz və ya hüquqi sənəd analizi kimi sahəyə xas tətbiqlər üçün incə tənzimlənmiş modellər.
 
 ## Model Qabiliyyətləri və Məhdudiyyətləri
 
@@ -131,14 +133,14 @@ LLM-lərin nə edə bilib nə edə bilmədiyini kəşf edin. Nümunə promptlar�
 ### Halüsinasiyaları Anlamaq
 
 <Callout type="warning" title="Süni İntellekt Şeylər Uydura Bilər">
-Bəzən süni intellekt doğru görünən amma olmayan şeylər yazır. Buna "halüsinasiya" deyilir. Bu bir səhv deyil. Proqnozun işləmə üsuludur. Vacib faktları həmişə iki dəfə yoxlayın.
+Bəzən süni intellekt doğru görünən amma olmayan şeylər yazır. Buna "halüsinasiya" deyilir. Bu, proqram xətası deyil. Sadəcə proqnozlaşdırma belə işləyir. Vacib faktları həmişə iki dəfə yoxlayın.
 </Callout>
 
 Süni intellekt niyə şeylər uydurur?
 
 1. Həmişə doğru olan mətn deyil, yaxşı görünən mətn yazmağa çalışır
-2. Öyrəndiyi internet (harada öyrənibsə) də səhvlər ehtiva edir
-3. Bir şeyin həqiqi olub olmadığını əslində yoxlaya bilmir
+2. Öyrəndiyi internetdə də səhvlər var
+3. Tək başına bir şeyin həqiqi olub-olmadığını yoxlaya bilmir (veb axtarış kimi alətlərə qoşulmayıbsa)
 
 <Collapsible title="Yanlış Cavablardan Necə Qaçınmalı">
 
@@ -149,106 +151,106 @@ Süni intellekt niyə şeylər uydurur?
 
 </Collapsible>
 
-<TryIt compact prompt={`İlk iPhone hansı il çıxdı? Zəhmət olmasa bu cavaba nə qədər əmin olduğunuzu izah edin.`} />
+<TryIt compact prompt={`İlk iPhone hansı il çıxdı? Zəhmət olmasa bu cavaba nə qədər əmin olduğunu izah et.`} />
 
 ## Süni İntellekt Necə Öyrənir: Üç Addım
 
-Süni intellekt şeyləri sehrli şəkildə bilmir. Məktəbə getmək kimi üç öyrənmə addımından keçir:
+Süni intellekt hər şeyi sehrli şəkildə bilmir. Məktəbdə olduğu kimi, üç öyrənmə addımından keçir:
 
 ### Addım 1: Ön Öyrətmə (Oxumağı Öyrənmək)
 
-İnternetdəki hər kitabı, veb saytı və məqaləni oxuduğunuzu təsəvvür edin. Ön öyrətmədə olan budur. Süni intellekt milyardlarla söz oxuyur və nümunələri öyrənir:
+İnternetdəki hər kitabı, veb saytı və məqaləni oxuduğunuzu təsəvvür edin. Ön öyrətmə zamanı baş verən məhz budur. Süni intellekt milyardlarla söz oxuyur və nümunələri öyrənir:
 
 - Cümlələrin necə qurulduğu
-- Hansı sözlərin adətən birlikdə getdiyi
+- Hansı sözlərin adətən birlikdə işləndiyi
 - Dünya haqqında faktlar
 - Fərqli yazı üslubları
 
-Bu aylar çəkir və milyonlarla dollara başa gəlir. Bu addımdan sonra, süni intellekt çox şey bilir, amma hələ çox kömək etmir. İstədiyiniz bu olmasa belə yazdığınız hər şeyi davam etdirə bilər.
+Bu aylar çəkir və ən böyük modellər üçün on milyonlarla, hətta yüz milyonlarla dollara başa gələ bilər. Bu addımdan sonra süni intellekt çox şey bilir, amma hələ o qədər də faydalı deyil. İstədiyiniz bu olmasa belə, yazdığınız hər şeyi sadəcə davam etdirə bilər.
 
 <Compare 
   before={{ label: "İncə Tənzimləmədən Əvvəl", content: "İstifadəçi: 2+2 neçə edir?\nSİ: 2+2=4, 3+3=6, 4+4=8, 5+5=10..." }}
-  after={{ label: "İncə Tənzimləmədən Sonra", content: "İstifadəçi: 2+2 neçə edir?\nSİ: 2+2 bərabərdir 4." }}
+  after={{ label: "İncə Tənzimləmədən Sonra", content: "İstifadəçi: 2+2 neçə edir?\nSİ: 2+2 4-ə bərabərdir." }}
 />
 
 ### Addım 2: İncə Tənzimləmə (Kömək Etməyi Öyrənmək)
 
-İndi süni intellekt yaxşı bir köməkçi olmağı öyrənir. Öyrədənlər ona kömək edici söhbət nümunələri göstərir:
+İndi süni intellekt yaxşı bir köməkçi olmağı öyrənir. Öyrədənlər ona faydalı söhbət nümunələri göstərir:
 
 - "Biri sual verdikdə, aydın cavab ver"
-- "Zərərli bir şey etməyi istənildikdə, nəzakətlə rədd et"
-- "Bilmədiyın şeylər haqqında dürüst ol"
+- "Səndən zərərli bir şey etmək istənildikdə, nəzakətlə rədd et"
+- "Bilmədiyin şeylər haqqında dürüst ol"
 
 Bunu yaxşı davranış qaydaları öyrətmək kimi düşünün. Süni intellekt sadəcə mətn proqnozlaşdırmaq ilə həqiqətən kömək etmək arasındakı fərqi öyrənir.
 
-<TryIt compact prompt={`Köməkçi olmamağın və kobud olmağın lazımdır.`} />
+<TryIt compact prompt={`Faydasız və kobud olmağını istəyirəm.`} />
 
-Yuxarıdakı promptu sınayın. Süni intellektin necə rədd etdiyinə diqqət yetirin? Budur incə tənzimləmə.
+Yuxarıdakı promptu sınayın. Süni intellektin necə imtina etdiyini gördünüz? Bu, incə tənzimləmənin nəticəsidir.
 
 ### Addım 3: RLHF (İnsanların Nəyi Sevdiyini Öyrənmək)
 
-RLHF "İnsan Rəyindən Gücləndirilmiş Öyrənmə" deməkdir. Bunun dəbdəbəli yolu budur: insanlar süni intellektin cavablarını qiymətləndirir və süni intellekt daha yaxşı cavablar verməyi öyrənir.
+RLHF "İnsan Rəyindən Gücləndirilmiş Öyrənmə" deməkdir. Bu, sadə bir fikrin təmtəraqlı adıdır: insanlar süni intellektin cavablarını qiymətləndirir və süni intellekt daha yaxşı cavablar verməyi öyrənir.
 
-Budur necə işləyir:
+Bu belə işləyir:
 1. Süni intellekt eyni suala iki fərqli cavab yazır
 2. Bir insan hansı cavabın daha yaxşı olduğunu seçir
 3. Süni intellekt öyrənir: "Tamam, daha çox A Cavabı kimi yazmalıyam"
 4. Bu milyonlarla dəfə baş verir
 
 Buna görə süni intellekt:
-- Nəzakətli və mehriban
+- Nəzakətli və mehribandır
 - Bir şey bilmədiyini qəbul edir
 - Bir mövzunun fərqli tərəflərini görməyə çalışır
 - Mübahisəli ifadələrdən qaçınır
 
 <Callout type="tip" title="Bu Sizin Üçün Niyə Vacibdir">
-Bu üç addımı bilmək, süni intellekt davranışını anlamağınıza kömək edir. Süni intellekt bir istəyi rədd etdikdə, bu incə tənzimləmədir. Süni intellekt əlavə nəzakətli olduqda, bu RLHF-dir. Süni intellekt təsadüfi faktlar bildikdə, bu ön öyrətmədir.
+Bu üç addımı bilmək, süni intellekt davranışını anlamağınıza kömək edir. Süni intellekt bir istəyi rədd etdikdə, bu incə tənzimləmədir. Süni intellekt həddən artıq nəzakətli olduqda, bu RLHF-dir. Süni intellekt təsadüfi faktlar bildikdə, bu ön öyrətmədir.
 </Callout>
 
 ## Bu Promptlarınız Üçün Nə Deməkdir
 
-İndi süni intellektin necə işlədiyini anladığınıza görə, bu biliyi necə istifadə edəcəyiniz budur:
+İndi süni intellektin necə işlədiyini anladığınıza görə, gəlin bu bilikdən necə istifadə edəcəyinizə baxaq:
 
 ### 1. Aydın və Spesifik Olun
 
-Süni intellekt sözlərinizə görə sonra nə gələcəyini proqnozlaşdırır. Qeyri-müəyyən promptlar qeyri-müəyyən cavablara səbəb olur. Spesifik promptlar spesifik nəticələr alır.
+Süni intellekt sözlərinizə görə sonra nə gələcəyini proqnozlaşdırır. Qeyri-müəyyən promptlar qeyri-müəyyən cavablara səbəb olur. Spesifik promptlar spesifik nəticələr verir.
 
 <Compare 
   before={{ label: "Qeyri-müəyyən", content: "Mənə itlər haqqında məlumat ver" }}
-  after={{ label: "Spesifik", content: "Mənzillər üçün yaxşı olan 5 it cinsini, hər biri üçün bir cümləlik izahatla siyahıla" }}
+  after={{ label: "Spesifik", content: "Mənzildə saxlamaq üçün uyğun olan 5 it cinsini, hər biri üçün bir cümləlik izahatla siyahıla" }}
 />
 
-<TryIt compact prompt={`Mənzillər üçün yaxşı olan 5 it cinsini, hər biri üçün bir cümləlik izahatla siyahıla.`} />
+<TryIt compact prompt={`Mənzildə saxlamaq üçün uyğun olan 5 it cinsini, hər biri üçün bir cümləlik izahatla siyahıla.`} />
 
 ### 2. Kontekst Verin
 
-Süni intellekt siz söyləmədikdə sizin haqqınızda heç nə bilmir. Hər söhbət sıfırdan başlayır. Süni intellektin ehtiyac duyduğu arxa plan məlumatını əlavə edin.
+Siz deməsəniz, süni intellekt sizin haqqınızda heç nə bilmir. Bəzi tətbiqlərdə artıq bir söhbətdən digərinə bəzi detalları ötürən yaddaş funksiyaları var, amma onlar dediklərinizin yalnız bir hissəsini xatırlayır. Süni intellektin qarşıdakı tapşırıq üçün ehtiyac duyduğu əlavə məlumatları promptunuza daxil edin.
 
 <Compare 
-  before={{ label: "Əksik Kontekst", content: "Bu yaxşı qiymətdir?" }}
-  after={{ label: "Kontekstlə", content: "45.000 km-də 2020 Honda Civic işlənmiş avtomobil alıram. Satıcı 15.000 AZN istəyir. Azərbaycan bazarı üçün bu yaxşı qiymətdir?" }}
+  before={{ label: "Çatışmayan Kontekst", content: "Bu, yaxşı qiymətdirmi?" }}
+  after={{ label: "Kontekstlə", content: "45.000 km yürüşlü, 2020-ci il buraxılışı olan işlənmiş Honda Civic alıram. Satıcı 15.000 AZN istəyir. Azərbaycan bazarı üçün bu, yaxşı qiymətdirmi?" }}
 />
 
-<TryIt compact prompt={`45.000 km-də 2020 Honda Civic işlənmiş avtomobil alıram. Satıcı 15.000 AZN istəyir. Azərbaycan bazarı üçün bu yaxşı qiymətdir?`} />
+<TryIt compact prompt={`45.000 km yürüşlü, 2020-ci il buraxılışı olan işlənmiş Honda Civic alıram. Satıcı 15.000 AZN istəyir. Azərbaycan bazarı üçün bu, yaxşı qiymətdirmi?`} />
 
-### 3. Süni İntellektlə İşləyin, Əksinə Deyil
+### 3. Süni İntellektlə Birlikdə İşləyin, Ona Qarşı Deyil
 
-Unutmayın: Süni intellekt kömək etmək üçün öyrədilib. Şeyləri kömək edən bir dostdan soruşduğunuz kimi istəyin.
+Unutmayın: Süni intellekt kömək etmək üçün öyrədilib. İstəklərinizi köməksevər bir dostdan xahiş etdiyiniz kimi bildirin.
 
 <Compare 
   before={{ label: "Süni İntellektlə Mübarizə", content: "Yəqin rədd edəcəksən bilirəm, amma..." }}
-  after={{ label: "Birlikdə İşləmək", content: "Bir sirr romanı yazıram və süjet dönüşü ilə bağlı köməyə ehtiyacım var. Dedektivin pis adamı kəşf etməsinin üç sürprizli yolunu təklif edə bilərsən?" }}
+  after={{ label: "Birlikdə İşləmək", content: "Detektiv roman yazıram və süjet dönüşü ilə bağlı köməyə ehtiyacım var. Detektivin cinayətkarı ifşa etməsinin üç gözlənilməz yolunu təklif edə bilərsən?" }}
 />
 
 ### 4. Vacib Şeyləri Həmişə İki Dəfə Yoxlayın
 
-Süni intellekt səhv olduqda belə özündən əmin görünür. Vacib hər şey üçün məlumatı özünüz doğrulayın.
+Süni intellekt səhv etdikdə belə özündən əmin görünür. Vacib hər şey üçün məlumatı özünüz doğrulayın.
 
 <TryIt compact prompt={`Bakının əhalisi nə qədərdir? Həmçinin, biliklərin hansı tarixə qədər aktualdır?`} />
 
 ### 5. Vacib Şeyləri Önə Qoyun
 
-Promptunuz çox uzundursa, ən vacib təlimatları əvvələ qoyun. Süni intellekt ilk gələnə daha çox diqqət yetirir.
+Promptunuz çox uzundursa, ən vacib təlimatları əvvələ qoyun və onları sonda təkrarlamağı da düşünün. Süni intellekt uzun mətnin ən çox əvvəlinə və sonuna diqqət yetirir, ortada qalan detalları isə gözdən qaçıra bilər.
 
 ## Doğru Süni İntellekti Seçmək
 
@@ -257,29 +259,29 @@ Fərqli süni intellekt modelləri fərqli şeylərdə yaxşıdır:
 <div className="my-4 grid gap-2">
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">Sürətli suallar</span>
-    <span className="text-muted-foreground">GPT-4o və ya Claude 3.5 Sonnet kimi daha sürətli modellər</span>
+    <span className="text-muted-foreground">GPT-6 Luna, Claude Haiku 5.5 və ya Gemini Flash kimi daha sürətli modellər</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">Çətin problemlər</span>
-    <span className="text-muted-foreground">GPT-5.2 və ya Claude 4.5 Opus kimi daha ağıllı modellər</span>
+    <span className="text-muted-foreground">GPT-6 Astra, Claude Fable 5.1 və ya Gemini 4 Argon kimi daha ağıllı modellər</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">Kod yazmaq</span>
-    <span className="text-muted-foreground">Kod fokuslu modellər və ya ən ağıllı ümumi modellər</span>
+    <span className="text-muted-foreground">Koda yönəlmiş modellər və ya ən ağıllı ümumi modellər</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">Uzun sənədlər</span>
-    <span className="text-muted-foreground">Böyük kontekst pəncərəli modellər (Claude, Gemini)</span>
+    <span className="text-muted-foreground">Böyük kontekst pəncərəli modellər (bir çoxu artıq 1M tokeni emal edə bilir)</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">Aktual hadisələr</span>
-    <span className="text-muted-foreground">İnternet girişi olan modellər</span>
+    <span className="text-muted-foreground">İnternetə çıxışı olan modellər</span>
   </div>
 </div>
 
 ## Xülasə
 
-Süni intellekt dil modelləri mətn üzərində öyrədilmiş proqnoz maşınlarıdır. Bir çox şeydə əladırlar, amma həqiqi məhdudiyyətləri var. Süni intellektdən istifadənin ən yaxşı yolu necə işlədiyini anlamaq və güclü tərəflərinə oynayan promptlar yazmaqdır.
+Süni intellekt dil modelləri mətn üzərində öyrədilmiş proqnoz maşınlarıdır. Bir çox şeydə əladırlar, amma real məhdudiyyətləri var. Süni intellektdən istifadənin ən yaxşı yolu onun necə işlədiyini anlamaq və güclü tərəflərindən yararlanan promptlar yazmaqdır.
 
 <Quiz 
   question="Süni intellekt niyə bəzən yanlış məlumat uydurur?"
@@ -290,13 +292,13 @@ Süni intellekt dil modelləri mətn üzərində öyrədilmiş proqnoz maşınla
     "İnsanlar pis promptlar yazdığı üçün"
   ]}
   correctIndex={1}
-  explanation="Süni intellekt doğru olanı deyil, doğru görünəni proqnozlaşdırmaq üçün öyrədilir. Şeyləri axtara və ya bir şeyin doğru olub olmadığını doğrulaya bilmir, buna görə bəzən özündən əmin şəkildə yanlış şeylər yazır."
+  explanation="Süni intellekt faktları yoxlamaq üçün deyil, doğru səslənəni proqnozlaşdırmaq üçün öyrədilir. Veb axtarış kimi bir alətə qoşulmadıqca, məlumat axtara və ya bir şeyin doğru olub-olmadığını yoxlaya bilmir, buna görə bəzən özündən əmin şəkildə yanlış şeylər yazır."
 />
 
 <TryIt 
-  title="Süni İntellektə Özünü Soruş"
+  title="Süni İntellektdən Özü Haqqında Soruşun"
   prompt="Bir süni intellekt olaraq necə işlədiyini izah et. Nələr edə bilərsən və məhdudiyyətlərin nələrdir?"
-  description="Süni intellektə özünü izah etməsini istəyin. Proqnoz modeli olduğunu necə danışdığını və məhdudiyyətlərini necə qəbul etdiyini görün."
+  description="Süni intellektə özünü izah etməsini istəyin. Proqnoz modeli olması barədə necə danışdığını və məhdudiyyətlərini necə qəbul etdiyini görün."
 />
 
-Növbəti fəsildə, yaxşı bir promptu nəyin təşkil etdiyini və əla nəticələr alan promptları necə yazacağımızı öyrənəcəyik.
+Növbəti fəsildə yaxşı promptun nədən ibarət olduğunu və əla nəticələr verən promptları necə yazacağımızı öyrənəcəyik.

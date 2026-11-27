@@ -1,20 +1,20 @@
 Prompt engineering is zelden een proces dat in één keer slaagt. De beste prompts ontstaan door iteratie—testen, observeren en verfijnen totdat je de gewenste resultaten bereikt.
 
-<Callout type="info" title="Eerste Versie, Niet Definitieve Versie">
-Beschouw je eerste prompt als een ruwe schets. Zelfs ervaren prompt engineers slagen er zelden in om het de eerste keer perfect te doen.
+<Callout type="info" title="Een eerste versie, geen eindversie">
+Beschouw je eerste prompt als een ruwe schets. Zelfs ervaren prompt engineers hebben het zelden in één keer goed.
 </Callout>
 
-## De Iteratiecyclus
+## De iteratiecyclus
 
 Effectieve promptverfijning volgt een voorspelbare cyclus: schrijven, testen, analyseren en verbeteren. Elke iteratie brengt je dichter bij een prompt die betrouwbaar de resultaten oplevert die je nodig hebt.
 
 <IterativeRefinementDemo />
 
-## Veelvoorkomende Verfijningspatronen
+## Veelvoorkomende verfijningspatronen
 
-De meeste prompt-mislukkingen vallen in een handvol categorieën. Door deze patronen te leren herkennen, kun je problemen snel diagnosticeren en oplossen zonder helemaal opnieuw te beginnen.
+De meeste mislukte prompts vallen in een handvol categorieën. Door deze patronen te leren herkennen, kun je problemen snel diagnosticeren en oplossen zonder helemaal opnieuw te beginnen.
 
-### Probleem: Output Te Lang
+### Probleem: output te lang
 
 Een van de meest voorkomende problemen. Zonder expliciete beperkingen hebben modellen de neiging om grondig te zijn in plaats van beknopt.
 
@@ -25,9 +25,9 @@ Een van de meest voorkomende problemen. Zonder expliciete beperkingen hebben mod
   afterLabel="Verfijnd"
 />
 
-### Probleem: Output Te Vaag
+### Probleem: output te vaag
 
-Vage prompts produceren vage outputs. Het model kan niet gedachten lezen over wat "beter" betekent of welke aspecten het belangrijkst voor je zijn.
+Vage prompts produceren vage outputs. Het model kan geen gedachten lezen en weet dus niet wat jij onder "beter" verstaat of welke aspecten voor jou het belangrijkst zijn.
 
 <DiffView 
   before="Give me tips for better presentations."
@@ -36,7 +36,7 @@ Vage prompts produceren vage outputs. Het model kan niet gedachten lezen over wa
   afterLabel="Verfijnd"
 />
 
-### Probleem: Verkeerde Toon
+### Probleem: verkeerde toon
 
 Toon is subjectief en varieert per context. Wat voor het model "professioneel" klinkt, past mogelijk niet bij de stem van je organisatie of de relatie met je ontvanger.
 
@@ -47,7 +47,7 @@ Toon is subjectief en varieert per context. Wat voor het model "professioneel" k
   afterLabel="Verfijnd"
 />
 
-### Probleem: Belangrijke Informatie Ontbreekt
+### Probleem: belangrijke informatie ontbreekt
 
 Open verzoeken krijgen open antwoorden. Als je specifieke soorten feedback nodig hebt, moet je er expliciet om vragen.
 
@@ -66,7 +66,7 @@ For each issue found, explain the problem and suggest a fix.
   afterLabel="Verfijnd"
 />
 
-### Probleem: Inconsistent Formaat
+### Probleem: inconsistent formaat
 
 Zonder een sjabloon zal het model elke reactie anders structureren, waardoor vergelijking moeilijk wordt en automatisering onmogelijk.
 
@@ -86,18 +86,18 @@ Zonder een sjabloon zal het model elke reactie anders structureren, waardoor ver
   afterLabel="Verfijnd"
 />
 
-## Systematische Verfijningsaanpak
+## Systematische verfijningsaanpak
 
 Willekeurige wijzigingen verspillen tijd. Een systematische aanpak helpt je problemen snel te identificeren en efficiënt op te lossen.
 
-### Stap 1: Diagnosticeer het Probleem
+### Stap 1: Diagnosticeer het probleem
 
-Voordat je iets verandert, identificeer wat er daadwerkelijk mis is. Gebruik deze diagnostische tabel om symptomen aan oplossingen te koppelen:
+Stel vast wat er werkelijk mis is voordat je iets verandert. Gebruik deze diagnostische tabel om symptomen aan oplossingen te koppelen:
 
 <div className="my-4 grid gap-2">
   <div className="grid grid-cols-3 gap-2 p-3 bg-muted/50 rounded-lg text-sm">
     <span className="font-semibold">Symptoom</span>
-    <span className="font-semibold">Waarschijnlijke Oorzaak</span>
+    <span className="font-semibold">Waarschijnlijke oorzaak</span>
     <span className="font-semibold">Oplossing</span>
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
@@ -107,7 +107,7 @@ Voordat je iets verandert, identificeer wat er daadwerkelijk mis is. Gebruik dez
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Te kort</span>
-    <span className="text-muted-foreground">Ontbreekt detailverzoek</span>
+    <span className="text-muted-foreground">Geen vraag om details</span>
     <span className="text-green-600 dark:text-green-400">Vraag om uitwerking</span>
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
@@ -128,13 +128,13 @@ Voordat je iets verandert, identificeer wat er daadwerkelijk mis is. Gebruik dez
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Inconsistent</span>
     <span className="text-muted-foreground">Geen voorbeelden gegeven</span>
-    <span className="text-green-600 dark:text-green-400">Voeg few-shot voorbeelden toe</span>
+    <span className="text-green-600 dark:text-green-400">Voeg few-shot-voorbeelden toe</span>
   </div>
 </div>
 
-### Stap 2: Maak Gerichte Wijzigingen
+### Stap 2: Maak gerichte wijzigingen
 
-Weersta de drang om alles te herschrijven. Het tegelijkertijd wijzigen van meerdere variabelen maakt het onmogelijk om te weten wat hielp en wat schadde. Maak één wijziging, test deze en ga dan verder:
+Weersta de drang om alles te herschrijven. Als je meerdere variabelen tegelijk wijzigt, kun je onmogelijk weten wat hielp en wat schadde. Maak één wijziging, test deze en ga dan verder:
 
 ```
 Iteratie 1: Voeg lengtebeperking toe
@@ -143,12 +143,12 @@ Iteratie 3: Voeg voorbeeld toe
 Iteratie 4: Verfijn tooninstructies
 ```
 
-### Stap 3: Documenteer Wat Werkt
+### Stap 3: Documenteer wat werkt
 
 Kennis over prompt engineering gaat gemakkelijk verloren. Houd een logboek bij van wat je hebt geprobeerd en waarom. Dit bespaart tijd wanneer je later terugkeert naar de prompt of vergelijkbare uitdagingen tegenkomt:
 
 ```markdown
-## Prompt: Klant E-mail Reactie
+## Prompt: reactie op klant-e-mail
 
 ### Versie 1 (te formeel)
 "Write a response to this customer complaint."
@@ -167,11 +167,11 @@ Show empathy first."
 Tone: Friendly, professional, empathetic but not groveling."
 ```
 
-## Praktijkvoorbeeld van Iteratie
+## Praktijkvoorbeeld van iteratie
 
 Laten we een complete iteratiecyclus doorlopen om te zien hoe elke verfijning voortbouwt op de vorige. Let op hoe elke versie specifieke tekortkomingen van de vorige aanpakt.
 
-### Taak: Genereer Productnamen
+### Taak: productnamen genereren
 
 <VersionDiff versions={[
   {
@@ -216,55 +216,55 @@ Name | Pronunciation | Why It Works | Domain Availability Guess`,
   }
 ]} />
 
-## Verfijningsstrategieën per Taaktype
+## Verfijningsstrategieën per taaktype
 
-Verschillende taken falen op voorspelbare manieren. Het kennen van de veelvoorkomende faalwijzen helpt je problemen sneller te diagnosticeren en op te lossen.
+Verschillende taken falen op voorspelbare manieren. Als je de veelvoorkomende faalwijzen kent, kun je problemen sneller diagnosticeren en oplossen.
 
-### Voor Contentgeneratie
+### Voor contentgeneratie
 
-Contentgeneratie produceert vaak generieke, niet-gerichte of slecht geformatteerde output. De oplossing omvat meestal specifieker zijn over beperkingen, concrete voorbeelden geven of je merkstem expliciet definiëren.
+Contentgeneratie produceert vaak generieke, niet-gerichte of slecht geformatteerde output. De oplossing is meestal: specifiekere beperkingen stellen, concrete voorbeelden geven of je merkstem expliciet definiëren.
 
 <InfoGrid items={[
-  { icon: "target", title: "Te Generiek", description: "Voeg specifieke beperkingen en context toe", example: "\"Write about dogs\" → \"Write about golden retrievers for first-time owners, focusing on training and exercise needs\"" },
-  { icon: "scissors", title: "Te Lang", description: "Stel woord-/alinealimieten in", example: "Voeg toe: \"Keep response under 150 words\" of \"Maximum 3 paragraphs\"" },
-  { icon: "palette", title: "Verkeerde Stijl", description: "Geef stijlvoorbeelden", example: "\"Write in the style of this example: [paste sample text]\"" },
-  { icon: "megaphone", title: "Niet On-Brand", description: "Voeg richtlijnen voor merkstem toe", example: "\"Use friendly, casual tone. Avoid jargon. Address reader as 'you'.\"" }
+  { icon: "target", title: "Te generiek", description: "Voeg specifieke beperkingen en context toe", example: "\"Write about dogs\" → \"Write about golden retrievers for first-time owners, focusing on training and exercise needs\"" },
+  { icon: "scissors", title: "Te lang", description: "Stel woord-/alinealimieten in", example: "Voeg toe: \"Keep response under 150 words\" of \"Maximum 3 paragraphs\"" },
+  { icon: "palette", title: "Verkeerde stijl", description: "Geef stijlvoorbeelden", example: "\"Write in the style of this example: [paste sample text]\"" },
+  { icon: "megaphone", title: "Past niet bij het merk", description: "Voeg richtlijnen voor merkstem toe", example: "\"Use friendly, casual tone. Avoid jargon. Address reader as 'you'.\"" }
 ]} />
 
-### Voor Codegeneratie
+### Voor codegeneratie
 
-Code-output kan technisch falen (syntaxfouten, verkeerde taalfuncties) of architecturaal (slechte patronen, ontbrekende gevallen). Technische problemen vereisen versie-/omgevingsspecificaties; architecturale problemen vereisen ontwerpbegeleiding.
+Code-output kan technisch falen (syntaxfouten, verkeerde taalfuncties) of architectonisch (slechte patronen, ontbrekende gevallen). Technische problemen vereisen informatie over versie en omgeving; architectonische problemen vereisen ontwerprichtlijnen.
 
 <InfoGrid items={[
   { icon: "code", title: "Syntaxfouten", description: "Specificeer taalversie", example: "\"Use Python 3.11+ syntax with type hints\" of \"ES2022 JavaScript\"" },
-  { icon: "git-branch", title: "Verkeerde Aanpak", description: "Beschrijf gewenste patronen", example: "\"Use functional approach, avoid classes\" of \"Follow repository pattern\"" },
-  { icon: "shield", title: "Ontbrekende Randgevallen", description: "Som scenario's op om af te handelen", example: "\"Handle: empty input, null values, network timeouts, invalid formats\"" },
-  { icon: "tag", title: "Slechte Naamgeving", description: "Voeg naamgevingsconventies toe", example: "\"Use camelCase for variables, PascalCase for classes, UPPER_SNAKE for constants\"" }
+  { icon: "git-branch", title: "Verkeerde aanpak", description: "Beschrijf gewenste patronen", example: "\"Use functional approach, avoid classes\" of \"Follow repository pattern\"" },
+  { icon: "shield", title: "Ontbrekende randgevallen", description: "Som scenario's op om af te handelen", example: "\"Handle: empty input, null values, network timeouts, invalid formats\"" },
+  { icon: "tag", title: "Slechte naamgeving", description: "Voeg naamgevingsconventies toe", example: "\"Use camelCase for variables, PascalCase for classes, UPPER_SNAKE for constants\"" }
 ]} />
 
-### Voor Analyse
+### Voor analyse
 
 Analysetaken produceren vaak oppervlakkige of ongestructureerde resultaten. Begeleid het model met specifieke frameworks (SWOT, Porter's Five Forces), vraag om meerdere standpunten of geef een sjabloon voor de outputstructuur.
 
 <InfoGrid items={[
-  { icon: "layers", title: "Te Oppervlakkig", description: "Vraag om specifieke frameworks", example: "\"Analyze using SWOT framework\" of \"Apply Porter's Five Forces\"" },
+  { icon: "layers", title: "Te oppervlakkig", description: "Vraag om specifieke frameworks", example: "\"Analyze using SWOT framework\" of \"Apply Porter's Five Forces\"" },
   { icon: "scale", title: "Bevooroordeeld", description: "Vraag om meerdere perspectieven", example: "\"Present arguments for and against\" of \"Include skeptic's viewpoint\"" },
-  { icon: "database", title: "Ontbrekende Data", description: "Specificeer wat te analyseren", example: "\"Focus on: market size, growth rate, key players, entry barriers\"" },
+  { icon: "database", title: "Ontbrekende data", description: "Specificeer wat te analyseren", example: "\"Focus on: market size, growth rate, key players, entry barriers\"" },
   { icon: "layout", title: "Ongestructureerd", description: "Geef analysesjabloon", example: "\"Format as: Summary → Key Findings → Implications → Recommendations\"" }
 ]} />
 
-### Voor Vraag & Antwoord
+### Voor vraag en antwoord
 
-Vraag-en-antwoord kan te beknopt of te uitgebreid zijn, en mist mogelijk betrouwbaarheidsindicatoren of bronnen. Specificeer het detailniveau dat je nodig hebt en of je citaties of uitdrukking van onzekerheid wilt.
+Antwoorden op vragen kunnen te beknopt of te uitgebreid zijn, en missen soms een indicatie van betrouwbaarheid of bronnen. Geef aan welk detailniveau je nodig hebt en of je bronvermeldingen wilt of wilt dat onzekerheid wordt benoemd.
 
 <InfoGrid items={[
-  { icon: "plus", title: "Te Kort", description: "Vraag om uitwerking", example: "\"Explain in detail with examples\" of \"Elaborate on each point\"" },
-  { icon: "minus", title: "Te Lang", description: "Vraag om beknopt antwoord", example: "\"Answer in 2-3 sentences\" of \"Give me the TL;DR\"" },
+  { icon: "plus", title: "Te kort", description: "Vraag om uitwerking", example: "\"Explain in detail with examples\" of \"Elaborate on each point\"" },
+  { icon: "minus", title: "Te lang", description: "Vraag om beknopt antwoord", example: "\"Answer in 2-3 sentences\" of \"Give me the TL;DR\"" },
   { icon: "help-circle", title: "Onzeker", description: "Vraag om betrouwbaarheidsniveau", example: "\"Rate your confidence 1-10\" of \"Note any assumptions made\"" },
-  { icon: "link", title: "Zonder Bron", description: "Vraag om citaties", example: "\"Cite sources for claims\" of \"Include references where possible\"" }
+  { icon: "link", title: "Zonder bron", description: "Vraag om citaties", example: "\"Cite sources for claims\" of \"Include references where possible\"" }
 ]} />
 
-## De Feedbackloop-Techniek
+## De feedbacklooptechniek
 
 Hier is een metatechniek: gebruik het model zelf om je prompts te helpen verbeteren. Deel wat je hebt geprobeerd, wat je kreeg en wat je wilde. Het model kan vaak verbeteringen voorstellen waar je niet aan had gedacht.
 
@@ -279,9 +279,9 @@ I wanted something more [describe gap]. How should I modify
 my prompt to get better results?
 ```
 
-## A/B Testen van Prompts
+## Prompts A/B-testen
 
-Voor prompts die herhaaldelijk of op schaal worden gebruikt, kies niet zomaar de eerste die werkt. Test variaties om de meest betrouwbare en hoogste kwaliteit aanpak te vinden.
+Kies bij prompts die herhaaldelijk of op grote schaal worden gebruikt niet zomaar de eerste die werkt. Test variaties om de meest betrouwbare aanpak met de hoogste kwaliteit te vinden.
 
 ```
 Prompt A: "Summarize this article in 3 bullet points."
@@ -294,22 +294,22 @@ Voer elke meerdere keren uit en vergelijk:
 - Kwaliteit van informatie
 - Relevantie voor je behoeften
 
-## Wanneer Stoppen met Itereren
+## Wanneer stop je met itereren?
 
-Perfectie is de vijand van goed genoeg. Weet wanneer je prompt klaar is voor gebruik en wanneer je alleen maar polijst voor afnemende opbrengsten.
+Het betere is de vijand van het goede. Weet wanneer je prompt klaar is voor gebruik en wanneer je alleen nog aan het schaven bent voor steeds minder resultaat.
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
   <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
-    <p className="text-sm font-semibold text-green-700 dark:text-green-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconCheck className="h-4 w-4" /> Klaar voor Lancering</p>
+    <p className="text-sm font-semibold text-green-700 dark:text-green-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconCheck className="h-4 w-4" /> Klaar voor gebruik</p>
     <div className="text-sm p-4 pt-2 space-y-1">
       <p className="m-0!">Output voldoet consistent aan vereisten</p>
       <p className="m-0!">Randgevallen worden correct afgehandeld</p>
       <p className="m-0!">Formaat is betrouwbaar en te parseren</p>
-      <p className="m-0!">Verdere verbeteringen tonen afnemende opbrengsten</p>
+      <p className="m-0!">Verdere verbeteringen leveren steeds minder op</p>
     </div>
   </div>
   <div className="border rounded-lg bg-red-50/50 dark:bg-red-950/20 border-red-200 dark:border-red-900">
-    <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> Blijf Itereren</p>
+    <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> Blijf itereren</p>
     <div className="text-sm p-4 pt-2 space-y-1">
       <p className="m-0!">Output is inconsistent tussen runs</p>
       <p className="m-0!">Randgevallen veroorzaken fouten</p>
@@ -319,15 +319,15 @@ Perfectie is de vijand van goed genoeg. Weet wanneer je prompt klaar is voor geb
   </div>
 </div>
 
-## Versiebeheer voor Prompts
+## Versiebeheer voor prompts
 
 Prompts zijn code. Behandel elke prompt die in productie wordt gebruikt met dezelfde zorgvuldigheid: versiebeheer, changelogs en de mogelijkheid om terug te draaien als iets kapotgaat.
 
-<Callout type="tip" title="Ingebouwd Versiebeheer">
-prompts.chat bevat automatische versiegeschiedenis voor je prompts. Elke bewerking wordt opgeslagen, zodat je versies kunt vergelijken en eerdere iteraties met één klik kunt herstellen.
+<Callout type="tip" title="Ingebouwd versiebeheer">
+Veel prompttools houden een versiegeschiedenis voor je bij. Op prompts.chat bijvoorbeeld wordt elke wijziging in de tekst van een prompt als nieuwe versie opgeslagen, en kun je twee willekeurige versies naast elkaar vergelijken.
 </Callout>
 
-Voor zelfbeheerde prompts, gebruik een mappenstructuur:
+Gebruik voor zelfbeheerde prompts een mappenstructuur:
 
 ```
 prompts/
@@ -341,7 +341,7 @@ prompts/
 
 ## Samenvatting
 
-<Callout type="tip" title="Belangrijkste Punten">
+<Callout type="tip" title="Belangrijkste punten">
 Begin eenvoudig, observeer zorgvuldig, verander één ding tegelijk, documenteer wat werkt en weet wanneer je moet stoppen. De beste prompts worden niet geschreven—ze worden ontdekt door systematische iteratie.
 </Callout>
 
@@ -357,12 +357,12 @@ Begin eenvoudig, observeer zorgvuldig, verander één ding tegelijk, documenteer
   explanation="Door één ding tegelijk te veranderen kun je isoleren wat werkt en wat niet. Als je meerdere dingen tegelijk verandert, weet je niet welke wijziging het probleem oploste of welke het erger maakte."
 />
 
-## Oefening: Verbeter Deze Prompt
+## Oefening: verbeter deze prompt
 
-Probeer zelf deze zwakke prompt te verbeteren. Bewerk deze en gebruik dan AI om je versie met het origineel te vergelijken:
+Probeer zelf deze zwakke prompt te verbeteren. Bewerk hem en gebruik dan AI om je versie met het origineel te vergelijken:
 
 <BeforeAfterEditor
-  title="Verfijn Deze E-mail Prompt"
+  title="Verfijn deze e-mailprompt"
   badPrompt="Write an email."
   idealPrompt={`You are a professional business writer.
 
@@ -381,7 +381,7 @@ Requirements:
 - Keep under 150 words
 
 Format: Subject line + email body`}
-  task="Transformeer deze vage e-mail prompt naar iets dat een professioneel, effectief resultaat zal opleveren."
+  task="Maak van deze vage e-mailprompt een prompt die een professioneel, effectief resultaat oplevert."
 />
 
-In het volgende hoofdstuk verkennen we JSON en YAML prompting voor gestructureerde data-toepassingen.
+In het volgende hoofdstuk verkennen we JSON- en YAML-prompting voor gestructureerde datatoepassingen.

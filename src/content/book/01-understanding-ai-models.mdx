@@ -23,7 +23,7 @@ When you type "The capital of France is...", the AI predicts "Paris" because tha
 **Tokens**: AI doesn't read letter by letter. It breaks text into chunks called "tokens." A token might be a whole word like "hello" or part of a word like "ing." Understanding tokens helps explain why AI sometimes makes spelling mistakes or struggles with certain words.
 
 <Callout type="info" title="What is a Token?">
-A token is the smallest unit of text that an AI model processes. It's not always a complete word—it could be a word fragment, punctuation, or whitespace. For example, "unbelievable" might become 3 tokens: "un" + "believ" + "able". On average, **1 token ≈ 4 characters** or **100 tokens ≈ 75 words**. API costs and context limits are measured in tokens.
+A token is the smallest unit of text that an AI model processes. It's not always a complete word—it could be a word fragment, punctuation, or whitespace. For example, "unbelievable" might become 3 tokens: "un" + "believ" + "able". For English text, a common rule of thumb is **1 token ≈ 4 characters** or **100 tokens ≈ 75 words**, though the exact ratio depends on the model's tokenizer and the language. API costs and context limits are measured in tokens.
 </Callout>
 
 <TokenizerDemo />
@@ -32,23 +32,23 @@ A token is the smallest unit of text that an AI model processes. It's not always
 
 <ContextWindowDemo />
 
-Context windows vary by model and are rapidly expanding:
+Context windows vary by model and have grown quickly, from a few thousand tokens in the first version of ChatGPT to a million or more in many of today's models:
 
 <div className="my-4 grid gap-2">
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">GPT-4o</span>
-    <span className="text-muted-foreground">128K tokens</span>
-  </div>
-  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">GPT-5</span>
-    <span className="text-muted-foreground">400K tokens</span>
-  </div>
-  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">Claude Sonnet 4</span>
+    <span className="font-semibold min-w-32">GPT-6</span>
     <span className="text-muted-foreground">1M tokens</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">Gemini 2.5</span>
+    <span className="font-semibold min-w-32">Claude Opus 5.5</span>
+    <span className="text-muted-foreground">1M tokens</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">Gemini 4</span>
+    <span className="text-muted-foreground">1M tokens</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">DeepSeek V4</span>
     <span className="text-muted-foreground">1M tokens</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
@@ -56,12 +56,14 @@ Context windows vary by model and are rapidly expanding:
     <span className="text-muted-foreground">1M-10M tokens</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">DeepSeek R1</span>
-    <span className="text-muted-foreground">128K tokens</span>
+    <span className="font-semibold min-w-32">Mistral Small 4</span>
+    <span className="text-muted-foreground">256K tokens</span>
   </div>
 </div>
 
-**Temperature**: This controls how creative or predictable the AI is. Low temperature (0.0-0.3) gives you focused, consistent answers. High temperature (0.7-1.0) gives you more creative, surprising responses.
+A bigger window doesn't mean the AI uses every part of it equally well. As the context fills up, models can lose track of details, so a focused context still beats a stuffed one.
+
+**Temperature**: This controls how creative or predictable the AI is. Low temperature (0.0-0.3) gives you focused, consistent answers. High temperature (0.7-1.0) gives you more creative, surprising responses. Some newer reasoning models manage this setting themselves and ignore custom values.
 
 <TemperatureDemo />
 
@@ -70,10 +72,10 @@ Context windows vary by model and are rapidly expanding:
 ## Types of AI Models
 
 ### Text Models (LLMs)
-The most common type, these generate text responses to text inputs. They power chatbots, writing assistants, and code generators. Examples: GPT-4, Claude, Llama, Mistral.
+The most common type, these generate text responses to text inputs. They power chatbots, writing assistants, and code generators. Examples: GPT, Claude, Gemini, Llama, DeepSeek, Mistral.
 
 ### Multimodal Models
-These can understand more than just text. They can look at images, listen to audio, and watch videos. Examples: GPT-4V, Gemini, Claude 3.
+These can understand more than just text. They can look at images, and some can also listen to audio and watch videos. Most of today's leading models, including GPT, Gemini, and Claude, are multimodal.
 
 ### Text-to-Image Models
 
@@ -81,17 +83,17 @@ These can understand more than just text. They can look at images, listen to aud
 While this book focuses primarily on prompting for Large Language Models (text-based AI), the principles of clear, specific prompting apply to image generation too. Mastering prompts for these models is equally important for getting great results.
 </Callout>
 
-Text-to-image models like DALL-E, Midjourney, Nano Banana and Stable Diffusion create images from text descriptions. They work differently from text models:
+Text-to-image models like GPT Image, Midjourney, Nano Banana, and Stable Diffusion create images from text descriptions. They work differently from text models:
 
 **How They Work:**
 1. **Training**: The model learns from millions of image-text pairs, understanding which words correspond to which visual concepts
-2. **Diffusion Process**: Starting from random noise, the model gradually refines the image, guided by your text prompt
-3. **CLIP Guidance**: A separate model (CLIP) helps connect your words to visual concepts, ensuring the image matches your description
+2. **Diffusion Process**: In many models, generation starts from random noise, and the model gradually refines the image, guided by your text prompt
+3. **Text Guidance**: A text encoder (such as CLIP, or a full language model in newer systems) helps connect your words to visual concepts, ensuring the image matches your description
 
 <TextToImageDemo />
 
 **Prompting for Images is Different:**
-Unlike text prompts where you write sentences, image prompts often work better as descriptive phrases separated by commas:
+Unlike text prompts where you write requests, image prompts describe what the picture should look like. Many image models, especially diffusion models like Stable Diffusion, respond well to descriptive phrases separated by commas. Newer models with strong language understanding also follow full descriptive sentences. Either way, the detail is what matters: subject, setting, lighting, and style.
 
 <Compare 
   before={{ label: "Text-Style Prompt", content: "Please create an image of a cat sitting on a windowsill looking at the rain outside" }}
@@ -100,7 +102,7 @@ Unlike text prompts where you write sentences, image prompts often work better a
 
 ### Text-to-Video Models
 
-Text-to-video is the newest frontier. Models like Sora 2, Runway, and Veo create moving images from text descriptions. Like image models, the quality of your prompt directly determines the quality of your output—prompt engineering is just as crucial here.
+Text-to-video is the newest frontier. Models like Veo, Runway, and Kling create moving images from text descriptions. Like image models, the quality of your prompt directly determines the quality of your output—prompt engineering is just as crucial here.
 
 **How They Work:**
 1. **Temporal Understanding**: Beyond single images, these models understand how things move and change over time
@@ -120,7 +122,7 @@ Video prompts need to describe action over time, not just a static scene. Includ
 />
 
 ### Specialized Models
-Fine-tuned for specific tasks like code generation (Codex, CodeLlama), music generation (Suno, Udio), or domain-specific applications like medical diagnosis or legal document analysis.
+Fine-tuned for specific tasks like code generation (Codestral, OpenAI's Codex models), music generation (Suno, Udio), or domain-specific applications like medical diagnosis or legal document analysis.
 
 ## Model Capabilities and Limitations
 
@@ -138,7 +140,7 @@ Why does AI make things up?
 
 1. It tries to write text that sounds good, not text that's always true
 2. The internet (where it learned) has mistakes too
-3. It can't actually check if something is real
+3. On its own, it can't check if something is real (unless it's connected to tools like web search)
 
 <Collapsible title="How to Avoid Wrong Answers">
 
@@ -164,7 +166,7 @@ Imagine reading every book, website, and article on the internet. That's what ha
 - Facts about the world
 - Different writing styles
 
-This takes months and costs millions of dollars. After this step, the AI knows a lot, but it's not very helpful yet. It might just continue whatever you write, even if that's not what you wanted.
+This takes months and, for the largest models, can cost tens or even hundreds of millions of dollars. After this step, the AI knows a lot, but it's not very helpful yet. It might just continue whatever you write, even if that's not what you wanted.
 
 <Compare 
   before={{ label: "Before Fine-tuning", content: "User: What is 2+2?\nAI: 2+2=4, 3+3=6, 4+4=8, 5+5=10..." }}
@@ -222,7 +224,7 @@ AI predicts what comes next based on your words. Vague prompts lead to vague ans
 
 ### 2. Give Context
 
-AI doesn't know anything about you unless you tell it. Each conversation starts fresh. Include the background information AI needs.
+AI doesn't know anything about you unless you tell it. Some apps now have memory features that carry a few details from one chat to the next, but they only remember part of what you've said. Include the background information AI needs for the task at hand.
 
 <Compare 
   before={{ label: "Missing Context", content: "Is this a good price?" }}
@@ -248,7 +250,7 @@ AI sounds confident even when it's wrong. For anything important, verify the inf
 
 ### 5. Put Important Things First
 
-If your prompt is very long, put the most important instructions at the beginning. AI pays more attention to what comes first.
+If your prompt is very long, put the most important instructions at the beginning, and consider repeating them at the end. AI tends to pay the most attention to the start and end of a long input, and can miss details buried in the middle.
 
 ## Picking the Right AI
 
@@ -257,11 +259,11 @@ Different AI models are good at different things:
 <div className="my-4 grid gap-2">
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">Quick questions</span>
-    <span className="text-muted-foreground">Faster models like GPT-4o or Claude 3.5 Sonnet</span>
+    <span className="text-muted-foreground">Faster models like GPT-6 Luna, Claude Haiku 5.5, or Gemini Flash</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">Hard problems</span>
-    <span className="text-muted-foreground">Smarter models like GPT-5.2 or Claude 4.5 Opus</span>
+    <span className="text-muted-foreground">Smarter models like GPT-6 Astra, Claude Fable 5.1, or Gemini 4 Argon</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">Writing code</span>
@@ -269,7 +271,7 @@ Different AI models are good at different things:
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">Long documents</span>
-    <span className="text-muted-foreground">Models with big context windows (Claude, Gemini)</span>
+    <span className="text-muted-foreground">Models with big context windows (many now handle 1M tokens)</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">Current events</span>
@@ -290,7 +292,7 @@ AI language models are prediction machines trained on text. They're amazing at m
     "Because people write bad prompts"
   ]}
   correctIndex={1}
-  explanation="AI is trained to predict what sounds right, not to check facts. It can't look things up or verify if something is true, so sometimes it confidently writes things that are wrong."
+  explanation="AI is trained to predict what sounds right, not to check facts. Unless it's connected to a tool like web search, it can't look things up or verify if something is true, so sometimes it confidently writes things that are wrong."
 />
 
 <TryIt 

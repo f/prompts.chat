@@ -134,6 +134,99 @@ Change one setting, then step through the run. Watch what changes in the context
 
 These are example outcomes, not rules about what every model will do. A model may ask a useful question even with a vague prompt. Clear instructions make your expectations easier to follow and check.
 
+## When the Model Writes the Loop
+
+The loop above has a steady rhythm: the model asks for one tool, the harness runs it, and the result joins the model's context. For a few steps, that works well. For a task that touches hundreds of files, every step becomes another full model request, and the context fills with output the model needed only once.
+
+Some harnesses offer another arrangement. The model writes a small program that calls the tools itself. The program runs in a sandbox, raw results such as files, logs, and search hits stay in its variables, and only what it prints returns to the model. This is called **programmatic tool calling**, an idea that grew out of research such as [CodeAct](https://arxiv.org/abs/2402.01030) (Wang et al., 2024).
+
+<Compare
+  before={{ label: "One tool call at a time", content: "Read file A. Here is A. Read file B. Here is B. After every result, the model is called again with its instructions, its history, and everything it has seen so far." }}
+  after={{ label: "A program that calls the tools", content: "Search the project, read every match, keep the files that still use the old API, and print a short list. The harness runs the program and returns only the list." }}
+/>
+
+The context stays cleaner, because the model reasons over a summary. Model requests drop, because instructions and history are not re-sent every few calls. And loops and checks run in code, so a case the model meant to handle does not silently fall away.
+
+Factory made this the default in [Droid 1.0](https://factory.com/news/frontier-harness), announced on October 29, 2026. Its Script tool runs JavaScript in a sandbox and can make hundreds of tool calls in one model request. Independent calls run at the same time, and a long script can run in the background and wake the model when it is done. Factory credits CodeAct, and notes that Cloudflare and Anthropic brought the idea to production in late 2025 and Codex brought it to coding agents. In Factory's own example of fixing a failing test, the same 15 tool calls took 5 model calls instead of 10; these are figures Factory reports for its own harness.
+
+The trade-offs are real. The sandbox has no file, network, or system access of its own, only the tools the harness exposes. Permissions and approvals still have to apply to every tool the program calls. Printed output is capped. And a program is harder for a person to follow than a list of single steps.
+
+### Workflows: The Same Idea One Level Up
+
+The same move works with whole agents. In Anthropic's [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/workflow-runs) (beta) and [Claude Code](https://code.claude.com/docs/en/workflows), an agent can write a **workflow**: a program that runs many agents in phases, fans work out, passes results from one agent to another, repeats a step until a review passes, and combines what comes back. It runs in the background while the main conversation stays free.
+
+With subagents, the agent itself decides each next step. In a workflow, the program decides. The agent still chooses when to start one, so you guide that choice in its system prompt or instructions. Budgets matter too: every agent in a run spends tokens.
+
+### Prompting for a Program
+
+When the model plans a program, your prompt becomes its specification. Describe the whole job: which items to cover, the checks that must hold for every one, what to do when one fails, and what the final report should contain. For risky actions, ask to see a summary of the program first.
+
+<TryIt compact prompt={`Handle this whole job with a program instead of one step at a time.
+
+Job: \${job:check that every API route that changes data requires a signed-in user}
+Items: \${items:all route files under src/app/api}
+Check for every item: \${checks:the route verifies the session before it reads or writes anything}
+If an item fails: \${failure:record the file path and the reason, then keep going}
+Final report: \${report:the routes that failed, how many passed, and any file you could not read}
+
+Before running anything that changes files, summarize the program for me and wait for my approval.`} />
+
+Not every task needs a program. When each move depends on judging the last result, one call at a time is often clearer. A program shines when the job is large, repetitive, and easy to check.
+
+### Fresh Eyes: Reviewers That Start Empty
+
+A subagent's empty context is usually described as a way to save room: the noisy work happens somewhere else, and only a summary comes back. It is also one of the best review tools a harness can offer. An agent that has spent a long session on a problem carries every assumption it made along the way. When it re-reads its own plan, it fills each gap from memory and never notices that the gap was there. A reviewer started in a fresh context has only the document and the files it points to. Whatever the author knew but never wrote down shows up as confusion, and confusion on a page is far cheaper to fix than confusion in code.
+
+Google's open-source [Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model) plugin (EGM), [announced in October 2026](https://opensource.googleblog.com/2026/10/introducing-elephant-goldfish-model-plugin.html), is built around this split. The Elephant is the long session that holds the project's context and drafts a specification; it writes no code. The Goldfish are stateless subagents that see only the draft and the source it references. You resolve the trade-offs and approve the design. Before any critique, one Goldfish has to explain the plan back in its own words, and if it cannot, the document is ambiguous and goes back for another draft. Other reviewers take different roles, looking for edge cases, hidden dependencies, and anything an implementer would still have to decide alone. Their findings are ranked as blockers, major issues, or nits and sent back to the Elephant. Google says thousands of its engineers use the plugin. It is not an officially supported Google product, and it publishes no accuracy benchmark.
+
+<Compare
+  before={{ label: "The author re-reads its own plan", content: "\"Retry failed deliveries with backoff.\" The line feels complete, because the author remembers deciding how many retries to allow and what happens when the same event arrives twice. None of that is on the page." }}
+  after={{ label: "A fresh reviewer reads only the document", content: "\"How many retries, and what happens after the last one? If the same event arrives twice, is it delivered twice? I had to guess both.\" The gaps the author filled from memory come back as questions." }}
+/>
+
+The pattern is not tied to one product. Anthropic's [best-practices guide for Claude Code](https://code.claude.com/docs/en/best-practices) describes `/code-review` as a review run in a fresh subagent that never saw the conversation, so it "isn't swayed by the reasoning that produced the code." The guide draws the same line this section does: handing a task to a subagent does not make the answer better, but a reviewer that has not seen your reasoning does help. It suggests giving that reviewer read-only tools and telling it to skip style, because a reviewer asked to find problems will always find something. The open-source [Code Copilot Team](https://github.com/gosha70/code-copilot-team) harness hands the review to a second model instead, which checks the diff in a read-only sandbox and returns PASS, FAIL, or INCONCLUSIVE. A phase cannot complete on a FAIL.
+
+Two cautions keep the idea honest. First, a review run in the same context is not an independent review, however firmly the prompt asks for one. EGM's [harness guide](https://github.com/google/elephant-goldfish-model/blob/main/docs/harnesses.md) maps "spawn a subagent" to each harness's own subagent tool, and when a harness has none, the review stops instead of quietly running in the author's session. Second, a fresh conversation is not always an empty context, so isolation has to be checked rather than assumed. Instruction files that a harness loads on its own can follow the reviewer in. [Issue #237](https://github.com/google/elephant-goldfish-model/issues/237) reports that EGM reviewers in Codex and Antigravity never saw the parent conversation but still received the project's `AGENTS.md`, carrying the team's assumptions into the very review meant to question them. And every extra reviewer costs tokens and time. Fresh eyes find what the author can no longer see; they do not replace tests or your own judgment.
+
+To try it, open a new session or a subagent with no history and only read-only tools, set in your harness rather than requested in the prompt. Point it at the document, not the conversation that produced it, and ask:
+
+<TryIt compact prompt={`Read this plan as someone who has never seen it before. Use only the document and the files it mentions: \${document:docs/designs/webhook-delivery.md}
+
+1. Explain the plan back in your own words: what it builds, how the parts fit together, and how it will be checked.
+2. List every point where you had to guess, and what you guessed.
+3. Rank each gap as blocker, major, or nit, and say what the author should add.
+
+Skip style comments and do not edit any files.`} />
+
+### One Harness, Several Models
+
+A harness decides which model answers each call, and nothing says it has to be the same model every time. The steps of a long task are not alike. Some ask for judgment: choosing an approach, noticing that a plan has gone wrong, deciding when the work is really finished. Others are bounded and repeated: read these files, pull out these fields, port this one module and run its tests. A harness can match each step to the model that fits it, and the pattern shows up in two directions.
+
+<InfoGrid columns={2} items={[
+  { label: "Delegating down", description: "A larger model plans and supervises. Many small, inexpensive models take bounded pieces of the work in parallel, each with its own brief, and the larger model reviews what comes back.", color: "blue" },
+  { label: "Escalating up", description: "A faster, cheaper model runs the whole task. At hard moments it asks a stronger model for advice. The stronger model reads the transcript and returns a plan or a correction, without using the tools itself.", color: "purple" }
+]} />
+
+Meta's Muse Ember, released on November 9, 2026, is built for the first direction. Meta [describes it](https://research.meta.ai/blog/muse-ember) as made for "the work agents repeat all day: tool calls, coding subtasks, routing, extraction, and long document parsing," and sums up its pairing with a larger model in one line: "Muse Wonder plans, Muse Ember handles the volume." Its [developer post](https://dev.meta.ai/resources/blog/build-with-muse-ember) sketches a coding workflow in three steps. The larger model plans a change across a repository. Ember workers each take a bounded subtask with its own files, constraints, and checks. Then the larger model reviews the combined result, alongside a developer. In the cookbook example, 16 Ember agents each ported one lexer of the Pygments syntax highlighter from Python to Rust, each in its own copy of the repository, while the planner wrote their briefs and never opened the source itself. Meta notes that the harness chooses the model for each call and carries the context between steps, and that a worker who finds a broader dependency or an unclear requirement should send it back to the planner before going on. Meta reports that all 16 ports matched the Python originals on its tests, and adds that results vary from run to run.
+
+Anthropic's [advisor strategy](https://claude.com/resources/articles/the-advisor-strategy) runs the other way, and Anthropic itself calls it an inversion of the usual pattern of one orchestrator and many workers. A faster model called the executor (Sonnet or Haiku, for example) carries the whole task: it calls tools, reads results, and keeps going. When it reaches a decision it cannot reasonably make alone, it consults a stronger model called the advisor, such as Opus. The [Claude Code documentation](https://code.claude.com/docs/en/advisor) says this tends to happen before committing to an approach, when an error keeps coming back, and before declaring a task done. The advisor receives the full conversation, every tool call and result included, and returns a plan, a correction, or a signal to stop. It never calls tools itself, and only its advice reaches the executor, as the [API documentation](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool) describes. There is no pool of workers to coordinate, and the stronger model is brought in only at the moments that call for it. Advice is not an order, either. In Claude Code the executor generally follows it, but when a file or a failed step contradicts the advice, it raises the conflict instead of obeying blindly.
+
+Both directions put more weight on the prompt, not less. Going down, the handoff brief is the worker's whole world. Meta lists what it should hold: the task, the relevant context, the files the worker may change, the checks that show it is done, and what to send back. A small model given a vague brief cannot borrow the planner's judgment to fill the gaps; it will guess, quickly and many times over. Going up, your instructions shape when help is sought. Anthropic notes that without guidance in the system prompt, executors tend to call the advisor too rarely on coding tasks, and suggests telling them when to ask.
+
+The split works best when the work can be cut into bounded pieces and each piece can be checked. When every step depends on judging the last one, or every step needs the strongest model anyway, the handoffs only add cost and more places for context to get lost. The savings are not guaranteed either. Planning, merging, and every advisor call all spend tokens, and Anthropic observes that the benefit shrinks as the smaller model's own ability approaches the advisor's. The honest test is your own work: run the same tasks against the same checks with the small model alone, with the pair, and with the large model alone. Choosing which model takes a step is also a different dial from how hard one model thinks, a distinction covered in "Effort Is Not the Same as Model Choice" in [Software Development with AI](/book/28a-software-development-with-ai).
+
+To practice the first direction, write the brief a planner would give one worker, then read it as that worker would. Could a capable stranger finish the job from this page alone?
+
+<TryIt compact prompt={`You are one of several workers on a larger change. Do only this task.
+
+Task: \${task:move the date formatting in the invoice module to the shared formatDate helper}
+Context: \${context:the helper already exists in src/lib/format.ts; other workers are updating the orders and reports modules}
+Files you may change: \${files:src/invoices/ and its tests}
+Checks: \${checks:the invoice tests pass and no file outside your list has changed}
+Return: \${result:the files you changed, each check you ran with its last line of output, and anything you could not finish}
+
+If the task needs a file outside your list, or you find a problem bigger than this task, stop and report it instead of working around it.`} />
+
 ## Why Prompts Matter Inside a Harness
 
 A harness gives the model a way to act. Your prompts explain what useful action looks like. Without a clear goal, an agent can spend many steps doing work you did not need.
@@ -211,6 +304,70 @@ The same distinction matters for information coming back from tools. A web page 
   explanation="Prompts guide behavior. The tool or environment must enforce the access boundary even if the model requests a disallowed action."
 />
 
+## Where Does the Harness Live?
+
+Every agent runs inside a harness, but someone has to build that harness, host it, and keep it working. Who does that decides how much you control and how much you have to maintain. Today a harness usually reaches you in one of four ways:
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Where it comes from</th>
+      <th scope="col">Who runs the loop</th>
+      <th scope="col">What you provide</th>
+      <th scope="col">The trade-off</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>A loop you write yourself</td>
+      <td>You</td>
+      <td>Everything: context, tool handling, permissions, limits</td>
+      <td>Complete control, and all of the upkeep</td>
+    </tr>
+    <tr>
+      <td>An SDK or framework</td>
+      <td>You, locally or on a host you choose</td>
+      <td>The agent as files in your project: prompts, tools, tests</td>
+      <td>Changes go through ordinary code review; you still deploy and update it</td>
+    </tr>
+    <tr>
+      <td>A managed service</td>
+      <td>The provider</td>
+      <td>Instructions, skills, tools, and a choice of model</td>
+      <td>Little machinery to maintain; the provider's sandbox and limits set the edges</td>
+    </tr>
+    <tr>
+      <td>Part of an automation system, such as CI</td>
+      <td>The automation platform, when an event fires</td>
+      <td>A task description and the outputs it is allowed to produce</td>
+      <td>Fits pipelines you already have; nobody is watching a chat while it runs</td>
+    </tr>
+  </tbody>
+</table>
+
+Late October 2026 brought a clear example of each of the last three. Cursor's [Agent SDK](https://cursor.com/blog/agent-sdk), generally available since October 20, treats an agent as a small project: prompts in Markdown, tools as TypeScript functions, and evals beside them. You can run it locally, deploy it to Cursor's infrastructure, or run it on your own as a single Node process. On October 28, Microsoft released the [Copilot harness in Foundry Agent Service](https://devblogs.microsoft.com/foundry/microsoft-copilot-harness-in-foundry/) as a public preview. It is the [same harness](https://blogs.microsoft.com/blog/2026/10/28/introducing-the-microsoft-copilot-harness-unlocking-the-potential-of-truly-multi-model-agentic-work/) that powers GitHub Copilot in its app, CLI, and VS Code. Microsoft runs the agent loop and the sandbox; you bring skills, MCP tools, and agent definitions you can keep in source control. The same day, [GitHub Agentic Workflows](https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available/) became generally available. You describe a job such as issue triage in a Markdown file, and it is compiled into an ordinary GitHub Actions workflow that runs Copilot or another coding agent.
+
+Where the harness lives also decides where its boundaries are enforced. Instructions guide; permissions enforce. In your own loop, you build that enforcement yourself. On a managed service or an automation platform, the platform supplies it and you configure it. Agentic Workflows shows how many layers that can mean: agents get read-only permissions by default and run in a sandboxed container behind a firewall, and their proposed changes pass through validated "safe outputs" and a separate threat-detection scan before anything is applied. Your prompt still says what to do. The platform limits what a mistake can do.
+
+The parts you write usually travel better than the loop. Skills and MCP are open standards, and Microsoft's announcement treats supporting them as the mark of a serious harness. A clear skill or tool description can often move to another harness with small adjustments; code written around one particular loop rarely can. Earlier we suggested keeping the model fixed while you compare harnesses. A multi-model harness offers the opposite experiment: Foundry lets you pick a supported model without rewriting the orchestration, and Agentic Workflows lets each workflow choose its model provider. You can change the model and hold everything else still.
+
+Whichever path you choose, some things never move to the provider: the outcome you want, the instructions and skills that describe it, the tools and access you grant, and the checks that show the work is done. A harness can run the loop for you. It cannot decide what "done" means.
+
+### When a Model Is Trained for a Harness
+
+So far we have treated the model as a part you can swap. Often it is, but the fit can run deeper than that. Every harness has its own tools, its own system prompt, and its own rhythm of steps. When a model is trained with reinforcement learning inside one harness, it learns those habits along with the work. Move it to a different harness and it may call tools less well, take more steps than it needs, or stop before the job is done.
+
+OpenAI says this openly about its Codex models. It describes GPT-5-Codex as ["purpose-built"](https://openai.com/index/introducing-upgrades-to-codex/) for Codex and recommends it only for agentic coding in Codex or Codex-like environments. Its [Codex Prompting Guide](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide) advises people who build their own harness to start from the standard Codex prompt and to use its `apply_patch` and shell tools, which the model was trained to use. It also asks them to remove any prompting for an upfront plan or for status updates during the run, because that can make the model stop abruptly before the work is complete. Cursor described the same fitting from the other side when it [adapted its own harness for these models](https://cursor.com/blog/codex-model-harness). It brought tool names closer to their shell equivalents, such as `rg`, and found that a lint tool's definition alone was not enough: the model needed a literal instruction about when to call it.
+
+Open models are getting the same treatment. On November 6, 2026, Hugging Face introduced [harness adapters](https://huggingface.co/blog/harness-hub/harness-adapters): one small LoRA adapter for each model and harness, trained with reinforcement learning on verifiable tasks inside unmodified harnesses (pi, opencode, and hermes), all served from a single base model. In what the team calls smoke tests, the adapters made fewer tool calls than the base model on held-out tasks while keeping or improving its accuracy. During training, a proxy called safeagents checks every tool call against fixed rules and blocks attempts to cheat the reward, such as editing the tests or looking up the answer. A run with a blocked call scores zero. Even while a model is learning, the checks belong to the harness.
+
+For anyone writing prompts, the lesson is practical. When you use a model in a harness it was not built for, read the vendor's prompting guide for that model. Keep tool names and descriptions close to what it already knows, and drop instructions that fight its trained habits. Describe the outcome and when to stop, instead of scripting how it should report along the way. And when you compare harnesses, remember that a model may favor the one it was trained in, so test on your own tasks before you decide.
+
+<Compare
+  before={{ label: "A generic harness prompt", content: "First write a plan and send it to me. After each step, send me a status update. Edit files with the edit_file tool." }}
+  after={{ label: "Adapted to a harness-trained model", content: "Fix the failing search tests without changing how matches are found. Make edits with apply_patch. Keep working until the tests pass or you are blocked, then report what changed, which checks ran, and anything you could not verify." }}
+/>
+
 ## What Makes a Harness Useful?
 
 More autonomy is useful only when the system can check its work and recover from problems. For a long task, look at how the harness handles:
@@ -222,6 +379,23 @@ More autonomy is useful only when the system can check its work and recover from
 - **Verification:** Inspect actual files, test results, or other outcomes. A confident final message is not enough.
 
 When comparing setups, try the same real tasks and inspect both the outcomes and the execution traces. Keep the model fixed when you want to study a harness change. Change one prompt, skill, or tool setting at a time, and repeat tasks because individual runs vary.
+
+### When a Harness Gets Smaller
+
+Harnesses tend to grow. Each new feature arrives with its own path, its own instructions, and its own idea of what "done" means, and each one made sense on the day it was added. As models get stronger, some teams are doing the opposite and taking pieces out. Apple researchers asked [How Much of a Harness Does a Strong Agent Need?](https://machinelearning.apple.com/research/harness-autonomous-ml-engineering) (October 2026) and found that on machine learning engineering tasks, with the same model and the same time budget, elaborate open-source harnesses did no better than a single coding-agent session with a minimal set of tools. Taking parts out is easy, though. Knowing that the smaller harness still does the job takes measurement.
+
+Pogl, where people build and edit games by talking with an AI, described one such rebuild in [We rebuilt our harness from scratch](https://about.pogl.com/blog/one-loop-harness) (November 11, 2026). Its old harness was built on the open-source coding agent OpenCode, and over time each new feature had been added as a new path around it, so the same problem had to be fixed separately on every path. The new harness sends every request through one loop whose core is 715 lines. Each project keeps one conversation history, and every step leaves one line in a log, so a worker that restarts rebuilds the conversation from the log and continues instead of starting over.
+
+<Compare
+  before={{ label: "The inherited harness", content: "16 paths for different kinds of requests, 3 ways of judging whether a job is done, 6 or 7 contract documents for the model, and a fixed prompt of about 14,000 tokens. The same problem has to be fixed on every path." }}
+  after={{ label: "One loop", content: "Every request goes through the same loop. 13 tools are registered in one place, and all their descriptions fit in about 3,000 tokens. Long reference material is read only when needed, and the fixed prompt is under 6,000 tokens." }}
+/>
+
+The measurement is the most instructive part. The two harnesses judged "done" by different standards, so their own verdicts could not be compared. Pogl re-ran 54 pairs of past requests and scored both harnesses with the same judge. Overall quality was similar: the new harness did better on 8 requests and the old one on 5. Per edit, Pogl reports that uncached input fell about 65% and output about 52%, and jobs that ran longer than 40 minutes disappeared. It is just as open about the other side. Most of the savings came from a few very large jobs on the old harness, and typical jobs on the new one re-read more from cache, wrote more output, and took longer. One rerun showed something no average would: the old harness had marked an unfixed item as done, while the new one reported it as not done. Pogl then turned the new harness on for half of its users, split by person so that no one switches harness in the middle of a task, with a single setting that sends everyone back to the old one within a minute.
+
+Framer reached a smaller loop from another direction in [Harness 2: executing agent code as it streams](https://www.framer.com/blog/harness-2/) (November 2, 2026). It builds on the programmatic tool calling from "When the Model Writes the Loop" earlier in this chapter: the agent can express a whole workflow as one JavaScript program. Framer runs that program in cells while the model is still writing it, so a failed assumption can stop the stream early instead of after the whole program has been generated. Framer reports 2x fewer tool steps and 39% fewer cached input tokens per message, with no measured drop in quality.
+
+These figures are each company's own reports, and your tasks will differ. The lessons still travel. Fewer paths means one place to fix: when every request runs through the same loop, a problem found once is fixed once. Two harnesses can be compared fairly only when the same judge scores both, because each harness's own sense of "done" is part of what you are testing. Averages hide the slow tail, the rare job that runs for forty minutes, and they hide a single false "done", so look at the longest runs and read a few traces. And a new harness is safest when it reaches people gradually, with a way back that takes a minute rather than a week.
 
 <InteractiveChecklist
   title="Try this on a task you already do"

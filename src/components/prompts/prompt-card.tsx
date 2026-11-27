@@ -6,18 +6,23 @@ import { useTranslations, useLocale } from "next-intl";
 import { getPromptUrl } from "@/lib/urls";
 import { BotCard, promptToBotCardData } from "@/components/bots/bot-card";
 import type { BotPlatform } from "@/lib/bots/schema";
-import { ArrowBigUp, Lock, Copy, ImageIcon, Download, Play, BadgeCheck, Volume2, Link2 } from "lucide-react";
+import { Lock, Copy, ImageIcon, Download, Play, Volume2, Link2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { CodeView } from "@/components/ui/code-view";
 import { toast } from "sonner";
 import { prettifyJson } from "@/lib/format";
 import { PinButton } from "@/components/prompts/pin-button";
 import { RunPromptButton } from "@/components/prompts/run-prompt-button";
+import { ActionButtonTrigger } from "@/components/action-buttons/action-button-trigger";
+import { InjectedActionButton } from "@/components/action-buttons/injected-action-button";
+import { useActionButton } from "@/components/action-buttons/use-action-button";
 import { VariableFillModal, hasVariables, renderContentWithVariables } from "@/components/prompts/variable-fill-modal";
 import { ExamplesSlider } from "@/components/prompts/examples-slider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { PromptAuthor } from "@/components/prompts/prompt-author";
 import { AudioPlayer } from "@/components/prompts/audio-player";
 import { TrendingBadge } from "@/components/prompts/trending-badge";
+import { UpvoteCount } from "@/components/prompts/upvote-count";
 import { isTrending } from "@/lib/trending";
 import {
   Tooltip,
@@ -112,6 +117,7 @@ function StandardPromptCard({ prompt, showPinButton = false, isPinned = false }:
   const incomingCount = prompt._count?.incomingConnections || 0;
   const isFlowStart = outgoingCount > 0 && incomingCount === 0;
   const trending = isTrending(prompt.trendingUntil);
+  const actionButton = useActionButton(prompt.category);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"copy" | "run">("copy");
   const [imageError, setImageError] = useState(false);
@@ -330,6 +336,8 @@ function StandardPromptCard({ prompt, showPinButton = false, isPinned = false }:
             open={modalOpen}
             onOpenChange={setModalOpen}
             mode={modalMode}
+            promptId={prompt.id}
+            actionButton={actionButton}
           />
         )}
 
@@ -356,14 +364,7 @@ function StandardPromptCard({ prompt, showPinButton = false, isPinned = false }:
         {/* Footer */}
         <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-2 border-t mt-auto">
           <div className="flex items-center gap-1.5">
-            <Link href={`/@${prompt.author.username}`} prefetch={false} className="hover:text-foreground flex items-center gap-1.5">
-              <Avatar className="h-4 w-4">
-                <AvatarImage src={prompt.author.avatar || undefined} alt={prompt.author.username} />
-                <AvatarFallback className="text-[8px]">{prompt.author.username[0]?.toUpperCase()}</AvatarFallback>
-              </Avatar>
-              @{prompt.author.username}
-              {prompt.author.verified && <BadgeCheck className="h-3 w-3 mt-0.5 text-primary shrink-0" />}
-            </Link>
+            <PromptAuthor author={prompt.author} />
             {prompt.contributors && prompt.contributors.length > 0 ? (
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -396,10 +397,7 @@ function StandardPromptCard({ prompt, showPinButton = false, isPinned = false }:
             ) : null}
           </div>
           <div className="flex items-center gap-2">
-            <span className="flex items-center gap-0.5">
-              <ArrowBigUp className="h-3.5 w-3.5" />
-              {prompt.voteCount}
-            </span>
+            <UpvoteCount count={prompt.voteCount} />
             <button
               onClick={handleCopyClick}
               className="p-1 rounded hover:bg-accent"
@@ -414,6 +412,17 @@ function StandardPromptCard({ prompt, showPinButton = false, isPinned = false }:
               >
                 <Download className="h-3.5 w-3.5" />
               </button>
+            ) : contentHasVariables && actionButton ? (
+              <ActionButtonTrigger action={actionButton} compact onClick={handleRunClick} />
+            ) : actionButton ? (
+              <InjectedActionButton
+                action={actionButton}
+                content={prompt.content}
+                title={prompt.title}
+                description={prompt.description || undefined}
+                promptId={prompt.id}
+                compact
+              />
             ) : contentHasVariables ? (
               <button
                 onClick={handleRunClick}

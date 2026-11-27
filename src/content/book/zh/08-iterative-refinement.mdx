@@ -169,7 +169,7 @@ Tone: Friendly, professional, empathetic but not groveling."
 
 ## 真实世界的迭代示例
 
-让我们完整地走一遍迭代循环，看看每次优化是如何在前一次基础上构建的。注意每个版本是如何解决前一个版本的具体不足的。
+让我们完整地走一遍迭代循环，看看每次优化是如何在前一次的基础上逐步推进的。注意每个版本是如何解决前一个版本的具体不足的。
 
 ### 任务：生成产品名称
 
@@ -218,7 +218,7 @@ Name | Pronunciation | Why It Works | Domain Availability Guess`,
 
 ## 按任务类型的优化策略
 
-不同的任务会以可预测的方式失败。了解常见的失败模式可以帮助你更快地诊断和修复问题。
+不同类型的任务，失败的方式往往有规律可循。了解常见的失败模式可以帮助你更快地诊断和修复问题。
 
 ### 内容生成
 
@@ -296,7 +296,7 @@ Prompt C: "What are the key takeaways from this article? List 3."
 
 ## 何时停止迭代
 
-完美是"足够好"的敌人。知道什么时候你的提示已经可以使用，什么时候你只是在为递减的回报而打磨。
+完美是"足够好"的敌人。知道什么时候你的提示已经可以使用，什么时候你只是在收益越来越小的情况下继续打磨。
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
   <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
@@ -324,7 +324,7 @@ Prompt C: "What are the key takeaways from this article? List 3."
 提示就是代码。对于任何在生产中使用的提示，要以同样的严格性对待：版本控制、变更日志，以及在出现问题时回滚的能力。
 
 <Callout type="tip" title="内置版本控制">
-prompts.chat 包含提示的自动版本历史。每次编辑都会保存，因此你可以比较版本并一键恢复之前的迭代。
+许多提示工具都会替你保存版本历史。以 prompts.chat 为例，每次修改提示文本都会保存为一个新版本，你可以将任意两个版本并排比较。
 </Callout>
 
 对于自行管理的提示，使用文件夹结构：

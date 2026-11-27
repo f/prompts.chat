@@ -5,43 +5,43 @@ Bu kitabın sonunda, yapay zekanın nasıl çalıştığını, nasıl daha iyi p
 </Callout>
 
 <Callout type="tip" title="Bu İnteraktif Bir Kitap">
-Geleneksel kitapların aksine, bu rehber tamamen interaktiftir. Canlı demolar, tıklanabilir örnekler ve promptları anında test etmenizi sağlayan "Dene" butonları bulacaksınız. Yaparak öğrenmek, karmaşık kavramları anlamayı çok daha kolay hale getirir.
+Geleneksel kitapların aksine, bu rehber tamamen interaktiftir. Canlı demolar, tıklanabilir örnekler ve promptları anında test etmenizi sağlayan "Kendiniz Deneyin" butonları bulacaksınız. Yaparak öğrenmek, karmaşık kavramları anlamayı çok daha kolay hale getirir.
 </Callout>
 
 ## Prompt Mühendisliği Nedir?
 
 Prompt mühendisliği, yapay zeka için iyi talimatlar yazma becerisidir. ChatGPT, Claude, Gemini veya diğer yapay zeka araçlarına bir şey yazdığınızda, buna "prompt" denir. Promptunuz ne kadar iyi olursa, aldığınız yanıt o kadar iyi olur.
 
-Şöyle düşünün: Yapay zeka, sözlerinizi çok harfi harfine alan güçlü bir yardımcıdır. Tam olarak istediğinizi yapacaktır. İşin püf noktası, tam olarak ne istediğinizi nasıl soracağınızı öğrenmektir.
+Şöyle düşünün: Yapay zeka, sözlerinizi harfi harfine alan güçlü bir yardımcıdır. Ne isterseniz tam olarak onu yapar. İşin püf noktası, tam olarak istediğiniz şeyi nasıl isteyeceğinizi öğrenmektir.
 
 <Compare 
   before={{ label: "Basit Prompt", content: "Köpekler hakkında yaz" }}
-  after={{ label: "Mühendislik Yapılmış Prompt", content: "Köpeklerin evcilleştirilmesinin tarihi hakkında, ortaokul fen kitabına uygun, ilgi çekici bir giriş cümlesiyle 200 kelimelik bilgilendirici bir paragraf yaz." }}
+  after={{ label: "Özenle Kurgulanmış Prompt", content: "Köpeklerin evcilleştirilmesinin tarihi hakkında, ortaokul fen kitabına uygun, ilgi çekici bir giriş cümlesiyle 200 kelimelik bilgilendirici bir paragraf yaz." }}
 />
 
-Bu iki prompt arasındaki çıktı kalitesi farkı dramatik olabilir.
+Bu iki promptun çıktıları arasındaki kalite farkı çarpıcı olabilir.
 
 <TryIt 
   prompt="Köpeklerin evcilleştirilmesinin tarihi hakkında, ortaokul fen kitabına uygun, ilgi çekici bir giriş cümlesiyle 200 kelimelik bilgilendirici bir paragraf yaz."
-  description="Bu mühendislik yapılmış promptu deneyin ve sonucu sadece 'Köpekler hakkında yaz' ile karşılaştırın."
+  description="Bu özenle kurgulanmış promptu deneyin ve sonucu yalnızca 'Köpekler hakkında yaz' demenin sonucuyla karşılaştırın."
 />
 
 ## Prompt Mühendisliği Nasıl Evrildi
 
-ChatGPT'nin piyasaya sürülmesinden bu yana geçen sadece üç yılda, prompt mühendisliği teknolojinin kendisiyle birlikte önemli ölçüde evrildi. "Daha iyi sorular yazmak" olarak başlayan şey çok daha geniş bir şeye dönüştü.
+ChatGPT'nin piyasaya sürülmesinin üzerinden geçen yalnızca üç yılda prompt mühendisliği, teknolojinin kendisiyle birlikte büyük bir dönüşüm geçirdi. "Daha iyi sorular yazmak" olarak başlayan şey çok daha geniş bir şeye dönüştü.
 
 Bugün, promptunuzun **daha büyük bir bağlamın sadece bir parçası** olduğunu anlıyoruz. Modern yapay zeka sistemleri aynı anda birden fazla veri türüyle çalışır:
 
 - Yapay zekanın davranışını tanımlayan **sistem promptları**
 - Önceki mesajlardan gelen **sohbet geçmişi**
-- Veritabanlarından çekilen **alınan belgeler** (RAG)
-- Yapay zekanın eylem gerçekleştirmesine izin veren **araç tanımları**
+- Veritabanlarından **getirilen belgeler** (RAG)
+- Yapay zekanın eyleme geçmesini sağlayan **araç tanımları**
 - **Kullanıcı tercihleri** ve ayarları
 - **Gerçek promptunuz** - şu anda sorduğunuz soru
 
-"Prompt mühendisliği"nden "bağlam mühendisliği"ne bu kayma, artık yapay zeka etkileşimleri hakkında nasıl düşündüğümüzü yansıtıyor. Promptunuz önemli, ama yapay zekanın gördüğü her şey de önemli. En iyi sonuçlar, tüm bu parçaları dikkatli bir şekilde yönetmekten gelir.
+"Prompt mühendisliği"nden "bağlam mühendisliği"ne bu geçiş, artık yapay zeka etkileşimleri hakkında nasıl düşündüğümüzü yansıtıyor. Promptunuz önemli, ama yapay zekanın gördüğü her şey de önemli. En iyi sonuçlar, tüm bu parçaları birlikte ve özenle yönetmekten doğar.
 
-Bu kavramları bu kitap boyunca, özellikle [Bağlam Mühendisliği](/book/20-context-engineering) bölümünde derinlemesine keşfedeceğiz.
+Bu kavramları bu kitap boyunca, özellikle [Bağlam Mühendisliği](/book/14-context-engineering) bölümünde derinlemesine inceleyeceğiz.
 
 ## Prompt Mühendisliği Neden Önemli?
 
@@ -51,12 +51,12 @@ Yapay zeka araçları inanılmaz derecede yetenekli, ancak tam potansiyellerini 
 
 <Compare 
   before={{ label: "Belirsiz Prompt", content: "Özgeçmişimde bana yardım et" }}
-  after={{ label: "Mühendislik Yapılmış Prompt", content: "Kıdemli yazılım mühendisi pozisyonu için özgeçmişimi incele. Şunlara odaklan: 1) Etki metrikleri, 2) Teknik beceriler bölümü, 3) ATS optimizasyonu. Örneklerle spesifik iyileştirmeler öner." }}
+  after={{ label: "Özenle Kurgulanmış Prompt", content: "Kıdemli yazılım mühendisi pozisyonu için özgeçmişimi incele. Şunlara odaklan: 1) Etki metrikleri, 2) Teknik beceriler bölümü, 3) ATS optimizasyonu. Örneklerle spesifik iyileştirmeler öner." }}
 />
 
 ### 2. Zaman ve Para Tasarrufu
 
-İyi hazırlanmış bir prompt, birden fazla ileri-geri alışveriş yerine tek denemede sonuç alır. Token başına ödeme yaptığınızda veya hız limitleriyle çalıştığınızda bu daha da önemli. İyi bir prompt yazmaya yapılan 5 dakikalık yatırım, saatlerce yinelemeden tasarruf sağlayabilir.
+İyi hazırlanmış bir prompt, defalarca gidip gelmek yerine tek denemede sonuç verir. Token başına ödeme yaptığınızda veya hız limitleriyle çalıştığınızda bu daha da önemli. İyi bir prompt yazmaya ayıracağınız 5 dakika, sizi saatlerce sürecek deneme-düzeltme döngüsünden kurtarabilir.
 
 ### 3. Tutarlı, Tekrarlanabilir Sonuçlar Elde Etmek
 
@@ -70,7 +70,7 @@ Yapay zeka araçları inanılmaz derecede yetenekli, ancak tam potansiyellerini 
 Birçok güçlü yapay zeka özelliği yalnızca nasıl isteyeceğinizi bildiğinizde çalışır:
 - Karmaşık problemler için **düşünce zinciri muhakemesi**
 - Veri çıkarma için **yapılandırılmış çıktı**
-- Uzmanlaşmış uzmanlık için **rol yapma**
+- Alanında uzman yanıtlar için **rol yapma**
 - Özel görevler için **az örnekli öğrenme**
 
 Prompt mühendisliği bilgisi olmadan, yapay zekanın yapabileceklerinin sadece bir kısmını kullanıyorsunuz.
@@ -85,7 +85,7 @@ Prompt mühendisliği bilgisi olmadan, yapay zekanın yapabileceklerinin sadece 
 
 ### 6. Becerilerinizi Geleceğe Hazırlamak
 
-Yapay zeka iş ve yaşama daha fazla entegre oldukça, prompt mühendisliği temel bir okuryazarlık haline geliyor. Burada öğrendiğiniz ilkeler tüm yapay zeka araçlarına uygulanır—ChatGPT, Claude, Gemini, görsel oluşturucular ve henüz görmediğimiz gelecek modeller.
+Yapay zeka işimize ve hayatımıza daha çok girdikçe, prompt mühendisliği temel bir okuryazarlık haline geliyor. Burada öğrendiğiniz ilkeler tüm yapay zeka araçlarında geçerlidir—ChatGPT, Claude, Gemini, görsel oluşturucular ve henüz görmediğimiz gelecek modeller.
 
 ## Bu Kitap Kimin İçin?
 
@@ -102,11 +102,11 @@ Bu kitap herkes için:
 
 <BookPartsNav />
 
-Ayrıca şablonlar, sorun giderme yardımı, sözlük ve ek kaynaklar içeren bir **Ek** bölümü.
+Bunlara ek olarak şablonlar, sorun giderme yardımı, sözlük ve ek kaynaklar içeren bir **Ek** bölümü de var.
 
 ## Yapay Zeka Modelleri Hakkında Bir Not
 
-Bu kitap çoğunlukla ChatGPT'den örnekler kullanır (en popüler olduğu için), ancak fikirler Claude, Gemini veya diğerleri gibi herhangi bir yapay zeka aracıyla çalışır. Bir şeyin yalnızca belirli yapay zeka modelleriyle çalıştığı durumlarda bunu belirteceğiz.
+Bu kitap çoğunlukla ChatGPT'den örnekler kullanır (en popüler olduğu için), ancak fikirler Claude, Gemini ya da başka herhangi bir yapay zeka aracında da işe yarar. Bir şeyin yalnızca belirli yapay zeka modelleriyle çalıştığı durumlarda bunu belirteceğiz.
 
 Yapay zeka hızla değişiyor. Bugün işe yarayan bir şey yarın daha iyi bir şeyle değiştirilebilir. Bu yüzden bu kitap, hangi yapay zekayı kullanırsanız kullanın faydalı kalacak temel fikirlere odaklanıyor.
 
@@ -114,12 +114,12 @@ Yapay zeka hızla değişiyor. Bugün işe yarayan bir şey yarın daha iyi bir 
 
 İyi promptlar yazmak, pratikle gelişen bir beceridir. Bu kitabı okurken:
 
-1. **Şeyleri deneyin** - Örnekleri test edin, değiştirin, ne olduğunu görün
+1. **Kurcalayın** - Örnekleri test edin, değiştirin, ne olduğunu görün
 2. **Denemeye devam edin** - İlk denemede mükemmel sonuçlar beklemeyin
 3. **Not alın** - Neyin işe yaradığını ve neyin yaramadığını yazın
 4. **Paylaşın** - Keşiflerinizi [prompts.chat](https://prompts.chat)'e ekleyin
 
-<Callout type="tip" title="Pratik Mükemmelleştirir">
+<Callout type="tip" title="İşleyen Demir Işıldar">
 Öğrenmenin en iyi yolu yapmaktır. Her bölümde hemen deneyebileceğiniz örnekler var. Sadece okumayın. Kendiniz deneyin!
 </Callout>
 

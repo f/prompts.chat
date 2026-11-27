@@ -1,17 +1,17 @@
-Rol tabanlı prompting, prompt mühendisliğindeki en güçlü ve yaygın kullanılan tekniklerden biridir. Yapay zekaya belirli bir rol veya persona atayarak, yanıtların kalitesini, stilini ve ilgililiğini dramatik biçimde etkileyebilirsiniz.
+Rol tabanlı prompting, prompt mühendisliğindeki en güçlü ve yaygın kullanılan tekniklerden biridir. Yapay zekaya belirli bir rol veya persona atayarak, yanıtların kalitesini, üslubunu ve isabetini büyük ölçüde etkileyebilirsiniz.
 
 <Callout type="tip" title="Personaların Gücü">
-Rolleri, yapay zekanın geniş bilgisi için filtreler olarak düşünün. Doğru rol, yanıtları bir merceğin ışığı odaklaması gibi odaklar.
+Rolleri, yapay zekanın geniş bilgisi için filtreler olarak düşünün. Doğru rol, tıpkı bir merceğin ışığı toplaması gibi yanıtları tek bir noktaya toplar.
 </Callout>
 
 ## Roller Neden İşe Yarar
 
-Bir rol atadığınızda, esasen modele şunu söylüyorsunuz: "Geniş bilgini bu spesifik mercekten filtrele." Model şunları ayarlar:
+Bir rol atadığınızda, esasen modele şunu söylüyorsunuz: "Engin bilgini bu özel mercekten süzerek kullan." Model şunları ayarlar:
 
 - **Kelime dağarcığı**: Role uygun terminoloji kullanma
 - **Perspektif**: Problemleri o bakış açısından değerlendirme
 - **Uzmanlık derinliği**: Role uygun detay seviyeleri sağlama
-- **İletişim stili**: O rolün nasıl iletişim kuracağıyla eşleşme
+- **İletişim stili**: O rolün iletişim biçimine uyma
 
 ### Teknik Açıklama
 
@@ -19,16 +19,18 @@ LLM'ler, verilen bağlama göre en olası sonraki token'ı tahmin ederek çalı�
 
 **İlgili Bilgiyi Aktifleştirme**: Rol, modelin öğrenilmiş çağrışımlarının belirli bölgelerini hazırlar. "Sen bir doktorsun" demek, eğitim verilerinden tıbbi terminolojiyi, tanısal muhakeme kalıplarını ve klinik iletişim stillerini aktifleştirir.
 
-**İstatistiksel Koşullandırma**: LLM'ler gerçek uzmanlar tarafından yazılmış milyonlarca belgeden öğrendi. Bir rol atadığınızda, model olasılık dağılımlarını o tür yazardan gördüğü kalıplarla eşleşecek şekilde koşullandırır.
+**İstatistiksel Koşullandırma**: LLM'ler gerçek uzmanlar tarafından yazılmış milyonlarca belgeden öğrendi. Bir rol atadığınızda, model olasılık dağılımlarını, o tür yazarların metinlerinde gördüğü kalıplara uyacak şekilde koşullandırır.
 
-**Belirsizliği Azaltma**: Rol olmadan, model tüm olası yanıtlayanlar arasında ortalamasını alır. Rol ile belirli bir alt kümeye daralır, yanıtları daha odaklı ve tutarlı hale getirir.
+**Belirsizliği Azaltma**: Rol olmadan model, olası tüm yanıt verenlerin bir tür ortalamasını alır. Rol verildiğinde belirli bir alt kümeye daralır ve yanıtlar daha odaklı, daha tutarlı hale gelir.
 
 **Bağlam Çapalama**: Rol, sohbet boyunca kalıcı bir bağlam çapası oluşturur. Her sonraki yanıt bu başlangıç çerçevesinden etkilenir.
 
 Şöyle düşünün: "Bu öksürük için ne yapmalıyım?" diye sorarsanız, model bir doktor, bir arkadaş, bir eczacı veya endişeli bir ebeveyn olarak yanıt verebilir. Her biri farklı tavsiye verir. Rolü önceden belirterek, modele eğitim verilerinden hangi "sesi" kullanacağını söylüyorsunuz.
 
 <Callout type="info" title="Bu Neden Önemli">
-Model teatral anlamda rol yapmıyor veya taklit etmiyor. Eğitim sırasında gerçek uzmanlardan, profesyonellerden ve uzmanlardan öğrendiği kalıplara doğru çıktılarını istatistiksel olarak yönlendiriyor. "Doktor" rolü tıbbi bilgi yollarını aktifleştirir; "şair" rolü edebi kalıpları aktifleştirir.
+Model, tiyatrodaki anlamıyla rol yapmıyor ya da numara yapmıyor. Eğitim sırasında gerçek uzmanlardan, profesyonellerden ve alanında yetkin kişilerden öğrendiği kalıplara doğru çıktılarını istatistiksel olarak yönlendiriyor. "Doktor" rolü tıbbi bilgi yollarını aktifleştirir; "şair" rolü edebi kalıpları aktifleştirir.
+
+Roller en çok tonu, kelime seçimini ve odağı şekillendirir. Modelin hiç öğrenmediği bir bilgiyi ona kazandıramazlar; araştırmalar da tek başına bir personanın olgusal sorulardaki doğruluğu nadiren artırdığını gösteriyor. Rolleri iyi bir bağlamla birlikte kullanın ve önemli olan her şeyi doğrulayın.
 </Callout>
 
 ## Temel Rol Kalıpları
@@ -37,7 +39,7 @@ Bu temel kalıplar çoğu kullanım durumunda işe yarar. Bu şablonlarla başla
 
 ### Uzman Kalıbı
 
-En çok yönlü kalıp. Yetkili, derinlemesine yanıtlar almak için uzmanlık alanını ve deneyim yıllarını belirtin. Teknik sorular, analiz ve profesyonel tavsiyeler için iyi çalışır.
+En çok yönlü kalıp. Güvenilir ve derinlemesine yanıtlar almak için uzmanlık alanını ve deneyim yıllarını belirtin. Teknik sorular, analiz ve profesyonel tavsiyeler için iyi çalışır.
 
 <TryIt compact prompt={`Sen \${years:10} yıllık \${specialty} deneyimine sahip uzman bir \${field} profesyonelisin.
 
@@ -47,15 +49,15 @@ En çok yönlü kalıp. Yetkili, derinlemesine yanıtlar almak için uzmanlık a
 
 Bir iş unvanı ve organizasyon türü belirterek rolü gerçek dünya bağlamına oturtun. Bu, yanıta kurumsal bilgi ve profesyonel normlar ekler.
 
-<TryIt compact prompt={`Sen \${organization}'da çalışan bir \${profession}sun.
+<TryIt compact prompt={`Sen \${organization} bünyesinde \${profession} olarak çalışıyorsun.
 
 \${task}`} />
 
 ### Öğretmen Kalıbı
 
-Öğrenme ve açıklamalar için mükemmel. Hedef kitle seviyesini belirtmek, yanıtın öğrenicinin geçmişiyle eşleşmesini sağlar, yeni başlayanlardan ileri düzey pratisyenlere kadar.
+Öğrenme ve açıklamalar için mükemmel. Hedef kitlenin seviyesini belirtmek, yanıtın yeni başlayanlardan ileri düzey uygulayıcılara kadar öğrenenin birikimine uymasını sağlar.
 
-<TryIt compact prompt={`Sen karmaşık kavramları \${audience}'a açıklamada uzmanlaşmış bir \${subject} öğretmenisin.
+<TryIt compact prompt={`Sen karmaşık kavramları \${audience} için anlaşılır kılmada uzmanlaşmış bir \${subject} öğretmenisin.
 
 \${task}`} />
 
@@ -63,7 +65,7 @@ Bir iş unvanı ve organizasyon türü belirterek rolü gerçek dünya bağlamı
 
 ### Bileşik Roller
 
-Farklı perspektifleri harmanlayan yanıtlar almak için birden fazla kimliği birleştirin. Bu çocuk doktoru-ebeveyn kombinasyonu hem tıbbi olarak sağlam hem de pratik olarak test edilmiş tavsiyeler üretir.
+Farklı perspektifleri harmanlayan yanıtlar almak için birden fazla kimliği birleştirin. Bu çocuk doktoru-ebeveyn kombinasyonu hem tıbben sağlam hem de pratikte sınanmış tavsiyeler üretir.
 
 <TryIt compact prompt={`Sen aynı zamanda üç çocuk ebeveyni olan bir çocuk doktorusun. Çocukluk sağlık sorunlarının hem tıbbi hem de pratik yönlerini anlıyorsun. Empatiyle ve tıbbi jargon olmadan iletişim kuruyorsun.
 
@@ -80,7 +82,7 @@ Hem içeriği hem de tonu şekillendirmek için rolü belirli bir senaryoya yerl
 
 ### Perspektif Rolleri
 
-Belirli bir paydaşın bakış açısından geri bildirim alın. Bir yatırımcı perspektifi, uygulanabilirliği ve ölçeklenebilirliği bir müşteri veya mühendisten farklı değerlendirir.
+Belirli bir paydaşın bakış açısından geri bildirim alın. Bir girişim sermayedarı, uygulanabilirliği ve ölçeklenebilirliği bir müşteriden ya da mühendisten farklı değerlendirir.
 
 <TryIt compact prompt={`Sen startup sunumlarını değerlendiren bir girişim sermayedarısın. Binlerce sunum gördün ve güçlü yönleri, zayıflıkları ve tehlike işaretlerini hızla belirleyebilirsin. Doğrudan ama yapıcı ol.
 
@@ -88,23 +90,23 @@ Sunum: \${pitch}`} />
 
 ## Rol Kategorileri ve Örnekler
 
-Farklı alanlar farklı rol türlerinden faydalanır. İşte görevlerinize uyarlayabileceğiniz kategorilere göre düzenlenmiş kanıtlanmış örnekler.
+Farklı alanlar farklı rol türlerinden faydalanır. İşte görevlerinize uyarlayabileceğiniz kategorilere göre düzenlenmiş, denenmiş örnekler.
 
 ### Teknik Roller
 
-**Yazılım Mimarı**: Sistem tasarım kararları, teknoloji seçimleri ve mimari ödünleşimler için en iyi. Sürdürülebilirlik odağı yanıtları pratik, uzun vadeli çözümlere yönlendirir.
+**Yazılım Mimarı**: Sistem tasarım kararları, teknoloji seçimleri ve mimari ödünleşimler için en uygun rol. Sürdürülebilirlik odağı yanıtları pratik, uzun vadeli çözümlere yönlendirir.
 
 <TryIt compact prompt={`Sen ölçeklenebilir dağıtık sistemlerde uzmanlaşmış bir yazılım mimarısın. Önerilerinde sürdürülebilirlik, performans ve ekip üretkenliğini önceliklendiriyorsun.
 
 \${question}`} />
 
-**Güvenlik Uzmanı**: Saldırgan zihniyeti burada anahtar. Bu rol, yalnızca savunmacı bir perspektifin gözden kaçırabileceği güvenlik açıklarını tespit eden tehdit odaklı analiz üretir.
+**Güvenlik Uzmanı**: Burada kilit nokta, saldırgan gibi düşünmek. Bu rol, yalnızca savunmacı bir perspektifin gözden kaçırabileceği güvenlik açıklarını tespit eden tehdit odaklı analiz üretir.
 
 <TryIt compact prompt={`Sen penetrasyon testi yapan bir siber güvenlik uzmanısın. Güvenlik açıklarını belirlemek için bir saldırgan gibi düşünüyorsun.
 
 Analiz et: \${target}`} />
 
-**DevOps Mühendisi**: Dağıtım, otomasyon ve altyapı soruları için ideal. Güvenilirlik vurgusu üretim hazır öneriler sağlar.
+**DevOps Mühendisi**: Dağıtım, otomasyon ve altyapı soruları için ideal. Güvenilirlik vurgusu, üretime hazır öneriler getirir.
 
 <TryIt compact prompt={`Sen CI/CD pipeline'ları ve kod olarak altyapıya odaklanan bir DevOps mühendisisin. Otomasyon ve güvenilirliğe değer veriyorsun.
 
@@ -112,13 +114,13 @@ Analiz et: \${target}`} />
 
 ### Yaratıcı Roller
 
-**Metin Yazarı**: "Ödüllü" niteleyicisi ve dönüşüm odağı, genel pazarlama metni yerine kısa ve ikna edici metin üretir.
+**Metin Yazarı**: "Ödüllü" sıfatı ve dönüşüme odaklanma, sıradan pazarlama metni yerine vurucu ve ikna edici metinler üretir.
 
 <TryIt compact prompt={`Sen dönüşüm sağlayan çekici başlıklar ve ikna edici içerik oluşturmasıyla tanınan ödüllü bir metin yazarısın.
 
 Şunun için metin yaz: \${product}`} />
 
-**Senarist**: Dramatik yapı, tempo ve diyalog konvansiyonları bilgisini aktifleştirir. Gerilim ve karakter sesi gerektiren herhangi bir anlatı yazımı için harika.
+**Senarist**: Dramatik yapı, tempo ve diyalog kurallarına dair bilgiyi aktifleştirir. Gerilim ve karakter sesi gerektiren herhangi bir anlatı yazımı için harika.
 
 <TryIt compact prompt={`Sen popüler TV dramaları için senaryo yazmış bir senaristsin. Hikaye yapısını, diyaloğu ve karakter gelişimini anlıyorsun.
 
@@ -126,19 +128,19 @@ Yaz: \${scene}`} />
 
 **UX Yazarı**: Arayüz metni için özelleşmiş bir rol. Kısalık ve kullanıcı rehberliği odağı öz, eylem odaklı metin üretir.
 
-<TryIt compact prompt={`Sen mikro metinlerde uzmanlaşmış bir UX yazarısın. Arayüzleri insani hissettiriyorsun ve kullanıcıları minimal metinle yönlendiriyorsun.
+<TryIt compact prompt={`Sen mikro metinlerde uzmanlaşmış bir UX yazarısın. Arayüzlere insani bir sıcaklık katıyor, kullanıcıları en az sözcükle yönlendiriyorsun.
 
 Şunun için mikro metin yaz: \${element}`} />
 
 ### Analitik Roller
 
-**İş Analisti**: Teknik ve teknik olmayan paydaşlar arasında köprü kurar. Gereksinim toplama, spec yazma ve proje planlarındaki boşlukları belirleme için yararlı.
+**İş Analisti**: Teknik ve teknik olmayan paydaşlar arasında köprü kurar. Gereksinim toplama, şartname yazma ve proje planlarındaki boşlukları belirleme için yararlı.
 
-<TryIt compact prompt={`Sen teknik ekipler ve paydaşlar arasında çeviri yapan bir iş analistsin. Gereksinimleri netleştiriyorsun ve uç durumları belirliyorsun.
+<TryIt compact prompt={`Sen teknik ekiplerle paydaşlar arasında köprü görevi gören bir iş analistsin. Gereksinimleri netleştiriyorsun ve uç durumları belirliyorsun.
 
 Analiz et: \${requirement}`} />
 
-**Araştırma Bilimcisi**: Kanıt ve belirsizlik kabulü vurgusu, gerçekleri spekülasyondan ayıran dengeli, iyi kaynaklı yanıtlar üretir.
+**Araştırma Bilimcisi**: Kanıta verilen önem ve belirsizliği kabul etme tutumu, gerçekleri spekülasyondan ayıran dengeli, iyi kaynaklı yanıtlar üretir.
 
 <TryIt compact prompt={`Sen ampirik kanıtlara değer veren ve belirsizliği kabul eden bir araştırma bilimcisisin. Yerleşik gerçekler ile hipotezler arasında ayrım yapıyorsun.
 
@@ -158,7 +160,7 @@ Değerlendir: \${investment}`} />
 
 Konu: \${topic}`} />
 
-**Öğretim Tasarımcısı**: Öğrenmeyi maksimum kalıcılık için yapılandırır. Karmaşık konuları net ilerlemeyle öğretilebilir parçalara bölmeniz gerektiğinde bu rolü kullanın.
+**Öğretim Tasarımcısı**: Öğrenmeyi, akılda kalıcılığı en üst düzeye çıkaracak şekilde yapılandırır. Karmaşık konuları net ilerlemeyle öğretilebilir parçalara bölmeniz gerektiğinde bu rolü kullanın.
 
 <TryIt compact prompt={`Sen ilgi çekici öğrenme deneyimleri oluşturan bir öğretim tasarımcısısın. Karmaşık konuları net öğrenme hedefleriyle sindirilebilir modüllere bölüyorsun.
 
@@ -168,9 +170,9 @@ Konu: \${topic}`} />
 
 Karmaşık görevler için birden fazla rol yönünü tek, katmanlı bir kimlikte birleştirin. Bu teknik, son derece uzmanlaşmış yanıtlar oluşturmak için uzmanlık, hedef kitle farkındalığı ve stil kılavuzlarını üst üste koyar.
 
-Bu örnek üç elemanı katmanlar: alan uzmanlığı (API dokümantasyonu), hedef kitle (junior geliştiriciler) ve stil kılavuzu (Google'ın konvansiyonları). Her katman çıktıyı daha da kısıtlar.
+Bu örnek üç katmanı üst üste koyar: alan uzmanlığı (API dokümantasyonu), hedef kitle (junior geliştiriciler) ve stil kılavuzu (Google'ın konvansiyonları). Her katman çıktıyı daha da kısıtlar.
 
-<TryIt compact prompt={`Sen API dokümantasyonunda uzmanlığa sahip bir teknik yazarsın. REST API'lerine yeni olan geliştiriciler için yazıyorsun. Google geliştirici dokümantasyonu stil kılavuzunu takip et: ikinci tekil şahıs ("sen") kullan, etken çatı, şimdiki zaman ve cümleleri 26 kelimenin altında tut.
+<TryIt compact prompt={`Sen API dokümantasyonunda uzmanlığa sahip bir teknik yazarsın. REST API'lerle yeni tanışan geliştiriciler için yazıyorsun. Google geliştirici dokümantasyonu stil kılavuzunu takip et: ikinci tekil şahıs ("sen"), etken çatı ve şimdiki zaman kullan; cümleleri 26 kelimenin altında tut.
 
 Belgele: \${apiEndpoint}`} />
 
@@ -191,11 +193,11 @@ Belgele: \${apiEndpoint}`} />
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Yeni konu öğrenme</span>
-    <span className="text-muted-foreground">Sabırlı öğretmen + pratisyen</span>
+    <span className="text-muted-foreground">Sabırlı öğretmen + uygulayıcı</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Yaratıcı yazı</span>
-    <span className="text-muted-foreground">Belirli tür yazarı</span>
+    <span className="text-muted-foreground">Belirli bir türün yazarı</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Teknik açıklama</span>
@@ -203,7 +205,7 @@ Belgele: \${apiEndpoint}`} />
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Problem çözme</span>
-    <span className="text-muted-foreground">Alan uzmanı + generalist</span>
+    <span className="text-muted-foreground">Alan uzmanı + genelci</span>
   </div>
 </div>
 
@@ -271,10 +273,10 @@ Kütüphanesindeki kitapların sonlarının yavaş yavaş değiştiğini keşfed
   prompt={`Sen Fortune 500 CEO'larıyla çalışmış bir yönetici iletişim koçusun. Liderlerin karmaşık fikirleri basitçe iletmelerine ve ekipleriyle güven oluşturmalarına yardım ediyorsun.
 
 Bütçe kesintileri hakkında bir ekip toplantısı için bu mesajı incele. Şu iyileştirmeleri öner:
-- Zorluğu kabul ederken güveni koruma
+- Zorluğu kabul ederken kendinden emin duruşu koruma
 - Panik yaratmadan şeffaf olma
 - Profesyonel kalırken empati gösterme
-- Net sonraki adımları dahil etme
+- Sonraki adımları net biçimde belirtme
 
 Taslak mesaj: "Bütçe kısıtlamaları nedeniyle proje kapsamını azaltmamız gerekiyor. Bazı girişimler duraklatılacak."`}
 />
@@ -291,7 +293,7 @@ Rolün tam olarak nasıl yanıt vermesi gerektiğini göstermek için bir rolü 
 
 Kızgın müşteriye örnek yanıt:
 Müşteri: "Bu saçmalık! 2 haftadır bekliyorum!"
-Sen: "Hayal kırıklığınızı tamamen anlıyorum ve gecikme için özür dilerim. Şu anda buna bakayım ve siparişinizin tam olarak nerede olduğunu bulayım. Sipariş numaranızı alabilir miyim?"
+Sen: "Hayal kırıklığınızı tamamen anlıyorum ve gecikme için özür dilerim. Şu anda buna bakayım ve siparişinizin tam olarak nerede olduğunu bulayım. Sipariş numaranızı paylaşabilir misiniz?"
 
 Şimdi yanıtla:
 Müşteri: "\${customerMessage}"`} />
@@ -300,7 +302,7 @@ Müşteri: "\${customerMessage}"`} />
 
 Dedektif rolü doğal olarak adım adım muhakemeyi teşvik eder. Rolleri düşünce zinciriyle birleştirmek daha şeffaf, doğrulanabilir problem çözümü üretir.
 
-<TryIt compact prompt={`Sen bir mantık bulmacasını çözen bir dedektifsin. Her ipucunu metodik olarak düşün, her adımda muhakemeni belirt.
+<TryIt compact prompt={`Sen bir mantık bulmacasını çözen bir dedektifsin. Her ipucunu yöntemli biçimde değerlendir ve her adımda muhakemeni açıkla.
 
 İpuçları:
 \${clues}
@@ -325,4 +327,4 @@ Rol tabanlı prompting güçlüdür çünkü modelin geniş bilgisini odaklar, t
   explanation="Rol ne kadar detaylı ve gerçekçi olursa, sonuçlar o kadar iyi olur. Özgüllük, modelin tam olarak hangi bilgi, ton ve perspektifi uygulaması gerektiğini anlamasına yardımcı olur."
 />
 
-Anahtar **özgüllüktür**: rol ne kadar detaylı ve gerçekçi olursa, sonuçlar o kadar iyi olur. Bir sonraki bölümde, promptlarınızdan tutarlı, yapılandırılmış çıktılar almayı keşfedeceğiz.
+İşin sırrı **özgüllük**: rol ne kadar detaylı ve gerçekçi olursa, sonuçlar o kadar iyi olur. Bir sonraki bölümde, promptlarınızdan tutarlı, yapılandırılmış çıktılar almayı keşfedeceğiz.

@@ -1,22 +1,22 @@
 L'ingénierie des prompts est rarement un processus en une seule étape. Les meilleurs prompts émergent à travers l'itération—tester, observer et affiner jusqu'à atteindre les résultats souhaités.
 
-<Callout type="info" title="Premier Brouillon, Pas Version Finale">
-Pensez à votre premier prompt comme un brouillon. Même les ingénieurs de prompts expérimentés réussissent rarement du premier coup.
+<Callout type="info" title="Premier jet, pas version finale">
+Considérez votre premier prompt comme un brouillon. Même les ingénieurs de prompts expérimentés réussissent rarement du premier coup.
 </Callout>
 
-## Le Cycle d'Itération
+## Le cycle d'itération
 
 L'affinement efficace des prompts suit un cycle prévisible : écrire, tester, analyser et améliorer. Chaque itération vous rapproche d'un prompt qui produit de manière fiable les résultats dont vous avez besoin.
 
 <IterativeRefinementDemo />
 
-## Patterns d'Affinement Courants
+## Schémas d'affinement courants
 
-La plupart des échecs de prompts tombent dans une poignée de catégories. Apprendre à reconnaître ces patterns vous permet de diagnostiquer et corriger rapidement les problèmes sans repartir de zéro.
+La plupart des échecs de prompts relèvent d'une poignée de catégories. Apprendre à reconnaître ces schémas vous permet de diagnostiquer et de corriger rapidement les problèmes sans repartir de zéro.
 
-### Problème : Sortie Trop Longue
+### Problème : sortie trop longue
 
-L'un des problèmes les plus courants. Sans contraintes explicites, les modèles tendent à être exhaustifs plutôt que concis.
+C'est l'un des problèmes les plus courants. Sans contraintes explicites, les modèles ont tendance à être exhaustifs plutôt que concis.
 
 <DiffView 
   before="Explique comment fonctionne la photosynthèse."
@@ -25,60 +25,60 @@ L'un des problèmes les plus courants. Sans contraintes explicites, les modèles
   afterLabel="Affiné"
 />
 
-### Problème : Sortie Trop Vague
+### Problème : sortie trop vague
 
-Les prompts vagues produisent des sorties vagues. Le modèle ne peut pas lire dans vos pensées sur ce que « meilleur » signifie ou quels aspects comptent le plus pour vous.
+Les prompts vagues produisent des sorties vagues. Le modèle ne peut pas deviner ce que « meilleur » signifie pour vous, ni quels aspects comptent le plus à vos yeux.
 
 <DiffView 
   before="Donne-moi des conseils pour de meilleures présentations."
-  after={`Donne-moi 5 conseils spécifiques et actionnables pour améliorer les présentations techniques à des non-techniciens. Pour chaque conseil, inclus un exemple concret.`}
+  after={`Donne-moi 5 conseils précis et directement applicables pour améliorer des présentations techniques destinées à un public non technique. Pour chaque conseil, donne un exemple concret.`}
   beforeLabel="Original"
   afterLabel="Affiné"
 />
 
-### Problème : Mauvais Ton
+### Problème : mauvais ton
 
-Le ton est subjectif et varie selon le contexte. Ce qui semble « professionnel » pour le modèle peut ne pas correspondre à la voix de votre organisation.
+Le ton est subjectif et varie selon le contexte. Ce qui semble « professionnel » au modèle ne correspond pas forcément à la voix de votre organisation ni à la relation que vous entretenez avec votre destinataire.
 
 <DiffView 
-  before="Écris un email d'excuses pour avoir manqué une deadline."
-  after={`Écris un email d'excuses professionnel mais chaleureux pour avoir manqué une deadline de projet. Le ton doit être responsable sans être excessivement apologétique. Inclus un plan concret pour éviter les retards futurs.`}
+  before="Écris un email d'excuses pour avoir manqué une échéance."
+  after={`Écris un email d'excuses professionnel mais chaleureux pour avoir manqué l'échéance d'un projet. Le ton doit montrer que j'assume la responsabilité sans m'excuser à l'excès. Inclus un plan concret pour éviter de nouveaux retards.`}
   beforeLabel="Original"
   afterLabel="Affiné"
 />
 
-### Problème : Information Clé Manquante
+### Problème : informations clés manquantes
 
-Les demandes ouvertes obtiennent des réponses ouvertes. Si vous avez besoin de types spécifiques de feedback, vous devez les demander explicitement.
+Une demande ouverte appelle une réponse ouverte. Si vous avez besoin de retours d'un type précis, vous devez les demander explicitement.
 
 <DiffView 
-  before="Révise ce code."
-  after={`Révise ce code Python pour :
-1. Bugs et erreurs logiques
-2. Problèmes de performance
-3. Vulnérabilités de sécurité
-4. Style de code (PEP 8)
+  before="Relis ce code."
+  after={`Relis ce code Python en cherchant :
+1. Les bugs et erreurs logiques
+2. Les problèmes de performance
+3. Les failles de sécurité
+4. Le style de code (PEP 8)
 
-Pour chaque problème trouvé, explique le problème et suggère une correction.
+Pour chaque problème trouvé, explique-le et propose une correction.
 
 [code]`}
   beforeLabel="Original"
   afterLabel="Affiné"
 />
 
-### Problème : Format Incohérent
+### Problème : format incohérent
 
-Sans template, le modèle structurera chaque réponse différemment, rendant la comparaison difficile et l'automatisation impossible.
+Sans modèle de réponse, le modèle structurera chaque réponse différemment, ce qui rend la comparaison difficile et l'automatisation impossible.
 
 <DiffView 
   before="Analyse ces trois produits."
-  after={`Analyse ces trois produits en utilisant ce format exact pour chacun :
+  after={`Analyse ces trois produits en utilisant exactement ce format pour chacun :
 
-## [Nom du Produit]
+## [Nom du produit]
 **Prix :** X€
 **Avantages :** [liste à puces]
 **Inconvénients :** [liste à puces]
-**Idéal Pour :** [une phrase]
+**Idéal pour :** [une phrase]
 **Note :** X/10
 
 [produits]`}
@@ -86,88 +86,92 @@ Sans template, le modèle structurera chaque réponse différemment, rendant la 
   afterLabel="Affiné"
 />
 
-## Approche d'Affinement Systématique
+## Une approche d'affinement systématique
 
-Les changements aléatoires gaspillent du temps. Une approche systématique vous aide à identifier rapidement les problèmes et à les corriger efficacement.
+Les changements au hasard font perdre du temps. Une approche systématique vous aide à identifier rapidement les problèmes et à les corriger efficacement.
 
-### Étape 1 : Diagnostiquer le Problème
+### Étape 1 : diagnostiquer le problème
 
-Avant de changer quoi que ce soit, identifiez ce qui ne va vraiment pas :
+Avant de changer quoi que ce soit, identifiez ce qui ne va vraiment pas. Utilisez ce tableau de diagnostic pour relier les symptômes aux solutions :
 
 <div className="my-4 grid gap-2">
   <div className="grid grid-cols-3 gap-2 p-3 bg-muted/50 rounded-lg text-sm">
     <span className="font-semibold">Symptôme</span>
-    <span className="font-semibold">Cause Probable</span>
+    <span className="font-semibold">Cause probable</span>
     <span className="font-semibold">Solution</span>
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Trop long</span>
     <span className="text-muted-foreground">Pas de contrainte de longueur</span>
-    <span className="text-green-600 dark:text-green-400">Ajouter limites mots/phrases</span>
+    <span className="text-green-600 dark:text-green-400">Limiter le nombre de mots ou de phrases</span>
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Trop court</span>
-    <span className="text-muted-foreground">Manque demande de détails</span>
-    <span className="text-green-600 dark:text-green-400">Demander élaboration</span>
+    <span className="text-muted-foreground">Aucune demande de détails</span>
+    <span className="text-green-600 dark:text-green-400">Demander de développer</span>
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Hors sujet</span>
     <span className="text-muted-foreground">Instructions vagues</span>
-    <span className="text-green-600 dark:text-green-400">Être plus spécifique</span>
+    <span className="text-green-600 dark:text-green-400">Être plus précis</span>
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Mauvais format</span>
-    <span className="text-muted-foreground">Format non spécifié</span>
-    <span className="text-green-600 dark:text-green-400">Définir structure exacte</span>
+    <span className="text-muted-foreground">Format non précisé</span>
+    <span className="text-green-600 dark:text-green-400">Définir la structure exacte</span>
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Mauvais ton</span>
-    <span className="text-muted-foreground">Audience pas claire</span>
-    <span className="text-green-600 dark:text-green-400">Spécifier audience/style</span>
+    <span className="text-muted-foreground">Public mal défini</span>
+    <span className="text-green-600 dark:text-green-400">Préciser le public et le style</span>
   </div>
   <div className="grid grid-cols-3 gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg text-sm">
     <span>Incohérent</span>
-    <span className="text-muted-foreground">Pas d'exemples fournis</span>
-    <span className="text-green-600 dark:text-green-400">Ajouter exemples few-shot</span>
+    <span className="text-muted-foreground">Aucun exemple fourni</span>
+    <span className="text-green-600 dark:text-green-400">Ajouter des exemples few-shot</span>
   </div>
 </div>
 
-### Étape 2 : Faire des Changements Ciblés
+### Étape 2 : faire des changements ciblés
 
-Résistez à l'envie de tout réécrire. Changer plusieurs variables à la fois rend impossible de savoir ce qui a aidé et ce qui a nui :
+Résistez à l'envie de tout réécrire. Changer plusieurs variables à la fois empêche de savoir ce qui a aidé et ce qui a nui. Faites un changement, testez-le, puis continuez :
 
 ```
-Itération 1 : Ajouter contrainte de longueur
-Itération 2 : Spécifier le format
+Itération 1 : Ajouter une contrainte de longueur
+Itération 2 : Préciser le format
 Itération 3 : Ajouter un exemple
-Itération 4 : Affiner les instructions de ton
+Itération 4 : Affiner les consignes de ton
 ```
 
-### Étape 3 : Documenter Ce Qui Fonctionne
+### Étape 3 : documenter ce qui fonctionne
+
+Le savoir-faire en ingénierie des prompts se perd facilement. Tenez un journal de ce que vous avez essayé et pourquoi. Vous gagnerez du temps quand vous reviendrez sur le prompt ou que vous affronterez des problèmes similaires :
 
 ```markdown
-## Prompt : Réponse Email Client
+## Prompt : réponse à un email client
 
-### Version 1 (trop formel)
-"Écris une réponse à cette plainte client."
+### Version 1 (trop formelle)
+"Écris une réponse à cette réclamation client."
 
-### Version 2 (meilleur ton, structure manquante)
-"Écris une réponse amicale mais professionnelle. 
-Montre de l'empathie d'abord."
+### Version 2 (meilleur ton, structure encore absente)
+"Écris une réponse amicale mais professionnelle à cette réclamation. 
+Commence par faire preuve d'empathie."
 
-### Version 3 (final - bons résultats)
-"Écris une réponse à cette plainte client. Structure :
-1. Reconnaître leur frustration (1 phrase)
-2. S'excuser spécifiquement (1 phrase)  
+### Version 3 (finale, bons résultats)
+"Écris une réponse à cette réclamation client. Structure :
+1. Reconnaître sa frustration (1 phrase)
+2. S'excuser de façon précise (1 phrase)  
 3. Expliquer la solution (2-3 phrases)
-4. Offrir aide supplémentaire (1 phrase)
+4. Proposer une aide supplémentaire (1 phrase)
 
-Ton : Amical, professionnel, empathique mais pas servile."
+Ton : amical, professionnel, empathique mais pas obséquieux."
 ```
 
-## Exemple d'Itération Réel
+## Un exemple d'itération concret
 
-### Tâche : Générer des Noms de Produit
+Parcourons un cycle d'itération complet pour voir comment chaque amélioration s'appuie sur la précédente. Remarquez comment chaque version corrige des défauts précis de la version antérieure.
+
+### Tâche : générer des noms de produit
 
 <VersionDiff versions={[
   {
@@ -177,73 +181,92 @@ Ton : Amical, professionnel, empathique mais pas servile."
   },
   {
     label: "Version 2",
-    content: `Génère des noms pour une nouvelle app de productivité. L'app utilise l'IA pour planifier automatiquement vos tâches selon vos niveaux d'énergie et disponibilité calendrier.`,
+    content: `Génère des noms pour une nouvelle app de productivité. L'app utilise l'IA pour planifier automatiquement vos tâches selon votre niveau d'énergie et vos disponibilités dans l'agenda.`,
     note: "Contexte ajouté, encore générique"
   },
   {
     label: "Version 3",
-    content: `Génère 10 noms uniques et mémorables pour une app de productivité avec ces caractéristiques :
-- Utilise l'IA pour planifier les tâches selon l'énergie
-- Audience cible : professionnels occupés 25-40 ans
-- Ton de marque : moderne, intelligent, légèrement ludique
-- Éviter : mots génériques comme "pro", "smart", "IA", "task"
+    content: `Génère 10 noms uniques et mémorables pour une app de productivité présentant ces caractéristiques :
+- Utilise l'IA pour planifier les tâches selon le niveau d'énergie
+- Public cible : professionnels très occupés de 25 à 40 ans
+- Ton de la marque : moderne, intelligent, légèrement ludique
+- À éviter : mots génériques comme "pro", "smart", "IA", "task"
 
 Pour chaque nom, explique pourquoi il fonctionne.`,
-    note: "Contraintes et raisonnement ajoutés"
+    note: "Contraintes et justification ajoutées"
   },
   {
     label: "Version 4 (finale)",
     content: `Génère 10 noms uniques et mémorables pour une app de productivité.
 
 Contexte :
-- Utilise l'IA pour planifier les tâches selon l'énergie
-- Cible : professionnels occupés, 25-40 ans
+- Utilise l'IA pour planifier les tâches selon le niveau d'énergie
+- Cible : professionnels très occupés, 25-40 ans
 - Ton : moderne, intelligent, légèrement ludique
 
 Exigences :
 - 2-3 syllabes maximum
-- Facile à épeler et prononcer
-- Disponible comme domaine .com (vérifier si plausible)
-- Éviter : mots génériques (pro, smart, IA, task, flow)
+- Facile à écrire et à prononcer
+- Disponible en nom de domaine .com (vérifier si c'est plausible)
+- À éviter : mots génériques (pro, smart, IA, task, flow)
 
 Format :
-Nom | Prononciation | Pourquoi Ça Marche | Disponibilité Domaine`,
-    note: "Format structuré, exigences spécifiques"
+Nom | Prononciation | Pourquoi ça marche | Disponibilité probable du domaine`,
+    note: "Format structuré, exigences précises"
   }
 ]} />
 
-## Stratégies d'Affinement par Type de Tâche
+## Stratégies d'affinement par type de tâche
 
-### Pour la Génération de Contenu
+Chaque type de tâche échoue de façon prévisible. Connaître les modes d'échec courants vous aide à diagnostiquer et à corriger les problèmes plus vite.
 
-<InfoGrid items={[
-  { icon: "target", title: "Trop Générique", description: "Ajouter contraintes et contexte spécifiques" },
-  { icon: "scissors", title: "Trop Long", description: "Définir limites mots/paragraphes" },
-  { icon: "palette", title: "Mauvais Style", description: "Fournir exemples de style" },
-  { icon: "megaphone", title: "Hors Marque", description: "Inclure directives voix de marque" }
-]} />
+### Pour la génération de contenu
 
-### Pour la Génération de Code
+La génération de contenu produit souvent des textes génériques, à côté du sujet ou mal formatés. La solution consiste généralement à préciser davantage les contraintes, à fournir des exemples concrets ou à définir explicitement la voix de votre marque.
 
 <InfoGrid items={[
-  { icon: "code", title: "Erreurs Syntaxe", description: "Spécifier version du langage" },
-  { icon: "git-branch", title: "Mauvaise Approche", description: "Décrire patterns préférés" },
-  { icon: "shield", title: "Cas Limites Manquants", description: "Lister scénarios à gérer" },
-  { icon: "tag", title: "Mauvais Nommage", description: "Inclure conventions de nommage" }
+  { icon: "target", title: "Trop générique", description: "Ajouter des contraintes et un contexte précis", example: "« Écris sur les chiens » → « Écris sur les golden retrievers pour des propriétaires débutants, en te concentrant sur le dressage et les besoins d'exercice »" },
+  { icon: "scissors", title: "Trop long", description: "Fixer une limite de mots ou de paragraphes", example: "Ajouter : « Réponds en moins de 150 mots » ou « 3 paragraphes maximum »" },
+  { icon: "palette", title: "Mauvais style", description: "Fournir des exemples de style", example: "« Écris dans le style de cet exemple : [coller un extrait] »" },
+  { icon: "megaphone", title: "Hors de l'image de marque", description: "Inclure les règles de voix de la marque", example: "« Adopte un ton amical et décontracté. Évite le jargon. Tutoie le lecteur. »" }
 ]} />
 
-### Pour l'Analyse
+### Pour la génération de code
+
+Le code produit peut échouer sur le plan technique (erreurs de syntaxe, fonctionnalités du langage inadaptées) ou sur le plan architectural (mauvais schémas de conception, cas oubliés). Les problèmes techniques demandent de préciser la version et l'environnement ; les problèmes d'architecture demandent des consignes de conception.
 
 <InfoGrid items={[
-  { icon: "layers", title: "Trop Superficiel", description: "Demander frameworks spécifiques" },
-  { icon: "scale", title: "Biaisé", description: "Demander plusieurs perspectives" },
-  { icon: "database", title: "Données Manquantes", description: "Spécifier quoi analyser" },
-  { icon: "layout", title: "Non Structuré", description: "Fournir template d'analyse" }
+  { icon: "code", title: "Erreurs de syntaxe", description: "Préciser la version du langage", example: "« Utilise la syntaxe Python 3.11+ avec des annotations de type » ou « JavaScript ES2022 »" },
+  { icon: "git-branch", title: "Mauvaise approche", description: "Décrire les schémas de conception préférés", example: "« Adopte une approche fonctionnelle, évite les classes » ou « Suis le pattern repository »" },
+  { icon: "shield", title: "Cas limites oubliés", description: "Lister les scénarios à gérer", example: "« Gère : entrée vide, valeurs null, délais réseau dépassés, formats invalides »" },
+  { icon: "tag", title: "Nommage médiocre", description: "Inclure les conventions de nommage", example: "« Utilise le camelCase pour les variables, le PascalCase pour les classes, UPPER_SNAKE pour les constantes »" }
 ]} />
 
-## La Technique de Boucle de Feedback
+### Pour l'analyse
 
-Utilisez le modèle lui-même pour aider à améliorer vos prompts :
+Les tâches d'analyse produisent souvent des résultats superficiels ou peu structurés. Guidez le modèle avec des cadres précis (SWOT, cinq forces de Porter), demandez plusieurs points de vue ou fournissez un modèle pour la structure de la réponse.
+
+<InfoGrid items={[
+  { icon: "layers", title: "Trop superficiel", description: "Demander un cadre d'analyse précis", example: "« Analyse à l'aide d'une matrice SWOT » ou « Applique les cinq forces de Porter »" },
+  { icon: "scale", title: "Biaisé", description: "Demander plusieurs points de vue", example: "« Présente les arguments pour et contre » ou « Inclus le point de vue d'un sceptique »" },
+  { icon: "database", title: "Données manquantes", description: "Préciser quoi analyser", example: "« Concentre-toi sur : taille du marché, taux de croissance, acteurs clés, barrières à l'entrée »" },
+  { icon: "layout", title: "Non structuré", description: "Fournir un modèle d'analyse", example: "« Format : Synthèse → Constats clés → Implications → Recommandations »" }
+]} />
+
+### Pour les questions-réponses
+
+Les réponses aux questions peuvent être trop laconiques ou trop bavardes, et manquer d'indications de fiabilité ou de sources. Précisez le niveau de détail attendu et si vous voulez des citations ou une expression de l'incertitude.
+
+<InfoGrid items={[
+  { icon: "plus", title: "Trop court", description: "Demander de développer", example: "« Explique en détail avec des exemples » ou « Développe chaque point »" },
+  { icon: "minus", title: "Trop long", description: "Demander une réponse concise", example: "« Réponds en 2-3 phrases » ou « Donne-moi l'essentiel en bref »" },
+  { icon: "help-circle", title: "Incertain", description: "Demander un niveau de confiance", example: "« Évalue ta confiance de 1 à 10 » ou « Signale les hypothèses que tu fais »" },
+  { icon: "link", title: "Sans sources", description: "Demander des citations", example: "« Cite tes sources pour chaque affirmation » ou « Ajoute des références quand c'est possible »" }
+]} />
+
+## La technique de la boucle de rétroaction
+
+Voici une méta-technique : utilisez le modèle lui-même pour améliorer vos prompts. Montrez-lui ce que vous avez essayé, ce que vous avez obtenu et ce que vous vouliez. Il peut souvent suggérer des améliorations auxquelles vous n'aviez pas pensé.
 
 ```
 J'ai utilisé ce prompt :
@@ -256,50 +279,69 @@ Je voulais quelque chose de plus [décrire l'écart]. Comment devrais-je
 modifier mon prompt pour obtenir de meilleurs résultats ?
 ```
 
-## Quand Arrêter d'Itérer
+## Tests A/B de prompts
+
+Pour les prompts destinés à être utilisés de façon répétée ou à grande échelle, ne vous contentez pas du premier qui fonctionne. Testez des variantes pour trouver l'approche la plus fiable et de la meilleure qualité.
+
+```
+Prompt A : "Résume cet article en 3 points."
+Prompt B : "Extrais les 3 idées les plus importantes de cet article."
+Prompt C : "Quels sont les principaux enseignements de cet article ? Cites-en 3."
+```
+
+Exécutez chacun plusieurs fois et comparez :
+- La cohérence des sorties
+- La qualité des informations
+- La pertinence par rapport à vos besoins
+
+## Quand arrêter d'itérer
+
+Le mieux est l'ennemi du bien. Sachez reconnaître quand votre prompt est prêt à servir et quand vous ne faites plus que le peaufiner pour des gains de plus en plus faibles.
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
   <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
-    <p className="text-sm font-semibold text-green-700 dark:text-green-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconCheck className="h-4 w-4" /> Prêt à Déployer</p>
+    <p className="text-sm font-semibold text-green-700 dark:text-green-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconCheck className="h-4 w-4" /> Prêt à déployer</p>
     <div className="text-sm p-4 pt-2 space-y-1">
-      <p className="m-0!">La sortie répond aux exigences de manière cohérente</p>
+      <p className="m-0!">La sortie répond systématiquement aux exigences</p>
       <p className="m-0!">Les cas limites sont gérés correctement</p>
       <p className="m-0!">Le format est fiable et analysable</p>
-      <p className="m-0!">Les améliorations montrent des rendements décroissants</p>
+      <p className="m-0!">Les améliorations supplémentaires rapportent de moins en moins</p>
     </div>
   </div>
   <div className="border rounded-lg bg-red-50/50 dark:bg-red-950/20 border-red-200 dark:border-red-900">
-    <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> Continuer à Itérer</p>
+    <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> Continuer à itérer</p>
     <div className="text-sm p-4 pt-2 space-y-1">
-      <p className="m-0!">La sortie est incohérente entre les exécutions</p>
-      <p className="m-0!">Les cas limites causent des échecs</p>
-      <p className="m-0!">Des exigences critiques sont manquées</p>
-      <p className="m-0!">Vous n'avez pas testé assez de variations</p>
+      <p className="m-0!">La sortie varie d'une exécution à l'autre</p>
+      <p className="m-0!">Les cas limites provoquent des échecs</p>
+      <p className="m-0!">Des exigences essentielles ne sont pas respectées</p>
+      <p className="m-0!">Vous n'avez pas testé assez de variantes</p>
     </div>
   </div>
 </div>
 
-## Contrôle de Version pour les Prompts
+## Gestion de versions pour les prompts
 
-Les prompts sont du code. Pour tout prompt utilisé en production, traitez-le avec la même rigueur :
+Les prompts sont du code. Tout prompt utilisé en production mérite la même rigueur : gestion de versions, journal des modifications et possibilité de revenir en arrière si quelque chose casse.
 
-<Callout type="tip" title="Versioning Intégré">
-prompts.chat inclut un historique de versions automatique pour vos prompts. Chaque modification est sauvegardée, vous permettant de comparer les versions et restaurer des itérations précédentes en un clic.
+<Callout type="tip" title="Versionnage intégré">
+De nombreux outils de prompts conservent un historique des versions à votre place. Sur prompts.chat, par exemple, chaque modification du texte d'un prompt est enregistrée comme une nouvelle version, et vous pouvez comparer deux versions côte à côte.
 </Callout>
+
+Pour les prompts que vous gérez vous-même, utilisez une arborescence de dossiers :
 
 ```
 prompts/
 ├── reponse-client/
 │   ├── v1.0.txt    # Version initiale
-│   ├── v1.1.txt    # Correction ton
+│   ├── v1.1.txt    # Correction du ton
 │   ├── v2.0.txt    # Restructuration majeure
-│   └── current.txt # Lien vers version active
-└── changelog.md    # Documenter les changements
+│   └── current.txt # Lien symbolique vers la version active
+└── changelog.md    # Historique des modifications
 ```
 
 ## Résumé
 
-<Callout type="tip" title="Points Clés à Retenir">
+<Callout type="tip" title="Points clés à retenir">
 Commencez simple, observez attentivement, changez une chose à la fois, documentez ce qui fonctionne, et sachez quand arrêter. Les meilleurs prompts ne sont pas écrits—ils sont découverts par l'itération systématique.
 </Callout>
 
@@ -307,39 +349,39 @@ Commencez simple, observez attentivement, changez une chose à la fois, document
   question="Quelle est la meilleure approche pour affiner un prompt qui produit de mauvais résultats ?"
   options={[
     "Réécrire entièrement le prompt depuis zéro",
-    "Ajouter plus d'exemples jusqu'à ce que ça fonctionne",
+    "Ajouter des exemples jusqu'à ce que ça fonctionne",
     "Changer une chose à la fois et tester chaque changement",
     "Rendre le prompt aussi long que possible"
   ]}
   correctIndex={2}
-  explanation="Changer une chose à la fois vous permet d'isoler ce qui fonctionne et ce qui ne fonctionne pas. Si vous changez plusieurs choses à la fois, vous ne saurez pas quel changement a corrigé le problème."
+  explanation="Changer une chose à la fois vous permet d'isoler ce qui fonctionne et ce qui ne fonctionne pas. Si vous changez plusieurs choses à la fois, vous ne saurez pas quel changement a résolu le problème ni lequel l'a aggravé."
 />
 
-## Pratique : Améliorez Ce Prompt
+## Pratique : améliorez ce prompt
 
-Essayez d'améliorer ce prompt faible vous-même :
+Essayez d'améliorer vous-même ce prompt faible. Modifiez-le, puis utilisez l'IA pour comparer votre version à l'original :
 
 <BeforeAfterEditor
-  title="Affinez Ce Prompt d'Email"
+  title="Affinez ce prompt d'email"
   badPrompt="Écris un email."
-  idealPrompt={`Tu es un rédacteur professionnel.
+  idealPrompt={`Tu es un rédacteur professionnel spécialisé dans la communication d'entreprise.
 
-Tâche : Écris un email de suivi à un client potentiel après une réunion commerciale.
+Tâche : Écris un email de relance à un client potentiel après un rendez-vous commercial.
 
 Contexte :
-- Rencontré Sophie Martin, VP Marketing chez TechCorp
-- Discuté de notre plateforme d'analytics
-- Elle a exprimé de l'intérêt pour les fonctionnalités de reporting
-- Réunion hier
+- Rendez-vous avec Sophie Martin, directrice marketing chez TechCorp
+- Nous avons présenté notre plateforme d'analytics
+- Elle s'est montrée intéressée par les fonctionnalités de reporting
+- Le rendez-vous a eu lieu hier
 
 Exigences :
 - Ton professionnel mais chaleureux
-- Référencer des points spécifiques de notre réunion
+- Faire référence à des points précis abordés pendant le rendez-vous
 - Inclure une prochaine étape claire (planifier une démo)
-- Garder sous 150 mots
+- Moins de 150 mots
 
-Format : Objet + corps de l'email`}
-  task="Transformez ce prompt vague en quelque chose qui produira un résultat professionnel et efficace."
+Format : objet + corps de l'email`}
+  task="Transformez ce prompt d'email vague en un prompt qui produira un résultat professionnel et efficace."
 />
 
 Dans le prochain chapitre, nous explorerons le prompting JSON et YAML pour les applications de données structurées.

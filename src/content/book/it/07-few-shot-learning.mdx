@@ -15,7 +15,7 @@ Il few-shot learning mostra al modello esempi di coppie input-output prima di ch
 
 "La batteria dura tantissimo ma lo schermo è troppo scuro."
 
-→ Il modello potrebbe essere inconsistente con i casi limite` 
+→ Il modello potrebbe essere incoerente con i casi limite` 
   }}
   after={{ 
     label: "Few-Shot (Con Esempi)", 
@@ -61,7 +61,7 @@ Gli esempi comunicano:
 
 ## Pattern Few-Shot Base
 
-La struttura fondamentale del prompting few-shot segue un pattern semplice: mostra esempi, poi chiedi il nuovo compito. La consistenza nella formattazione tra gli esempi è cruciale. Il modello impara dal pattern che stabilisci.
+La struttura fondamentale del prompting few-shot segue un pattern semplice: mostra esempi, poi chiedi il nuovo compito. La coerenza nella formattazione tra gli esempi è cruciale. Il modello impara dal pattern che stabilisci.
 
 ```
 [Esempio 1]
@@ -83,7 +83,7 @@ Output:
 
 ## Few-Shot per la Classificazione
 
-La classificazione è uno dei casi d'uso più forti per il few-shot learning. Mostrando esempi di ogni categoria, definisci i confini tra le classi più precisamente di quanto le sole istruzioni potrebbero fare.
+La classificazione è uno dei casi d'uso in cui il few-shot learning rende di più. Mostrando esempi di ogni categoria, definisci i confini tra le classi più precisamente di quanto le sole istruzioni potrebbero fare.
 
 ### Analisi del Sentiment
 
@@ -91,7 +91,7 @@ La classificazione è uno dei casi d'uso più forti per il few-shot learning. Mo
 L'analisi del sentiment classifica il testo per tono emotivo: positivo, negativo, neutro o misto. È ampiamente usata per feedback clienti, monitoraggio social media e tracciamento della percezione del brand.
 </Callout>
 
-La classificazione del sentiment beneficia dal mostrare esempi di ogni tipo di sentiment, specialmente casi limite come sentiment "misto" che potrebbero essere ambigui.
+La classificazione del sentiment trae vantaggio da esempi di ogni tipo di sentiment, specialmente casi limite come sentiment "misto" che potrebbero essere ambigui.
 
 <TryIt compact prompt={`Classifica il sentiment di queste recensioni clienti.
 
@@ -144,7 +144,7 @@ La trasformazione di stile richiede esempi che mostrino il cambio di tono esatto
 <TryIt compact prompt={`Riscrivi queste frasi in un tono professionale.
 
 Informale: "Ehi, volevo solo controllare se hai ricevuto la mia email?"
-Professionale: "Volevo fare un follow-up riguardo alla mia email precedente."
+Professionale: "Mi permetto di ricontattarla in merito alla mia email precedente."
 
 Informale: "Questo è super importante e deve essere fatto SUBITO!"
 Professionale: "Questa questione richiede attenzione urgente e azione tempestiva."
@@ -158,7 +158,7 @@ Professionale:`} />
 
 ### Conversione di Formato
 
-I compiti di conversione di formato beneficiano da esempi che mostrano casi limite e input ambigui. Il modello impara le tue convenzioni specifiche per gestire casi complicati.
+I compiti di conversione di formato traggono vantaggio da esempi che mostrano casi limite e input ambigui. Il modello impara le tue convenzioni specifiche per gestire casi complicati.
 
 <TryIt compact prompt={`Converti queste date in linguaggio naturale in formato ISO.
 
@@ -184,7 +184,7 @@ I compiti di generazione creano nuovo contenuto seguendo un pattern appreso. Gli
 
 ### Descrizioni Prodotto
 
-Il copy marketing beneficia enormemente dagli esempi perché catturano la voce del brand, l'enfasi sulle funzionalità e le tecniche persuasive che sono difficili da descrivere astrattamente.
+I testi di marketing traggono enorme vantaggio dagli esempi perché catturano la voce del brand, l'enfasi sulle funzionalità e le tecniche persuasive che sono difficili da descrivere astrattamente.
 
 <TryIt compact prompt={`Scrivi descrizioni prodotto in questo stile:
 
@@ -204,7 +204,7 @@ Descrizione:`} />
 ### Documentazione del Codice
 
 <Callout type="info" title="Perché Documentare il Codice?">
-Una buona documentazione spiega cosa fa il codice, i suoi parametri, valori di ritorno e esempi d'uso. Docstring consistenti abilitano documentazione API auto-generata e aiutano gli IDE a fornire completamento codice migliore.
+Una buona documentazione spiega cosa fa il codice, i suoi parametri, valori di ritorno e esempi d'uso. Docstring coerenti permettono di generare automaticamente la documentazione API e aiutano gli IDE a offrire un completamento del codice migliore.
 </Callout>
 
 Lo stile di documentazione varia ampiamente tra progetti. Gli esempi insegnano il tuo formato specifico, cosa includere (args, returns, examples) e il livello di dettaglio atteso.
@@ -249,7 +249,7 @@ I compiti di estrazione estraggono informazioni strutturate da testo non struttu
 Il Named Entity Recognition (NER) identifica e classifica entità nominate nel testo in categorie come persone, organizzazioni, luoghi, date e prodotti. È fondamentale per il recupero di informazioni e i knowledge graph.
 </Callout>
 
-Il NER beneficia da esempi che mostrano i tuoi tipi di entità specifici e come gestire entità che potrebbero rientrare in molteplici categorie.
+Il NER trae vantaggio da esempi che mostrano i tuoi tipi di entità specifici e come gestire entità che potrebbero rientrare in molteplici categorie.
 
 <TryIt compact prompt={`Estrai entità nominate da queste frasi.
 
@@ -328,8 +328,8 @@ Risposta:`} />
 
 ### Esempi Negativi
 
-<Callout type="tip" title="Apprendimento Contrastivo">
-Mostrare esempi "buoni" vs "cattivi" si chiama apprendimento contrastivo. Aiuta il modello a capire non solo cosa vuoi, ma cosa evitare. Questo è particolarmente utile per giudizi di stile e qualità.
+<Callout type="tip" title="Esempi Contrastivi">
+Affiancare esempi "buoni" ed esempi "cattivi" è ciò che spesso si chiama usare esempi contrastivi. (Non va confusa con il "contrastive learning", o apprendimento contrastivo, che è un metodo per addestrare i modelli.) Aiuta il modello a capire non solo cosa vuoi, ma cosa evitare. Questo è particolarmente utile per giudizi di stile e qualità.
 </Callout>
 
 A volte mostrare cosa *non* fare è prezioso quanto mostrare esempi corretti. Gli esempi negativi aiutano il modello a capire i confini ed evitare errori comuni.
@@ -351,23 +351,23 @@ Oggetto:`} />
 
 ### Esempi di Casi Limite
 
-I casi limite spesso determinano se una soluzione funziona in produzione. Includere input insoliti nei tuoi esempi previene che il modello fallisca su dati del mondo reale che non rientrano nel "percorso felice".
+I casi limite spesso determinano se una soluzione funziona in produzione. Includere input insoliti nei tuoi esempi evita che il modello sbagli su dati reali che non rientrano nel caso ideale (il cosiddetto "happy path"). Nota che tutti gli esempi qui sotto usano gli stessi campi e mettono null quando una parte manca. Anche questa coerenza fa parte di ciò che il modello impara.
 
-<TryIt compact prompt={`Parsa nomi in formato strutturato.
+<TryIt compact prompt={`Scomponi questi nomi in formato strutturato.
 
 Input: "Mario Rossi"
-Output: {"first": "Mario", "last": "Rossi", "middle": null, "suffix": null}
+Output: {"prefix": null, "first": "Mario", "middle": null, "last": "Rossi", "suffix": null}
 
 Input: "Maria Giovanna Bianchi-Verdi"
-Output: {"first": "Maria", "middle": "Giovanna", "last": "Bianchi-Verdi", "suffix": null}
+Output: {"prefix": null, "first": "Maria", "middle": "Giovanna", "last": "Bianchi-Verdi", "suffix": null}
 
 Input: "Dott. Marco Antonio Ferri Jr."
 Output: {"prefix": "Dott.", "first": "Marco", "middle": "Antonio", "last": "Ferri", "suffix": "Jr."}
 
 Input: "Cher"
-Output: {"first": "Cher", "last": null, "middle": null, "suffix": null, "mononym": true}
+Output: {"prefix": null, "first": "Cher", "middle": null, "last": null, "suffix": null}
 
-Ora parsa:
+Ora scomponi:
 Input: "Cav. Giuseppe Garibaldi III"
 Output:`} />
 
@@ -377,7 +377,7 @@ Output:`} />
   <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Classificazione semplice</span>
     <span className="text-primary font-mono">2-3</span>
-    <span className="text-muted-foreground">Uno per categoria minimo</span>
+    <span className="text-muted-foreground">Almeno uno per categoria</span>
   </div>
   <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Formattazione complessa</span>
@@ -395,6 +395,8 @@ Output:`} />
     <span className="text-muted-foreground">Insieme agli esempi normali</span>
   </div>
 </div>
+
+Questi numeri sono un punto di partenza, non un tetto. I modelli con finestre di contesto lunghe possono continuare a migliorare in alcuni compiti con decine o persino centinaia di esempi, un approccio che i ricercatori chiamano many-shot prompting. Per la maggior parte dei prompt di tutti i giorni, però, una manciata di esempi ben scelti ti dà quasi tutto il beneficio a una frazione del costo. I modelli di ragionamento spesso ne richiedono meno: OpenAI suggerisce di provarli prima senza esempi, aggiungendone qualcuno solo se serve e assicurandosi che siano in linea con le tue istruzioni.
 
 ## La Qualità degli Esempi Conta
 
@@ -424,11 +426,11 @@ Output:`} />
 
 ## Combinare Few-Shot con Altre Tecniche
 
-Il few-shot learning si combina potentemente con altre tecniche di prompting. Gli esempi forniscono il "cosa" mentre altre tecniche possono aggiungere contesto, ragionamento o struttura.
+Il few-shot learning si combina in modo molto efficace con altre tecniche di prompting. Gli esempi forniscono il "cosa" mentre altre tecniche possono aggiungere contesto, ragionamento o struttura.
 
 ### Few-Shot + Ruolo
 
-Aggiungere un ruolo dà al modello contesto sul *perché* sta facendo il compito, il che può migliorare qualità e consistenza.
+Aggiungere un ruolo dà al modello contesto sul *perché* sta facendo il compito, il che può migliorare qualità e coerenza.
 
 ```
 Sei un revisore di contratti legali.
@@ -464,7 +466,7 @@ Il few-shot learning insegna attraverso la dimostrazione ed è spesso più effic
 </Callout>
 
 <Quiz 
-  question="Quanti esempi dovresti tipicamente fornire nel few-shot learning?"
+  question="Quanti esempi dovresti fornire di solito nel few-shot learning?"
   options={[
     "Quanti più possibile (10+)",
     "Solo 1 esempio è sempre sufficiente",
@@ -472,7 +474,7 @@ Il few-shot learning insegna attraverso la dimostrazione ed è spesso più effic
     "Gli esempi non sono necessari se le istruzioni sono chiare"
   ]}
   correctIndex={2}
-  explanation="2-5 esempi diversi e corretti tipicamente funzionano meglio. Troppo pochi potrebbero non catturare il pattern, mentre troppi sprecano token e potrebbero confondere il modello. Qualità e diversità contano più della quantità."
+  explanation="Di solito 2-5 esempi diversi e corretti funzionano meglio. Troppo pochi potrebbero non catturare il pattern, mentre aggiungerne molti altri costa token e per i compiti di tutti i giorni porta in genere poco in più. Qualità e diversità contano più della quantità."
 />
 
 Nel prossimo capitolo, esploreremo il raffinamento iterativo: l'arte di migliorare i prompt attraverso tentativi successivi.

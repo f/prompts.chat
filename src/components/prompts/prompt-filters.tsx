@@ -58,11 +58,13 @@ interface PromptFiltersProps {
   basePath?: string;
   primaryFilter?: PrimaryFilter;
   searchPlaceholder?: string;
+  /** Listings without votes or dates to sort by hide the sort select */
+  showSort?: boolean;
 }
 
 const promptTypes = ["TEXT", "STRUCTURED", "IMAGE", "VIDEO", "AUDIO"];
 
-export function PromptFilters({ categories, tags, currentFilters, aiSearchEnabled, showTrendingFilter = false, basePath = "/prompts", primaryFilter, searchPlaceholder }: PromptFiltersProps) {
+export function PromptFilters({ categories, tags, currentFilters, aiSearchEnabled, showTrendingFilter = false, basePath = "/prompts", primaryFilter, searchPlaceholder, showSort = true }: PromptFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations();
@@ -328,6 +330,7 @@ export function PromptFilters({ categories, tags, currentFilters, aiSearchEnable
       )}
 
       {/* Sort */}
+      {showSort && (
       <div className="space-y-1.5">
         <Label className="text-xs">{t("search.sortBy")}</Label>
         <Select
@@ -347,6 +350,7 @@ export function PromptFilters({ categories, tags, currentFilters, aiSearchEnable
           </SelectContent>
         </Select>
       </div>
+      )}
 
       {/* Tags */}
       {tags.length > 0 && (

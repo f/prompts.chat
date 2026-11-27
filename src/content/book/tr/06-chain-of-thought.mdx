@@ -1,7 +1,7 @@
-Düşünce Zinciri (Chain of Thought - CoT) promptlaması, modelden çalışmasını adım adım göstermesini isteyerek karmaşık muhakeme görevlerinde yapay zeka performansını dramatik biçimde artıran bir tekniktir.
+Düşünce Zinciri (Chain of Thought, CoT) promptlaması, modelden çözümünü adım adım göstermesini isteyerek karmaşık muhakeme gerektiren görevlerde yapay zekanın başarısını çarpıcı biçimde artıran bir tekniktir.
 
-<Callout type="info" title="Çalışmanı Göster">
-Tıpkı bir matematik öğretmeninin öğrencilerden çalışmalarını göstermelerini istemesi gibi, CoT promptlaması yapay zekadan muhakemesini görünür kılmasını ister.
+<Callout type="info" title="İşlemlerini Göster">
+Matematik öğretmeni öğrencilerden yalnızca sonucu değil, işlemleri de görmek ister. CoT promptlaması da yapay zekadan aynı şeyi ister: muhakemesini görünür kılmasını.
 </Callout>
 
 ## CoT'un Çözdüğü Problem
@@ -9,23 +9,25 @@ Tıpkı bir matematik öğretmeninin öğrencilerden çalışmalarını gösterm
 Yapay zeka modelleri, doğrudan cevaba atlamaları istendiğinde çok adımlı muhakemede zorlanabilir.
 
 <Compare 
-  before={{ label: "Doğrudan Cevap (Genellikle Yanlış)", content: "Soru: Bir mağaza elmaları tanesi 2 TL'ye satıyor. 5 veya daha fazla alırsan %20 indirim alırsın. 7 elma kaç lira tutar?\n\nCevap: 14 TL ❌" }}
-  after={{ label: "Düşünce Zinciri (Doğru)", content: "Soru: Bir mağaza elmaları tanesi 2 TL'ye satıyor. 5 veya daha fazla alırsan %20 indirim alırsın. 7 elma kaç lira tutar?\n\nBunu adım adım çözelim:\n1. Elma başına normal fiyat: 2 TL\n2. Elma sayısı: 7\n3. 7 ≥ 5 olduğundan indirim uygulanır\n4. Normal toplam: 7 × 2 TL = 14 TL\n5. İndirim: 14 TL'nin %20'si = 2,80 TL\n6. Son fiyat: 14 TL - 2,80 TL = 11,20 TL\n\nCevap: 11,20 TL ✓" }}
+  before={{ label: "Doğrudan Cevap (Genellikle Yanlış)", content: "Soru: Bir manav elmanın tanesini 2 TL'ye satıyor. 5 veya daha fazla alana %20 indirim var. 7 elma kaç lira tutar?\n\nCevap: 14 TL ❌" }}
+  after={{ label: "Düşünce Zinciri (Doğru)", content: "Soru: Bir manav elmanın tanesini 2 TL'ye satıyor. 5 veya daha fazla alana %20 indirim var. 7 elma kaç lira tutar?\n\nBunu adım adım çözelim:\n1. Elmanın normal fiyatı: 2 TL\n2. Elma sayısı: 7\n3. 7 ≥ 5 olduğundan indirim uygulanır\n4. Normal toplam: 7 × 2 TL = 14 TL\n5. İndirim: 14 TL'nin %20'si = 2,80 TL\n6. Son fiyat: 14 TL - 2,80 TL = 11,20 TL\n\nCevap: 11,20 TL ✓" }}
 />
 
 ## Temel CoT Promptları
 
 ### Basit Tetikleyici İfadeler
 
-Bunlardan birini promptlarınıza ekleyin:
+Promptunuza bunlardan birini eklemeniz yeterli:
 
 <div className="my-4 grid gap-2">
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Adım adım düşünelim."</div>
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Bunu dikkatlice düşün."</div>
-  <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Bu problemi metodik olarak çöz."</div>
+  <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Bu problemi yöntemli bir şekilde çöz."</div>
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Her adımda muhakemeni göster."</div>
   <div className="p-3 bg-muted/50 rounded-lg font-mono text-sm">"Düşünce sürecini açıkla."</div>
 </div>
+
+Bu ifadeler en çok standart sohbet modellerinde işe yarar. Cevap vermeden önce kendi kendine düşünen akıl yürütme modellerinin bunlara pek ihtiyacı yoktur; bu modellere bölümün ilerleyen kısmında yeniden döneceğiz.
 
 ### Açık Adım İsteği
 
@@ -34,28 +36,28 @@ Bunlardan birini promptlarınıza ekleyin:
   description="Yapay zekadan bir problemi adım adım çözmesini isteyin."
   prompt={`Bu problemi çöz:
 
-Bir araç kiralama günlük 40 TL artı kilometre başına 0,25 TL tutuyor. Birisi 3 gün araç kiralar ve 200 kilometre sürerse, toplam maliyet ne olur?
+Araç kiralamanın günlük ücreti 40 TL, üstüne de kilometre başına 0,25 TL ödeniyor. 3 günlüğüne araç kiralayıp 200 kilometre yol yapan biri toplam ne öder?
 
 Son cevabını vermeden önce:
 1. Verilen bilgileri belirle
-2. Ne bulmamız gerektiğini tespit et
-3. Yaklaşımını planla
-4. Her adımı çalışmayı göstererek uygula
+2. Neyi bulmamız gerektiğini tespit et
+3. Nasıl ilerleyeceğini planla
+4. Her adımı işlemlerini göstererek uygula
 5. Cevabını doğrula`}
 />
 
-## Sıfır Örnek vs Birkaç Örnek CoT
+## Sıfır Örnekli ve Az Örnekli CoT
 
-Düşünce Zinciri promptlamasına iki ana yaklaşım vardır, her biri basitlik ve kontrol arasında farklı ödünleşimler sunar.
+Düşünce Zinciri promptlamasında iki ana yaklaşım vardır; her biri basitlik ile kontrol arasında farklı bir denge kurar.
 
-### Sıfır Örnek CoT
+### Sıfır Örnekli CoT
 
-En basit yaklaşım—sadece bir tetikleyici ifade ekleyin ve modelin nasıl muhakeme edeceğini bulmasına izin verin. Örnek gerekmez. Bu, birçok problem için şaşırtıcı derecede iyi çalışır, ancak muhakeme formatı üzerinde daha az kontrolünüz olur.
+En basit yaklaşım budur: bir tetikleyici ifade ekler, gerisini modele bırakırsınız. Örnek vermeniz gerekmez. Pek çok problemde şaşırtıcı derecede iyi sonuç verir, ama muhakemenin biçimi üzerinde daha az söz sahibi olursunuz.
 
 <TryIt 
   compact
-  title="Sıfır Örnek CoT"
-  prompt={`Ali'nin 3 elması var ve yarısını Ayşe'ye veriyor, sonra 4 tane daha alıyor. Kaç tane elması var?
+  title="Sıfır Örnekli CoT"
+  prompt={`Ali'nin 3 elması var. Yarısını Ayşe'ye veriyor, sonra 4 elma daha alıyor. Ali'nin şimdi kaç elması var?
 
 Adım adım düşünelim.`}
 />
@@ -64,47 +66,47 @@ Adım adım düşünelim.`}
 ```
 Adım adım düşünelim.
 - Ali 3 elmayla başlıyor
-- 3'ün yarısı 1,5 ama elmaları bölemeyiz
-- Aşağı yuvarlarsak: Ali 1 elma verir, 2 tutar
-- 4 tane daha aldıktan sonra: 2 + 4 = 6 elma
+- 3'ün yarısı 1,5 ama elmayı bölemeyiz
+- Aşağı yuvarlarsak: Ali 1 elma verir, elinde 2 elma kalır
+- 4 elma daha aldıktan sonra: 2 + 4 = 6 elma
 
 Cevap: 6 elma
 ```
 
-### Birkaç Örnek CoT
+### Az Örnekli CoT
 
-Daha tutarlı sonuçlar için, çözülmüş örnekler vererek modele tam olarak nasıl muhakeme etmesini istediğinizi gösterin. Bu size muhakeme stili, formatı ve detay seviyesi üzerinde kontrol sağlar. Model gösterilen kalıbı taklit edecektir.
+Daha tutarlı sonuçlar istiyorsanız, çözülmüş örneklerle modele nasıl muhakeme etmesini istediğinizi tam olarak gösterin. Böylece muhakemenin üslubunu, biçimini ve ayrıntı düzeyini siz belirlersiniz. Model de gösterdiğiniz kalıbı izler.
 
 <TryIt 
   compact
-  title="Birkaç Örnek CoT"
+  title="Az Örnekli CoT"
   prompt={`Örnek 1:
-S: Bir pastacının 24 kurabiyesi var. Bunları eşit olarak 4 kutuya koyuyor. Sonra bir kutudan 2 kurabiye yiyor. Toplamda kaç kurabiye kalır?
+S: Bir pastacının 24 kurabiyesi var. Bunları 4 kutuya eşit olarak paylaştırıyor. Sonra kutulardan birinden 2 kurabiye yiyor. Geriye toplam kaç kurabiye kalır?
 
 C: Bunu adım adım çözelim:
 - Toplam kurabiye: 24
 - Kutu başına kurabiye: 24 ÷ 4 = 6
-- Bir kutudan 2 yedikten sonra: 6 - 2 = 4 kurabiye o kutuda
+- Bir kutudan 2 kurabiye yendikten sonra o kutuda 6 - 2 = 4 kurabiye kalır
 - Kalan toplam: (3 kutu × 6) + 4 = 18 + 4 = 22 kurabiye
 
 Örnek 2:
-S: Bir tren 2 saat boyunca saatte 60 km hızla, sonra 3 saat boyunca saatte 40 km hızla gidiyor. Ortalama hızı nedir?
+S: Bir tren önce 2 saat boyunca saatte 60 km hızla, sonra 3 saat boyunca saatte 40 km hızla gidiyor. Ortalama hızı nedir?
 
 C: Bunu adım adım çözelim:
-- 60 km/sa ile mesafe: 60 × 2 = 120 km
-- 40 km/sa ile mesafe: 40 × 3 = 120 km
-- Toplam mesafe: 120 + 120 = 240 km
+- 60 km/sa ile alınan yol: 60 × 2 = 120 km
+- 40 km/sa ile alınan yol: 40 × 3 = 120 km
+- Toplam yol: 120 + 120 = 240 km
 - Toplam süre: 2 + 3 = 5 saat
 - Ortalama hız: 240 ÷ 5 = 48 km/sa
 
-Şimdi çöz:
-S: Bir mağaza defterleri tanesi 3 TL'ye satıyor. 10 veya daha fazla alırsan %25 indirim alırsın. 12 defter kaç lira tutar?`}
+Şimdi bunu çöz:
+S: Bir kırtasiye defterin tanesini 3 TL'ye satıyor. 10 veya daha fazla alana %25 indirim var. 12 defter kaç lira tutar?`}
 />
 
 **Örnek Çıktı:**
 ```
 C: Bunu adım adım çözelim:
-- Normal fiyat: 3 TL, Miktar: 12
+- Normal fiyat: 3 TL, Adet: 12
 - 12 ≥ 10 olduğundan %25 indirim uygulanır
 - Normal toplam: 12 × 3 TL = 36 TL
 - İndirim: 36 TL'nin %25'i = 9 TL
@@ -113,17 +115,17 @@ C: Bunu adım adım çözelim:
 
 ## Yapılandırılmış CoT Formatları
 
-Tutarlı, tekrarlanabilir muhakeme için adlandırılmış adımlarla yapılandırılmış formatlar kullanın. Bu çerçeveler modelin önemli aşamaları atlamamasını sağlar ve çıktıları ayrıştırmayı ve doğrulamayı kolaylaştırır.
+Tutarlı ve tekrarlanabilir bir muhakeme için adımları adlandırılmış yapılandırılmış formatlar kullanın. Bu çerçeveler modelin önemli aşamaları atlamasını önler; çıktıyı ayrıştırmak ve doğrulamak da kolaylaşır.
 
 ### BREAK Formatı
 
-Modeli anlama'dan doğrulama'ya tam bir problem çözme döngüsünden geçiren akılda kalıcı bir kısaltma.
+Modeli, problemi anlamaktan çözümü doğrulamaya kadar eksiksiz bir problem çözme döngüsünden geçiren, akılda kalıcı bir kısaltma.
 
 <BREAKFramework />
 
 ### Muhakeme Şablonu
 
-Girdileri, hedefleri ve uygulamayı ayıran daha resmi bir yapı. Çözüm sürecinin net belgelenmesine ihtiyaç duyduğunuz teknik problemler için mükemmel.
+Girdileri, hedefleri ve uygulamayı birbirinden ayıran daha resmi bir yapı. Çözüm sürecinin açıkça kayda geçmesini istediğiniz teknik problemler için biçilmiş kaftandır.
 
 <TryIt 
   compact
@@ -131,23 +133,23 @@ Girdileri, hedefleri ve uygulamayı ayıran daha resmi bir yapı. Çözüm süre
   prompt={`Problemi çözmek için bu şablonu kullan:
 
 VERİLENLER: [Bilinen bilgileri listele]
-HEDEF: [Ne bulmamız gerekiyor]
+HEDEF: [Neyi bulmamız gerekiyor]
 YAKLAŞIM: [Kullanacağımız strateji]
 ADIMLAR:
-  1. [Muhakemeyle birinci adım]
-  2. [Muhakemeyle ikinci adım]
+  1. [Gerekçesiyle birinci adım]
+  2. [Gerekçesiyle ikinci adım]
   ...
 DOĞRULAMA: [Cevabı kontrol et]
 CEVAP: [Son cevap]
 
-Problem: Bir araba 100 km'de 8 litre yakıt tüketiyor. Depo 45 litre alıyorsa ve yakıt litresi 35 TL ise, 300 km sürmek kaça mal olur?`}
+Problem: Bir araba 100 km'de 8 litre yakıt tüketiyor. Deposu 45 litre alıyor ve yakıtın litresi 35 TL. 300 km yol yapmak kaça mal olur?`}
 />
 
 **Örnek Çıktı:**
 ```
-VERİLENLER: 8L/100km, depo 45L, 35 TL/L, 300km sürmek
+VERİLENLER: 8L/100km, depo 45L, 35 TL/L, 300 km yol
 HEDEF: Yakıt maliyetini hesapla
-YAKLAŞIM: Gereken yakıt × litre başına maliyet
+YAKLAŞIM: Gereken yakıt × litre fiyatı
 ADIMLAR:
 1. Yakıt = (300 ÷ 100) × 8 = 24 litre
 2. Maliyet = 24 × 35 TL = 840 TL
@@ -157,18 +159,18 @@ CEVAP: 840 TL
 
 ## Farklı Problem Türleri için CoT
 
-Farklı problem türleri farklı CoT yaklaşımlarından faydalanır. İşte yaygın senaryolar için optimize edilmiş kalıplar.
+Her problem türü farklı bir CoT yaklaşımından fayda görür. Aşağıda yaygın senaryolara göre uyarlanmış kalıplar bulacaksınız.
 
 ### Matematiksel Muhakeme
 
-Matematik problemleri CoT'tan en çok faydalanır çünkü her adım bir öncekinin üzerine inşa edilir. Hatalar katlanır, bu yüzden çalışmayı göstermek hataları erken yakalamaya yardımcı olur. Model her hesaplamayı net bir şekilde etiketlemelidir.
+CoT'tan en çok matematik problemleri yararlanır, çünkü her adım bir öncekinin üzerine kurulur. Hatalar birikerek büyür; işlemleri göstermek bu yüzden hataları erkenden yakalamaya yardım eder. Model her hesaplamayı açıkça etiketlemelidir.
 
 <TryIt 
   compact
   title="CoT ile Matematik"
-  prompt={`Bir şirketin 1. çeyrekte geliri 1,2 milyon TL idi. 2. çeyrekte %15 büyüdü, 3. çeyrekte %10 düştü ve 4. çeyrekte %25 büyüdü. Toplam yıllık gelir ne kadardı?
+  prompt={`Bir şirketin geliri 1. çeyrekte 1,2 milyon TL idi. Gelir 2. çeyrekte %15 arttı, 3. çeyrekte %10 düştü ve 4. çeyrekte %25 arttı. Yıllık toplam gelir ne kadardı?
 
-Her çeyreği düşün, hesaplamalarını net bir şekilde göster.`}
+Çeyrekleri tek tek ele al ve hesaplamalarını açıkça göster.`}
 />
 
 **Örnek Çıktı:**
@@ -183,20 +185,21 @@ Toplam: 5.374.500 TL
 
 ### Mantıksal Muhakeme
 
-Mantık bulmacaları sistematik eleme ve hipotez testi gerektirir. CoT modelin kısıtlamaları takip etmesine, olasılıkları test etmesine ve tüm koşulların karşılandığını doğrulamasına yardımcı olur. Anahtar, tahmin etmek yerine metodik keşiftir.
+Mantık bulmacaları sistematik eleme ve hipotez sınamayı gerektirir. CoT, modelin kısıtları takip etmesine, olasılıkları sınamasına ve tüm koşulların sağlandığını doğrulamasına yardım eder. Püf noktası, tahmin yürütmek yerine olasılıkları yöntemli biçimde taramaktır.
 
 <TryIt 
   compact
   title="Mantık Bulmacası"
-  prompt={`Üç arkadaş—Ayşe, Ali ve Cemile—her birinin farklı evcil hayvanları (kedi, köpek, balık) ve farklı meslekleri (öğretmen, mühendis, doktor) var.
+  prompt={`Üç arkadaşın (Ayşe, Ali ve Cemile) her birinin farklı bir evcil hayvanı (kedi, köpek, balık) ve farklı bir mesleği (öğretmen, mühendis, doktor) var.
 
 İpuçları:
 1. Ayşe'nin kedisi yok
 2. Mühendisin köpeği var
 3. Ali öğretmen
 4. Cemile'nin balığı yok
+5. Doktorun kedisi yok
 
-Kimin hangi evcil hayvanı ve mesleği var? Bunu sistematik olarak düşün, hipotezleri test et ve tüm ipuçlarına karşı doğrula.`}
+Kimin hangi hayvanı var, kim hangi mesleği yapıyor? Hipotezleri sınayarak sistematik biçimde düşün ve sonucu tüm ipuçlarıyla karşılaştırarak doğrula.`}
 />
 
 **Örnek Çıktı:**
@@ -204,23 +207,28 @@ Kimin hangi evcil hayvanı ve mesleği var? Bunu sistematik olarak düşün, hip
 İpucu 3'ten: Ali = öğretmen
 → Ayşe ve Cemile mühendis/doktor
 
-Eğer Cemile = mühendis ise:
-- Cemile'nin köpeği var (ipucu 2)
-- Ayşe = doktor, balığı var (ipucu 1)
+Hipotez A: Ayşe = mühendis
+- Ayşe'nin köpeği var (ipucu 2), Cemile = doktor
+- Cemile'nin balığı olamaz (ipucu 4), o hâlde kedisi var
+- Ama doktorun kedisi olamaz (ipucu 5) ✗
+
+Hipotez B: Cemile = mühendis
+- Cemile'nin köpeği var (ipucu 2), Ayşe = doktor
+- Ayşe'nin kedisi olamaz (ipucu 1), o hâlde balığı var
 - Ali'nin kedisi var
 
-Doğrula: 4 ipucu da karşılandı ✓
+Doğrulama: 5 ipucunun hepsi sağlanıyor ✓
 Cevap: Ayşe (doktor, balık), Ali (öğretmen, kedi), Cemile (mühendis, köpek)
 ```
 
 ### Kod Hata Ayıklama
 
-Hata ayıklama CoT'tan faydalanır çünkü modeli hata tahmin etmek yerine yürütmeyi izlemeye zorlar. Kodu somut değerlerle adım adım geçerek, gerçek davranış görünür hale gelir ve beklenen davranışla tutarsızlıklar ortaya çıkar.
+Hata ayıklamada CoT işe yarar, çünkü modeli hatanın yerini tahmin etmek yerine kodun akışını izlemeye zorlar. Kod somut değerlerle adım adım izlendiğinde gerçek davranış görünür hale gelir ve beklenen davranıştan sapmalar ortaya çıkar.
 
 <TryIt 
   compact
   title="CoT ile Hata Ayıklama"
-  prompt={`Bu fonksiyon listedeki çift sayıların toplamını döndürmeli ama yanlış değerler döndürüyor. [2, 3, 4, 6] girdisiyle adım adım izleyerek hata ayıkla:
+  prompt={`Bu fonksiyon listedeki çift sayıların toplamını döndürmeli ama yanlış değerler döndürüyor. [2, 3, 4, 6] girdisiyle kodu adım adım izleyerek hatayı ayıkla:
 
 def cift_toplami(sayilar):
     toplam = 0
@@ -229,135 +237,152 @@ def cift_toplami(sayilar):
             toplam += 1
     return toplam
 
-Her adımı izle, hatayı bul ve düzeltmeyi sağla.`}
+Her adımı izle, hatayı bul ve düzeltilmiş hâlini ver.`}
 />
 
 **Örnek Çıktı:**
 ```
 [2, 3, 4, 6] izle:
-n=2: toplam += 1 → 1 (bekle, n değil 1 ekleniyor!)
+n=2: toplam += 1 → 1 (dur, n yerine 1 ekleniyor!)
 n=3: atla (tek)
 n=4: toplam = 2
 n=6: toplam = 3
 
 HATA: "toplam += 1" yerine "toplam += n" olmalı
 Beklenen: 12, Gelen: 3
-Düzeltme: "toplam += n" olarak değiştir
+Düzeltme: Satırı "toplam += n" yap
 ```
 
 ## CoT ile Öz Tutarlılık
 
-Kritik problemler için tek bir muhakeme yoluna güvenmeyin. Birden fazla bağımsız çözüm üretin ve sonuçları karşılaştırın. Farklı yaklaşımlar aynı cevaba ulaşırsa, güven yüksektir. Uyuşmazlık dikkatli inceleme ihtiyacını işaret eder.
+Kritik problemlerde tek bir muhakeme yoluna güvenmeyin. Birbirinden bağımsız birkaç çözüm üretin ve sonuçları karşılaştırın. Farklı yaklaşımlar aynı cevapta buluşuyorsa sonuca güvenebilirsiniz. Sonuçlar birbirini tutmuyorsa konuyu dikkatle incelemeniz gerekir.
 
 <TryIt 
   compact
   title="Öz Tutarlılık"
-  prompt={`Bu problemi 3 farklı yolla çöz, sonra hangi çözümün en doğru göründüğüne dayanarak son cevabını ver:
+  prompt={`Bu problemi 3 farklı yoldan çöz, ardından hangi çözüm en doğru görünüyorsa ona dayanarak son cevabını ver:
 
-Problem: Bir çiftçinin tavukları ve inekleri var. Toplamda 30 baş ve 74 bacak var. Çiftçinin kaç tavuğu ve kaç ineği var?
+Problem: Bir çiftçinin tavukları ve inekleri var. Hayvanların toplam 30 başı ve 74 bacağı var. Çiftçinin kaç tavuğu, kaç ineği var?
 
 Yaklaşım 1: Cebir
 Yaklaşım 2: Deneme yanılma
 Yaklaşım 3: Mantıksal muhakeme
 
-Sonra karşılaştır ve son cevabını ver.`}
+Sonra sonuçları karşılaştır ve son cevabını ver.`}
 />
 
 **Örnek Çıktı:**
 ```
 Yaklaşım 1 (Cebir): t + i = 30, 2t + 4i = 74 → t=23, i=7
 Yaklaşım 2 (Deneme): 23/7 dene → 46 + 28 = 74 ✓
-Yaklaşım 3 (Mantık): 30 tavuk = 60 bacak, 14 tane daha gerek → 7 inek
+Yaklaşım 3 (Mantık): 30 tavuk = 60 bacak, 14 bacak eksik → 7 inek
 
-Hepsi aynı: 23 tavuk, 7 inek
+Üçü de aynı sonuca varıyor: 23 tavuk, 7 inek
 ```
+
+Öz tutarlılık, araştırmalarda ilk ortaya atıldığı hâliyle bir adım daha ileri gider: aynı promptu ayrı istekler hâlinde birkaç kez gönderir, en sık çıkan cevabı seçersiniz. Yukarıdaki gibi birkaç yaklaşımı tek bir yanıtta istemek, aynı fikrin daha hafif bir uyarlamasıdır. Daha ucuza gelir, ama denemeler gerçek anlamda bağımsız sayılmaz, çünkü her biri ötekileri görebilir.
 
 ## Karar Verme için CoT
 
-Kararlar birden fazla boyutta ödünleşimleri tartmayı içerir. CoT tüm ilgili faktörlerin sonuçlara atlamak yerine sistematik olarak değerlendirilmesini sağlar. Bu yapılandırılmış yaklaşım aynı zamanda gelecek referans için muhakemeyi belgeler.
+Karar vermek, artıları ve eksileri birçok açıdan tartmayı gerektirir. CoT, hemen bir sonuca atlamak yerine ilgili tüm etkenlerin sırayla ele alınmasını sağlar. Bu yapılı yaklaşım, kararın gerekçesini ileride başvurmak üzere kayda da geçirir.
 
 <TryIt 
   compact
   title="Karar Analizi"
-  prompt={`Uygulamamız için mikroservis mimarisini benimsemeli miyiz?
+  prompt={`Uygulamamızda mikroservis mimarisine geçmeli miyiz?
 
 Bağlam:
 - 50.000 satır kodlu monolit uygulama
 - 5 kişilik geliştirici ekibi
-- 100 günlük aktif kullanıcı
-- 2 yılda 10 kat büyüme planlanıyor
+- Günde 100 aktif kullanıcı
+- 2 yılda 10 kat büyüme hedefleniyor
 
 Bunu sistematik olarak düşün:
-1. Mevcut durumu listele
-2. Değerlendirilecek faktörleri belirle (ekip boyutu, ölçek, hız, gelecek büyüme)
-3. Her faktörü lehine/aleyhine olarak tart
-4. Muhakemeyle bir öneri ver`}
+1. Mevcut durumu özetle
+2. Hesaba katılacak etkenleri belirle (ekip büyüklüğü, ölçek, hız, gelecekteki büyüme)
+3. Her etkenin lehte mi aleyhte mi olduğunu tart
+4. Gerekçesiyle birlikte bir öneri sun`}
 />
 
 **Örnek Çıktı:**
 ```
-FAKTÖRLER:
-- Ekip boyutu (5): Mikroservisler için çok küçük ❌
-- Ölçek (100 DAU): Ölçekleme ihtiyacı yok ❌  
+ETKENLER:
+- Ekip büyüklüğü (5): Mikroservisler için çok küçük ❌
+- Ölçek (günde 100 aktif kullanıcı): Ölçekleme ihtiyacı yok ❌  
 - Hız: Monolit = daha hızlı iterasyon ❌
-- Gelecek büyüme: Belirsiz zaman çizelgesi ⚠️
+- Gelecekteki büyüme: Zamanlaması belirsiz ⚠️
 
-TARTMA: 3 güçlü aleyhine, 1 zayıf lehine
+DEĞERLENDİRME: 3 güçlü aleyhte, 1 zayıf lehte
 
-ÖNERİ: Monolit olarak kal, gelecekteki geçişi 
-kolaylaştırmak için net modül sınırları kullan.
+ÖNERİ: Monolitte kal, ileride geçişi kolaylaştırmak 
+için modül sınırlarını net tut.
 ```
+
+## Akıl Yürütme Modelleri: Yerleşik CoT
+
+Düşünce zinciri işe bir prompt hilesi olarak başladı, ama zamanla modellerin kendi içine yerleşti. Bugün pek çok model, cevap vermeden önce akıl yürütecek şekilde eğitiliyor. OpenAI'ın akıl yürütme modelleri, düşünme özelliği açıkken Anthropic'in Claude'u, Google'ın Gemini'si ve DeepSeek-R1 gibi açık ağırlıklı modeller, problemi önce kendi içlerinde çözüyor, cevabı ondan sonra veriyor. Çoğu zaman yalnızca cevabı ya da düşünme sürecinin kısa bir özetini görürsünüz; akıl yürütme token'ları ise görünmeseler de kullanımınıza dahil edilir.
+
+Bu, bölümde anlattıklarımızı geçersiz kılmıyor, ama onları nasıl uygulayacağınızı değiştiriyor:
+
+- **Sihirli cümleyi bırakın.** OpenAI'ın yönergelerine göre akıl yürütme modellerine "adım adım düşün" demek gereksizdir, hatta bazen sonucu kötüleştirebilir. Anthropic de "iyice düşün" gibi genel bir talimatın, elle yazılmış adım adım bir plandan çoğu zaman daha iyi sonuç verdiğini belirtir; çünkü modelin kendi akıl yürütmesi, sizin planınızın varacağı yerden genellikle daha ileriye gider.
+- **Yolu değil, varılacak yeri tarif edin.** Kelimelerinizi problemi, kısıtları ve iyi bir cevabın neye benzediğini anlatmaya ayırın; yolu bulmayı modele bırakın.
+- **Yazıyı uzatmak yerine ayarı yükseltin.** Bu modellerin API'leri akıl yürütme çabası (reasoning effort) ya da düşünme düzeyi gibi ayarlar sunar. Daha derin bir akıl yürütme istiyorsanız, promptta daha uzun açıklamalar istemektense bu ayarları yükseltmek genellikle daha iyi sonuç verir.
+- **Muhakemeyi görmeniz gerekiyorsa yapıyı koruyun.** BREAK ya da VERİLENLER/HEDEF/ADIMLAR gibi şablonlar, okuyup denetleyebileceğiniz ya da ayrıştırabileceğiniz bir muhakeme istediğinizde ve kendi kendine düşünmeyen modellerle çalışırken hâlâ işinize yarar. Öte yandan bazı sağlayıcılar, sürekli düşünen modellerinden muhakemelerini yazıya dökmelerini istememenizi tavsiye ediyor; bu yüzden kullandığınız modelin yönergelerine mutlaka göz atın.
+
+<Callout type="warning" title="Görünen Muhakeme Her Şeyi Yansıtmaz">
+Modelin yazıya döktüğü muhakemenin ya da ekranda gösterdiği düşünme özetinin, cevabı gerçekten üreten süreç olduğunun bir garantisi yoktur. Anthropic'in araştırması, akıl yürütme modellerinin kararlarını etkileyen unsurlardan çoğu zaman hiç söz etmediğini ortaya koydu. Görünen adımları bir kanıt gibi değil, sınanması gereken bir iddia gibi ele alın.
+</Callout>
 
 ## CoT Ne Zaman Kullanılmalı
 
 <div className="my-6 grid md:grid-cols-2 gap-4">
   <div className="border rounded-lg bg-green-50/50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
-    <p className="text-sm font-semibold text-green-700 dark:text-green-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconCheck className="h-4 w-4" /> CoT Kullan</p>
+    <p className="text-sm font-semibold text-green-700 dark:text-green-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconCheck className="h-4 w-4" /> CoT'un İşe Yaradığı Yerler</p>
     <div className="text-sm p-4 pt-2 space-y-1">
-      <p className="m-0!">**Matematik problemleri** — Hesaplama hatalarını azaltır</p>
-      <p className="m-0!">**Mantık bulmacaları** — Atlanan adımları önler</p>
-      <p className="m-0!">**Karmaşık analiz** — Düşünceyi organize eder</p>
-      <p className="m-0!">**Kod hata ayıklama** — Yürütmeyi izler</p>
-      <p className="m-0!">**Karar verme** — Ödünleşimleri tartar</p>
+      <p className="m-0!">**Matematik problemleri**: Hesaplama hatalarını azaltır</p>
+      <p className="m-0!">**Mantık bulmacaları**: Adım atlanmasını önler</p>
+      <p className="m-0!">**Karmaşık analiz**: Düşünceyi düzene sokar</p>
+      <p className="m-0!">**Kodda hata ayıklama**: Kodun akışını izler</p>
+      <p className="m-0!">**Karar verme**: Artıları ve eksileri tartar</p>
     </div>
   </div>
   <div className="border rounded-lg bg-red-50/50 dark:bg-red-950/20 border-red-200 dark:border-red-900">
-    <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> CoT Atlayın</p>
+    <p className="text-sm font-semibold text-red-700 dark:text-red-400 px-4 pt-3 flex items-center gap-2 m-0!"><IconX className="h-4 w-4" /> CoT'a Gerek Olmayan Yerler</p>
     <div className="text-sm p-4 pt-2 space-y-1">
-      <p className="m-0!">**Basit S&C** — Gereksiz ek yük</p>
-      <p className="m-0!">**Yaratıcı yazı** — Yaratıcılığı kısıtlayabilir</p>
-      <p className="m-0!">**Gerçek aramaları** — Muhakeme gerekmez</p>
-      <p className="m-0!">**Çeviri** — Doğrudan görev</p>
-      <p className="m-0!">**Özetleme** — Genellikle basit</p>
+      <p className="m-0!">**Basit soru-cevap**: Gereksiz yük getirir</p>
+      <p className="m-0!">**Yaratıcı yazarlık**: Yaratıcılığı kısıtlayabilir</p>
+      <p className="m-0!">**Bilgi sorgulama**: Muhakeme gerektirmez</p>
+      <p className="m-0!">**Çeviri**: Doğrudan bir görevdir</p>
+      <p className="m-0!">**Özetleme**: Genellikle basittir</p>
     </div>
   </div>
 </div>
 
-## CoT Sınırlamaları
+## CoT'un Sınırları
 
-Güçlü olsa da, Düşünce Zinciri her derde deva değildir. Sınırlamalarını anlamak onu uygun şekilde uygulamanıza yardımcı olur.
+Güçlü olsa da Düşünce Zinciri her derde deva değildir. Sınırlarını bilmek, onu yerinde kullanmanıza yardım eder.
 
-1. **Artan token kullanımı** — Daha fazla çıktı daha yüksek maliyet demek
-2. **Her zaman gerekli değil** — Basit görevler faydalanmaz
-3. **Uzun olabilir** — Kısalık istemeniz gerekebilir
-4. **Muhakeme hatalı olabilir** — CoT doğruluğu garanti etmez
+1. **Daha fazla token harcanır**: Çıktı uzadıkça maliyet artar
+2. **Her zaman gerekmez**: Basit görevlerde bir fark yaratmaz
+3. **Fazla uzun olabilir**: Kısa tutmasını ayrıca istemeniz gerekebilir
+4. **Muhakeme hatalı olabilir**: CoT doğruluğu garanti etmez
 
 ## Özet
 
 <Callout type="tip" title="Ana Çıkarımlar">
-CoT, örtük adımları açık hale getirerek karmaşık muhakemeyi dramatik biçimde iyileştirir. Matematik, mantık, analiz ve hata ayıklama için kullanın. Ödünleşim: daha fazla token için daha iyi doğruluk.
+CoT, örtük adımları görünür kılarak karmaşık muhakemeyi çarpıcı biçimde iyileştirir. Matematik, mantık, analiz ve hata ayıklama için kullanın. Bedeli de belli: daha yüksek doğruluk karşılığında daha fazla token. Cevap vermeden önce zaten düşünen akıl yürütme modellerinde ise promptu hedefe odaklı tutun, derinliği akıl yürütme ayarlarıyla belirleyin.
 </Callout>
 
 <Quiz 
   question="Düşünce Zinciri promptlamasını ne zaman KULLANMAMALISINIZ?"
   options={[
-    "Birden fazla adım gerektiren matematik problemleri",
-    "'Fransa'nın başkenti neresidir?' gibi basit gerçeksel sorular",
-    "Karmaşık mantıklı kod hata ayıklama",
-    "Bir iş kararını analiz etme"
+    "Birden fazla adım gerektiren matematik problemlerinde",
+    "'Fransa'nın başkenti neresidir?' gibi basit bilgi sorularında",
+    "Karmaşık mantık içeren kodda hata ayıklarken",
+    "Bir iş kararını analiz ederken"
   ]}
   correctIndex={1}
-  explanation="Düşünce Zinciri basit S&C için gereksiz ek yük ekler. Çalışmayı göstermenin doğruluğu artırdığı matematik, mantık bulmacaları, kod hata ayıklama ve analiz gibi karmaşık muhakeme görevleri için en iyisidir."
+  explanation="Düşünce Zinciri, basit soru-cevaplarda gereksiz bir yük getirir. Asıl yeri, işlemleri göstermenin doğruluğu artırdığı matematik, mantık bulmacaları, kod hata ayıklama ve analiz gibi karmaşık muhakeme görevleridir."
 />
 
-Bir sonraki bölümde, az örnekli öğrenmeyi—modele örneklerle öğretmeyi—keşfedeceğiz.
+Bir sonraki bölümde az örnekli öğrenmeyi, yani modele örneklerle bir şey öğretmeyi ele alacağız.

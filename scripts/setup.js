@@ -79,7 +79,7 @@ AUTH_AZURE_AD_ISSUER=""
 `;
   }
 
-  if (config.features.aiSearch || config.features.aiGeneration) {
+  if (config.features.aiSearch || config.features.aiGeneration || config.features.promptEnhancer) {
     envContent += `
 # AI Features
 OPENAI_API_KEY=""
@@ -146,6 +146,7 @@ export default defineConfig({
     aiSearch: ${config.features.aiSearch},
     aiGeneration: ${config.features.aiGeneration},
     mcp: ${config.features.mcp},
+    promptEnhancer: ${config.features.promptEnhancer},
   },
 
   // Homepage customization (clone branding mode)
@@ -400,6 +401,7 @@ async function main() {
       { value: 'aiSearch', label: 'AI Search', hint: 'Requires OPENAI_API_KEY' },
       { value: 'aiGeneration', label: 'AI Generation', hint: 'AI-powered prompt generation (requires OPENAI_API_KEY)' },
       { value: 'mcp', label: 'MCP Support', hint: 'Model Context Protocol features & API keys' },
+      { value: 'promptEnhancer', label: 'Prompt Enhancer', hint: 'AI prompt enhancer on /developers (requires OPENAI_API_KEY)' },
     ],
     initialValues: ['privatePrompts', 'changeRequests', 'categories', 'tags', 'comments'],
     required: false,
@@ -416,6 +418,7 @@ async function main() {
     aiSearch: features.includes('aiSearch'),
     aiGeneration: features.includes('aiGeneration'),
     mcp: features.includes('mcp'),
+    promptEnhancer: features.includes('promptEnhancer'),
   };
 
   // === SPONSORS ===
@@ -563,7 +566,7 @@ async function main() {
     additionalEnvVars.push('AUTH_APPLE_ID              - Apple Services ID');
     additionalEnvVars.push('AUTH_APPLE_SECRET          - Apple secret key');
   }
-  if (config.features.aiSearch || config.features.aiGeneration) {
+  if (config.features.aiSearch || config.features.aiGeneration || config.features.promptEnhancer) {
     additionalEnvVars.push('OPENAI_API_KEY     - OpenAI API key for AI features');
   }
 

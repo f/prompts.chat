@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { countPendingTeamChangeRequests } from "@/lib/bots/team-changes";
 
 const DEFAULT_RESPONSE = { 
   pendingChangeRequests: 0,
@@ -23,14 +24,18 @@ export async function GET() {
 
   try {
     // Count pending change requests on user's prompts
-    const pendingCount = await db.changeRequest.count({
-      where: {
-        status: "PENDING",
-        prompt: {
-          authorId: session.user.id,
+    const [promptPendingCount, teamPendingCount] = await Promise.all([
+      db.changeRequest.count({
+        where: {
+          status: "PENDING",
+          prompt: {
+            authorId: session.user.id,
+          },
         },
-      },
-    });
+      }),
+      countPendingTeamChangeRequests(session.user.id),
+    ]);
+    const pendingCount = promptPendingCount + teamPendingCount;
 
     // Get unread comment notifications
     const commentNotifications = await db.notification.findMany({

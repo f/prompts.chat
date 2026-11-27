@@ -11,9 +11,11 @@ import { analyticsPrompt } from "@/lib/analytics";
 interface ReopenChangeRequestButtonProps {
   changeRequestId: string;
   promptId: string;
+  /** API endpoint of the request; defaults to the prompt change request endpoint */
+  apiPath?: string;
 }
 
-export function ReopenChangeRequestButton({ changeRequestId, promptId }: ReopenChangeRequestButtonProps) {
+export function ReopenChangeRequestButton({ changeRequestId, promptId, apiPath }: ReopenChangeRequestButtonProps) {
   const router = useRouter();
   const t = useTranslations("changeRequests");
   const tCommon = useTranslations("common");
@@ -23,7 +25,7 @@ export function ReopenChangeRequestButton({ changeRequestId, promptId }: ReopenC
     setIsLoading(true);
 
     try {
-      const response = await fetch(`/api/prompts/${promptId}/changes/${changeRequestId}`, {
+      const response = await fetch(apiPath ?? `/api/prompts/${promptId}/changes/${changeRequestId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "PENDING" }),
@@ -34,7 +36,7 @@ export function ReopenChangeRequestButton({ changeRequestId, promptId }: ReopenC
         throw new Error(error.message || "Failed to reopen change request");
       }
 
-      analyticsPrompt.changeRequest(promptId, "reopen");
+      if (!apiPath) analyticsPrompt.changeRequest(promptId, "reopen");
       toast.success(t("reopenedSuccess"));
       router.refresh();
     } catch (error) {

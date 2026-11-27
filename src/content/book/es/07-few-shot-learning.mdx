@@ -83,7 +83,7 @@ Salida:
 
 ## Pocos Ejemplos para Clasificación
 
-La clasificación es uno de los casos de uso más fuertes para el aprendizaje de pocos ejemplos. Al mostrar ejemplos de cada categoría, defines los límites entre clases más precisamente de lo que las instrucciones solas podrían lograr.
+La clasificación es uno de los usos en los que más destaca el aprendizaje de pocos ejemplos. Al mostrar ejemplos de cada categoría, defines los límites entre clases con más precisión de la que lograrían las instrucciones por sí solas.
 
 ### Análisis de Sentimiento
 
@@ -120,14 +120,14 @@ Para categorización de múltiples clases, incluye al menos un ejemplo por categ
 Ticket: "No puedo iniciar sesión en mi cuenta, el restablecimiento de contraseña no funciona"
 Categoría: Autenticación
 
-Ticket: "¿Cómo actualizo al plan premium?"
+Ticket: "¿Cómo me paso al plan premium?"
 Categoría: Facturación
 
 Ticket: "La app se cierra cuando intento exportar datos"
 Categoría: Reporte de Error
 
 Ticket: "¿Pueden agregar modo oscuro a la app móvil?"
-Categoría: Solicitud de Función
+Categoría: Solicitud de Funcionalidad
 
 Ahora categoriza:
 Ticket: "Mi pago fue rechazado pero veo el cargo en mi tarjeta"
@@ -143,14 +143,14 @@ La transformación de estilo requiere ejemplos que muestren el cambio de tono ex
 
 <TryIt compact prompt={`Reescribe estas oraciones en un tono profesional.
 
-Casual: "Oye, solo quería saber si recibiste mi correo?"
-Profesional: "Quería dar seguimiento respecto a mi correo anterior."
+Casual: "Oye, solo quería saber: ¿recibiste mi correo?"
+Profesional: "Le escribo para hacer un seguimiento de mi correo anterior."
 
 Casual: "¡Esto es súper importante y hay que hacerlo YA!"
-Profesional: "Este asunto requiere atención urgente y acción pronta."
+Profesional: "Este asunto requiere atención urgente y una actuación inmediata."
 
 Casual: "Perdón por la respuesta tardía, ¡he estado muy ocupado!"
-Profesional: "Me disculpo por la demora en responder. He tenido una agenda particularmente exigente."
+Profesional: "Disculpe la demora en responder. He tenido una agenda particularmente exigente."
 
 Ahora reescribe:
 Casual: "No puedo ir a la reunión, me surgió algo."
@@ -163,7 +163,7 @@ Las tareas de conversión de formato se benefician de ejemplos que muestran caso
 <TryIt compact prompt={`Convierte estas fechas en lenguaje natural a formato ISO.
 
 Entrada: "el próximo martes"
-Salida: 2024-01-16 (asumiendo que hoy es 2024-01-11, jueves)
+Salida: 2024-01-16 (suponiendo que hoy es 2024-01-11, jueves)
 
 Entrada: "pasado mañana"
 Salida: 2024-01-13
@@ -189,10 +189,10 @@ El texto de marketing se beneficia enormemente de ejemplos porque capturan la vo
 <TryIt compact prompt={`Escribe descripciones de productos en este estilo:
 
 Producto: Auriculares Inalámbricos Bluetooth
-Descripción: Sumérgete en un sonido cristalino con nuestros auriculares inalámbricos ligeros. Con 40 horas de batería, cancelación activa de ruido y almohadillas de espuma viscoelástica para comodidad todo el día.
+Descripción: Sumérgete en un sonido cristalino con nuestros auriculares inalámbricos ligeros. Con 40 horas de batería, cancelación activa de ruido y almohadillas de espuma viscoelástica para una comodidad que dura todo el día.
 
 Producto: Botella de Agua de Acero Inoxidable
-Descripción: Mantente hidratado con estilo con nuestra botella aislada de doble pared. Mantiene bebidas frías por 24 horas o calientes por 12. Incluye tapa a prueba de fugas y cabe en portavasos estándar.
+Descripción: Mantente hidratado con estilo con nuestra botella aislada de doble pared. Mantiene las bebidas frías durante 24 horas o calientes durante 12. Incluye tapa a prueba de fugas y cabe en portavasos estándar.
 
 Producto: Silla de Oficina Ergonómica
 Descripción: Transforma tu espacio de trabajo con nuestra silla ergonómica ajustable. Respaldo de malla transpirable, soporte lumbar y giro de 360° se combinan para mantenerte cómodo durante largas sesiones de trabajo.
@@ -204,7 +204,7 @@ Descripción:`} />
 ### Documentación de Código
 
 <Callout type="info" title="¿Por Qué Documentar Código?">
-La buena documentación explica qué hace el código, sus parámetros, valores de retorno y ejemplos de uso. Los docstrings consistentes permiten documentación de API auto-generada y ayudan a los IDEs a proporcionar mejor autocompletado de código.
+La buena documentación explica qué hace el código, sus parámetros, valores de retorno y ejemplos de uso. Los docstrings consistentes permiten documentación de API autogenerada y ayudan a los IDEs a proporcionar mejor autocompletado de código.
 </Callout>
 
 El estilo de documentación varía ampliamente entre proyectos. Los ejemplos enseñan tu formato específico, qué incluir (args, returns, ejemplos) y el nivel de detalle esperado.
@@ -241,7 +241,7 @@ Documentación:`} />
 
 ## Pocos Ejemplos para Extracción
 
-Las tareas de extracción extraen información estructurada de texto no estructurado. Los ejemplos definen qué entidades importan, cómo formatear la salida, y cómo manejar casos donde la información falta o es ambigua.
+Las tareas de extracción obtienen información estructurada a partir de texto no estructurado. Los ejemplos definen qué entidades importan, cómo formatear la salida, y cómo manejar casos donde la información falta o es ambigua.
 
 ### Extracción de Entidades
 
@@ -286,13 +286,13 @@ Reunión:
 - Tema: Discusión de presupuesto Q4
 - Requisitos: Traer portátil
 
-Correo: "Sincronización de equipo movida al viernes 10am, usaremos Zoom en su lugar. Link en la invitación del calendario. 30 minutos máximo."
+Correo: "La reunión de seguimiento del equipo pasa al viernes a las 10am y la haremos por Zoom. Enlace en la invitación del calendario. 30 minutos como máximo."
 
 Reunión:
 - Fecha: Viernes
 - Hora: 10:00 AM
 - Ubicación: Zoom (virtual)
-- Tema: Sincronización de equipo
+- Tema: Reunión de seguimiento del equipo
 - Duración: 30 minutos
 
 Ahora extrae de:
@@ -315,12 +315,12 @@ Cliente: "Mi pedido llegó dañado."
 Respuesta: "Le pido sinceras disculpas por la entrega dañada. Enviaré inmediatamente un reemplazo sin cargo. No necesita devolver el artículo dañado. ¿Puedo confirmar su dirección de envío?"
 
 Ejemplo 2 (Problema de Servicio):
-Cliente: "¡He estado en espera por 2 horas!"
+Cliente: "¡Llevo 2 horas en espera!"
 Respuesta: "Lamento mucho el largo tiempo de espera. Eso es inaceptable. Estoy aquí ahora y personalmente me aseguraré de que su problema se resuelva. ¿En qué puedo ayudarle hoy?"
 
 Ejemplo 3 (Problema de Facturación):
 Cliente: "¡Me cobraron dos veces por el mismo pedido!"
-Respuesta: "Me disculpo por este error de facturación. He verificado el cargo duplicado e iniciado un reembolso de XX€ a su método de pago original. Debería verlo dentro de 3-5 días hábiles."
+Respuesta: "Le pido disculpas por este error de facturación. He verificado el cargo duplicado e iniciado un reembolso de XX€ a su método de pago original. Debería verlo dentro de 3-5 días hábiles."
 
 Ahora responde a:
 Cliente: "El producto no coincide con lo que se mostraba en el sitio web."
@@ -328,8 +328,8 @@ Respuesta:`} />
 
 ### Ejemplos Negativos
 
-<Callout type="tip" title="Aprendizaje Contrastivo">
-Mostrar ejemplos "buenos" vs "malos" se llama aprendizaje contrastivo. Ayuda al modelo a entender no solo lo que quieres, sino lo que debe evitar. Esto es especialmente útil para juicios de estilo y calidad.
+<Callout type="tip" title="Ejemplos Contrastivos">
+Colocar ejemplos "buenos" y "malos" uno junto a otro es lo que suele llamarse usar ejemplos contrastivos. (No lo confundas con el "aprendizaje contrastivo", que es un método para entrenar modelos). Ayuda al modelo a entender no solo lo que quieres, sino lo que debe evitar. Esto es especialmente útil para juicios de estilo y calidad.
 </Callout>
 
 A veces mostrar lo que *no* hacer es tan valioso como mostrar ejemplos correctos. Los ejemplos negativos ayudan al modelo a entender límites y evitar errores comunes.
@@ -342,7 +342,7 @@ Malo: "Oye, terminé ese informe del que hablamos"
 Bueno: "Acción Requerida: Aprobar Vacaciones antes del Viernes"
 Malo: "Necesito que hagas algo por mí por favor lee esto"
 
-Bueno: "Reunión Reprogramada: Sincronización de Proyecto → Jueves 2pm"
+Bueno: "Reunión Reprogramada: Seguimiento del Proyecto → Jueves 2pm"
 Malo: "¡¡¡¡¡Cambio de planes!!!!!"
 
 Ahora escribe una línea de asunto para:
@@ -351,21 +351,21 @@ Asunto:`} />
 
 ### Ejemplos de Casos Límite
 
-Los casos límite a menudo determinan si una solución funciona en producción. Incluir entradas inusuales en tus ejemplos previene que el modelo falle con datos del mundo real que no encajan en el "camino feliz."
+Los casos límite a menudo determinan si una solución funciona en producción. Incluir entradas inusuales en tus ejemplos evita que el modelo falle con datos del mundo real que no encajan en el "camino feliz". Fíjate en que todos los ejemplos de abajo usan los mismos campos y ponen null cuando falta una parte. Esa coherencia también forma parte de lo que aprende el modelo.
 
 <TryIt compact prompt={`Parsea nombres en formato estructurado.
 
 Entrada: "Juan García"
-Salida: {"nombre": "Juan", "apellido": "García", "segundo_nombre": null, "sufijo": null}
+Salida: {"prefijo": null, "nombre": "Juan", "segundo_nombre": null, "apellido": "García", "sufijo": null}
 
 Entrada: "María José Rodríguez-López"
-Salida: {"nombre": "María", "segundo_nombre": "José", "apellido": "Rodríguez-López", "sufijo": null}
+Salida: {"prefijo": null, "nombre": "María", "segundo_nombre": "José", "apellido": "Rodríguez-López", "sufijo": null}
 
 Entrada: "Dr. Martín Pérez Sánchez Jr."
 Salida: {"prefijo": "Dr.", "nombre": "Martín", "segundo_nombre": "Pérez", "apellido": "Sánchez", "sufijo": "Jr."}
 
 Entrada: "Shakira"
-Salida: {"nombre": "Shakira", "apellido": null, "segundo_nombre": null, "sufijo": null, "mononimo": true}
+Salida: {"prefijo": null, "nombre": "Shakira", "segundo_nombre": null, "apellido": null, "sufijo": null}
 
 Ahora parsea:
 Entrada: "Don Antonio Banderas III"
@@ -377,7 +377,7 @@ Salida:`} />
   <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Clasificación simple</span>
     <span className="text-primary font-mono">2-3</span>
-    <span className="text-muted-foreground">Uno por categoría mínimo</span>
+    <span className="text-muted-foreground">Mínimo uno por categoría</span>
   </div>
   <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-40">Formateo complejo</span>
@@ -395,6 +395,8 @@ Salida:`} />
     <span className="text-muted-foreground">Junto con ejemplos normales</span>
   </div>
 </div>
+
+Estas cifras son un punto de partida, no un techo. Los modelos con ventanas de contexto largas pueden seguir mejorando en algunas tareas con decenas o incluso cientos de ejemplos, un enfoque que los investigadores llaman prompting de muchos ejemplos (many-shot). Aun así, para la mayoría de los prompts del día a día, un puñado de ejemplos bien elegidos te da casi todo el beneficio por una fracción del costo. Los modelos de razonamiento suelen necesitar menos: OpenAI sugiere probarlos primero sin ejemplos y añadir unos pocos solo si hace falta, asegurándote de que sean coherentes con tus instrucciones.
 
 ## La Calidad de los Ejemplos Importa
 
@@ -422,9 +424,9 @@ Salida:`} />
   }}
 />
 
-## Combinando Pocos Ejemplos con Otras Técnicas
+## Combinar Pocos Ejemplos con Otras Técnicas
 
-El aprendizaje de pocos ejemplos se combina poderosamente con otras técnicas de prompting. Los ejemplos proporcionan el "qué" mientras otras técnicas pueden agregar contexto, razonamiento o estructura.
+El aprendizaje de pocos ejemplos se combina muy bien con otras técnicas de prompting. Los ejemplos proporcionan el "qué" mientras otras técnicas pueden agregar contexto, razonamiento o estructura.
 
 ### Pocos Ejemplos + Rol
 
@@ -446,9 +448,9 @@ Combinar pocos ejemplos con Cadena de Pensamiento muestra no solo *qué* respues
 Clasifica y explica el razonamiento.
 
 Reseña: "Grandes características pero muy caro"
-Pensando: La reseña menciona aspectos positivos ("grandes características") 
+Razonamiento: La reseña menciona aspectos positivos ("grandes características") 
 pero también un negativo significativo ("muy caro"). Lo negativo parece 
-superar lo positivo basándose en la conjunción "pero".
+pesar más que lo positivo, a juzgar por la conjunción "pero".
 Clasificación: Mixto-Negativo
 
 [más ejemplos con razonamiento]
@@ -460,11 +462,11 @@ Reseña: "Exactamente lo que necesitaba, llegó más rápido de lo esperado"
 ## Resumen
 
 <Callout type="tip" title="Puntos Clave">
-El aprendizaje de pocos ejemplos enseña a través de demostración y a menudo es más efectivo que las instrucciones solas. Usa 2-5 ejemplos diversos y correctos y combina con otras técnicas para mejores resultados.
+El aprendizaje de pocos ejemplos enseña a través de demostración y a menudo es más eficaz que las instrucciones por sí solas. Usa 2-5 ejemplos diversos y correctos y combínalos con otras técnicas para obtener mejores resultados.
 </Callout>
 
 <Quiz 
-  question="¿Cuántos ejemplos deberías proporcionar típicamente en el aprendizaje de pocos ejemplos?"
+  question="¿Cuántos ejemplos conviene proporcionar normalmente en el aprendizaje de pocos ejemplos?"
   options={[
     "Tantos como sea posible (10+)",
     "Solo 1 ejemplo siempre es suficiente",
@@ -472,7 +474,7 @@ El aprendizaje de pocos ejemplos enseña a través de demostración y a menudo e
     "Los ejemplos no son necesarios si las instrucciones son claras"
   ]}
   correctIndex={2}
-  explanation="2-5 ejemplos diversos y correctos típicamente funcionan mejor. Muy pocos pueden no capturar el patrón, mientras que muchos desperdician tokens y pueden confundir al modelo. La calidad y diversidad importan más que la cantidad."
+  explanation="Lo que mejor suele funcionar son 2-5 ejemplos diversos y correctos. Con muy pocos, el modelo puede no captar el patrón, mientras que acumular más cuesta tokens y, en las tareas cotidianas, suele aportar poco. La calidad y la diversidad importan más que la cantidad."
 />
 
 En el próximo capítulo, exploraremos el refinamiento iterativo: el arte de mejorar prompts a través de intentos sucesivos.

@@ -1,4 +1,4 @@
-Yapının ötesinde, etkili prompt mühendisliği ilkelerle yönlendirilir—modeller, görevler ve bağlamlar arasında geçerli olan temel gerçekler. Bu ilkelerde ustalaşın ve herhangi bir prompt zorluğuna uyum sağlayabileceksiniz.
+Yapının ötesinde, etkili prompt mühendisliğine ilkeler yön verir: modelden, görevden ve bağlamdan bağımsız olarak geçerli olan temel doğrular. Bu ilkelere hakim olduğunuzda karşınıza çıkan her prompt zorluğuna uyum sağlayabilirsiniz.
 
 <Callout type="info" title="8 Temel İlke">
 Bu ilkeler her yapay zeka modeli ve her görev için geçerlidir. Bir kez öğrenin, her yerde kullanın.
@@ -6,13 +6,13 @@ Bu ilkeler her yapay zeka modeli ve her görev için geçerlidir. Bir kez öğre
 
 ## İlke 1: Zekilik Değil Netlik
 
-En iyi promptlar net olanlardır, zeki olanlar değil. Yapay zeka modelleri literal yorumcularıdır—tam olarak verdiğiniz şeyle çalışırlar.
+En iyi promptlar net olanlardır, zeki olanlar değil. Yapay zeka modelleri söyleneni harfiyen yorumlar: tam olarak verdiğiniz şeyle çalışırlar.
 
 ### Açık Olun
 
 <Compare 
   before={{ label: "Örtük (sorunlu)", content: "Bunu daha iyi yap." }}
-  after={{ label: "Açık (etkili)", content: "Bu e-postayı şu şekillerde iyileştir:\n1. Konu satırını daha çekici yap\n2. Paragrafları maksimum 2-3 cümleyle kısalt\n3. Sonuna net bir eylem çağrısı ekle" }}
+  after={{ label: "Açık (etkili)", content: "Bu e-postayı şu şekillerde iyileştir:\n1. Konu satırını daha çekici yap\n2. Paragrafları en fazla 2-3 cümleye indir\n3. Sonuna net bir eylem çağrısı ekle" }}
 />
 
 ### Belirsizlikten Kaçının
@@ -21,7 +21,7 @@ Kelimelerin birden fazla anlamı olabilir. Kesin dil seçin.
 
 <Compare 
   before={{ label: "Belirsiz", content: "Bana kısa bir özet ver.\n(Ne kadar kısa? 1 cümle? 1 paragraf? 1 sayfa?)" }}
-  after={{ label: "Kesin", content: "Tam olarak 3 madde işareti halinde özetle, her biri 20 kelimenin altında." }}
+  after={{ label: "Kesin", content: "Tam olarak 3 maddeyle özetle; her madde 20 kelimeyi geçmesin." }}
 />
 
 ### Bariz Olanı Belirtin
@@ -48,10 +48,10 @@ Belirsiz girdiler belirsiz çıktılar üretir. Spesifik girdiler spesifik, kull
   { level: "Seviye 1", text: "İklim değişikliği hakkında yaz" },
   { level: "Seviye 2", text: "İklim değişikliği etkileri hakkında bir makale yaz" },
   { level: "Seviye 3", text: "İklim değişikliğinin mercan resiflerini nasıl etkilediği hakkında 500 kelimelik bir makale yaz" },
-  { level: "Seviye 4", text: "Artan okyanus sıcaklıklarının mercan ağartmasına nasıl neden olduğunu açıklayan, lise öğrencilerine yönelik, Büyük Set Resifi'nden 2 spesifik örnekle, ilgi çekici ama bilimsel olarak doğru bir tonda 500 kelimelik bir makale yaz" }
+  { level: "Seviye 4", text: "Artan okyanus sıcaklıklarının mercan beyazlamasına nasıl neden olduğunu açıklayan, lise öğrencilerine yönelik, Büyük Set Resifi'nden 2 spesifik örnekle, ilgi çekici ama bilimsel olarak doğru bir tonda 500 kelimelik bir makale yaz" }
 ]} />
 
-Her seviye özgüllük ekler ve çıktı kalitesini dramatik biçimde artırır.
+Her seviye biraz daha özgüllük katar ve çıktı kalitesini belirgin biçimde artırır.
 
 ### Bu Elemanları Belirtin
 
@@ -84,13 +84,13 @@ Her seviye özgüllük ekler ve çıktı kalitesini dramatik biçimde artırır.
 
 ## İlke 3: Bağlam Kraldır
 
-Modellerin hafızası, dosyalarınıza erişimi veya durumunuz hakkında bilgisi yoktur. İlgili her şey promptta olmalıdır.
+Bir model, durumunuz hakkında yalnızca sohbete yansıyanları bilir. Hafıza özelliği olan, dosya yükleyebildiğiniz ya da araçlara bağlı asistanlar bile sadece kendileriyle gerçekten paylaşılanı görür ve bunu da seçici biçimde hatırlar. Bir şey önemliyse onu prompta yazın.
 
 ### Yeterli Bağlam Sağlayın
 
 <Compare 
   before={{ label: "Yetersiz bağlam", content: "Fonksiyonum neden çalışmıyor?" }}
-  after={{ label: "Yeterli bağlam", content: "Belirli bir anahtar değerine göre sözlük listesini filtrelemesi gereken bir Python fonksiyonum var. 3 öğe döndürmesi gerekirken boş liste döndürüyor.\n\nFonksiyon:\ndef filter_items(items, key, value):\n    return [item for item in items if item[key] = value]\n\nÇağrı: filter_items(items, 'status', 'active')\nBeklenen: 2 öğe, Gelen: boş liste" }}
+  after={{ label: "Yeterli bağlam", content: "Belirli bir anahtar değerine göre sözlük listesini filtrelemesi gereken bir Python fonksiyonum var. 3 öğe döndürmesi gerekirken boş liste döndürüyor.\n\nFonksiyon:\ndef filter_items(items, key, value):\n    return [item for item in items if item.get(key) == value]\n\nÖrnek öğe: {'id': 7, 'status': 'active'}\nÇağrı: filter_items(items, 'Status', 'active')\nBeklenen: 3 öğe, Gelen: boş liste" }}
 />
 
 ### Bağlam Kontrol Listesi
@@ -112,7 +112,7 @@ Kendinize sorun: Akıllı bir yabancı bu isteği anlar mıydı? Eğer hayırsa,
 
 ## İlke 4: Sadece Sormayın, Yönlendirin
 
-Sadece cevap istemeyin—modeli istediğiniz cevaba doğru yönlendirin.
+Sadece cevap istemekle yetinmeyin; modeli istediğiniz cevaba doğru yönlendirin.
 
 ### Talimat Çerçevelemesi Kullanın
 
@@ -193,7 +193,7 @@ Final: [Başarılı promptu şablon olarak kaydet]
 
 ## İlke 6: Modelin Güçlü Yönlerinden Yararlanın
 
-Modellerin nasıl eğitildiğiyle uyumlu çalışın, karşı değil.
+Modellerin eğitilme biçimine karşı değil, onunla uyumlu çalışın.
 
 ### Modeller Yardımcı Olmak İster
 
@@ -201,10 +201,10 @@ Modellerin nasıl eğitildiğiyle uyumlu çalışın, karşı değil.
 
 <Compare 
   before={{ label: "Akıntıya karşı", content: "Bunu yapamayacağını biliyorum, ama dene..." }}
-  after={{ label: "Akıntıyla", content: "Anlamama yardım et...\nX üzerinde çalışıyorum ve şunun için yardıma ihtiyacım var...\nBeni şunun üzerinden geçirir misin..." }}
+  after={{ label: "Akıntıyla", content: "Anlamama yardım et...\nX üzerinde çalışıyorum ve şunun için yardıma ihtiyacım var...\nBana adım adım anlatır mısın..." }}
 />
 
-### Modeller Kalıplarda İyi
+### Modeller Kalıplarda Başarılıdır
 
 Tutarlı çıktıya ihtiyacınız varsa, kalıbı gösterin:
 
@@ -213,20 +213,20 @@ Tutarlı çıktıya ihtiyacınız varsa, kalıbı gösterin:
   description="Bu prompt, yapay zekaya kitap önerileri için tam olarak hangi formatı istediğinizi gösterir."
   prompt={`3 bilim kurgu kitabı öner. Her öneriyi şu şekilde formatla:
 
-📚 **[Başlık]** yazan [Yazar]
+📚 **[Başlık]**, [Yazar]
 *[Tür] | [Yayın Yılı]*
 [2 cümlelik açıklama]
-Neden seveceğiniz: [1 cümlelik çekici özet]
+Neden seveceksiniz: [1 cümlelik çekici özet]
 
 ---`}
 />
 
-### Modeller Rol Yapabilir
+### Modeller Rol Üstlenebilir
 
 Farklı yanıt "modlarına" erişmek için personalar kullanın:
 
 ```
-Şeytanın avukatı olarak, teklifime karşı argüman yap...
+Şeytanın avukatlığını yaparak teklifime karşı çık...
 Destekleyici bir mentor olarak, iyileştirmeme yardım et...
 Şüpheci bir yatırımcı olarak, bu iş planını sorgula...
 ```
@@ -272,7 +272,7 @@ Promptunuzun bölümlerini net bir şekilde ayırın:
 Programatik kullanım için:
 
 ```
-Sadece geçerli JSON döndür, açıklama yok:
+Yalnızca geçerli JSON döndür, açıklama ekleme:
 {
   "karar": "onayla" | "reddet" | "incele",
   "güven": 0.0-1.0,
@@ -282,7 +282,7 @@ Sadece geçerli JSON döndür, açıklama yok:
 
 ## İlke 8: Doğrulayın ve Onaylayın
 
-Model çıktılarına, özellikle önemli görevler için körü körüne güvenmeyin.
+Özellikle önemli görevlerde model çıktılarına asla körü körüne güvenmeyin.
 
 ### Muhakeme İsteyin
 
@@ -301,7 +301,7 @@ Her biri için ödünleşimleri açıkla.
 ### Öz Kontrol Dahil Edin
 
 ```
-Kodu oluşturduktan sonra, şunlar için incele:
+Kodu oluşturduktan sonra şunlar açısından incele:
 - Sözdizimi hataları
 - Uç durumlar
 - Güvenlik açıkları
@@ -321,7 +321,7 @@ Bulunan sorunları listele.
     "Yinele ve İyileştir"
   ]}
   correctIndex={2}
-  explanation="Bağlam Kraldır, yapay zeka modellerinin oturumlar arasında hafızası olmadığını ve aklınızı okuyamayacağını vurgular. İlgili arka plan, kısıtlamalar ve hedefleri dahil etmek modelin ihtiyaçlarınızı anlamasına yardımcı olur."
+  explanation="Bağlam Kraldır, yapay zeka modellerinin aklınızı okuyamayacağını, yalnızca sohbete yansıyanları bilebileceğini vurgular. İlgili arka plan, kısıtlamalar ve hedefleri dahil etmek modelin ihtiyaçlarınızı anlamasına yardımcı olur."
 />
 
 ## Pratik: Boşlukları Doldurun
@@ -333,7 +333,7 @@ Bu prompt şablonunu tamamlayarak temel ilkeleri anladığınızı test edin:
   description="İyi yapılandırılmış bir prompt oluşturmak için boşlukları doldurun — istediğiniz herhangi bir şey yazın!"
   useAI={true}
   openEnded={true}
-  template={`Sen {{role}} konusunda {{expertise}} uzmanlığına sahip birisin.
+  template={`Sen {{expertise}} alanında uzmanlaşmış bir {{role}} rolündesin.
 
 Bağlam: {{context}} üzerinde çalışıyorum.
 
@@ -350,24 +350,24 @@ Format: Cevabını {{format}} olarak döndür.`}
     { id: "context", correctAnswers: [], hint: "Proje veya durum nedir?", context: "Bu uzmanlığa sahip birinin üzerinde çalışacağı bir proje" },
     { id: "task", correctAnswers: [], hint: "Yapay zeka hangi spesifik eylemi gerçekleştirmeli?", context: "Rol ve bağlama uygun bir eylem" },
     { id: "length", correctAnswers: [], hint: "Yanıt ne kadar uzun olmalı?", context: "Bir sayı (kelime sayısı)" },
-    { id: "focus", correctAnswers: [], hint: "Hangi yön önceliklendirilmeli?", context: "Göreve ilgili bir kalite veya yön" },
+    { id: "focus", correctAnswers: [], hint: "Hangi yön önceliklendirilmeli?", context: "Görevle ilgili bir nitelik veya yön" },
     { id: "format", correctAnswers: [], hint: "Çıktı nasıl yapılandırılmalı?", context: "Bir çıktı format türü" }
   ]}
-  explanation="İyi yapılandırılmış bir prompt şunları içerir: net bir rol (İlke 1), yeterli bağlam (İlke 3), spesifik görev (İlke 2), kısıtlamalar (İlke 4) ve çıktı formatı (İlke 5). Yapay zeka seçimlerinizin dahili olarak tutarlı olup olmadığını kontrol eder."
+  explanation="İyi yapılandırılmış bir prompt şunları içerir: net bir rol (İlke 6), yeterli bağlam (İlke 3), kısıtlamalarıyla birlikte spesifik bir görev (İlke 2) ve açık bir çıktı formatı (İlke 7). Yapay zeka seçimlerinizin dahili olarak tutarlı olup olmadığını kontrol eder."
 />
 
 <InteractiveChecklist
   title="İlkeler Kontrol Listesi"
   items={[
-    { id: "clarity", label: "Zekilik Değil Netlik", description: "Promptunuz açık ve belirsiz değil mi?" },
+    { id: "clarity", label: "Zekilik Değil Netlik", description: "Promptunuz açık ve tek anlamlı mı?" },
     { id: "specificity", label: "Özgüllük Kalite Üretir", description: "Hedef kitle, uzunluk, ton ve format dahil ettiniz mi?" },
     { id: "context", label: "Bağlam Kraldır", description: "Prompt gerekli tüm arka plan bilgilerini içeriyor mu?" },
-    { id: "examples", label: "Örnekler Açıklamalardan İyidir", description: "Ne istediğinizi sadece tanımlamak yerine gösterdiniz mi?" },
-    { id: "constraints", label: "Kısıtlamalar Çıktıyı Odaklar", description: "Kapsam ve format üzerinde net sınırlar var mı?" },
+    { id: "guide", label: "Sadece Sormayın, Yönlendirin", description: "Yalnızca cevap istemekle kalmayıp izlenecek adımları veya düşünme yolunu tarif ettiniz mi?" },
     { id: "iteration", label: "Yinele ve İyileştir", description: "Sonuçlara göre iyileştirmeye hazır mısınız?" },
-    { id: "persona", label: "Persona Perspektifi Şekillendirir", description: "Yapay zeka hangi rolü oynayacağını biliyor mu?" },
+    { id: "strengths", label: "Modelin Güçlü Yönlerinden Yararlanın", description: "Modelin iyi olduğu kalıpları gösterip uygun rolleri kullanıyor musunuz?" },
+    { id: "structure", label: "Çıktı Yapısını Kontrol Edin", description: "İhtiyacınız olan formatı tam olarak belirttiniz mi?" },
     { id: "verify", label: "Doğrulayın ve Onaylayın", description: "Doğruluk için kontroller dahil ettiniz mi?" }
   ]}
 />
 
-Bu ilkeler takip eden her şeyin temelini oluşturur. Bölüm II'de, bunları prompt etkinliğini dramatik biçimde artıran spesifik tekniklere uygulayacağız.
+Bu ilkeler takip eden her şeyin temelini oluşturur. Bölüm II'de bu ilkeleri, promptların etkisini belirgin biçimde artıran belirli tekniklere uygulayacağız.

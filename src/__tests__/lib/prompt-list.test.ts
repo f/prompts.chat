@@ -8,7 +8,7 @@ describe("trendingPromptListWhere", () => {
       isPrivate: false,
       isUnlisted: false,
       deletedAt: null,
-      type: { not: "BOT" },
+      type: { notIn: ["BOT", "CLASSIFIER"] },
       trendingUntil: { gt: new Date(Date.UTC(2026, 9, 27, 12, 30)) },
     });
   });
@@ -16,7 +16,7 @@ describe("trendingPromptListWhere", () => {
 
 describe("promptListTypeWhere", () => {
   it("excludes bots when no type is requested", () => {
-    expect(promptListTypeWhere()).toEqual({ type: { not: "BOT" } });
+    expect(promptListTypeWhere()).toEqual({ type: { notIn: ["BOT", "CLASSIFIER"] } });
     expect(promptListTypeWhere(null)).toEqual(NON_BOT_PROMPTS);
     expect(promptListTypeWhere("")).toEqual(NON_BOT_PROMPTS);
   });

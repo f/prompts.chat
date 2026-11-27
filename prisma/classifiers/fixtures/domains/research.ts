@@ -1,0 +1,393 @@
+import type { ClassifierChain, ClassifierDefinition } from "../../../../src/lib/classifiers/types";
+import { choiceOutcome, lowConfidence } from "../outcomes";
+
+export const classifiers: ClassifierDefinition[] = [
+  {
+    slug: "feedback-topic",
+    name: "Feedback topic",
+    category: "research",
+    summary: "Tag a piece of product feedback with its main topic: usability, performance, pricing, missing feature, bug or praise.",
+    problem:
+      "Feedback arrives from surveys, app reviews, sales calls and support tickets. Without consistent tags, nobody can say which themes are growing.",
+    goal: "Give every piece of feedback one main topic, so themes can be counted and bugs reach engineering.",
+    input: {
+      summary: "The feedback text and where it came from.",
+      fields: [
+        { name: "feedback", description: "The feedback text." },
+        { name: "source", description: "Survey, app review, sales note, support ticket and so on." },
+      ],
+    },
+    question: {
+      key: "feedback_topic",
+      type: "choice",
+      instructions: "What is the main topic of this feedback?",
+      options: [
+        { key: "usability", description: "Hard to find, understand or use something." },
+        { key: "performance", description: "Slow, laggy, crashing under load, or using too many resources." },
+        { key: "pricing", description: "Price, plans, limits or value for money." },
+        { key: "missing_feature", description: "Wants something the product doesn't do." },
+        { key: "bug_report", description: "Describes something not working as it should." },
+        { key: "praise", description: "Positive feedback without a request or complaint." },
+      ],
+    },
+    outcomes: [
+      choiceOutcome("usability", "Usability"),
+      choiceOutcome("performance", "Performance"),
+      choiceOutcome("pricing", "Pricing"),
+      choiceOutcome("missing_feature", "Missing feature"),
+      choiceOutcome("bug_report", "Bug report", "caution"),
+      choiceOutcome("praise", "Praise"),
+      lowConfidence("Researcher tags it"),
+    ],
+    guidance: [
+      "Long feedback often covers several topics. Split it into sentences or points in code first, then tag each one.",
+      "Keep the topic list short and stable over time; changing it breaks trend lines.",
+    ],
+    scenarios: [
+      {
+        id: "cant-find-export",
+        title: "Hard to find",
+        state: { feedback: "Took me ten minutes to find where export lives.", source: "survey" },
+        outcome: "usability",
+        rationale: "Hard to find a feature.",
+      },
+      {
+        id: "slow-dashboard",
+        title: "Slow",
+        state: { feedback: "Dashboard takes forever to load with more than a few projects.", source: "app review" },
+        outcome: "performance",
+        rationale: "Slowness.",
+      },
+      {
+        id: "seat-price",
+        title: "Per-seat price",
+        state: { feedback: "Per-seat pricing makes it hard to add our contractors.", source: "sales note" },
+        outcome: "pricing",
+        rationale: "Pricing model.",
+      },
+      {
+        id: "gantt",
+        title: "Feature wish",
+        state: { feedback: "Would be great to have Gantt charts for client timelines.", source: "survey" },
+        outcome: "missing_feature",
+        rationale: "Asks for new capability.",
+      },
+      {
+        id: "export-blank",
+        title: "Broken export",
+        state: { feedback: "Export to PDF gives a blank page since last week.", source: "app review" },
+        outcome: "bug_report",
+        rationale: "Something stopped working.",
+      },
+      {
+        id: "love-it",
+        title: "Praise",
+        state: { feedback: "Honestly the best planning tool we've used.", source: "survey" },
+        outcome: "praise",
+        rationale: "Positive with no request.",
+      },
+      {
+        id: "meh",
+        title: "Too short",
+        state: { feedback: "meh", source: "survey" },
+        outcome: "low_confidence",
+        rationale: "No topic to tag.",
+      },
+    ],
+    betterTogether: [
+      { slug: "feedback-sentiment", reason: "Topic says what it's about; sentiment says how they feel about it." },
+      { slug: "feature-request-specificity", reason: "Feature requests are checked for a concrete use case." },
+      { slug: "return-reason", reason: "Return comments are product feedback too." },
+      { slug: "cancellation-reason", reason: "Cancellation reasons can share the same theme report." },
+      { slug: "issue-report-type", reason: "Feature requests from the issue tracker join the same themes." },
+    ],
+    references: ["typesafe-system-one", "typesafe-fan-out", "typesafe-confidence-routing"],
+    tags: ["feedback", "research", "tagging"],
+  },
+  {
+    slug: "feedback-sentiment",
+    name: "Feedback sentiment",
+    category: "research",
+    summary: "Rate how positive or negative a piece of feedback is, with neutral and mixed in the middle.",
+    problem:
+      "Star ratings don't match the text often enough to rely on, and a single positive/negative label hides mixed feedback.",
+    goal: "Track sentiment per theme over time and find unhappy users worth a follow-up.",
+    input: {
+      summary: "The feedback text.",
+      fields: [{ name: "feedback", description: "The feedback text." }],
+    },
+    question: {
+      key: "sentiment",
+      type: "score",
+      instructions: "How positive or negative is this feedback overall?",
+      options: [
+        { key: "0", description: "Very negative: angry or very disappointed." },
+        { key: "1", description: "Negative: unhappy or critical." },
+        { key: "2", description: "Neutral, or a mix of positive and negative." },
+        { key: "3", description: "Positive: satisfied or appreciative." },
+        { key: "4", description: "Very positive: enthusiastic." },
+      ],
+    },
+    outcomes: [
+      { id: "negative", label: "Negative", when: "Most likely level is 0 or 1 and confidence meets your threshold.", tone: "caution" },
+      { id: "neutral_or_mixed", label: "Neutral or mixed", when: "Most likely level is 2 and confidence meets your threshold.", tone: "proceed" },
+      { id: "positive", label: "Positive", when: "Most likely level is 3 or 4 and confidence meets your threshold.", tone: "proceed" },
+      lowConfidence("Unscored"),
+    ],
+    guidance: [
+      "Report averages per topic rather than overall; overall sentiment hides where the problems are.",
+      "The expected score across levels is a smoother trend measure than the most likely level.",
+    ],
+    scenarios: [
+      {
+        id: "furious",
+        title: "Very negative",
+        state: { feedback: "Lost a day of work because sync deleted my edits. Unacceptable." },
+        outcome: "negative",
+        rationale: "Angry and disappointed.",
+      },
+      {
+        id: "mixed",
+        title: "Mixed",
+        state: { feedback: "Love the editor, but the mobile app is painfully slow." },
+        outcome: "neutral_or_mixed",
+        rationale: "Clear positive and negative parts.",
+      },
+      {
+        id: "happy",
+        title: "Positive",
+        state: { feedback: "The new templates saved our team hours this week, thank you!" },
+        outcome: "positive",
+        rationale: "Appreciative.",
+      },
+      {
+        id: "sarcasm",
+        title: "Sarcasm",
+        state: { feedback: "Wow, another update that moves every button. Love it." },
+        outcome: "low_confidence",
+        rationale: "Positive words, probably negative meaning.",
+      },
+    ],
+    betterTogether: [
+      { slug: "feedback-topic", reason: "Sentiment is most useful per topic." },
+      { slug: "customer-frustration", reason: "Sentiment measures feedback over time; frustration decides who replies to a single customer." },
+    ],
+    references: ["typesafe-system-one", "typesafe-quickstart"],
+    tags: ["feedback", "sentiment", "score"],
+  },
+  {
+    slug: "feature-request-specificity",
+    name: "Feature request specificity",
+    category: "research",
+    summary: "Tell whether a feature request explains the user's problem, only proposes a solution, or is a vague wish.",
+    problem:
+      "Product teams get requests like \"add a button for X\" with no context. Building exactly what's asked often misses the real need.",
+    goal: "Keep requests with a concrete use case for planning, and ask the others what they are trying to achieve.",
+    input: {
+      summary: "The request text.",
+      fields: [{ name: "request", description: "The feature request as written." }],
+    },
+    question: {
+      key: "specificity",
+      type: "choice",
+      instructions: "How much does this request explain the problem the user is trying to solve?",
+      options: [
+        { key: "concrete_use_case", description: "Describes a situation, a goal and why the current product falls short." },
+        { key: "solution_only", description: "Asks for a specific feature or change without saying what it's for." },
+        { key: "vague_wish", description: "A general wish without a specific problem or solution." },
+      ],
+    },
+    outcomes: [
+      choiceOutcome("concrete_use_case", "Add to research backlog"),
+      choiceOutcome("solution_only", "Ask for the use case", "caution"),
+      choiceOutcome("vague_wish", "Count toward theme"),
+      lowConfidence("Researcher reads it"),
+    ],
+    guidance: ["Use one open question to ask for the use case: \"What were you trying to do when you needed this?\""],
+    scenarios: [
+      {
+        id: "client-timelines",
+        title: "Concrete use case",
+        state: { request: "We show clients a timeline every Monday; today we export to a spreadsheet and draw bars by hand. A Gantt view would remove that step." },
+        outcome: "concrete_use_case",
+        rationale: "Situation, goal and current gap.",
+      },
+      {
+        id: "dark-mode-button",
+        title: "Solution only",
+        state: { request: "Add a dark mode toggle to the toolbar." },
+        outcome: "solution_only",
+        rationale: "A solution with no stated need.",
+      },
+      {
+        id: "more-ai",
+        title: "Vague wish",
+        state: { request: "More AI features please." },
+        outcome: "vague_wish",
+        rationale: "No specific problem or solution.",
+      },
+      {
+        id: "like-competitor",
+        title: "Like a competitor",
+        state: { request: "Make it work like the other tool does." },
+        outcome: "low_confidence",
+        rationale: "Depends on knowing which tool and which part.",
+      },
+    ],
+    betterTogether: [
+      { slug: "feedback-topic", reason: "Runs for feedback tagged as a missing feature." },
+      { slug: "request-clarity", reason: "The same \"ask before you build\" idea, applied to requests made to an AI agent." },
+    ],
+    references: ["typesafe-system-one"],
+    tags: ["feedback", "feature-requests", "research"],
+  },
+];
+
+export const chains: ClassifierChain[] = [
+  {
+    slug: "feedback-triage",
+    name: "Feedback triage",
+    category: "research",
+    summary: "Tag feedback by topic, send bugs to engineering, check feature requests for a use case, and find unhappy users to follow up with.",
+    goal: "Every piece of feedback ends counted in a theme, on the research backlog, as a question back to the user, in the bug flow, in highlights, or with a person.",
+    input: {
+      summary: "Feedback from any channel, with its source.",
+      fields: [
+        { name: "feedback", description: "The feedback text." },
+        { name: "source", description: "Where it came from." },
+      ],
+    },
+    entry: "topic",
+    steps: [
+      {
+        id: "topic",
+        classifier: "feedback-topic",
+        purpose: "Tag the main topic.",
+        receives: [
+          { from: "input", value: "feedback" },
+          { from: "input", value: "source" },
+        ],
+        branches: [
+          { outcomes: ["bug_report"], to: "issue_handoff" },
+          { outcomes: ["missing_feature"], to: "specificity" },
+          { outcomes: ["usability", "performance", "pricing"], to: "sentiment" },
+          { outcomes: ["praise"], to: "highlights" },
+          { outcomes: ["low_confidence"], to: "researcher" },
+        ],
+      },
+      {
+        id: "specificity",
+        classifier: "feature-request-specificity",
+        purpose: "Check for a concrete use case.",
+        receives: [
+          { from: "input", value: "feedback" },
+          { from: "topic", value: "Topic: missing feature" },
+        ],
+        branches: [
+          { outcomes: ["concrete_use_case"], to: "research_backlog" },
+          { outcomes: ["solution_only"], to: "ask_use_case" },
+          { outcomes: ["vague_wish"], to: "theme_tally" },
+          { outcomes: ["low_confidence"], to: "researcher" },
+        ],
+      },
+      {
+        id: "sentiment",
+        classifier: "feedback-sentiment",
+        purpose: "Find unhappy users worth a follow-up.",
+        receives: [
+          { from: "input", value: "feedback" },
+          { from: "topic", value: "Topic, for reporting" },
+        ],
+        branches: [
+          { outcomes: ["negative"], to: "follow_up" },
+          { outcomes: ["neutral_or_mixed", "low_confidence"], to: "theme_tally" },
+          { outcomes: ["positive"], to: "highlights" },
+        ],
+      },
+    ],
+    terminals: [
+      { id: "issue_handoff", label: "Issue intake triage", description: "Bug reports continue in the issue chain.", kind: "handoff", handoffChain: "issue-intake-triage" },
+      { id: "research_backlog", label: "Research backlog", description: "Added to the request board with the user's use case.", kind: "automated" },
+      { id: "ask_use_case", label: "Ask for the use case", description: "Asks what the user was trying to do.", kind: "automated" },
+      { id: "theme_tally", label: "Count toward theme", description: "Counted in the topic's trend; no individual follow-up.", kind: "automated" },
+      { id: "highlights", label: "Team highlights", description: "Shared with the team as positive feedback.", kind: "automated" },
+      { id: "follow_up", label: "Personal follow-up", description: "A product manager or researcher reaches out to learn more.", kind: "human" },
+      { id: "researcher", label: "Researcher", description: "A researcher tags it by hand.", kind: "human" },
+    ],
+    scenarios: [
+      {
+        id: "pdf-blank",
+        title: "Bug in a review",
+        summary: "A bug report in an app review moves to the issue chain.",
+        input: { feedback: "Export to PDF gives a blank page since last week.", source: "app review" },
+        path: [{ step: "topic", outcome: "bug_report", note: "Something stopped working." }],
+        terminal: "issue_handoff",
+      },
+      {
+        id: "gantt-use-case",
+        title: "Feature request with a use case",
+        summary: "A concrete use case goes on the research backlog.",
+        input: { feedback: "We draw client timelines by hand every Monday; a Gantt view would remove that step.", source: "survey" },
+        path: [
+          { step: "topic", outcome: "missing_feature", note: "Asks for a new view." },
+          { step: "specificity", outcome: "concrete_use_case", note: "Situation and gap described." },
+        ],
+        terminal: "research_backlog",
+      },
+      {
+        id: "toggle-only",
+        title: "Solution without a reason",
+        summary: "A bare solution gets one question about the need behind it.",
+        input: { feedback: "Add a dark mode toggle to the toolbar.", source: "survey" },
+        path: [
+          { step: "topic", outcome: "missing_feature", note: "Asks for something new." },
+          { step: "specificity", outcome: "solution_only", note: "No stated need." },
+        ],
+        terminal: "ask_use_case",
+      },
+      {
+        id: "slow-angry",
+        title: "Unhappy about performance",
+        summary: "Strongly negative performance feedback gets a personal follow-up.",
+        input: { feedback: "Dashboard is unbearably slow, our whole team has stopped using it.", source: "survey" },
+        path: [
+          { step: "topic", outcome: "performance", note: "Slowness." },
+          { step: "sentiment", outcome: "negative", note: "Very unhappy." },
+        ],
+        terminal: "follow_up",
+      },
+      {
+        id: "mixed-pricing",
+        title: "Mixed view on pricing",
+        summary: "Mixed feedback is counted toward its theme.",
+        input: { feedback: "Worth it for us, but per-seat pricing makes contractors awkward.", source: "sales note" },
+        path: [
+          { step: "topic", outcome: "pricing", note: "Pricing model." },
+          { step: "sentiment", outcome: "neutral_or_mixed", note: "Positive and critical." },
+        ],
+        terminal: "theme_tally",
+      },
+      {
+        id: "best-tool",
+        title: "Praise",
+        summary: "Praise goes to the team highlights.",
+        input: { feedback: "Honestly the best planning tool we've used.", source: "survey" },
+        path: [{ step: "topic", outcome: "praise", note: "Positive, no request." }],
+        terminal: "highlights",
+      },
+      {
+        id: "meh",
+        title: "Nothing to tag",
+        summary: "Feedback with no clear topic is tagged by a researcher.",
+        input: { feedback: "meh", source: "survey" },
+        path: [{ step: "topic", outcome: "low_confidence", note: "No topic to tag." }],
+        terminal: "researcher",
+      },
+    ],
+    notes: [
+      "Topic and sentiment can be asked in one fan-out request; code uses sentiment only for usability, performance and pricing feedback.",
+      "The issue chain hands feature requests here, and this chain hands bug reports there. Each handoff starts the other chain from its entry.",
+    ],
+    references: ["typesafe-system-one", "typesafe-fan-out"],
+  },
+];

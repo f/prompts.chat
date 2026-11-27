@@ -19,7 +19,7 @@ Les listes sont parfaites pour les instructions étape par étape, les élément
   title="Formatage en Liste"
   prompt={`Donne 5 conseils pour mieux dormir.
 
-Format : Liste numérotée avec une brève explication pour chaque.
+Format : Liste numérotée avec une brève explication pour chacun.
 Chaque conseil doit être en gras, suivi d'un tiret et de l'explication.`}
 />
 
@@ -41,7 +41,7 @@ Formate comme un tableau markdown avec les colonnes :
 />
 
 <Callout type="tip" title="Bonnes Pratiques pour les Tableaux">
-Spécifiez les noms de colonnes, les types de données attendus (texte, nombres, notes), et combien de lignes vous avez besoin. Pour les comparaisons complexes, limitez à 4-6 colonnes pour la lisibilité.
+Spécifiez les noms de colonnes, les types de données attendus (texte, nombres, notes), et le nombre de lignes dont vous avez besoin. Pour les comparaisons complexes, limitez à 4-6 colonnes pour la lisibilité.
 </Callout>
 
 ### En-têtes et Sections
@@ -170,9 +170,13 @@ Retourne le résultat comme un bloc de code JSON :
 ```
 ````
 
+<Callout type="info" title="Sorties Structurées Natives">
+Si vous appelez un modèle via une API, vous n'avez pas à compter uniquement sur la formulation. OpenAI, Anthropic et Google proposent tous des modes de sortie structurée qui prennent un JSON Schema et contraignent la réponse à s'y conformer : les champs obligatoires et les valeurs autorisées sont alors imposés, et non plus simplement demandés. Les anciennes options « mode JSON » garantissent seulement un JSON syntaxiquement valide, pas le respect de votre schéma. Même avec un schéma imposé, les valeurs elles-mêmes peuvent rester fausses : continuez donc à valider ce qui compte.
+</Callout>
+
 ## Sortie YAML
 
-YAML est plus lisible que JSON, utilisant l'indentation au lieu des accolades. C'est le standard pour les fichiers de configuration (Docker, Kubernetes, GitHub Actions) et fonctionne bien quand la sortie sera lue par des humains ou utilisée dans des contextes DevOps. YAML est sensible à l'indentation, donc soyez spécifique sur les exigences de formatage.
+YAML est plus lisible que JSON, utilisant l'indentation au lieu des accolades. C'est le standard pour les fichiers de configuration (Docker, Kubernetes, GitHub Actions) et il fonctionne bien quand la sortie sera lue par des humains ou utilisée dans des contextes DevOps. YAML est sensible à l'indentation, donc soyez spécifique sur les exigences de formatage.
 
 <TryIt 
   compact
@@ -181,7 +185,7 @@ YAML est plus lisible que JSON, utilisant l'indentation au lieu des accolades. C
 
 Retourne en YAML valide :
 - Inclure : étapes install, lint, test, build
-- Utiliser Node.js 18
+- Utiliser la version LTS actuelle de Node.js
 - Mettre en cache les dépendances npm
 - Exécuter sur push vers main et pull requests`}
 />
@@ -196,7 +200,7 @@ Convertis ces données en format XML :
 Exigences :
 - Élément racine : <catalogue>
 - Chaque élément dans un élément <livre>
-- Inclure des attributs où approprié
+- Inclure des attributs là où c'est approprié
 - Utiliser CDATA pour le texte de description
 
 Données : [données du livre]
@@ -237,7 +241,7 @@ Couverture de Tests : [% estimé]
 
 ### Format à Trous
 
-Les templates avec des blancs (___) guident le modèle à remplir des champs spécifiques tout en maintenant un formatage exact. Cette approche est excellente pour les formulaires, briefs et documents standardisés où la cohérence compte.
+Les templates avec des blancs (___) amènent le modèle à remplir des champs spécifiques tout en maintenant un formatage exact. Cette approche est excellente pour les formulaires, briefs et documents standardisés où la cohérence compte.
 
 ```
 Complète ce template pour le produit donné :
@@ -324,7 +328,7 @@ Si MOYEN (un seul utilisateur affecté, contournement existe) :
 Si FAIBLE (questions, demandes de fonctionnalités) :
   Retourne : 🟢 FAIBLE | [Catégorie] | [Action Suggérée]
 
-Ticket : "Je ne peux pas me connecter à mon compte. J'ai essayé de réinitialiser mon mot de passe deux fois mais j'obtiens toujours une erreur. Cela bloque toute mon équipe pour accéder au tableau de bord."`}
+Ticket : "Je ne peux pas me connecter à mon compte. J'ai essayé de réinitialiser mon mot de passe deux fois mais j'obtiens toujours une erreur. Cela empêche toute mon équipe d'accéder au tableau de bord."`}
 />
 
 ## Tableaux et Listes en JSON
@@ -353,7 +357,7 @@ Transcription : "[transcription de réunion]"
 
 ## Instructions de Validation
 
-L'auto-validation demande au modèle de vérifier sa propre sortie avant de répondre. Cela attrape les problèmes courants comme les sections manquantes, le texte placeholder ou les violations de contraintes. Le modèle itérera en interne pour corriger les problèmes, améliorant la qualité de sortie sans appels API supplémentaires.
+L'auto-validation demande au modèle de vérifier sa propre sortie avant de répondre. Cela permet de repérer les problèmes courants comme les sections manquantes, le texte placeholder ou les violations de contraintes. Cela améliore souvent la qualité sans appel API supplémentaire, mais ce n'est pas une garantie : un modèle peut affirmer qu'une vérification a réussi alors que ce n'est pas le cas, donc vérifiez quand même les sorties critiques dans votre propre code.
 
 ```
 Génère le rapport, puis :
@@ -408,4 +412,4 @@ Soyez explicite sur le format, utilisez des exemples, spécifiez les types, gér
   explanation="Les sorties structurées comme JSON peuvent être analysées par du code, comparées entre requêtes, intégrées dans des workflows et validées pour la complétude—des choses difficiles ou impossibles avec du texte libre."
 />
 
-Les sorties structurées sont essentielles pour construire des applications alimentées par l'IA fiables. Dans le prochain chapitre, nous explorerons le prompting en chaîne de pensée pour les tâches de raisonnement complexe.
+Les sorties structurées sont essentielles pour construire des applications fiables alimentées par l'IA. Dans le prochain chapitre, nous explorerons le prompting en chaîne de pensée pour les tâches de raisonnement complexe.

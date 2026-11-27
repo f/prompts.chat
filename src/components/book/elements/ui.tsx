@@ -144,7 +144,7 @@ export function Quiz({ question, options, correctIndex, explanation }: QuizProps
             onClick={() => handleSelect(index)}
             disabled={showExplanation}
             className={cn(
-              "w-full p-3 text-left rounded-lg border transition-colors text-sm",
+              "w-full p-3 text-start rounded-lg border transition-colors text-sm",
               selected === index
                 ? isCorrect
                   ? "bg-green-100 border-green-500 dark:bg-green-950 dark:border-green-700"

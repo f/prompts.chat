@@ -84,13 +84,13 @@ Cada nível adiciona especificidade e melhora dramaticamente a qualidade do resu
 
 ## Princípio 3: Contexto É Rei
 
-Modelos não têm memória, nem acesso aos seus arquivos, nem conhecimento da sua situação. Tudo que é relevante deve estar no prompt.
+Um modelo não sabe nada sobre a sua situação além do que chega até ele na conversa. Mesmo assistentes com recursos de memória, arquivos enviados ou ferramentas conectadas só veem o que foi de fato compartilhado com eles, e se lembram disso de forma seletiva. Quando algo importa, coloque no prompt.
 
 ### Forneça Contexto Suficiente
 
 <Compare 
   before={{ label: "Contexto insuficiente", content: "Por que minha função não está funcionando?" }}
-  after={{ label: "Contexto suficiente", content: "Tenho uma função Python que deveria filtrar uma lista de dicionários por um valor de chave específico. Ela está retornando uma lista vazia quando deveria retornar 3 itens.\n\nFunção:\ndef filter_items(items, key, value):\n    return [item for item in items if item[key] = value]\n\nChamada: filter_items(items, 'status', 'active')\nEsperado: 2 itens, Obtido: lista vazia" }}
+  after={{ label: "Contexto suficiente", content: "Tenho uma função Python que deveria filtrar uma lista de dicionários por um valor de chave específico. Ela está retornando uma lista vazia quando deveria retornar 3 itens.\n\nFunção:\ndef filter_items(items, key, value):\n    return [item for item in items if item.get(key) == value]\n\nItem de exemplo: {'id': 7, 'status': 'active'}\nChamada: filter_items(items, 'Status', 'active')\nEsperado: 3 itens, Obtido: lista vazia" }}
 />
 
 ### A Checklist de Contexto
@@ -193,7 +193,7 @@ Final: [Salve prompt bem-sucedido como template]
 
 ## Princípio 6: Aproveite os Pontos Fortes do Modelo
 
-Trabalhe com como os modelos são treinados, não contra eles.
+Trabalhe a favor da forma como os modelos são treinados, não contra ela.
 
 ### Modelos Querem Ser Úteis
 
@@ -204,7 +204,7 @@ Enquadre pedidos como coisas que um assistente prestativo naturalmente faria:
   after={{ label: "A favor da corrente", content: "Me ajude a entender...\nEstou trabalhando em X e preciso de ajuda com...\nVocê poderia me guiar por..." }}
 />
 
-### Modelos Excelam em Padrões
+### Modelos Se Destacam em Padrões
 
 Se você precisa de saída consistente, mostre o padrão:
 
@@ -321,7 +321,7 @@ Liste quaisquer problemas encontrados.
     "Itere e Refine"
   ]}
   correctIndex={2}
-  explanation="Contexto É Rei enfatiza que modelos de IA não têm memória entre sessões e não podem ler sua mente. Incluir background relevante, restrições e objetivos ajuda o modelo a entender suas necessidades."
+  explanation="Contexto É Rei enfatiza que modelos de IA não podem ler sua mente: eles só sabem o que chega até eles na conversa. Incluir background relevante, restrições e objetivos ajuda o modelo a entender suas necessidades."
 />
 
 ## Prática: Preencha as Lacunas
@@ -353,7 +353,7 @@ Formato: Retorne sua resposta como {{format}}.`}
     { id: "focus", correctAnswers: [], hint: "Qual aspecto deve ser priorizado?", context: "Uma qualidade ou aspecto relevante para a tarefa" },
     { id: "format", correctAnswers: [], hint: "Como a saída deve ser estruturada?", context: "Um tipo de formato de saída" }
   ]}
-  explanation="Um prompt bem estruturado inclui: um papel claro (Princípio 1), contexto suficiente (Princípio 3), tarefa específica (Princípio 2), restrições (Princípio 4), e formato de saída (Princípio 5). A IA verifica se suas escolhas são internamente consistentes."
+  explanation="Um prompt bem estruturado inclui um papel claro (Princípio 6), contexto suficiente (Princípio 3), uma tarefa específica com restrições (Princípio 2) e um formato de saída explícito (Princípio 7). A IA verifica se suas escolhas são internamente consistentes."
 />
 
 <InteractiveChecklist
@@ -362,10 +362,10 @@ Formato: Retorne sua resposta como {{format}}.`}
     { id: "clarity", label: "Clareza Acima de Esperteza", description: "Seu prompt é explícito e não ambíguo?" },
     { id: "specificity", label: "Especificidade Gera Qualidade", description: "Você incluiu público, tamanho, tom e formato?" },
     { id: "context", label: "Contexto É Rei", description: "O prompt inclui toda informação de background necessária?" },
-    { id: "examples", label: "Exemplos Vencem Explicações", description: "Você mostrou o que quer, não apenas descreveu?" },
-    { id: "constraints", label: "Restrições Focam a Saída", description: "Há limites claros de escopo e formato?" },
+    { id: "guide", label: "Guie, Não Apenas Pergunte", description: "Você descreveu os passos ou o raciocínio que quer, em vez de apenas pedir uma resposta?" },
     { id: "iteration", label: "Itere e Refine", description: "Você está preparado para melhorar baseado nos resultados?" },
-    { id: "persona", label: "Persona Molda Perspectiva", description: "A IA sabe qual papel desempenhar?" },
+    { id: "strengths", label: "Aproveite os Pontos Fortes do Modelo", description: "Você está mostrando padrões e usando papéis que o modelo domina bem?" },
+    { id: "structure", label: "Controle a Estrutura de Saída", description: "Você especificou o formato exato de que precisa?" },
     { id: "verify", label: "Verifique e Valide", description: "Você construiu verificações de precisão?" }
   ]}
 />

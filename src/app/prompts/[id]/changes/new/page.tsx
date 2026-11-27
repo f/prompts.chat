@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ChangeRequestForm } from "@/components/prompts/change-request-form";
 import type { Metadata } from "next";
 import { NOINDEX_ROBOTS } from "@/lib/seo";
+import { getBotUrl, getClassifierUrl } from "@/lib/urls";
 
 // Signed-in or workflow page with no search value
 export const metadata: Metadata = {
@@ -50,11 +51,21 @@ export default async function NewChangeRequestPage({ params }: NewChangeRequestP
       structuredFormat: true,
       authorId: true,
       isPrivate: true,
+      slug: true,
+      classifierSlug: true,
     },
   });
 
   if (!prompt) {
     notFound();
+  }
+
+  // Bots propose changes to every bot field on their own page
+  if (prompt.type === "BOT") {
+    redirect(`${getBotUrl(prompt.id, prompt.slug)}/changes/new`);
+  }
+  if (prompt.type === "CLASSIFIER" && prompt.classifierSlug) {
+    redirect(`${getClassifierUrl(prompt.classifierSlug)}/changes/new`);
   }
 
   // Can't create change request for own prompt

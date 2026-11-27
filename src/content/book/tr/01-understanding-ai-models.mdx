@@ -1,12 +1,12 @@
-Prompt tekniklerini öğrenmeden önce, yapay zeka dil modellerinin gerçekte nasıl çalıştığını anlamak yardımcı olur. Bu bilgi sizi prompt yazmada daha iyi yapacaktır.
+Prompt tekniklerini öğrenmeden önce, yapay zeka dil modellerinin gerçekte nasıl çalıştığını anlamak yardımcı olur. Bu bilgi, daha iyi promptlar yazmanızı sağlayacak.
 
 <Callout type="info" title="Bu Neden Önemli">
-Yapay zekanın nasıl çalıştığını anlamak sadece uzmanlar için değil. Doğrudan daha iyi promptlar yazmanıza yardımcı olur. Yapay zekanın sonra ne geleceğini tahmin ettiğini öğrendiğinizde, doğal olarak daha net talimatlar vereceksiniz.
+Yapay zekanın nasıl çalıştığını anlamak sadece uzmanlar için değil. Doğrudan daha iyi promptlar yazmanıza yardımcı olur. Yapay zekanın bir sonraki adımda ne geleceğini tahmin ettiğini bildiğinizde, talimatlarınız da kendiliğinden netleşir.
 </Callout>
 
 ## Büyük Dil Modelleri Nedir?
 
-Büyük Dil Modelleri (LLM'ler), büyük miktarda metin okuyarak öğrenen yapay zeka sistemleridir. Yazabilir, soruları yanıtlayabilir ve insana benzeyen sohbetler yapabilirler. "Büyük" olarak adlandırılırlar çünkü eğitim sırasında ayarlanan milyarlarca küçük ayara (parametre olarak adlandırılır) sahiptirler.
+Büyük Dil Modelleri (LLM'ler), büyük miktarda metin okuyarak öğrenen yapay zeka sistemleridir. Yazabilir, soruları yanıtlayabilir ve insan gibi sohbet edebilirler. Onlara "büyük" denmesinin sebebi, eğitim sırasında ince ince ayarlanan milyarlarca küçük değere (bunlara parametre denir) sahip olmalarıdır.
 
 ### LLM'ler Nasıl Çalışır (Basitleştirilmiş)
 
@@ -14,41 +14,41 @@ Büyük Dil Modelleri (LLM'ler), büyük miktarda metin okuyarak öğrenen yapay
 
 <TryIt compact prompt={`Bu cümleyi tamamla: "Yeni bir şey öğrenmenin en iyi yolu..."`} />
 
-"Fransa'nın başkenti..." yazdığınızda, yapay zeka "Paris" tahmin eder çünkü Fransa hakkındaki metinlerde genellikle bundan sonra bu gelir. Muazzam miktarda veriyle milyarlarca kez tekrarlanan bu basit fikir, şaşırtıcı derecede akıllı davranış yaratır.
+"Fransa'nın başkenti..." yazdığınızda, yapay zeka "Paris" tahmininde bulunur, çünkü Fransa hakkındaki metinlerde bu ifadeden sonra genellikle o kelime gelir. Muazzam miktarda veriyle milyarlarca kez tekrarlanan bu basit fikir, şaşırtıcı derecede akıllıca davranışlar ortaya çıkarır.
 
 <TokenPredictionDemo />
 
 ### Temel Kavramlar
 
-**Token'lar**: Yapay zeka harf harf okumaz. Metni "token" adı verilen parçalara ayırır. Bir token "merhaba" gibi tam bir kelime veya "lar" gibi bir kelimenin parçası olabilir. Token'ları anlamak, yapay zekanın neden bazen yazım hataları yaptığını veya belirli kelimelerle neden zorlandığını açıklamaya yardımcı olur.
+**Tokenlar**: Yapay zeka harf harf okumaz. Metni "token" adı verilen parçalara ayırır. Bir token "merhaba" gibi tam bir kelime veya "lar" gibi bir kelimenin parçası olabilir. Tokenları anlamak, yapay zekanın neden bazen yazım hataları yaptığını ya da bazı kelimelerde neden zorlandığını açıklamaya yardımcı olur.
 
 <Callout type="info" title="Token Nedir?">
-Token, bir yapay zeka modelinin işlediği en küçük metin birimidir. Her zaman tam bir kelime değildir—bir kelime parçası, noktalama işareti veya boşluk olabilir. Örneğin, "inanılmaz" 3 token olabilir: "inan" + "ıl" + "maz". Ortalama olarak, **1 token ≈ 4 karakter** veya **100 token ≈ 75 kelime**. API maliyetleri ve bağlam limitleri token'larla ölçülür.
+Token, bir yapay zeka modelinin işlediği en küçük metin birimidir. Her zaman tam bir kelime değildir—bir kelime parçası, noktalama işareti veya boşluk olabilir. Örneğin, "inanılmaz" 3 token olabilir: "inan" + "ıl" + "maz". İngilizce metinler için yaygın bir pratik kural **1 token ≈ 4 karakter** veya **100 token ≈ 75 kelime** şeklindedir; ancak kesin oran, modelin metni tokenlara nasıl böldüğüne ve dile göre değişir. API maliyetleri ve bağlam limitleri tokenlarla ölçülür.
 </Callout>
 
 <TokenizerDemo />
 
-**Bağlam Penceresi**: Bu, yapay zekanın bir sohbette ne kadar metni "hatırlayabildiğidir". Bunu yapay zekanın kısa süreli belleği gibi düşünün. Her şeyi içerir: sorunuz VE yapay zekanın yanıtı.
+**Bağlam Penceresi**: Yapay zekanın bir sohbette ne kadar metni "hatırlayabildiğini" belirler. Bunu yapay zekanın kısa süreli belleği gibi düşünün. Her şeyi içerir: sorunuz VE yapay zekanın yanıtı.
 
 <ContextWindowDemo />
 
-Bağlam pencereleri modele göre değişir ve hızla genişlemektedir:
+Bağlam pencereleri modelden modele değişir ve kısa sürede çok büyüdü; ChatGPT'nin ilk sürümündeki birkaç bin tokendan bugün pek çok modelde bir milyon ve üzerine çıktı:
 
 <div className="my-4 grid gap-2">
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">GPT-4o</span>
-    <span className="text-muted-foreground">128K token</span>
-  </div>
-  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">GPT-5</span>
-    <span className="text-muted-foreground">400K token</span>
-  </div>
-  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">Claude Sonnet 4</span>
+    <span className="font-semibold min-w-32">GPT-6</span>
     <span className="text-muted-foreground">1M token</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">Gemini 2.5</span>
+    <span className="font-semibold min-w-32">Claude Opus 5.5</span>
+    <span className="text-muted-foreground">1M token</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">Gemini 4</span>
+    <span className="text-muted-foreground">1M token</span>
+  </div>
+  <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
+    <span className="font-semibold min-w-32">DeepSeek V4</span>
     <span className="text-muted-foreground">1M token</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
@@ -56,42 +56,44 @@ Bağlam pencereleri modele göre değişir ve hızla genişlemektedir:
     <span className="text-muted-foreground">1M-10M token</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
-    <span className="font-semibold min-w-32">DeepSeek R1</span>
-    <span className="text-muted-foreground">128K token</span>
+    <span className="font-semibold min-w-32">Mistral Small 4</span>
+    <span className="text-muted-foreground">256K token</span>
   </div>
 </div>
 
-**Sıcaklık (Temperature)**: Bu, yapay zekanın ne kadar yaratıcı veya öngörülebilir olduğunu kontrol eder. Düşük sıcaklık (0.0-0.3) odaklanmış, tutarlı yanıtlar verir. Yüksek sıcaklık (0.7-1.0) daha yaratıcı, şaşırtıcı yanıtlar verir.
+Ancak pencerenin büyümesi, yapay zekanın onun her köşesini aynı verimle kullandığını göstermez. Bağlam doldukça modeller ayrıntıları gözden kaçırabilir; bu yüzden odaklı bir bağlam, tıka basa doldurulmuş bir bağlamdan hâlâ daha iyidir.
+
+**Sıcaklık (Temperature)**: Yapay zekanın ne kadar yaratıcı ya da öngörülebilir olacağını belirler. Düşük sıcaklık (0.0-0.3) odaklı, tutarlı yanıtlar verir. Yüksek sıcaklık (0.7-1.0) daha yaratıcı, şaşırtıcı yanıtlar verir. Bazı yeni akıl yürütme modelleri bu ayarı kendileri yönetir ve sizin belirlediğiniz değerleri dikkate almaz.
 
 <TemperatureDemo />
 
-**Sistem Promptu**: Yapay zekaya tüm sohbet boyunca nasıl davranacağını söyleyen özel talimatlar. Örneğin, "Sen konuları basitçe açıklayan dost canlısı bir öğretmensin." Tüm yapay zeka araçları bunu ayarlamanıza izin vermez, ancak mevcut olduğunda çok güçlüdür.
+**Sistem Promptu**: Yapay zekaya tüm sohbet boyunca nasıl davranacağını söyleyen özel talimatlar. Örneğin, "Sen konuları basitçe açıklayan dost canlısı bir öğretmensin." Her yapay zeka aracı bunu ayarlamanıza izin vermez, ama bu imkân varsa çok güçlü bir araçtır.
 
 ## Yapay Zeka Model Türleri
 
 ### Metin Modelleri (LLM'ler)
-En yaygın tür, bunlar metin girdilerine metin yanıtları üretir. Chatbot'lara, yazma asistanlarına ve kod oluşturuculara güç verirler. Örnekler: GPT-4, Claude, Llama, Mistral.
+En yaygın tür budur: metin girdilerine metinle yanıt verirler. Sohbet botlarının, yazma asistanlarının ve kod üreticilerinin arkasında bu modeller vardır. Örnekler: GPT, Claude, Gemini, Llama, DeepSeek, Mistral.
 
 ### Çok Modlu Modeller
-Bunlar sadece metinden fazlasını anlayabilir. Görüntülere bakabilir, ses dinleyebilir ve video izleyebilirler. Örnekler: GPT-4V, Gemini, Claude 3.
+Bunlar metinden fazlasını anlayabilir. Görüntülere bakabilirler; bazıları ses dinleyip video da izleyebilir. GPT, Gemini ve Claude dahil, bugünün önde gelen modellerinin çoğu çok modludur.
 
 ### Metinden Görüntüye Modeller
 
 <Callout type="info" title="Bu Kitap Hakkında">
-Bu kitap öncelikle Büyük Dil Modelleri (metin tabanlı yapay zeka) için prompt yazmaya odaklansa da, net ve spesifik prompt yazma ilkeleri görüntü oluşturmaya da uygulanır. Bu modeller için promptlarda ustalaşmak, harika sonuçlar almak için eşit derecede önemlidir.
+Bu kitap öncelikle Büyük Dil Modelleri (metin tabanlı yapay zeka) için prompt yazmaya odaklansa da, net ve spesifik prompt yazma ilkeleri görüntü üretimi için de geçerlidir. Bu modellerde de harika sonuçlar almak için prompt yazmada ustalaşmak aynı derecede önemlidir.
 </Callout>
 
-DALL-E, Midjourney, Nano Banana ve Stable Diffusion gibi metinden görüntüye modeller, metin açıklamalarından görüntüler oluşturur. Metin modellerinden farklı çalışırlar:
+GPT Image, Midjourney, Nano Banana ve Stable Diffusion gibi metinden görüntüye modeller, metin açıklamalarından görüntüler oluşturur. Metin modellerinden farklı çalışırlar:
 
 **Nasıl Çalışırlar:**
 1. **Eğitim**: Model milyonlarca görüntü-metin çiftinden öğrenir, hangi kelimelerin hangi görsel kavramlara karşılık geldiğini anlar
-2. **Difüzyon Süreci**: Rastgele gürültüden başlayarak, model metin promptunuz tarafından yönlendirilerek görüntüyü kademeli olarak iyileştirir
-3. **CLIP Rehberliği**: Ayrı bir model (CLIP) kelimelerinizi görsel kavramlara bağlamaya yardımcı olur, görüntünün açıklamanızla eşleşmesini sağlar
+2. **Difüzyon Süreci**: Pek çok modelde üretim rastgele gürültüyle başlar ve model, metin promptunuzun yönlendirmesiyle görüntüyü adım adım iyileştirir
+3. **Metin Rehberliği**: Bir metin kodlayıcı (CLIP gibi ya da yeni sistemlerde tam teşekküllü bir dil modeli) kelimelerinizi görsel kavramlara bağlamaya yardımcı olur ve görüntünün açıklamanızla örtüşmesini sağlar
 
 <TextToImageDemo />
 
 **Görüntüler için Prompt Yazmak Farklıdır:**
-Cümleler yazdığınız metin promptlarının aksine, görüntü promptları genellikle virgüllerle ayrılmış açıklayıcı ifadeler olarak daha iyi çalışır:
+Taleplerinizi yazdığınız metin promptlarının aksine, görüntü promptları resmin nasıl görünmesi gerektiğini tarif eder. Pek çok görüntü modeli, özellikle de Stable Diffusion gibi difüzyon modelleri, virgüllerle ayrılmış betimleyici ifadelere iyi yanıt verir. Dili güçlü biçimde anlayan yeni modeller ise tam cümlelerle yazılmış betimlemeleri de takip edebilir. Hangisini seçerseniz seçin, asıl önemli olan ayrıntılardır: konu, ortam, ışık ve stil.
 
 <Compare 
   before={{ label: "Metin Tarzı Prompt", content: "Lütfen pencere kenarında oturup dışarıdaki yağmura bakan bir kedi görüntüsü oluştur" }}
@@ -100,12 +102,12 @@ Cümleler yazdığınız metin promptlarının aksine, görüntü promptları ge
 
 ### Metinden Videoya Modeller
 
-Metinden videoya en yeni sınırdır. Sora 2, Runway ve Veo gibi modeller metin açıklamalarından hareketli görüntüler oluşturur. Görüntü modelleri gibi, promptunuzun kalitesi doğrudan çıktınızın kalitesini belirler—prompt mühendisliği burada da aynı derecede önemlidir.
+Metinden video üretimi, bu alanın en yeni sınırı. Veo, Runway ve Kling gibi modeller metin açıklamalarından hareketli görüntüler oluşturur. Görüntü modellerinde olduğu gibi, promptunuzun kalitesi doğrudan çıktının kalitesini belirler—prompt mühendisliği burada da en az o kadar önemlidir.
 
 **Nasıl Çalışırlar:**
-1. **Zamansal Anlayış**: Tek görüntülerin ötesinde, bu modeller şeylerin zaman içinde nasıl hareket ettiğini ve değiştiğini anlar
+1. **Zamansal Anlayış**: Tek görüntülerin ötesinde, bu modeller nesnelerin zaman içinde nasıl hareket ettiğini ve değiştiğini anlar
 2. **Fizik Simülasyonu**: Temel fiziği öğrenirler—nesnelerin nasıl düştüğünü, suyun nasıl aktığını, insanların nasıl yürüdüğünü
-3. **Kare Tutarlılığı**: Birçok kare boyunca tutarlı konular ve sahneler korurlar
+3. **Kare Tutarlılığı**: Karakterleri ve sahneleri kareler boyunca tutarlı tutarlar
 4. **Zamanda Difüzyon**: Görüntü modellerine benzer, ancak tek kareler yerine tutarlı diziler üretir
 
 <TextToVideoDemo />
@@ -116,11 +118,11 @@ Video promptlarının statik bir sahne değil, zaman içindeki eylemi tanımlama
 
 <Compare 
   before={{ label: "Statik (Zayıf)", content: "Dalda bir kuş" }}
-  after={{ label: "Hareketli (Güçlü)", content: "Bir kuş daldan havalanıyor, kanatları geniş açılıyor, havalanırken yapraklar hışırdıyor" }}
+  after={{ label: "Hareketli (Güçlü)", content: "Bir kuş daldan havalanıyor, kanatlarını iki yana açıyor, kalkarken yapraklar hışırdıyor" }}
 />
 
 ### Özelleşmiş Modeller
-Kod oluşturma (Codex, CodeLlama), müzik oluşturma (Suno, Udio) veya tıbbi tanı veya hukuki belge analizi gibi alana özgü uygulamalar için ince ayar yapılmış.
+Kod üretimi (Codestral, OpenAI'ın Codex modelleri), müzik üretimi (Suno, Udio) ya da tıbbi tanı veya hukuki belge analizi gibi alana özgü uygulamalar için ince ayar yapılmış modellerdir.
 
 ## Model Yetenekleri ve Sınırlamaları
 
@@ -130,30 +132,30 @@ LLM'lerin neler yapıp yapamayacağını keşfedin. Örnek promptları görmek i
 
 ### Halüsinasyonları Anlamak
 
-<Callout type="warning" title="Yapay Zeka Şeyler Uydurabilir">
-Bazen yapay zeka doğru gibi görünen ama olmayan şeyler yazar. Buna "halüsinasyon" denir. Bu bir hata değil. Tahminin işleyiş şekli budur. Önemli gerçekleri her zaman iki kez kontrol edin.
+<Callout type="warning" title="Yapay Zeka Uydurabilir">
+Bazen yapay zeka doğru gibi görünen ama aslında doğru olmayan şeyler yazar. Buna "halüsinasyon" denir. Bu bir yazılım hatası değil; tahmin zaten böyle işler. Önemli bilgileri her zaman teyit edin.
 </Callout>
 
-Yapay zeka neden şeyler uydurur?
+Yapay zeka neden bir şeyler uydurur?
 
-1. İyi görünen metin yazmaya çalışır, her zaman doğru olan metin değil
-2. Öğrendiği internet (nerede öğrendiyse) de hatalar içerir
-3. Bir şeyin gerçek olup olmadığını gerçekten kontrol edemez
+1. Her zaman doğru olan metni değil, kulağa iyi gelen metni yazmaya çalışır
+2. Öğrendiği yer olan internette de hatalar var
+3. Kendi başına bir şeyin gerçek olup olmadığını kontrol edemez (web araması gibi araçlara bağlı değilse)
 
 <Collapsible title="Yanlış Yanıtlardan Nasıl Kaçınılır">
 
 - **Kaynak isteyin**: Sonra bu kaynakların gerçek olup olmadığını kontrol edin
-- **Adım adım düşünme isteyin**: Her adımı kontrol edebilirsiniz
-- **Önemli gerçekleri iki kez kontrol edin**: Google veya güvenilir web sitelerini kullanın
-- **"Emin misin?" diye sorun**: Yapay zeka belirsizliğini kabul edebilir
+- **Adım adım düşünmesini isteyin**: Böylece her adımı kontrol edebilirsiniz
+- **Önemli bilgileri teyit edin**: Google veya güvenilir web sitelerini kullanın
+- **"Emin misin?" diye sorun**: Yapay zeka emin olmadığını itiraf edebilir
 
 </Collapsible>
 
-<TryIt compact prompt={`İlk iPhone hangi yıl çıktı? Lütfen bu yanıta ne kadar güvendiğinizi açıklayın.`} />
+<TryIt compact prompt={`İlk iPhone hangi yıl çıktı? Bu yanıttan ne kadar emin olduğunu da açıkla.`} />
 
 ## Yapay Zeka Nasıl Öğrenir: Üç Adım
 
-Yapay zeka bir şeyleri sihirli bir şekilde bilmez. Okula gitmek gibi üç öğrenme adımından geçer:
+Yapay zeka bir şeyleri sihirle bilivermez. Tıpkı okula giden bir çocuk gibi üç öğrenme aşamasından geçer:
 
 ### Adım 1: Ön Eğitim (Okumayı Öğrenmek)
 
@@ -164,7 +166,7 @@ Yapay zeka bir şeyleri sihirli bir şekilde bilmez. Okula gitmek gibi üç öğ
 - Dünya hakkında gerçekler
 - Farklı yazı stilleri
 
-Bu aylar sürer ve milyonlarca dolara mal olur. Bu adımdan sonra, yapay zeka çok şey bilir, ama henüz çok yardımcı değildir. İstediğiniz bu olmasa bile yazdığınız her şeyi devam ettirebilir.
+Bu süreç aylar sürer ve en büyük modellerde on milyonlarca, hatta yüz milyonlarca dolara mal olabilir. Bu adımdan sonra yapay zeka çok şey bilir ama henüz pek işe yaramaz. İstediğiniz bu olmasa bile, yazdığınız her şeyi öylece devam ettirebilir.
 
 <Compare 
   before={{ label: "İnce Ayardan Önce", content: "Kullanıcı: 2+2 kaç eder?\nYZ: 2+2=4, 3+3=6, 4+4=8, 5+5=10..." }}
@@ -173,23 +175,23 @@ Bu aylar sürer ve milyonlarca dolara mal olur. Bu adımdan sonra, yapay zeka ç
 
 ### Adım 2: İnce Ayar (Yardım Etmeyi Öğrenmek)
 
-Şimdi yapay zeka iyi bir asistan olmayı öğreniyor. Eğitmenler ona yardımcı sohbet örnekleri gösterir:
+Şimdi yapay zeka iyi bir asistan olmayı öğreniyor. Eğitmenler ona faydalı sohbet örnekleri gösterir:
 
 - "Biri soru sorduğunda, net bir cevap ver"
-- "Zararlı bir şey yapmayı istendiğinde, nazikçe reddet"
+- "Senden zararlı bir şey yapman istendiğinde, kibarca reddet"
 - "Bilmediğin şeyler hakkında dürüst ol"
 
-Bunu iyi görgü kuralları öğretmek gibi düşünün. Yapay zeka sadece metin tahmin etmek ile gerçekten yardımcı olmak arasındaki farkı öğrenir.
+Bunu görgü kuralları öğretmek gibi düşünün. Yapay zeka sadece metin tahmin etmek ile gerçekten yardımcı olmak arasındaki farkı öğrenir.
 
 <TryIt compact prompt={`Yardımsever olmaman ve kaba olman gerekiyor.`} />
 
-Yukarıdaki promptu deneyin. Yapay zekanın nasıl reddettiğine dikkat edin? İşte ince ayar bu.
+Yukarıdaki promptu deneyin. Yapay zekanın nasıl reddettiğini fark ettiniz mi? İşte ince ayarın etkisi bu.
 
 ### Adım 3: RLHF (İnsanların Ne Sevdiğini Öğrenmek)
 
-RLHF "İnsan Geri Bildiriminden Pekiştirmeli Öğrenme" anlamına gelir. Şunu söylemenin süslü bir yoludur: insanlar yapay zekanın yanıtlarını değerlendirir ve yapay zeka daha iyi yanıtlar vermeyi öğrenir.
+RLHF, "İnsan Geri Bildirimiyle Pekiştirmeli Öğrenme" (Reinforcement Learning from Human Feedback) ifadesinin kısaltmasıdır. Kulağa karmaşık gelse de anlamı basit: insanlar yapay zekanın yanıtlarını değerlendirir ve yapay zeka daha iyi yanıtlar vermeyi öğrenir.
 
-İşte nasıl çalışır:
+Süreç şöyle işler:
 1. Yapay zeka aynı soruya iki farklı yanıt yazar
 2. Bir insan hangi yanıtın daha iyi olduğunu seçer
 3. Yapay zeka öğrenir: "Tamam, daha çok A Yanıtı gibi yazmalıyım"
@@ -202,53 +204,53 @@ Bu yüzden yapay zeka:
 - Tartışmalı ifadelerden kaçınıyor
 
 <Callout type="tip" title="Bu Sizin İçin Neden Önemli">
-Bu üç adımı bilmek, yapay zeka davranışını anlamanıza yardımcı olur. Yapay zeka bir isteği reddettiğinde, bu ince ayardır. Yapay zeka ekstra kibar olduğunda, bu RLHF'dir. Yapay zeka rastgele gerçekler bildiğinde, bu ön eğitimdir.
+Bu üç adımı bilmek, yapay zeka davranışını anlamanıza yardımcı olur. Yapay zeka bir isteği reddettiğinde, bu ince ayarın eseridir. Fazlasıyla kibar davrandığında RLHF'nin, rastgele bilgileri bildiğinde ise ön eğitimin.
 </Callout>
 
-## Bu Promptlarınız İçin Ne Anlama Geliyor
+## Bunun Promptlarınıza Yansıması
 
-Artık yapay zekanın nasıl çalıştığını anladığınıza göre, işte bu bilgiyi nasıl kullanacağınız:
+Artık yapay zekanın nasıl çalıştığını bildiğinize göre, bu bilgiyi nasıl kullanabileceğinize bakalım:
 
 ### 1. Net ve Spesifik Olun
 
-Yapay zeka kelimelerinize göre sonra ne geleceğini tahmin eder. Belirsiz promptlar belirsiz yanıtlara yol açar. Spesifik promptlar spesifik sonuçlar alır.
+Yapay zeka kelimelerinize göre sonra ne geleceğini tahmin eder. Belirsiz promptlar belirsiz yanıtlara yol açar. Spesifik promptlar ise spesifik sonuçlar getirir.
 
 <Compare 
   before={{ label: "Belirsiz", content: "Bana köpekler hakkında bilgi ver" }}
-  after={{ label: "Spesifik", content: "Apartmanlar için iyi olan 5 köpek ırkını, her biri için tek cümlelik bir açıklamayla listele" }}
+  after={{ label: "Spesifik", content: "Apartman dairesine uygun 5 köpek ırkını, her biri için tek cümlelik bir açıklamayla listele" }}
 />
 
-<TryIt compact prompt={`Apartmanlar için iyi olan 5 köpek ırkını, her biri için tek cümlelik bir açıklamayla listele.`} />
+<TryIt compact prompt={`Apartman dairesine uygun 5 köpek ırkını, her biri için tek cümlelik bir açıklamayla listele.`} />
 
 ### 2. Bağlam Verin
 
-Yapay zeka siz söylemediğiniz sürece sizin hakkınızda hiçbir şey bilmez. Her sohbet sıfırdan başlar. Yapay zekanın ihtiyaç duyduğu arka plan bilgisini ekleyin.
+Yapay zeka siz söylemediğiniz sürece sizin hakkınızda hiçbir şey bilmez. Bazı uygulamalarda artık bir sohbetten diğerine birkaç ayrıntıyı taşıyan hafıza özellikleri var, ancak bunlar söylediklerinizin yalnızca bir kısmını hatırlar. Yapay zekanın elindeki görev için ihtiyaç duyduğu arka plan bilgisini ekleyin.
 
 <Compare 
   before={{ label: "Eksik Bağlam", content: "Bu iyi bir fiyat mı?" }}
-  after={{ label: "Bağlamla", content: "45.000 km'de 2020 Honda Civic kullanılmış araba alıyorum. Satıcı 500.000 TL istiyor. Türkiye pazarı için bu iyi bir fiyat mı?" }}
+  after={{ label: "Bağlamla", content: "45.000 km'de, 2020 model ikinci el bir Honda Civic alıyorum. Satıcı 500.000 TL istiyor. Türkiye pazarı için bu iyi bir fiyat mı?" }}
 />
 
-<TryIt compact prompt={`45.000 km'de 2020 Honda Civic kullanılmış araba alıyorum. Satıcı 500.000 TL istiyor. Türkiye pazarı için bu iyi bir fiyat mı?`} />
+<TryIt compact prompt={`45.000 km'de, 2020 model ikinci el bir Honda Civic alıyorum. Satıcı 500.000 TL istiyor. Türkiye pazarı için bu iyi bir fiyat mı?`} />
 
-### 3. Yapay Zekayla Çalışın, Karşı Değil
+### 3. Yapay Zekayla Birlikte Çalışın, Ona Karşı Değil
 
-Unutmayın: Yapay zeka yardımcı olmak için eğitildi. Şeyleri yardımcı bir arkadaşa sorduğunuz gibi isteyin.
+Unutmayın: Yapay zeka yardımcı olmak için eğitildi. Bir şey isterken, yardımsever bir arkadaşınızdan ister gibi isteyin.
 
 <Compare 
   before={{ label: "Yapay Zekayla Savaşmak", content: "Muhtemelen reddedeceksin biliyorum, ama..." }}
-  after={{ label: "Birlikte Çalışmak", content: "Bir gizem romanı yazıyorum ve olay örgüsü dönüşümüyle ilgili yardıma ihtiyacım var. Dedektifin kötü adamı keşfetmesinin üç şaşırtıcı yolunu önerebilir misin?" }}
+  after={{ label: "Birlikte Çalışmak", content: "Bir gizem romanı yazıyorum ve beklenmedik bir olay örgüsü kırılması için yardıma ihtiyacım var. Dedektifin kötü adamı keşfetmesinin üç şaşırtıcı yolunu önerebilir misin?" }}
 />
 
-### 4. Önemli Şeyleri Her Zaman İki Kez Kontrol Edin
+### 4. Önemli Konularda Her Zaman Teyit Edin
 
-Yapay zeka yanlış olduğunda bile kendinden emin görünür. Önemli her şey için bilgiyi kendiniz doğrulayın.
+Yapay zeka yanıldığında bile kendinden emin konuşur. Önemli her şey için bilgiyi kendiniz doğrulayın.
 
 <TryIt compact prompt={`İstanbul'un nüfusu ne kadar? Ayrıca, bilgin hangi tarihe kadar güncel?`} />
 
 ### 5. Önemli Şeyleri Öne Koyun
 
-Promptunuz çok uzunsa, en önemli talimatları başa koyun. Yapay zeka ilk gelene daha fazla dikkat eder.
+Promptunuz çok uzunsa en önemli talimatları başa koyun, hatta sonda bir kez daha tekrarlamayı düşünün. Yapay zeka, uzun bir girdinin en çok başına ve sonuna dikkat etme eğilimindedir; ortada kalan ayrıntıları gözden kaçırabilir.
 
 ## Doğru Yapay Zekayı Seçmek
 
@@ -257,11 +259,11 @@ Farklı yapay zeka modelleri farklı şeylerde iyidir:
 <div className="my-4 grid gap-2">
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">Hızlı sorular</span>
-    <span className="text-muted-foreground">GPT-4o veya Claude 3.5 Sonnet gibi daha hızlı modeller</span>
+    <span className="text-muted-foreground">GPT-6 Luna, Claude Haiku 5.5 veya Gemini Flash gibi daha hızlı modeller</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">Zor problemler</span>
-    <span className="text-muted-foreground">GPT-5.2 veya Claude 4.5 Opus gibi daha akıllı modeller</span>
+    <span className="text-muted-foreground">GPT-6 Astra, Claude Fable 5.1 veya Gemini 4 Argon gibi daha akıllı modeller</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">Kod yazmak</span>
@@ -269,7 +271,7 @@ Farklı yapay zeka modelleri farklı şeylerde iyidir:
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">Uzun belgeler</span>
-    <span className="text-muted-foreground">Büyük bağlam pencereli modeller (Claude, Gemini)</span>
+    <span className="text-muted-foreground">Büyük bağlam pencereli modeller (artık birçoğu 1M token işleyebiliyor)</span>
   </div>
   <div className="flex gap-2 p-3 bg-muted/50 rounded-lg">
     <span className="font-semibold min-w-36">Güncel olaylar</span>
@@ -279,24 +281,24 @@ Farklı yapay zeka modelleri farklı şeylerde iyidir:
 
 ## Özet
 
-Yapay zeka dil modelleri metin üzerinde eğitilmiş tahmin makineleridir. Birçok şeyde harikadar, ancak gerçek sınırlamaları var. Yapay zekayı kullanmanın en iyi yolu nasıl çalıştığını anlamak ve güçlü yönlerine oynayan promptlar yazmaktır.
+Yapay zeka dil modelleri metin üzerinde eğitilmiş tahmin makineleridir. Birçok şeyde harikalar, ancak gerçek sınırlamaları da var. Yapay zekayı kullanmanın en iyi yolu, nasıl çalıştığını anlamak ve güçlü yanlarından yararlanan promptlar yazmaktır.
 
 <Quiz 
   question="Yapay zeka neden bazen yanlış bilgi uydurur?"
   options={[
     "Kodda hatalar olduğu için",
-    "Her zaman doğru olan metin değil, iyi görünen metin yazmaya çalıştığı için",
+    "Her zaman doğru olanı değil, kulağa iyi geleni yazmaya çalıştığı için",
     "Yeterli eğitim verisi olmadığı için",
     "İnsanlar kötü promptlar yazdığı için"
   ]}
   correctIndex={1}
-  explanation="Yapay zeka doğru olanı değil, doğru görüneni tahmin etmek için eğitilir. Bir şeyleri arayamaz veya bir şeyin doğru olup olmadığını doğrulayamaz, bu yüzden bazen kendinden emin bir şekilde yanlış şeyler yazar."
+  explanation="Yapay zeka bilgileri kontrol etmek için değil, kulağa doğru geleni tahmin etmek için eğitilir. Web araması gibi bir araca bağlı olmadıkça bir şeyi araştıramaz ya da doğru olup olmadığını teyit edemez; bu yüzden bazen yanlış şeyleri kendinden emin bir şekilde yazar."
 />
 
 <TryIt 
   title="Yapay Zekaya Kendini Sor"
   prompt="Bir yapay zeka olarak nasıl çalıştığını açıkla. Neler yapabilirsin ve sınırlamaların neler?"
-  description="Yapay zekaya kendini açıklamasını isteyin. Tahmin modeli olduğunu nasıl anlattığını ve sınırlarını nasıl kabul ettiğini görün."
+  description="Yapay zekadan kendini açıklamasını isteyin. Tahmin modeli olduğunu nasıl anlattığını ve sınırlarını nasıl kabul ettiğini görün."
 />
 
-Bir sonraki bölümde, iyi bir promptu neyin oluşturduğunu ve harika sonuçlar alan promptları nasıl yazacağımızı öğreneceğiz.
+Bir sonraki bölümde, iyi bir promptu iyi yapan şeyin ne olduğunu ve harika sonuçlar veren promptları nasıl yazacağımızı öğreneceğiz.

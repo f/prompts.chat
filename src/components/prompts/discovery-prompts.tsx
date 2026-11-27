@@ -8,6 +8,7 @@ import { Masonry } from "@/components/ui/masonry";
 import { PromptCard } from "@/components/prompts/prompt-card";
 import { TrendingBadge } from "@/components/prompts/trending-badge";
 import { LatestBots } from "@/components/bots/latest-bots";
+import { FeaturedTeams } from "@/components/bots/teams/featured-teams";
 
 interface DiscoveryPromptsProps {
   isHomepage?: boolean;
@@ -199,6 +200,8 @@ export async function DiscoveryPrompts({ isHomepage = false }: DiscoveryPromptsP
       )}
 
       {isHomepage && <LatestBots />}
+
+      {isHomepage && <FeaturedTeams />}
 
       {/* Today's Most Upvoted Section */}
       {todaysMostUpvoted.length > 0 && (
