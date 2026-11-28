@@ -259911,3 +259911,436 @@ if __name__ == "__main__":
 
 </details>
 
+<details>
+<summary><strong>Employee Turnover Cost Calculator</strong></summary>
+
+## Employee Turnover Cost Calculator
+
+Contributed by [@f](https://github.com/f)
+
+```md
+---
+name: employee-turnover-cost-calculator
+description: Estimates what employee turnover really costs per team: recruiting, interviews, vacancy, ramp-up, onboarding and offboarding from a simple CSV, flags hot spots, and tests whether a retention program pays for itself with savings and break-even scenarios. Stdlib Python.
+---
+
+# Employee Turnover Cost Calculator
+
+You help business managers, founders and HR leads put a credible number on employee turnover. "People keep leaving" rarely wins a budget discussion; "Sales turnover cost us about 150,000 last year, and a 25,000 retention program breaks even if it keeps 1.4 people" does. You turn a few numbers per team into a transparent cost estimate, show which part of the cost dominates, and help decide whether a retention investment is worth it.
+
+The numbers are estimates built from stated assumptions, not accounting facts. You always show the assumptions, round sensibly and invite the user to replace defaults with their own data. You never ask for or handle personal data about individual employees: team-level aggregates are enough.
+
+## Files in this skill
+
+- `scripts/turnover_cost.py` - reads a team CSV and an assumptions JSON, computes cost per leaver (recruiting, interviewing, vacancy, ramp-up, onboarding, offboarding), annual and regrettable cost per team and in total; flags T01-T04 and invalid rows (E01); `--reduce-pct` savings scenario, `--program-cost` break-even for a retention program; `--format text|md|csv|json`; `--self-test` runs 22 checks (Python 3.8+ standard library only)
+- `references/cost-model.md` - every cost component, the formulas, typical ranges and where to get the inputs
+- `references/retention-levers.md` - what usually drives turnover per situation and which retention actions fit, with rough costs
+- `templates/turnover-cost-brief.md` - a one-page brief for leadership
+- `examples/teams.csv` + `examples/assumptions.json` - a fictional 93-person company with six teams
+
+## Workflow
+
+### 1. Gather inputs
+Ask for, per team or role: average headcount over the last 12 months, number of leavers (voluntary and involuntary, or say which), how many were regrettable (people you wanted to keep), average salary, typical time to fill a role (calendar days), months until a new hire is fully productive, and the main hiring channel. Then confirm the assumptions: currency, employer overhead on salary, agency fees or job-ad costs, interview hours per hire, onboarding and offboarding costs, how much work is lost while a seat is empty, and productivity during ramp-up. Use the defaults in `examples/assumptions.json` only when the user has no better number, and say so.
+
+### 2. Run the calculation
+```
+python3 scripts/turnover_cost.py teams.csv --assumptions assumptions.json
+python3 scripts/turnover_cost.py teams.csv --assumptions assumptions.json --reduce-pct 20 --program-cost 25000
+python3 scripts/turnover_cost.py teams.csv --assumptions assumptions.json --format md > turnover.md
+python3 scripts/turnover_cost.py teams.csv --assumptions assumptions.json --format csv
+python3 scripts/turnover_cost.py --self-test
+```
+Exit code 0 = no flags, 1 = flags or invalid rows, 2 = unreadable input or missing columns.
+
+| Code | Meaning |
+|---|---|
+| T01 | turnover rate at or above `high_turnover_pct` (default 25%) |
+| T02 | more than half of the team's leavers (2 or more) were regrettable |
+| T03 | cost per leaver at or above 50% of annual salary |
+| T04 | time to fill at or above `slow_fill_days` (default 60) |
+| E01 | invalid row (non-numeric, regrettable > leavers, unknown hiring channel, implausible numbers) |
+
+### 3. Interpret
+- Look at both the total and the mix: high-volume, low-cost turnover (warehouse, support) and low-volume, high-cost turnover (engineering, sales) need different responses.
+- Check which component dominates (`By part`): ramp-up and vacancy usually outweigh recruiting fees, which is why "cheaper recruiting" rarely fixes the problem.
+- Regrettable cost is the number to act on; some turnover is healthy.
+- Run a sensitivity check: re-run with ramp-up loss and vacancy cost 20-30% lower; if the conclusion still holds, it is robust.
+
+### 4. Decide on retention actions
+Use `references/retention-levers.md` to match the likely drivers (pay, manager quality, workload, growth, schedule) to actions, estimate their yearly cost, and use `--program-cost` to show the break-even reduction. Prefer a pilot in the team with the highest regrettable cost and a measurable target (for example "cut Sales leavers from 4 to 2 within 12 months").
+
+### 5. Report
+Fill `templates/turnover-cost-brief.md`: the headline number with assumptions, the team table, the top two hot spots, the proposed action with its break-even, and how to measure progress.
+
+## Example
+```
+python3 scripts/turnover_cost.py examples/teams.csv --assumptions examples/assumptions.json --reduce-pct 20 --program-cost 25000
+```
+Result: about EUR 540k per year for 31 leavers (33.3% turnover, avg EUR 17.4k per leaver), EUR 298k of it regrettable. Engineering (EUR 184k, 59% of salary per leaver, slow to fill) and Sales (EUR 153k, 40% turnover) are the hot spots; a EUR 25k program breaks even at 4.6% less turnover, and a 20% reduction would save about EUR 108k.
+
+## Limits
+- Estimates only; hidden costs (lost customers, team morale, knowledge loss) are not included and usually make the real cost higher.
+- Team averages hide individual differences; do not use the output to judge individual employees.
+- Vacancy and ramp-up assumptions drive most of the result: agree them with finance before presenting.
+
+FILE:references/cost-model.md
+# Turnover cost model
+
+All amounts per leaver unless stated. The script uses exactly these formulas.
+
+| Component | Formula | Typical range | Where to get the input |
+|---|---|---|---|
+| Recruiting | agency fee % x salary, or fixed channel cost (job ads, referral bonus) | agency 15-30% of salary; job boards 300-2,000; referral bonus 500-3,000 | finance, recruiting invoices |
+| Interviewing | interview hours per hire x loaded hourly cost of interviewers | 8-25 hours | hiring managers, ATS stages |
+| Vacancy | working days empty (calendar days x 5/7) x daily loaded pay x vacancy cost % | 30-80% of daily pay, depending on how much work is covered by others or overtime | time-to-fill from ATS; ask managers how much work is really lost |
+| Ramp-up | ramp months / 12 x loaded salary x productivity loss % | 1-2 months for hourly roles, 3-6 for skilled roles, 6-9 for senior or sales roles with long cycles; average loss 40-60% over the ramp | managers |
+| Onboarding | fixed: equipment, licences, training, buddy time, admin | 500-4,000 | IT, HR |
+| Offboarding | fixed: exit admin, access removal, handover time, final pay processing | 200-1,000 | HR, IT |
+
+Loaded salary = salary x (1 + employer overhead %). Overhead covers employer taxes, benefits and pension contributions (often 15-35%).
+Daily loaded pay = loaded salary / working days per year (around 220).
+Turnover rate = leavers in 12 months / average headcount over the same months.
+
+## Cross-check
+Total cost per leaver usually lands between 20% and 60% of annual salary for most roles, and can exceed 100% for senior, specialist or quota-carrying roles once lost revenue is included. If the result is far outside that range, check the inputs (monthly vs annual salary, days vs months).
+
+## What is not included
+- Lost revenue or customers (sales roles, account managers): add separately if the business can estimate it.
+- Overtime and burnout of remaining colleagues, and knock-on resignations.
+- Knowledge loss and mistakes made by new hires.
+- Severance and legal costs for involuntary exits.
+Mention these as reasons the real cost is likely higher, without inventing numbers.
+
+## Data hygiene
+- Use team-level aggregates; never collect names or reasons for individual leavers in this calculation.
+- Count interns, fixed-term contracts that ended as planned, and internal transfers separately or exclude them.
+- Twelve months is the standard window; for small teams (under 10 people) one leaver swings the rate a lot, so look at two or three years.
+
+FILE:references/retention-levers.md
+# Retention levers
+
+Match the likely driver to an action. Ask exit and stay interview themes (aggregated) before choosing.
+
+| Likely driver | Signals | Actions | Rough yearly cost |
+|---|---|---|---|
+| Pay below market | offers from competitors, leavers get 15%+ raises | market pay review for the at-risk roles, clear salary bands, retention bonus for critical people | 3-8% of the affected payroll |
+| Manager relationship | turnover concentrated under one or two managers | manager training, regular 1:1s, skip-level conversations, coaching | 1,000-3,000 per manager |
+| Workload and burnout | overtime, sick leave rising, leavers mention stress | hire ahead of demand, cut low-value work, protect focus time, fair on-call rotas | varies; often cheaper than one leaver |
+| No growth path | good people leave after 18-30 months | career ladders, internal mobility, learning budget, stretch projects | 500-2,000 per person |
+| Schedule and flexibility | hourly roles, parents, long commutes | predictable shifts published early, shift swapping, hybrid days where possible | low |
+| Bad hiring fit | many leavers in the first 90 days | clearer job previews, structured interviews, better onboarding and a buddy | 500-1,500 per hire |
+| Recognition | leavers mention feeling invisible | regular, specific recognition; transparent promotion criteria | low |
+
+## Running a pilot
+1. Pick the team with the highest regrettable cost.
+2. Choose one or two actions that fit its driver.
+3. Set a target in leavers (not only percent) and a review date (6 and 12 months).
+4. Compare with a similar team that did not get the action, if possible.
+5. Re-run the calculator with the new numbers and report the saving against the program cost.
+
+## Break-even reasoning
+Program break-even (leavers avoided) = program cost / average cost per leaver. If keeping one or two people pays for the program, it is usually worth piloting even with uncertain assumptions.
+
+FILE:templates/turnover-cost-brief.md
+# Turnover cost brief: {company or department}, {period}
+
+## Headline
+Turnover cost us an estimated **{currency} {annual_cost}** in the last 12 months: {leavers} leavers, {turnover_pct}% turnover, about {currency} {avg_cost_per_leaver} per leaver. **{currency} {regrettable_cost}** of it came from people we wanted to keep.
+
+## Where it hurts
+| Team | Leavers | Turnover | Cost per leaver | Annual cost | Why |
+|---|---|---|---|---|---|
+| {team} | {n} | {pct}% | {cost} ({pct_salary}% of salary) | {annual} | {flags in plain words} |
+
+Biggest cost component: {ramp-up / vacancy / recruiting} ({share}% of the total).
+
+## Proposal
+{Action, team, owner}. Cost: {currency} {program_cost} per year. It breaks even if it prevents **{break_even_leavers} leavers** ({break_even_pct}% less turnover). A {reduce_pct}% reduction would save about {currency} {annual_saving} ({net} net).
+
+## How we will measure it
+- Leavers and regrettable leavers per quarter in {team}
+- Time to fill and 90-day attrition of new hires
+- Review on {date}; stop or scale based on the result
+
+## Assumptions
+{overhead %, channel costs, interview hours, vacancy %, ramp months and loss %, onboarding/offboarding costs}. Not included: lost revenue, overtime, knowledge loss, severance, so the real cost is likely higher.
+
+FILE:examples/teams.csv
+team,role,avg_headcount,leavers_12m,regrettable_leavers,avg_salary,time_to_fill_days,ramp_months,hiring_channel
+Customer Support,Support Agent,24,9,4,38000,35,2,job_board
+Engineering,Software Engineer,18,4,3,78000,62,4,agency
+Sales,Account Executive,10,4,2,62000,48,5,agency
+Warehouse,Picker and Packer,30,13,3,31000,14,1,job_board
+Finance,Accountant,5,1,1,58000,55,3,referral
+Marketing,Content Marketer,6,0,0,52000,40,3,job_board
+
+FILE:examples/assumptions.json
+{
+  "currency": "EUR",
+  "working_days_per_year": 220,
+  "employer_overhead_pct": 22,
+  "hiring_channels": {
+    "agency": {"fee_pct_of_salary": 20, "fixed_cost": 0},
+    "job_board": {"fee_pct_of_salary": 0, "fixed_cost": 900},
+    "referral": {"fee_pct_of_salary": 0, "fixed_cost": 1500}
+  },
+  "interview_hours_per_hire": 14,
+  "interviewer_hourly_cost": 55,
+  "onboarding_cost_per_hire": 1800,
+  "offboarding_cost_per_leaver": 400,
+  "vacancy_cost_pct_of_daily_pay": 60,
+  "ramp_productivity_loss_pct": 50,
+  "high_turnover_pct": 25,
+  "slow_fill_days": 60
+}
+
+FILE:scripts/turnover_cost.py
+#!/usr/bin/env python3
+"""turnover_cost.py - estimate what employee turnover costs a business, per team and in total (standard library only).
+
+Input: a CSV with one row per team or role (see examples/teams.csv) and an assumptions JSON (examples/assumptions.json).
+Per leaver the cost is the sum of:
+  recruiting   agency fee (% of salary) or fixed channel cost (job ads, referral bonus)
+  interviewing interview hours x interviewer hourly cost
+  vacancy      days the seat is empty (time_to_fill_days converted to working days) x daily pay x vacancy_cost_pct
+  ramp-up      ramp_months / 12 x loaded salary x ramp_productivity_loss_pct
+  onboarding   fixed onboarding cost (equipment, training, admin)
+  offboarding  fixed offboarding cost (exit admin, access removal, handover)
+Loaded salary = avg_salary x (1 + employer_overhead_pct / 100).
+Flags: T01 turnover rate >= high_turnover_pct, T02 more than half of 2+ leavers were regrettable,
+       T03 cost per leaver >= 50% of salary, T04 time to fill >= slow_fill_days, E01 invalid row.
+Scenarios: --reduce-pct P shows the saving if turnover fell by P percent; --program-cost C (per year) shows
+whether a retention program pays for itself and the break-even reduction.
+
+Usage:
+  python3 turnover_cost.py teams.csv --assumptions assumptions.json [--format text|md|csv|json]
+                           [--reduce-pct 20] [--program-cost 15000]
+  python3 turnover_cost.py --self-test
+Exit code: 0 = no flags, 1 = flags present (T01-T04) or invalid rows, 2 = bad input file.
+"""
+import argparse, csv, io, json, sys
+
+REQUIRED = ["team", "role", "avg_headcount", "leavers_12m", "regrettable_leavers", "avg_salary", "time_to_fill_days", "ramp_months", "hiring_channel"]
+DEFAULTS = {"currency": "EUR", "working_days_per_year": 220, "employer_overhead_pct": 20, "hiring_channels": {},
+            "interview_hours_per_hire": 12, "interviewer_hourly_cost": 50, "onboarding_cost_per_hire": 1500,
+            "offboarding_cost_per_leaver": 300, "vacancy_cost_pct_of_daily_pay": 50, "ramp_productivity_loss_pct": 50,
+            "high_turnover_pct": 25, "slow_fill_days": 60}
+
+
+def load_assumptions(path):
+    a = dict(DEFAULTS)
+    if path:
+        with open(path, encoding="utf-8") as fh:
+            a.update(json.load(fh))
+    return a
+
+
+def parse_rows(text):
+    reader = csv.DictReader(io.StringIO(text))
+    missing = [c for c in REQUIRED if c not in (reader.fieldnames or [])]
+    if missing:
+        raise ValueError("missing columns: " + ", ".join(missing))
+    return list(reader)
+
+
+def money(x):
+    return round(x + 0.0, 2)
+
+
+def cost_row(row, a):
+    """Return the cost breakdown and flags for one CSV row, or raise ValueError for invalid data."""
+    try:
+        hc = float(row["avg_headcount"]); leavers = int(row["leavers_12m"]); regret = int(row["regrettable_leavers"])
+        salary = float(row["avg_salary"]); fill = float(row["time_to_fill_days"]); ramp = float(row["ramp_months"])
+    except (TypeError, ValueError):
+        raise ValueError("non-numeric value")
+    if hc <= 0 or salary <= 0 or leavers < 0 or regret < 0 or fill < 0 or ramp < 0:
+        raise ValueError("values must be positive (headcount and salary > 0)")
+    if regret > leavers:
+        raise ValueError("regrettable_leavers > leavers_12m")
+    if leavers > hc * 3:
+        raise ValueError("leavers_12m more than 3x headcount - check the data")
+    channel = (row.get("hiring_channel") or "").strip()
+    ch = a["hiring_channels"].get(channel)
+    if ch is None:
+        raise ValueError("unknown hiring_channel %r" % channel)
+    loaded = salary * (1 + a["employer_overhead_pct"] / 100.0)
+    daily = loaded / a["working_days_per_year"]
+    working_days_vacant = fill * 5.0 / 7.0
+    parts = {
+        "recruiting": salary * ch.get("fee_pct_of_salary", 0) / 100.0 + ch.get("fixed_cost", 0),
+        "interviewing": a["interview_hours_per_hire"] * a["interviewer_hourly_cost"],
+        "vacancy": working_days_vacant * daily * a["vacancy_cost_pct_of_daily_pay"] / 100.0,
+        "ramp_up": ramp / 12.0 * loaded * a["ramp_productivity_loss_pct"] / 100.0,
+        "onboarding": float(a["onboarding_cost_per_hire"]),
+        "offboarding": float(a["offboarding_cost_per_leaver"]),
+    }
+    per_leaver = sum(parts.values())
+    rate = 100.0 * leavers / hc
+    flags = []
+    if rate >= a["high_turnover_pct"]:
+        flags.append("T01 turnover %.1f%% >= %s%%" % (rate, a["high_turnover_pct"]))
+    if leavers >= 2 and regret / leavers > 0.5:
+        flags.append("T02 %d of %d leavers regrettable" % (regret, leavers))
+    if per_leaver >= 0.5 * salary:
+        flags.append("T03 cost per leaver %.0f%% of salary" % (100 * per_leaver / salary))
+    if fill >= a["slow_fill_days"]:
+        flags.append("T04 time to fill %g days >= %s" % (fill, a["slow_fill_days"]))
+    return {"team": row["team"], "role": row["role"], "avg_headcount": hc, "leavers_12m": leavers, "regrettable_leavers": regret,
+            "turnover_pct": round(rate, 1), "avg_salary": salary, "cost_per_leaver": money(per_leaver),
+            "cost_per_leaver_pct_salary": round(100 * per_leaver / salary, 1),
+            "breakdown_per_leaver": {k: money(v) for k, v in parts.items()},
+            "annual_cost": money(per_leaver * leavers), "regrettable_cost": money(per_leaver * regret), "flags": flags}
+
+
+def analyze(rows, a, reduce_pct=None, program_cost=None):
+    teams, errors = [], []
+    for i, row in enumerate(rows, start=2):
+        try:
+            teams.append(cost_row(row, a))
+        except ValueError as e:
+            errors.append({"line": i, "team": row.get("team", ""), "error": "E01 " + str(e)})
+    total = sum(t["annual_cost"] for t in teams)
+    leavers = sum(t["leavers_12m"] for t in teams)
+    hc = sum(t["avg_headcount"] for t in teams)
+    summary = {"currency": a["currency"], "teams": len(teams), "avg_headcount": hc, "leavers_12m": leavers,
+               "turnover_pct": round(100.0 * leavers / hc, 1) if hc else 0.0, "annual_cost": money(total),
+               "regrettable_cost": money(sum(t["regrettable_cost"] for t in teams)),
+               "avg_cost_per_leaver": money(total / leavers) if leavers else 0.0,
+               "cost_by_part": {k: money(sum(t["breakdown_per_leaver"][k] * t["leavers_12m"] for t in teams)) for k in ["recruiting", "interviewing", "vacancy", "ramp_up", "onboarding", "offboarding"]}}
+    if reduce_pct is not None:
+        summary["scenario"] = {"reduce_pct": reduce_pct, "leavers_avoided": round(leavers * reduce_pct / 100.0, 1), "annual_saving": money(total * reduce_pct / 100.0)}
+    if program_cost is not None:
+        be = 100.0 * program_cost / total if total else None
+        summary["program"] = {"program_cost": money(program_cost), "break_even_reduce_pct": round(be, 1) if be is not None else None,
+                              "break_even_leavers_avoided": round(program_cost / summary["avg_cost_per_leaver"], 1) if leavers else None}
+        if reduce_pct is not None:
+            summary["program"]["net_saving_at_reduce_pct"] = money(total * reduce_pct / 100.0 - program_cost)
+    teams.sort(key=lambda t: -t["annual_cost"])
+    return {"summary": summary, "teams": teams, "errors": errors}
+
+
+def fmt_money(x, cur):
+    return "%s %s" % (cur, "{:,.0f}".format(x))
+
+
+def render(res, fmt):
+    s, cur = res["summary"], res["summary"]["currency"]
+    if fmt == "json":
+        return json.dumps(res, indent=2)
+    if fmt == "csv":
+        out = io.StringIO(); w = csv.writer(out, lineterminator="\n")
+        w.writerow(["team", "role", "avg_headcount", "leavers_12m", "turnover_pct", "cost_per_leaver", "cost_per_leaver_pct_salary", "annual_cost", "regrettable_cost", "flags"])
+        for t in res["teams"]:
+            w.writerow([t["team"], t["role"], t["avg_headcount"], t["leavers_12m"], t["turnover_pct"], t["cost_per_leaver"], t["cost_per_leaver_pct_salary"], t["annual_cost"], t["regrettable_cost"], "; ".join(t["flags"])])
+        return out.getvalue().rstrip("\n")
+    L = []
+    md = fmt == "md"
+    L.append(("## " if md else "") + "Turnover cost: %s per year (%d leavers, %.1f%% turnover, avg %s per leaver)" % (fmt_money(s["annual_cost"], cur), s["leavers_12m"], s["turnover_pct"], fmt_money(s["avg_cost_per_leaver"], cur)))
+    L.append(("- " if md else "  ") + "Regrettable leavers cost: %s" % fmt_money(s["regrettable_cost"], cur))
+    L.append(("- " if md else "  ") + "By part: " + ", ".join("%s %s" % (k, fmt_money(v, cur)) for k, v in s["cost_by_part"].items()))
+    if "scenario" in s:
+        sc = s["scenario"]
+        L.append(("- " if md else "  ") + "Scenario: %g%% less turnover avoids %.1f leavers and saves %s per year" % (sc["reduce_pct"], sc["leavers_avoided"], fmt_money(sc["annual_saving"], cur)))
+    if "program" in s:
+        p = s["program"]
+        line = "Retention program %s/year breaks even at %.1f%% less turnover (%.1f leavers avoided)" % (fmt_money(p["program_cost"], cur), p["break_even_reduce_pct"], p["break_even_leavers_avoided"])
+        if "net_saving_at_reduce_pct" in p:
+            line += "; net %s at the scenario" % fmt_money(p["net_saving_at_reduce_pct"], cur)
+        L.append(("- " if md else "  ") + line)
+    L.append("")
+    if md:
+        L.append("| Team | Role | Headcount | Leavers | Turnover | Cost per leaver | % of salary | Annual cost | Flags |")
+        L.append("|---|---|---|---|---|---|---|---|---|")
+        for t in res["teams"]:
+            L.append("| %s | %s | %g | %d | %.1f%% | %s | %.1f%% | %s | %s |" % (t["team"], t["role"], t["avg_headcount"], t["leavers_12m"], t["turnover_pct"], fmt_money(t["cost_per_leaver"], cur), t["cost_per_leaver_pct_salary"], fmt_money(t["annual_cost"], cur), "<br>".join(t["flags"]) or "-"))
+    else:
+        for t in res["teams"]:
+            L.append("%-18s %-20s hc %-5g leavers %-3d turnover %5.1f%%  per leaver %-12s (%5.1f%% of salary)  annual %s" % (t["team"], t["role"], t["avg_headcount"], t["leavers_12m"], t["turnover_pct"], fmt_money(t["cost_per_leaver"], cur), t["cost_per_leaver_pct_salary"], fmt_money(t["annual_cost"], cur)))
+            for f in t["flags"]:
+                L.append("    " + f)
+    for e in res["errors"]:
+        L.append(("- " if md else "") + "line %d %s: %s" % (e["line"], e["team"], e["error"]))
+    return "\n".join(L)
+
+
+def self_test():
+    T = []
+    def check(name, cond): T.append((name, bool(cond)))
+    a = dict(DEFAULTS); a.update({"employer_overhead_pct": 0, "working_days_per_year": 200, "hiring_channels": {"fixed": {"fixed_cost": 1000}, "agency": {"fee_pct_of_salary": 20}},
+              "interview_hours_per_hire": 10, "interviewer_hourly_cost": 50, "onboarding_cost_per_hire": 1000, "offboarding_cost_per_leaver": 500,
+              "vacancy_cost_pct_of_daily_pay": 100, "ramp_productivity_loss_pct": 50, "high_turnover_pct": 25, "slow_fill_days": 60})
+    base = {"team": "T", "role": "R", "avg_headcount": "10", "leavers_12m": "2", "regrettable_leavers": "1", "avg_salary": "40000", "time_to_fill_days": "28", "ramp_months": "3", "hiring_channel": "fixed"}
+    r = cost_row(base, a)
+    b = r["breakdown_per_leaver"]
+    check("fixed channel recruiting cost", b["recruiting"] == 1000)
+    check("interview cost hours x rate", b["interviewing"] == 500)
+    check("vacancy: 28 calendar days = 20 working days x 200/day", b["vacancy"] == 4000)
+    check("ramp: 3/12 x 40000 x 50%", b["ramp_up"] == 5000)
+    check("cost per leaver sums parts", r["cost_per_leaver"] == 12000)
+    check("annual cost = per leaver x leavers", r["annual_cost"] == 24000)
+    check("turnover rate 20%", r["turnover_pct"] == 20.0)
+    check("no flags for moderate row", r["flags"] == [])
+    r2 = cost_row(dict(base, hiring_channel="agency", ramp_months="4"), a)
+    check("agency fee 20% of salary", r2["breakdown_per_leaver"]["recruiting"] == 8000)
+    check("T03 when cost >= 50% of salary", any(f.startswith("T03") for f in r2["flags"]))
+    a2 = dict(a, employer_overhead_pct=25)
+    check("overhead loads ramp cost", cost_row(base, a2)["breakdown_per_leaver"]["ramp_up"] == 6250)
+    r3 = cost_row(dict(base, leavers_12m="3", regrettable_leavers="2", time_to_fill_days="70"), a)
+    check("T01 at 30% turnover", any(f.startswith("T01") for f in r3["flags"]))
+    check("T02 when most leavers regrettable", any(f.startswith("T02") for f in r3["flags"]))
+    check("no T02 for a single regrettable leaver", not any(f.startswith("T02") for f in cost_row(dict(base, leavers_12m="1"), a)["flags"]))
+    check("T04 slow fill", any(f.startswith("T04") for f in r3["flags"]))
+    res = analyze([base, dict(base, regrettable_leavers="5")], a)
+    check("invalid regrettable > leavers gives E01", res["errors"] and res["errors"][0]["line"] == 3)
+    res = analyze([dict(base, hiring_channel="magic")], a)
+    check("unknown channel gives E01", "unknown hiring_channel" in res["errors"][0]["error"])
+    res = analyze([base, dict(base, team="U", leavers_12m="0", regrettable_leavers="0")], a, reduce_pct=25, program_cost=6000)
+    check("total over teams", res["summary"]["annual_cost"] == 24000)
+    check("scenario saving 25%", res["summary"]["scenario"]["annual_saving"] == 6000)
+    check("program break-even 25% and 0.5 leavers", res["summary"]["program"]["break_even_reduce_pct"] == 25.0 and res["summary"]["program"]["break_even_leavers_avoided"] == 0.5)
+    check("net saving 0 at break-even", res["summary"]["program"]["net_saving_at_reduce_pct"] == 0)
+    try:
+        parse_rows("team,role\nA,B\n"); check("missing columns rejected", False)
+    except ValueError:
+        check("missing columns rejected", True)
+    for n, ok in T:
+        print(("PASS  " if ok else "FAIL  ") + n)
+    p = sum(ok for _, ok in T)
+    print("%d/%d checks passed" % (p, len(T)))
+    return 0 if p == len(T) else 1
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description="Employee turnover cost calculator (stdlib only).")
+    ap.add_argument("csv", nargs="?")
+    ap.add_argument("--assumptions")
+    ap.add_argument("--format", choices=["text", "md", "csv", "json"], default="text")
+    ap.add_argument("--reduce-pct", type=float)
+    ap.add_argument("--program-cost", type=float)
+    ap.add_argument("--self-test", action="store_true")
+    o = ap.parse_args(argv)
+    if o.self_test:
+        return self_test()
+    if not o.csv:
+        ap.error("give a CSV file or --self-test")
+    try:
+        a = load_assumptions(o.assumptions)
+        with open(o.csv, encoding="utf-8-sig") as fh:
+            rows = parse_rows(fh.read())
+    except (OSError, ValueError) as e:
+        print("input error: %s" % e, file=sys.stderr)
+        return 2
+    res = analyze(rows, a, o.reduce_pct, o.program_cost)
+    print(render(res, o.format))
+    return 1 if res["errors"] or any(t["flags"] for t in res["teams"]) else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+
+```
+
+</details>
+
