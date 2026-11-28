@@ -260524,3 +260524,2179 @@ A premium purple smartphone floating in a purple studio. The phone smoothly sepa
 
 </details>
 
+<details>
+<summary><strong>Polyrepo Tax</strong></summary>
+
+## Polyrepo Tax
+
+Contributed by [@santoshyadavdev](https://github.com/santoshyadavdev)
+
+```md
+---
+name: polyrepo-tax
+description: Use when a user wants to know what their polyrepo setup costs - bugs from version drift and cross-repo changes, developer and CI time spent on internal dependency bumps, releases and duplicated fixes - converted to money, or wants a business case and migration plan for moving several repositories into a monorepo. Read-only; analyzes git history and writes Markdown and JSON reports.
+---
+
+# Polyrepo Tax
+
+Measure what splitting code across repositories costs an organization, from the
+repositories' own git history: bugs attributable to repo boundaries, developer
+hours and CI minutes spent moving code between repos, the equivalent money, and
+a migration plan for the repos that would actually benefit.
+
+Prerequisites: Node ≥ 22.5 and git. Optional: an authenticated `gh` CLI for real CI minutes.
+`$S` is this skill's directory (the one holding this file). The work dir is `$W` = `$(node -p 'require("os").tmpdir()')/polyrepo-tax`.
+
+## Rules
+
+- **Read-only.** Never push, open PRs, edit files or run builds in the analysed repos. Allowed writes: clones and config under `$W`, and the reports (`polyrepo-tax-report.{md,json,html}`, `migration-plan.md`) (default `${tmpdir}/polyrepo-tax-reports`, or a user-given dir).
+- Allowed commands: `git clone --bare` / `git fetch` into `$W`, read-only `git` (`log`, `show`, `ls-tree`, `for-each-ref`, `rev-parse`), `node $S/scripts/analyze.mjs`, `node $S/scripts/render-html.mjs`, `node $S/scripts/fetch-ci.mjs` (only `gh api` GETs), and `gh repo list` to discover repos.
+- **Estimates, not invoices.** Every number must trace to commits or to a stated assumption. Never invent counts, rates, incidents or CI minutes. Use the user's numbers when given; otherwise use the defaults and label them as defaults.
+- **Attribution, not blame.** Bugs are "attributable to repo boundaries" with a confidence level, never "caused by" a person. Do not name individual authors in the summary.
+- **Honest recommendation.** If the measured tax is small, coupling is low or payback is longer than the user's horizon, say that a monorepo is not worth it (or only for one cluster). Never inflate assumptions to reach a target.
+- Use only the bug categories defined in [references/signals.md](references/signals.md).
+
+## Workflow
+
+1. **Collect inputs** — follow [references/inputs.md](references/inputs.md): get the repo list, the window, internal package scopes, the loaded developer rate and the CI price. Clone the repos with full history into `$W/repos` and write `$W/polyrepo-tax.config.json`.
+2. **CI minutes (optional)** — if the repos are on GitHub and `gh auth status` succeeds, run `fetch-ci.mjs` as described in inputs.md. Otherwise skip it: the analyzer uses `ciMinutesPerCommit` and marks CI as `assumed`.
+3. **Analyze** — `node "$S/scripts/analyze.mjs" --config "$W/polyrepo-tax.config.json" --out <report dir>`. Signal definitions are in [references/signals.md](references/signals.md); the cost formulas are in [references/cost-model.md](references/cost-model.md).
+4. **Review** — read the high- and medium-confidence bugs in the JSON report. For each one that the commit evidence does not support (for example `git show <sha>` shows an unrelated change), add the full SHA to `excludeCommits` in `$W/overrides.json` and rerun step 3 with `"overrides": "overrides.json"` in the config. Tell the user how many you excluded and why.
+5. **Migration plan** — follow [references/migration.md](references/migration.md) to turn the report's `migration` section into a phased plan. Write it to `migration-plan.md` in the report dir, append it to the Markdown report, and run `node "$S/scripts/render-html.mjs" <report dir>/polyrepo-tax-report.json` so the HTML report includes it.
+6. **Present** — follow [references/report-format.md](references/report-format.md): where the reports are, the headline numbers as a range, the top bugs with evidence, the assumptions that drive most of the cost, and the recommendation.
+
+## Tracking
+
+Create a todo per workflow step and mark each done when its output exists.
+FILE:references/cost-model.md
+# Cost model
+
+`cost = developer hours × developerHourly + CI minutes × ciPerMinute`, computed per cost driver, then annualized as `cost × 365 / window days`.
+
+## Assumptions
+
+All are overridable through `assumptions` in the config. The report prints the values it used.
+
+| Name | Default | Used for |
+|---|---:|---|
+| `bumpHumanHours` | 0.5 | Each internal bump by a person: open, review, merge, babysit CI. |
+| `bumpBotHours` | 0.2 | Each internal bump by a bot: review and merge. |
+| `releaseHours` | 0.5 | Each internal release consumed by a sibling repo, except `publicPackages`. |
+| `coordinationHoursPerExtraRepo` | 2 | Each extra repo in a coordinated change: sequencing PRs, waiting on releases, cross-repo review. |
+| `duplicateChangeHoursPerCopy` | 1 | Each extra copy of a repeated maintenance change or duplicated fix (`bumpBotHours` instead when every copy is by a bot). |
+| `bugHours` | 8 | Each bug: triage, fix, review, release, bump. Duplicated fixes add `duplicateChangeHoursPerCopy` per extra repo. |
+| `ciMinutesPerCommit` | 15 | CI minutes per landed commit when a repo has no CI data. With CI data: `totalMinutes ÷ commits in window`. |
+| `bumpFixWindowDays` | 7 | `post-bump-fix` window. |
+| `groupWindowDays` | 14 | Max spread of one cross-repo group. |
+| `similarity` | 0.75 | Subject similarity threshold. |
+| `migrationDaysPerRepo` | 3 | One-time import + CI + ownership work per migrated repo. |
+| `migrationDaysPerConflict` | 0.5 | One-time alignment per external dependency with conflicting majors. |
+| `monorepoToolingMonthly` | 0 | Ongoing monorepo cost (remote cache, larger runners), subtracted before payback. |
+
+If the user has better numbers (for example "a production incident costs us 20 hours on average"), use them and say so.
+
+## CI minutes per driver
+
+Each driver's commits (bump commits, release commits, every commit in a bug, each extra-repo commit in a group) × that repo's CI minutes per commit. This treats an overhead commit as costing as much CI as an average landed change in that repo, including its PR runs.
+
+## Scenarios
+
+| Scenario | Bugs included |
+|---|---|
+| `low` | high confidence only |
+| `expected` | high + medium |
+| `high` | high + medium + low |
+
+Non-bug drivers are identical across scenarios. Present `low`–`high` as the range, `expected` as the headline.
+
+## Monorepo savings
+
+Share of each driver a monorepo with workspace dependencies (`workspace:*`), affected-only CI and atomic commits removes:
+
+| Driver | Removed | Reason |
+|---|---:|---|
+| Internal bumps, internal releases | 100% | Consumers build against source; no publish/bump cycle. |
+| Repeated tooling changes, duplicated fixes, fix propagation | 100% | One config and one copy of the code. |
+| Coordinated changes | 75% | One atomic PR; review across teams still costs time. |
+| Dependency regressions, post-bump fixes | 90% | The producer PR runs consumer tests; some breaks still slip past tests. |
+| Cross-repo fixes | 50% | Atomic fix, but the bug can still happen. |
+
+Payback months = one-time migration cost ÷ (annual savings ÷ 12 − `monorepoToolingMonthly`). Both sides cover only the repos that would move (coupled clusters):
+
+- Savings count an event only when its repos are all in scope: bumps and releases in migrated repos of packages produced by migrated repos, bugs whose repos all move, and the in-scope part of a cross-repo group with at least two in-scope repos. Cost per driver still covers every analysed repo.
+- One-time cost = (`migrationDaysPerRepo` × migrated repos + `migrationDaysPerConflict` × external conflicts among migrated repos) × 8 × `developerHourly`.
+
+Isolated repos are excluded from migration cost, savings and the recommendation.
+
+The model does not count costs that are real but hard to measure from git: onboarding to N toolchains, context switching, slower discovery of shared code, and security patches applied N times (unless they show up as repeated changes). Mention them qualitatively, never as numbers.
+FILE:references/inputs.md
+# Step 1 — Inputs
+
+Ask for anything below that the user has not given, in **one** message. Offer the default for each so they can just say "use defaults".
+
+| Input | Default | Notes |
+|---|---|---|
+| Repositories | — (required) | Git URLs, `owner/repo` slugs, local paths, or "all repos in org X that team Y contributes to". Include the libraries the apps consume, not only the apps. |
+| Window | last 12 months | Shorter windows are noisier; the report annualizes. |
+| Internal package scopes | packages published by the listed repos | e.g. `@acme/`. Add a scope when apps consume internal packages from repos that are not in the list. |
+| Loaded developer cost per hour | 100 USD | Salary + benefits + overhead ÷ working hours. Ask for their number; teams often use 75–150 USD. |
+| CI price per minute | 0.008 USD | GitHub-hosted 2-core Linux list price at the time of writing. Ask for theirs: larger runners, macOS, self-hosted and plan discounts all differ. |
+| Currency | USD | Set `rates.currency`; the report prints it. |
+| Packages also used outside these repos | none | Packages published for other teams or open source keep releasing after a migration, so their releases are not costed. Put them in `publicPackages` (or `true` for all). |
+
+To expand "all repos in org X": `gh repo list X --limit 1000 --no-archived --json nameWithOwner,pushedAt`. Show the list and ask which to include. Do not guess team membership.
+
+## Clone
+
+Use bare clones with full history. Shallow clones are reported as a data problem because they hide most history.
+
+```bash
+W="$(node -p 'require("os").tmpdir()')/polyrepo-tax"
+mkdir -p "$W/repos"
+# one per repo; for local paths, skip cloning and use the path directly
+git clone --bare --quiet https://github.com/acme/web-app.git "$W/repos/web-app.git"
+```
+
+If a clone fails (no access, SSO), tell the user and continue with the others; list the missing repos in the final summary.
+
+## Config
+
+Write `$W/polyrepo-tax.config.json`. Paths are relative to the config file.
+
+```json
+{
+  "repos": [
+    { "name": "ui-lib", "path": "repos/ui-lib.git", "github": "acme/ui-lib" },
+    { "name": "web-app", "path": "repos/web-app.git", "github": "acme/web-app" }
+  ],
+  "since": "2025-11-25",
+  "internalScopes": ["@acme/"],
+  "publicPackages": [],
+  "rates": { "developerHourly": 100, "ciPerMinute": 0.008, "currency": "USD" },
+  "assumptions": {},
+  "ci": "ci.json"
+}
+```
+
+Put only overrides the user gave in `assumptions` (see cost-model.md for names). Leave out `"ci"` if step 2 is skipped.
+
+## CI minutes (optional)
+
+Only when `gh auth status` succeeds and repos have a `github` slug:
+
+```bash
+node "$S/scripts/fetch-ci.mjs" --config "$W/polyrepo-tax.config.json" --out "$W/ci.json"
+```
+
+It sums the wall-clock time of every completed GitHub Actions run in the window. The API caps a filtered query at 1000 runs, so it queries one month at a time and splits any range at the cap until each part is complete; if a single day still hits the cap, that repo fails and keeps the assumed CI minutes. It also samples job timings for up to 30 runs per repo (`--sample`) and scales the total by the measured job/wall ratio, which can be below 1 when queueing inflates wall-clock time. It makes only GET requests. A repo that fails keeps the assumed per-commit CI minutes; mention it.
+
+Other CI systems: if the user can export total CI minutes per repo for the window, write `ci.json` by hand as `{ "${repo_name}": { "totalMinutes": 12345 } }`.
+
+FILE:references/migration.md
+# Step 5 — Migration plan
+
+Write the plan from the report's `migration` section. Use only facts from the report and the repos; mark anything else as a suggestion.
+
+## Decide scope first
+
+- **Migrate:** the coupled clusters in `migration.clusters`, heaviest first.
+- **Keep separate:** `migration.isolated`. Say why: no shared packages, no co-changes and no shared bugs in the window.
+- **Don't migrate at all** when expected payback is longer than 24 months, or the user's horizon if they gave one, or every cluster has a weight below 5. Say so plainly, and suggest cheaper fixes for the top cost drivers instead: Renovate grouping and automerge for internal bumps, a shared CI template, contract tests between producer and consumer.
+
+## Why migrate and tool options
+
+The report carries two sections built from a dated snapshot of [monorepo.tools](https://monorepo.tools/) (`scripts/monorepo-tools.json`). Copy them into the plan as they are. Do not add tools, change ratings or give reasons the report does not list.
+
+- **Why migrate** — `migration.whyMigrate`: the polyrepo costs monorepo.tools names (cumbersome code sharing, code duplication, costly cross-repo changes, hard-to-enforce conventions). Each appears only when this report measured evidence for it, with the counts. Present it as monorepo.tools' reasons, backed by this team's numbers.
+- **Tool options** — `migration.toolOptions`: every tool monorepo.tools compares, not just one pick. Show all of them in a table with the rating, the per-category counts, the partial and unsupported counts, fit and whether the team already uses the tool.
+  - **monorepo.tools rating /10** = 10 × the features monorepo.tools marks "natively supported" ÷ the number of compared features. "Implement your own" and "community provided" are counted but not scored. Always call it the monorepo.tools rating, never just "the rating" or a neutral score.
+  - **Sources** — list every source under the table, monorepo.tools first, each with its publisher, retrieval date, role and coverage: monorepo.tools (published by Nx, scored), State of JS 2024 and 2025, and the Thoughtworks Radar (independent, not scored). The report renders this list; keep it when copying the table.
+  - **Fit** is `no` only when monorepo.tools marks polyglot support "not supported" and the repos contain more than JS/TS. Otherwise every tool fits; don't infer more.
+  - State `migration.toolSource`: the URLs, the snapshot date, and that monorepo.tools is made by Nx and accepts corrections by pull request. A feature count isn't a quality score: the team's stack, existing tools and skills matter too. Call those out as considerations, not as rating changes.
+  - **Independent signals (not scored)** — each option carries `independent`, from sources that aren't tool vendors: State of JS 2024 satisfaction (with its 2021 value), State of JS 2025 regular-use counts, and the Thoughtworks Technology Radar ring. They cover only some tools. Show "—" where none applies, never fill a gap, and never fold them into the rating: they measure sentiment, usage or expert opinion, not features. Say that every Radar blip shown is archived (none is on the current edition), and give its date.
+  - If the snapshot is older than about six months, or the user doubts a mark, tell them to check monorepo.tools/compare and update `scripts/monorepo-tools.json`. The same applies to new State of JS editions or Radar volumes. Never patch marks or signals from memory.
+
+## Plan template
+
+Write this to `migration-plan.md` in the report directory, filled in, append it to `polyrepo-tax-report.md`, then re-render the HTML report (`render-html.mjs` embeds `migration-plan.md` from the same directory):
+
+1. **Target layout and tooling** — the tool options table, then the pick: `migration.recommendedTool` is the stack-based default. If the team chooses another fitting tool from the table, use that one. Propose `apps/${repo}` for deployables and `packages/${name}` for libraries. If one repo already uses Nx, Turborepo or Bazel, build on it rather than adding a second tool.
+2. **Phase 0 — prepare (no repo moves).**
+   - Align each entry in `migration.externalConflicts`, starting with those in the most repos. Each is a normal PR in the existing repo.
+   - Agree on one package manager, Node version and lint/format config (from `repos[].packageManager`, `nodeVersion`).
+   - Freeze new internal packages outside the monorepo.
+3. **Phase 1 — first cluster.** Import the producer libraries, then their consumers, keeping history:
+   - Nx: `nx import <repo-url> <dest-dir>`
+   - Otherwise: `git subtree add --prefix=<dest-dir> <repo-url> <branch>`, or rewrite with `git filter-repo --to-subdirectory-filter <dest-dir>` and merge with `--allow-unrelated-histories`.
+   - Replace internal version ranges with `workspace:*` and delete the publish step for packages no external consumer uses.
+   - Set up affected-only CI (`nx affected` / `turbo run --affected` / Bazel target selection) so a change runs only the tests it can break.
+   - Move each repo's CODEOWNERS entries under its new directory.
+   - Archive the old repo (read-only, README pointing to the new path) once its last open PRs are merged or moved.
+4. **Phase 2+** — the next clusters in order of weight.
+5. **Verify** — run the `monorepo-doctor` skill on the new monorepo for boundaries, cycles, caching, CI coverage and test leakage. Use `monorepo-boundaries-cleanup` to pay down what it finds.
+6. **Measure** — rerun polyrepo-tax on the old repos for the pre-migration window, and track bumps, duplicated fixes and regressions after the move.
+
+State the one-time effort (`migration.oneTime`) and payback range, and the risks: CI capacity during the transition, history-rewrite mistakes, ownership disputes, and teams that release independently.
+
+FILE:references/report-format.md
+# Step 6 — Report
+
+The analyzer writes three files to the output directory (default `${tmpdir}/polyrepo-tax-reports`):
+
+- `polyrepo-tax-report.html` — the shareable report: headline range, cost-by-driver chart, filterable bug list with commit evidence, churn, migration and assumptions. One self-contained file with no network requests, light and dark mode, printable. Re-render it with `render-html.mjs` after writing `migration-plan.md`.
+- `polyrepo-tax-report.md` — the same content as Markdown; step 5 appends the migration plan.
+- `polyrepo-tax-report.json` — the full data.
+
+## JSON shape (version 1)
+
+| Key | Contents |
+|---|---|
+| `window`, `rates`, `assumptions` | Inputs actually used. |
+| `problems` | Data problems (missing repo, shallow clone). |
+| `repos[]` | Name, commit count, packages, languages, package manager, build tools, CI files, and `ci` (`minutesPerCommit`, `source`: `measured` or `assumed`). |
+| `internal` | `packages` (producer → consumers), `bumps`, `releases`, `medianBumpLagDays`, `drift`, `skew`. |
+| `bugs[]` | `id`, `category`, `confidence`, `repos`, `title`, `why`, `commits[]` (`repo`, `sha`, `date`, `subject`). |
+| `coordinated[]`, `duplicatedTooling[]` | Cross-repo groups with commits. |
+| `cost.{low,expected,high}` | `lines[]` per driver (`count`, `hours`, `ciMinutes`, `cost`, `annualCost`, `savingsShare`, `annualSavings`) and `totals`. |
+| `migration` | `recommendedTool`, `toolOptions[]` (every monorepo.tools tool: `rating` /10, `counts` per mark, `categories[]`, `gaps`, `fit`, `fitReason`, `alreadyUsed`, `independent`: State of JS and Thoughtworks Radar data where a source covers the tool, else `null`), `whyMigrate[]` (monorepo.tools reasons with measured `evidence`), `toolSource` (URLs, snapshot date, publisher, legend, `independent` sources with metric and coverage), `clusters`, `isolated`, `coupling`, `externalConflicts`, `oneTime`, `paybackMonths`. |
+
+## What to tell the user
+
+Keep the message short; the report has the detail.
+
+1. Paths of the reports; suggest the HTML file for sharing with leadership. It contains repo names, commit subjects and SHAs, so it is as confidential as the repos.
+2. One line: expected cost for the window and annualized range, split into developer and CI money.
+3. Bug counts by confidence, and the 3 strongest bugs, each with its commit evidence.
+4. The two cost drivers that dominate, and the assumption each depends on, so the user knows which number to challenge.
+5. The recommendation: which cluster to migrate first and its payback, which repos to keep separate, or why not to migrate. When recommending a migration, give the measured reasons from `migration.whyMigrate`, and the top fitting tools from `migration.toolOptions` with their ratings and the monorepo.tools source. The full table is in the report.
+6. Data gaps: repos that failed to clone, CI that was assumed, commits you excluded in review.
+
+Never present the expected number without the range, or money without the rates that produced it.
+FILE:references/signals.md
+# Signals
+
+The analyzer reads the history reachable from each repo's `HEAD` (`git log --no-merges`) between the window start and `now`, `package.json` diffs, tags, and the files at `HEAD`. In the bare clones from inputs.md, `HEAD` is the default branch. For a local working copy, check out the default branch first; a feature branch adds unmerged commits and misses ones it does not contain. Package ecosystems other than npm contribute to grouping signals (tickets, repeated fixes, tooling churn) but not to dependency bumps.
+
+## Internal packages
+
+A package is internal when an analysed repo publishes it (a `package.json` `name` at `HEAD`) or its name starts with a configured `internalScopes` prefix.
+
+- **Bump** — a commit that changes an internal dependency's version range in a `package.json` upwards. Authors matching `[bot]`, Renovate, Dependabot or github-actions count as bots. One count per (commit, package). A repo bumping its own package (a playground or docs workspace) is not counted.
+- **Downgrade** — the same, but to a lower minimum version.
+- **Release** — a commit that changes the `version` field of an internal package that another analysed repo consumes, or a tag `vX.Y.Z` / `name@X.Y.Z`. Tags only date releases; costed releases come from version commits. Packages listed in `publicPackages` (also consumed outside the analysed repos) are excluded: they keep releasing in a monorepo.
+- **Lag** — days from a release to the consumer's bump to that version.
+- **Drift / skew** — at `HEAD`, consumers below the newest known version, and internal packages used at more than one major version across repos.
+
+## Bug categories
+
+Only these categories exist. Each bug carries commit evidence.
+
+| Category | Confidence | Detected when | Why it is a repo-boundary bug |
+|---|---|---|---|
+| `dependency-regression` | high | A commit downgrades an internal dependency, or is `Revert "${subject}"` of a bump commit in the same repo. | An internal release broke a consumer after it shipped. In a monorepo, the producer change runs the consumer's tests before merge. |
+| `duplicated-fix` | medium | Fix commits (see below) with near-identical subjects land in ≥2 repos within `groupWindowDays`, or share a ticket and a subject. | The same code or contract was copied into several repos and had to be fixed in each. |
+| `cross-repo-fix` | medium | Fix commits in ≥2 repos share a ticket key (`ABC-123`, `owner/repo#12`) but have different subjects. | One bug needed coordinated changes across repos: the contract between them lives nowhere. |
+| `fix-propagation` | medium | A fix commit that also bumps an internal dependency up. | The fix needed a producer release and a consumer bump to reach users. |
+| `post-bump-fix` | medium / low | A fix commit within `bumpFixWindowDays` after an internal bump in the same repo. Medium if it names the bumped package or uses compatibility words (breaking, compat, migrate, mismatch…); low if it only lands within 2 days of a **major** internal bump. | The bump exposed an integration break after release. |
+
+A **fix commit** has a `fix:`/`hotfix:`/`bugfix:` conventional prefix (but not the `deps` or `release` scopes), or has no conventional prefix and a subject containing fix/bug/hotfix/regression/broken/crash/incident (but not "typo"). Any other conventional type wins: `docs: fix anchors` and `chore: fix lint` are not fixes. Dependency-update subjects (`chore(deps)`, `fix(deps)`, `update dependency … to v2`) are bumps, not fixes.
+
+Each commit is assigned to at most one bug, in the order of the table rows: regressions, then groups, then single-commit categories.
+
+## Duplicated and coordinated work
+
+Commits that are not bumps, releases or bugs are grouped across repos when they share a ticket key or a near-identical subject (token Jaccard ≥ `similarity` after removing conventional prefixes, ticket keys, PR numbers and SHAs, at least 3 tokens, within `groupWindowDays`). Groups spanning more than twice the window are dropped as long-lived tickets.
+
+- **Repeated maintenance** — every commit in the group only touches CI, lint, format, TypeScript, test-runner, Docker, Renovate or editor config, or is a dependency update (`chore(deps): …`). Each extra repo is a duplicate copy. It is a cost but **not** coupling: every repo has tooling, so it never pulls repos into a migration cluster.
+- **Coordinated change** — any other group: one feature or refactor split across repos. This is coupling.
+
+## Known blind spots
+
+State these when the user questions a number:
+
+- Squash-merged PRs hide branch history; merge-commit workflows contribute every branch commit.
+- Bugs fixed without a fix-like subject, or never fixed in git (worked around in config, data or ops), are missed. Counts are a floor for the categories above, not a total bug count.
+- Bumps in lockfiles only, in non-npm manifests (Maven, Gradle, Go, Python) and Git submodule pointer updates are not counted.
+- Similar subjects can coincide by chance; review step 4 in SKILL.md exists to exclude them.
+
+FILE:scripts/analyze.mjs
+#!/usr/bin/env node
+// polyrepo-tax analyzer. Read-only: runs only `git log`, `git show`, `git ls-tree`
+// and `git for-each-ref` against the given repositories (bare clones work).
+// Usage:
+//   node analyze.mjs --config polyrepo-tax.config.json [--out DIR]
+//   node analyze.mjs ../repo-a ../repo-b [--since 2025-11-25] [--scope @acme/] [--rate 100]
+//                    [--ci-rate 0.008] [--ci ci.json] [--overrides overrides.json] [--out DIR]
+import { execFileSync } from 'node:child_process';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { renderHtml, independentSignals, toolSources } from './render-html.mjs';
+
+export const DEFAULT_ASSUMPTIONS = {
+  // Developer hours per event. Every value is user-overridable and printed in the report.
+  bumpHumanHours: 0.5, // open/review/merge a manual internal-dependency bump PR
+  bumpBotHours: 0.2, // review + merge a Renovate/Dependabot internal bump PR
+  releaseHours: 0.5, // cut and publish an internal release that sibling repos consume
+  coordinationHoursPerExtraRepo: 2, // sequencing PRs/releases for one change spread over N repos
+  duplicateChangeHoursPerCopy: 1, // re-applying the same tooling/config change in another repo
+  bugHours: 8, // triage + fix + release + bump for one polyrepo-attributable bug
+  ciMinutesPerCommit: 15, // used only when no CI data is supplied for a repo
+  bumpFixWindowDays: 7, // a fix this soon after an internal bump is checked for a link to it
+  groupWindowDays: 14, // max spread for "same change in several repos"
+  similarity: 0.75, // token Jaccard threshold for "same commit subject"
+  migrationDaysPerRepo: 3, // one-time cost to import one repo into the monorepo
+  migrationDaysPerConflict: 0.5, // one-time cost to align one external-dependency major-version conflict
+  monorepoToolingMonthly: 0, // ongoing $ for remote cache / tooling, if any
+};
+
+// Share of each cost a monorepo removes. Documented in references/cost-model.md.
+export const SAVINGS = {
+  bumps: 1, releases: 1, coordination: 0.75, duplicatedTooling: 1,
+  'dependency-regression': 0.9, 'post-bump-fix': 0.9, 'fix-propagation': 1, 'duplicated-fix': 1, 'cross-repo-fix': 0.5,
+};
+
+const BOT = /\[bot\]|^renovate|^dependabot|greenkeeper|github-actions|^snyk-bot/i;
+const FIX_PREFIX = /^(fix|hotfix|bugfix)(\(([^)]*)\))?!?:/i;
+const FIX_WORD = /\b(fix(es|ed)?|bug(fix)?|hotfix|regression|broken|crash(es|ed)?|incident)\b/i;
+const DEPS_CHORE = /^(chore|build|fix|ci)\((deps|deps-dev|dependencies)\)|^(update|bump|upgrade)\b.*\b(dependency|dependencies|deps|from .* to|to v?\d)/i;
+const RELEASE = /^(chore|build)(\(release\))?:\s*(release|publish|version)|^(release|publish|version)\b|^v?\d+\.\d+\.\d+$/i;
+const COMPAT = /\b(compat|compatib\w*|breaking|incompatib\w*|migrat\w*|mismatch|api change|new version|after (the )?(bump|upgrade|update))\b/i;
+const TICKET = /\b([A-Z][A-Z0-9]{1,9})-(\d+)\b/g;
+const GH_REF = /\b([\w.-]+\/[\w.-]+)#(\d+)\b/g;
+const TICKET_STOP = new Set(['UTF', 'ISO', 'SHA', 'RFC', 'ECMA', 'HTTP', 'ES', 'TLS', 'SSL', 'X', 'UTC', 'GMT']);
+const CONFIG_FILE = /(^|\/)(\.github\/(workflows|actions)\/|\.gitlab-ci\.yml$|\.circleci\/|Jenkinsfile$|azure-pipelines\.yml$|\.buildkite\/|\.eslintrc|eslint\.config\.|\.prettierrc|prettier\.config\.|tsconfig[\w.-]*\.json$|\.nvmrc$|\.node-version$|\.tool-versions$|renovate\.json5?$|\.github\/dependabot\.yml$|Dockerfile|\.dockerignore$|\.editorconfig$|jest\.config\.|vitest\.config\.|\.npmrc$|\.yarnrc|babel\.config\.|\.babelrc|\.husky\/|\.lintstagedrc|commitlint\.config\.|\.gitignore$|CODEOWNERS$)/;
+const GENERIC = new Set(['update readme', 'initial commit', 'wip', 'update', 'fix', 'fix typo', 'typo', 'cleanup', 'merge', 'tests', 'lint', 'format', 'update changelog', 'docs', 'fix tests', 'fix build', 'fix lint']);
+// Source languages by file extension. Anything but js/ts makes the workspace polyglot for tool fit.
+const LANG = [
+  ['js/ts', /\.(m?[jt]sx?|cjs|cts|vue|svelte)$/],
+  ['jvm', /\.(java|kts?|groovy|gradle)$/], ['scala', /\.(scala|sc)$/], ['clojure', /\.(clj|cljs|cljc|edn)$/],
+  ['dotnet', /\.(cs|csx|fs|fsi|fsx|vb)$/],
+  ['c/c++', /\.(c|cc|cpp|cxx|c\+\+|h|hh|hpp|hxx|h\+\+|ipp|inl)$/], ['objective-c', /\.(m|mm)$/],
+  ['go', /\.go$/], ['rust', /\.rs$/], ['zig', /\.zig$/], ['swift', /\.swift$/], ['dart', /\.dart$/],
+  ['python', /\.(py|pyi|pyx)$/], ['ruby', /\.(rb|rake)$/], ['php', /\.php$/], ['perl', /\.(pl|pm)$/], ['lua', /\.lua$/],
+  ['elixir/erlang', /\.(ex|exs|erl|hrl)$/], ['haskell', /\.(hs|lhs)$/], ['ocaml', /\.(ml|mli)$/],
+];
+const DAY = 86_400_000;
+// Dated snapshot of the monorepo.tools/compare matrix. Ratings are computed from it alone.
+export const MONOREPO_TOOLS = JSON.parse(fs.readFileSync(new URL('./monorepo-tools.json', import.meta.url), 'utf8'));
+
+// Every tool on monorepo.tools, rated 0–10 by the share of compared features the page marks "natively supported".
+// Partial marks ("implement your own", "community provided") are counted, not scored. A tool the page marks
+// "not supported" for polyglot is not a fit when the repos contain more than JS/TS. Nothing else is inferred.
+export function toolOptions(langNames, buildTools, data = MONOREPO_TOOLS) {
+  const polyglotIdx = data.features.findIndex((f) => f.key === 'polyglot');
+  const otherLangs = langNames.filter((l) => l !== 'js/ts');
+  const count = (marks) => Object.fromEntries(Object.keys(data.source.legend).map((k) => [k, marks.filter((m) => m === k).length]));
+  return data.tools.map((t) => {
+    const counts = count(t.marks);
+    const categories = data.categories.map((c) => {
+      const marks = t.marks.filter((_, i) => data.features[i].category === c);
+      return { category: c, native: marks.filter((m) => m === 'native').length, total: marks.length };
+    });
+    const fit = !(otherLangs.length && t.marks[polyglotIdx] === 'none');
+    return {
+      key: t.key, name: t.name, by: t.by, description: t.description, repo: t.repo,
+      rating: Math.round((counts.native / t.marks.length) * 100) / 10,
+      counts, total: t.marks.length, categories,
+      gaps: data.features.filter((_, i) => t.marks[i] === 'none').map((f) => f.label),
+      fit, fitReason: fit ? null : `monorepo.tools marks polyglot support "${data.source.legend.none}"; the repos also contain ${otherLangs.join(', ')}`,
+      alreadyUsed: buildTools.has(t.detect),
+      independent: t.independent ?? null,
+    };
+  }).sort((x, y) => (y.fit - x.fit) || (y.rating - x.rating) || x.name.localeCompare(y.name));
+}
+
+// The polyrepo costs monorepo.tools lists, kept only where this report measured evidence for them.
+export function whyMigrate(ev, data = MONOREPO_TOOLS) {
+  const evidence = {
+    'code-sharing': [[ev.bumps, 'internal dependency bumps'], [ev.releases, 'internal releases consumed by sibling repos']],
+    duplication: [[ev.duplicatedFixes, 'duplicated-fix bugs']],
+    'cross-repo-changes': [[ev.coordinated, 'coordinated cross-repo changes'], [ev.crossRepoFixes, 'cross-repo-fix bugs']],
+    conventions: [[ev.repeatedTooling, 'repeated tooling/dependency changes'], [ev.skew, 'internal packages with version skew today']],
+  };
+  return data.reasons.map((r) => ({ ...r, evidence: evidence[r.key].filter(([n]) => n > 0).map(([n, what]) => `${what}: ${n}`) }))
+    .filter((r) => r.evidence.length);
+}
+
+const git = (repo, args) => execFileSync('git', ['-C', repo, ...args], { encoding: 'utf8', maxBuffer: 1 << 30, stdio: ['ignore', 'pipe', 'pipe'] });
+// For lookups that may legitimately miss (a file at a revision, a repo probe). History collection uses
+// collect(), which records failures as data problems instead of returning empty history.
+const tryGit = (repo, args) => { try { return git(repo, args); } catch { return ''; } };
+function collect(repo, args, problems, label) {
+  try { return git(repo, args); } catch (err) {
+    problems.push(`${label}: git ${args[0]} failed (${String(err.stderr || err.message).trim().split('\n')[0]}); this repo's results are incomplete`);
+    return '';
+  }
+}
+const tryJson = (s) => { try { return JSON.parse(s); } catch { return null; } };
+const round = (n, d = 1) => Math.round(n * 10 ** d) / 10 ** d;
+const days = (a, b) => (Date.parse(b) - Date.parse(a)) / DAY;
+
+export function minVersion(range) {
+  if (typeof range !== 'string') return null;
+  const m = range.replace(/^workspace:/, '').match(/(\d+)\.(\d+|x|\*)(?:\.(\d+|x|\*))?/);
+  if (!m) return null;
+  const n = (v) => (v === undefined || v === 'x' || v === '*' ? 0 : Number(v));
+  return [Number(m[1]), n(m[2]), n(m[3])];
+}
+export function cmpVersion(a, b) {
+  for (let i = 0; i < 3; i++) if (a[i] !== b[i]) return a[i] - b[i];
+  return 0;
+}
+const vstr = (v) => (v ? v.join('.') : '?');
+
+export function normalizeSubject(s) {
+  return s.replace(TICKET, ' ').toLowerCase()
+    .replace(/^\s*revert\s+"?/, '')
+    .replace(/^[a-z]+(\([^)]*\))?!?:\s*/, '')
+    .replace(/\(?#\d+\)?/g, ' ').replace(/\b[0-9a-f]{7,40}\b/g, ' ')
+    .replace(/[^a-z0-9@/.\s-]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+export function similarity(a, b) {
+  const ta = new Set(a.split(' ').filter(Boolean));
+  const tb = new Set(b.split(' ').filter(Boolean));
+  if (ta.size < 3 || tb.size < 3) return 0;
+  let inter = 0;
+  for (const t of ta) if (tb.has(t)) inter++;
+  return inter / (ta.size + tb.size - inter);
+}
+export function ticketsOf(text) {
+  const out = new Set();
+  for (const m of text.matchAll(TICKET)) if (!TICKET_STOP.has(m[1])) out.add(`${m[1]}-${m[2]}`);
+  for (const m of text.matchAll(GH_REF)) out.add(`${m[1].toLowerCase()}#${m[2]}`);
+  return [...out];
+}
+export const isBot = (c) => BOT.test(c.authorName) || BOT.test(c.authorEmail);
+export const isFixSubject = (subject) => {
+  if (DEPS_CHORE.test(subject)) return false;
+  const pre = subject.match(FIX_PREFIX);
+  if (pre) return !/^(deps|deps-dev|dependencies|release)$/i.test(pre[3] ?? '');
+  // Another conventional type (docs:, chore:, test:, build:…) wins over the word "fix" in its description.
+  if (/^[a-z]+(\([^)]*\))?!?:/i.test(subject)) return false;
+  return FIX_WORD.test(subject) && !/\btypos?\b/i.test(subject);
+};
+
+// ---------- per-repo collection ----------
+
+function inventory(repo) {
+  const files = tryGit(repo, ['ls-tree', '-r', '--name-only', 'HEAD']).split('\n').filter(Boolean);
+  const pkgFiles = files.filter((f) => /(^|\/)package\.json$/.test(f) && !/(^|\/)node_modules\//.test(f));
+  const packages = [];
+  for (const file of pkgFiles) {
+    const pkg = tryJson(tryGit(repo, ['show', `HEAD:${file}`]));
+    if (!pkg || typeof pkg !== 'object') continue;
+    const deps = { ...pkg.peerDependencies, ...pkg.optionalDependencies, ...pkg.devDependencies, ...pkg.dependencies };
+    packages.push({ file, name: pkg.name ?? null, version: pkg.version ?? null, private: pkg.private === true, deps });
+  }
+  const languages = {};
+  for (const f of files) {
+    if (/(^|\/)(node_modules|vendor|dist|build)\//.test(f)) continue;
+    const lang = LANG.find(([, re]) => re.test(f));
+    if (lang) languages[lang[0]] = (languages[lang[0]] ?? 0) + 1;
+  }
+  const has = (f) => files.includes(f);
+  const packageManager = has('pnpm-lock.yaml') ? 'pnpm' : has('yarn.lock') ? 'yarn' : has('bun.lockb') || has('bun.lock') ? 'bun' : has('package-lock.json') ? 'npm' : null;
+  const buildTools = [
+    has('nx.json') && 'nx', has('turbo.json') && 'turbo', has('lerna.json') && 'lerna',
+    (has('MODULE.bazel') || has('WORKSPACE') || has('WORKSPACE.bazel')) && 'bazel',
+    (has('build.gradle') || has('build.gradle.kts') || has('settings.gradle') || has('settings.gradle.kts')) && 'gradle', has('pom.xml') && 'maven',
+    has('go.mod') && 'go', has('Cargo.toml') && 'cargo',
+    files.some((f) => /^lage\.config\.[cm]?js$/.test(f)) && 'lage', files.some((f) => /^\.moon\/workspace\.ya?ml$/.test(f)) && 'moon',
+    has('pants.toml') && 'pants', has('rush.json') && 'rush',
+  ].filter(Boolean);
+  const ci = files.filter((f) => /^\.github\/workflows\/.+\.ya?ml$|^\.gitlab-ci\.yml$|^\.circleci\/config\.yml$|^Jenkinsfile$|^azure-pipelines\.yml$/.test(f));
+  const nodeVersion = has('.nvmrc') ? tryGit(repo, ['show', 'HEAD:.nvmrc']).trim() : null;
+  return { files: files.length, packages, languages, packageManager, buildTools, ci, nodeVersion };
+}
+
+function commits(repo, since, until, problems, label) {
+  const out = collect(repo, ['log', `--since=${since}`, `--until=${until}`, '--no-merges', '--format=%x1e%H%x1f%aI%x1f%an%x1f%ae%x1f%s%x1f%b%x1f', '--name-only'], problems, label);
+  const list = [];
+  for (const rec of out.split('\x1e')) {
+    if (!rec.trim()) continue;
+    const [sha, date, authorName, authorEmail, subject, body, rest = ''] = rec.split('\x1f');
+    list.push({ sha, date, authorName, authorEmail, subject, body: body.trim(), files: rest.split('\n').map((s) => s.trim()).filter(Boolean) });
+  }
+  return list;
+}
+
+// Parse package.json diffs (zero context) into per-commit dependency and version changes.
+function manifestChanges(repo, since, until, problems, label) {
+  const out = collect(repo, ['log', `--since=${since}`, `--until=${until}`, '--no-merges', '--format=%x1e%H', '-p', '-U0', '--no-color', '--no-ext-diff', '--', ':(glob)**/package.json'], problems, label);
+  const bySha = new Map();
+  for (const rec of out.split('\x1e')) {
+    if (!rec.trim()) continue;
+    const lines = rec.split('\n');
+    const sha = lines[0].trim();
+    const files = new Map();
+    let file = null;
+    for (const line of lines.slice(1)) {
+      let m;
+      if ((m = line.match(/^\+\+\+ b\/(.+)$/))) { file = m[1]; continue; }
+      if ((m = line.match(/^--- a\/(.+)$/))) { file = m[1]; continue; }
+      if (line.startsWith('+++') || line.startsWith('---') || !file) continue;
+      if (!(m = line.match(/^([-+])\s*"([^"]+)"\s*:\s*"([^"]*)"/))) continue;
+      if (!files.has(file)) files.set(file, { removed: new Map(), added: new Map() });
+      files.get(file)[m[1] === '-' ? 'removed' : 'added'].set(m[2], m[3]);
+    }
+    bySha.set(sha, files);
+  }
+  return bySha;
+}
+
+function tags(repo, problems, label) {
+  return collect(repo, ['for-each-ref', 'refs/tags', '--format=%(refname:short)%09%(creatordate:iso-strict)'], problems, label)
+    .split('\n').filter(Boolean).map((l) => { const [name, date] = l.split('\t'); return { name, date }; });
+}
+
+// ---------- analysis ----------
+
+export function analyze(config) {
+  const a = { ...DEFAULT_ASSUMPTIONS, ...config.assumptions };
+  const rates = { developerHourly: 100, ciPerMinute: 0.008, currency: 'USD', ...config.rates };
+  const now = config.now ?? new Date().toISOString();
+  const since = config.since ?? new Date(Date.parse(now) - 365 * DAY).toISOString().slice(0, 10);
+  const windowDays = Math.max(1, days(new Date(since).toISOString(), now));
+  const exclude = new Set(config.overrides?.excludeCommits ?? []);
+  const scopes = config.internalScopes ?? [];
+  const problems = [];
+
+  const repos = config.repos.map((r) => {
+    const p = typeof r === 'string' ? { path: r } : r;
+    const abs = path.resolve(config.baseDir ?? '.', p.path);
+    const name = p.name ?? path.basename(abs).replace(/\.git$/, '');
+    if (!tryGit(abs, ['rev-parse', '--git-dir'])) { problems.push(`${name}: not a git repository (${abs})`); return null; }
+    if (tryGit(abs, ['rev-parse', '--is-shallow-repository']).trim() === 'true') problems.push(`${name}: shallow clone; history before the shallow boundary is missing`);
+    if (!tryGit(abs, ['rev-parse', '--verify', '--quiet', 'HEAD'])) { problems.push(`${name}: HEAD has no commits (${abs})`); return null; }
+    // HEAD inventory is intentionally current state; history is bounded to [since, now].
+    const inv = inventory(abs);
+    const list = commits(abs, since, now, problems, name).filter((c) => !exclude.has(c.sha));
+    for (const c of list) c.repo = name;
+    return { name, path: abs, github: p.github ?? null, inv, commits: list, manifests: manifestChanges(abs, since, now, problems, name), tags: tags(abs, problems, name) };
+  }).filter(Boolean);
+
+  // Internal packages: published by an analysed repo, or matching a configured scope.
+  const producerOf = new Map();
+  for (const r of repos) for (const p of r.inv.packages) if (p.name) producerOf.set(p.name, r.name);
+  const isInternal = (name) => producerOf.has(name) || scopes.some((s) => name.startsWith(s));
+
+  // Releases of internal packages: version-field changes + tags.
+  const releases = new Map(); // pkg -> [{version:[..], date, repo, sha}]
+  const addRelease = (pkg, version, date, repo, sha) => {
+    const v = minVersion(version);
+    if (!v || !isInternal(pkg)) return;
+    if (!releases.has(pkg)) releases.set(pkg, []);
+    const list = releases.get(pkg);
+    const prev = list.find((x) => cmpVersion(x.version, v) === 0);
+    if (prev) { if (date < prev.date) Object.assign(prev, { date, sha, repo }); } else list.push({ version: v, date, repo, sha });
+  };
+  const commitBySha = new Map();
+  for (const r of repos) for (const c of r.commits) commitBySha.set(`${r.name}:${c.sha}`, c);
+
+  // Per-commit internal bumps.
+  const bumps = [];
+  const releaseCommits = [];
+  for (const r of repos) {
+    const fileToName = new Map(r.inv.packages.map((p) => [p.file, p.name]));
+    for (const [sha, files] of r.manifests) {
+      const c = commitBySha.get(`${r.name}:${sha}`);
+      if (!c) continue;
+      for (const [file, { removed, added }] of files) {
+        if (removed.has('version') && added.has('version')) {
+          let name = fileToName.get(file) ?? added.get('name');
+          if (!name) name = tryJson(tryGit(r.path, ['show', `${sha}:${file}`]))?.name;
+          if (name && isInternal(name)) {
+            addRelease(name, added.get('version'), c.date, r.name, sha);
+            releaseCommits.push({ repo: r.name, sha, date: c.date, pkg: name, version: added.get('version') });
+          }
+        }
+        for (const [dep, to] of added) {
+          // Skip self-references (a playground or docs package depending on its own repo's package).
+          if (dep === 'version' || dep === 'name' || !isInternal(dep) || !removed.has(dep) || producerOf.get(dep) === r.name) continue;
+          const from = removed.get(dep);
+          const vf = minVersion(from), vt = minVersion(to);
+          if (!vf || !vt || from === to) continue;
+          const direction = cmpVersion(vt, vf) > 0 ? 'up' : cmpVersion(vt, vf) < 0 ? 'down' : 'range';
+          if (direction === 'range') continue;
+          bumps.push({ repo: r.name, sha, date: c.date, file, pkg: dep, from, to, direction, bot: isBot(c), subject: c.subject });
+        }
+      }
+    }
+    for (const t of r.tags) {
+      const m = t.name.match(/^(?:(.+)@)?v?(\d+\.\d+\.\d+)$/);
+      if (!m) continue;
+      const publics = r.inv.packages.filter((p) => p.name && !p.private);
+      const pkg = m[1] ?? (publics.length === 1 ? publics[0].name : null);
+      if (pkg && t.date >= since && t.date <= now) addRelease(pkg, m[2], t.date, r.name, null);
+    }
+  }
+  // Collapse bumps: one per (repo, sha, pkg) — a commit touching several manifests counts once.
+  const bumpKey = new Map();
+  for (const b of bumps) { const k = `${b.repo}:${b.sha}:${b.pkg}`; if (!bumpKey.has(k)) bumpKey.set(k, b); }
+  const uniqueBumps = [...bumpKey.values()].sort((x, y) => x.date.localeCompare(y.date));
+  const bumpCommitKeys = new Set(uniqueBumps.map((b) => `${b.repo}:${b.sha}`));
+  const releaseDate = (pkg, v) => releases.get(pkg)?.find((x) => cmpVersion(x.version, v) === 0)?.date ?? null;
+  for (const b of uniqueBumps) {
+    const rd = b.direction === 'up' ? releaseDate(b.pkg, minVersion(b.to)) : null;
+    b.lagDays = rd && b.date >= rd ? round(days(rd, b.date)) : null;
+  }
+
+  // Consumers: which analysed repos depend (at HEAD) on which internal packages.
+  const consumers = [];
+  for (const r of repos) {
+    const seen = new Set();
+    for (const p of r.inv.packages) for (const [dep, range] of Object.entries(p.deps)) {
+      if (!isInternal(dep) || producerOf.get(dep) === r.name || seen.has(dep)) continue;
+      seen.add(dep);
+      consumers.push({ repo: r.name, pkg: dep, range, producer: producerOf.get(dep) ?? null, file: p.file });
+    }
+  }
+  const consumedPkgs = new Set(consumers.map((c) => c.pkg));
+  // Packages also consumed outside the analysed repos keep their releases in a monorepo, so those are not costed.
+  const isPublic = (pkg) => config.publicPackages === true || (Array.isArray(config.publicPackages) && config.publicPackages.includes(pkg));
+  const consumedReleases = releaseCommits.filter((x) => consumedPkgs.has(x.pkg) && !isPublic(x.pkg));
+  // Dedupe release commits per (repo, sha).
+  const relSeen = new Set();
+  const releaseEvents = consumedReleases.filter((x) => { const k = `${x.repo}:${x.sha}:${x.pkg}`; if (relSeen.has(k)) return false; relSeen.add(k); return true; });
+
+  // Drift at HEAD.
+  const latestVersion = (pkg) => {
+    const fromReleases = releases.get(pkg)?.map((x) => x.version) ?? [];
+    const head = repos.flatMap((r) => r.inv.packages).filter((p) => p.name === pkg).map((p) => minVersion(p.version)).filter(Boolean);
+    return [...fromReleases, ...head].sort(cmpVersion).at(-1) ?? null;
+  };
+  const drift = consumers.map((c) => {
+    const cur = minVersion(c.range), latest = latestVersion(c.pkg);
+    if (!cur || !latest || /^workspace:|^(file|link|portal):/.test(c.range)) return null;
+    return { ...c, current: vstr(cur), latest: vstr(latest), majorsBehind: latest[0] - cur[0], behind: cmpVersion(latest, cur) > 0 };
+  }).filter(Boolean);
+  const skew = [];
+  for (const pkg of consumedPkgs) {
+    const majors = new Map();
+    for (const d of drift.filter((x) => x.pkg === pkg)) {
+      const maj = d.current.split('.')[0];
+      if (!majors.has(maj)) majors.set(maj, []);
+      majors.get(maj).push(d.repo);
+    }
+    if (majors.size > 1) skew.push({ pkg, majors: Object.fromEntries(majors) });
+  }
+
+  // ---------- bugs and duplicated work ----------
+  const all = repos.flatMap((r) => r.commits).sort((x, y) => x.date.localeCompare(y.date));
+  const used = new Set();
+  const key = (c) => `${c.repo}:${c.sha}`;
+  const ev = (c) => ({ repo: c.repo, sha: c.sha.slice(0, 10), date: c.date.slice(0, 10), subject: c.subject });
+  const bugs = [];
+
+  // 1. dependency-regression (high): downgrade of an internal dependency, or revert of a bump commit.
+  for (const c of all) {
+    const downs = uniqueBumps.filter((b) => b.repo === c.repo && b.sha === c.sha && b.direction === 'down');
+    const rev = c.subject.match(/^Revert "(.+)"$/);
+    const revertsBump = rev && all.some((o) => o.repo === c.repo && o.subject === rev[1] && bumpCommitKeys.has(key(o)) && o.date <= c.date);
+    if (!downs.length && !revertsBump) continue;
+    used.add(key(c));
+    bugs.push({
+      category: 'dependency-regression', confidence: 'high', repos: [c.repo],
+      title: downs.length ? `${c.repo} rolled back ${downs.map((d) => `${d.pkg} ${d.from} → ${d.to}`).join(', ')}` : `${c.repo} reverted an internal dependency bump`,
+      why: 'An internal release broke a consumer after it shipped. In a monorepo the producer change runs the consumer\'s tests before merge.',
+      commits: [ev(c)],
+    });
+  }
+
+  // 2. Groups: the same change in several repos (shared ticket, or near-identical subject).
+  const candidates = all.filter((c) => !used.has(key(c)) && !bumpCommitKeys.has(key(c)) && !RELEASE.test(c.subject));
+  const parent = new Map(candidates.map((c) => [key(c), key(c)]));
+  const find = (k) => { while (parent.get(k) !== k) { parent.set(k, parent.get(parent.get(k))); k = parent.get(k); } return k; };
+  const union = (x, y) => parent.set(find(x), find(y));
+  const linkedBy = new Map();
+  const byTicket = new Map();
+  for (const c of candidates) for (const t of ticketsOf(`${c.subject}\n${c.body}`)) {
+    if (!byTicket.has(t)) byTicket.set(t, []);
+    byTicket.get(t).push(c);
+  }
+  for (const [t, list] of byTicket) {
+    if (new Set(list.map((c) => c.repo)).size < 2) continue;
+    for (const c of list.slice(1)) union(key(c), key(list[0]));
+    for (const c of list) { linkedBy.set(key(c), 'ticket'); c.ticket ??= t; }
+  }
+  const norm = new Map(candidates.map((c) => [key(c), normalizeSubject(c.subject)]));
+  for (let i = 0; i < candidates.length; i++) {
+    const ci = candidates[i];
+    const ni = norm.get(key(ci));
+    if (GENERIC.has(ni)) continue;
+    for (let j = i + 1; j < candidates.length; j++) {
+      const cj = candidates[j];
+      if (days(ci.date, cj.date) > a.groupWindowDays) break;
+      if (cj.repo === ci.repo) continue;
+      if (similarity(ni, norm.get(key(cj))) >= a.similarity) {
+        union(key(ci), key(cj));
+        if (!linkedBy.has(key(ci))) linkedBy.set(key(ci), 'similar');
+        if (!linkedBy.has(key(cj))) linkedBy.set(key(cj), 'similar');
+      }
+    }
+  }
+  const groupsMap = new Map();
+  for (const c of candidates) {
+    if (!linkedBy.has(key(c))) continue;
+    const root = find(key(c));
+    if (!groupsMap.has(root)) groupsMap.set(root, []);
+    groupsMap.get(root).push(c);
+  }
+  const coordinated = [], duplicatedTooling = [];
+  for (const list of groupsMap.values()) {
+    const groupRepos = [...new Set(list.map((c) => c.repo))];
+    if (groupRepos.length < 2) continue;
+    // Groups spanning more than the window are usually unrelated commits sharing a long-lived ticket.
+    if (days(list[0].date, list.at(-1).date) > a.groupWindowDays * 2) continue;
+    for (const c of list) used.add(key(c));
+    const via = list.some((c) => linkedBy.get(key(c)) === 'ticket') ? 'ticket' : 'similar';
+    const ticket = list.find((c) => c.ticket)?.ticket ?? null;
+    const commitsEv = list.map(ev);
+    // A group is a bug only when fix commits land in at least two repos; one fix plus related work is coordination.
+    const fixes = list.filter((c) => isFixSubject(c.subject));
+    const isFix = new Set(fixes.map((c) => c.repo)).size >= 2;
+    const configOnly = list.every((c) => (c.files.length && c.files.every((f) => CONFIG_FILE.test(f))) || DEPS_CHORE.test(c.subject));
+    const title = ticket && !list[0].subject.includes(ticket) ? `${ticket}: ${list[0].subject}` : list[0].subject;
+    if (isFix) {
+      const first = normalizeSubject(fixes[0].subject);
+      const similarRepos = new Set(fixes.filter((c) => similarity(normalizeSubject(c.subject), first) >= a.similarity).map((c) => c.repo));
+      const dup = similarRepos.size >= 2;
+      bugs.push(dup
+        ? { category: 'duplicated-fix', confidence: 'medium', repos: groupRepos, title, why: `The same fix was applied in ${groupRepos.length} repos: duplicated code, or a shared contract that has to be fixed everywhere.`, commits: commitsEv, copies: groupRepos.length }
+        : { category: 'cross-repo-fix', confidence: 'medium', repos: groupRepos, title, why: `One bug needed coordinated fixes in ${groupRepos.length} repos (linked by ${ticket ?? 'subject'}); the contract between them lives in no single repo.`, commits: commitsEv });
+    } else if (configOnly) {
+      duplicatedTooling.push({ repos: groupRepos, title, commits: commitsEv, copies: groupRepos.length, bot: list.every(isBot) });
+    } else {
+      coordinated.push({ repos: groupRepos, title, via, ticket, commits: commitsEv });
+    }
+  }
+
+  // 3. Single-commit fixes linked to an internal bump.
+  for (const c of all) {
+    if (used.has(key(c)) || !isFixSubject(c.subject) && !(FIX_WORD.test(c.body) && !DEPS_CHORE.test(c.subject))) continue;
+    const ownUps = uniqueBumps.filter((b) => b.repo === c.repo && b.sha === c.sha && b.direction === 'up');
+    if (ownUps.length) {
+      used.add(key(c));
+      bugs.push({
+        category: 'fix-propagation', confidence: 'medium', repos: [c.repo, ...new Set(ownUps.map((b) => producerOf.get(b.pkg)).filter(Boolean))],
+        title: `${c.subject}`, why: `The fix reached ${c.repo} only after a release of ${ownUps.map((b) => b.pkg).join(', ')} and a version bump.`,
+        commits: [ev(c)],
+      });
+      continue;
+    }
+    if (bumpCommitKeys.has(key(c))) continue;
+    const prior = uniqueBumps.filter((b) => b.repo === c.repo && b.direction === 'up' && b.date <= c.date && days(b.date, c.date) <= a.bumpFixWindowDays);
+    if (!prior.length) continue;
+    const text = `${c.subject}\n${c.body}`.toLowerCase();
+    const mentions = prior.find((b) => text.includes(b.pkg.toLowerCase()) || (b.pkg.split('/').pop().length >= 4 && new RegExp(`\\b${b.pkg.split('/').pop().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(text)));
+    const lastMajor = prior.findLast((b) => minVersion(b.to)[0] > minVersion(b.from)[0]);
+    const confidence = mentions || COMPAT.test(text) ? 'medium' : lastMajor && days(lastMajor.date, c.date) <= 2 ? 'low' : null;
+    if (!confidence) continue;
+    used.add(key(c));
+    const b = mentions ?? (confidence === 'low' ? lastMajor : prior.at(-1));
+    bugs.push({
+      category: 'post-bump-fix', confidence, repos: [c.repo, producerOf.get(b.pkg)].filter(Boolean),
+      title: c.subject, why: `Fix landed ${round(days(b.date, c.date))} days after ${c.repo} bumped ${b.pkg} ${b.from} → ${b.to}${mentions ? ' and names that package' : COMPAT.test(text) ? ' and describes a compatibility break' : ''}.`,
+      commits: [{ ...ev(commitBySha.get(`${b.repo}:${b.sha}`)), evidenceOnly: true }, ev(c)],
+    });
+  }
+
+  // ---------- cost model ----------
+  const perRepoCi = {};
+  for (const r of repos) {
+    const ci = config.ci?.[r.name];
+    const landed = r.commits.length || 1;
+    perRepoCi[r.name] = ci && Number.isFinite(ci.totalMinutes) && ci.totalMinutes >= 0
+      ? { minutesPerCommit: ci.totalMinutes / Math.max(ci.commits ?? landed, 1), source: 'measured', runs: ci.runs ?? null, totalMinutes: ci.totalMinutes }
+      : { minutesPerCommit: a.ciMinutesPerCommit, source: 'assumed' };
+  }
+  const ciMin = (repo, n = 1) => n * (perRepoCi[repo]?.minutesPerCommit ?? a.ciMinutesPerCommit);
+  const conf = { low: ['high'], expected: ['high', 'medium'], high: ['high', 'medium', 'low'] };
+  // scope: null = every analysed repo (the tax); a Set = only repos that would move (what a migration recovers).
+  const inScope = (scope, repo) => !scope || scope.has(repo);
+  const scopeGroup = (scope, g) => {
+    const commits = g.commits.filter((c) => inScope(scope, c.repo));
+    const repos = [...new Set(commits.map((c) => c.repo))];
+    return repos.length >= 2 ? { ...g, commits, repos, copies: repos.length } : null;
+  };
+  const lines = (scenario, scope = null) => {
+    const out = [];
+    const coordinatedS = coordinated.map((g) => scopeGroup(scope, g)).filter(Boolean);
+    const toolingS = duplicatedTooling.map((g) => scopeGroup(scope, g)).filter(Boolean);
+    // A bump that is itself counted as a fix-propagation bug is costed once, as the bug.
+    const ownBug = new Set(bugs.filter((b) => b.category === 'fix-propagation').flatMap((b) => b.commits.map((c) => `${c.repo}:${c.sha}`)));
+    const costedBumps = uniqueBumps.filter((b) => b.direction === 'up' && !ownBug.has(`${b.repo}:${b.sha.slice(0, 10)}`)
+      && inScope(scope, b.repo) && (!scope || scope.has(producerOf.get(b.pkg))));
+    const humanBumps = costedBumps.filter((b) => !b.bot);
+    const botBumps = costedBumps.filter((b) => b.bot);
+    const bumpCommitSet = (list) => [...new Set(list.map((b) => `${b.repo}:${b.sha}`))].map((k) => k.split(':')[0]);
+    out.push({ key: 'bumps', label: 'Internal dependency bumps', count: humanBumps.length + botBumps.length,
+      hours: humanBumps.length * a.bumpHumanHours + botBumps.length * a.bumpBotHours,
+      ciMinutes: bumpCommitSet(costedBumps).reduce((s, repo) => s + ciMin(repo), 0) });
+    const rel = releaseEvents.filter((x) => inScope(scope, x.repo));
+    // One CI run per release commit, even when it versions several packages.
+    const relCommits = [...new Map(rel.map((x) => [`${x.repo}:${x.sha}`, x.repo])).values()];
+    out.push({ key: 'releases', label: 'Internal releases consumed by sibling repos', count: rel.length,
+      hours: rel.length * a.releaseHours, ciMinutes: relCommits.reduce((s, repo) => s + ciMin(repo), 0) });
+    out.push({ key: 'coordination', label: 'Changes coordinated across repos', count: coordinatedS.length,
+      hours: coordinatedS.reduce((s, g) => s + (g.repos.length - 1) * a.coordinationHoursPerExtraRepo, 0),
+      ciMinutes: coordinatedS.reduce((s, g) => s + g.commits.filter((c) => c.repo !== g.commits[0].repo).reduce((t, c) => t + ciMin(c.repo), 0), 0) });
+    out.push({ key: 'duplicatedTooling', label: 'Same tooling/dependency maintenance repeated per repo', count: toolingS.length,
+      hours: toolingS.reduce((s, g) => s + (g.copies - 1) * (g.bot ? a.bumpBotHours : a.duplicateChangeHoursPerCopy), 0),
+      ciMinutes: toolingS.reduce((s, g) => s + g.commits.filter((c) => c.repo !== g.commits[0].repo).reduce((t, c) => t + ciMin(c.repo), 0), 0) });
+    for (const cat of ['dependency-regression', 'post-bump-fix', 'fix-propagation', 'duplicated-fix', 'cross-repo-fix']) {
+      const list = bugs.filter((b) => b.category === cat && conf[scenario].includes(b.confidence) && (!scope || b.repos.every((x) => scope.has(x))));
+      out.push({ key: cat, label: `Bugs: ${cat}`, count: list.length,
+        hours: list.reduce((s, b) => s + a.bugHours + (b.copies ? (b.copies - 1) * a.duplicateChangeHoursPerCopy : 0), 0),
+        ciMinutes: list.reduce((s, b) => s + b.commits.filter((c) => !c.evidenceOnly).reduce((t, c) => t + ciMin(c.repo), 0), 0) });
+    }
+    const yearly = 365 / windowDays;
+    for (const l of out) {
+      l.cost = l.hours * rates.developerHourly + l.ciMinutes * rates.ciPerMinute;
+      l.savingsShare = SAVINGS[l.key];
+      l.annualCost = l.cost * yearly;
+      l.annualSavings = l.annualCost * l.savingsShare;
+    }
+    const sum = (f) => out.reduce((s, l) => s + l[f], 0);
+    return {
+      lines: out.map((l) => ({ ...l, hours: round(l.hours), ciMinutes: Math.round(l.ciMinutes), cost: Math.round(l.cost), annualCost: Math.round(l.annualCost), annualSavings: Math.round(l.annualSavings) })),
+      totals: { hours: round(sum('hours')), ciMinutes: Math.round(sum('ciMinutes')), cost: Math.round(sum('cost')), annualCost: Math.round(sum('annualCost')), annualSavings: Math.round(sum('annualSavings')),
+        devCost: Math.round(sum('hours') * rates.developerHourly), ciCost: Math.round(sum('ciMinutes') * rates.ciPerMinute) },
+    };
+  };
+
+  // ---------- migration facts ----------
+  const edges = new Map();
+  const edge = (x, y) => { const k = [x, y].sort().join(' ↔ '); if (!edges.has(k)) edges.set(k, { repos: [x, y].sort(), dependencies: 0, bumps: 0, sharedChanges: 0, sharedTooling: 0, bugs: 0 }); return edges.get(k); };
+  for (const c of consumers) if (c.producer) edge(c.repo, c.producer).dependencies++;
+  for (const b of uniqueBumps) { const p = producerOf.get(b.pkg); if (p && p !== b.repo) edge(b.repo, p).bumps++; }
+  const pairs = (rs) => rs.flatMap((x, i) => rs.slice(i + 1).map((y) => [x, y]));
+  for (const g of coordinated) for (const [x, y] of pairs(g.repos)) edge(x, y).sharedChanges++;
+  // Repeated tooling is a cost, but every repo has tooling: it is shown, not used for coupling.
+  for (const g of duplicatedTooling) for (const [x, y] of pairs(g.repos)) edge(x, y).sharedTooling++;
+  for (const b of bugs) for (const [x, y] of pairs([...new Set(b.repos)])) edge(x, y).bugs++;
+  const edgeList = [...edges.values()].filter((e) => e.dependencies + e.bumps + e.sharedChanges + e.bugs > 0).map((e) => ({ ...e, weight: e.dependencies * 2 + e.bumps + e.sharedChanges + e.bugs * 3 })).sort((x, y) => y.weight - x.weight);
+  // Clusters: tooling-only links do not justify a migration on their own.
+  const cp = new Map(repos.map((r) => [r.name, r.name]));
+  const cf = (k) => { while (cp.get(k) !== k) k = cp.get(k); return k; };
+  for (const e of edgeList) if (e.dependencies || e.bumps || e.bugs || e.sharedChanges >= 2) cp.set(cf(e.repos[0]), cf(e.repos[1]));
+  const clusterMap = new Map();
+  for (const r of repos) { const k = cf(r.name); if (!clusterMap.has(k)) clusterMap.set(k, []); clusterMap.get(k).push(r.name); }
+  const clusters = [...clusterMap.values()].map((members) => ({
+    repos: members.sort(), weight: edgeList.filter((e) => members.includes(e.repos[0]) && members.includes(e.repos[1])).reduce((s, e) => s + e.weight, 0),
+  })).sort((x, y) => y.weight - x.weight || y.repos.length - x.repos.length);
+  const isolated = clusters.filter((c) => c.repos.length === 1).map((c) => c.repos[0]);
+
+  const migrateRepos = repos.filter((r) => !isolated.includes(r.name) || repos.length === 1);
+  const migrateSet = new Set(migrateRepos.map((r) => r.name));
+  // Cost covers every analysed repo; savings and payback only the repos that would move.
+  const scenarios = {};
+  for (const k of ['low', 'expected', 'high']) {
+    const full = lines(k), scoped = lines(k, migrateSet);
+    full.lines.forEach((l, i) => { l.annualSavings = scoped.lines[i].annualSavings; });
+    full.totals.annualSavings = scoped.totals.annualSavings;
+    scenarios[k] = full;
+  }
+
+  // External dependency conflicts (different majors across the repos that would move) — alignment before one lockfile.
+  const ext = new Map();
+  for (const r of migrateRepos) for (const p of r.inv.packages) for (const [dep, range] of Object.entries(p.deps)) {
+    if (isInternal(dep)) continue;
+    const v = minVersion(range);
+    if (!v) continue;
+    if (!ext.has(dep)) ext.set(dep, new Map());
+    const m = ext.get(dep);
+    if (!m.has(v[0])) m.set(v[0], new Set());
+    m.get(v[0]).add(r.name);
+  }
+  const conflicts = [...ext].filter(([, m]) => m.size > 1)
+    .map(([dep, m]) => ({ dep, majors: Object.fromEntries([...m].map(([k, s]) => [k, [...s].sort()])), repos: new Set([...m.values()].flatMap((s) => [...s])).size }))
+    .sort((x, y) => y.repos - x.repos || x.dep.localeCompare(y.dep));
+
+  const langs = {};
+  for (const r of repos) for (const [l, n] of Object.entries(r.inv.languages)) langs[l] = (langs[l] ?? 0) + n;
+  const langNames = Object.keys(langs).sort((x, y) => langs[y] - langs[x]);
+  const tools = new Set(repos.flatMap((r) => r.inv.buildTools));
+  const recommendedTool = langNames.length === 0 ? 'unknown'
+    : langNames.every((l) => l === 'js/ts') ? (tools.has('nx') ? 'Nx (already used) on pnpm workspaces' : tools.has('turbo') ? 'Turborepo (already used) on pnpm workspaces' : 'pnpm workspaces + Nx or Turborepo')
+      : langNames.every((l) => l === 'jvm') ? 'Gradle composite build, or Bazel for very large graphs'
+        : tools.has('bazel') ? 'Bazel (already used)' : 'Nx (polyglot plugins) or Bazel';
+
+  const options = toolOptions(langNames, tools);
+  const reasons = whyMigrate({
+    bumps: uniqueBumps.length, releases: releaseEvents.length, coordinated: coordinated.length, repeatedTooling: duplicatedTooling.length,
+    skew: skew.length, duplicatedFixes: bugs.filter((b) => b.category === 'duplicated-fix').length,
+    crossRepoFixes: bugs.filter((b) => b.category === 'cross-repo-fix').length,
+  });
+
+  const migrationDays = migrateRepos.length * a.migrationDaysPerRepo + conflicts.length * a.migrationDaysPerConflict;
+  const migrationCost = Math.round(migrationDays * 8 * rates.developerHourly);
+  const payback = (s) => {
+    const monthly = s.totals.annualSavings / 12 - a.monorepoToolingMonthly;
+    return monthly > 0 ? round(migrationCost / monthly) : null;
+  };
+
+  return {
+    version: 1,
+    generatedAt: now,
+    window: { since, until: now.slice(0, 10), days: Math.round(windowDays) },
+    rates, assumptions: a, problems, publicPackages: config.publicPackages ?? [],
+    repos: repos.map((r) => ({
+      name: r.name, github: r.github, commits: r.commits.length,
+      packages: r.inv.packages.filter((p) => p.name).map((p) => ({ name: p.name, version: p.version, private: p.private })),
+      languages: r.inv.languages, packageManager: r.inv.packageManager, buildTools: r.inv.buildTools, ciFiles: r.inv.ci, nodeVersion: r.inv.nodeVersion, ci: perRepoCi[r.name],
+    })),
+    internal: {
+      packages: [...producerOf].filter(([n]) => consumedPkgs.has(n)).map(([pkg, repo]) => ({ pkg, repo, consumers: consumers.filter((c) => c.pkg === pkg).map((c) => c.repo) })),
+      bumps: uniqueBumps.map(({ subject, ...b }) => ({ ...b, sha: b.sha.slice(0, 10), date: b.date.slice(0, 10) })),
+      releases: releaseEvents.map((x) => ({ ...x, sha: x.sha.slice(0, 10), date: x.date.slice(0, 10) })),
+      medianBumpLagDays: median(uniqueBumps.map((b) => b.lagDays).filter((x) => x !== null)),
+      drift: drift.filter((d) => d.behind), skew,
+    },
+    bugs: bugs.map((b, i) => ({ id: `B${i + 1}`, ...b })),
+    coordinated, duplicatedTooling,
+    cost: scenarios,
+    migration: {
+      recommendedTool, languages: langs,
+      toolOptions: options, whyMigrate: reasons,
+      toolSource: { urls: MONOREPO_TOOLS.source.urls, retrieved: MONOREPO_TOOLS.source.retrieved, publisher: MONOREPO_TOOLS.source.publisher, legend: MONOREPO_TOOLS.source.legend, independent: MONOREPO_TOOLS.independent },
+      clusters, isolated, coupling: edgeList.filter((e) => e.weight > 0), externalConflicts: conflicts,
+      oneTime: { days: round(migrationDays), cost: migrationCost, repos: migrateRepos.map((r) => r.name) },
+      paybackMonths: { low: payback(scenarios.low), expected: payback(scenarios.expected), high: payback(scenarios.high) },
+    },
+  };
+}
+
+export function toolOptionsMarkdown(m) {
+  const src = m.toolSource;
+  const cats = m.toolOptions[0].categories.map((c) => c.category);
+  const out = ['### Tool options', '',
+    `Every tool compared on [monorepo.tools/compare](${src.urls[1]}) (snapshot ${src.retrieved}). The rating and every column up to "${src.legend.none}" come from monorepo.tools, which is published by Nx; the last column is from independent sources and is not scored.`, '',
+    `| Tool | monorepo.tools rating /10 | ${cats.join(' | ')} | ${src.legend.implement} | ${src.legend.community} | ${src.legend.none} | Fit | Already used | Independent signals (not scored) |`,
+    `|---|---:|${cats.map(() => '---:').join('|')}|---:|---:|---:|---|---|---|`];
+  for (const t of m.toolOptions) {
+    out.push(`| [${t.name}](${t.repo}) | ${t.rating.toFixed(1)} | ${t.categories.map((c) => `${c.native}/${c.total}`).join(' | ')} | ${t.counts.implement} | ${t.counts.community} | ${t.counts.none} | ${t.fit ? 'yes' : `no: ${t.fitReason}`} | ${t.alreadyUsed ? 'yes' : '—'} | ${independentSignals(t.independent) ?? '—'} |`);
+  }
+  out.push('', '**Sources**', '');
+  for (const x of toolSources(src, m.toolOptions[0].total)) out.push(`- [${x.name}](${x.url}) (${x.publisher}, retrieved ${x.retrieved}; **${x.role}**). ${x.metric}. Covers: ${x.covers}.`);
+  return out;
+}
+
+function median(xs) {
+  if (!xs.length) return null;
+  const s = [...xs].sort((x, y) => x - y);
+  const m = Math.floor(s.length / 2);
+  return round(s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2);
+}
+
+// ---------- rendering ----------
+
+export function renderMarkdown(r) {
+  const cur = r.rates.currency === 'USD' ? '$' : `${r.rates.currency} `;
+  const money = (n) => `${cur}${Math.round(n).toLocaleString('en-US')}`;
+  const e = r.cost.expected;
+  const md = [];
+  md.push('# Polyrepo Tax Report', '');
+  md.push(`**Repos:** ${r.repos.length} · **Window:** ${r.window.since} → ${r.window.until} (${r.window.days} days) · **Rates:** ${money(r.rates.developerHourly)}/dev-hour, ${cur}${r.rates.ciPerMinute}/CI-minute`, '');
+  md.push(`**Polyrepo tax in this window (expected):** ${money(e.totals.cost)} — ${e.totals.hours} developer hours (${money(e.totals.devCost)}) + ${e.totals.ciMinutes.toLocaleString('en-US')} CI minutes (${money(e.totals.ciCost)})`, '');
+  md.push(`**Annualized:** ${money(r.cost.low.totals.annualCost)} – ${money(r.cost.high.totals.annualCost)} (expected ${money(e.totals.annualCost)}); a monorepo would recover about ${money(e.totals.annualSavings)}/year.`, '');
+  const pb = r.migration.paybackMonths;
+  md.push(`**Migration:** ~${r.migration.oneTime.days} dev-days (${money(r.migration.oneTime.cost)}) for ${r.migration.oneTime.repos.length} repos → payback ${pb.expected === null ? 'not reached' : `~${pb.expected} months`} (range ${pb.high ?? '—'}–${pb.low ?? 'never'}).`, '');
+  const bugCount = (s) => r.bugs.filter((b) => s.includes(b.confidence)).length;
+  md.push(`**Polyrepo-attributable bugs:** ${bugCount(['high'])} high-confidence · ${bugCount(['medium'])} medium · ${bugCount(['low'])} low`, '');
+  if (r.problems.length) md.push('> **Data problems:** ' + r.problems.join('; '), '');
+  md.push('These are estimates from git history, not invoices. Every count links to commits below; every rate and assumption is listed at the end and can be overridden.', '');
+
+  md.push('## Where the time goes (expected scenario)', '');
+  md.push('| Cost driver | Events | Dev hours | CI minutes | Cost (window) | Annualized | Monorepo removes |', '|---|---:|---:|---:|---:|---:|---:|');
+  for (const l of e.lines) md.push(`| ${l.label} | ${l.count} | ${l.hours} | ${l.ciMinutes.toLocaleString('en-US')} | ${money(l.cost)} | ${money(l.annualCost)} | ${Math.round(l.savingsShare * 100)}% |`);
+  md.push(`| **Total** | | **${e.totals.hours}** | **${e.totals.ciMinutes.toLocaleString('en-US')}** | **${money(e.totals.cost)}** | **${money(e.totals.annualCost)}** | **${money(e.totals.annualSavings)}/yr** |`, '');
+  md.push('| Scenario | Counts | Window cost | Annualized | Annual savings | Payback |', '|---|---|---:|---:|---:|---:|');
+  for (const [k, label] of [['low', 'high-confidence bugs only'], ['expected', 'high + medium'], ['high', 'high + medium + low']]) {
+    const s = r.cost[k];
+    md.push(`| ${k} | ${label} | ${money(s.totals.cost)} | ${money(s.totals.annualCost)} | ${money(s.totals.annualSavings)} | ${pb[k] === null ? '—' : `${pb[k]} mo`} |`);
+  }
+  md.push('');
+
+  md.push('## Bugs attributable to repo boundaries', '');
+  if (!r.bugs.length) md.push('None found in this window.', '');
+  for (const conf of ['high', 'medium', 'low']) {
+    const list = r.bugs.filter((b) => b.confidence === conf);
+    if (!list.length) continue;
+    md.push(`### ${conf[0].toUpperCase()}${conf.slice(1)} confidence (${list.length})`, '');
+    for (const b of list) {
+      md.push(`- **${b.id} · \`${b.category}\`** — ${b.title} _(${[...new Set(b.repos)].join(', ')})_`);
+      md.push(`  - ${b.why}`);
+      for (const c of b.commits) md.push(`  - \`${c.repo}@${c.sha}\` ${c.date} — ${c.subject}`);
+    }
+    md.push('');
+  }
+
+  md.push('## Internal dependency churn', '');
+  const ib = r.internal;
+  const ups = ib.bumps.filter((b) => b.direction === 'up');
+  md.push(`- **${ups.length}** internal bump commits (${ups.filter((b) => b.bot).length} by bots, ${ups.filter((b) => !b.bot).length} by people); **${ib.bumps.filter((b) => b.direction === 'down').length}** downgrade(s).`);
+  md.push(`- **${ib.releases.length}** internal releases existed to move code between repos${r.publicPackages?.length || r.publicPackages === true ? ' (releases of packages marked public are not counted)' : ''}.`);
+  md.push(`- Median lag from release to consumer bump: **${ib.medianBumpLagDays ?? 'n/a'}** days.`);
+  if (ib.drift.length) md.push(`- **${ib.drift.length}** consumer(s) behind the latest internal version today; ${ib.drift.filter((d) => d.majorsBehind > 0).length} at least a major version behind.`);
+  md.push('');
+  if (ib.packages.length) {
+    md.push('| Internal package | Producer | Consumers | Bumps | Releases |', '|---|---|---|---:|---:|');
+    for (const p of ib.packages) md.push(`| \`${p.pkg}\` | ${p.repo} | ${p.consumers.join(', ')} | ${ups.filter((b) => b.pkg === p.pkg).length} | ${ib.releases.filter((x) => x.pkg === p.pkg).length} |`);
+    md.push('');
+  }
+  if (ib.skew.length) {
+    md.push('**Version skew today** (the same internal package at different majors):', '');
+    for (const s of ib.skew) md.push(`- \`${s.pkg}\`: ${Object.entries(s.majors).map(([m, rs]) => `v${m} in ${rs.join(', ')}`).join(' · ')}`);
+    md.push('');
+  }
+
+  if (r.coordinated.length || r.duplicatedTooling.length) {
+    md.push('## Duplicated and coordinated work', '');
+    for (const g of r.coordinated.slice(0, 15)) md.push(`- **Coordinated change** (${g.repos.join(', ')}): ${g.title} — ${g.commits.map((c) => `\`${c.repo}@${c.sha}\``).join(', ')}`);
+    for (const g of r.duplicatedTooling.slice(0, 15)) md.push(`- **Repeated maintenance** ×${g.copies}${g.bot ? ' (bot)' : ''}: ${g.title} — ${g.commits.map((c) => `\`${c.repo}@${c.sha}\``).join(', ')}`);
+    const more = Math.max(0, r.coordinated.length - 15) + Math.max(0, r.duplicatedTooling.length - 15);
+    if (more) md.push(`- …and ${more} more in the JSON report.`);
+    md.push('');
+  }
+
+  const m = r.migration;
+  md.push('## Migration plan inputs', '');
+  md.push(`**Recommended tooling:** ${m.recommendedTool} (languages by file count: ${Object.entries(m.languages).map(([l, n]) => `${l} ${n}`).join(', ') || 'none detected'})`, '');
+  if (m.whyMigrate?.length) {
+    md.push('### Why migrate', '', 'The polyrepo costs [monorepo.tools](https://monorepo.tools/) lists, shown only where this report measured them:', '');
+    for (const w of m.whyMigrate) md.push(`- **${w.polyrepo}** → ${w.monorepo}. Measured: ${w.evidence.join(', ')}.`);
+    md.push('');
+  }
+  if (m.toolOptions?.length) md.push(...toolOptionsMarkdown(m), '');
+  md.push('**Clusters** (repos that change together; migrate the heaviest first):', '');
+  m.clusters.filter((c) => c.repos.length > 1).forEach((c, i) => md.push(`${i + 1}. ${c.repos.join(', ')} — coupling weight ${c.weight}`));
+  if (m.isolated.length) md.push('', `**No measured coupling — keep separate unless there is another reason:** ${m.isolated.join(', ')}`);
+  md.push('');
+  if (m.coupling.length) {
+    md.push('| Repo pair | Internal deps | Bumps | Coordinated changes | Bugs | Weight | Repeated tooling (not weighted) |', '|---|---:|---:|---:|---:|---:|---:|');
+    for (const c of m.coupling.slice(0, 20)) md.push(`| ${c.repos.join(' ↔ ')} | ${c.dependencies} | ${c.bumps} | ${c.sharedChanges} | ${c.bugs} | ${c.weight} | ${c.sharedTooling} |`);
+    md.push('');
+  }
+  if (m.externalConflicts.length) {
+    md.push(`**External dependencies to align before sharing one lockfile** (${m.externalConflicts.length}):`, '');
+    for (const c of m.externalConflicts.slice(0, 15)) md.push(`- \`${c.dep}\`: ${Object.entries(c.majors).map(([v, rs]) => `v${v} (${rs.join(', ')})`).join(' · ')}`);
+    if (m.externalConflicts.length > 15) md.push(`- …and ${m.externalConflicts.length - 15} more in the JSON report.`);
+    md.push('');
+  }
+
+  md.push('## Assumptions', '');
+  md.push('| Assumption | Value |', '|---|---|');
+  for (const [k, v] of Object.entries(r.assumptions)) md.push(`| \`${k}\` | ${v} |`);
+  md.push(`| \`developerHourly\` | ${money(r.rates.developerHourly)} |`, `| \`ciPerMinute\` | ${cur}${r.rates.ciPerMinute} |`, '');
+  md.push('| Repo | Commits | CI minutes/commit | CI source |', '|---|---:|---:|---|');
+  for (const repo of r.repos) md.push(`| ${repo.name} | ${repo.commits} | ${round(repo.ci.minutesPerCommit)} | ${repo.ci.source} |`);
+  md.push('');
+  return md.join('\n');
+}
+
+// ---------- CLI ----------
+
+function parseArgs(argv) {
+  const opts = { repos: [], internalScopes: [] };
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    const next = () => argv[++i];
+    if (a === '--config') opts.config = next();
+    else if (a === '--out') opts.out = next();
+    else if (a === '--since') opts.since = next();
+    else if (a === '--scope') opts.internalScopes.push(next());
+    else if (a === '--rate') opts.rate = Number(next());
+    else if (a === '--ci-rate') opts.ciRate = Number(next());
+    else if (a === '--ci') opts.ci = next();
+    else if (a === '--overrides') opts.overrides = next();
+    else if (a === '--now') opts.now = next();
+    else if (a === '--public') (opts.publicPackages ??= []).push(next());
+    else if (a.startsWith('--')) throw new Error(`unknown option ${a}`);
+    else opts.repos.push(a);
+  }
+  return opts;
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  try {
+    const opts = parseArgs(process.argv.slice(2));
+    let config = { repos: [], internalScopes: [] };
+    if (opts.config) {
+      config = JSON.parse(fs.readFileSync(opts.config, 'utf8'));
+      config.baseDir = path.dirname(path.resolve(opts.config));
+    }
+    if (opts.repos.length) config.repos = [...(config.repos ?? []), ...opts.repos];
+    if (opts.internalScopes.length) config.internalScopes = [...(config.internalScopes ?? []), ...opts.internalScopes];
+    if (opts.since) config.since = opts.since;
+    if (opts.now) config.now = opts.now;
+    if (opts.publicPackages) config.publicPackages = opts.publicPackages.includes('*') ? true : [...(Array.isArray(config.publicPackages) ? config.publicPackages : []), ...opts.publicPackages];
+    config.rates = { ...config.rates };
+    if (opts.rate) config.rates.developerHourly = opts.rate;
+    if (opts.ciRate) config.rates.ciPerMinute = opts.ciRate;
+    const ciPath = opts.ci ?? (typeof config.ci === 'string' ? path.resolve(config.baseDir ?? '.', config.ci) : null);
+    if (ciPath) config.ci = JSON.parse(fs.readFileSync(ciPath, 'utf8'));
+    const ovPath = opts.overrides ?? (typeof config.overrides === 'string' ? path.resolve(config.baseDir ?? '.', config.overrides) : null);
+    if (ovPath) config.overrides = JSON.parse(fs.readFileSync(ovPath, 'utf8'));
+    if (!config.repos?.length) throw new Error('no repositories given (pass paths or --config)');
+    const report = analyze(config);
+    const out = path.resolve(opts.out ?? path.join(os.tmpdir(), 'polyrepo-tax-reports'));
+    fs.mkdirSync(out, { recursive: true });
+    fs.writeFileSync(path.join(out, 'polyrepo-tax-report.json'), JSON.stringify(report, null, 2));
+    fs.writeFileSync(path.join(out, 'polyrepo-tax-report.md'), renderMarkdown(report));
+    fs.writeFileSync(path.join(out, 'polyrepo-tax-report.html'), renderHtml(report));
+    const e = report.cost.expected.totals;
+    console.log(`wrote ${path.join(out, 'polyrepo-tax-report')}.{md,json,html}`);
+    console.log(`expected: ${e.hours} dev hours + ${e.ciMinutes} CI minutes = ${report.rates.currency} ${e.cost} in ${report.window.days} days; ${report.bugs.length} candidate bugs`);
+    for (const p of report.problems) console.error(`WARN: ${p}`);
+  } catch (err) {
+    console.error(`polyrepo-tax: ${err.message}`);
+    process.exit(2);
+  }
+}
+FILE:scripts/fetch-ci.mjs
+#!/usr/bin/env node
+// Collects GitHub Actions minutes per repository for polyrepo-tax. Read-only: only `gh api` GET requests.
+// Usage: node fetch-ci.mjs --config polyrepo-tax.config.json [--since 2025-11-25] [--sample 30] [--out ci.json]
+//        node fetch-ci.mjs --repo name=owner/repo [--repo ...] --since 2025-11-25 --out ci.json
+// Total = wall-clock minutes of every completed run in the window. Runs fan out into parallel jobs that are
+// billed separately, so job minutes are sampled for up to --sample runs per repo and the total is scaled
+// by the sampled job/wall ratio.
+import { execFileSync } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const gh = (args) => execFileSync('gh', ['api', '-X', 'GET', ...args], { encoding: 'utf8', maxBuffer: 1 << 30, stdio: ['ignore', 'pipe', 'pipe'] });
+const minutes = (a, b) => Math.max(0, (Date.parse(b) - Date.parse(a)) / 60000);
+
+const LIMIT = 1000;
+const DAY = 86_400_000;
+const isoDay = (d) => d.toISOString().slice(0, 10);
+
+// The runs API returns at most 1000 results per filtered query, so start with one month at a time.
+export function monthRanges(since, until) {
+  const out = [];
+  let start = new Date(`${since}T00:00:00Z`);
+  const end = new Date(`${until}T00:00:00Z`);
+  while (start < end) {
+    const next = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 1));
+    const stop = next < end ? next : end;
+    out.push(`${start.toISOString().slice(0, 10)}..${new Date(stop - 86_400_000).toISOString().slice(0, 10)}`);
+    start = stop;
+  }
+  return out;
+}
+
+// Splits a range (YYYY-MM-DD..YYYY-MM-DD, inclusive) until each piece is under the API's result cap.
+// Throws when a single day still reaches the cap, so a partial total is never reported as measured.
+export function completeRanges(range, count) {
+  const total = count(range);
+  if (total < LIMIT) return total ? [range] : [];
+  const [from, to] = range.split('..').map((d) => new Date(`${d}T00:00:00Z`));
+  const spanDays = Math.round((to - from) / DAY);
+  if (spanDays < 1) throw new Error(`more than ${LIMIT - 1} runs on ${isoDay(from)}; cannot list them completely`);
+  const mid = new Date(from.getTime() + Math.floor(spanDays / 2) * DAY);
+  return [...completeRanges(`${isoDay(from)}..${isoDay(mid)}`, count), ...completeRanges(`${isoDay(new Date(mid.getTime() + DAY))}..${isoDay(to)}`, count)];
+}
+
+export function fetchRepo(slug, since, until, sample, api = gh) {
+  const runs = [];
+  const base = [`repos/${slug}/actions/runs`, '-f', 'status=completed'];
+  const count = (range) => Number(api([...base, '-f', `created=${range}`, '-f', 'per_page=1', '--jq', '.total_count']).trim());
+  for (const range of monthRanges(since, until).flatMap((r) => completeRanges(r, count))) {
+    const out = api([...base, '-f', `created=${range}`, '-f', 'per_page=100', '--paginate',
+      '--jq', '.workflow_runs[] | [.id, .run_started_at, .updated_at, .event, .name] | @tsv']);
+    for (const line of out.split('\n').filter(Boolean)) {
+      const [id, started, updated, event, name] = line.split('\t');
+      runs.push({ id, wall: minutes(started, updated), event, name });
+    }
+  }
+  const wall = runs.reduce((s, r) => s + r.wall, 0);
+  let ratio = 1, sampled = 0;
+  if (sample > 0 && runs.length) {
+    const step = Math.max(1, Math.floor(runs.length / sample));
+    let w = 0, j = 0;
+    for (let i = 0; i < runs.length && sampled < sample; i += step) {
+      try {
+        const jobs = api([`repos/${slug}/actions/runs/${runs[i].id}/jobs`, '-f', 'per_page=100', '--paginate', '--jq', '.jobs[] | [.started_at, .completed_at] | @tsv']);
+        const jm = jobs.split('\n').filter(Boolean).reduce((s, l) => { const [a, b] = l.split('\t'); return b && b !== 'null' ? s + Math.max(1, Math.ceil(minutes(a, b))) : s; }, 0);
+        if (runs[i].wall > 0) { w += runs[i].wall; j += jm; sampled++; }
+      } catch { /* skip runs whose jobs were deleted */ }
+    }
+    // Keep the measured ratio either way: below 1 when queue time inflates wall clock, above 1 for parallel jobs.
+    if (w > 0) ratio = j / w;
+  }
+  const byWorkflow = {};
+  for (const r of runs) byWorkflow[r.name] = Math.round((byWorkflow[r.name] ?? 0) + r.wall * ratio);
+  return { runs: runs.length, wallMinutes: Math.round(wall), jobWallRatio: Math.round(ratio * 100) / 100, sampledRuns: sampled, totalMinutes: Math.round(wall * ratio), byWorkflow, since, until };
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  const argv = process.argv.slice(2);
+  const opt = (n) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : undefined; };
+  const repos = [];
+  const config = opt('--config') ? JSON.parse(fs.readFileSync(opt('--config'), 'utf8')) : {};
+  for (const r of config.repos ?? []) {
+    if (typeof r === 'object' && r.github) repos.push({ name: r.name ?? path.basename(r.path).replace(/\.git$/, ''), slug: r.github });
+  }
+  argv.forEach((a, i) => { if (a === '--repo') { const [name, slug] = argv[i + 1].split('='); repos.push({ name, slug: slug ?? name }); } });
+  const until = opt('--until') ?? new Date().toISOString().slice(0, 10);
+  const since = opt('--since') ?? config.since ?? new Date(Date.now() - 365 * 86_400_000).toISOString().slice(0, 10);
+  const sample = Number(opt('--sample') ?? 30);
+  if (!repos.length) { console.error('fetch-ci: no repos with a "github" slug (use --config or --repo name=owner/repo)'); process.exit(2); }
+  const result = {};
+  for (const r of repos) {
+    try {
+      result[r.name] = fetchRepo(r.slug, since, until, sample);
+      console.error(`${r.name}: ${result[r.name].runs} runs, ${result[r.name].totalMinutes} minutes (job/wall ×${result[r.name].jobWallRatio})`);
+    } catch (err) {
+      console.error(`WARN ${r.name}: ${String(err.stderr || err.message).trim().split('\n')[0]} — CI cost for this repo will be assumed`);
+    }
+  }
+  const out = opt('--out') ?? 'ci.json';
+  fs.writeFileSync(out, JSON.stringify(result, null, 2));
+  console.error(`wrote ${out}`);
+}
+FILE:scripts/monorepo-tools.json
+{
+  "source": {
+    "name": "monorepo.tools",
+    "urls": [
+      "https://monorepo.tools/",
+      "https://monorepo.tools/compare"
+    ],
+    "retrieved": "2026-11-26",
+    "publisher": "Made by Nx; content \"© 2026 Nx and Contributors\". The page says it tries to represent each tool objectively and welcomes pull requests for corrections.",
+    "legend": {
+      "native": "natively supported",
+      "implement": "implement your own",
+      "community": "community provided",
+      "none": "not supported"
+    }
+  },
+  "reasons": [
+    {
+      "key": "code-sharing",
+      "polyrepo": "Cumbersome code sharing",
+      "monorepo": "Share code without the overhead of publishing versioned packages"
+    },
+    {
+      "key": "duplication",
+      "polyrepo": "Significant code duplication",
+      "monorepo": "A single source of truth: fix once and every consumer gets the fix"
+    },
+    {
+      "key": "cross-repo-changes",
+      "polyrepo": "Costly cross-repo changes",
+      "monorepo": "Atomic commits: a breaking change and its consumer fixes land in one PR"
+    },
+    {
+      "key": "conventions",
+      "polyrepo": "Hard to enforce conventions (drift is the default)",
+      "monorepo": "Conventions live in one place and are enforceable at scale"
+    }
+  ],
+  "categories": [
+    "Fast",
+    "Understandable",
+    "Manageable",
+    "AI Support"
+  ],
+  "features": [
+    {
+      "key": "local-caching",
+      "label": "Local computation caching",
+      "category": "Fast"
+    },
+    {
+      "key": "local-orchestration",
+      "label": "Local task orchestration",
+      "category": "Fast"
+    },
+    {
+      "key": "distributed-caching",
+      "label": "Distributed computation caching",
+      "category": "Fast"
+    },
+    {
+      "key": "distributed-execution",
+      "label": "Distributed task execution",
+      "category": "Fast"
+    },
+    {
+      "key": "remote-execution",
+      "label": "Transparent remote execution",
+      "category": "Fast"
+    },
+    {
+      "key": "affected",
+      "label": "Detecting affected projects/packages",
+      "category": "Fast"
+    },
+    {
+      "key": "task-splitting",
+      "label": "Task splitting",
+      "category": "Fast"
+    },
+    {
+      "key": "deflaking",
+      "label": "Deflaking",
+      "category": "Fast"
+    },
+    {
+      "key": "workspace-analysis",
+      "label": "Workspace analysis",
+      "category": "Understandable"
+    },
+    {
+      "key": "graph-visualization",
+      "label": "Project graph visualization",
+      "category": "Understandable"
+    },
+    {
+      "key": "code-sharing",
+      "label": "Source code sharing",
+      "category": "Manageable"
+    },
+    {
+      "key": "polyglot",
+      "label": "Polyglot support",
+      "category": "Manageable"
+    },
+    {
+      "key": "code-generation",
+      "label": "Code generation",
+      "category": "Manageable"
+    },
+    {
+      "key": "constraints",
+      "label": "Project constraints and visibility",
+      "category": "Manageable"
+    },
+    {
+      "key": "hermetic",
+      "label": "Hermetic builds",
+      "category": "Manageable"
+    },
+    {
+      "key": "mcp-server",
+      "label": "MCP Server",
+      "category": "AI Support"
+    },
+    {
+      "key": "ai-skills",
+      "label": "AI Skills",
+      "category": "AI Support"
+    },
+    {
+      "key": "ai-workspace-analysis",
+      "label": "Workspace Analysis (AI)",
+      "category": "AI Support"
+    },
+    {
+      "key": "ai-task-execution",
+      "label": "Task Execution via AI",
+      "category": "AI Support"
+    },
+    {
+      "key": "agentic-ci",
+      "label": "Agentic CI",
+      "category": "AI Support"
+    }
+  ],
+  "tools": [
+    {
+      "key": "bazel",
+      "name": "Bazel",
+      "by": "Google",
+      "description": "A fast, scalable, multi-language and extensible build system.",
+      "repo": "https://github.com/bazelbuild/bazel",
+      "detect": "bazel",
+      "marks": [
+        "native",
+        "native",
+        "native",
+        "native",
+        "native",
+        "implement",
+        "implement",
+        "implement",
+        "implement",
+        "native",
+        "native",
+        "native",
+        "implement",
+        "native",
+        "native",
+        "community",
+        "none",
+        "community",
+        "community",
+        "none"
+      ]
+    },
+    {
+      "key": "gradle",
+      "name": "Gradle",
+      "by": "Gradle, Inc",
+      "description": "A fast, flexible polyglot build system designed for multi-project builds.",
+      "repo": "https://github.com/gradle/gradle",
+      "detect": "gradle",
+      "marks": [
+        "native",
+        "native",
+        "native",
+        "implement",
+        "none",
+        "native",
+        "native",
+        "native",
+        "native",
+        "implement",
+        "native",
+        "native",
+        "implement",
+        "implement",
+        "none",
+        "native",
+        "none",
+        "community",
+        "community",
+        "implement"
+      ],
+      "independent": {
+        "radar": {
+          "ring": "Adopt",
+          "edition": "2013-05",
+          "url": "https://www.thoughtworks.com/radar/tools/gradle"
+        }
+      }
+    },
+    {
+      "key": "lage",
+      "name": "Lage",
+      "by": "Microsoft",
+      "description": "Task runner in JS monorepos",
+      "repo": "https://github.com/microsoft/lage",
+      "detect": "lage",
+      "marks": [
+        "native",
+        "native",
+        "native",
+        "none",
+        "none",
+        "native",
+        "none",
+        "none",
+        "native",
+        "implement",
+        "native",
+        "none",
+        "implement",
+        "implement",
+        "none",
+        "none",
+        "none",
+        "none",
+        "none",
+        "none"
+      ]
+    },
+    {
+      "key": "lerna",
+      "name": "Lerna",
+      "by": "maintained by the Nx team",
+      "description": "A tool for managing JavaScript projects with multiple packages.",
+      "repo": "https://github.com/lerna/lerna",
+      "detect": "lerna",
+      "marks": [
+        "native",
+        "native",
+        "native",
+        "native",
+        "none",
+        "native",
+        "native",
+        "native",
+        "native",
+        "native",
+        "native",
+        "none",
+        "implement",
+        "implement",
+        "none",
+        "none",
+        "none",
+        "none",
+        "none",
+        "native"
+      ],
+      "independent": {
+        "stateOfJs2024": {
+          "satisfaction": {
+            "2021": 0.59,
+            "2022": 0.47,
+            "2023": 0.36,
+            "2024": 0.33
+          },
+          "usage": 0.21
+        },
+        "stateOfJs2025": {
+          "regularUse": 794
+        }
+      }
+    },
+    {
+      "key": "moon",
+      "name": "moon",
+      "by": "moonrepo",
+      "description": "A task runner and monorepo management tool for the web ecosystem.",
+      "repo": "https://github.com/moonrepo/moon",
+      "detect": "moon",
+      "marks": [
+        "native",
+        "native",
+        "native",
+        "none",
+        "none",
+        "native",
+        "none",
+        "none",
+        "native",
+        "native",
+        "native",
+        "native",
+        "native",
+        "native",
+        "none",
+        "native",
+        "community",
+        "native",
+        "native",
+        "none"
+      ],
+      "independent": {
+        "stateOfJs2025": {
+          "regularUse": 23,
+          "writeIn": true
+        }
+      }
+    },
+    {
+      "key": "nx",
+      "name": "Nx",
+      "by": "Nx",
+      "description": "Nx optimizes your builds, scales your CI, and fixes failed PRs. Built for developers and AI agents.",
+      "repo": "https://github.com/nrwl/nx",
+      "detect": "nx",
+      "marks": [
+        "native",
+        "native",
+        "native",
+        "native",
+        "none",
+        "native",
+        "native",
+        "native",
+        "native",
+        "native",
+        "native",
+        "native",
+        "native",
+        "native",
+        "native",
+        "native",
+        "native",
+        "native",
+        "native",
+        "native"
+      ],
+      "independent": {
+        "stateOfJs2024": {
+          "satisfaction": {
+            "2021": 0.84,
+            "2022": 0.81,
+            "2023": 0.75,
+            "2024": 0.65
+          },
+          "usage": 0.23
+        },
+        "stateOfJs2025": {
+          "regularUse": 1682
+        },
+        "radar": {
+          "ring": "Trial",
+          "edition": "2021-10",
+          "url": "https://www.thoughtworks.com/radar/tools/nx"
+        }
+      }
+    },
+    {
+      "key": "pants",
+      "name": "Pants",
+      "by": "Pants Build",
+      "description": "A fast, scalable, user-friendly build system for codebases of all sizes.",
+      "repo": "https://github.com/pantsbuild/pants",
+      "detect": "pants",
+      "marks": [
+        "native",
+        "native",
+        "native",
+        "native",
+        "native",
+        "native",
+        "implement",
+        "implement",
+        "native",
+        "implement",
+        "native",
+        "native",
+        "native",
+        "implement",
+        "native",
+        "community",
+        "none",
+        "none",
+        "none",
+        "none"
+      ]
+    },
+    {
+      "key": "rush",
+      "name": "Rush",
+      "by": "Microsoft",
+      "description": "Geared for large monorepos with lots of teams and projects. Part of the Rush Stack family of projects.",
+      "repo": "https://github.com/microsoft/rushstack",
+      "detect": "rush",
+      "marks": [
+        "native",
+        "native",
+        "native",
+        "implement",
+        "none",
+        "native",
+        "none",
+        "none",
+        "native",
+        "implement",
+        "native",
+        "none",
+        "implement",
+        "native",
+        "none",
+        "native",
+        "none",
+        "native",
+        "native",
+        "none"
+      ],
+      "independent": {
+        "stateOfJs2024": {
+          "satisfaction": {
+            "2021": 0.59,
+            "2022": 0.54,
+            "2023": 0.48,
+            "2024": 0.42
+          },
+          "usage": 0.01
+        },
+        "stateOfJs2025": {
+          "regularUse": 74
+        }
+      }
+    },
+    {
+      "key": "turborepo",
+      "name": "Turborepo",
+      "by": "Vercel",
+      "description": "The high-performance build system for JavaScript & TypeScript codebases.",
+      "repo": "https://github.com/vercel/turborepo",
+      "detect": "turbo",
+      "marks": [
+        "native",
+        "native",
+        "native",
+        "none",
+        "none",
+        "native",
+        "none",
+        "none",
+        "native",
+        "native",
+        "native",
+        "none",
+        "implement",
+        "implement",
+        "none",
+        "community",
+        "native",
+        "none",
+        "none",
+        "none"
+      ],
+      "independent": {
+        "stateOfJs2024": {
+          "satisfaction": {
+            "2021": 0.87,
+            "2022": 0.9,
+            "2023": 0.83,
+            "2024": 0.77
+          },
+          "usage": 0.16
+        },
+        "stateOfJs2025": {
+          "regularUse": 1718
+        },
+        "radar": {
+          "ring": "Trial",
+          "edition": "2025-04",
+          "previous": "Assess (2023-04)",
+          "url": "https://www.thoughtworks.com/radar/tools/turborepo"
+        }
+      }
+    }
+  ],
+  "independent": {
+    "note": "Independent of the tool vendors. Shown next to the rating, never scored: they measure developer sentiment, usage or expert opinion, not features, and cover only some tools.",
+    "sources": [
+      {
+        "key": "stateOfJs2024",
+        "name": "State of JavaScript 2024",
+        "publisher": "Devographics",
+        "url": "https://2024.stateofjs.com/en-US/libraries/monorepo_tools/",
+        "retrieved": "2026-11-26",
+        "metric": "Satisfaction: proportion of positive sentiment among respondents having used an item and expressed a sentiment",
+        "covers": "Lerna, Nx, Rush, Turborepo (JS tools only)"
+      },
+      {
+        "key": "stateOfJs2025",
+        "name": "State of JavaScript 2025",
+        "publisher": "Devographics",
+        "url": "https://2025.stateofjs.com/en-US/other-tools/",
+        "retrieved": "2026-11-26",
+        "metric": "Respondents who answered \"Which of these monorepo tools do you regularly use?\" (multiple choice, 10,251 answered). This edition did not ask about satisfaction.",
+        "covers": "Lerna, Nx, Rush, Turborepo; moon only as a write-in answer"
+      },
+      {
+        "key": "radar",
+        "name": "Thoughtworks Technology Radar",
+        "publisher": "Thoughtworks",
+        "url": "https://www.thoughtworks.com/radar",
+        "retrieved": "2026-11-26",
+        "metric": "Ring (Adopt, Trial, Assess, Hold) on the latest edition that featured the tool",
+        "covers": "Gradle, Nx, Turborepo. None is on the current edition (Vol. 35, November 2026); Thoughtworks says older blips may no longer reflect its view."
+      }
+    ]
+  }
+}
+FILE:scripts/render-html.mjs
+#!/usr/bin/env node
+// Renders a polyrepo-tax JSON report as one self-contained HTML file (no network requests).
+// Usage: node render-html.mjs <polyrepo-tax-report.json> [--plan migration-plan.md] [--out report.html]
+// Without --plan, a migration-plan.md next to the JSON is embedded when present.
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+
+function moneyFormatter(currency) {
+  try {
+    const full = new Intl.NumberFormat('en-US', { style: 'currency', currency, maximumFractionDigits: 0 });
+    const compact = new Intl.NumberFormat('en-US', { style: 'currency', currency, notation: 'compact', maximumFractionDigits: 1 });
+    return { full: (n) => full.format(n), compact: (n) => (Math.abs(n) < 10_000 ? full.format(n) : compact.format(n)) };
+  } catch {
+    // Not an ISO 4217 code: keep only characters that are safe in HTML text and attributes.
+    const label = String(currency).replace(/[^A-Za-z0-9 ._-]/g, '').slice(0, 12) || 'USD';
+    const f = (n) => `${label} ${Math.round(n).toLocaleString('en-US')}`;
+    return { full: f, compact: f };
+  }
+}
+const num = (n) => Math.round(n).toLocaleString('en-US');
+
+// One line per tool from the independent sources; null when none covers it. Never feeds the rating.
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const month = (ym) => { const [y, m] = ym.split('-'); return `${MONTHS[Number(m) - 1]} ${y}`; };
+export function independentSignals(ind) {
+  if (!ind) return null;
+  const parts = [];
+  const s24 = ind.stateOfJs2024;
+  if (s24) {
+    const years = Object.keys(s24.satisfaction).sort();
+    const pct = (y) => `${Math.round(s24.satisfaction[y] * 100)}%`;
+    parts.push(`State of JS 2024 satisfaction ${pct(years.at(-1))}${years.length > 1 ? ` (${pct(years[0])} in ${years[0]})` : ''}`);
+  }
+  if (ind.stateOfJs2025) parts.push(`State of JS 2025 regular use ${ind.stateOfJs2025.regularUse.toLocaleString('en-US')}${ind.stateOfJs2025.writeIn ? ' (write-in)' : ''}`);
+  if (ind.radar) parts.push(`Thoughtworks Radar ${ind.radar.ring} (${month(ind.radar.edition)}, archived)`);
+  return parts.join(' · ');
+}
+
+// Every source behind the tool options table, monorepo.tools first: the one that is scored, and who publishes it.
+export function toolSources(src, total) {
+  const list = [{
+    name: 'monorepo.tools', url: src.urls[1], publisher: 'published by Nx', retrieved: src.retrieved, role: 'scored',
+    metric: `Feature matrix. monorepo.tools rating = 10 × features marked "${src.legend.native}" ÷ ${total}; "${src.legend.implement}" and "${src.legend.community}" are counted but not scored. The page says it aims to be objective and accepts corrections by pull request`,
+    covers: 'all tools in the table; the rating and the feature columns come from it',
+  }];
+  for (const x of src.independent?.sources ?? []) list.push({ ...x, role: 'independent, not scored' });
+  return list.map((x) => ({ ...x, metric: x.metric.replace(/\.$/, ''), covers: x.covers.replace(/\.$/, '') }));
+}
+
+// Minimal, escaped Markdown for the agent-written migration plan: headings, lists, code, tables, emphasis, links.
+export function markdownToHtml(md) {
+  const inline = (s) => esc(s)
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/(^|[^*])\*([^*\s][^*]*)\*/g, '$1<em>$2</em>')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" rel="noopener">$1</a>');
+  const out = [];
+  const lines = md.replace(/\r\n/g, '\n').split('\n');
+  let list = null;
+  const closeList = () => { if (list) { out.push(`</${list}>`); list = null; } };
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (/^```/.test(line)) {
+      closeList();
+      const code = [];
+      while (++i < lines.length && !/^```/.test(lines[i])) code.push(lines[i]);
+      out.push(`<pre><code>${esc(code.join('\n'))}</code></pre>`);
+      continue;
+    }
+    if (/^\|.*\|\s*$/.test(line) && /^\|[\s:|-]+\|\s*$/.test(lines[i + 1] ?? '')) {
+      closeList();
+      const cells = (l) => l.trim().replace(/^\||\|$/g, '').split('|').map((c) => inline(c.trim()));
+      const head = cells(line);
+      i++;
+      const rows = [];
+      while (i + 1 < lines.length && /^\|.*\|\s*$/.test(lines[i + 1])) rows.push(cells(lines[++i]));
+      out.push(`<div class="table-wrap"><table><thead><tr>${head.map((c) => `<th>${c}</th>`).join('')}</tr></thead><tbody>${rows.map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`);
+      continue;
+    }
+    let m;
+    if ((m = line.match(/^(#{1,4})\s+(.*)$/))) { closeList(); const lvl = Math.min(m[1].length + 2, 5); out.push(`<h${lvl}>${inline(m[2])}</h${lvl}>`); continue; }
+    if ((m = line.match(/^\s*([-*]|\d+\.)\s+(.*)$/))) {
+      const type = /\d/.test(m[1]) ? 'ol' : 'ul';
+      if (list !== type) { closeList(); out.push(`<${type}>`); list = type; }
+      out.push(`<li>${inline(m[2])}</li>`);
+      continue;
+    }
+    if (!line.trim()) { closeList(); continue; }
+    closeList();
+    out.push(`<p>${inline(line)}</p>`);
+  }
+  closeList();
+  return out.join('\n');
+}
+
+export function renderHtml(r, { plan } = {}) {
+  const fmt = moneyFormatter(r.rates.currency ?? 'USD');
+  const e = r.cost.expected;
+  const pb = r.migration.paybackMonths;
+  const bugsBy = (c) => r.bugs.filter((b) => b.confidence === c);
+  const repoList = r.repos.map((x) => x.name).join(', ');
+  const ciMeasured = r.repos.filter((x) => x.ci?.source === 'measured').length;
+  const paybackText = pb.expected === null ? 'Not reached' : pb.expected > 120 ? '10+ years' : `${pb.expected} months`;
+  // Payback decides the message; weak coupling only qualifies a short payback, never contradicts it.
+  const strongCluster = r.migration.clusters.some((c) => c.repos.length > 1 && c.weight >= 5);
+  const verdict = pb.expected === null || pb.expected > 24
+    ? { cls: 'verdict-no', text: 'The measured tax does not pay back a migration within two years. Fix the top cost drivers in place instead, or migrate only the most coupled cluster.' }
+    : strongCluster
+      ? { cls: 'verdict-yes', text: `Migrating the coupled repos pays back in about ${pb.expected} months at the expected estimate.` }
+      : { cls: 'verdict-no', text: `Payback is about ${pb.expected} months, but no cluster has a coupling weight of 5 or more. Treat it as a small, uncertain gain: fixing the top cost drivers in place may be cheaper.` };
+
+  // Annualized cost by driver: one series, ranked, zero rows left to the table.
+  const drivers = e.lines.filter((l) => l.annualCost > 0).sort((a, b) => b.annualCost - a.annualCost);
+  const max = Math.max(1, ...drivers.map((l) => l.annualCost));
+  const bars = drivers.map((l) => {
+    const pct = (l.annualCost / max) * 100;
+    const tip = `${l.label}: ${fmt.full(l.annualCost)}/yr · ${l.count} event${l.count === 1 ? '' : 's'} · ${l.hours} dev h · ${num(l.ciMinutes)} CI min in window · monorepo removes ${Math.round(l.savingsShare * 100)}%`;
+    return `<div class="bar-row" tabindex="0" data-tip="${esc(tip)}"><div class="bar-label">${esc(l.label.replace(/^Bugs: /, 'Bugs · '))}</div><div class="bar-track"><div class="bar" style="width:${pct.toFixed(2)}%"></div><span class="bar-value">${esc(fmt.compact(l.annualCost))}</span></div></div>`;
+  }).join('');
+
+  // Low / expected / high range on one axis.
+  const lo = r.cost.low.totals.annualCost, ex = e.totals.annualCost, hi = r.cost.high.totals.annualCost;
+  const span = Math.max(1, hi * 1.08);
+  const at = (v) => `${((v / span) * 100).toFixed(2)}%`;
+  const range = `<div class="range" role="img" aria-label="Annualized cost range ${esc(fmt.full(lo))} to ${esc(fmt.full(hi))}, expected ${esc(fmt.full(ex))}">
+    <div class="range-axis"></div>
+    <div class="range-span" style="left:${at(lo)};width:calc(${at(hi)} - ${at(lo)})"></div>
+    <div class="range-dot" style="left:${at(ex)}" tabindex="0" data-tip="Expected (high + medium confidence bugs): ${esc(fmt.full(ex))}/yr"></div>
+    <div class="range-tick" style="left:${at(lo)}" data-tip="Low (high-confidence bugs only): ${esc(fmt.full(lo))}/yr" tabindex="0"><span>Low ${esc(fmt.compact(lo))}</span></div>
+    <div class="range-tick" style="left:${at(hi)}" data-tip="High (all bugs incl. low confidence): ${esc(fmt.full(hi))}/yr" tabindex="0"><span>High ${esc(fmt.compact(hi))}</span></div>
+  </div>`;
+
+  const costTable = `<table><thead><tr><th>Cost driver</th><th class="n">Events</th><th class="n">Dev hours</th><th class="n">CI minutes</th><th class="n">Cost (window)</th><th class="n">Annualized</th><th class="n">Monorepo removes</th></tr></thead><tbody>
+    ${e.lines.map((l) => `<tr><td>${esc(l.label)}</td><td class="n">${l.count}</td><td class="n">${l.hours}</td><td class="n">${num(l.ciMinutes)}</td><td class="n">${fmt.full(l.cost)}</td><td class="n">${fmt.full(l.annualCost)}</td><td class="n">${Math.round(l.savingsShare * 100)}%</td></tr>`).join('')}
+    </tbody><tfoot><tr><th>Total</th><th></th><th class="n">${e.totals.hours}</th><th class="n">${num(e.totals.ciMinutes)}</th><th class="n">${fmt.full(e.totals.cost)}</th><th class="n">${fmt.full(e.totals.annualCost)}</th><th class="n">${fmt.full(e.totals.annualSavings)}/yr</th></tr></tfoot></table>`;
+
+  const scenarioTable = `<table><thead><tr><th>Scenario</th><th>Bugs counted</th><th class="n">Window cost</th><th class="n">Annualized</th><th class="n">Annual savings</th><th class="n">Payback</th></tr></thead><tbody>
+    ${[['low', 'high confidence only'], ['expected', 'high + medium'], ['high', 'high + medium + low']].map(([k, label]) => {
+      const s = r.cost[k].totals;
+      return `<tr${k === 'expected' ? ' class="row-em"' : ''}><td>${k}</td><td>${label}</td><td class="n">${fmt.full(s.cost)}</td><td class="n">${fmt.full(s.annualCost)}</td><td class="n">${fmt.full(s.annualSavings)}</td><td class="n">${pb[k] === null ? '—' : `${pb[k]} mo`}</td></tr>`;
+    }).join('')}</tbody></table>`;
+
+  // Drawn with CSS: the half-filled circle glyph renders inconsistently across fonts.
+  const confIcon = { high: '<span class="dot dot-high" aria-hidden="true"></span>', medium: '<span class="dot dot-medium" aria-hidden="true"></span>', low: '<span class="dot dot-low" aria-hidden="true"></span>' };
+  const bugCards = r.bugs.map((b) => `<details class="bug" data-conf="${b.confidence}">
+      <summary><span class="badge badge-${b.confidence}">${confIcon[b.confidence]} ${b.confidence}</span><code class="cat">${esc(b.category)}</code><span class="bug-title">${esc(b.title)}</span><span class="bug-repos">${esc([...new Set(b.repos)].join(', '))}</span></summary>
+      <p>${esc(b.why)}</p>
+      <ul class="commits">${b.commits.map((c) => `<li><code>${esc(c.repo)}@${esc(c.sha)}</code> <span class="muted">${esc(c.date)}</span> ${esc(c.subject)}${c.evidenceOnly ? ' <span class="muted">(context)</span>' : ''}</li>`).join('')}</ul>
+    </details>`).join('');
+
+  const ib = r.internal;
+  const ups = ib.bumps.filter((b) => b.direction === 'up');
+  const pkgTable = ib.packages.length ? `<table><thead><tr><th>Internal package</th><th>Producer</th><th>Consumers</th><th class="n">Bumps</th><th class="n">Releases</th></tr></thead><tbody>
+    ${ib.packages.map((p) => `<tr><td><code>${esc(p.pkg)}</code></td><td>${esc(p.repo)}</td><td>${esc(p.consumers.join(', '))}</td><td class="n">${ups.filter((b) => b.pkg === p.pkg).length}</td><td class="n">${ib.releases.filter((x) => x.pkg === p.pkg).length}</td></tr>`).join('')}</tbody></table>` : '<p class="muted">No internal package is consumed across the analysed repos.</p>';
+
+  const groups = [
+    ...r.coordinated.map((g) => ({ kind: 'Coordinated change', ...g })),
+    ...r.duplicatedTooling.map((g) => ({ kind: `Repeated maintenance ×${g.copies}${g.bot ? ' (bot)' : ''}`, ...g })),
+  ];
+  const groupList = groups.length ? `<ul class="groups">${groups.map((g) => `<li><strong>${esc(g.kind)}</strong> <span class="muted">${esc(g.repos.join(', '))}</span><br>${esc(g.title)}<br><span class="muted">${g.commits.map((c) => `<code>${esc(c.repo)}@${esc(c.sha)}</code>`).join(' ')}</span></li>`).join('')}</ul>` : '<p class="muted">None found.</p>';
+
+  const m = r.migration;
+  const clusters = m.clusters.filter((c) => c.repos.length > 1);
+  const clusterList = clusters.length ? `<ol class="clusters">${clusters.map((c) => `<li><strong>${esc(c.repos.join(', '))}</strong> <span class="muted">coupling weight ${c.weight}</span></li>`).join('')}</ol>` : '<p class="muted">No coupled repos.</p>';
+  const whyHtml = m.whyMigrate?.length ? `<h3>Why migrate</h3><p class="muted">The polyrepo costs <a href="https://monorepo.tools/" rel="noopener">monorepo.tools</a> lists, shown only where this report measured them.</p>
+    <ul>${m.whyMigrate.map((w) => `<li><strong>${esc(w.polyrepo)}</strong> → ${esc(w.monorepo)}. <span class="muted">Measured: ${esc(w.evidence.join(', '))}.</span></li>`).join('')}</ul>` : '';
+  const src = m.toolSource;
+  const cats = m.toolOptions?.[0]?.categories.map((c) => c.category) ?? [];
+  const optionsHtml = m.toolOptions?.length ? `<h3>Tool options</h3>
+    <p class="muted">Every tool compared on <a href="${esc(src.urls[1])}" rel="noopener">monorepo.tools/compare</a> (snapshot ${esc(src.retrieved)}). The rating and every column up to “${esc(src.legend.none)}” come from monorepo.tools, which is published by Nx; the last column is from independent sources and is not scored.</p>
+    <div class="table-wrap"><table><thead><tr><th>Tool</th><th class="n">monorepo.tools rating /10</th>${cats.map((c) => `<th class="n">${esc(c)}</th>`).join('')}<th class="n">${esc(src.legend.implement)}</th><th class="n">${esc(src.legend.community)}</th><th class="n">${esc(src.legend.none)}</th><th>Fit</th><th>Already used</th><th>Independent signals <span class="muted">(not scored)</span></th></tr></thead><tbody>
+    ${m.toolOptions.map((t) => `<tr><td><a href="${esc(t.repo)}" rel="noopener">${esc(t.name)}</a>${t.by && t.by !== t.name ? ` <span class="muted">${esc(t.by)}</span>` : ''}</td><td class="n"><strong>${t.rating.toFixed(1)}</strong></td>${t.categories.map((c) => `<td class="n">${c.native}/${c.total}</td>`).join('')}<td class="n">${t.counts.implement}</td><td class="n">${t.counts.community}</td><td class="n">${t.counts.none}</td><td>${t.fit ? 'yes' : `no <span class="muted">(${esc(t.fitReason)})</span>`}</td><td>${t.alreadyUsed ? 'yes' : '—'}</td><td class="signals">${(independentSignals(t.independent) ?? '—').split(' · ').map(esc).join('<br>')}</td></tr>`).join('')}</tbody></table></div>
+    <h4>Sources</h4><ul class="muted">${toolSources(src, m.toolOptions[0].total).map((x) => `<li><a href="${esc(x.url)}" rel="noopener">${esc(x.name)}</a> (${esc(x.publisher)}, retrieved ${esc(x.retrieved)}; <strong>${esc(x.role)}</strong>). ${esc(x.metric)}. Covers: ${esc(x.covers)}.</li>`).join('')}</ul>` : '';
+  const couplingTable = m.coupling.length ? `<table><thead><tr><th>Repo pair</th><th class="n">Internal deps</th><th class="n">Bumps</th><th class="n">Coordinated changes</th><th class="n">Bugs</th><th class="n">Weight</th><th class="n">Repeated tooling (not weighted)</th></tr></thead><tbody>
+    ${m.coupling.slice(0, 30).map((c) => `<tr><td>${esc(c.repos.join(' ↔ '))}</td><td class="n">${c.dependencies}</td><td class="n">${c.bumps}</td><td class="n">${c.sharedChanges}</td><td class="n">${c.bugs}</td><td class="n">${c.weight}</td><td class="n">${c.sharedTooling ?? 0}</td></tr>`).join('')}</tbody></table>` : '';
+  const conflicts = m.externalConflicts.length ? `<table><thead><tr><th>External dependency</th><th>Majors in use</th></tr></thead><tbody>
+    ${m.externalConflicts.slice(0, 40).map((c) => `<tr><td><code>${esc(c.dep)}</code></td><td>${Object.entries(c.majors).map(([v, rs]) => `v${esc(v)} <span class="muted">(${esc(rs.join(', '))})</span>`).join(' · ')}</td></tr>`).join('')}</tbody></table>${m.externalConflicts.length > 40 ? `<p class="muted">…and ${m.externalConflicts.length - 40} more in the JSON report.</p>` : ''}` : '<p class="muted">No conflicting major versions.</p>';
+
+  const assumptions = `<table><thead><tr><th>Assumption</th><th class="n">Value</th></tr></thead><tbody>
+    ${Object.entries(r.assumptions).map(([k, v]) => `<tr><td><code>${esc(k)}</code></td><td class="n">${esc(v)}</td></tr>`).join('')}
+    <tr><td><code>developerHourly</code></td><td class="n">${fmt.full(r.rates.developerHourly)}</td></tr>
+    <tr><td><code>ciPerMinute</code></td><td class="n">${esc(r.rates.currency)} ${esc(r.rates.ciPerMinute)}</td></tr></tbody></table>`;
+  const repoTable = `<table><thead><tr><th>Repo</th><th class="n">Commits</th><th>Stack</th><th class="n">CI min/commit</th><th>CI source</th></tr></thead><tbody>
+    ${r.repos.map((x) => `<tr><td>${esc(x.name)}</td><td class="n">${x.commits}</td><td>${esc([x.packageManager, ...x.buildTools].filter(Boolean).join(', ') || '—')}</td><td class="n">${Math.round(x.ci.minutesPerCommit * 10) / 10}</td><td>${esc(x.ci.source)}</td></tr>`).join('')}</tbody></table>`;
+
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polyrepo Tax Report</title>
+<style>
+:root {
+  color-scheme: light;
+  --surface: #ffffff; --surface-2: #f6f6f4; --line: #e4e4e0;
+  --text: #191919; --text-2: #5f5f5b; --accent: #257de0; --track: #eef3fb;
+  --yes: #0a7d22; --no: #a55a00;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --surface: #161616; --surface-2: #1f1f1f; --line: #333333;
+    --text: #efefef; --text-2: #a3a3a3; --accent: #338ced; --track: #1c2735;
+    --yes: #4cc363; --no: #e8a34c;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface: #161616; --surface-2: #1f1f1f; --line: #333333;
+  --text: #efefef; --text-2: #a3a3a3; --accent: #338ced; --track: #1c2735;
+  --yes: #4cc363; --no: #e8a34c;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--surface); color: var(--text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 1040px; margin: 0 auto; padding: 32px 16px 64px; }
+h1 { font-size: 28px; margin: 0 0 4px; letter-spacing: -0.01em; }
+h2 { font-size: 20px; margin: 48px 0 12px; padding-top: 16px; border-top: 1px solid var(--line); }
+h3 { font-size: 16px; margin: 24px 0 8px; }
+h4, h5 { font-size: 15px; margin: 16px 0 6px; }
+p { margin: 8px 0; }
+code { font: 13px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+pre { background: var(--surface-2); padding: 12px; border-radius: 8px; overflow-x: auto; }
+a { color: var(--accent); }
+.muted { color: var(--text-2); }
+.meta { color: var(--text-2); margin: 0 0 24px; }
+.hero { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; align-items: stretch; }
+.hero-main, .tile { background: var(--surface-2); border-radius: 12px; padding: 20px; }
+.hero-label, .tile-label { color: var(--text-2); font-size: 13px; }
+.hero-value { font-size: 44px; font-weight: 650; letter-spacing: -0.02em; line-height: 1.1; margin: 6px 0; font-variant-numeric: tabular-nums; }
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.tile-value { font-size: 22px; font-weight: 600; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.tile-note { color: var(--text-2); font-size: 12px; }
+.verdict { margin: 16px 0 0; padding: 12px 16px; border-radius: 10px; background: var(--surface-2); border-left: 4px solid; }
+.verdict-yes { border-color: var(--yes); } .verdict-no { border-color: var(--no); }
+.range { position: relative; height: 56px; margin: 12px 8px 4px; }
+.range-axis { position: absolute; left: 0; right: 0; top: 18px; height: 1px; background: var(--line); }
+.range-span { position: absolute; top: 14px; height: 9px; border-radius: 5px; background: var(--track); }
+.range-dot { position: absolute; top: 9px; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 2px var(--surface); cursor: default; }
+.range-tick { position: absolute; top: 12px; width: 2px; height: 13px; margin-left: -1px; background: var(--text-2); }
+.range-tick span { position: absolute; top: 18px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 12px; color: var(--text-2); }
+.range-tick:first-of-type span { transform: none; left: 0; }
+.chart { margin: 8px 0 4px; }
+.bar-row { display: grid; grid-template-columns: minmax(140px, 34%) 1fr; gap: 12px; align-items: center; padding: 5px 0; border-radius: 6px; }
+.bar-row:hover, .bar-row:focus-visible { background: var(--surface-2); outline: none; }
+.bar-label { font-size: 13px; color: var(--text); text-align: right; }
+.bar-track { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.bar { height: 20px; min-width: 2px; background: var(--accent); border-radius: 0 4px 4px 0; }
+.bar-value { font-size: 13px; color: var(--text-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 8px 0; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+thead th { color: var(--text-2); font-weight: 600; }
+tfoot th { border-bottom: 0; }
+.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.row-em td { font-weight: 600; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 12px; }
+.filters button { font: inherit; font-size: 13px; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--text); cursor: pointer; }
+.filters button[aria-pressed="true"] { background: var(--text); color: var(--surface); border-color: var(--text); }
+.bug { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; margin: 8px 0; }
+.bug summary { cursor: pointer; display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+.bug-title { font-weight: 600; flex: 1 1 260px; min-width: 0; overflow-wrap: anywhere; }
+.bug-repos { color: var(--text-2); font-size: 13px; }
+.cat { color: var(--text-2); }
+.badge { font-size: 12px; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); text-transform: capitalize; }
+.badge-high { background: var(--text); color: var(--surface); border-color: var(--text); }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid currentColor; vertical-align: 0; margin-right: 2px; }
+.dot-high { background: currentColor; }
+.dot-medium { background: linear-gradient(90deg, currentColor 50%, transparent 50%); }
+.commits { margin: 6px 0 0; padding-left: 18px; font-size: 13px; overflow-wrap: anywhere; }
+.groups, .clusters { padding-left: 20px; }
+.groups li, .clusters li { margin: 8px 0; overflow-wrap: anywhere; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 8px 0; }
+.signals { min-width: 240px; }
+.plan { background: var(--surface-2); border-radius: 12px; padding: 4px 20px 12px; }
+#tip { position: fixed; pointer-events: none; z-index: 10; max-width: 320px; padding: 8px 10px; border-radius: 8px; font-size: 12px; background: var(--text); color: var(--surface); box-shadow: 0 4px 16px rgb(0 0 0 / .25); opacity: 0; }
+footer { margin-top: 48px; color: var(--text-2); font-size: 12px; }
+@media (max-width: 720px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-value { font-size: 36px; }
+  .bar-row { grid-template-columns: 1fr; gap: 2px; }
+  .bar-label { text-align: left; }
+}
+@media print {
+  #tip, .filters { display: none; }
+  .bug { break-inside: avoid; }
+  details.bug:not([open]) > *:not(summary) { display: block; }
+}
+</style>
+</head>
+<body>
+<main>
+<h1>Polyrepo Tax Report</h1>
+<p class="meta">${r.repos.length} repos (${esc(repoList)}) · ${esc(r.window.since)} → ${esc(r.window.until)} (${r.window.days} days) · ${fmt.full(r.rates.developerHourly)}/dev-hour · ${esc(r.rates.currency)} ${esc(r.rates.ciPerMinute)}/CI-minute</p>
+${r.problems.length ? `<p class="verdict verdict-no"><strong>Data problems:</strong> ${esc(r.problems.join('; '))}</p>` : ''}
+
+<section class="hero" aria-label="Headline numbers">
+  <div class="hero-main">
+    <div class="hero-label">Polyrepo tax per year, expected</div>
+    <div class="hero-value">${fmt.full(ex)}</div>
+    <div class="muted">${fmt.full(lo)} – ${fmt.full(hi)} depending on which bugs you count</div>
+    ${range}
+  </div>
+  <div class="tiles">
+    <div class="tile"><div class="tile-label">Developer time (window)</div><div class="tile-value">${num(e.totals.hours)} h</div><div class="tile-note">${fmt.full(e.totals.devCost)}</div></div>
+    <div class="tile"><div class="tile-label">CI time (window)</div><div class="tile-value">${num(e.totals.ciMinutes)} min</div><div class="tile-note">${fmt.full(e.totals.ciCost)} · ${ciMeasured ? `measured for ${ciMeasured} of ${r.repos.length} repos` : 'assumed'}</div></div>
+    <div class="tile"><div class="tile-label">Bugs attributable to repo boundaries</div><div class="tile-value">${bugsBy('high').length + bugsBy('medium').length}</div><div class="tile-note">${bugsBy('high').length} high · ${bugsBy('medium').length} medium · ${bugsBy('low').length} low confidence</div></div>
+    <div class="tile"><div class="tile-label">Migration payback</div><div class="tile-value">${esc(paybackText)}</div><div class="tile-note">${fmt.full(m.oneTime.cost)} one-time · saves ${fmt.full(e.totals.annualSavings)}/yr</div></div>
+  </div>
+</section>
+<p class="verdict ${verdict.cls}">${esc(verdict.text)}</p>
+<p class="muted">Estimates from git history, not invoices. Every count links to commits below; every rate and assumption is listed at the end and can be overridden.</p>
+
+<h2>Where the money goes</h2>
+<p class="muted">Annualized cost per driver, expected scenario. Hover or focus a bar for hours and CI minutes.</p>
+<div class="chart">${bars || '<p class="muted">No measurable polyrepo cost in this window.</p>'}</div>
+<details><summary>Table view</summary><div class="table-wrap">${costTable}</div></details>
+<h3>Scenarios</h3>
+<div class="table-wrap">${scenarioTable}</div>
+
+<h2>Bugs attributable to repo boundaries</h2>
+${r.bugs.length ? `<div class="filters" role="group" aria-label="Filter by confidence">
+  <button type="button" data-filter="all" aria-pressed="true">All ${r.bugs.length}</button>
+  ${['high', 'medium', 'low'].map((c) => `<button type="button" data-filter="${c}" aria-pressed="false">${confIcon[c]} ${c[0].toUpperCase()}${c.slice(1)} ${bugsBy(c).length}</button>`).join('')}
+</div>
+<div id="bugs">${bugCards}</div>` : '<p class="muted">None found in this window.</p>'}
+
+<h2>Internal dependency churn</h2>
+<div class="stats">
+  <div class="tile"><div class="tile-label">Internal bumps</div><div class="tile-value">${ups.length}</div><div class="tile-note">${ups.filter((b) => b.bot).length} by bots · ${ups.filter((b) => !b.bot).length} by people</div></div>
+  <div class="tile"><div class="tile-label">Internal releases to move code</div><div class="tile-value">${ib.releases.length}</div><div class="tile-note">${(r.publicPackages === true || r.publicPackages?.length) ? 'public packages excluded' : 'packages consumed by sibling repos'}</div></div>
+  <div class="tile"><div class="tile-label">Median release → bump lag</div><div class="tile-value">${ib.medianBumpLagDays ?? 'n/a'}${ib.medianBumpLagDays === null ? '' : ' days'}</div><div class="tile-note">time a consumer runs old code</div></div>
+  <div class="tile"><div class="tile-label">Consumers behind today</div><div class="tile-value">${ib.drift.length}</div><div class="tile-note">${ib.drift.filter((d) => d.majorsBehind > 0).length} a major version or more</div></div>
+</div>
+<div class="table-wrap">${pkgTable}</div>
+${ib.skew.length ? `<h3>Version skew today</h3><ul>${ib.skew.map((s) => `<li><code>${esc(s.pkg)}</code>: ${Object.entries(s.majors).map(([v, rs]) => `v${esc(v)} in ${esc(rs.join(', '))}`).join(' · ')}</li>`).join('')}</ul>` : ''}
+
+<h2>Duplicated and coordinated work</h2>
+${groupList}
+
+<h2>Migration</h2>
+<p><strong>Recommended tooling:</strong> ${esc(m.recommendedTool)} <span class="muted">(${esc(Object.entries(m.languages).map(([l, n]) => `${l} ${n} files`).join(', ') || 'no languages detected')})</span></p>
+${whyHtml}
+${optionsHtml}
+<h3>Clusters to migrate, heaviest first</h3>
+${clusterList}
+${m.isolated.length ? `<p><strong>Keep separate</strong> (no measured coupling): ${esc(m.isolated.join(', '))}</p>` : ''}
+<p><strong>One-time effort:</strong> ~${m.oneTime.days} dev-days (${fmt.full(m.oneTime.cost)}) for ${m.oneTime.repos.length} repos · <strong>payback</strong> ${pb.expected === null ? 'not reached' : `~${pb.expected} months`} <span class="muted">(range ${pb.high ?? '—'} – ${pb.low ?? 'never'} months)</span></p>
+${couplingTable ? `<h3>Coupling between repos</h3><div class="table-wrap">${couplingTable}</div>` : ''}
+<h3>External dependencies to align first</h3>
+<div class="table-wrap">${conflicts}</div>
+${plan ? `<h3>Migration plan</h3><div class="plan">${markdownToHtml(plan.replace(/^\s*#{1,6}\s*Migration plan\s*\n/i, ''))}</div>` : ''}
+
+<h2>Assumptions</h2>
+<div class="table-wrap">${assumptions}</div>
+<div class="table-wrap">${repoTable}</div>
+
+<footer>Generated ${esc(r.generatedAt)} by the polyrepo-tax skill. Full data: polyrepo-tax-report.json.</footer>
+</main>
+<div id="tip" role="tooltip"></div>
+<script>
+(() => {
+  const tip = document.getElementById('tip');
+  const show = (el, x, y) => {
+    tip.textContent = el.dataset.tip;
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    tip.style.left = Math.max(8, Math.min(x + 12, innerWidth - w - 8)) + 'px';
+    tip.style.top = Math.max(8, y - h - 12) + 'px';
+    tip.style.opacity = 1;
+  };
+  const hide = () => { tip.style.opacity = 0; };
+  for (const el of document.querySelectorAll('[data-tip]')) {
+    el.addEventListener('pointermove', (ev) => show(el, ev.clientX, ev.clientY));
+    el.addEventListener('pointerleave', hide);
+    el.addEventListener('focus', () => { const b = el.getBoundingClientRect(); show(el, b.left + 16, b.top); });
+    el.addEventListener('blur', hide);
+  }
+  const buttons = document.querySelectorAll('.filters button');
+  for (const btn of buttons) btn.addEventListener('click', () => {
+    for (const b of buttons) b.setAttribute('aria-pressed', String(b === btn));
+    for (const card of document.querySelectorAll('#bugs .bug')) card.hidden = btn.dataset.filter !== 'all' && card.dataset.conf !== btn.dataset.filter;
+  });
+})();
+</script>
+</body>
+</html>
+`;
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  const argv = process.argv.slice(2);
+  const opt = (n) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : undefined; };
+  const input = argv.find((a, i) => !a.startsWith('--') && !['--plan', '--out'].includes(argv[i - 1]));
+  if (!input) { console.error('usage: render-html.mjs <polyrepo-tax-report.json> [--plan migration-plan.md] [--out report.html]'); process.exit(2); }
+  const report = JSON.parse(fs.readFileSync(input, 'utf8'));
+  const planPath = opt('--plan') ?? path.join(path.dirname(input), 'migration-plan.md');
+  const plan = fs.existsSync(planPath) ? fs.readFileSync(planPath, 'utf8') : undefined;
+  const out = opt('--out') ?? path.join(path.dirname(input), 'polyrepo-tax-report.html');
+  fs.writeFileSync(out, renderHtml(report, { plan }));
+  console.log(`wrote ${out}${plan ? ` (with ${path.basename(planPath)})` : ''}`);
+}
+```
+
+</details>
+
