@@ -259076,3 +259076,21 @@ Macro lens, shallow depth of field with the chapel and cottages tack-sharp throu
 
 </details>
 
+<details>
+<summary><strong>Hand-Decorated Ukrainian Pysanky Eggs with Wax-Resist Folk Patterns</strong></summary>
+
+## Hand-Decorated Ukrainian Pysanky Eggs with Wax-Resist Folk Patterns
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A still-life photograph of five hand-decorated Ukrainian pysanky eggs made with the traditional wax-resist method, arranged in a shallow handwoven willow basket on an unbleached linen cloth. Each egg carries a different geometric folk pattern drawn in fine, crisp lines: an eight-pointed star rosette in white and yellow on deep red, wheat ears and pine branches in gold and green on black, a band of endless meanders and little triangles in orange and red, a sun motif with spiraling rays on rich blue, and dotted grids with tiny crosses and diamonds on burgundy. The lines are slightly uneven in places, showing the handwork, with small glossy and matte areas on the dyed shells.
+
+Beside the basket lie the tools of the craft: a traditional kistka stylus with a little brass funnel, a beeswax block, a thin beeswax candle with a soft flame, and three small glass jars of dye in red, yellow and blue. A dried sprig of wheat lies across the cloth.
+
+Soft window daylight from the left, gentle shadows, warm natural colors, close-up with shallow depth of field so the front egg's patterns are tack-sharp and the jars fall softly out of focus. No people, no hands, no text or letters on the eggs. Landscape 4:3.
+
+```
+
+</details>
+
