@@ -259058,3 +259058,21 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Vintage Snow Globe of a Tiny Winter Village with a Lit Chapel at Night</strong></summary>
+
+## Vintage Snow Globe of a Tiny Winter Village with a Lit Chapel at Night
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A close-up studio photograph of a vintage glass snow globe on a dark walnut shelf. Inside the clear water-filled dome sits a tiny handmade winter village: a small white chapel with a slim steeple and warm yellow light glowing from its arched windows, a pair of little timber cottages with snow-covered roofs and glowing windows, a few frosted fir trees and a narrow path winding up a snowy hill. Fine white snowflakes swirl gently through the water, a few settling on the roofs.
+
+The globe stands on a turned wooden base with a thin brass band, slightly worn at the edges. Soft curved reflections and a warm highlight bend across the glass; the glowing windows cast a faint golden light into the snow inside. Behind the globe, out of focus, a dark wintry window with blurred warm string-light bokeh. Warm low-key lighting from the side, deep blue and charcoal shadows, a cozy, nostalgic holiday mood.
+
+Macro lens, shallow depth of field with the chapel and cottages tack-sharp through the glass, slight refraction at the dome's edges, rich contrast between warm window light and cool snow. No people, no figures inside the globe, no readable text or logos. Portrait 3:4.
+
+```
+
+</details>
+
