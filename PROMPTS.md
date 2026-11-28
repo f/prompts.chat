@@ -260451,3 +260451,36 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>A Father's Little Chef: Heartwarming 3D Animated Pancake Comedy (Vertical Video Prompt)</strong></summary>
+
+## A Father's Little Chef: Heartwarming 3D Animated Pancake Comedy (Vertical Video Prompt)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Create a heartwarming, hilarious, ultra-realistic Japanese-style 3D animated family comedy in vertical 9:16 format.
+
+A cute 3-year-old Japanese girl with short black bobbed hair, chubby cheeks, sparkling eyes, and pink pajamas decides to surprise her father with breakfast.
+
+Wearing an oversized chef hat, she struggles to prepare pancakes in the kitchen. She accidentally spills flour everywhere, gets chocolate on her face, and finally serves her father a funny-looking, slightly burnt pancake.
+
+🎙️ Girl: "Papa! I made this for you!"
+
+Her father takes a bite, struggles to hide his reaction, and says, "Delicious!"
+
+The little girl notices his watery eyes and innocently asks, "Papa, are you crying because it's so yummy?"
+
+The mother walks in, tastes the pancake, and bursts into laughter. The father hugs his little daughter and kisses her forehead.
+
+Final Shot: The little girl proudly poses like a professional chef while her parents laugh.
+
+Style: High-end Japanese 3D animation, adorable characters, expressive faces, realistic movements, warm lighting, cinematic camera angles, funny sound effects, natural Japanese dialogue, and heartwarming family moments.
+
+Consistency: Maintain identical characters, clothing, facial features, and kitchen throughout.
+
+Negative: No distorted faces, extra fingers, flickering, scene jumps, subtitles, text, or watermark.
+```
+
+</details>
+
