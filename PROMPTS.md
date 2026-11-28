@@ -262828,3 +262828,16 @@ Locked tripod wide shot, no camera movement. The hedgehog slowly lowers his paw 
 
 </details>
 
+<details>
+<summary><strong>Naughty Dog Duo Master Prompt — Funny AI Video Prompt for Veo & Kling</strong></summary>
+
+## Naughty Dog Duo Master Prompt — Funny AI Video Prompt for Veo & Kling
+
+Contributed by [@faisalsaleem3330s](https://github.com/faisalsaleem3330s)
+
+```md
+Create a funny AI video about two dogs in a kitchen. One dog is the sneaky mastermind. The other dog has no idea what is going on. The sneaky one slides across the kitchen floor with a frying pan in his paw — and everything goes hilariously wrong. Full master prompt with picture: Faisal360 — https://www.faisal360.com/2026/11/naughty-dog-duo-master-prompt-secret.html
+```
+
+</details>
+
