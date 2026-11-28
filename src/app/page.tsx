@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { ArrowRight, Star, Heart, Trophy, Users, HeartHandshake, Code, Lock, Building2, Github, GraduationCap, LogIn, Rocket, Quote, History } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { getConfig } from "@/lib/config";
@@ -34,6 +34,7 @@ function getOrdinalSuffix(n: number): string {
 
 export default async function HomePage() {
   const tHomepage = await getTranslations("homepage");
+  const locale = await getLocale();
   const tNav = await getTranslations("nav");
   const session = await auth();
   const config = await getConfig();
@@ -215,7 +216,7 @@ export default async function HomePage() {
                     className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     <Star className="h-4 w-4 text-amber-500" />
-                    <span>{tHomepage("beStargazer", { count: (githubStars + 1).toLocaleString(), ordinal: getOrdinalSuffix(githubStars + 1) })}</span>
+                    <span>{tHomepage("beStargazer", { count: (githubStars + 1).toLocaleString(locale), ordinal: getOrdinalSuffix(githubStars + 1) })}</span>
                   </Link>
                   <Link 
                     href="/about" 
