@@ -260380,3 +260380,39 @@ Contributed by [@f](https://github.com/f)
 
 </details>
 
+<details>
+<summary><strong>Swift Package taste</strong></summary>
+
+## Swift Package taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Swift Package taste of a developer who ships small, well-tested Swift libraries
+- Use Swift Package Manager as the only distribution method for new libraries, and skip CocoaPods and Carthage specs unless users ask. Confidence: 0.85
+- Set the swift-tools-version to the oldest toolchain you really test on, and raise it on purpose in a minor release. Confidence: 0.80
+- Declare explicit platform minimums in Package.swift (.iOS, .macOS, .watchOS, .tvOS, .visionOS) instead of relying on defaults. Confidence: 0.85
+- Keep one focused library product per package; split optional integrations into separate targets users can opt into. Confidence: 0.80
+- Use the standard layout (Sources/<Target>, Tests/<Target>Tests) and avoid custom path settings. Confidence: 0.90
+- Enable Swift 6 language mode and strict concurrency checking, and mark public types Sendable where it is true. Confidence: 0.80
+- Keep the public API small: default to internal, and make each public symbol a deliberate decision. Confidence: 0.90
+- Prefer value types and protocols with small requirements over class hierarchies in public APIs. Confidence: 0.80
+- Offer async/await APIs first, and add completion-handler or Combine wrappers only when users need them. Confidence: 0.75
+- Avoid third-party dependencies in a library; when one is needed, use a version range from: a major version, never a branch or exact revision. Confidence: 0.85
+- Write tests with Swift Testing (@Test, #expect) for new code and keep XCTest only where it is already used. Confidence: 0.75
+- Run CI on macOS and Linux with swift build and swift test, plus xcodebuild for each Apple platform you claim to support. Confidence: 0.85
+- Write DocC documentation for every public symbol and include at least one article showing the main use case. Confidence: 0.80
+- Host the docs on the Swift Package Index and keep a .spi.yml so builds and documentation stay green there. Confidence: 0.70
+- Follow semantic versioning with plain tags like 1.4.0, without a v prefix, so SPM resolves them. Confidence: 0.90
+- Use @available and deprecation messages with a renamed: hint one minor release before removing an API. Confidence: 0.85
+- Keep resources in a Resources folder declared with .process and access them only through Bundle.module. Confidence: 0.75
+- Format with swift-format or SwiftFormat and lint with SwiftLint in CI, using a config committed to the repo. Confidence: 0.70
+- Avoid build plugins and macros unless they remove real boilerplate, because they slow builds and need extra trust prompts. Confidence: 0.65
+- Ship a privacy manifest (PrivacyInfo.xcprivacy) when the library touches required-reason APIs. Confidence: 0.75
+- Keep Package.resolved out of library repositories, but commit it in apps and example projects. Confidence: 0.80
+- Include a runnable example app or snippet in the README that compiles in CI. Confidence: 0.70
+- Keep a CHANGELOG.md with Added, Changed, Deprecated and Fixed sections for every release. Confidence: 0.80
+```
+
+</details>
+
