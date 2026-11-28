@@ -1542,7 +1542,7 @@
     "commandLine": "Komanda Sətri",
     "extension": "Uzantı",
     "setupPrivateServer": "Şəxsi Serverinizi Qurun",
-    "beStargazer": "GitHub-da {count}{ordinal} ulduz verən olun",
+    "beStargazer": "GitHub-da {count} nömrəli ulduz verən olun",
     "ourHistory": "Tariximiz haqqında daha çox oxuyun",
     "browsePrompts": "Promptlara Bax",
     "viewFeed": "Lentə Bax",

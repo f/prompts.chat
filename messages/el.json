@@ -1542,7 +1542,7 @@
     "commandLine": "Γραμμή Εντολών",
     "extension": "Επέκταση",
     "setupPrivateServer": "Αναπτύξτε τον Δικό σας Server",
-    "beStargazer": "Γίνετε ο {count}ος{ordinal} stargazer στο GitHub",
+    "beStargazer": "Γίνετε ο {count}ος stargazer στο GitHub",
     "ourHistory": "Διαβάστε περισσότερα για την ιστορία μας",
     "browsePrompts": "Περιήγηση Prompts",
     "viewFeed": "Προβολή Feed",

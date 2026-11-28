@@ -1542,7 +1542,7 @@
     "commandLine": "שורת פקודה",
     "extension": "תוסף",
     "setupPrivateServer": "הקם שרת פרטי משלך",
-    "beStargazer": "היה הכוכב ה-{count}{ordinal} ב-GitHub",
+    "beStargazer": "היה הכוכב ה-{count} ב-GitHub",
     "ourHistory": "קרא עוד על ההיסטוריה שלנו",
     "browsePrompts": "עיין בפרומפטים",
     "viewFeed": "צפה בפיד",
