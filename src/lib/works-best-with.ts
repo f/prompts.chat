@@ -33,6 +33,7 @@ export const AI_MODELS = {
   "grok-3": { name: "Grok 3", provider: "xAI" },
 
   // MiniMax
+  "minimax-m3-1-flash": { name: "MiniMax-M3.1-Flash", provider: "MiniMax" },
   "minimax-m3": { name: "MiniMax-M3", provider: "MiniMax" },
   "minimax-m2-7": { name: "MiniMax-M2.7", provider: "MiniMax" },
 
@@ -66,6 +67,9 @@ export function getModelsByProvider(): Record<string, { slug: string; name: stri
   const grouped: Record<string, { slug: string; name: string }[]> = {};
 
   for (const [slug, info] of Object.entries(AI_MODELS)) {
+    // Keep legacy metadata readable without offering it for new selections.
+    if (slug === "minimax-m2-7") continue;
+
     if (!grouped[info.provider]) {
       grouped[info.provider] = [];
     }
