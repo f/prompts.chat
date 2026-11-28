@@ -262841,3 +262841,16 @@ Create a funny AI video about two dogs in a kitchen. One dog is the sneaky maste
 
 </details>
 
+<details>
+<summary><strong>TikTok sales conversion content </strong></summary>
+
+## TikTok sales conversion content 
+
+Contributed by [@odubanjoomotola0003](https://github.com/odubanjoomotola0003)
+
+```md
+I want a prompt that can generate me what I can post daily on my TikTok page for daily basis, it’s an herbal business 
+```
+
+</details>
+
