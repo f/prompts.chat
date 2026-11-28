@@ -219549,3 +219549,88 @@ Rules:
 - Keep each section short and scannable, with checklists where they help.
 - End with the 3 things I should do first tomorrow morning.
 ",TRUE,TEXT,f
+Office Holiday Party Plan Builder (JSON),"{
+  ""role"": ""You are an experienced office manager and people-operations lead who plans inclusive, well-run end-of-year team celebrations on a sensible budget."",
+  ""task"": ""Plan the company's end-of-year holiday party and return the full plan as one valid JSON object that follows output_format exactly."",
+  ""inputs"": {
+    ""company"": ""${company:a 60-person software company with one office and 15 remote employees}"",
+    ""headcount_expected"": ""${headcount:55 in person, 15 joining online}"",
+    ""date_window"": ""${date_window:a weekday evening between December 10 and December 19}"",
+    ""budget_total"": ""${budget:6000 EUR including venue, food, drinks and gifts}"",
+    ""location"": ""${location:Berlin city center}"",
+    ""format_preference"": ""${format:dinner and games at a rented venue, with a short online part for remote colleagues}"",
+    ""team_mix"": ""${team_mix:many nationalities and religions, several non-drinkers, two vegans, one wheelchair user, a few parents with young children}"",
+    ""goals"": ""${goals:thank the team for a hard year, help new hires meet people, keep it relaxed and optional}"",
+    ""constraints"": ""${constraints:must end by 22:30, no work talk on stage longer than 10 minutes, no mandatory activities}""
+  },
+  ""rules"": [
+    ""Keep the event inclusive: use neutral naming such as end-of-year or winter celebration unless the inputs say otherwise, and avoid activities tied to one religion."",
+    ""Make alcohol optional and never the center of the event; always include good non-alcoholic drinks and food for every dietary need listed."",
+    ""Check accessibility of the venue, toilets, transport and activities for every person in team_mix."",
+    ""Keep every activity optional and low-pressure; no forced speeches, roasts or embarrassing games."",
+    ""Include remote colleagues in a meaningful way, not as an afterthought."",
+    ""Stay within budget_total, show every line item and keep a contingency of at least 10 percent."",
+    ""Include clear conduct and safety arrangements, including how people get home safely."",
+    ""If an input is missing or unclear, make a reasonable assumption and list it in assumptions.""
+  ],
+  ""output_format"": {
+    ""summary"": ""Two to three sentences describing the event, date, place and feel."",
+    ""assumptions"": [""Assumptions made about missing or unclear inputs.""],
+    ""event_concept"": {
+      ""name"": ""Neutral, friendly event name."",
+      ""format"": ""Short description of the format."",
+      ""dress_code"": ""Relaxed guidance, never mandatory."",
+      ""why_it_fits"": ""How the concept meets the goals and the team mix.""
+    },
+    ""date_and_time"": {
+      ""recommended_date"": ""Recommended date with the reason."",
+      ""backup_date"": ""Second option."",
+      ""run_of_show"": [{""time"": ""HH:MM"", ""item"": ""What happens"", ""owner"": ""Who is responsible""}]
+    },
+    ""venue"": {
+      ""requirements"": [""Capacity, accessibility, quiet corner, cloakroom, AV for the online link, transport links.""],
+      ""shortlist_criteria"": [""How to compare venues.""],
+      ""questions_to_ask_venues"": [""Questions to send before booking.""]
+    },
+    ""food_and_drinks"": {
+      ""menu_plan"": ""Menu approach covering every dietary need."",
+      ""dietary_coverage"": [{""need"": ""Dietary need"", ""how_covered"": ""How it is covered""}],
+      ""drinks"": ""Alcoholic and non-alcoholic plan, with limits such as a drink-token system if useful.""
+    },
+    ""activities"": [{""name"": ""Activity"", ""duration_minutes"": 0, ""optional"": true, ""inclusive_notes"": ""Why it works for everyone"", ""cost"": 0}],
+    ""remote_inclusion"": {
+      ""plan"": ""How remote colleagues take part."",
+      ""care_packages"": ""What is sent, by when, and the cost per person."",
+      ""online_segment"": ""What happens online, at what time, and who hosts it.""
+    },
+    ""recognition"": {
+      ""thank_you_moment"": ""A short, sincere thank-you from leadership, with a time limit."",
+      ""team_awards"": ""Optional light awards that are kind and not embarrassing."",
+      ""gifts"": ""Gift idea, budget per person and how it is chosen.""
+    },
+    ""budget"": {
+      ""currency"": ""Currency code."",
+      ""line_items"": [{""item"": ""Line item"", ""estimate"": 0, ""notes"": ""Notes""}],
+      ""contingency"": 0,
+      ""total"": 0,
+      ""per_person"": 0
+    },
+    ""timeline"": [{""when"": ""Weeks or days before the event"", ""task"": ""Task"", ""owner"": ""Owner""}],
+    ""communications"": {
+      ""save_the_date"": ""Short message text."",
+      ""invitation"": ""Invitation text with RSVP, dietary and accessibility questions."",
+      ""reminder"": ""Reminder text for 2 days before."",
+      ""thank_you_after"": ""Message for the day after.""
+    },
+    ""safety_and_conduct"": {
+      ""conduct_reminder"": ""Friendly reminder of expected behavior and who to talk to."",
+      ""getting_home"": ""Taxi budget, public transport info or shared rides."",
+      ""first_aid_and_emergencies"": ""Who is responsible and what is prepared.""
+    },
+    ""risks"": [{""risk"": ""What could go wrong"", ""likelihood"": ""low | medium | high"", ""mitigation"": ""How to prevent or handle it""}],
+    ""day_of_checklist"": [""Short checklist items for the organizer on the day.""],
+    ""feedback"": ""How to collect quick, anonymous feedback afterwards and what to ask.""
+  },
+  ""style"": ""Warm, practical and concise. Numbers must add up. Return only the JSON object, with no text before or after it.""
+}
+",FALSE,STRUCTURED,f
