@@ -136,6 +136,7 @@ export function ContextWindowDemo() {
   const [responseLength, setResponseLength] = useState(1000);
   const contextLimit = 8000;
   const t = useTranslations("book.interactive");
+  const locale = useLocale();
   
   const totalUsed = promptLength + responseLength;
   const remaining = Math.max(0, contextLimit - totalUsed);
@@ -150,12 +151,12 @@ export function ContextWindowDemo() {
       <div className="p-4 space-y-6">
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
-            <span>{t("contextWindow")}: {contextLimit.toLocaleString()} tokens</span>
+            <span>{t("contextWindow")}: {contextLimit.toLocaleString(locale)} {t("tokens")}</span>
             <span className={cn(
               "font-mono",
               isOverLimit ? "text-red-600 dark:text-red-400" : "text-green-600 dark:text-green-400"
             )}>
-              {remaining.toLocaleString()} {t("remaining")}
+              {remaining.toLocaleString(locale)} {t("remaining")}
             </span>
           </div>
           <div className="h-8 bg-muted rounded-lg overflow-hidden flex">
@@ -177,8 +178,8 @@ export function ContextWindowDemo() {
           </div>
           <div className="flex justify-between text-xs text-muted-foreground">
             <span>0</span>
-            <span>{(contextLimit / 2).toLocaleString()}</span>
-            <span>{contextLimit.toLocaleString()}</span>
+            <span>{(contextLimit / 2).toLocaleString(locale)}</span>
+            <span>{contextLimit.toLocaleString(locale)}</span>
           </div>
         </div>
 
@@ -186,7 +187,7 @@ export function ContextWindowDemo() {
           <div>
             <label className="text-sm flex justify-between mb-1">
               <span>{t("yourPrompt")}</span>
-              <span className="text-blue-600 dark:text-blue-400 font-mono">{promptLength.toLocaleString()} tokens</span>
+              <span className="text-blue-600 dark:text-blue-400 font-mono">{promptLength.toLocaleString(locale)} {t("tokens")}</span>
             </label>
             <input
               type="range"
@@ -200,7 +201,7 @@ export function ContextWindowDemo() {
           <div>
             <label className="text-sm flex justify-between mb-1">
               <span>{t("aiResponse")}</span>
-              <span className="text-green-600 dark:text-green-400 font-mono">{responseLength.toLocaleString()} tokens</span>
+              <span className="text-green-600 dark:text-green-400 font-mono">{responseLength.toLocaleString(locale)} {t("tokens")}</span>
             </label>
             <input
               type="range"
