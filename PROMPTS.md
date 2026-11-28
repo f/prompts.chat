@@ -260498,3 +260498,16 @@ Combine expressive hand-drawn 2D animation with photorealistic urban environment
 
 </details>
 
+<details>
+<summary><strong>Surrealist Haute Couture Fashion Illustration (Theme + 3-Color Palette Template)</strong></summary>
+
+## Surrealist Haute Couture Fashion Illustration (Theme + 3-Color Palette Template)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+A full-body fashion illustration of one elegant model wearing a [theme]-inspired surrealist haute couture gown, avant-garde deconstructivist silhouette, sculptural tailoring, intricate 3D embroidery, layered velvet, translucent organza, pleated silk, elaborate [theme]-inspired headpiece, artistic handbag, flowing architectural forms, sophisticated [color1] and [color2] palette with [color3] accents, refined fashion illustration, dreamy editorial aesthetic, clean white background, 4K
+```
+
+</details>
+
