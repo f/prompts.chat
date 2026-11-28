@@ -135,6 +135,25 @@ Connecting an account does not mean the agent sees every file, loads all of your
 
 For the issue tracker, keep these questions separate: Is a connection configured? Which project can it access? Can it only read, or can it create issues too?
 
+### When the Service Builds a Door Just for Agents
+
+The questions above treat a connector as something the agent brings along. More and more, the service on the other side has its own view of how an agent should come in. For years, a program that wanted to read your mail or edit your documents used the same public API as every other app. The service could not easily tell a calendar app that syncs every few minutes from an agent that might read a thousand messages in a minute and decide for itself what to do with them. Some services are now drawing that line on purpose, and asking agents to use an entrance made for them.
+
+Google Workspace offers a clear recent example. On November 24, 2026, Google [made generally available](https://workspace.google.com/blog/product-announcements/built-for-trust-and-control-new-ai-agent-protections-and-developer-tools-in-google-workspace) its Workspace MCP servers for Gmail, Drive, Docs, Sheets, Slides, Calendar, Chat, and Tasks, with Keep coming soon, together with the Workspace CLI, `gwscli`, for agents that run locally on a desktop. It calls them "front doors for AI agents." Its reasoning is worth reading slowly. Traditional APIs were built for software that moves at a human pace and behaves predictably. Agents act at machine speed and can move data out before an administrator has time to react. Through the agent door, every call is checked against the organization's permissions, its data loss prevention (DLP) rules, and its labels.
+
+The door comes with a rule about using it. A new [Workspace AI Tools Addendum](https://workspace.google.com/terms/ai-tools/) takes effect on February 1, 2027. From then on, AI agents and similar access tools must reach Workspace data through the MCP servers or the CLI instead of calling the REST APIs directly, while ordinary apps can stay on the APIs. Agents that keep calling REST directly are held to [Standard tier quotas](https://developers.google.com/workspace/guides/quota-usage-tiers), and the higher agent quotas of the Scaled tier are billed from April 1, 2027. The addendum also forbids storing the raw data permanently, training models on it, and scraping it, and it requires the data to be deleted when the agent is disconnected.
+
+Because the door knows who is knocking, more can be built into it. External agents must use their own dedicated OAuth client IDs, so that consent screens and the admin console can show whether something asking for access is a traditional app or an AI agent. Scopes are meant to be as narrow as the task allows, and approvals that expire after a set time are coming soon. People stay in charge of high-impact actions: sending email outside the organization, changing who can see a file in Drive, or editing many items at once can require the user's confirmation under rules the IT team sets, which the servers carry out through MCP user confirmations. Administrators can view, audit, and revoke agents, and users will soon be able to see what agents have done and withdraw their access themselves.
+
+The lesson reaches beyond one company. A connector is not only a convenience that spares someone from writing API calls. Services are starting to tell agent traffic apart from app traffic, and to ask agents to come through a door that knows it is talking to an agent, where confirmations, limits, and an audit trail are part of the frame instead of something each developer has to remember. Set this beside computer use earlier in this chapter. The screen was the way in when a system left no other door open. When a service offers a door built for agents, that is usually the route to prefer, over reading the screen and over calling the raw API.
+
+The habit for your prompts is a small one. When you give an agent access to your mail or documents, ask it to use the service's official agent connector, to tell you before it starts which actions will need your confirmation, and not to keep copies of what it reads.
+
+<Compare
+  before={{ label: "Any way in", content: "Go through my inbox and my Drive and clean up everything about the Henderson project." }}
+  after={{ label: "The agent door, named confirmations, no copies", content: "Use the official Gmail and Drive connectors for this, not scraping or direct API calls. Find the email threads and files about the Henderson project and propose a cleanup: what to archive, what to move into the project folder, and what to share with the team. Before you start, tell me which of these steps will ask for my confirmation, and wait for it. Do not send anything outside the company, and do not keep copies of the messages or files once the task is done." }}
+/>
+
 ## What MCP Standardizes
 
 **MCP** stands for **Model Context Protocol**. It defines a shared way for AI applications and external capability providers to communicate. It does not replace a service's API; an MCP server can use that API behind the scenes.
