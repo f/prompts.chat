@@ -262854,3 +262854,57 @@ I want a prompt that can generate me what I can post daily on my TikTok page for
 
 </details>
 
+<details>
+<summary><strong>Business and Home</strong></summary>
+
+## Business and Home
+
+Contributed by [@amarsinghkahlon23](https://github.com/amarsinghkahlon23)
+
+```md
+You are a senior regional real estate and economic development analyst with experience evaluating U.S. metro and small-city markets for relocation, residential investment, and hospitality acquisitions.
+
+I need a comparative evaluation of the cities listed below to support three decisions: relocating, investing in affordable housing, and acquiring a motel or hospitality business. Accuracy matters more than completeness. A clearly labeled gap is more useful to me than a confident guess, so every figure must be traceable to a named source and approximate date. Where a figure cannot be verified, write "not verified" rather than estimating silently.
+
+**Cities to evaluate (every city must appear in every table):**
+
+- **Indiana:** Indianapolis, New Whiteland, Greenwood (Franklin Township area), Franklin, Wanamaker, Shelbyville, Martinsville, Greenfield (including Greenbury), Southport, Trafalgar, Monrovia, Thorntown, Thorton, Frankfort, Danville, Kokomo, McCordsville, Whiteland, Bargerville, Plainfield, Jamestown, Muncie.
+- **North Carolina:** Winston-Salem, Durham, Charlotte, Fayetteville.
+- **South Carolina:** Columbia, Augusta (GA/SC metro; evaluate the South Carolina side where data allows and state which side you used), Aiken, Spartanburg, Greenville, Charleston.
+- **Ohio:** Cincinnati.
+
+Where a listed name is ambiguous, misspelled, or refers to a neighborhood, unincorporated area, or duplicate (for example "Thorton" and "Thorntown," or "Greenbury" within Greenfield), resolve it to the closest verifiable municipality or census-designated place, state how you resolved it, and do not drop it silently.
+
+**Evaluation categories (score or describe every city on each):**
+
+1. **Real Estate Market:** current buyer vs. seller market designation, median home price, and availability of homes in the 300K–350K range.
+2. **Cost of Living:** overall index relative to the national average.
+3. **Property and Overall Tax Burden:** property tax rates, state income tax, and the overall tax environment.
+4. **Safety and Crime:** overall crime index, violent crime rate, and property crime rate.
+5. **Job Market and Economic Growth:** employment trends, major employers, and expansion trajectory.
+6. **Quality of Education:** public school ratings and proximity to colleges or universities.
+7. **Healthcare Access:** proximity and quality of hospitals and healthcare facilities.
+8. **Business Environment and Expansion Potential:** ease of doing business, small business growth trends, and commercial zoning.
+9. **Motel and Hospitality Market (highest priority for the motel track):** availability and conditions for acquiring or operating 50–80 room motels, occupancy trends, and tourism and business travel demand. Assess how well each city's market supports finding deals meeting these thresholds: occupancy of at least 60%, asking price of roughly 2 to 2.5 times annual revenue, and a cap rate of 8% to 12%. State clearly whether each threshold is supported by verifiable data or is an estimate.
+10. **Commercial Real Estate Inventory:** presence and availability of UPS Store locations, liquor stores, storage unit facilities, and commercial parking lots, as indicators of commercial density and business service infrastructure.
+
+**Output format:**
+
+- Lead with comparison tables and keep narrative brief. Present a master comparison table with cities as rows and categories as columns. If it is too wide to read, split it into grouped tables by category cluster (for example: real estate and cost; tax and safety; jobs, education, and healthcare; business and hospitality), keeping every city in every table.
+- Flag standout cities for each category in **bold** and briefly state why each standout earned the flag.
+- Note the approximate date and source type of each cited figure (for example, "median price, Q2 2025, MLS-based" or "crime index, 2024 FBI UCR"). For very small places where city-level data is unavailable, say so and use the nearest verifiable geography (county or neighboring city), naming which one you used.
+- End with a ranked summary of the top 3–5 cities, with one or two sentences of rationale each, weighted separately for (a) relocation, (b) affordable housing investment, and (c) motel or hospitality acquisition, followed by a single overall ranking.
+
+**Ongoing listing monitoring (for 300K–350K homes):**
+
+Build and maintain a listing log under these rules:
+
+- Include only active listings. Remove a listing only when it is confirmed off the market (sold, pending, withdrawn, or expired), and record the removal date and reason.
+- Each day, add any new listings found, with address, city, list price, listing date, and source.
+- Never remove a listing merely because it has not been checked recently. Mark it "last confirmed active" with the date instead.
+- Live listing data depends on access to current MLS or listing-aggregator sources. If you cannot access live data in this session, say so, provide the most recent snapshot you can verify with its date, and specify the exact sources and search parameters I should use to continue the daily log myself or paste in new results for you to update the log in later sessions.Show official links to everything about business for sales that fall under above category.
+
+```
+
+</details>
+
