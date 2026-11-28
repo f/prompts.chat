@@ -220896,3 +220896,26 @@ Swift Package taste,"# Swift Package taste of a developer who ships small, well-
 - Keep Package.resolved out of library repositories, but commit it in apps and example projects. Confidence: 0.80
 - Include a runnable example app or snippet in the README that compiles in CI. Confidence: 0.70
 - Keep a CHANGELOG.md with Added, Changed, Deprecated and Fixed sections for every release. Confidence: 0.80",TRUE,TEXT,f
+Terminal UI App taste,"# Terminal UI App taste of a developer who builds fast, keyboard-first terminal interfaces
+- Pick a mature TUI framework (Bubble Tea, Ratatui, Textual, Ink) instead of writing raw escape codes. Confidence: 0.90
+- Use an Elm-style model, update and view architecture so state changes are easy to test without a terminal. Confidence: 0.80
+- Render in the alternate screen buffer and always restore the terminal on exit, panic or Ctrl+C. Confidence: 0.95
+- Make every action reachable by keyboard and show the main shortcuts in a footer bar. Confidence: 0.90
+- Offer a ? key that opens a full help overlay listing all key bindings for the current view. Confidence: 0.85
+- Support both arrow keys and vim-style hjkl navigation, and never require a mouse, though mouse support is welcome. Confidence: 0.80
+- Use q or Esc to go back or quit, and ask for confirmation only before destructive actions. Confidence: 0.85
+- Never block the render loop on I/O; run network and disk work in the background and show a spinner or progress bar. Confidence: 0.90
+- Redraw only on state changes or at a capped frame rate, not in a busy loop. Confidence: 0.80
+- Handle terminal resize events and lay out with flexible constraints that still work at 80x24. Confidence: 0.90
+- Respect NO_COLOR, detect color depth, and fall back gracefully from truecolor to 256 and 16 colors. Confidence: 0.85
+- Never use color as the only signal; pair it with symbols, labels or bold text. Confidence: 0.85
+- Use a small, consistent palette tied to the terminal theme instead of hard-coded bright colors. Confidence: 0.75
+- Provide a non-interactive mode (flags, --json output) for every important action so the tool works in scripts and CI. Confidence: 0.90
+- Detect when stdout is not a TTY and switch to plain output automatically. Confidence: 0.90
+- Add fuzzy filtering with / to any list longer than one screen. Confidence: 0.80
+- Write logs to a file (opt-in with --debug), never to the screen the UI is drawing on. Confidence: 0.85
+- Store config in the XDG config directory as TOML or YAML, and let users remap key bindings there. Confidence: 0.75
+- Test views with golden snapshot files of rendered output at fixed terminal sizes. Confidence: 0.75
+- Test in the common terminals (iTerm2, Windows Terminal, GNOME Terminal, tmux) before a release, including Unicode width cases. Confidence: 0.70
+- Keep startup under about 100 ms so opening the app feels instant. Confidence: 0.70
+- Ship a single static binary or a pipx/npm install path, with a short animated demo GIF in the README. Confidence: 0.70",TRUE,TEXT,f
