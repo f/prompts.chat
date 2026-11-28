@@ -3040,6 +3040,16 @@
         "sameLink": "Même lien à chaque mise à jour",
         "versionHistory": "Historique des versions"
       }
+    },
+    "soundboost": {
+      "label": "Générateur de clips musicaux IA",
+      "description": "Importez votre chanson et obtenez un clip fait pour elle.",
+      "cta": "Essayer un storyboard gratuit",
+      "features": {
+        "beat": "Montage sur le rythme",
+        "lipSync": "Synchro labiale",
+        "fullLength": "Durée complète"
+      }
     }
   }
 }

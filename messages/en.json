@@ -3041,6 +3041,16 @@
         "sameLink": "Same link for updates",
         "versionHistory": "Version history"
       }
+    },
+    "soundboost": {
+      "label": "AI Music Video Generator",
+      "description": "Upload your song and get a music video made for it.",
+      "cta": "Try a free storyboard",
+      "features": {
+        "beat": "Cut to the beat",
+        "lipSync": "Lip sync",
+        "fullLength": "Full length"
+      }
     }
   }
 }

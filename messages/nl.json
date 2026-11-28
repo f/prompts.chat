@@ -3028,6 +3028,16 @@
         "sameLink": "Zelfde link bij updates",
         "versionHistory": "Versiegeschiedenis"
       }
+    },
+    "soundboost": {
+      "label": "AI-muziekvideogenerator",
+      "description": "Upload je nummer en krijg een muziekvideo die ervoor gemaakt is.",
+      "cta": "Probeer een gratis storyboard",
+      "features": {
+        "beat": "Montage op de beat",
+        "lipSync": "Lipsync",
+        "fullLength": "Volledige lengte"
+      }
     }
   }
 }

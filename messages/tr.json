@@ -3036,6 +3036,16 @@
         "sameLink": "Güncellemeler için aynı bağlantı",
         "versionHistory": "Sürüm geçmişi"
       }
+    },
+    "soundboost": {
+      "label": "Yapay Zeka Müzik Videosu Oluşturucu",
+      "description": "Şarkınızı yükleyin, ona özel bir müzik videosu alın.",
+      "cta": "Ücretsiz storyboard deneyin",
+      "features": {
+        "beat": "Ritme göre kurgu",
+        "lipSync": "Dudak senkronu",
+        "fullLength": "Tam uzunluk"
+      }
     }
   }
 }

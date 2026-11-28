@@ -3037,6 +3037,16 @@
         "sameLink": "Gleicher Link bei Updates",
         "versionHistory": "Versionsverlauf"
       }
+    },
+    "soundboost": {
+      "label": "KI-Musikvideo-Generator",
+      "description": "Lade deinen Song hoch und erhalte ein Musikvideo, das für ihn gemacht ist.",
+      "cta": "Kostenloses Storyboard testen",
+      "features": {
+        "beat": "Schnitt im Takt",
+        "lipSync": "Lippensynchron",
+        "fullLength": "Volle Länge"
+      }
     }
   }
 }
