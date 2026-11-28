@@ -262783,3 +262783,35 @@ Negative: a second hedgehog, a hedgehog with glasses, a crow with spines, mixed 
 
 </details>
 
+<details>
+<summary><strong>Hedgehog Dad C6 v3 – The Father Doesn't Give Up (Bento Stays Still) | Veo 3.1, 8s, 16:9</strong></summary>
+
+## Hedgehog Dad C6 v3 – The Father Doesn't Give Up (Bento Stays Still) | Veo 3.1, 8s, 16:9
+
+Contributed by [@diogovarelarepresentacoes](https://github.com/diogovarelarepresentacoes)
+
+```md
+Style: Pixar-style 3D animated family drama, warm soft morning light, soft shadows, 24 fps, STATIC LOCKED CAMERA for the whole clip, same framing as the start frame, smooth natural motion. 16:9, 8 seconds.
+
+Characters:
+- THE FATHER: adult hedgehog, brown fur, dark spines with cream tips, mustard-yellow knitted scarf, dark green vest, exactly two small round hedgehog ears. Stubborn, determined face, mouth always closed.
+- SEU BENTO: a crow (a bird, not a hedgehog), black feathers with grey tips, round golden glasses, red bow tie, brown tweed beret, dark grey beak, wings folded. Worried face.
+Same faces, outfits and colors in every shot. Exactly one hedgehog and one crow for the whole clip, nothing else.
+
+Location: A cozy hedgehog burrow carved inside tree roots: round window on screen-left, wooden shelves with jars, a stone fireplace with fire on screen-right, a colorful crocheted rug in the center with a pile of pulled spines on it. Bento is perched on the sill of the round window on screen-left; the father stands on the rug at screen-center facing Bento, holding one pulled spine. The pile of spines stays on the rug for the whole clip.
+
+Continuity rules: animate the attached start frame exactly as it is. The crow and the hedgehog are two different animals and stay separate at all times: the crow keeps feathers, wings and beak and never grows spines; the hedgehog keeps spines and never gets glasses, beret or wings. Nobody new appears in the room. The window light stays soft, the crow stays dark and sharp.
+
+SHOT SEQUENCE:
+* 0-3s: Wide shot. ONLY THE FATHER MOVES: he drops the spine from his paw onto the pile of spines on the rug. Stubborn, not smiling. Mouth closed.
+* 3-5.5s: Wide shot. ONLY THE FATHER MOVES: he looks at Bento, crosses his arms and lifts his chin, lips pressed together. Mouth closed.
+* 5.5-8s: Wide shot. ONLY THE FATHER MOVES: he glances down at the pile of spines, then back up at Bento, firm and determined. Mouth closed.
+Bento stays perfectly still on the sill for the whole clip, wings folded, only blinking; he never moves, never flies, never changes.
+
+Audio: No dialogue. A small tick when the spine lands on the pile at 1.5s, crackling fireplace, low emotional piano, a soft suspense note at the end. No narration.
+
+Negative: a second hedgehog, a hedgehog with glasses, Bento turning into a hedgehog, Bento splitting or duplicating, mixed animals, the father wearing glasses, open mouth, shouting, pain expression, distorted faces, melting features, extra ears, fox ears, the father turning to face the camera, the father turning his back, Bento flying, Bento leaving the sill, Bento entering the room, Bento losing his glasses, beret or bow tie, yellow or orange beak, the spines disappearing from the rug, extra characters, camera movement, zoom, camera rotation, cuts, scene jumps, teleportation, flickering, jittery motion, deformed hands or wings, subtitles, readable text, logos, watermark.
+```
+
+</details>
+
