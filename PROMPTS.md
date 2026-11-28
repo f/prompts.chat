@@ -262759,3 +262759,27 @@ Negative: open mouth, shouting, screaming, pain expression, distorted faces, mel
 
 </details>
 
+<details>
+<summary><strong>Hedgehog Dad C6 – Sharp Opening Frame (Hedgehog and Crow in the Burrow) | Nano Banana 16:9</strong></summary>
+
+## Hedgehog Dad C6 – Sharp Opening Frame (Hedgehog and Crow in the Burrow) | Nano Banana 16:9
+
+Contributed by [@diogovarelarepresentacoes](https://github.com/diogovarelarepresentacoes)
+
+```md
+Style: Pixar-style 3D animated family film still, warm soft morning light, gentle window glow without glare, soft shadows, crisp sharp details. 16:9.
+
+Characters:
+- THE FATHER: adult hedgehog, brown fur, dark spines with cream tips, mustard-yellow knitted scarf, dark green vest, exactly two small round hedgehog ears. Stubborn, determined face, mouth closed.
+- SEU BENTO: a crow (a bird, not a hedgehog), black feathers with grey tips, round golden glasses, red bow tie, brown tweed beret, dark grey beak, two black wings folded. Worried face.
+Same faces, outfits and colors as the reference images. Exactly one hedgehog and one crow, nothing else.
+
+Location: Same exact room, camera position and framing as the first reference image: a cozy hedgehog burrow carved inside tree roots, round window on screen-left, wooden shelves with jars, a stone fireplace with fire on screen-right, a colorful crocheted rug in the center with a pile of pulled spines on it.
+
+Composition: Wide shot. Bento is perched on the sill of the round window on screen-left, clearly visible, sharp and dark against the window, wings folded, facing the father. The father stands on the rug at screen-center in three-quarter profile facing Bento, holding one pulled spine in his paw.
+
+Negative: a second hedgehog, a hedgehog with glasses, a crow with spines, mixed animals, Bento inside the room, blown-out window glare, washed-out or blurry crow, extra characters, changed outfits or colors, yellow or orange beak, extra ears, fox ears, text, subtitles, logos, watermark.
+```
+
+</details>
+
