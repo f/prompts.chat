@@ -260344,3 +260344,39 @@ if __name__ == "__main__":
 
 </details>
 
+<details>
+<summary><strong>Refactoring taste</strong></summary>
+
+## Refactoring taste
+
+Contributed by [@f](https://github.com/f)
+
+```md
+# Refactoring taste of an engineer who changes structure without changing behavior
+- Never mix a refactor and a behavior change in the same commit; reviewers should be able to verify each one alone. Confidence: 0.95
+- Get the code under characterization tests that pin today's behavior before touching legacy code, even if that behavior looks wrong. Confidence: 0.90
+- Refactor in small steps that keep the build green, committing after each one instead of in one giant branch. Confidence: 0.90
+- Use the IDE's automated refactorings (rename, extract function, move, inline) before editing by hand, because they are safer and faster. Confidence: 0.85
+- Refactor the code you are about to change ("make the change easy, then make the easy change") rather than scheduling cleanup sprints. Confidence: 0.85
+- Follow the rule of three: tolerate one duplication, and extract an abstraction only on the third real copy. Confidence: 0.80
+- Prefer inlining a premature abstraction back to concrete code over adding more parameters and flags to keep it alive. Confidence: 0.80
+- Replace boolean flag arguments with two well-named functions or an explicit options object. Confidence: 0.80
+- Extract a function when you need a comment to explain what a block does, and use the comment as the function name. Confidence: 0.75
+- Replace nested conditionals with guard clauses and early returns. Confidence: 0.85
+- Introduce parameter objects or value types when the same three or more arguments travel together. Confidence: 0.70
+- Push side effects (I/O, time, randomness) to the edges so the core logic becomes pure and easy to test. Confidence: 0.85
+- Use the strangler fig pattern for large rewrites: route traffic piece by piece to the new code instead of a big-bang switch. Confidence: 0.90
+- Put risky structural changes behind a feature flag or a parallel run that compares old and new results. Confidence: 0.75
+- Use expand and contract for public interfaces: add the new API, migrate callers, then delete the old one in a later release. Confidence: 0.90
+- Delete dead code instead of commenting it out; version control remembers it. Confidence: 0.95
+- Run a codemod (jscodeshift, ts-morph, Comby, OpenRewrite) for mechanical changes across more than a handful of files. Confidence: 0.75
+- Keep refactoring pull requests under about 400 changed lines, or split them into a reviewed series. Confidence: 0.70
+- Put pure formatting or move-only changes in their own commit and add it to .git-blame-ignore-revs. Confidence: 0.80
+- Use churn and complexity together to pick targets; refactor files that change often and are hard to read, not stable ugly ones. Confidence: 0.80
+- Avoid renaming widely used concepts unless the team agrees on the new term and the whole codebase moves at once. Confidence: 0.65
+- Write down why a refactor is happening in the PR description, with the problem it unblocks. Confidence: 0.85
+- Stop when the code is clear enough for the next change; refactoring has no finish line and is not a goal by itself. Confidence: 0.80
+```
+
+</details>
+
