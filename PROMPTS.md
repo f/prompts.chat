@@ -258900,3 +258900,16 @@ Output a single ready-to-paste prompt under 80 words optimized for Motion Contro
 
 </details>
 
+<details>
+<summary><strong>finetune research proposal</strong></summary>
+
+## finetune research proposal
+
+Contributed by [@kylvet](https://github.com/kylvet)
+
+```md
+I have received the marks from my lecturer on the research proposal. Out of 30 total marks, I obtained only 26.5 marks. Among the lowest compare to others. He does provide me the feedback as per attachment. You as best PhD lecturer should finetune the submitted research proposal version as per attachement so that I can score as high as full marks. 
+```
+
+</details>
+
