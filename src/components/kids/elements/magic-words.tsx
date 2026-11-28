@@ -36,19 +36,22 @@ export function MagicWords({
 }: MagicWordsProps) {
   const t = useTranslations("kids.magicWords");
   const levelSlug = useLevelSlug();
-  const { currentSection, markSectionComplete, registerSectionRequirement } = useSectionNavigation();
+  const { currentSection, markSectionComplete, registerSectionRequirement } =
+    useSectionNavigation();
   const componentId = useId();
   const displayTitle = title || t("title");
-  
+
   // Register that this section has an interactive element requiring completion
   useEffect(() => {
     registerSectionRequirement(currentSection);
   }, [currentSection, registerSectionRequirement]);
-  
+
   const [placements, setPlacements] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [draggedWord, setDraggedWord] = useState<string | null>(null);
-  const [availableWords, setAvailableWords] = useState<{ word: string; blankId: string }[]>([]);
+  const [availableWords, setAvailableWords] = useState<
+    { word: string; blankId: string }[]
+  >([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Generate IDs for blanks if not provided
@@ -60,8 +63,8 @@ export function MagicWords({
   // Load saved state on mount
   useEffect(() => {
     const shuffleWords = () => {
-      const words = blanksWithIds.flatMap((blank) => 
-        blank.answers.map((answer) => ({ word: answer, blankId: blank.id! }))
+      const words = blanksWithIds.flatMap((blank) =>
+        blank.answers.map((answer) => ({ word: answer, blankId: blank.id! })),
       );
       for (let i = words.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -76,9 +79,14 @@ export function MagicWords({
       setIsLoaded(true);
       return;
     }
-    
+
     const saved = getComponentState<SavedState>(levelSlug, componentId);
-    if (saved && saved.placements && saved.availableWords && saved.availableWords.length > 0) {
+    if (
+      saved &&
+      saved.placements &&
+      saved.availableWords &&
+      saved.availableWords.length > 0
+    ) {
       setPlacements(saved.placements);
       setSubmitted(saved.submitted || false);
       setAvailableWords(saved.availableWords);
@@ -87,13 +95,13 @@ export function MagicWords({
       setAvailableWords(shuffleWords());
     }
     setIsLoaded(true);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [levelSlug, componentId]);
 
   // Save state when it changes
   useEffect(() => {
     if (!levelSlug || !isLoaded || availableWords.length === 0) return;
-    
+
     saveComponentState<SavedState>(levelSlug, componentId, {
       placements,
       submitted,
@@ -101,17 +109,28 @@ export function MagicWords({
     });
   }, [levelSlug, componentId, placements, submitted, availableWords, isLoaded]);
 
-  const checkAnswer = useCallback((blankId: string, value: string): boolean => {
-    const blank = blanksWithIds.find((b) => b.id === blankId);
-    if (!blank) return false;
-    return blank.answers.some((answer) => answer.toLowerCase() === value.toLowerCase());
-  }, [blanksWithIds]);
+  const checkAnswer = useCallback(
+    (blankId: string, value: string): boolean => {
+      const blank = blanksWithIds.find((b) => b.id === blankId);
+      if (!blank) return false;
+      return blank.answers.some(
+        (answer) => answer.toLowerCase() === value.toLowerCase(),
+      );
+    },
+    [blanksWithIds],
+  );
 
   // Don't render until loaded to prevent hydration mismatch
   if (!isLoaded) return null;
 
-  const allCorrect = submitted && blanksWithIds.every((blank) => checkAnswer(blank.id, placements[blank.id] || ""));
-  const score = blanksWithIds.filter((blank) => checkAnswer(blank.id, placements[blank.id] || "")).length;
+  const allCorrect =
+    submitted &&
+    blanksWithIds.every((blank) =>
+      checkAnswer(blank.id, placements[blank.id] || ""),
+    );
+  const score = blanksWithIds.filter((blank) =>
+    checkAnswer(blank.id, placements[blank.id] || ""),
+  ).length;
 
   const usedWords = Object.values(placements);
 
@@ -140,7 +159,7 @@ export function MagicWords({
 
   const handleClickWord = (word: string) => {
     if (submitted) return;
-    
+
     // Find first empty blank
     const emptyBlank = blanksWithIds.find((blank) => !placements[blank.id]);
     if (emptyBlank) {
@@ -164,15 +183,21 @@ export function MagicWords({
     setPlacements(newPlacements);
   };
 
-  const handleSubmit = () => {
-    setSubmitted(true);
-    // Check if all blanks are filled correctly
-    const allFilled = blanksWithIds.every(blank => placements[blank.id]);
-    if (allFilled && levelSlug) {
-      markSectionCompleted(levelSlug, currentSection);
-      markSectionComplete(currentSection);
-    }
-  };
+
+const handleSubmit = () => {
+  setSubmitted(true);
+
+  // FIX: Every blank must contain a valid answer.
+  const allCorrect = blanksWithIds.every((blank) =>
+    checkAnswer(blank.id, placements[blank.id] ?? ""),
+  );
+
+  if (allCorrect && levelSlug) {
+    markSectionCompleted(levelSlug, currentSection);
+    markSectionComplete(currentSection);
+  }
+};
+
 
   const handleReset = () => {
     setPlacements({});
@@ -190,7 +215,7 @@ export function MagicWords({
       if (/^_+$/.test(part) || /^\{\{[^}]+\}\}$/.test(part)) {
         const blank = blanksWithIds[blankIndex];
         if (!blank) return <span key={index}>{part}</span>;
-        
+
         const blankId = blank.id;
         const placedWord = placements[blankId];
         const isCorrect = submitted && checkAnswer(blankId, placedWord || "");
@@ -199,7 +224,10 @@ export function MagicWords({
         blankIndex++;
 
         return (
-          <span key={index} className="inline-flex items-center gap-1 mx-1 my-1">
+          <span
+            key={index}
+            className="inline-flex items-center gap-1 mx-1 my-1"
+          >
             <span
               onClick={() => placedWord && handleClickBlank(blankId)}
               onDragOver={(e) => e.preventDefault()}
@@ -207,16 +235,22 @@ export function MagicWords({
               className={cn(
                 "px-3 py-2 border-2 border-dashed rounded-lg min-w-[100px] text-xl text-center font-medium transition-all cursor-pointer text-[#2C1810]",
                 !placedWord && "bg-white border-purple-400",
-                placedWord && !submitted && "bg-purple-100 border-purple-500 border-solid",
+                placedWord &&
+                  !submitted &&
+                  "bg-purple-100 border-purple-500 border-solid",
                 isCorrect && "border-green-500 border-solid bg-green-50",
                 isWrong && "border-red-400 border-solid bg-red-50",
-                draggedWord && !placedWord && "border-purple-500 bg-purple-50 scale-105"
+                draggedWord &&
+                  !placedWord &&
+                  "border-purple-500 bg-purple-50 scale-105",
               )}
               title={blank.hint}
             >
               {placedWord || blank.hint}
             </span>
-            {submitted && isCorrect && <Check className="h-6 w-6 text-green-500" />}
+            {submitted && isCorrect && (
+              <Check className="h-6 w-6 text-green-500" />
+            )}
           </span>
         );
       }
@@ -230,18 +264,32 @@ export function MagicWords({
       <div className="px-4 py-3 bg-gradient-to-r from-purple-100 to-pink-100 border-b-2 border-purple-200">
         <div className="flex items-center gap-2">
           <Sparkles className="h-6 w-6 text-purple-500" />
-          <span className="font-bold text-2xl text-[#2C1810]">{displayTitle}</span>
+          <span className="font-bold text-2xl text-[#2C1810]">
+            {displayTitle}
+          </span>
         </div>
       </div>
 
       <div className="p-4 space-y-4">
         {/* Sentence with blanks */}
-        <div className="text-xl leading-relaxed p-4 bg-purple-50 flex flex-wrap items-center text-[#2C1810]" style={{ clipPath: "polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px)" }}>
+        <div
+          className="text-xl leading-relaxed p-4 bg-purple-50 flex flex-wrap items-center text-[#2C1810]"
+          style={{
+            clipPath:
+              "polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px)",
+          }}
+        >
           {renderSentence()}
         </div>
 
         {/* Word bank */}
-        <div className="p-4 bg-purple-100" style={{ clipPath: "polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px)" }}>
+        <div
+          className="p-4 bg-purple-100"
+          style={{
+            clipPath:
+              "polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px)",
+          }}
+        >
           <p className="text-lg font-medium text-purple-700 mb-3 m-0">
             {t("dragOrTap")}
           </p>
@@ -254,19 +302,29 @@ export function MagicWords({
                   draggable={!submitted && !isUsed}
                   onDragStart={() => handleDragStart(word)}
                   onDragEnd={handleDragEnd}
-                  onTouchStart={() => !isUsed && !submitted && handleDragStart(word)}
+                  onTouchStart={() =>
+                    !isUsed && !submitted && handleDragStart(word)
+                  }
                   onTouchEnd={() => handleDragEnd()}
                   onClick={() => !isUsed && handleClickWord(word)}
                   disabled={submitted || isUsed}
                   className={cn(
                     "flex items-center gap-2 px-4 py-3 border-2 text-xl font-medium transition-all text-[#2C1810]",
-                    !isUsed && !submitted && "bg-white border-purple-300 hover:border-purple-500 hover:shadow-md cursor-grab active:cursor-grabbing",
-                    isUsed && "bg-gray-100 border-gray-300 text-gray-400 opacity-50 cursor-not-allowed",
-                    submitted && "cursor-default"
+                    !isUsed &&
+                      !submitted &&
+                      "bg-white border-purple-300 hover:border-purple-500 hover:shadow-md cursor-grab active:cursor-grabbing",
+                    isUsed &&
+                      "bg-gray-100 border-gray-300 text-gray-400 opacity-50 cursor-not-allowed",
+                    submitted && "cursor-default",
                   )}
-                  style={{ clipPath: "polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px)" }}
+                  style={{
+                    clipPath:
+                      "polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px)",
+                  }}
                 >
-                  {!submitted && !isUsed && <GripVertical className="h-5 w-5 text-purple-400" />}
+                  {!submitted && !isUsed && (
+                    <GripVertical className="h-5 w-5 text-purple-400" />
+                  )}
                   {word}
                 </button>
               );
@@ -281,12 +339,17 @@ export function MagicWords({
               "p-4 text-center",
               allCorrect
                 ? "bg-green-100 border-2 border-green-300"
-                : "bg-amber-100 border-2 border-amber-300"
+                : "bg-amber-100 border-2 border-amber-300",
             )}
-            style={{ clipPath: "polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px)" }}
+            style={{
+              clipPath:
+                "polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px)",
+            }}
           >
             {allCorrect ? (
-              <p className="font-bold text-xl m-0 text-green-800">🎉 {successMessage || "Amazing!"}</p>
+              <p className="font-bold text-xl m-0 text-green-800">
+                🎉 {successMessage || "Amazing!"}
+              </p>
             ) : (
               <p className="font-bold text-lg m-0 text-amber-800">
                 {score} / {blanksWithIds.length} {t("correct")}! {t("tryAgain")}
@@ -298,8 +361,8 @@ export function MagicWords({
         {/* Actions */}
         <div className="flex gap-3">
           {!submitted ? (
-            <Button 
-              onClick={handleSubmit} 
+            <Button
+              onClick={handleSubmit}
               className="rounded-full h-12 text-xl px-6"
               disabled={Object.keys(placements).length < blanksWithIds.length}
             >
@@ -307,7 +370,11 @@ export function MagicWords({
               {t("check")}
             </Button>
           ) : !allCorrect ? (
-            <Button onClick={handleReset} variant="outline" className="rounded-full h-12 text-xl px-6">
+            <Button
+              onClick={handleReset}
+              variant="outline"
+              className="rounded-full h-12 text-xl px-6"
+            >
               <RefreshCw className="h-5 w-5 mr-2" />
               {t("retry")}
             </Button>
