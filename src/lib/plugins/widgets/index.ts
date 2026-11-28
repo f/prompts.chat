@@ -11,6 +11,7 @@ import { bookWidget } from "./book";
 import { textreamWidget } from "./textream";
 import { commandcodeWidget } from "./commandcode";
 import { spacefastWidget } from "./spacefast";
+import { soundboostWidget } from "./soundboost";
 
 export * from "./types";
 
@@ -21,6 +22,7 @@ const widgetPlugins: WidgetPlugin[] = [
   textreamWidget,
   commandcodeWidget,
   spacefastWidget,
+  soundboostWidget,
 ];
 
 /**

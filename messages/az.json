@@ -3037,6 +3037,16 @@
         "sameLink": "Yeniləmələr üçün eyni keçid",
         "versionHistory": "Versiya tarixçəsi"
       }
+    },
+    "soundboost": {
+      "label": "Süni intellektli musiqi videosu generatoru",
+      "description": "Mahnınızı yükləyin və onun üçün hazırlanmış musiqi videosu alın.",
+      "cta": "Pulsuz storyboard sınayın",
+      "features": {
+        "beat": "Ritmə uyğun montaj",
+        "lipSync": "Dodaq sinxronu",
+        "fullLength": "Tam uzunluq"
+      }
     }
   }
 }

@@ -88,6 +88,7 @@ export default defineConfig({
 
         { name: "eachlabs", className: 'py-[6px]', logo: '/sponsors/eachlabs.png', darkLogo: '/sponsors/eachlabs-dark.png', url: "https://www.eachlabs.ai/?utm_source=promptschat&utm_medium=referral" },
         { name: "CommandCode", className: 'py-1', logo: '/sponsors/commandcode.svg', darkLogo: '/sponsors/commandcode-dark.svg', url: "https://commandcode.ai/?utm_source=prompts.chat" },
+        { name: "SoundBoost", className: 'py-1', logo: '/sponsors/soundboost.svg', darkLogo: '/sponsors/soundboost-dark.svg', url: "https://soundboost.ai/music-video-generator" },
       ],
     },
   },

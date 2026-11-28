@@ -118,3 +118,29 @@ describe("injectWidgets", () => {
     });
   });
 });
+
+describe("SoundBoost widget", () => {
+  const videoGeneration = { category: "cat-video", categorySlug: "video-generation" };
+
+  it("takes the third card of the video generation category, once", () => {
+    const result = injectWidgets(items(100), { filters: videoGeneration });
+    expect(widgetSlots(result, "soundboost-music-video")).toEqual([2]);
+    expect(widgetIds(result).filter((id) => id.startsWith("soundboost"))).toEqual(["soundboost-music-video"]);
+  });
+
+  it("stays off other categories, the unfiltered feed, skills and tastes", () => {
+    expect(widgetIds(injectWidgets(items(24)))).not.toContain("soundboost-music-video");
+    expect(widgetIds(injectWidgets(items(24), { filters: { category: "cat-image", categorySlug: "image-generation" } }))).not.toContain(
+      "soundboost-music-video"
+    );
+    expect(widgetIds(injectWidgets(items(24), { filters: { ...videoGeneration, type: "SKILL" } }))).not.toContain("soundboost-music-video");
+    expect(widgetIds(injectWidgets(items(24), { filters: { ...videoGeneration, type: "TASTE" } }))).not.toContain("soundboost-music-video");
+  });
+
+  it("is a prompts-only widget", () => {
+    const widget = getWidgetPlugin("soundboost")!.prompts[0];
+    expect(widgetHasPlacement(widget, "prompts")).toBe(true);
+    expect(widgetHasPlacement(widget, "bots")).toBe(false);
+    expect(widgetHasPlacement(widget, "teams")).toBe(false);
+  });
+});

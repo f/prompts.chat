@@ -3025,6 +3025,16 @@
         "sameLink": "업데이트해도 같은 링크",
         "versionHistory": "버전 기록"
       }
+    },
+    "soundboost": {
+      "label": "AI 뮤직비디오 생성기",
+      "description": "노래를 업로드하면 그 곡을 위한 뮤직비디오가 만들어집니다.",
+      "cta": "무료 스토리보드 체험",
+      "features": {
+        "beat": "비트에 맞춘 컷",
+        "lipSync": "립싱크",
+        "fullLength": "풀 길이"
+      }
     }
   }
 }

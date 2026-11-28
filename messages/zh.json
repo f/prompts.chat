@@ -3025,6 +3025,16 @@
         "sameLink": "更新始终同一链接",
         "versionHistory": "版本历史"
       }
+    },
+    "soundboost": {
+      "label": "AI 音乐视频生成器",
+      "description": "上传你的歌曲，获得为它量身打造的音乐视频。",
+      "cta": "免费试用分镜",
+      "features": {
+        "beat": "踩点剪辑",
+        "lipSync": "口型同步",
+        "fullLength": "完整长度"
+      }
     }
   }
 }

@@ -3043,6 +3043,16 @@
         "sameLink": "Stesso link per gli aggiornamenti",
         "versionHistory": "Cronologia versioni"
       }
+    },
+    "soundboost": {
+      "label": "Generatore di videoclip con IA",
+      "description": "Carica la tua canzone e ottieni un videoclip fatto per lei.",
+      "cta": "Prova uno storyboard gratis",
+      "features": {
+        "beat": "Montaggio a tempo",
+        "lipSync": "Sincronizzazione labiale",
+        "fullLength": "Durata completa"
+      }
     }
   }
 }
