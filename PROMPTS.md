@@ -260484,3 +260484,17 @@ Negative: No distorted faces, extra fingers, flickering, scene jumps, subtitles,
 
 </details>
 
+<details>
+<summary><strong>Tiny Delivery Girl, Giant City: Hand-Drawn 2D Character in a Photorealistic New York (Mixed-Reality Video Prompt)</strong></summary>
+
+## Tiny Delivery Girl, Giant City: Hand-Drawn 2D Character in a Photorealistic New York (Mixed-Reality Video Prompt)
+
+Contributed by [@f](https://github.com/f)
+
+```md
+Create a whimsical mixed-reality animation featuring a miniature hand-drawn 2D young woman with long black hair, a pink hoodie, denim shorts, white sneakers, and a tiny red delivery backpack exploring a gigantic photorealistic New York street. She encounters a massive pedestrian crossing where passing cars create powerful gusts of wind that nearly blow her away, climbs onto a giant sneaker left on the pavement, slides down a newspaper stand, discovers a giant hot-dog cart where she narrowly escapes a rolling pickle, sails across a huge puddle using a discarded coffee cup lid as a boat, and gets lifted into the air by a gust of wind using her delivery bag as an improvised parachute. Finally, she lands on top of a giant pizza slice and celebrates triumphantly until a human hand suddenly picks up the slice, leaving her dangling in disbelief.
+Combine expressive hand-drawn 2D animation with photorealistic urban environments, exaggerated scale, playful physics, cinematic macro close-ups, smooth camera movements, and seamless mixed-media compositing. Include realistic city ambience, traffic, footsteps, car horns, street vendor sounds, water splashes, wind, and playful comedic sound effects. No dialogue. Ultra-detailed visuals, consistent character design, cinematic depth of field, and high-end commercial animation quality.
+```
+
+</details>
+
