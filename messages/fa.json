@@ -1542,7 +1542,7 @@
     "commandLine": "خط فرمان",
     "extension": "افزونه",
     "setupPrivateServer": "سرور خصوصی خود را راه‌اندازی کنید",
-    "beStargazer": "{count}{ordinal} ستاره‌دهنده در GitHub باشید",
+    "beStargazer": "{count}امین ستاره‌دهنده در GitHub باشید",
     "ourHistory": "بیشتر درباره تاریخچه ما بخوانید",
     "browsePrompts": "مرور پرامپت‌ها",
     "viewFeed": "مشاهده فید",

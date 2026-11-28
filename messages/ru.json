@@ -1542,7 +1542,7 @@
     "commandLine": "Командная строка",
     "extension": "Расширение",
     "setupPrivateServer": "Разверните Свой Сервер",
-    "beStargazer": "Станьте {count}{ordinal} звездочетом на GitHub",
+    "beStargazer": "Станьте {count}-м звездочетом на GitHub",
     "ourHistory": "Узнать больше о нашей истории",
     "browsePrompts": "Смотреть промпты",
     "viewFeed": "Смотреть ленту",

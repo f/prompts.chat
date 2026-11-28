@@ -1542,7 +1542,7 @@
     "commandLine": "Command Line",
     "extension": "Extensie",
     "setupPrivateServer": "Deploy je privéserver",
-    "beStargazer": "Word de {count}{ordinal} stargazer op GitHub",
+    "beStargazer": "Word de {count}e stargazer op GitHub",
     "ourHistory": "Lees meer over onze geschiedenis",
     "browsePrompts": "Prompts bekijken",
     "viewFeed": "Feed bekijken",
